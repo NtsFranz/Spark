@@ -61,6 +61,15 @@ namespace IgniteBot2.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IgniteBot.
+        /// </summary>
+        internal static string AppName {
+            get {
+                return ResourceManager.GetString("AppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon ignite_logo {

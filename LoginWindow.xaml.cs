@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IgniteBot2.Properties;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace IgniteBot2
 {
@@ -22,6 +12,27 @@ namespace IgniteBot2
 		public LoginWindow()
 		{
 			InitializeComponent();
+		}
+
+		private void StartButtonClicked(object sender, RoutedEventArgs e)
+		{
+			Program.authorized = true;
+			Settings.Default.accessMode = ((ComboBoxItem)accessCodeComboBox.SelectedValue).Content.ToString();
+			Settings.Default.Save();
+
+			if (Program.liveWindow == null)
+			{
+				Program.liveWindow = new LiveWindow();
+				Program.liveWindow.Closed += (sender, args) => Program.liveWindow = null;
+				Program.liveWindow.Show();
+			}
+
+			Close();
+		}
+
+		private void DiscordLoginButtonClicked(object sender, RoutedEventArgs e)
+		{
+			OAuth.OAuthLogin(force: true);
 		}
 	}
 }

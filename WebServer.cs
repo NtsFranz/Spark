@@ -107,7 +107,14 @@ namespace IgniteBot2
 		{
 			// stop thread and listener
 			threadActive = false;
-			if (listener != null && listener.IsListening) listener.Stop();
+			try
+			{
+				if (listener != null && listener.IsListening) listener.Stop();
+			}
+			catch
+			{
+
+			}
 
 			// wait for thread to finish
 			if (thread != null)

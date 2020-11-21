@@ -152,17 +152,13 @@ namespace IgniteBot2
 		public static bool useCompression;
 		public static bool batchWrites;
 
+		public static LiveWindow liveWindow;
 		public static SettingsWindow settingsWindow;
 		public static Speedometer speedometerWindow;
 		public static AtlasLinks atlasLinksWindow;
 		public static Playspace playspaceWindow;
 		public static TTSSettingsWindow ttsWindow;
 		public static LoginWindow loginWindow;
-		public static bool ShowingMainWindow { get; set; }
-
-		public static bool ShowingSettings { get; set; }
-		public static bool ShowingSpeedometer { get; set; }
-		public static bool ShowingAtlasLinksWindow { get; set; }
 
 		private static float smoothDeltaTime = -1;
 
@@ -192,13 +188,21 @@ namespace IgniteBot2
 		public static string discordUsername = "";
 		public static Dictionary<string, string> discordUserData;
 
+
+		static Thread statsThread;
+		static Thread fullLogThread;
+		static Thread autorestartThread;
+		static Thread fetchThread;
+		static Thread liveReplayThread;
+		static Thread milkThread;
+
 		public static App app;
 
 
-		static void Main(string[] args, App app)
+		public static void Main(string[] args, App app)
 		{
 			Program.app = app;
-			using (Mutex mutex = new Mutex(false, "Global\\ignitebot"))
+			using (Mutex mutex = new Mutex(false, "Global\\ignitebot2"))
 			{
 
 				if (args.Contains("-port"))
@@ -220,14 +224,14 @@ namespace IgniteBot2
 
 				if (CheckIfLaunchedWithCustomURLHandlerParam(args))
 				{
-					return;
+					Quit();
 				}
 
 				// allow multiple instances if the port is overriden
 				if (!mutex.WaitOne(0, false) && !overrideEchoVRPort)
 				{
 					new MessageBox("Instance already running").Show();
-					return;
+					Quit();
 				}
 
 				// Reload old settings file
@@ -243,17 +247,22 @@ namespace IgniteBot2
 
 				//OAuth.OAuthLogin();
 
-				if (CheckAccessCode(Settings.Default.accessCode) != AuthCode.approved)
+				if (string.IsNullOrEmpty(Settings.Default.accessCode))
 				{
 					loginWindow = new LoginWindow();
+					loginWindow.Closed += (sender, args) => loginWindow = null;
 					loginWindow.Show();
 				}
 				else
 				{
 					authorized = true;
+
+					liveWindow = new LiveWindow();
+					liveWindow.Closed += (sender, args) => liveWindow = null;
+					liveWindow.Show();
 				}
 
-				if (!authorized) return;
+				//if (!authorized) Quit();
 
 				var argsList = new List<string>(args);
 
@@ -325,26 +334,25 @@ namespace IgniteBot2
 				DiscordRichPresence.Start();
 
 
-				Thread statsThread = new Thread(new ThreadStart(StatsThread));
+				statsThread = new Thread(new ThreadStart(StatsThread));
 				statsThread.Start();
 
-				Thread fullLogThread = new Thread(new ThreadStart(FullLogThread));
+				fullLogThread = new Thread(new ThreadStart(FullLogThread));
+				fullLogThread.Start();
 
-				Thread autorestartThread = new Thread(new ThreadStart(AutorestartThread));
+				autorestartThread = new Thread(new ThreadStart(AutorestartThread));
 				autorestartThread.Start();
 
-				Thread fetchThread = new Thread(new ThreadStart(FetchThread));
+				fetchThread = new Thread(new ThreadStart(FetchThread));
 				fetchThread.Start();
 
-				Thread liveReplayThread = new Thread(new ThreadStart(LiveReplayHostingThread));
+				liveReplayThread = new Thread(new ThreadStart(LiveReplayHostingThread));
 				liveReplayThread.Start();
 
-				Thread milkThread = new Thread(new ThreadStart(MilkThread));
+				milkThread = new Thread(new ThreadStart(MilkThread));
 				//milkThread.Start();
 
 				Logger.Init();
-
-				_ = KillAll(statsThread, fullLogThread, autorestartThread, fetchThread, milkThread);
 			}
 		}
 
@@ -906,7 +914,11 @@ namespace IgniteBot2
 
 		public static void StartEchoVR(string joinType = "choose")
 		{
-			Process.Start("ignitebot://" + joinType + "/" + lastFrame.sessionid);
+			Process.Start(new ProcessStartInfo
+			{
+				FileName = "ignitebot://" + joinType + "/" + lastFrame.sessionid,
+				UseShellExecute = true
+			});
 		}
 
 		public static void UpdateEchoExeLocation()
@@ -2465,6 +2477,7 @@ namespace IgniteBot2
 
 		internal static void Quit()
 		{
+			_ = KillAll(statsThread, fullLogThread, autorestartThread, fetchThread, milkThread);
 			app.ExitApplication();
 		}
 	}

@@ -20,8 +20,8 @@ namespace IgniteBot2
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			base.OnStartup(e);
-			MainWindow = new LiveWindow();
-			MainWindow.Closing += MainWindow_Closing;
+
+			Program.Main(e.Args, this);
 
 			trayIcon = new System.Windows.Forms.NotifyIcon();
 			trayIcon.DoubleClick += (s, args) => ShowMainWindow();
@@ -40,8 +40,9 @@ namespace IgniteBot2
 
 		public void ExitApplication()
 		{
+			Program.running = false;
 			isExit = true;
-			MainWindow.Close();
+			Current.Shutdown();
 			trayIcon.Dispose();
 			trayIcon = null;
 		}

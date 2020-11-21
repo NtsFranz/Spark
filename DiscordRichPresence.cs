@@ -82,7 +82,11 @@ namespace IgniteBot2
 
 		private static void OnJoin(object sender, JoinMessage args)
 		{
-			Process.Start(args.Secret);
+			Process.Start(new ProcessStartInfo
+			{
+				FileName = args.Secret,
+				UseShellExecute = true
+			});
 		}
 
 		private static void OnJoinRequested(object sender, JoinRequestMessage args)
@@ -92,7 +96,11 @@ namespace IgniteBot2
 
 		private static void OnSpectate(object sender, SpectateMessage args)
 		{
-			Process.Start(args.Secret);
+			Process.Start(new ProcessStartInfo
+			{
+				FileName = args.Secret,
+				UseShellExecute = true
+			});
 		}
 
 		public static void DisposeDiscord()

@@ -5,11 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot2"
         mc:Ignorable="d"
-        Title="AtlasLinks" Height="129" Width="443">
+        Title="IgniteBot | Atlas Links" Height="301" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterScreen" SizeToContent="Height" ResizeMode="NoResize" Icon="/ignite_logo.png">
 	<StackPanel>
-		<TextBox x:Name="textBox" Text="TextBox" TextWrapping="Wrap" Width="120" Margin="4,4,4,4" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
-		<TextBox x:Name="textBox_Copy" Text="TextBox" TextWrapping="Wrap" Width="120" Margin="4,4,4,4" VerticalAlignment="Top"/>
-		<TextBox x:Name="textBox_Copy1" Text="TextBox" TextWrapping="Wrap" Width="120" Margin="4,4,4,4" VerticalAlignment="Top"/>
-		<Button x:Name="button" Content="Button" Margin="4,4,4,4" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+		<Label x:Name="label" Content="Join as Player" Margin="10,10,10,-8"/>
+		<TextBox x:Name="joinLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+		<Label x:Name="label_Copy1" Content="Join as Spectator" Margin="10,10,10,-8"/>
+		<TextBox x:Name="spectateLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top"/>
+		<Label x:Name="label_Copy" Content="Choose" Margin="10,10,10,-8"/>
+		<TextBox x:Name="chooseLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top"/>
+		<Button x:Name="closeButton" Content="Close" Margin="8,8,8,10" HorizontalAlignment="Right" IsCancel="True" IsDefault="True" Padding="4,4,4,4" Width="81" Click="closeButton_Click"/>
 	</StackPanel>
 </Window>

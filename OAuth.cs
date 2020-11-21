@@ -1,6 +1,8 @@
 ﻿using IgniteBot2.Properties;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
@@ -20,12 +22,16 @@ namespace IgniteBot2
 		public static string oauthToken = "";
 
 
-		public static void OAuthLogin()
+		public static void OAuthLogin(bool force = false)
 		{
 			string token = Settings.Default.discordOAuthRefreshToken;
-			if (token == string.Empty)
+			if (string.IsNullOrEmpty(token) || force)
 			{
-				System.Diagnostics.Process.Start(SecretKeys.OAuthURL);
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = SecretKeys.OAuthURL,
+					UseShellExecute = true
+				});
 
 				//create server with auto assigned port
 				httpServer = new HTTPServer("localhost", 6722);
@@ -53,7 +59,11 @@ namespace IgniteBot2
 
 			if (!response.IsSuccessStatusCode)
 			{
-				System.Diagnostics.Process.Start(SecretKeys.OAuthURL);
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = SecretKeys.OAuthURL,
+					UseShellExecute = true
+				});
 
 				//create server with auto assigned port
 				httpServer = new HTTPServer("localhost", 6722);
@@ -104,8 +114,15 @@ namespace IgniteBot2
 			string responseString = await response.Content.ReadAsStringAsync();
 
 			Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseString);
-			Program.discordUserData = data;
-			Program.discordUsername = data["username"];
+			if (data.ContainsKey("username"))
+			{
+				Program.discordUserData = data;
+				Program.discordUsername = data["username"];
+			}
+			else
+			{
+				Console.WriteLine("Not Authorized");
+			}
 		}
 	}
 }

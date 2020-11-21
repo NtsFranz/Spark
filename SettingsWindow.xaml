@@ -5,8 +5,70 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot2"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="IgniteBot | Settings" Height="912" Width="600" Background="{DynamicResource BackgroundColour}" Loaded="SettingsWindow_Load" FontSize="14" Padding="10,10,10,10" ResizeMode="CanMinimize" SizeToContent="Height">
+	<Grid>
+		<StackPanel>
+			<Label x:Name="label" Content="Settings" FontSize="20" Margin="10,10,10,4"/>
+			<Button x:Name="echoVRSettings" Content="EchoVR Settings" Margin="10,4,10,4" HorizontalAlignment="Left" Width="120" Padding="4,4,4,4" Click="echoVRSettings_Click"/>
+			<Button x:Name="ttsSettingsButton" Content="TTS Settings" Margin="10,4,10,4" HorizontalAlignment="Left" Width="120" Padding="4,4,4,4" Click="ShowTTSSettingsWindow"/>
+			<CheckBox x:Name="startWithWindowsCheckbox" Content="Start with Windows" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="StartWithWindowsEvent" Unchecked="StartWithWindowsEvent"/>
+			<CheckBox x:Name="startMinimizedCheckbox" Content="Start Minimized" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="StartMinimizedEvent" Unchecked="StartMinimizedEvent"/>
+			<CheckBox x:Name="autorestartCheckbox" Content="Autorestart EchoVR" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="RestartOnCrashEvent" Unchecked="RestartOnCrashEvent"/>
+			<CheckBox x:Name="discordRichPresenceCheckbox" Content="Discord Rich Presence" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="EnableDiscordRichPresenceEvent" Unchecked="EnableDiscordRichPresenceEvent"/>
+			<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="LogToServerEvent" Unchecked="LogToServerEvent"/>
+			<StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,4">
+				<Label x:Name="echoVRIPLabel" Content="EchoVR IP (for Quest)" Margin="4,4,4,4"/>
+				<TextBox x:Name="echoVRIPTextBox" Text="127.0.0.1" TextWrapping="Wrap" Width="140" Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas" Padding="4,4,4,4" TextChanged="EchoVRIPChanged"/>
+				<TextBox x:Name="echoVRPortTextBox" Text="6721" TextWrapping="Wrap" Width="60" Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas" Padding="4,4,4,4" TextChanged="EchoVRPortChanged"/>
+				<Button x:Name="resetIP" Content="Reset" Margin="4,4,4,4" Padding="4,4,4,4" Click="resetIP_Click"/>
+			</StackPanel>
+			<CheckBox x:Name="enableStatsLogging" Content="Enable Stats Logging" Margin="10,20,4,4" Checked="EnableStatsLoggingEvent" Unchecked="EnableStatsLoggingEvent"/>
+			<GroupBox x:Name="statsLoggingBox" Header="Stats Logging" Margin="10,4,10,4">
+				<StackPanel>
+					<Label x:Name="label2" Content="When to upload data to the Ignite database:" Width="588" Margin="4,4,4,4"/>
+					<ComboBox x:Name="uploadTimesComboBox" Width="437" SelectedIndex="0" HorizontalAlignment="Left" Margin="4,4,4,4" DataContextChanged="LoggingTimeChanged">
+						<ComboBoxItem Content="Only at end of matches"/>
+						<ComboBoxItem Content="After goals, player leave/join, and end of matches"/>
+						<ComboBoxItem Content="Never"/>
+					</ComboBox>
+					<CheckBox x:Name="uploadToFirestoreCheckBox" Content="Upload to Firestore" Margin="4,4,4,4" Checked="UploadToFirestoreChanged" Visibility="Visible" Unchecked="UploadToFirestoreChanged"/>
+				</StackPanel>
+			</GroupBox>
+			<CheckBox x:Name="enableFullLoggingCheckbox" Content="Save Replays" Margin="10,20,4,4" Checked="EnableFullLoggingEvent" Unchecked="EnableFullLoggingEvent"/>
+			<GroupBox x:Name="fullLoggingBox" Header="Replay Logging" Margin="10,4,10,4">
+				<StackPanel>
+					<CheckBox x:Name="onlyRecordPrivateMatches" Width="588" Content="Only Record Private Matches" Margin="4,4,4,4" Checked="onlyRecordPrivateMatches_CheckedChanged" Unchecked="onlyRecordPrivateMatches_CheckedChanged"/>
+					<CheckBox x:Name="batchWritesButton" Width="588" Content="Batch Writes" Margin="4,4,4,4" Checked="BatchWritesEvent" Unchecked="BatchWritesEvent"/>
+					<CheckBox x:Name="useCompressionButton" Width="588" Content="Use Compression" Margin="4,4,4,4" Checked="UseCompressionEvent" Unchecked="UseCompressionEvent"/>
+					<ComboBox x:Name="speedSelector" Width="211" SelectedIndex="-1" Margin="4,4,4,4" HorizontalAlignment="Left" DataContextChanged="SpeedChangeEvent">
+						<ComboBoxItem Content="Fast (60 Hz)"/>
+						<ComboBoxItem Content="Med (30 Hz)"/>
+						<ComboBoxItem Content="Slow (10 Hz)"/>
+					</ComboBox>
+					<Label x:Name="saveLocLabel" Content="Save Folder:" Margin="4,4,4,4"/>
+					<StackPanel Height="30" Margin="4,4,4,4" Orientation="Horizontal">
+						<TextBox x:Name="storageLocationTextBox" TextWrapping="Wrap" Width="322" Margin="4,0,4,0" VerticalContentAlignment="Center"/>
+						<Button x:Name="saveLocButton" Content="Browse" Margin="4,0,4,0" Padding="4,4,4,4" Click="SetStorageLocation"/>
+						<Button x:Name="resetReplayFolder" Content="Reset" Margin="4,0,4,0" Padding="4,4,4,4" Click="resetReplayFolder_Click"/>
+						<Button x:Name="openReplayFolderButton" Content="Open Folder" Margin="4,0,4,0" Padding="4,4,4,4" Click="OpenReplayFolder"/>
+					</StackPanel>
+					<Label x:Name="splitLabel" Content="Replay File Splitting:" Margin="4,4,4,4"/>
+					<StackPanel Height="30" Margin="4,4,4,4" Orientation="Horizontal">
+						<ComboBox x:Name="whenToSplitReplays" Width="250" SelectedIndex="0" Margin="4,0,4,0" DataContextChanged="whenToSplitReplaysChanged" Height="24.62">
+							<ComboBoxItem Content="Every Round"/>
+							<ComboBoxItem Content="Every Match (Scoreboard)"/>
+							<ComboBoxItem Content="On Server Change"/>
+							<ComboBoxItem Content="Only on IgniteBot Restart"/>
+						</ComboBox>
+						<Button x:Name="splitFileButton" Content="Split File" Margin="4,0,4,0" Padding="4,4,4,4" Click="SplitFileEvent"/>
+						<Label x:Name="currentFilenameLabel" Content="--" Margin="4,0,4,0" Width="246" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+					</StackPanel>
+				</StackPanel>
+			</GroupBox>
+		</StackPanel>
+		<Image x:Name="logo" Margin="10.5,10,10,10" Source="/ignite_logo.png" Width="128" Height="128" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+		<Label x:Name="versionNum" Content="version ?" Width="128" Margin="462,143,10,722" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0,0,0,0" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+		<Button x:Name="closeButton" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,10,10,10" Padding="8,8,8,8" IsCancel="True" IsDefault="True" Width="80" Click="CloseButtonEvent"/>
+
+	</Grid>
 </Window>

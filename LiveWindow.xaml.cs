@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using static Logger;
 
 namespace IgniteBot2
@@ -56,11 +57,11 @@ namespace IgniteBot2
 			JToken gameSettings = Program.ReadEchoVRSettings();
 			if (gameSettings != null)
 			{
-				enableAPIButton.Visibility = !(bool)gameSettings["game"]["EnableAPIAccess"] ? Visibility.Visible : Visibility.Hidden;
+				enableAPIButton.Visibility = !(bool)gameSettings["game"]["EnableAPIAccess"] ? Visibility.Visible : Visibility.Collapsed;
 			}
 			//hostLiveReplayButton.Visible = !Program.Personal;
 
-			accessCodeLabel.Content = "Mode: " + Program.currentAccessCodeUsername;
+			accessCodeLabel.Content = "Mode: " + Settings.Default.accessMode;
 			versionLabel.Content = "v" + GetType().Assembly.GetName().Version.ToString();
 
 			GenerateNewStatsId();
@@ -70,24 +71,28 @@ namespace IgniteBot2
 				AddSpeedBar();
 			}
 
-			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Hidden;
+			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		private void Update(object source, ElapsedEventArgs e)
 		{
-			lock (Program.logOutputWriteLock)
+			if (Program.running)
 			{
-				string newText = FilterLines(unusedFileCache.ToString());
-				if (newText != string.Empty && newText != Environment.NewLine)
+				Dispatcher.Invoke(() =>
 				{
-					try
+					lock (Program.logOutputWriteLock)
 					{
-						mainOutputTextBox.AppendText(newText);
-
-						if (Program.writeToOBSHTMLFile) // TODO this file path won't work
+						string newText = FilterLines(unusedFileCache.ToString());
+						if (newText != string.Empty && newText != Environment.NewLine)
 						{
-							// write to html file for overlay as well
-							File.WriteAllText("html_output/events.html", @"
+							try
+							{
+								mainOutputTextBox.AppendText(newText);
+
+								if (Program.writeToOBSHTMLFile) // TODO this file path won't work
+								{
+									// write to html file for overlay as well
+									File.WriteAllText("html_output/events.html", @"
 								<html>
 								<head>
 								<meta http-equiv=""refresh"" content=""1"">
@@ -96,58 +101,58 @@ namespace IgniteBot2
 								<body>
 
 								<div id=""info""> " +
-									newText
-									+ @"
+												newText
+												+ @"
 								</div>
 
 								</body>
 								</html>
 							");
+								}
+							}
+							catch (Exception) { }
+
+							//ColorizeOutput("Entered state:", gameStateChangedCheckBox.ForeColor, mainOutputTextBox.Text.Length - newText.Length);
 						}
+						unusedFileCache.Clear();
 					}
-					catch (Exception) { }
-
-					//ColorizeOutput("Entered state:", gameStateChangedCheckBox.ForeColor, mainOutputTextBox.Text.Length - newText.Length);
-				}
-				unusedFileCache.Clear();
-			}
 
 
-			// update the other labels in the stats box
-			if (Program.lastFrame != null)  // 'mpl_lobby_b2' may change in the future
-			{
-				// session ID
-				sessionIdTextBox.Text = Program.lastFrame.sessionid;
+					// update the other labels in the stats box
+					if (Program.lastFrame != null)  // 'mpl_lobby_b2' may change in the future
+					{
+						// session ID
+						sessionIdTextBox.Text = Program.lastFrame.sessionid;
 
-				// ip stuff
-				if (Program.lastFrame.sessionip != lastIP)
-				{
-					serverLocationLabel.Content = "Server IP: " + Program.lastFrame.sessionip;
-					_ = GetServerLocation(Program.lastFrame.sessionip);
-				}
-				lastIP = Program.lastFrame.sessionip;
-			}
-			else
-			{
-				serverLocationLabel.Content = "Server IP: ---";
-			}
+						// ip stuff
+						if (Program.lastFrame.sessionip != lastIP)
+						{
+							serverLocationLabel.Content = "Server IP: " + Program.lastFrame.sessionip;
+							_ = GetServerLocation(Program.lastFrame.sessionip);
+						}
+						lastIP = Program.lastFrame.sessionip;
+					}
+					else
+					{
+						serverLocationLabel.Content = "Server IP: ---";
+					}
 
-			if (Program.lastFrame != null && Program.lastFrame.map_name != "mpl_lobby_b2")  // 'mpl_lobby_b2' may change in the future
-			{
-				discSpeedLabel.Content = Program.lastFrame.disc.velocity.ToVector3().Length() + " m/s";
-				//discSpeedProgressBar.Value = (int)Program.lastFrame.disc.Velocity.Length();
-				//if (Program.lastFrame.teams[0].possession)
-				//{
-				//	discSpeedProgressBar.ForeColor = Color.Blue;
-				//} else if (Program.lastFrame.teams[1].possession)
-				//{
-				//	discSpeedProgressBar.ForeColor = Color.Orange;
-				//} else
-				//{
-				//	discSpeedProgressBar.ForeColor = Color.Gray;
-				//}
+					if (Program.lastFrame != null && Program.lastFrame.map_name != "mpl_lobby_b2")  // 'mpl_lobby_b2' may change in the future
+					{
+						discSpeedLabel.Content = Program.lastFrame.disc.velocity.ToVector3().Length() + " m/s";
+						//discSpeedProgressBar.Value = (int)Program.lastFrame.disc.Velocity.Length();
+						//if (Program.lastFrame.teams[0].possession)
+						//{
+						//	discSpeedProgressBar.ForeColor = Color.Blue;
+						//} else if (Program.lastFrame.teams[1].possession)
+						//{
+						//	discSpeedProgressBar.ForeColor = Color.Orange;
+						//} else
+						//{
+						//	discSpeedProgressBar.ForeColor = Color.Gray;
+						//}
 
-				string playerSpeedHTML = @"
+						string playerSpeedHTML = @"
 				<html>
 				<head>
 				<meta http-equiv=""refresh"" content=""0.2"">
@@ -155,99 +160,101 @@ namespace IgniteBot2
 				</head>
 				<body>
 				<div id = ""player_speeds"">";
-				bool updatedHTML = false;
+						bool updatedHTML = false;
 
-				StringBuilder pingsTextNames = new StringBuilder();
-				StringBuilder pingsTextPings = new StringBuilder();
+						StringBuilder pingsTextNames = new StringBuilder();
+						StringBuilder pingsTextPings = new StringBuilder();
 
-				// loop through all the players and set their speed progress bars and pings
-				int i = 0;
-				for (int t = 0; t < 2; t++)
-				{
-					foreach (var player in Program.lastFrame.teams[t].players)
-					{
-						if (playerSpeedBars.Count > i)
+						// loop through all the players and set their speed progress bars and pings
+						int i = 0;
+						for (int t = 0; t < 2; t++)
 						{
-							playerSpeedBars[i].Visibility = Visibility.Visible;
-							double speed = (player.velocity.ToVector3().Length() * 10);
-							if (speed > playerSpeedBars[i].Maximum) speed = playerSpeedBars[i].Maximum;
-							playerSpeedBars[i].Value = speed;
-							Color color = t == 0 ? Color.DodgerBlue : Color.Orange;
+							foreach (var player in Program.lastFrame.teams[t].players)
+							{
+								if (playerSpeedBars.Count > i)
+								{
+									playerSpeedBars[i].Visibility = Visibility.Visible;
+									double speed = (player.velocity.ToVector3().Length() * 10);
+									if (speed > playerSpeedBars[i].Maximum) speed = playerSpeedBars[i].Maximum;
+									playerSpeedBars[i].Value = speed;
+									Color color = t == 0 ? Color.DodgerBlue : Color.Orange;
 
-							// TODO convert to WPF
-							//playerSpeedBars[i].Foreground = color;
-							//playerSpeedBars[i].Background = speedsLayout.BackColor;
-							i++;
+									// TODO convert to WPF
+									//playerSpeedBars[i].Foreground = color;
+									//playerSpeedBars[i].Background = speedsLayout.BackColor;
+									i++;
 
-							updatedHTML = true;
-							playerSpeedHTML += "<div style=\"width:" + speed + "px;\" class=\"speed_bar " + (g_Team.TeamColor)t + "\"></div>\n";
+									updatedHTML = true;
+									playerSpeedHTML += "<div style=\"width:" + speed + "px;\" class=\"speed_bar " + (g_Team.TeamColor)t + "\"></div>\n";
+								}
+
+								pingsTextNames.AppendLine(player.name + ":");
+								pingsTextPings.AppendLine(player.ping.ToString());
+							}
 						}
 
-						pingsTextNames.AppendLine(player.name + ":");
-						pingsTextPings.AppendLine(player.ping.ToString());
+						playerPingsNames.Content = pingsTextNames.ToString();
+						playerPingsPings.Content = pingsTextPings.ToString();
+
+						if (updatedHTML && Program.writeToOBSHTMLFile)
+						{
+							playerSpeedHTML += "</div></body></html>";
+
+							File.WriteAllText("html_output/player_speeds.html", playerSpeedHTML);
+						}
+
+						for (; i < playerSpeedBars.Count; i++)
+						{
+							playerSpeedBars[i].Visibility = Visibility.Visible;
+							// TODO convert to WPF
+							//playerSpeedBars[i].Background = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
+						}
 					}
-				}
+					else
+					{
+						sessionIdTextBox.Text = "---";
+						discSpeedLabel.Content = "--- m/s";
+						//discSpeedProgressBar.Value = 0;
+						//discSpeedProgressBar.ForeColor = Color.Gray;
+						foreach (ProgressBar bar in playerSpeedBars)
+						{
+							bar.Value = 0;
+							// TODO convert to WPF
+							//bar.BackColor = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
+						}
+					}
 
-				playerPingsNames.Content = pingsTextNames.ToString();
-				playerPingsPings.Content = pingsTextPings.ToString();
+					connectedLabel.Content = Program.inGame ? "Connected" : "Not Connected";
 
-				if (updatedHTML && Program.writeToOBSHTMLFile)
-				{
-					playerSpeedHTML += "</div></body></html>";
-
-					File.WriteAllText("html_output/player_speeds.html", playerSpeedHTML);
-				}
-
-				for (; i < playerSpeedBars.Count; i++)
-				{
-					playerSpeedBars[i].Visibility = Visibility.Visible;
 					// TODO convert to WPF
-					//playerSpeedBars[i].Background = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
-				}
-			}
-			else
-			{
-				sessionIdTextBox.Text = "---";
-				discSpeedLabel.Content = "--- m/s";
-				//discSpeedProgressBar.Value = 0;
-				//discSpeedProgressBar.ForeColor = Color.Gray;
-				foreach (ProgressBar bar in playerSpeedBars)
-				{
-					bar.Value = 0;
-					// TODO convert to WPF
-					//bar.BackColor = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
-				}
-			}
-
-			connectedLabel.Content = Program.inGame ? "Connected" : "Not Connected";
-
-			// TODO convert to WPF
-			//speedsLayout.BackColor = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
-			//discordLoginLayout.BackColor = discordLoginHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
-			//loggedInAsLabel.BackColor = discordLoginHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
+					//speedsLayout.BackColor = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
+					//discordLoginLayout.BackColor = discordLoginHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
+					//loggedInAsLabel.BackColor = discordLoginHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
 
 
 
-			#region Rejoiner
+					#region Rejoiner
 
-			// show the button once the player hasn't been getting data for some time
-			float secondsUntilRejoiner = 1f;
-			if (Program.lastFrame != null &&
-				Program.lastFrame.private_match &&
-				DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.Now) < 0)
-			{
-				rejoinButton.Visibility = Visibility.Visible;
-			}
-			else
-			{
-				rejoinButton.Visibility = Visibility.Hidden;
-			}
+					// show the button once the player hasn't been getting data for some time
+					float secondsUntilRejoiner = 1f;
+					if (Program.lastFrame != null &&
+						Program.lastFrame.private_match &&
+						DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.Now) < 0)
+					{
+						rejoinButton.Visibility = Visibility.Visible;
+					}
+					else
+					{
+						rejoinButton.Visibility = Visibility.Collapsed;
+					}
 
-			#endregion
+					#endregion
 
-			if (!Program.running)
-			{
-				outputUpdateTimer.Stop();
+					if (!Program.running)
+					{
+						outputUpdateTimer.Stop();
+					}
+				});
 			}
 		}
 
@@ -345,26 +352,24 @@ namespace IgniteBot2
 			}
 		}
 
-		private void CloseButtonClicked(object sender, EventArgs e)
+		private void CloseButtonClicked(object sender, RoutedEventArgs e)
 		{
 			outputUpdateTimer.Stop();
 			Close();
 		}
 
-		private void SettingsButtonClicked(object sender, EventArgs e)
+		private void SettingsButtonClicked(object sender, RoutedEventArgs e)
 		{
-			Program.ShowingSettings = !Program.ShowingSettings;
 			if (Program.settingsWindow == null)
 			{
 				Program.settingsWindow = new SettingsWindow();
+				Program.settingsWindow.Closed += (sender, args) => Program.settingsWindow = null;
 				Program.settingsWindow.Show();
-				Program.ShowingSettings = true;
 			}
 			else
 			{
 				Program.settingsWindow.Close();
 				// TODO maybe add Program.settingsWindow = null here. Check if it's necessary
-				Program.ShowingSettings = false;
 			}
 		}
 
@@ -373,7 +378,7 @@ namespace IgniteBot2
 			Program.Quit();
 		}
 
-		private void pauseButton_Click(object sender, EventArgs e)
+		private void pauseButton_Click(object sender, RoutedEventArgs e)
 		{
 			Program.paused = !Program.paused;
 			((Button)sender).Content = Program.paused ? "Continue" : "Pause";
@@ -409,7 +414,8 @@ namespace IgniteBot2
 
 			output = string.Join(Environment.NewLine, lines) + ((output != string.Empty) ? Environment.NewLine : string.Empty);
 
-			return output;
+			//return output;
+			return input;
 		}
 
 		private string FilterLines(List<string> input)
@@ -442,10 +448,11 @@ namespace IgniteBot2
 
 			string output = string.Join(Environment.NewLine, lines) + ((input.Count != 0 && input[0] != string.Empty) ? Environment.NewLine : string.Empty);
 
-			return output;
+			//return output;
+			return string.Join(Environment.NewLine, input);
 		}
 
-		private void accessCodeLabel_Click(object sender, EventArgs e)
+		private void accessCodeLabel_Click(object sender, RoutedEventArgs e)
 		{
 			LoginWindow login = new LoginWindow();
 
@@ -456,12 +463,12 @@ namespace IgniteBot2
 			login.Close();
 		}
 
-		private void SessionIDFocused(object sender, EventArgs e)
+		private void SessionIDFocused(object sender, RoutedEventArgs e)
 		{
 			sessionIdTextBox.SelectAll();
 		}
 
-		private void clearButton_Click(object sender, EventArgs e)
+		private void clearButton_Click(object sender, RoutedEventArgs e)
 		{
 			lock (Program.logOutputWriteLock)
 			{
@@ -470,12 +477,12 @@ namespace IgniteBot2
 			}
 		}
 
-		private void customIdChanged(object sender, EventArgs e)
+		private void customIdChanged(object sender, RoutedEventArgs e)
 		{
 			Program.customId = ((TextBox)sender).Text;
 		}
 
-		private void splitStatsButtonClick(object sender, EventArgs e)
+		private void splitStatsButtonClick(object sender, RoutedEventArgs e)
 		{
 			GenerateNewStatsId();
 		}
@@ -496,7 +503,7 @@ namespace IgniteBot2
 			}
 		}
 
-		private void updateButton_Click(object sender, EventArgs e)
+		private void updateButton_Click(object sender, RoutedEventArgs e)
 		{
 			WebClient webClient = new WebClient();
 			webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Completed);
@@ -512,7 +519,7 @@ namespace IgniteBot2
 
 		private void Completed(object sender, AsyncCompletedEventArgs e)
 		{
-			updateProgressBar.Visibility = Visibility.Hidden;
+			updateProgressBar.Visibility = Visibility.Collapsed;
 
 			// TODO add a confirmation? 
 			//DialogResult result = MessageBox.Show("Download Finished. Install?", "", MessageBoxButtons.OKCancel);
@@ -521,11 +528,11 @@ namespace IgniteBot2
 			//{
 
 			// Install the update
-			Process installerProcess = new Process();
-			ProcessStartInfo processInfo = new ProcessStartInfo();
-			processInfo.FileName = Path.GetTempPath() + updateFilename;
-			installerProcess.StartInfo = processInfo;
-			installerProcess.Start();
+			Process.Start(new ProcessStartInfo
+			{
+				FileName = Path.Combine(Path.GetTempPath(), updateFilename),
+				UseShellExecute = true
+			});
 
 			Program.Quit();
 			//}
@@ -535,60 +542,63 @@ namespace IgniteBot2
 			//}
 		}
 
-		private void UploadStatsManual(object sender, EventArgs e)
+		private void UploadStatsManual(object sender, RoutedEventArgs e)
 		{
 			Program.UpdateStatsIngame(Program.lastFrame, manual: true);
 		}
 
-		private void RejoinClicked(object sender, EventArgs e)
+		private void RejoinClicked(object sender, RoutedEventArgs e)
 		{
 			Program.KillEchoVR();
 			Program.StartEchoVR("player");
 		}
 
-		private void RestartAsSpectatorClick(object sender, EventArgs e)
+		private void RestartAsSpectatorClick(object sender, RoutedEventArgs e)
 		{
 			Program.KillEchoVR();
 			Program.StartEchoVR("spectator");
 		}
 
-		private void showEventLogFileButton_Click(object sender, EventArgs e)
+		private void showEventLogFileButton_Click(object sender, RoutedEventArgs e)
 		{
-			Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteBot\\" + logFolder));
+			string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteBot\\" + logFolder);
+			Process.Start(new ProcessStartInfo
+			{
+				FileName = folder,
+				UseShellExecute = true
+			});
 		}
 
-		private void openSpeedometer(object sender, EventArgs e)
+		private void openSpeedometer(object sender, RoutedEventArgs e)
 		{
-			Program.ShowingSpeedometer = !Program.ShowingSpeedometer;
 			if (Program.speedometerWindow == null)
 			{
 				Program.speedometerWindow = new Speedometer();
+				Program.speedometerWindow.Closed += (sender, args) => Program.speedometerWindow = null;
 				Program.speedometerWindow.Show();
-				Program.ShowingSpeedometer = true;
 			}
 			else
 			{
 				Program.speedometerWindow.Close();
-				Program.ShowingSpeedometer = false;
 			}
 		}
 
-		private void speedsHover(object sender, EventArgs e)
+		private void speedsHover(object sender, RoutedEventArgs e)
 		{
 			speedsHoveringDict[(Control)sender] = true;
 		}
 
-		private void speedsUnHover(object sender, EventArgs e)
+		private void speedsUnHover(object sender, RoutedEventArgs e)
 		{
 			speedsHoveringDict[(Control)sender] = false;
 		}
 
-		private void hostLiveReplayButton_CheckedChanged(object sender, EventArgs e)
+		private void hostLiveReplayButton_CheckedChanged(object sender, RoutedEventArgs e)
 		{
 			Program.hostingLiveReplay = ((CheckBox)sender).IsChecked == true;
 		}
 
-		private void enableAPIButton_Click(object sender, EventArgs e)
+		private void enableAPIButton_Click(object sender, RoutedEventArgs e)
 		{
 			JToken settings = Program.ReadEchoVRSettings();
 			if (settings != null)
@@ -597,7 +607,7 @@ namespace IgniteBot2
 
 				settings["game"]["EnableAPIAccess"] = true;
 				Program.WriteEchoVRSettings(settings);
-				enableAPIButton.Visibility = Visibility.Hidden;
+				enableAPIButton.Visibility = Visibility.Collapsed;
 
 			}
 			else
@@ -606,27 +616,26 @@ namespace IgniteBot2
 			}
 		}
 
-		private void showAtlasLinks_Click(object sender, EventArgs e)
+		private void showAtlasLinks_Click(object sender, RoutedEventArgs e)
 		{
-			Program.ShowingAtlasLinksWindow = !Program.ShowingAtlasLinksWindow;
 			if (Program.atlasLinksWindow == null)
 			{
 				Program.atlasLinksWindow = new AtlasLinks();
+				Program.atlasLinksWindow.Closed += (sender, args) => Program.atlasLinksWindow = null;
 				Program.atlasLinksWindow.Show();
-				Program.ShowingAtlasLinksWindow = true;
 			}
 			else
 			{
 				Program.atlasLinksWindow.Close();
-				Program.ShowingAtlasLinksWindow = false;
 			}
 		}
 
-		private void playspaceButton_Click(object sender, EventArgs e)
+		private void playspaceButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (Program.playspaceWindow == null)
 			{
 				Program.playspaceWindow = new Playspace();
+				Program.playspaceWindow.Closed += (sender, args) => Program.playspaceWindow = null;
 				Program.playspaceWindow.Show();
 			}
 			else
@@ -635,11 +644,12 @@ namespace IgniteBot2
 			}
 		}
 
-		private void ttsSettings_Click(object sender, EventArgs e)
+		private void ttsSettings_Click(object sender, RoutedEventArgs e)
 		{
 			if (Program.ttsWindow == null)
 			{
 				Program.ttsWindow = new TTSSettingsWindow();
+				Program.ttsWindow.Closed += (sender, args) => Program.ttsWindow = null;
 				Program.ttsWindow.Show();
 			}
 			else
@@ -648,11 +658,22 @@ namespace IgniteBot2
 			}
 		}
 
-		private void discordLoginAreaClicked(object sender, EventArgs e)
+		private void discordLoginHover(object sender, RoutedEventArgs e)
+		{
+			discordLoginHoveringDict[(Control)sender] = false;
+		}
+
+		private void discordLoginUnHover(object sender, RoutedEventArgs e)
+		{
+			discordLoginHoveringDict[(Control)sender] = false;
+		}
+
+		private void LoginWindowButtonClicked(object sender, RoutedEventArgs e)
 		{
 			if (Program.loginWindow == null)
 			{
 				Program.loginWindow = new LoginWindow();
+				Program.loginWindow.Closed += (sender, args) => Program.loginWindow = null;
 				Program.loginWindow.Show();
 			}
 			else
@@ -661,14 +682,12 @@ namespace IgniteBot2
 			}
 		}
 
-		private void discordLoginHover(object sender, EventArgs e)
+		private void startSpectatorStream_Click(object sender, RoutedEventArgs e)
 		{
-			discordLoginHoveringDict[(Control)sender] = false;
-		}
-
-		private void discordLoginUnHover(object sender, EventArgs e)
-		{
-			discordLoginHoveringDict[(Control)sender] = false;
+			if (!string.IsNullOrEmpty(Settings.Default.echoVRPath))
+			{
+				Process.Start(Settings.Default.echoVRPath, "-spectatorstream");
+			}
 		}
 	}
 }

@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot2"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="IgniteBot | Login" Height="231" Width="452" Background="{DynamicResource BackgroundColour}" FontSize="14" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+	<Grid>
+		<Button x:Name="discordLoginButton" Content="Discord Login" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" Height="54" Click="DiscordLoginButtonClicked"/>
+		<Label x:Name="label" Content="Access Code" HorizontalAlignment="Left" Margin="10,74,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.309,0.579"/>
+		<ComboBox x:Name="accessCodeComboBox" HorizontalAlignment="Left" Margin="10,103,10,10" VerticalAlignment="Top" Width="200" SelectedIndex="0">
+			<ComboBoxItem Content="Personal"/>
+		</ComboBox>
+		<Button x:Name="startButton" Content="Start" HorizontalAlignment="Left" Margin="226,10,10,10" VerticalAlignment="Top" Width="161" Height="123" Background="#FF4D3131" Click="StartButtonClicked"/>
+
+	</Grid>
 </Window>
