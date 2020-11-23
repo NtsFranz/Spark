@@ -15,31 +15,46 @@
 			<ColumnDefinition Width="200"/>
 		</Grid.ColumnDefinitions>
 		<StackPanel x:Name="Left_Sidebar" HorizontalAlignment="Stretch" Height="Auto">
-			<Button x:Name="button" Content="Login" Height="40" Width="200" Click="LoginWindowButtonClicked"/>
-			<GroupBox x:Name="groupBox" Header="Status">
+			<Button x:Name="loginButton" Height="40" Width="200" Click="LoginWindowButtonClicked" Padding="0,0,0,0" HorizontalContentAlignment="Left">
+				<StackPanel Orientation="Horizontal" Width="200" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+					<Image x:Name="discordPFPImage" Height="40" Width="40" Source="https://cdn.discordapp.com/avatars/174743468004868097/f15fadcd0b3c236ebaf4744227f68086" Visibility="Collapsed"/>
+					<Label x:Name="discordUsernameLabel" Content="Discord Login" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="200" HorizontalAlignment="Center"/>
+				</StackPanel>
+			</Button>
+			<GroupBox x:Name="statusBox" Header="Status">
 				<StackPanel>
 					<Label x:Name="connectedLabel" Width="188" Content="Not Connected"/>
 					<Label x:Name="sessionIdLabel" Content="Session ID:"/>
 					<TextBox x:Name="sessionIdTextBox" Text="********-****-****-****-************" TextWrapping="NoWrap" MaxLines="1" FontSize="14" FontFamily="Courier New" IsReadOnly="True" Height="16"/>
 					<Label x:Name="serverLocationLabel" Content="Server Location:" ToolTip="The server location is estimated using ip-api.com"/>
-					<Label x:Name="discSpeedLabel" Content="Disc Speed: --- m/s"/>
-					<GroupBox x:Name="playerSpeedsGroupbox" Header="Player Speeds:">
-						<StackPanel x:Name="speedsLayout" Margin="0,0,-12,0"/>
-					</GroupBox>
-					<GroupBox x:Name="playerPingsGroupbox" Header="Player Pings:">
-						<StackPanel Orientation="Horizontal">
-							<Label x:Name="playerPingsNames" Content="Label"/>
-							<Label x:Name="playerPingsPings" Content="Label"/>
-						</StackPanel>
-					</GroupBox>
 				</StackPanel>
+			</GroupBox>
+			<GroupBox x:Name="blueTeamBox" Header="Blue Team">
+				<Label x:Name="blueTeamPlayersLabel" Content=""/>
+			</GroupBox>
+			<GroupBox x:Name="orangeTeamBox" Header="Orange Team" Width="Auto" VerticalAlignment="Top">
+				<Label x:Name="orangeTeamPlayersLabel" Content=""/>
+			</GroupBox>
+			<GroupBox x:Name="spectatorsBox" Header="Spectators">
+				<Label x:Name="spectatorsLabel" Content=""/>
 			</GroupBox>
 		</StackPanel>
 		<GridSplitter x:Name="gridSplitter" Grid.Column="1" HorizontalAlignment="Stretch"/>
 		<StackPanel x:Name="Center_Panel" Grid.Column="2">
 			<TabControl x:Name="tabControl" Height="499" SelectedIndex="1" Margin="0,4,0,0">
 				<TabItem x:Name="dashboardTab" Header="Dashboard" FontSize="14" Padding="8,6,8,6" Margin="2,-2,-2,0">
-					<Grid Background="{DynamicResource ContainerBackground}"/>
+					<Grid Background="{DynamicResource ContainerBackground}">
+						<GroupBox x:Name="playerPingsGroupbox" Header="Player Pings:" Margin="448,10,10,380">
+							<StackPanel Orientation="Horizontal">
+								<Label x:Name="playerPingsNames" Content="Label"/>
+								<Label x:Name="playerPingsPings" Content="Label"/>
+							</StackPanel>
+						</GroupBox>
+						<GroupBox x:Name="playerSpeedsGroupbox" Header="Player Speeds:" Margin="10,10,448,409">
+							<StackPanel x:Name="speedsLayout" Margin="0,0,-12,0"/>
+						</GroupBox>
+						<Label x:Name="discSpeedLabel" Content="Disc Speed: --- m/s" Margin="229,10,229,421"/>
+					</Grid>
 				</TabItem>
 				<TabItem x:Name="eventLogTab" Header="Event Log" FontSize="14" Padding="8,6,8,6">
 					<TextBox x:Name="mainOutputTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>

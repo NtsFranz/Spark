@@ -2,25 +2,32 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Web;
 
 namespace IgniteBot2
 {
 	/// <summary>
 	/// 🔑
 	/// </summary>
-	public class OAuth
+	public class DiscordOAuth
 	{
 		const string REDIRECT_URI = "http://localhost:6722/oauth_login";
 
-		static HTTPServer httpServer;
+		static WebServer2 webServer;
 
 		static HttpClient client = new HttpClient();
 
 		public static string oauthToken = "";
 
+		public static Dictionary<string, string> discordUserData;
+		public static string DiscordUsername => discordUserData?["username"];
+		public static string DiscordPFPURL => $"https://cdn.discordapp.com/avatars/{discordUserData["id"]}/{discordUserData["avatar"]}";
+		public static List<Dictionary<string, string>> availableAccessCodes = new List<Dictionary<string, string>>();
 
 		public static void OAuthLogin(bool force = false)
 		{
@@ -34,13 +41,24 @@ namespace IgniteBot2
 				});
 
 				//create server with auto assigned port
-				httpServer = new HTTPServer("localhost", 6722);
-				httpServer.Start();
+				//httpServer = new HTTPServer("localhost", 6722);
+				//httpServer.Start();
+
+
+				webServer = new WebServer2(OAuthResponse, "http://localhost:6722/");
+				webServer.Run();
 			}
 			else
 			{
 				OAuthLoginRefresh(token);
 			}
+		}
+
+		private static string OAuthResponse(HttpListenerRequest request)
+		{
+			NameValueCollection queryStrings = HttpUtility.ParseQueryString(request.Url.Query);
+			OAuthLoginResponse(queryStrings["code"]);
+			return "<html><body onload=\"javascript: close(); \">You can close this window</body></html>";
 		}
 
 		public static async void OAuthLoginRefresh(string refresh_token)
@@ -59,18 +77,25 @@ namespace IgniteBot2
 
 			if (!response.IsSuccessStatusCode)
 			{
-				Process.Start(new ProcessStartInfo
-				{
-					FileName = SecretKeys.OAuthURL,
-					UseShellExecute = true
-				});
+				//Process.Start(new ProcessStartInfo
+				//{
+				//	FileName = SecretKeys.OAuthURL,
+				//	UseShellExecute = true
+				//});
 
 				//create server with auto assigned port
-				httpServer = new HTTPServer("localhost", 6722);
-				httpServer.Start();
+				//httpServer = new HTTPServer("localhost", 6722);
+				//httpServer.Start();
+
 			}
 			else
 			{
+				if (webServer == null)
+				{
+					webServer = new WebServer2(OAuthResponse, "http://localhost:6722/");
+					webServer.Run();
+				}
+
 				string responseString = await response.Content.ReadAsStringAsync();
 				Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseString);
 				ProcessResponse(data);
@@ -97,32 +122,37 @@ namespace IgniteBot2
 			ProcessResponse(data);
 		}
 
-		public static void ProcessResponse(Dictionary<string, string> response)
+		public static async void ProcessResponse(Dictionary<string, string> response)
 		{
 
 			Settings.Default.discordOAuthRefreshToken = response["refresh_token"];
 			Settings.Default.Save();
 			oauthToken = response["access_token"];
-			GetDiscordUsername();
-		}
 
-		public static async void GetDiscordUsername()
-		{
-			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Program.oauthToken);
-			HttpResponseMessage response = await client.GetAsync("https://discord.com/api/v6/users/@me");
+			webServer.Stop();
 
-			string responseString = await response.Content.ReadAsStringAsync();
+			client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", oauthToken);
+			HttpResponseMessage userResponse = await client.GetAsync("https://discord.com/api/v6/users/@me");
+
+			string responseString = await userResponse.Content.ReadAsStringAsync();
 
 			Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseString);
 			if (data.ContainsKey("username"))
 			{
-				Program.discordUserData = data;
-				Program.discordUsername = data["username"];
+				discordUserData = data;
 			}
 			else
 			{
 				Console.WriteLine("Not Authorized");
 			}
+
+			// get the access codes for this user
+			HttpResponseMessage accessCodesResponse = await client.GetAsync(SecretKeys.accessCodesURL + oauthToken);
+			string accessCodesResponseString = await accessCodesResponse.Content.ReadAsStringAsync();
+			Dictionary<string, List<Dictionary<string, string>>> accessCodesData = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(accessCodesResponseString);
+			availableAccessCodes = accessCodesData["keys"];
+
+			Program.loginWindow?.UpdateAccessCodesDropdown();
 		}
 	}
 }

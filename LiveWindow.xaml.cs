@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static Logger;
 
@@ -45,6 +46,8 @@ namespace IgniteBot2
 			get => discordLoginHoveringDict.Values.ToList().Contains(true);
 		}
 
+		private string lastDiscordUsername = string.Empty;
+
 
 		public LiveWindow()
 		{
@@ -62,7 +65,7 @@ namespace IgniteBot2
 			//hostLiveReplayButton.Visible = !Program.Personal;
 
 			accessCodeLabel.Content = "Mode: " + Settings.Default.accessMode;
-			versionLabel.Content = "v" + GetType().Assembly.GetName().Version.ToString();
+			versionLabel.Content = "v" + Program.AppVersion();
 
 			GenerateNewStatsId();
 
@@ -70,6 +73,8 @@ namespace IgniteBot2
 			{
 				AddSpeedBar();
 			}
+
+			RefreshDiscordLogin();
 
 			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 		}
@@ -164,37 +169,51 @@ namespace IgniteBot2
 
 						StringBuilder pingsTextNames = new StringBuilder();
 						StringBuilder pingsTextPings = new StringBuilder();
+						StringBuilder[] teamNames = new StringBuilder[]
+						{
+							new StringBuilder(),
+							new StringBuilder(),
+							new StringBuilder()
+						};
 
 						// loop through all the players and set their speed progress bars and pings
 						int i = 0;
-						for (int t = 0; t < 2; t++)
+						for (int t = 0; t < 3; t++)
 						{
 							foreach (var player in Program.lastFrame.teams[t].players)
 							{
-								if (playerSpeedBars.Count > i)
+								if (t < 2)
 								{
-									playerSpeedBars[i].Visibility = Visibility.Visible;
-									double speed = (player.velocity.ToVector3().Length() * 10);
-									if (speed > playerSpeedBars[i].Maximum) speed = playerSpeedBars[i].Maximum;
-									playerSpeedBars[i].Value = speed;
-									Color color = t == 0 ? Color.DodgerBlue : Color.Orange;
+									if (playerSpeedBars.Count > i)
+									{
+										playerSpeedBars[i].Visibility = Visibility.Visible;
+										double speed = (player.velocity.ToVector3().Length() * 10);
+										if (speed > playerSpeedBars[i].Maximum) speed = playerSpeedBars[i].Maximum;
+										playerSpeedBars[i].Value = speed;
+										Color color = t == 0 ? Color.DodgerBlue : Color.Orange;
 
-									// TODO convert to WPF
-									//playerSpeedBars[i].Foreground = color;
-									//playerSpeedBars[i].Background = speedsLayout.BackColor;
-									i++;
+										// TODO convert to WPF
+										//playerSpeedBars[i].Foreground = color;
+										//playerSpeedBars[i].Background = speedsLayout.BackColor;
+										i++;
 
-									updatedHTML = true;
-									playerSpeedHTML += "<div style=\"width:" + speed + "px;\" class=\"speed_bar " + (g_Team.TeamColor)t + "\"></div>\n";
+										updatedHTML = true;
+										playerSpeedHTML += "<div style=\"width:" + speed + "px;\" class=\"speed_bar " + (g_Team.TeamColor)t + "\"></div>\n";
+									}
+
+									pingsTextNames.AppendLine(player.name + ":");
+									pingsTextPings.AppendLine(player.ping.ToString());
 								}
-
-								pingsTextNames.AppendLine(player.name + ":");
-								pingsTextPings.AppendLine(player.ping.ToString());
+								teamNames[t].AppendLine(player.name);
 							}
 						}
 
 						playerPingsNames.Content = pingsTextNames.ToString();
 						playerPingsPings.Content = pingsTextPings.ToString();
+
+						blueTeamPlayersLabel.Content = teamNames[0].ToString().Trim();
+						orangeTeamPlayersLabel.Content = teamNames[1].ToString().Trim();
+						spectatorsLabel.Content = teamNames[2].ToString().Trim();
 
 						if (updatedHTML && Program.writeToOBSHTMLFile)
 						{
@@ -228,8 +247,6 @@ namespace IgniteBot2
 
 					// TODO convert to WPF
 					//speedsLayout.BackColor = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
-					//discordLoginLayout.BackColor = discordLoginHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
-					//loggedInAsLabel.BackColor = discordLoginHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
 
 
 
@@ -250,6 +267,8 @@ namespace IgniteBot2
 
 					#endregion
 
+					RefreshDiscordLogin();
+
 					if (!Program.running)
 					{
 						outputUpdateTimer.Stop();
@@ -260,9 +279,30 @@ namespace IgniteBot2
 
 		public void RefreshDiscordLogin()
 		{
-			// TODO convert to WPF
-			//discordNameLabel.Text = Program.discordUsername;
-			//discordProfileImage.ImageLocation = Program.discordUsername;
+			string username = DiscordOAuth.DiscordUsername;
+			if (username != lastDiscordUsername)
+			{
+				if (string.IsNullOrEmpty(username))
+				{
+					discordUsernameLabel.Content = "Discord Login";
+					discordUsernameLabel.Width = 200;
+					discordPFPImage.Source = null;
+					discordPFPImage.Visibility = Visibility.Collapsed;
+				}
+				else
+				{
+					discordUsernameLabel.Content = username;
+					string imgUrl = DiscordOAuth.DiscordPFPURL;
+					if (!string.IsNullOrEmpty(imgUrl))
+					{
+						discordUsernameLabel.Width = 160;
+						discordPFPImage.Source = new BitmapImage(new Uri(imgUrl));
+						discordPFPImage.Visibility = Visibility.Visible;
+					}
+				}
+
+				lastDiscordUsername = username;
+			}
 		}
 
 		private void AddSpeedBar()
@@ -387,7 +427,7 @@ namespace IgniteBot2
 		private string FilterLines(string input)
 		{
 			string output = input;
-			var lines = output
+			IEnumerable<string> lines = output
 				.Split(new[] { '\r', '\n' })
 				.Select(l => l.Trim())
 				//.Where(l =>

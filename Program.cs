@@ -184,10 +184,6 @@ namespace IgniteBot2
 
 		public static SpeechSynthesizer synth;
 
-		public static string oauthToken = "";
-		public static string discordUsername = "";
-		public static Dictionary<string, string> discordUserData;
-
 
 		static Thread statsThread;
 		static Thread fullLogThread;
@@ -197,7 +193,6 @@ namespace IgniteBot2
 		static Thread milkThread;
 
 		public static App app;
-
 
 		public static void Main(string[] args, App app)
 		{
@@ -245,7 +240,10 @@ namespace IgniteBot2
 				RegisterUriScheme("ignitebot", "IgniteBot Protocol");
 				RegisterUriScheme("atlas", "ATLAS Protocol");   // TODO see how this would overwrite ATLAS URL opening
 
-				//OAuth.OAuthLogin();
+				if (!string.IsNullOrEmpty(Settings.Default.discordOAuthRefreshToken))
+				{
+					DiscordOAuth.OAuthLoginRefresh(Settings.Default.discordOAuthRefreshToken);
+				}
 
 				if (string.IsNullOrEmpty(Settings.Default.accessCode))
 				{
@@ -334,22 +332,28 @@ namespace IgniteBot2
 				DiscordRichPresence.Start();
 
 
-				statsThread = new Thread(new ThreadStart(StatsThread));
+				statsThread = new Thread(StatsThread);
+				statsThread.IsBackground = true;
 				statsThread.Start();
 
-				fullLogThread = new Thread(new ThreadStart(FullLogThread));
+				fullLogThread = new Thread(FullLogThread);
+				fullLogThread.IsBackground = true;
 				fullLogThread.Start();
 
-				autorestartThread = new Thread(new ThreadStart(AutorestartThread));
+				autorestartThread = new Thread(AutorestartThread);
+				autorestartThread.IsBackground = true;
 				autorestartThread.Start();
 
-				fetchThread = new Thread(new ThreadStart(FetchThread));
+				fetchThread = new Thread(FetchThread);
+				fetchThread.IsBackground = true;
 				fetchThread.Start();
 
-				liveReplayThread = new Thread(new ThreadStart(LiveReplayHostingThread));
+				liveReplayThread = new Thread(LiveReplayHostingThread);
+				liveReplayThread.IsBackground = true;
 				liveReplayThread.Start();
 
-				milkThread = new Thread(new ThreadStart(MilkThread));
+				milkThread = new Thread(MilkThread);
+				milkThread.IsBackground = true;
 				//milkThread.Start();
 
 				Logger.Init();
@@ -368,20 +372,6 @@ namespace IgniteBot2
 		{
 			if (httpServer != null)
 				httpServer.Stop();
-
-			// give them some time to kill themselves, then kill them ourself if they couldn't manage it
-			await Task.Delay(30000);
-
-			if (statsThread.IsAlive)
-				statsThread.Abort();
-			if (fullLogThread.IsAlive)
-				fullLogThread.Abort();
-			if (autorestartThread.IsAlive)
-				autorestartThread.Abort();
-			if (fetchThread.IsAlive)
-				fetchThread.Abort();
-			if (milkThread != null && milkThread.IsAlive)
-				milkThread.Abort();
 		}
 
 		/// <summary>

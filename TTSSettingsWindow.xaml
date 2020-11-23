@@ -5,8 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot2"
         mc:Ignorable="d"
-        Title="TTSSettingsWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="IgniteBot | TTS Settings" Height="810" Width="418" Background="{DynamicResource BackgroundColour}" FontSize="14" SizeToContent="Height" ResizeMode="CanMinimize" Icon="/ignite_logo_128.png" Loaded="TTSSettingsWindow_Load">
+	<Grid>
+		<StackPanel Margin="15,15,15,15">
+			<Label x:Name="label" Content="Text-to-Speech (TTS) Settings" FontSize="20" Margin="4,4,4,4"/>
+			<Label x:Name="label1" Content="Speech Speed"/>
+			<ComboBox x:Name="speechSpeed" Width="146" HorizontalAlignment="Left" SelectedIndex="1" Margin="0,0,0,8" DataContextChanged="SpeechSpeedChanged">
+				<ComboBoxItem Content="Slow"/>
+				<ComboBoxItem Content="Normal"/>
+				<ComboBoxItem Content="Fast"/>
+				<ComboBoxItem Content="Very Fast"/>
+			</ComboBox>
+			<CheckBox x:Name="joustTimeCheckbox" Content="Joust Time" Margin="4,10,4,0" Checked="JoustTimeClicked" Unchecked="JoustTimeClicked"/>
+			<TextBlock x:Name="label2" TextWrapping="WrapWithOverflow" Text="Time in seconds to reach the midline on neutral jousts for the fastest player on each team" HorizontalAlignment="Stretch" Margin="4,4,4,4"/>
+			<CheckBox x:Name="joustSpeedCheckbox" Content="Joust Speed" Margin="4,10,4,0" Checked="JoustSpeedClicked" Unchecked="JoustSpeedClicked"/>
+			<TextBlock x:Name="label2_Copy" TextWrapping="WrapWithOverflow" Text="Speed in m/s of the first player on each team to cross the midline on neutral joust" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
+			<CheckBox x:Name="tubeExitSpeedCheckbox" Content="Tube Exit Speed (self)" Margin="4,10,4,0" Checked="TubeExitSpeedClicked" Unchecked="TubeExitSpeedClicked"/>
+			<TextBlock x:Name="label2_Copy1" TextWrapping="WrapWithOverflow" Text="Speed in m/s as you exit the launch tube" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
+			<CheckBox x:Name="serverLocationCheckbox" Content="Server Location" Margin="4,10,4,0" Unchecked="ServerLocationClicked" Checked="ServerLocationClicked"/>
+			<TextBlock x:Name="label2_Copy2" TextWrapping="WrapWithOverflow" Text="Estimated location of the server as you join" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
+			<CheckBox x:Name="maxBoostSpeedCheckbox" Content="Max Boost Speed" Margin="4,10,4,0" Checked="MaxBoostClicked" Unchecked="MaxBoostClicked"/>
+			<TextBlock x:Name="label2_Copy3" TextWrapping="WrapWithOverflow" Text="Maximum speed achieved for times when you are faster than 20 m/s" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
+			<CheckBox x:Name="throwSpeedCheckbox" Content="Throw Speed" Margin="4,10,4,0" Checked="throwSpeedCheckbox_CheckedChanged" Unchecked="throwSpeedCheckbox_CheckedChanged" Visibility="Collapsed"/>
+			<TextBlock x:Name="label2_Copy4" TextWrapping="WrapWithOverflow" Text="Speed in m/s of your throws" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" Visibility="Collapsed"/>
+			<CheckBox x:Name="goalSpeed" Content="Goal Speed" Margin="4,10,4,0" Unchecked="goalSpeed_CheckedChanged" Checked="goalSpeed_CheckedChanged"/>
+			<TextBlock x:Name="label2_Copy5" TextWrapping="WrapWithOverflow" Text="Speed in m/s of every goal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
+			<CheckBox x:Name="goalDistance" Content="Goal Distance" Margin="4,10,4,0" Checked="goalDistance_CheckedChanged" Unchecked="goalDistance_CheckedChanged"/>
+			<TextBlock x:Name="label2_Copy6" TextWrapping="WrapWithOverflow" Text="Distance in m of every goal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
+			<CheckBox x:Name="playerJoinCheckbox" Content="Player Join" Margin="4,10,4,0" Unchecked="PlayerJoinClicked" Checked="PlayerJoinClicked"/>
+			<CheckBox x:Name="playerLeaveCheckbox" Content="Player Leave" Margin="4,10,4,0" Checked="PlayerLeaveClicked" Unchecked="PlayerLeaveClicked"/>
+		</StackPanel>
+		<Button x:Name="closeButton" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Padding="4,4,4,4" Width="85" Click="CloseButtonClick"/>
+
+	</Grid>
 </Window>

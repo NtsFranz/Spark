@@ -49,17 +49,23 @@ namespace IgniteBot2
 
 		private void ShowMainWindow()
 		{
-			if (MainWindow.IsVisible)
+			if (Program.liveWindow == null)
 			{
-				if (MainWindow.WindowState == WindowState.Minimized)
+				Program.liveWindow = new LiveWindow();
+				Program.liveWindow.Closed += (sender, args) => Program.liveWindow = null;
+				Program.liveWindow.Show();
+			}
+			else if (Program.liveWindow.IsVisible)
+			{
+				if (Program.liveWindow.WindowState == WindowState.Minimized)
 				{
-					MainWindow.WindowState = WindowState.Normal;
+					Program.liveWindow.WindowState = WindowState.Normal;
 				}
-				MainWindow.Activate();
+				Program.liveWindow.Activate();
 			}
 			else
 			{
-				MainWindow.Show();
+				Program.liveWindow.Show();
 			}
 		}
 
@@ -68,7 +74,7 @@ namespace IgniteBot2
 			if (!isExit)
 			{
 				e.Cancel = true;
-				MainWindow.Hide(); // A hidden window can be shown again, a closed one not
+				Program.liveWindow.Hide(); // A hidden window can be shown again, a closed one not
 			}
 		}
 	}

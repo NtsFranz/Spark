@@ -9,10 +9,11 @@
 	<Grid>
 		<Button x:Name="discordLoginButton" Content="Discord Login" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" Height="54" Click="DiscordLoginButtonClicked"/>
 		<Label x:Name="label" Content="Access Code" HorizontalAlignment="Left" Margin="10,74,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.309,0.579"/>
-		<ComboBox x:Name="accessCodeComboBox" HorizontalAlignment="Left" Margin="10,103,10,10" VerticalAlignment="Top" Width="200" SelectedIndex="0">
+		<ComboBox x:Name="accessCodeComboBox" HorizontalAlignment="Left" Margin="10,103,10,10" VerticalAlignment="Top" Width="200" SelectedIndex="0" DataContextChanged="AccessCodeChanged">
 			<ComboBoxItem Content="Personal"/>
 		</ComboBox>
-		<Button x:Name="startButton" Content="Start" HorizontalAlignment="Left" Margin="226,10,10,10" VerticalAlignment="Top" Width="161" Height="123" Background="#FF4D3131" Click="StartButtonClicked"/>
+		<Button x:Name="startButton" Content="Start" HorizontalAlignment="Left" Margin="226,82,0,0" VerticalAlignment="Top" Width="169" Height="46" Background="#FF4D3131" Click="StartButtonClicked"/>
+		<Label x:Name="currentUsernameLabel" Content="Not Logged in" HorizontalAlignment="Left" Margin="226,10,0,0" VerticalAlignment="Top" Height="54" Width="169" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 
 	</Grid>
 </Window>

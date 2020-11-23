@@ -66,7 +66,7 @@
 				</StackPanel>
 			</GroupBox>
 		</StackPanel>
-		<Image x:Name="logo" Margin="10.5,10,10,10" Source="/ignite_logo.png" Width="128" Height="128" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+		<Image x:Name="logo" Margin="10.5,10,10,10" Source="/ignite_logo_128.png" Width="128" Height="128" HorizontalAlignment="Right" VerticalAlignment="Top"/>
 		<Label x:Name="versionNum" Content="version ?" Width="128" Margin="462,143,10,722" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0,0,0,0" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top"/>
 		<Button x:Name="closeButton" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,10,10,10" Padding="8,8,8,8" IsCancel="True" IsDefault="True" Width="80" Click="CloseButtonEvent"/>
 
