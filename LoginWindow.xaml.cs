@@ -14,29 +14,42 @@ namespace IgniteBot2
 		{
 			InitializeComponent();
 
-			UpdateAccessCodesDropdown();
+			Refresh();
 		}
 
-		public void UpdateAccessCodesDropdown()
+		public void Refresh()
 		{
 			Dispatcher.Invoke(() =>
 			{
 				accessCodeComboBox.Items.Clear();
-				accessCodeComboBox.Items.Add("Personal");
 				foreach (Dictionary<string, string> code in DiscordOAuth.availableAccessCodes)
 				{
 					accessCodeComboBox.Items.Add(code["username"]);
 				}
-				accessCodeComboBox.SelectedIndex = 0;
+				// if not logged in with discord
+				if (!accessCodeComboBox.Items.Contains("Personal")) accessCodeComboBox.Items.Add("Personal");
 
-				currentUsernameLabel.Content = "Logged in as:\n" + DiscordOAuth.DiscordUsername;
+				accessCodeComboBox.SelectedIndex = DiscordOAuth.GetAccessCodeIndex(Settings.Default.accessCode);
+
+				if (string.IsNullOrEmpty(DiscordOAuth.DiscordUsername))
+				{
+					currentUsernameLabel.Content = "Not logged in";
+					discordLoginButton.Content = "Discord Login";
+				}
+				else
+				{
+					currentUsernameLabel.Content = "Logged in as:\n" + DiscordOAuth.DiscordUsername;
+					discordLoginButton.Content = "Unlink Discord";
+				}
 			});
 		}
 
 		private void StartButtonClicked(object sender, RoutedEventArgs e)
 		{
-			Program.authorized = true;
-			Settings.Default.accessMode = accessCodeComboBox.SelectedValue.ToString();
+			string username = accessCodeComboBox.SelectedValue.ToString();
+			Settings.Default.accessCode = SecretKeys.Hash(DiscordOAuth.GetAccessCode(username));
+			Program.currentAccessCodeUsername = username;
+			Program.currentSeasonName = DiscordOAuth.GetSeasonName(username);
 			Settings.Default.Save();
 
 			if (Program.liveWindow == null)
@@ -51,31 +64,16 @@ namespace IgniteBot2
 
 		private void DiscordLoginButtonClicked(object sender, RoutedEventArgs e)
 		{
-			DiscordOAuth.OAuthLogin(force: true);
-		}
-
-		private void AccessCodeChanged(object sender, DependencyPropertyChangedEventArgs e)
-		{
-			string chosenCode = accessCodeComboBox.SelectedValue.ToString();
-			string seasonName = "";
-			if (chosenCode == "Personal")
+			if (string.IsNullOrEmpty(DiscordOAuth.DiscordUsername))
 			{
-				seasonName = "personal";
+				DiscordOAuth.OAuthLogin(force: true);
 			}
 			else
 			{
-				foreach (var code in DiscordOAuth.availableAccessCodes)
-				{
-					if (code["username"] == chosenCode)
-					{
-						seasonName = code["season_name"];
-						break;
-					}
-				}
+				DiscordOAuth.Unlink();
 			}
 
-			Program.currentAccessCodeUsername = chosenCode;
-			Program.currentSeasonName = seasonName;
+			Refresh();
 		}
 	}
 }

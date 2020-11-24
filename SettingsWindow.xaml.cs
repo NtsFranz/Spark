@@ -160,7 +160,7 @@ namespace IgniteBot2
 			storageLocationTextBox.Text = Program.saveFolder;
 		}
 
-		private void SpeedChangeEvent(object sender, DependencyPropertyChangedEventArgs e)
+		private void SpeedChangeEvent(object sender, SelectionChangedEventArgs e)
 		{
 			int index = ((ComboBox)sender).SelectedIndex;
 
@@ -198,7 +198,7 @@ namespace IgniteBot2
 			Settings.Default.Save();
 		}
 
-		private void LoggingTimeChanged(object sender, DependencyPropertyChangedEventArgs e)
+		private void LoggingTimeChanged(object sender, SelectionChangedEventArgs e)
 		{
 			int index = ((ComboBox)sender).SelectedIndex;
 
@@ -233,7 +233,7 @@ namespace IgniteBot2
 			Settings.Default.Save();
 		}
 
-		private void whenToSplitReplaysChanged(object sender, DependencyPropertyChangedEventArgs e)
+		private void whenToSplitReplaysChanged(object sender, SelectionChangedEventArgs e)
 		{
 			int index = ((ComboBox)sender).SelectedIndex;
 			Settings.Default.whenToSplitReplays = index;

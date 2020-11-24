@@ -21,9 +21,9 @@
 					<Label x:Name="discordUsernameLabel" Content="Discord Login" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="200" HorizontalAlignment="Center"/>
 				</StackPanel>
 			</Button>
-			<GroupBox x:Name="statusBox" Header="Status">
+			<GroupBox x:Name="statusBox" Header="Server Info">
 				<StackPanel>
-					<Label x:Name="connectedLabel" Width="188" Content="Not Connected"/>
+					<Label x:Name="connectedLabel" Width="188" Content="Not Connected" Visibility="Collapsed"/>
 					<Label x:Name="sessionIdLabel" Content="Session ID:"/>
 					<TextBox x:Name="sessionIdTextBox" Text="********-****-****-****-************" TextWrapping="NoWrap" MaxLines="1" FontSize="14" FontFamily="Courier New" IsReadOnly="True" Height="16"/>
 					<Label x:Name="serverLocationLabel" Content="Server Location:" ToolTip="The server location is estimated using ip-api.com"/>
@@ -44,25 +44,29 @@
 			<TabControl x:Name="tabControl" Height="499" SelectedIndex="1" Margin="0,4,0,0">
 				<TabItem x:Name="dashboardTab" Header="Dashboard" FontSize="14" Padding="8,6,8,6" Margin="2,-2,-2,0">
 					<Grid Background="{DynamicResource ContainerBackground}">
-						<GroupBox x:Name="playerPingsGroupbox" Header="Player Pings:" Margin="448,10,10,380">
+						<GroupBox x:Name="playerPingsGroupbox" Header="Player Pings:" Margin="448,10,10,196">
 							<StackPanel Orientation="Horizontal">
-								<Label x:Name="playerPingsNames" Content="Label"/>
-								<Label x:Name="playerPingsPings" Content="Label"/>
+								<TextBlock x:Name="playerPingsNames" Text="" VerticalAlignment="Top"/>
+								<TextBlock x:Name="playerPingsPings" Text="" VerticalAlignment="Top" Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
 							</StackPanel>
 						</GroupBox>
 						<GroupBox x:Name="playerSpeedsGroupbox" Header="Player Speeds:" Margin="10,10,448,409">
 							<StackPanel x:Name="speedsLayout" Margin="0,0,-12,0"/>
 						</GroupBox>
-						<Label x:Name="discSpeedLabel" Content="Disc Speed: --- m/s" Margin="229,10,229,421"/>
+						<GroupBox x:Name="discSpeedsGroupbox" Header="Disc Speed (m/s)" Margin="235,10,235,380" Width="150">
+							<Label x:Name="discSpeedLabel" Content="0" Height="30" Margin="0,0,-3,0" HorizontalContentAlignment="Center" Padding="15,5,15,5" VerticalAlignment="Stretch"/>
+						</GroupBox>
 					</Grid>
 				</TabItem>
 				<TabItem x:Name="eventLogTab" Header="Event Log" FontSize="14" Padding="8,6,8,6">
-					<TextBox x:Name="mainOutputTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>
+					<Grid>
+						<TextBox x:Name="mainOutputTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>
+						<Button x:Name="showEventLogFileButton" Content="Open Event Log Folder" Width="183" Margin="0,10,30,0" HorizontalAlignment="Right" Click="showEventLogFileButton_Click" VerticalAlignment="Top" Height="30"/>
+					</Grid>
 				</TabItem>
 			</TabControl>
 			<StackPanel Height="48" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,0,0">
 				<Button x:Name="rejoinButton" Content="REJOIN" Width="110" Background="#FF6E2F2F" VerticalAlignment="Stretch" Margin="4,4,4,5" Click="RejoinClicked" ToolTip="Rejoin the last private match that you were in"/>
-				<Button x:Name="showEventLogFileButton" Content="Open Event Log Folder" Width="183" Margin="4,4,4,4" HorizontalAlignment="Left" Click="showEventLogFileButton_Click"/>
 				<Button x:Name="settingsButton" Content="Settings" Width="100" Margin="4,4,4,4" Click="SettingsButtonClicked" ToolTip="Opens IgniteBot settings window"/>
 				<Button x:Name="exitButton" Content="Exit" Width="100" Margin="4,4,4,4" Click="QuitButtonClicked" ToolTip="Close the IgniteBot"/>
 				<Button x:Name="hideButton" Content="Hide" Width="100" Margin="4,4,4,4" Click="CloseButtonClicked" ToolTip="Hides this program in the tray. It will continue to run in the background"/>
@@ -75,10 +79,10 @@
 					<Label x:Name="label" Content="Stats ID:"/>
 					<TextBox x:Name="customIdTextbox" Text="---" MaxLines="1" TextWrapping="NoWrap" Height="16" IsReadOnly="True" FontSize="14" FontFamily="Courier New"/>
 					<StackPanel Height="40" Orientation="Horizontal">
-						<Button x:Name="button4" Content="Split Stats" Margin="4,4,4,4" Width="85"/>
-						<Button x:Name="button5" Content="Upload Now" Margin="4,4,4,4" Width="85"/>
+						<Button x:Name="button4" Content="Split Stats" Margin="4,4,4,4" Width="85" Click="splitStatsButtonClick"/>
+						<Button x:Name="button5" Content="Upload Now" Margin="4,4,4,4" Width="85" Click="UploadStatsManual"/>
 					</StackPanel>
-					<Button x:Name="button6" Content="Restart as Spectator" Height="35" Margin="4,4,4,4"/>
+					<Button x:Name="button6" Content="Restart as Spectator" Height="35" Margin="4,4,4,4" Click="RestartAsSpectatorClick"/>
 					<Button x:Name="startSpectatorStream" Content="Open Spectatorstream" Height="35" Click="startSpectatorStream_Click" Margin="4,4,4,4" ToolTip="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing"/>
 				</StackPanel>
 			</GroupBox>
@@ -94,8 +98,8 @@
 				</StackPanel>
 			</GroupBox>
 		</StackPanel>
-		<Label x:Name="accessCodeLabel" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,44"/>
-		<Label x:Name="versionLabel" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10"/>
+		<Label x:Name="accessCodeLabel" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3"/>
+		<Label x:Name="versionLabel" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5"/>
 
 	</Grid>
 </Window>

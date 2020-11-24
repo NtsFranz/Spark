@@ -19,25 +19,37 @@ namespace IgniteBot2
 
 		private void TTSSettingsWindow_Load(object sender, RoutedEventArgs e)
 		{
+			speechSpeed.SelectedIndex = Settings.Default.TTSSpeed;
+			serverLocationCheckbox.IsChecked = Settings.Default.serverLocationTTS;
 			joustTimeCheckbox.IsChecked = Settings.Default.joustTimeTTS;
 			joustSpeedCheckbox.IsChecked = Settings.Default.joustSpeedTTS;
-			serverLocationCheckbox.IsChecked = Settings.Default.serverLocationTTS;
-			maxBoostSpeedCheckbox.IsChecked = Settings.Default.maxBoostSpeedTTS;
 			tubeExitSpeedCheckbox.IsChecked = Settings.Default.tubeExitSpeedTTS;
+			maxBoostSpeedCheckbox.IsChecked = Settings.Default.maxBoostSpeedTTS;
+			goalSpeed.IsChecked = Settings.Default.goalSpeedTTS;
+			goalDistance.IsChecked = Settings.Default.goalDistanceTTS;
 			playerJoinCheckbox.IsChecked = Settings.Default.playerJoinTTS;
 			playerLeaveCheckbox.IsChecked = Settings.Default.playerLeaveTTS;
 
-			Console.WriteLine(speechSpeed.SelectedIndex);
-			speechSpeed.SelectedIndex = Settings.Default.TTSSpeed;
-			Console.WriteLine(speechSpeed.SelectedIndex);
+			speechSpeed.SelectionChanged += SpeechSpeedChanged;
+			serverLocationCheckbox.Checked += ServerLocationClicked;
+			serverLocationCheckbox.Unchecked += ServerLocationClicked;
+			joustTimeCheckbox.Checked += JoustTimeClicked;
+			joustTimeCheckbox.Unchecked += JoustTimeClicked;
+			joustSpeedCheckbox.Checked += JoustSpeedClicked;
+			joustSpeedCheckbox.Unchecked += JoustSpeedClicked;
+			tubeExitSpeedCheckbox.Checked += TubeExitSpeedClicked;
+			tubeExitSpeedCheckbox.Unchecked += TubeExitSpeedClicked;
+			maxBoostSpeedCheckbox.Checked += MaxBoostClicked;
+			maxBoostSpeedCheckbox.Unchecked += MaxBoostClicked;
+			goalSpeed.Checked += goalSpeed_CheckedChanged;
+			goalSpeed.Unchecked += goalSpeed_CheckedChanged;
+			goalDistance.Checked += goalDistance_CheckedChanged;
+			goalDistance.Unchecked += goalDistance_CheckedChanged;
+			playerJoinCheckbox.Checked += PlayerJoinClicked;
+			playerJoinCheckbox.Unchecked += PlayerJoinClicked;
+			playerLeaveCheckbox.Checked += PlayerLeaveClicked;
+			playerLeaveCheckbox.Unchecked += PlayerLeaveClicked;
 
-			//_ = SetSelectIndex();
-
-			//var t = Task.Run(async delegate
-			//{
-			//	await Task.Delay(1000);
-			//});
-				speechSpeed.SelectedIndex = Settings.Default.TTSSpeed;
 
 			// Speak a string.  
 			Program.synth.SpeakAsync("text to speech settings lol");
@@ -98,10 +110,10 @@ namespace IgniteBot2
 				Program.synth.SpeakAsync("32 meters per second");
 		}
 
-		private void SpeechSpeedChanged(object sender, DependencyPropertyChangedEventArgs e)
+		private void SpeechSpeedChanged(object sender, SelectionChangedEventArgs e)
 		{
 			var newVal = ((ComboBox)sender).SelectedIndex;
-			Program.synth.Rate = (newVal - 1) * 4;
+			Program.synth.SetRate(newVal);
 
 			if (newVal != Settings.Default.TTSSpeed)
 				Program.synth.SpeakAsync("This is the new speed");

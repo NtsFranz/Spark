@@ -74,7 +74,6 @@ namespace IgniteBot2
 		public static bool enableStatsLogging = true;
 		public static bool enableFullLogging = true;
 
-		public static bool authorized = false;
 		public static readonly HttpClient client = new HttpClient();
 
 		public static string currentAccessCodeUsername = "";
@@ -99,7 +98,10 @@ namespace IgniteBot2
 		private static g_Instance lastValidStatsFrame;
 		private static int lastValidSumOfStatsAge = 0;
 
-		static List<string> dataCache = new List<string>();
+		/// <summary>
+		/// For replay file saving in batches
+		/// </summary>
+		private static List<string> dataCache = new List<string>();
 
 		class UserAtTime
 		{
@@ -240,27 +242,34 @@ namespace IgniteBot2
 				RegisterUriScheme("ignitebot", "IgniteBot Protocol");
 				RegisterUriScheme("atlas", "ATLAS Protocol");   // TODO see how this would overwrite ATLAS URL opening
 
+				// if logged in with discord
 				if (!string.IsNullOrEmpty(Settings.Default.discordOAuthRefreshToken))
 				{
 					DiscordOAuth.OAuthLoginRefresh(Settings.Default.discordOAuthRefreshToken);
 				}
 
+
 				if (string.IsNullOrEmpty(Settings.Default.accessCode))
 				{
-					loginWindow = new LoginWindow();
-					loginWindow.Closed += (sender, args) => loginWindow = null;
-					loginWindow.Show();
+					Settings.Default.accessCode = SecretKeys.Hash("personal");
 				}
 				else
 				{
-					authorized = true;
-
-					liveWindow = new LiveWindow();
-					liveWindow.Closed += (sender, args) => liveWindow = null;
-					liveWindow.Show();
+					// checkaccesscode checks and sets the access code as active
+					switch (CheckAccessCode(Settings.Default.accessCode))
+					{
+						case AuthCode.network_error:
+							// TODO show that there's a network error
+							break;
+						case AuthCode.denied:
+							// TODO show that you were denied
+							break;
+					}
 				}
 
-				//if (!authorized) Quit();
+				liveWindow = new LiveWindow();
+				liveWindow.Closed += (sender, args) => liveWindow = null;
+				liveWindow.Show();
 
 				var argsList = new List<string>(args);
 
@@ -324,7 +333,7 @@ namespace IgniteBot2
 
 				// Configure the audio output.
 				synth.SetOutputToDefaultAudioDevice();
-				synth.Rate = Settings.Default.TTSSpeed;
+				synth.SetRate(Settings.Default.TTSSpeed);
 
 
 				UpdateEchoExeLocation();
@@ -542,7 +551,6 @@ namespace IgniteBot2
 			var deltaTimeSpan = new TimeSpan(0, 0, 0, 0, statsDeltaTimes[deltaTimeIndexStats]);
 
 			Thread.Sleep(10);
-			synth.Rate = Settings.Default.TTSSpeed;
 
 			// Session pull loop.
 			while (running)
@@ -2301,66 +2309,53 @@ namespace IgniteBot2
 		{
 			if (accessCode == "") return AuthCode.denied;
 
-			using (SHA256 sha = SHA256.Create())
+			try
 			{
-				var hashedPW = sha.ComputeHash(Encoding.ASCII.GetBytes(accessCode));
+				WebRequest request = WebRequest.Create(APIURL + "ignitebot_auth?key=" + accessCode);
 
-				// Convert the byte array to hexadecimal string
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < hashedPW.Length; i++)
+				// Get the response.
+				WebResponse response = request.GetResponse();
+
+				// Display the status.
+				Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+
+				string responseFromServer;
+
+				// Get the stream containing content returned by the server.
+				// The using block ensures the stream is automatically closed.
+				using (Stream dataStream = response.GetResponseStream())
 				{
-					sb.Append(hashedPW[i].ToString("X2"));
-				}
-				string passHash = sb.ToString().ToLower();
+					// Open the stream using a StreamReader for easy access.
+					StreamReader reader = new StreamReader(dataStream);
+					// Read the content.
+					responseFromServer = reader.ReadToEnd();
 
-				try
+				}
+
+				// Close the response.
+				response.Close();
+
+				// Display the content.
+				Dictionary<string, string> respObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseFromServer);
+				if (respObj["auth"] == "true")
 				{
-					WebRequest request = WebRequest.Create(APIURL + "ignitebot_auth?key=" + passHash);
+					currentAccessCodeUsername = respObj["username"];
+					currentSeasonName = respObj["season_name"];
 
-					// Get the response.
-					WebResponse response = request.GetResponse();
+					client.DefaultRequestHeaders.Remove("access-code");
+					client.DefaultRequestHeaders.Add("access-code", currentSeasonName);
 
-					// Display the status.
-					Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-
-					string responseFromServer;
-
-					// Get the stream containing content returned by the server.
-					// The using block ensures the stream is automatically closed.
-					using (Stream dataStream = response.GetResponseStream())
-					{
-						// Open the stream using a StreamReader for easy access.
-						StreamReader reader = new StreamReader(dataStream);
-						// Read the content.
-						responseFromServer = reader.ReadToEnd();
-
-					}
-
-					// Close the response.
-					response.Close();
-
-					// Display the content.
-					Dictionary<string, string> respObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseFromServer);
-					if (respObj["auth"] == "true")
-					{
-						currentAccessCodeUsername = respObj["username"];
-						currentSeasonName = respObj["season_name"];
-
-						client.DefaultRequestHeaders.Remove("access-code");
-						client.DefaultRequestHeaders.Add("access-code", currentSeasonName);
-
-						return AuthCode.approved;
-					}
-					else
-					{
-						return AuthCode.denied;
-					}
+					return AuthCode.approved;
 				}
-				catch
+				else
 				{
-					LogRow(LogType.Error, "Can't connect to the DB server");
-					return AuthCode.network_error;
+					return AuthCode.denied;
 				}
+			}
+			catch
+			{
+				LogRow(LogType.Error, "Can't connect to the DB server");
+				return AuthCode.network_error;
 			}
 		}
 

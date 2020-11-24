@@ -9,13 +9,12 @@ using System.Windows.Media;
 namespace IgniteBot2
 {
 	/// <summary>
-	/// An abstraction layer for whatever tts engine is being used
+	/// 📖➡🔊 An abstraction layer for whatever TTS engine is being used
 	/// </summary>
 	class SpeechSynthesizer
 	{
-		TextToSpeechClient client;
-		VoiceSelectionParams voice;
-		AudioConfig config;
+		private readonly TextToSpeechClient client;
+		private readonly VoiceSelectionParams voice;
 		bool playing = true;
 
 		/// <summary>
@@ -38,14 +37,9 @@ namespace IgniteBot2
 			voice = new VoiceSelectionParams
 			{
 				LanguageCode = "en-US",
-				SsmlGender = SsmlVoiceGender.Female
+				Name = "en-US-Wavenet-D"
 			};
 
-			// Select the type of audio file you want returned.
-			config = new AudioConfig
-			{
-				AudioEncoding = AudioEncoding.Mp3
-			};
 
 			Thread ttsThread = new Thread(TTSThread);
 			ttsThread.IsBackground = true;
@@ -65,7 +59,6 @@ namespace IgniteBot2
 				if (ttsQueue.TryDequeue(out string result))
 				{
 					mediaPlayer.Open(new Uri(result));
-					mediaPlayer.SpeedRatio = Rate;
 
 					playing = true;
 					mediaPlayer.Play();
@@ -94,7 +87,11 @@ namespace IgniteBot2
 			}
 		}
 
-		public int Rate { get; set; }
+		public float Rate { get; private set; }
+		public void SetRate(int selectedIndex)
+		{
+			Rate = 1 + ((selectedIndex - 1 /*index of Normal*/ ) * .4f /*Slope of the speed change*/);
+		}
 
 		public void SetOutputToDefaultAudioDevice()
 		{
@@ -112,6 +109,15 @@ namespace IgniteBot2
 			SynthesisInput input = new SynthesisInput
 			{
 				Text = text
+			};
+
+
+			// Select the type of audio file you want returned.
+			AudioConfig config = new AudioConfig
+			{
+				AudioEncoding = AudioEncoding.Mp3,
+				Pitch = -5,
+				SpeakingRate = Rate
 			};
 
 			// Perform the Text-to-Speech request, passing the text input

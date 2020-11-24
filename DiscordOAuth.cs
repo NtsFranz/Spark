@@ -29,6 +29,42 @@ namespace IgniteBot2
 		public static string DiscordPFPURL => $"https://cdn.discordapp.com/avatars/{discordUserData["id"]}/{discordUserData["avatar"]}";
 		public static List<Dictionary<string, string>> availableAccessCodes = new List<Dictionary<string, string>>();
 
+		public static string GetAccessCode(string username)
+		{
+			foreach (var key in availableAccessCodes)
+			{
+				if (key["username"] == username)
+				{
+					return key["pw"];
+				}
+			}
+			return "";
+		}
+
+		public static int GetAccessCodeIndex(string hash)
+		{
+			for (int i = 0; i < availableAccessCodes.Count; i++)
+			{
+				if (SecretKeys.Hash(availableAccessCodes[i]["pw"]) == hash)
+				{
+					return i;
+				}
+			}
+			return 0;
+		}
+
+		internal static string GetSeasonName(string username)
+		{
+			foreach (var key in availableAccessCodes)
+			{
+				if (key["username"] == username)
+				{
+					return key["season_name"];
+				}
+			}
+			return "";
+		}
+
 		public static void OAuthLogin(bool force = false)
 		{
 			string token = Settings.Default.discordOAuthRefreshToken;
@@ -52,6 +88,14 @@ namespace IgniteBot2
 			{
 				OAuthLoginRefresh(token);
 			}
+		}
+
+		internal static void Unlink()
+		{
+			discordUserData = null;
+			availableAccessCodes.Clear();
+			Settings.Default.discordOAuthRefreshToken = string.Empty;
+			Settings.Default.Save();
 		}
 
 		private static string OAuthResponse(HttpListenerRequest request)
@@ -151,8 +195,14 @@ namespace IgniteBot2
 			string accessCodesResponseString = await accessCodesResponse.Content.ReadAsStringAsync();
 			Dictionary<string, List<Dictionary<string, string>>> accessCodesData = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(accessCodesResponseString);
 			availableAccessCodes = accessCodesData["keys"];
+			availableAccessCodes.Insert(0, new Dictionary<string, string>()
+			{
+				{ "pw", "personal" },
+				{ "season_name", "personal" },
+				{ "username", "Personal" }
+			});
 
-			Program.loginWindow?.UpdateAccessCodesDropdown();
+			Program.loginWindow?.Refresh();
 		}
 	}
 }

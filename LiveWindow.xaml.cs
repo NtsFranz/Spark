@@ -93,6 +93,7 @@ namespace IgniteBot2
 							try
 							{
 								mainOutputTextBox.AppendText(newText);
+								mainOutputTextBox.ScrollToEnd();
 
 								if (Program.writeToOBSHTMLFile) // TODO this file path won't work
 								{
@@ -144,7 +145,7 @@ namespace IgniteBot2
 
 					if (Program.lastFrame != null && Program.lastFrame.map_name != "mpl_lobby_b2")  // 'mpl_lobby_b2' may change in the future
 					{
-						discSpeedLabel.Content = Program.lastFrame.disc.velocity.ToVector3().Length() + " m/s";
+						discSpeedLabel.Content = Program.lastFrame.disc.velocity.ToVector3().Length().ToString("N2");
 						//discSpeedProgressBar.Value = (int)Program.lastFrame.disc.Velocity.Length();
 						//if (Program.lastFrame.teams[0].possession)
 						//{
@@ -201,15 +202,15 @@ namespace IgniteBot2
 										playerSpeedHTML += "<div style=\"width:" + speed + "px;\" class=\"speed_bar " + (g_Team.TeamColor)t + "\"></div>\n";
 									}
 
-									pingsTextNames.AppendLine(player.name + ":");
+									pingsTextNames.AppendLine(player.name);
 									pingsTextPings.AppendLine(player.ping.ToString());
 								}
 								teamNames[t].AppendLine(player.name);
 							}
 						}
 
-						playerPingsNames.Content = pingsTextNames.ToString();
-						playerPingsPings.Content = pingsTextPings.ToString();
+						playerPingsNames.Text = pingsTextNames.ToString();
+						playerPingsPings.Text = pingsTextPings.ToString();
 
 						blueTeamPlayersLabel.Content = teamNames[0].ToString().Trim();
 						orangeTeamPlayersLabel.Content = teamNames[1].ToString().Trim();
@@ -232,7 +233,7 @@ namespace IgniteBot2
 					else
 					{
 						sessionIdTextBox.Text = "---";
-						discSpeedLabel.Content = "--- m/s";
+						discSpeedLabel.Content = "---";
 						//discSpeedProgressBar.Value = 0;
 						//discSpeedProgressBar.ForeColor = Color.Gray;
 						foreach (ProgressBar bar in playerSpeedBars)
@@ -269,12 +270,20 @@ namespace IgniteBot2
 
 					RefreshDiscordLogin();
 
+					RefreshAccessCode();
+
 					if (!Program.running)
 					{
 						outputUpdateTimer.Stop();
 					}
 				});
 			}
+		}
+
+		private void RefreshAccessCode()
+		{
+			accessCodeLabel.Content = "Mode: " + Program.currentAccessCodeUsername;
+			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		public void RefreshDiscordLogin()

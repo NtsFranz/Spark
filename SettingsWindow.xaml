@@ -26,7 +26,7 @@
 			<GroupBox x:Name="statsLoggingBox" Header="Stats Logging" Margin="10,4,10,4">
 				<StackPanel>
 					<Label x:Name="label2" Content="When to upload data to the Ignite database:" Width="588" Margin="4,4,4,4"/>
-					<ComboBox x:Name="uploadTimesComboBox" Width="437" SelectedIndex="0" HorizontalAlignment="Left" Margin="4,4,4,4" DataContextChanged="LoggingTimeChanged">
+					<ComboBox x:Name="uploadTimesComboBox" Width="437" SelectedIndex="0" HorizontalAlignment="Left" Margin="4,4,4,4" SelectionChanged="LoggingTimeChanged">
 						<ComboBoxItem Content="Only at end of matches"/>
 						<ComboBoxItem Content="After goals, player leave/join, and end of matches"/>
 						<ComboBoxItem Content="Never"/>
@@ -40,7 +40,7 @@
 					<CheckBox x:Name="onlyRecordPrivateMatches" Width="588" Content="Only Record Private Matches" Margin="4,4,4,4" Checked="onlyRecordPrivateMatches_CheckedChanged" Unchecked="onlyRecordPrivateMatches_CheckedChanged"/>
 					<CheckBox x:Name="batchWritesButton" Width="588" Content="Batch Writes" Margin="4,4,4,4" Checked="BatchWritesEvent" Unchecked="BatchWritesEvent"/>
 					<CheckBox x:Name="useCompressionButton" Width="588" Content="Use Compression" Margin="4,4,4,4" Checked="UseCompressionEvent" Unchecked="UseCompressionEvent"/>
-					<ComboBox x:Name="speedSelector" Width="211" SelectedIndex="-1" Margin="4,4,4,4" HorizontalAlignment="Left" DataContextChanged="SpeedChangeEvent">
+					<ComboBox x:Name="speedSelector" Width="211" SelectedIndex="-1" Margin="4,4,4,4" HorizontalAlignment="Left" SelectionChanged="SpeedChangeEvent">
 						<ComboBoxItem Content="Fast (60 Hz)"/>
 						<ComboBoxItem Content="Med (30 Hz)"/>
 						<ComboBoxItem Content="Slow (10 Hz)"/>
@@ -54,7 +54,7 @@
 					</StackPanel>
 					<Label x:Name="splitLabel" Content="Replay File Splitting:" Margin="4,4,4,4"/>
 					<StackPanel Height="30" Margin="4,4,4,4" Orientation="Horizontal">
-						<ComboBox x:Name="whenToSplitReplays" Width="250" SelectedIndex="0" Margin="4,0,4,0" DataContextChanged="whenToSplitReplaysChanged" Height="24.62">
+						<ComboBox x:Name="whenToSplitReplays" Width="250" SelectedIndex="0" Margin="4,0,4,0" Height="24.62" SelectionChanged="whenToSplitReplaysChanged">
 							<ComboBoxItem Content="Every Round"/>
 							<ComboBoxItem Content="Every Match (Scoreboard)"/>
 							<ComboBoxItem Content="On Server Change"/>
