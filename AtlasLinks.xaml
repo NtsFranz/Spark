@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot2"
         mc:Ignorable="d"
-        Title="IgniteBot | Atlas Links" Height="301" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterScreen" SizeToContent="Height" ResizeMode="NoResize" Icon="/ignite_logo.png">
+        Title="IgniteBot | Atlas Links" Height="301" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterScreen" SizeToContent="Height" ResizeMode="NoResize" Icon="/img/ignite_logo_128.png">
 	<StackPanel>
 		<Label x:Name="label" Content="Join as Player" Margin="10,10,10,-8"/>
 		<TextBox x:Name="joinLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>

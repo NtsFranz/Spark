@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot2"
+		xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
-        Title="IgniteBot | Live Data Output" Height="600" Width="1060" FontSize="14" Background="{DynamicResource BackgroundColour}" ResizeMode="CanMinimize" Icon="/ignite_logo.png" Initialized="LiveWindow_Load">
+        Title="IgniteBot | Live Data Output" Height="600" Width="1060" FontSize="14" Background="{DynamicResource BackgroundColour}" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png" Initialized="LiveWindow_Load">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="200"/>
@@ -42,23 +43,35 @@
 		<GridSplitter x:Name="gridSplitter" Grid.Column="1" HorizontalAlignment="Stretch"/>
 		<StackPanel x:Name="Center_Panel" Grid.Column="2">
 			<TabControl x:Name="tabControl" Height="499" SelectedIndex="1" Margin="0,4,0,0">
-				<TabItem x:Name="dashboardTab" Header="Dashboard" FontSize="14" Padding="8,6,8,6" Margin="2,-2,-2,0">
+				<TabItem x:Name="dashboardTab" Header="Dashboard" FontSize="14" Padding="10,6,10,6" Margin="4,-2,-2,0">
 					<Grid Background="{DynamicResource ContainerBackground}">
-						<GroupBox x:Name="playerPingsGroupbox" Header="Player Pings:" Margin="448,10,10,196">
-							<StackPanel Orientation="Horizontal">
+						<GroupBox x:Name="playerSpeedsGroupbox" Header="Player Speeds" Width="200" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="281">
+							<StackPanel Orientation="Horizontal" Margin="10,10,10,10">
+								<TextBlock x:Name="playersSpeedsNames" Text="" VerticalAlignment="Top"/>
+								<TextBlock x:Name="playerSpeedsSpeeds" Text="" VerticalAlignment="Top" Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
+							</StackPanel>
+						</GroupBox>
+						<GroupBox x:Name="discSpeedsGroupbox" Header="Disc Speed (m/s)" Width="180" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Center" VerticalAlignment="Top">
+							<Label x:Name="discSpeedLabel" Content="0" Height="30" Margin="0,0,-3,0" HorizontalContentAlignment="Center" Padding="15,5,15,5" VerticalAlignment="Stretch"/>
+						</GroupBox>
+						<GroupBox x:Name="playerPingsGroupbox" Header="Player Pings" Width="200" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="281">
+							<StackPanel Orientation="Horizontal" Margin="10,10,10,10">
 								<TextBlock x:Name="playerPingsNames" Text="" VerticalAlignment="Top"/>
 								<TextBlock x:Name="playerPingsPings" Text="" VerticalAlignment="Top" Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
 							</StackPanel>
 						</GroupBox>
-						<GroupBox x:Name="playerSpeedsGroupbox" Header="Player Speeds:" Margin="10,10,448,409">
-							<StackPanel x:Name="speedsLayout" Margin="0,0,-12,0"/>
+						<GroupBox x:Name="lastRoundScores" Header="Previous Rounds" Width="300" Margin="10,10,10,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="150">
+							<TextBlock x:Name="lastRoundScoresTextBlock"/>
 						</GroupBox>
-						<GroupBox x:Name="discSpeedsGroupbox" Header="Disc Speed (m/s)" Margin="235,10,235,380" Width="150">
-							<Label x:Name="discSpeedLabel" Content="0" Height="30" Margin="0,0,-3,0" HorizontalContentAlignment="Center" Padding="15,5,15,5" VerticalAlignment="Stretch"/>
+						<GroupBox x:Name="lastGoals" Header="Previous Goals" Width="300" Margin="10,10,10,10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="150" HorizontalContentAlignment="Left">
+							<TextBlock x:Name="lastGoalsTextBlock"/>
+						</GroupBox>
+						<GroupBox x:Name="lastJoustsBox" Header="Previous Joust TImes" Width="180" Margin="0,90,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="201">
+							<TextBlock x:Name="lastJoustsTextBlock"/>
 						</GroupBox>
 					</Grid>
 				</TabItem>
-				<TabItem x:Name="eventLogTab" Header="Event Log" FontSize="14" Padding="8,6,8,6">
+				<TabItem x:Name="eventLogTab" Header="Event Log" FontSize="14" Padding="10,6,10,6">
 					<Grid>
 						<TextBox x:Name="mainOutputTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible"/>
 						<Button x:Name="showEventLogFileButton" Content="Open Event Log Folder" Width="183" Margin="0,10,30,0" HorizontalAlignment="Right" Click="showEventLogFileButton_Click" VerticalAlignment="Top" Height="30"/>
@@ -92,8 +105,8 @@
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton" Content="Enable API in Settings" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
 					<Button x:Name="showAtlasLinks" Content="Show Atlas Links" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click"/>
-					<Button x:Name="playspaceButton" Content="Show Playspace" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click"/>
-					<Button x:Name="showPlayerSpeedsButton" Content="Show Player Speeds" Height="40" Margin="4,4,4,4" Click="openSpeedometer"/>
+					<Button x:Name="playspaceButton" Content="Show Playspace" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Collapsed"/>
+					<Button x:Name="showPlayerSpeedsButton" Content="Show Player Speeds" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
 					<Button x:Name="ttsSettings" Content="TTS Settings" Height="40" Margin="4,4,4,4" Click="ttsSettings_Click"/>
 				</StackPanel>
 			</GroupBox>
@@ -101,5 +114,21 @@
 		<Label x:Name="accessCodeLabel" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3"/>
 		<Label x:Name="versionLabel" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5"/>
 
+
+
+		<tb:TaskbarIcon x:Name="trayIcon"
+			IconSource="/img/ignite_logo.ico"
+			ToolTipText="IgniteBot2" PopupActivation="DoubleClick">
+
+			<!-- Set a simple context menu  -->
+			<tb:TaskbarIcon.ContextMenu>
+				<ContextMenu>
+					<MenuItem x:Name="showHideMenuItem" Header="Hide Main Window" Padding="5,5,5,5" Margin="1,1,1,1" Click="ToggleHidden" />
+					<Separator></Separator>
+					<MenuItem Header="Quit" Padding="5,5,5,5" Margin="1,1,1,1" Click="QuitButtonClicked" />
+				</ContextMenu>
+			</tb:TaskbarIcon.ContextMenu>
+
+		</tb:TaskbarIcon>
 	</Grid>
 </Window>

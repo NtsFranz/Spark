@@ -70,12 +70,32 @@ namespace IgniteBot2.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap baseline_replay_white_24px {
+            get {
+                object obj = ResourceManager.GetObject("baseline_replay_white_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon ignite_logo {
             get {
                 object obj = ResourceManager.GetObject("ignite_logo", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ignite_logo_128 {
+            get {
+                object obj = ResourceManager.GetObject("ignite_logo_128", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

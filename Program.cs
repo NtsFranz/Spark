@@ -98,6 +98,10 @@ namespace IgniteBot2
 		private static g_Instance lastValidStatsFrame;
 		private static int lastValidSumOfStatsAge = 0;
 
+		public static ConcurrentQueue<GoalData> lastGoals = new ConcurrentQueue<GoalData>();
+		public static ConcurrentQueue<MatchData> lastMatches = new ConcurrentQueue<MatchData>();
+		public static ConcurrentQueue<EventData> lastJousts = new ConcurrentQueue<EventData>();
+
 		/// <summary>
 		/// For replay file saving in batches
 		/// </summary>
@@ -170,7 +174,6 @@ namespace IgniteBot2
 
 #if INCLUDE_FIRESTORE
 		public static FirestoreDb db;
-		public static AtlasCSharp atlas;
 #endif
 
 		public static string echoVRIP = "";
@@ -324,8 +327,6 @@ namespace IgniteBot2
 #if INCLUDE_FIRESTORE
 				var builder = new FirestoreClientBuilder { JsonCredentials = SecretKeys.firebaseJSONCredentials };
 				db = FirestoreDb.Create("ignitevr-echostats", builder.Build());
-
-				atlas = new AtlasCSharp();
 #endif
 
 				// Initialize a new instance of the SpeechSynthesizer.
@@ -1590,6 +1591,12 @@ namespace IgniteBot2
 
 								// Upload to Firebase 🔥
 								_ = DoUploadEventFirebase(matchData, joustEvent);
+
+								lastJousts.Enqueue(joustEvent);
+								if (lastJousts.Count > 6)
+								{
+									lastJousts.TryDequeue(out var joust);
+								}
 							}
 						}
 					}
@@ -1974,6 +1981,11 @@ namespace IgniteBot2
 					matchData.currentDiskTrajectory
 				);
 			matchData.Goals.Add(goalEvent);
+			lastGoals.Enqueue(goalEvent);
+			if (lastGoals.Count > 5)
+			{
+				lastGoals.TryDequeue(out var goal);
+			}
 
 			// Upload to Firebase 🔥
 			_ = DoUploadEventFirebase(matchData, goalEvent);
@@ -2047,6 +2059,11 @@ namespace IgniteBot2
 				_ = DelayedNewFilename();
 			}
 
+			lastMatches.Enqueue(matchData);
+			if (lastMatches.Count > 5)
+			{
+				lastMatches.TryDequeue(out var match);
+			}
 			lastMatchData = matchData;
 			matchData = null;
 
@@ -2054,6 +2071,7 @@ namespace IgniteBot2
 
 			// show the scores in the log
 			LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - ORANGE: " + frame.orange_points + "  BLUE: " + frame.blue_points);
+
 		}
 
 		public static void UploadMatchBatch(bool final = false)

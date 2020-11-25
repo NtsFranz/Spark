@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot2"
         mc:Ignorable="d"
-        Title="IgniteBot | TTS Settings" Height="810" Width="418" Background="{DynamicResource BackgroundColour}" FontSize="14" SizeToContent="Height" ResizeMode="CanMinimize" Icon="/ignite_logo_128.png" Loaded="TTSSettingsWindow_Load">
+        Title="IgniteBot | TTS Settings" Height="810" Width="418" Background="{DynamicResource BackgroundColour}" FontSize="14" SizeToContent="Height" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png" Loaded="TTSSettingsWindow_Load">
 	<Grid>
 		<StackPanel Margin="15,15,15,15">
 			<Label x:Name="label" Content="Text-to-Speech (TTS) Settings" FontSize="20" Margin="4,4,4,4"/>

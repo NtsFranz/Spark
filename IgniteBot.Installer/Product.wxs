@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+	<?define UpgradeCode = "{3990C76C-D8C9-46B4-9451-F4B5F73006BC}"?>
+	<?define ProductCode = "{8E03117F-8505-4F27-8D78-6A302CAD8CD8}"?>
+
+	<!-- Define main product -->
+	<Product Id="*"
+           Name="!(loc.ProductName)"
+           Language="!(loc.Language)"
+           Version="$(var.BuildVersion)"
+           Manufacturer="!(loc.Company)"
+           UpgradeCode="$(var.UpgradeCode)">
+
+		<!-- Provide package details -->
+		<Package InstallerVersion="200"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Manufacturer="!(loc.Company)"
+             Description="!(loc.Description)"
+             Keywords="!(loc.Keywords)"
+             Comments="!(loc.Comments)"
+             Languages="!(loc.Language)"
+             />
+
+		<!-- Downgrade error message -->
+		<MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
+
+		<!-- Include .cab file into .msi file -->
+		<MediaTemplate
+      EmbedCab="yes"
+      />
+
+		<!-- Define main app icon -->
+		<Icon Id="icon.ico" SourceFile="$(var.IgniteBot.ProjectDir)\img\ignite_logo.ico"/>
+
+		<!-- Use the icon.ico icon for this installer (shows up in Add/Remove programs) -->
+		<Property Id="ARPPRODUCTICON">icon.ico</Property>
+		<!-- Help/Support website (shows in the Add/Remove programs) -->
+		<Property Id="ARPURLINFOABOUT">https://www.ignitevr.gg</Property>
+
+		<!-- Create a basic UI for the installer -->
+		<UI>
+			<UIRef Id="WixUI_InstallDir" />
+
+			<!-- Skip license dialog -->
+			<Publish Dialog="WelcomeDlg"
+							 Control="Next"
+							 Event="NewDialog"
+							 Value="InstallDirDlg"
+							 Order="2">1</Publish>
+			<Publish Dialog="InstallDirDlg"
+							 Control="Back"
+							 Event="NewDialog"
+							 Value="WelcomeDlg"
+							 Order="2">1</Publish>
+		</UI>
+
+		<!-- Change the installer UI background images -->
+		<WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\Assets\Background.bmp" />
+		<WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\Assets\Banner.bmp" />
+
+		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+		<!-- Change the installer UI background images -->
+
+		<!-- Define components, shortcuts, files etc... for installer -->
+		<Feature Id="ProductFeature" Title="IgniteBot" Level="1">
+
+			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentGroupRef Id="PublishedComponents" />
+
+		</Feature>
+
+	</Product>
+
+</Wix>

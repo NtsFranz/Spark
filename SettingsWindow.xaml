@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot2"
         mc:Ignorable="d"
-        Title="IgniteBot | Settings" Height="912" Width="600" Background="{DynamicResource BackgroundColour}" Loaded="SettingsWindow_Load" FontSize="14" Padding="10,10,10,10" ResizeMode="CanMinimize" SizeToContent="Height">
+        Title="IgniteBot | Settings" Height="912" Width="600" Background="{DynamicResource BackgroundColour}" Loaded="SettingsWindow_Load" FontSize="14" Padding="10,10,10,10" ResizeMode="CanMinimize" SizeToContent="Height" Icon="/img/ignite_logo_128.png">
 	<Grid>
 		<StackPanel>
 			<Label x:Name="label" Content="Settings" FontSize="20" Margin="10,10,10,4"/>
@@ -66,7 +66,7 @@
 				</StackPanel>
 			</GroupBox>
 		</StackPanel>
-		<Image x:Name="logo" Margin="10.5,10,10,10" Source="/ignite_logo_128.png" Width="128" Height="128" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+		<Image x:Name="logo" Margin="10.5,10,10,10" Source="/img/ignite_logo_128.png" Width="128" Height="128" HorizontalAlignment="Right" VerticalAlignment="Top"/>
 		<Label x:Name="versionNum" Content="version ?" Width="128" Margin="462,143,10,722" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0,0,0,0" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top"/>
 		<Button x:Name="closeButton" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,10,10,10" Padding="8,8,8,8" IsCancel="True" IsDefault="True" Width="80" Click="CloseButtonEvent"/>
 

@@ -1,4 +1,5 @@
-﻿using IgniteBot2.Properties;
+﻿using Google.Cloud.Firestore;
+using IgniteBot2.Properties;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -32,9 +33,6 @@ namespace IgniteBot2
 		private string updateFilename = "";
 
 		public static readonly object lastSnapshotLock = new object();
-#if INCLUDE_FIRESTORE
-		private QuerySnapshot lastSnapshot = null;
-#endif
 		private string lastIP;
 		private Dictionary<Control, bool> speedsHoveringDict = new Dictionary<Control, bool>();
 		private bool speedsHovering {
@@ -47,13 +45,14 @@ namespace IgniteBot2
 		}
 
 		private string lastDiscordUsername = string.Empty;
+		private bool hidden = false;
 
 
 		public LiveWindow()
 		{
 			InitializeComponent();
 
-			outputUpdateTimer.Interval = 50;
+			outputUpdateTimer.Interval = 100;
 			outputUpdateTimer.Elapsed += Update;
 			outputUpdateTimer.Enabled = true;
 
@@ -170,6 +169,7 @@ namespace IgniteBot2
 
 						StringBuilder pingsTextNames = new StringBuilder();
 						StringBuilder pingsTextPings = new StringBuilder();
+						StringBuilder speedsTextSpeeds = new StringBuilder();
 						StringBuilder[] teamNames = new StringBuilder[]
 						{
 							new StringBuilder(),
@@ -204,6 +204,8 @@ namespace IgniteBot2
 
 									pingsTextNames.AppendLine(player.name);
 									pingsTextPings.AppendLine(player.ping.ToString());
+
+									speedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 								}
 								teamNames[t].AppendLine(player.name);
 							}
@@ -212,9 +214,36 @@ namespace IgniteBot2
 						playerPingsNames.Text = pingsTextNames.ToString();
 						playerPingsPings.Text = pingsTextPings.ToString();
 
+						playersSpeedsNames.Text = pingsTextNames.ToString();
+						playerSpeedsSpeeds.Text = speedsTextSpeeds.ToString();
+
 						blueTeamPlayersLabel.Content = teamNames[0].ToString().Trim();
 						orangeTeamPlayersLabel.Content = teamNames[1].ToString().Trim();
 						spectatorsLabel.Content = teamNames[2].ToString().Trim();
+
+
+						// last goals and last matches
+						StringBuilder lastGoalsString = new StringBuilder();
+						foreach (var goal in Program.lastGoals)
+						{
+							lastGoalsString.AppendLine(goal.GameClock.ToString("N0") + "s  " + goal.LastScore.person_scored + "  " + goal.LastScore.point_amount + " pts  " + goal.LastScore.disc_speed.ToString("N1") + " m/s  " + goal.LastScore.distance_thrown.ToString("N1") + " m");
+						}
+						lastGoalsTextBlock.Text = lastGoalsString.ToString();
+
+						StringBuilder lastMatchesString = new StringBuilder();
+						foreach (var match in Program.lastMatches)
+						{
+							lastMatchesString.AppendLine(match.finishReason.ToString() + (match.finishReason == MatchData.FinishReason.reset ? match.endTime : "") + " - ORANGE: " + match.teams[g_Team.TeamColor.orange].points + "  BLUE: " + match.teams[g_Team.TeamColor.blue].points);
+						}
+						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
+
+						StringBuilder lastJoustsString = new StringBuilder();
+						foreach (var joust in Program.lastJousts)
+						{
+							lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s");
+						}
+						lastJoustsTextBlock.Text = lastJoustsString.ToString();
+
 
 						if (updatedHTML && Program.writeToOBSHTMLFile)
 						{
@@ -403,8 +432,9 @@ namespace IgniteBot2
 
 		private void CloseButtonClicked(object sender, RoutedEventArgs e)
 		{
-			outputUpdateTimer.Stop();
-			Close();
+			Hide();
+			showHideMenuItem.Header = "Show Main Window";
+			hidden = true;
 		}
 
 		private void SettingsButtonClicked(object sender, RoutedEventArgs e)
@@ -737,6 +767,21 @@ namespace IgniteBot2
 			{
 				Process.Start(Settings.Default.echoVRPath, "-spectatorstream");
 			}
+		}
+
+		private void ToggleHidden(object sender, RoutedEventArgs e)
+		{
+			if (hidden)
+			{
+				Show();
+				showHideMenuItem.Header = "Hide Main Window";
+			}
+			else
+			{
+				Hide();
+				showHideMenuItem.Header = "Show Main Window";
+			}
+			hidden = !hidden;
 		}
 	}
 }

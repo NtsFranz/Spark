@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Hardcodet.Wpf.TaskbarNotification;
 using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace IgniteBot2
@@ -14,7 +9,8 @@ namespace IgniteBot2
 	/// </summary>
 	public partial class App : Application
 	{
-		private System.Windows.Forms.NotifyIcon trayIcon;
+		//private System.Windows.Forms.NotifyIcon trayIcon;
+		private TaskbarIcon trayIcon;
 		private bool isExit;
 
 		protected override void OnStartup(StartupEventArgs e)
@@ -23,19 +19,19 @@ namespace IgniteBot2
 
 			Program.Main(e.Args, this);
 
-			trayIcon = new System.Windows.Forms.NotifyIcon();
-			trayIcon.DoubleClick += (s, args) => ShowMainWindow();
-			trayIcon.Icon = IgniteBot2.Properties.Resources.ignite_logo;
-			trayIcon.Visible = true;
+			//trayIcon = new TaskbarIcon();
+			////trayIcon.Double += (s, args) => ShowMainWindow();
+			//trayIcon.Icon = IgniteBot2.Properties.Resources.ignite_logo;
+			//trayIcon.Visibility = Visibility.Visible;
 
 			CreateContextMenu();
 		}
 
 		private void CreateContextMenu()
 		{
-			trayIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
-			trayIcon.ContextMenuStrip.Items.Add("Show Main Output Window...").Click += (s, e) => ShowMainWindow();
-			trayIcon.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => ExitApplication();
+			//trayIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
+			//trayIcon.ContextMenuStrip.Items.Add("Show Main Output Window...").Click += (s, e) => ShowMainWindow();
+			//trayIcon.ContextMenuStrip.Items.Add("Exit").Click += (s, e) => ExitApplication();
 		}
 
 		public void ExitApplication()
@@ -43,8 +39,8 @@ namespace IgniteBot2
 			Program.running = false;
 			isExit = true;
 			Current.Shutdown();
-			trayIcon.Dispose();
-			trayIcon = null;
+			//trayIcon.Dispose();
+			//trayIcon = null;
 		}
 
 		private void ShowMainWindow()

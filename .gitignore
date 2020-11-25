@@ -232,3 +232,4 @@ _Pvt_Extensions
 /.dotnet
 
 SecretKeys.cs
+IgniteBot.Installer/Installs/

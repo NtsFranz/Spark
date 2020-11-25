@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -301,7 +302,11 @@ namespace IgniteBot2
 
 		private void OpenReplayFolder(object sender, RoutedEventArgs e)
 		{
-			// TODO 
+			Process.Start(new ProcessStartInfo
+			{
+				FileName = Settings.Default.saveFolder,
+				UseShellExecute = true
+			});
 		}
 	}
 }
