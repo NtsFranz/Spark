@@ -586,5 +586,41 @@ namespace IgniteBot2.Properties {
                 this["accessMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int clientHighlightScope {
+            get {
+                return ((int)(this["clientHighlightScope"]));
+            }
+            set {
+                this["clientHighlightScope"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool clearHighlightsOnExit {
+            get {
+                return ((bool)(this["clearHighlightsOnExit"]));
+            }
+            set {
+                this["clearHighlightsOnExit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool isNVHighlightsEnabled {
+            get {
+                return ((bool)(this["isNVHighlightsEnabled"]));
+            }
+            set {
+                this["isNVHighlightsEnabled"] = value;
+            }
+        }
     }
 }

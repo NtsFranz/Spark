@@ -1,11 +1,11 @@
-﻿using DiscordRPC;
-using DiscordRPC.Logging;
-using DiscordRPC.Message;
-using IgniteBot2.Properties;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using DiscordRPC;
+using DiscordRPC.Logging;
+using DiscordRPC.Message;
+using IgniteBot2.Properties;
 using static Logger;
 
 namespace IgniteBot2
@@ -16,7 +16,7 @@ namespace IgniteBot2
 		public static DateTime initializationTime;
 		public static DateTime lastDiscordPresenceTime;
 		private static DateTime lobbyEntryTime;
-		private static bool inLobby = false;
+		private static bool inLobby;
 
 		private static Thread thread;
 
@@ -25,7 +25,7 @@ namespace IgniteBot2
 		/// </summary>
 		public static void Start()
 		{
-			thread = new Thread(new ThreadStart(DiscordThread));
+			thread = new Thread(DiscordThread);
 			thread.Start();
 		}
 
@@ -65,7 +65,7 @@ namespace IgniteBot2
 			discordClient.RegisterUriScheme();
 
 			// Set the logger
-			discordClient.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
+			discordClient.Logger = new ConsoleLogger { Level = LogLevel.Warning };
 
 			// Subscribe to events
 			discordClient.OnJoin += OnJoin;
@@ -147,7 +147,7 @@ namespace IgniteBot2
 					{
 						details.Append("pvt.");
 
-						rp.WithSecrets(new Secrets()
+						rp.WithSecrets(new Secrets
 						{
 							JoinSecret = "ignitebot://choose/" + frame.sessionid,
 							SpectateSecret = "ignitebot://spectate/" + frame.sessionid,
@@ -159,11 +159,11 @@ namespace IgniteBot2
 					}
 
 					rp.State = "Score: " + frame.orange_points + " - " + frame.blue_points;
-					rp.Timestamps = new Timestamps()
+					rp.Timestamps = new Timestamps
 					{
 						End = frame.game_status == "post_match" ? DateTime.UtcNow : DateTime.UtcNow.AddSeconds(frame.game_clock)
 					};
-					rp.WithParty(new Party()
+					rp.WithParty(new Party
 					{
 						ID = frame.sessionid,
 						Size = frame.GetAllPlayers().Count,
@@ -181,7 +181,7 @@ namespace IgniteBot2
 						inLobby = true;
 						lobbyEntryTime = DateTime.UtcNow;
 					}
-					rp.Timestamps = new Timestamps()
+					rp.Timestamps = new Timestamps
 					{
 						Start = lobbyEntryTime
 					};
@@ -192,7 +192,7 @@ namespace IgniteBot2
 				}
 
 				rp.Details = details.ToString();
-				rp.Assets = new Assets()
+				rp.Assets = new Assets
 				{
 					LargeImageKey = "echo_arena_store_icon",
 					LargeImageText = "Rich presence from IgniteBot"

@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
+using Newtonsoft.Json;
 
 namespace IgniteBot2
 {

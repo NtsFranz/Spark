@@ -18,6 +18,15 @@
 		<OutputPath>bin\$(Configuration)\</OutputPath>
 		<IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
 	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+		<DefineConstants>Debug</DefineConstants>
+		<OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+		<IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+		<OutputPath>bin\$(Platform)\$(Configuration)\</OutputPath>
+		<IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
+	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="Components.wxs" />
 		<Compile Include="ComponentsGenerated.wxs" />
@@ -48,40 +57,52 @@
 	<Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
 		<Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
 	</Target>
+	
+	
+	
 	<Target Name="BeforeBuild">
-
+		
 		<!-- Get assembly version -->
-		<GetAssemblyIdentity AssemblyFiles="..\bin\$(Configuration)\net5.0-windows\IgniteBot2.exe">
+		<GetAssemblyIdentity AssemblyFiles="..\bin\$(Configuration)\net5.0-windows\IgniteBot2.dll">
 			<Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
 		</GetAssemblyIdentity>
 		
 		<!-- Define some variables we need -->
 		<PropertyGroup>
-			<DefineConstants>BuildVersion=%(AssemblyVersion.Version);BasePath=..\bin\$(Configuration)</DefineConstants>
+			<DefineConstants>
+				BuildVersion=%(AssemblyVersion.Version);
+				BasePath=..\bin\$(Configuration)\net5.0-windows
+			</DefineConstants>
 		</PropertyGroup>
 		
 		<!-- Harvest file components from publish folder -->
-		<HeatDirectory OutputFile="ComponentsGenerated.wxs" 
-									 DirectoryRefId="INSTALLFOLDER" 
-									 ComponentGroupName="PublishedComponents" 
-									 SuppressCom="true" 
-									 Directory="..\bin\Release" 
-									 SuppressFragments="true" 
-									 SuppressRegistry="true" 
-									 SuppressRootDirectory="true" 
-									 AutoGenerateGuids="false"
-									 GenerateGuidsNow="true" 
-									 ToolPath="$(WixToolPath)" 
-									 PreprocessorVariable="var.BasePath" />
+		<HeatDirectory
+		  OutputFile="ComponentsGenerated.wxs"
+		  DirectoryRefId="INSTALLFOLDER"
+		  ComponentGroupName="PublishedComponents"
+		  SuppressCom="true"
+		  Directory="..\bin\$(Configuration)\net5.0-windows"
+		  SuppressFragments="true"
+		  SuppressRegistry="true"
+		  SuppressRootDirectory="true"
+		  AutoGenerateGuids="false"
+		  GenerateGuidsNow="true"
+		  ToolPath="$(WixToolPath)"
+		  PreprocessorVariable="var.BasePath" />
+		
 	</Target>
-
+	
+	
 	<Target Name="AfterBuild">
+		
 		<!-- Get assembly version -->
-		<GetAssemblyIdentity AssemblyFiles="..\bin\$(Configuration)\net5.0-windowsIgniteBot2.exe">
+		<GetAssemblyIdentity AssemblyFiles="..\bin\$(Configuration)\net5.0-windows\IgniteBot2.dll">
 			<Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
 		</GetAssemblyIdentity>
+		
 		<!-- Rename and move final MSI -->
 		<Exec Command="if not exist Installs mkdir Installs" />
 		<Exec Command="move bin\$(Configuration)\en-us\$(OutputName).msi Installs\IgniteBotInstaller_v%(AssemblyVersion.Version).msi" />
+		
 	</Target>
 </Project>

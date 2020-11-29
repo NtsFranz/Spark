@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using static IgniteBot2.g_Team;
-using System.Numerics;
 using System.Linq;
+using System.Numerics;
+using static IgniteBot2.g_Team;
 
 namespace IgniteBot2
 {

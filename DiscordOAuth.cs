@@ -1,6 +1,4 @@
-﻿using IgniteBot2.Properties;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -8,6 +6,8 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
+using IgniteBot2.Properties;
+using Newtonsoft.Json;
 
 namespace IgniteBot2
 {
@@ -107,7 +107,7 @@ namespace IgniteBot2
 
 		public static async void OAuthLoginRefresh(string refresh_token)
 		{
-			Dictionary<string, string> postDataDict = new Dictionary<string, string>()
+			Dictionary<string, string> postDataDict = new Dictionary<string, string>
 			{
 				{ "client_id", SecretKeys.CLIENT_ID },
 				{ "client_secret", SecretKeys.CLIENT_SECRET },
@@ -150,7 +150,7 @@ namespace IgniteBot2
 		public static async void OAuthLoginResponse(string code)
 		{
 
-			Dictionary<string, string> postDataDict = new Dictionary<string, string>()
+			Dictionary<string, string> postDataDict = new Dictionary<string, string>
 			{
 				{ "client_id", SecretKeys.CLIENT_ID },
 				{ "client_secret", SecretKeys.CLIENT_SECRET },
@@ -195,7 +195,7 @@ namespace IgniteBot2
 			string accessCodesResponseString = await accessCodesResponse.Content.ReadAsStringAsync();
 			Dictionary<string, List<Dictionary<string, string>>> accessCodesData = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(accessCodesResponseString);
 			availableAccessCodes = accessCodesData["keys"];
-			availableAccessCodes.Insert(0, new Dictionary<string, string>()
+			availableAccessCodes.Insert(0, new Dictionary<string, string>
 			{
 				{ "pw", "personal" },
 				{ "season_name", "personal" },

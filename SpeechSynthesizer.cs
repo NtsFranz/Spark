@@ -1,10 +1,10 @@
-﻿using Google.Cloud.TextToSpeech.V1;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Google.Cloud.TextToSpeech.V1;
 
 namespace IgniteBot2
 {

@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot2"
         mc:Ignorable="d"
-        Title="MessageBox" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="IgniteBot Message" Height="174" Width="548" FontSize="14" ResizeMode="NoResize" Background="{DynamicResource BackgroundColour}">
+	<Grid>
+		<Button x:Name="button" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Close" Margin="0,0,10,10" Width="64" Height="32" Click="button_Click"/>
+		<TextBlock x:Name="textBlock" TextWrapping="Wrap" Margin="10,30,10,30" TextAlignment="Center" LineStackingStrategy="MaxHeight"/>
+	</Grid>
 </Window>

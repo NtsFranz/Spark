@@ -5,15 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot2"
         mc:Ignorable="d"
-        Title="Join EchoVR Match" Height="150.4" Width="350" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Icon="/img/ignite_logo.ico" Background="#FF232323">
+        Title="Join EchoVR Match" Height="160" Width="350" WindowStartupLocation="CenterScreen" ResizeMode="CanResize" Icon="/img/ignite_logo.ico" Background="#FF232323" FontSize="16">
 	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="61*"/>
-			<ColumnDefinition Width="39*"/>
-		</Grid.ColumnDefinitions>
-		<Button x:Name="playerButton" Width="150" Height="50" Margin="10,74,54,10" Content="Player" Click="JoinAsPlayerClicked"/>
-		<Button x:Name="spectatorButton" Margin="190,74,10,10" Width="150" Height="50" Grid.ColumnSpan="2" Content="Spectator" Click="JoinAsSpectatorClicked"/>
-		<Label x:Name="label" Content="Join as a Player or as a Spectator?" Margin="10,19,10,88" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+		<Button x:Name="playerButton" Width="150" Height="50" Margin="10,0,0,10" Content="Player" Click="JoinAsPlayerClicked" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+		<Button x:Name="spectatorButton" Margin="0,0,10,10" Width="150" Height="50" Content="Spectator" Click="JoinAsSpectatorClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.RowSpan="1"/>
+		<Label x:Name="label" Content="Join as a Player or as a Spectator?" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
 
 	</Grid>
 </Window>

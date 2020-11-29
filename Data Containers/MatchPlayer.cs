@@ -148,14 +148,13 @@ namespace IgniteBot2
 				{
 					return distanceBetweenHands[(int)((distanceBetweenHands.Count - 1) * (99f / 100))];
 				}
-				else if (distanceBetweenHands.Count > 0)
+
+				if (distanceBetweenHands.Count > 0)
 				{
 					return distanceBetweenHands.Last();
 				}
-				else
-				{
-					return 0;
-				}
+
+				return 0;
 			}
 		}
 		public int Won { get; set; }

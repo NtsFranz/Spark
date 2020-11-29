@@ -127,10 +127,10 @@ namespace IgniteBot2
 
 		private static byte[] BuildFrameHeader(g_Instance frame)
 		{
-			List<byte> bytes = new List<byte>() { 254, 253 };
+			List<byte> bytes = new List<byte> { 254, 253 };
 			bytes.AddRange(BitConverter.GetBytes(frame.blue_points));
 			bytes.AddRange(BitConverter.GetBytes(frame.orange_points));
-			bytes.AddRange((new List<bool>() { frame.blue_team_restart_request, frame.orange_team_restart_request }).GetBytes());
+			bytes.AddRange((new List<bool> { frame.blue_team_restart_request, frame.orange_team_restart_request }).GetBytes());
 
 			// add last score
 			bytes.AddRange(BitConverter.GetBytes(frame.last_score.disc_speed));
@@ -181,7 +181,7 @@ namespace IgniteBot2
 
 		private static byte[] BuildChunk(g_Instance frame)
 		{
-			List<byte> bytes = new List<byte>() { 253, 254 };
+			List<byte> bytes = new List<byte> { 253, 254 };
 			List<bool> bools = new List<bool>();
 
 			bytes.AddRange(BitConverter.GetBytes(frame.game_clock));
@@ -214,8 +214,7 @@ namespace IgniteBot2
 			{
 				foreach (var player in team.players)
 				{
-					List<float>[] vectors = new List<float>[]
-					{
+					List<float>[] vectors = {
 						player.velocity,
 
 						player.head.position,

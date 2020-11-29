@@ -1,6 +1,6 @@
-﻿using IgniteBot2.Properties;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
+using IgniteBot2.Properties;
 
 namespace IgniteBot2
 {
@@ -23,6 +23,7 @@ namespace IgniteBot2
 			if (string.IsNullOrEmpty(Settings.Default.echoVRPath)) return;
 			Process.Start(Settings.Default.echoVRPath, "-lobbyid " + sessionid);
 			Close();
+			//Program.Quit();
 		}
 
 		private void JoinAsSpectatorClicked(object sender, RoutedEventArgs e)
@@ -30,6 +31,7 @@ namespace IgniteBot2
 			if (string.IsNullOrEmpty(Settings.Default.echoVRPath)) return;
 			Process.Start(Settings.Default.echoVRPath, "-spectatorstream -lobbyid " + sessionid);
 			Close();
+			//Program.Quit();
 		}
 	}
 }

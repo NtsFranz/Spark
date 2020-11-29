@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using IgniteBot2;
 
 namespace IgniteBot2
 {
@@ -101,7 +102,7 @@ namespace IgniteBot2
 			catch (Exception e)
 			{
 				Logger.LogRow(Logger.LogType.Error, "Can't serialize event.\n" + e.Message + "\n" + e.StackTrace);
-				return new Dictionary<string, object>()
+				return new Dictionary<string, object>
 				{
 					{"none", 0 }
 				};
@@ -113,15 +114,13 @@ namespace IgniteBot2
 
 static class EventTypeExtensions
 {
-	public static bool IsJoust(this IgniteBot2.EventData.EventType eventType)
+	public static bool IsJoust(this EventData.EventType eventType)
 	{
-		if (eventType == IgniteBot2.EventData.EventType.joust_speed)
+		if (eventType == EventData.EventType.joust_speed)
 		{
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 }

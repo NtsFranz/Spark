@@ -30,19 +30,19 @@
 					<Label x:Name="serverLocationLabel" Content="Server Location:" ToolTip="The server location is estimated using ip-api.com"/>
 				</StackPanel>
 			</GroupBox>
-			<GroupBox x:Name="blueTeamBox" Header="Blue Team">
+			<GroupBox x:Name="blueTeamBox" Header="Blue Team" BorderBrush="#FF2A384B">
 				<Label x:Name="blueTeamPlayersLabel" Content=""/>
 			</GroupBox>
-			<GroupBox x:Name="orangeTeamBox" Header="Orange Team" Width="Auto" VerticalAlignment="Top">
+			<GroupBox x:Name="orangeTeamBox" Header="Orange Team" Width="Auto" VerticalAlignment="Top" BorderBrush="#FF6C5339">
 				<Label x:Name="orangeTeamPlayersLabel" Content=""/>
 			</GroupBox>
-			<GroupBox x:Name="spectatorsBox" Header="Spectators">
+			<GroupBox x:Name="spectatorsBox" Header="Spectators" BorderBrush="#FF515151">
 				<Label x:Name="spectatorsLabel" Content=""/>
 			</GroupBox>
 		</StackPanel>
 		<GridSplitter x:Name="gridSplitter" Grid.Column="1" HorizontalAlignment="Stretch"/>
 		<StackPanel x:Name="Center_Panel" Grid.Column="2">
-			<TabControl x:Name="tabControl" Height="499" SelectedIndex="1" Margin="0,4,0,0">
+			<TabControl x:Name="tabControl" Height="500" SelectedIndex="0" Margin="0,4,0,0">
 				<TabItem x:Name="dashboardTab" Header="Dashboard" FontSize="14" Padding="10,6,10,6" Margin="4,-2,-2,0">
 					<Grid Background="{DynamicResource ContainerBackground}">
 						<GroupBox x:Name="playerSpeedsGroupbox" Header="Player Speeds" Width="200" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="281">
@@ -108,6 +108,8 @@
 					<Button x:Name="playspaceButton" Content="Show Playspace" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Collapsed"/>
 					<Button x:Name="showPlayerSpeedsButton" Content="Show Player Speeds" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
 					<Button x:Name="ttsSettings" Content="TTS Settings" Height="40" Margin="4,4,4,4" Click="ttsSettings_Click"/>
+					<Button x:Name="nvHighlightsSettings" Content="NV Highlights Settings" Height="40" Click="showNVHighlightsSettings_Click" Margin="4,4,4,4"/>
+					<Button x:Name="showHighlights" Content="Show NV Highlights" Height="40" Click="showHighlights_Click" Margin="4,4,4,4"/>
 				</StackPanel>
 			</GroupBox>
 		</StackPanel>

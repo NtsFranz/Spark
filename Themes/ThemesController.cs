@@ -21,7 +21,7 @@ namespace TheRThemes
 
         private static void ChangeTheme(Uri uri)
         {
-            ThemeDictionary = new ResourceDictionary() { Source = uri };
+            ThemeDictionary = new ResourceDictionary { Source = uri };
         }
         public static void SetTheme(ThemeTypes theme)
         {

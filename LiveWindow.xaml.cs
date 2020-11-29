@@ -1,7 +1,4 @@
-﻿using Google.Cloud.Firestore;
-using IgniteBot2.Properties;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -17,7 +14,8 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
+using IgniteBot2.Properties;
+using Newtonsoft.Json.Linq;
 using static Logger;
 
 namespace IgniteBot2
@@ -34,18 +32,9 @@ namespace IgniteBot2
 
 		public static readonly object lastSnapshotLock = new object();
 		private string lastIP;
-		private Dictionary<Control, bool> speedsHoveringDict = new Dictionary<Control, bool>();
-		private bool speedsHovering {
-			get => speedsHoveringDict.Values.ToList().Contains(true);
-		}
-
-		private Dictionary<Control, bool> discordLoginHoveringDict = new Dictionary<Control, bool>();
-		private bool discordLoginHovering {
-			get => discordLoginHoveringDict.Values.ToList().Contains(true);
-		}
 
 		private string lastDiscordUsername = string.Empty;
-		private bool hidden = false;
+		private bool hidden;
 
 
 		public LiveWindow()
@@ -59,7 +48,17 @@ namespace IgniteBot2
 			JToken gameSettings = Program.ReadEchoVRSettings();
 			if (gameSettings != null)
 			{
-				enableAPIButton.Visibility = !(bool)gameSettings["game"]["EnableAPIAccess"] ? Visibility.Visible : Visibility.Collapsed;
+				try
+				{
+					if (gameSettings["game"] != null && gameSettings["game"]["EnableAPIAccess"] != null)
+					{
+						enableAPIButton.Visibility = !(bool)gameSettings["game"]["EnableAPIAccess"] ? Visibility.Visible : Visibility.Collapsed;
+					}
+				}
+				catch (Exception)
+				{
+					enableAPIButton.Visibility = Visibility.Collapsed;
+				}
 			}
 			//hostLiveReplayButton.Visible = !Program.Personal;
 
@@ -76,6 +75,9 @@ namespace IgniteBot2
 			RefreshDiscordLogin();
 
 			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
+			showHighlights.IsEnabled = Program.DoNVClipsExist();
+			showHighlights.Visibility = (Program.didHighlightsInit && Program.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
+			showHighlights.Content = Program.DoNVClipsExist() ? "Show " + Program.nvHighlightClipCount + " Highlights" : "No clips available";
 		}
 
 		private void Update(object source, ElapsedEventArgs e)
@@ -121,6 +123,9 @@ namespace IgniteBot2
 						}
 						unusedFileCache.Clear();
 					}
+					showHighlights.IsEnabled = Program.DoNVClipsExist();
+					showHighlights.Visibility = (Program.didHighlightsInit && Program.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
+					showHighlights.Content = Program.DoNVClipsExist() ? "Show " + Program.nvHighlightClipCount + " Highlights" : "No clips available";
 
 
 					// update the other labels in the stats box
@@ -170,8 +175,7 @@ namespace IgniteBot2
 						StringBuilder pingsTextNames = new StringBuilder();
 						StringBuilder pingsTextPings = new StringBuilder();
 						StringBuilder speedsTextSpeeds = new StringBuilder();
-						StringBuilder[] teamNames = new StringBuilder[]
-						{
+						StringBuilder[] teamNames = {
 							new StringBuilder(),
 							new StringBuilder(),
 							new StringBuilder()
@@ -233,7 +237,7 @@ namespace IgniteBot2
 						StringBuilder lastMatchesString = new StringBuilder();
 						foreach (var match in Program.lastMatches)
 						{
-							lastMatchesString.AppendLine(match.finishReason.ToString() + (match.finishReason == MatchData.FinishReason.reset ? match.endTime : "") + " - ORANGE: " + match.teams[g_Team.TeamColor.orange].points + "  BLUE: " + match.teams[g_Team.TeamColor.blue].points);
+							lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[g_Team.TeamColor.orange].points + "  BLUE: " + match.teams[g_Team.TeamColor.blue].points);
 						}
 						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
 
@@ -467,7 +471,7 @@ namespace IgniteBot2
 		{
 			string output = input;
 			IEnumerable<string> lines = output
-				.Split(new[] { '\r', '\n' })
+				.Split('\r', '\n')
 				.Select(l => l.Trim())
 				//.Where(l =>
 				//{
@@ -585,8 +589,8 @@ namespace IgniteBot2
 		private void updateButton_Click(object sender, RoutedEventArgs e)
 		{
 			WebClient webClient = new WebClient();
-			webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Completed);
-			webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
+			webClient.DownloadFileCompleted += Completed;
+			webClient.DownloadProgressChanged += ProgressChanged;
 			webClient.DownloadFileAsync(new Uri("https://ignitevr.gg/ignitebot_installers/" + updateFilename), Path.GetTempPath() + updateFilename);
 		}
 
@@ -662,16 +666,6 @@ namespace IgniteBot2
 			}
 		}
 
-		private void speedsHover(object sender, RoutedEventArgs e)
-		{
-			speedsHoveringDict[(Control)sender] = true;
-		}
-
-		private void speedsUnHover(object sender, RoutedEventArgs e)
-		{
-			speedsHoveringDict[(Control)sender] = false;
-		}
-
 		private void hostLiveReplayButton_CheckedChanged(object sender, RoutedEventArgs e)
 		{
 			Program.hostingLiveReplay = ((CheckBox)sender).IsChecked == true;
@@ -737,14 +731,23 @@ namespace IgniteBot2
 			}
 		}
 
-		private void discordLoginHover(object sender, RoutedEventArgs e)
+		private void showHighlights_Click(object sender, RoutedEventArgs e)
 		{
-			discordLoginHoveringDict[(Control)sender] = false;
+			Program.ShowNVHighlights();
 		}
 
-		private void discordLoginUnHover(object sender, RoutedEventArgs e)
+		private void showNVHighlightsSettings_Click(object sender, RoutedEventArgs e)
 		{
-			discordLoginHoveringDict[(Control)sender] = false;
+			if (Program.nvhWindow == null)
+			{
+				Program.nvhWindow = new NVHighlightsSettingsWindow();
+				Program.nvhWindow.Closed += (sender, args) => Program.nvhWindow = null;
+				Program.nvhWindow.Show();
+			}
+			else
+			{
+				Program.nvhWindow.Close();
+			}
 		}
 
 		private void LoginWindowButtonClicked(object sender, RoutedEventArgs e)

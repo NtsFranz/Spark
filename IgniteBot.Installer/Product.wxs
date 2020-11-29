@@ -3,6 +3,7 @@
 
 	<?define UpgradeCode = "{3990C76C-D8C9-46B4-9451-F4B5F73006BC}"?>
 	<?define ProductCode = "{8E03117F-8505-4F27-8D78-6A302CAD8CD8}"?>
+	<!--<?define ProductVersion="!(bind.FileVersion.FileId)" ?>-->
 
 	<!-- Define main product -->
 	<Product Id="*"
@@ -32,12 +33,12 @@
       />
 
 		<!-- Define main app icon -->
-		<Icon Id="icon.ico" SourceFile="$(var.IgniteBot.ProjectDir)\img\ignite_logo.ico"/>
+		<Icon Id="icon.ico" SourceFile="..\img\ignite_logo.ico"/>
 
 		<!-- Use the icon.ico icon for this installer (shows up in Add/Remove programs) -->
 		<Property Id="ARPPRODUCTICON">icon.ico</Property>
 		<!-- Help/Support website (shows in the Add/Remove programs) -->
-		<Property Id="ARPURLINFOABOUT">https://www.ignitevr.gg</Property>
+		<Property Id="ARPURLINFOABOUT">https://www.ignitevr.gg/ignitebot</Property>
 
 		<!-- Create a basic UI for the installer -->
 		<UI>

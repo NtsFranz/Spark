@@ -1,10 +1,10 @@
 ﻿// Modified from: https://gist.github.com/aksakalli/9191056
 
 using System;
-using System.Collections.Generic;
-using System.Net;
 using System.IO;
+using System.Net;
 using System.Threading;
+using System.Web;
 
 namespace IgniteBot2
 {
@@ -119,9 +119,7 @@ namespace IgniteBot2
 				context.Response.OutputStream.Close();
 				Stop();
 
-				DiscordOAuth.OAuthLoginResponse(System.Web.HttpUtility.ParseQueryString(context.Request.Url.Query)["code"]);
-
-				return;
+				DiscordOAuth.OAuthLoginResponse(HttpUtility.ParseQueryString(context.Request.Url.Query)["code"]);
 			}
 
 			//context.Response.ContentType = "application/json";

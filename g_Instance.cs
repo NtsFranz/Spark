@@ -60,7 +60,7 @@ namespace IgniteBot2
 
 		public List<g_Team> playerTeams {
 			get {
-				return new List<g_Team>()
+				return new List<g_Team>
 				{
 					teams[0], teams[1]
 				};
@@ -155,6 +155,7 @@ namespace IgniteBot2
 	/// </summary>
 	public class g_Player
 	{
+		public g_Team team { get; set; }
 		/// <summary>
 		/// Right hand position and rotation
 		/// </summary>
@@ -211,7 +212,8 @@ namespace IgniteBot2
 	public class g_Transform
 	{
 		public Vector3 Position {
-			get {
+			get
+			{
 				if (pos != null) return pos.ToVector3();
 				else if (position != null) return position.ToVector3();
 				else throw new NullReferenceException("Neither pos nor position are set");
@@ -306,7 +308,7 @@ namespace IgniteBot2
 		/// <summary>
 		/// Enum declared for our own use.
 		/// </summary>
-		public enum TeamColor:byte { blue, orange, spectator };
+		public enum TeamColor:byte { blue, orange, spectator }
 
 		public List<g_Player> players { get; set; }
 		/// <summary>

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Net.NetworkInformation;
 using System.Linq;
 using System.Net.Http;
-using IgniteBot2;
+using System.Net.NetworkInformation;
+using System.Text;
 using System.Threading;
+using IgniteBot2;
 
 /// <summary>
 /// ✍ Logs any data to a file or remotely
@@ -65,7 +65,7 @@ public class Logger
 
 	public static bool initialized;
 
-	private static string macAddrVal = null;
+	private static string macAddrVal;
 	public static string MacAddr {
 		get {
 			if (macAddrVal == null)
@@ -89,7 +89,7 @@ public class Logger
 		if (!initialized)
 		{
 			initialized = true;
-			Thread loggerThread = new Thread(new ThreadStart(LoggerThread));
+			Thread loggerThread = new Thread(LoggerThread);
 			loggerThread.Start();
 		}
 	}
@@ -322,7 +322,7 @@ public class Logger
 		}
 		catch (Exception e)
 		{
-			Console.WriteLine("Cound not upload log to the server: " + data.Substring(0, data.Length > 1000 ? 1000 : data.Length) + "\n Error: " + e.ToString());
+			Console.WriteLine("Cound not upload log to the server: " + data.Substring(0, data.Length > 1000 ? 1000 : data.Length) + "\n Error: " + e);
 		}
 	}
 }

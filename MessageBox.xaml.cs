@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace IgniteBot2
 {
@@ -19,11 +8,24 @@ namespace IgniteBot2
 	/// </summary>
 	public partial class MessageBox : Window
 	{
-		public MessageBox(string message)
+		private readonly Action callback = null;
+
+		public MessageBox(string message, string title = null, Action callback = null)
 		{
 			InitializeComponent();
 
-			//message;
+			textBlock.Text = message;
+			if (!string.IsNullOrEmpty(title))
+			{
+				Title = title;
+			}
+			this.callback = callback;
+		}
+
+		private void button_Click(object sender, RoutedEventArgs e)
+		{
+			callback?.Invoke();
+			Close();
 		}
 	}
 }

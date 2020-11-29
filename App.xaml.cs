@@ -1,6 +1,6 @@
-﻿using Hardcodet.Wpf.TaskbarNotification;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace IgniteBot2
 {

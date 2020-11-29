@@ -1,5 +1,7 @@
-﻿using IgniteBot2.Properties;
-using Newtonsoft.Json;
+﻿#if INCLUDE_FIRESTORE
+using Google.Cloud.Firestore;
+using Google.Cloud.Firestore.V1;
+#endif
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,34 +13,33 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-#if INCLUDE_FIRESTORE
-using Google.Cloud.Firestore;
-using Google.Cloud.Firestore.V1;
-#endif
+using System.Windows;
+using IgniteBot2.Properties;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using static IgniteBot2.g_Team;
 using static Logger;
-using Newtonsoft.Json.Linq;
-using Microsoft.Win32;
-using System.Runtime.InteropServices;
-using System.Windows;
+using NVIDIA;
 
 namespace IgniteBot2
 {
 	/// <summary>
 	/// Main
 	/// </summary>
-	class Program
+	internal class Program
 	{
 
 		/// <summary>
 		/// Set this to false to finish up and close
 		/// </summary>
 		public static bool running = true;
-		public static bool inGame = false;
+		public static bool inGame;
 
 		/// <summary>
 		/// Whether to continue reading input right now (for reading files)
@@ -57,10 +58,21 @@ namespace IgniteBot2
 		private const bool readIntoQueue = true;
 		private static bool fileFinishedReading = false;
 
+		public static bool isNVHighlightsEnabled = false;
+		public static bool didHighlightsInit = false;
+		public static bool isNVHighlightsSupported = true;
+		public static HighlightLevel ClientHighlightScope = HighlightLevel.CLIENT_ONLY;
+
+		public static Highlights.EmptyCallbackDelegate videoCallback = NVSetVideoCallback;
+		public static Highlights.EmptyCallbackDelegate openSummaryCallback = Highlights.DefaultOpenSummaryCallback;
+		public static Highlights.EmptyCallbackDelegate closeGroupCallback = NVCloseGroupCallback;
+		public static Highlights.GetNumberOfHighlightsCallbackDelegate getNumOfHighlightsCallback = NVGetNumberOfHighlightsCallback;
+		public static Highlights.EmptyCallbackDelegate configStepCallback = NVConfigCallback;
+
 		//private static string readFromFolder = "S:\\git_repo\\EchoVR-Session-Grabber\\bin\\Debug\\full_session_data\\example\\";
 		private const string readFromFolder = "F:\\Documents\\EchoDataStorage\\TitanV Machine";
 		private static List<string> filesInFolder;
-		private static int readFromFolderIndex = 0;
+		private static int readFromFolderIndex;
 
 		public const bool uploadOnlyAtEndOfMatch = true;
 
@@ -73,14 +85,15 @@ namespace IgniteBot2
 
 		public static bool enableStatsLogging = true;
 		public static bool enableFullLogging = true;
+		public static bool clearHighlightsOnExit = true;
 
 		public static readonly HttpClient client = new HttpClient();
 
 		public static string currentAccessCodeUsername = "";
 		public static string currentSeasonName = "";
 
-		public static bool autoRestart = false;
-		public static bool showDatabaseLog = false;
+		public static bool autoRestart;
+		public static bool showDatabaseLog;
 
 		// declarations.
 		public static MatchData matchData;
@@ -94,9 +107,10 @@ namespace IgniteBot2
 		public static g_Instance lastLastFrame;
 		public static g_Instance lastLastLastFrame;
 
-		private static int lastFrameSumOfStats = 0;
+		private static int lastFrameSumOfStats;
 		private static g_Instance lastValidStatsFrame;
 		private static int lastValidSumOfStatsAge = 0;
+		public static int nvHighlightClipCount = 0;
 
 		public static ConcurrentQueue<GoalData> lastGoals = new ConcurrentQueue<GoalData>();
 		public static ConcurrentQueue<MatchData> lastMatches = new ConcurrentQueue<MatchData>();
@@ -107,7 +121,7 @@ namespace IgniteBot2
 		/// </summary>
 		private static List<string> dataCache = new List<string>();
 
-		class UserAtTime
+		private class UserAtTime
 		{
 			public float gameClock;
 			public g_Player player;
@@ -115,7 +129,7 @@ namespace IgniteBot2
 
 		// { [stunner, stunnee], [stunner, stunnee] }
 		static List<UserAtTime[]> stunningMatchedPairs = new List<UserAtTime[]>();
-		static float stunMatchingTimeout = 4f;
+		private const float stunMatchingTimeout = 4f;
 
 		public static string lastDateTimeString;
 		public static string lastJSON;
@@ -135,6 +149,7 @@ namespace IgniteBot2
 		static float minTillAutorestart = 3;
 
 		static bool wasThrown;
+		static int lastThrowPlayerId = -1;
 		static bool inPostMatch = false;
 
 		/// Joust stats
@@ -143,7 +158,7 @@ namespace IgniteBot2
 		static float[] joustTubeExitSpeed = new float[2];
 		static float joustStartTime = -1;
 
-		public static int deltaTimeIndexStats = 0;
+		public static int deltaTimeIndexStats;
 		public static int deltaTimeIndexFull = 1;
 
 		public static int StatsHz { get => statsDeltaTimes[deltaTimeIndexStats]; }
@@ -164,7 +179,9 @@ namespace IgniteBot2
 		public static AtlasLinks atlasLinksWindow;
 		public static Playspace playspaceWindow;
 		public static TTSSettingsWindow ttsWindow;
+		public static NVHighlightsSettingsWindow nvhWindow;
 		public static LoginWindow loginWindow;
+		public static ClosingDialog closingWindow;
 
 		private static float smoothDeltaTime = -1;
 
@@ -178,7 +195,7 @@ namespace IgniteBot2
 
 		public static string echoVRIP = "";
 		public static int echoVRPort = 6721;
-		public static bool overrideEchoVRPort = false;
+		public static bool overrideEchoVRPort;
 
 		public static bool Personal {
 			get {
@@ -224,14 +241,14 @@ namespace IgniteBot2
 
 				if (CheckIfLaunchedWithCustomURLHandlerParam(args))
 				{
-					Quit();
+					return;  // wait for the dialog to quit the program
 				}
 
 				// allow multiple instances if the port is overriden
 				if (!mutex.WaitOne(0, false) && !overrideEchoVRPort)
 				{
-					new MessageBox("Instance already running").Show();
-					Quit();
+					new MessageBox("Instance already running", "Error", Quit).Show();
+					return;  // wait for the dialog to quit the program
 				}
 
 				// Reload old settings file
@@ -329,6 +346,15 @@ namespace IgniteBot2
 				db = FirestoreDb.Create("ignitevr-echostats", builder.Build());
 #endif
 
+				if (isNVHighlightsEnabled)
+				{
+					SetupNVHighlights();
+				}
+				else
+				{
+					InitHighlightsSDK(true);
+				}
+
 				// Initialize a new instance of the SpeechSynthesizer.
 				synth = new SpeechSynthesizer();
 
@@ -366,7 +392,9 @@ namespace IgniteBot2
 				milkThread.IsBackground = true;
 				//milkThread.Start();
 
-				Logger.Init();
+				Init();
+
+				CloseNVHighlights();
 			}
 		}
 
@@ -375,6 +403,201 @@ namespace IgniteBot2
 			return Application.Current.GetType().Assembly.GetName().Version.ToString();
 		}
 
+		public static void CloseNVHighlights(bool wasDisableNVHCall = false)
+		{
+			if (didHighlightsInit)
+			{
+				if (clearHighlightsOnExit && !wasDisableNVHCall)
+				{
+					ClearUnsavedNVHighlights(false);
+
+				}
+				Highlights.ReleaseHighlightsSDK();
+			}
+		}
+		public static int InitHighlightsSDK(bool isCheck)
+		{
+			Highlights.HighlightScope[] RequiredScopes = new
+				Highlights.HighlightScope[3] {
+					Highlights.HighlightScope.Highlights,
+					Highlights.HighlightScope.HighlightsRecordVideo,
+					Highlights.HighlightScope.HighlightsRecordScreenshot
+				};
+			if (Highlights.CreateHighlightsSDK("EchoVR", RequiredScopes) != Highlights.ReturnCode.SUCCESS)
+			{
+				Console.WriteLine("Failed to initialize Highlights");
+				didHighlightsInit = false;
+				isNVHighlightsSupported = false;
+				return -1;
+			}
+			else if (isCheck)
+			{
+				Highlights.ReleaseHighlightsSDK();
+				isNVHighlightsSupported = true;
+				return 1;
+			}
+			didHighlightsInit = true;
+			return 1;
+		}
+
+		public static int SetupNVHighlights()
+		{
+			if (InitHighlightsSDK(false) < 0)
+			{
+				return -1;
+			}
+			Highlights.RequestPermissions(configStepCallback);
+			// Configure Highlights
+			Highlights.HighlightDefinition[] highlightDefinitions = new Highlights.HighlightDefinition[5];
+
+			highlightDefinitions[0].Id = "SAVE";
+			highlightDefinitions[0].HighlightTags = Highlights.HighlightType.Achievement;
+			highlightDefinitions[0].Significance = Highlights.HighlightSignificance.Good;
+			highlightDefinitions[0].UserDefaultInterest = true;
+			highlightDefinitions[0].NameTranslationTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Save!"), };
+
+			highlightDefinitions[1].Id = "SCORE";
+			highlightDefinitions[1].HighlightTags = Highlights.HighlightType.Achievement;
+			highlightDefinitions[1].Significance = Highlights.HighlightSignificance.Good;
+			highlightDefinitions[1].UserDefaultInterest = true;
+			highlightDefinitions[1].NameTranslationTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Goal!"), };
+
+			highlightDefinitions[2].Id = "INTERCEPTION";
+			highlightDefinitions[2].HighlightTags = Highlights.HighlightType.Achievement;
+			highlightDefinitions[2].Significance = Highlights.HighlightSignificance.Good;
+			highlightDefinitions[2].UserDefaultInterest = true;
+			highlightDefinitions[2].NameTranslationTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Interception!"), };
+
+			highlightDefinitions[3].Id = "STEAL_SAVE";
+			highlightDefinitions[3].HighlightTags = Highlights.HighlightType.Achievement;
+			highlightDefinitions[3].Significance = Highlights.HighlightSignificance.Good;
+			highlightDefinitions[3].UserDefaultInterest = true;
+			highlightDefinitions[3].NameTranslationTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Steal counts as Save!"), };
+
+			highlightDefinitions[4].Id = "ASSIST";
+			highlightDefinitions[4].HighlightTags = Highlights.HighlightType.Achievement;
+			highlightDefinitions[4].Significance = Highlights.HighlightSignificance.Good;
+			highlightDefinitions[4].UserDefaultInterest = true;
+			highlightDefinitions[4].NameTranslationTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Scoring Assist!"), };
+
+			Highlights.ConfigureHighlights(highlightDefinitions, "en-US", configStepCallback);
+			// Open Groups
+			Highlights.OpenGroupParams ogp1 = new Highlights.OpenGroupParams();
+			ogp1.Id = "PERSONAL_HIGHLIGHT_GROUP";
+			ogp1.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Personal Highlight Group"), };
+			Highlights.OpenGroup(ogp1, configStepCallback);
+
+			Highlights.OpenGroupParams ogp2 = new Highlights.OpenGroupParams();
+			ogp2.Id = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
+			ogp2.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Personal Team Highlight Group"), };
+			Highlights.OpenGroup(ogp2, configStepCallback);
+
+			Highlights.OpenGroupParams ogp3 = new Highlights.OpenGroupParams();
+			ogp3.Id = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
+			ogp3.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Opposing Team Highlight Group"), };
+			Highlights.OpenGroup(ogp3, configStepCallback);
+
+			GetNVHighlightsCount();
+			return 1;
+		}
+
+		public static bool DoNVClipsExist()
+		{
+			return nvHighlightClipCount > 0;
+		}
+
+		public static void ShowNVHighlights()
+		{
+			if (didHighlightsInit)
+			{
+				Highlights.GroupView[] gViews = new Highlights.GroupView[3];
+				Highlights.GroupView gv1 = new Highlights.GroupView();
+				gv1.GroupId = "PERSONAL_HIGHLIGHT_GROUP";
+				gv1.SignificanceFilter = Highlights.HighlightSignificance.Good;
+				gv1.TagFilter = Highlights.HighlightType.Achievement;
+				gViews[0] = gv1;
+				Highlights.GroupView gv2 = new Highlights.GroupView();
+				gv2.GroupId = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
+				gv2.SignificanceFilter = Highlights.HighlightSignificance.Good;
+				gv2.TagFilter = Highlights.HighlightType.Achievement;
+				gViews[1] = gv2;
+				Highlights.GroupView gv3 = new Highlights.GroupView();
+				gv3.GroupId = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
+				gv3.SignificanceFilter = Highlights.HighlightSignificance.Good;
+				gv3.TagFilter = Highlights.HighlightType.Achievement;
+				gViews[2] = gv3;
+
+				Highlights.OpenSummary(gViews, openSummaryCallback);
+			}
+		}
+
+		public static void GetNVHighlightsCount()
+		{
+			if (didHighlightsInit)
+			{
+				nvHighlightClipCount = 0;
+				Highlights.GroupView groupView = new Highlights.GroupView();
+				groupView.GroupId = "PERSONAL_HIGHLIGHT_GROUP";
+				Highlights.GetNumberOfHighlights(groupView, getNumOfHighlightsCallback);
+
+				Highlights.GroupView groupView2 = new Highlights.GroupView();
+				groupView2.GroupId = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
+				Highlights.GetNumberOfHighlights(groupView2, getNumOfHighlightsCallback);
+
+				Highlights.GroupView groupView3 = new Highlights.GroupView();
+				groupView3.GroupId = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
+				Highlights.GetNumberOfHighlights(groupView3, getNumOfHighlightsCallback);
+			}
+		}
+
+		public static void NVSetVideoCallback(Highlights.ReturnCode ret, int id)
+		{
+			if (ret == Highlights.ReturnCode.SUCCESS)
+			{
+				nvHighlightClipCount++;
+				Console.WriteLine("SetVideoCallback " + id + " returns success");
+			}
+			else
+			{
+				Console.WriteLine("SetVideoCallback " + id + " returns unsuccess");
+			}
+		}
+		public static void NVCloseGroupCallback(Highlights.ReturnCode ret, int id)
+		{
+			if (ret == Highlights.ReturnCode.SUCCESS)
+			{
+				nvHighlightClipCount = 0;
+				Console.WriteLine("CloseGroupCallback " + id + " returns success");
+			}
+			else
+			{
+				Console.WriteLine("CloseGroupCallback " + id + " returns unsuccess");
+			}
+		}
+		public static void NVConfigCallback(Highlights.ReturnCode ret, int id)
+		{
+			if (ret == Highlights.ReturnCode.SUCCESS)
+			{
+				nvHighlightClipCount = 0;
+				Console.WriteLine("ConfigStep " + id + " returns success");
+			}
+			else
+			{
+				Console.WriteLine("ConfigStep " + id + " returns unsuccess");
+			}
+		}
+		public static void NVGetNumberOfHighlightsCallback(Highlights.ReturnCode ret, int number, int id)
+		{
+			if (ret == Highlights.ReturnCode.SUCCESS)
+			{
+				nvHighlightClipCount += number;
+				Console.WriteLine("GetNumberOfHighlightsCallback " + id + " returns " + number);
+			}
+			else
+			{
+				Console.WriteLine("GetNumberOfHighlightsCallback " + id + " returns unsuccess");
+			}
+		}
 		/// <summary>
 		/// This is just a failsafe so that the program doesn't leave a dangling thread.
 		/// </summary>
@@ -382,6 +605,26 @@ namespace IgniteBot2
 		{
 			if (httpServer != null)
 				httpServer.Stop();
+		}
+
+		async static Task GentleClose()
+		{
+			running = false;
+			while (statsThread.IsAlive || fullLogThread.IsAlive)
+			{
+				if (fullLogThread.IsAlive)
+				{
+					closingWindow.label.Content = "Compressing Replay File...";
+				}
+				else
+				{
+					closingWindow.label.Content = "Closing...";
+				}
+				await Task.Delay(10);
+			}
+
+
+			app.ExitApplication();
 		}
 
 		/// <summary>
@@ -482,7 +725,7 @@ namespace IgniteBot2
 						}
 					}
 				}
-				else
+
 				{
 					WebResponse response;
 					StreamReader sReader;
@@ -492,7 +735,7 @@ namespace IgniteBot2
 					try
 					{
 						// Create Session.
-						WebRequest request = WebRequest.Create("http://" + echoVRIP + ":" + echoVRPort.ToString() + "/session");
+						WebRequest request = WebRequest.Create("http://" + echoVRIP + ":" + echoVRPort + "/session");
 						response = request.GetResponse();
 					}
 					catch (Exception)
@@ -574,20 +817,18 @@ namespace IgniteBot2
 							}
 							lastDateTimeStringQueue.TryDequeue(out recordedTime);
 						}
-						else
-						{
-							lock (lastJSONLock)
-							{
-								// no new frame to read
-								if (lastJSON == null || lastJSONUsed)
-								{
-									continue;
-								}
 
-								lastJSONUsed = true;
-								json = lastJSON;
-								recordedTime = lastDateTimeString;
+						lock (lastJSONLock)
+						{
+							// no new frame to read
+							if (lastJSON == null || lastJSONUsed)
+							{
+								continue;
 							}
+
+							lastJSONUsed = true;
+							json = lastJSON;
+							recordedTime = lastDateTimeString;
 						}
 
 						// make sure there is a valid echovr path saved
@@ -661,10 +902,8 @@ namespace IgniteBot2
 							//Thread.Sleep(1);
 						}
 					}
-					else
-					{
-						Thread.Sleep(statsDeltaTimes[deltaTimeIndexStats]);
-					}
+
+					Thread.Sleep(statsDeltaTimes[deltaTimeIndexStats]);
 				}
 				else
 				{
@@ -731,7 +970,6 @@ namespace IgniteBot2
 							json = lastJSON;
 						}
 
-
 						// if this is not a lobby api frame
 						if (json.Length > 800)
 						{
@@ -764,7 +1002,7 @@ namespace IgniteBot2
 				}
 				else
 				{
-					Thread.Sleep(1000);
+					Thread.Sleep(100);
 				}
 			}
 
@@ -906,7 +1144,7 @@ namespace IgniteBot2
 				}
 				catch (Exception ex)
 				{
-					LogRow(LogType.Error, "Failed to kill process\n" + ex.ToString());
+					LogRow(LogType.Error, "Failed to kill process\n" + ex);
 				}
 			}
 		}
@@ -957,7 +1195,7 @@ namespace IgniteBot2
 
 		private static StreamReader ExtractFile(StreamReader fileReader, string fileName)
 		{
-			string tempDir = Path.Combine(saveFolder, "temp_zip_read\\").ToString();
+			string tempDir = Path.Combine(saveFolder, "temp_zip_read\\");
 
 			if (Directory.Exists(tempDir))
 			{
@@ -1006,6 +1244,9 @@ namespace IgniteBot2
 			enableStatsLogging = Settings.Default.enableStatsLogging;
 			deltaTimeIndexFull = Settings.Default.targetDeltaTimeIndexFull;
 			echoVRIP = Settings.Default.echoVRIP;
+			clearHighlightsOnExit = Settings.Default.clearHighlightsOnExit;
+			ClientHighlightScope = (HighlightLevel)Settings.Default.clientHighlightScope;
+			isNVHighlightsEnabled = Settings.Default.isNVHighlightsEnabled;
 			if (!overrideEchoVRPort) echoVRPort = Settings.Default.echoVRPort;
 
 			if (saveFolder == "none" || !Directory.Exists(saveFolder))
@@ -1112,6 +1353,7 @@ namespace IgniteBot2
 				// Loop through players on team.
 				foreach (var player in team.players)
 				{
+					player.team = team;
 					if (!lastFrame.GetAllPlayers(true).Any(p => p.userid == player.userid))
 					{
 						// TODO find why this is crashing
@@ -1361,13 +1603,38 @@ namespace IgniteBot2
 						{
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.save, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
 							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " made a save");
+							string highlightGroupName = IsPlayerHighlightEnabled(player, frame);
+							if (highlightGroupName.Length > 0)
+							{
+								Highlights.VideoHighlightParams vhp = new Highlights.VideoHighlightParams();
+								vhp.groupId = highlightGroupName;
+								vhp.highlightId = "SAVE";
+								vhp.startDelta = -3000;
+								vhp.endDelta = 2000;
+								Highlights.SetVideoHighlight(vhp, videoCallback);
+							}
 						}
 
 						// check steals 🕵️‍
 						if (lastPlayer.stats.steals != player.stats.steals)
 						{
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.steal, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
-							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " stole the disk");
+							string highlightGroupName = IsPlayerHighlightEnabled(player, frame);
+							if (highlightGroupName.Length > 0 && WasStealNearGoal(frame.disc.position.ToVector3(), team.color, frame))
+							{
+								Highlights.VideoHighlightParams vhp = new Highlights.VideoHighlightParams();
+								vhp.groupId = highlightGroupName;
+								vhp.highlightId = "STEAL_SAVE";
+								vhp.startDelta = -3000;
+								vhp.endDelta = 2000;
+								Highlights.SetVideoHighlight(vhp, videoCallback);
+								LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " stole the disk near goal!");
+							}
+							else
+							{
+								LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " stole the disk");
+							}
+
 						}
 
 						// check stuns
@@ -1451,7 +1718,48 @@ namespace IgniteBot2
 						if (!lastPlayer.possession && player.possession)
 						{
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.@catch, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
-							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " made a catch");
+							bool caughtThrow = false;
+							string throwPlayerName = "";
+							bool wasInt = false;
+
+							if (lastThrowPlayerId > 0)
+							{
+
+								g_Instance lframe = lastFrame;
+
+								foreach (var lteam in lframe.teams)
+								{
+									foreach (var lplayer in lteam.players)
+									{
+										if (lplayer.playerid == lastThrowPlayerId && lplayer.possession == true)
+										{
+											caughtThrow = true;
+											throwPlayerName = lplayer.name;
+											if (lteam.color != team.color)
+											{
+												wasInt = true;
+											}
+										}
+									}
+								}
+
+							}
+							if (caughtThrow)
+							{
+								if (wasInt && lastPlayer.stats.saves == player.stats.saves)
+								{
+									_ = DelayedCatchEvent(player, throwPlayerName);
+									//LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " intercepted a throw from " + throwPlayerName);
+								}
+								else
+								{
+									LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " made a catch from a pass from " + throwPlayerName);
+								}
+							}
+							else
+							{
+								LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " made a catch");
+							}
 						}
 
 						// check if the disk was caught using stats 🥊
@@ -1472,6 +1780,17 @@ namespace IgniteBot2
 						{
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.shot_taken, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
 							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " just took a shot");
+							if (lastThrowPlayerId == player.playerid)
+							{
+								lastThrowPlayerId = -1;
+							}
+						}
+
+						// check blocks 🧱
+						if (lastPlayer.stats.passes != player.stats.passes)
+						{
+							//matchData.Events.Add(new EventData(matchData, EventData.EventType.block, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
+							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " made a pass");
 						}
 
 						// check disk was thrown ⚾
@@ -1479,6 +1798,7 @@ namespace IgniteBot2
 							(frame.disc.velocity.ToVector3() - player.velocity.ToVector3()).Length() > 3)
 						{
 							wasThrown = true;
+							lastThrowPlayerId = player.playerid;
 
 							// find out which hand it was thrown by
 							bool leftHanded = false;
@@ -1593,7 +1913,7 @@ namespace IgniteBot2
 								_ = DoUploadEventFirebase(matchData, joustEvent);
 
 								lastJousts.Enqueue(joustEvent);
-								if (lastJousts.Count > 6)
+								if (lastJousts.Count > 8)
 								{
 									lastJousts.TryDequeue(out var joust);
 								}
@@ -1629,6 +1949,41 @@ namespace IgniteBot2
 			lastLastLastFrame = lastLastFrame;
 			lastLastFrame = lastFrame;
 			lastFrame = frame;
+		}
+
+		private static async Task DelayedCatchEvent(g_Player originalPlayer, string throwPlayerName)
+		{
+			// TODO look through again
+			// wait some time before re-checking the throw velocity
+			await Task.Delay(2000);
+
+			g_Instance frame = lastFrame;
+
+			foreach (var team in frame.teams)
+			{
+				foreach (var player in team.players)
+				{
+					if (player.playerid == originalPlayer.playerid)
+					{
+						if (player.stats.saves == originalPlayer.stats.saves)
+						{
+							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " intercepted a throw from " + throwPlayerName);
+							string highlightGroupName = IsPlayerHighlightEnabled(player, frame);
+							if (highlightGroupName.Length > 0)
+							{
+								Highlights.VideoHighlightParams vhp = new Highlights.VideoHighlightParams();
+								vhp.groupId = highlightGroupName;
+								vhp.highlightId = "INTERCEPTION";
+								vhp.startDelta = -5000;
+								vhp.endDelta = 4000;
+								Highlights.SetVideoHighlight(vhp, videoCallback);
+							}
+						}
+					}
+
+				}
+			}
+
 		}
 
 		private static async Task DelayedThrowEvent(g_Player originalPlayer, bool leftHanded, float underhandedness, float origSpeed)
@@ -1701,10 +2056,8 @@ namespace IgniteBot2
 					return "";
 				}
 			}
-			else
-			{
-				return "";
-			}
+
+			return "";
 		}
 
 		/// <summary>
@@ -1882,6 +2235,67 @@ namespace IgniteBot2
 			}
 		}
 
+		private static string IsPlayerHighlightEnabled(g_Player player, g_Instance frame)
+		{
+			if (didHighlightsInit && isNVHighlightsEnabled)
+			{
+				TeamColor clientTeam = frame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
+				if (player.name == frame.client_name)
+				{
+					return "PERSONAL_HIGHLIGHT_GROUP";
+				}
+				else if (ClientHighlightScope != HighlightLevel.CLIENT_ONLY && player.team.color == clientTeam)
+				{
+					return "PERSONAL_TEAM_HIGHLIGHT_GROUP";
+				}
+				else if (ClientHighlightScope == HighlightLevel.ALL || clientTeam == TeamColor.spectator)
+				{
+					return "OPPOSING_TEAM_HIGHLIGHT_GROUP";
+				}
+				else
+				{
+					return "";
+				}
+			}
+			return "";
+		}
+
+		private static string IsPlayerHighlightEnabled(string playerName, g_Instance frame)
+		{
+			g_Player highlightPlayer = frame.teams.Find(t => t.players.Exists(p => p.name == playerName)).players.Find(p => p.name == playerName);
+			return IsPlayerHighlightEnabled(highlightPlayer, frame);
+		}
+
+		private static bool WasStealNearGoal(Vector3 disckPos, TeamColor playerTeamColor, g_Instance frame)
+		{
+			float stealSaveRadius = 2.2f;
+
+			float goalXPos = 0f;
+			float goalYPos = 0f;
+			float goalZPos = 36f;
+			if (playerTeamColor == TeamColor.blue)
+			{
+				goalZPos *= -1f;
+			}
+
+			int x1 = (int)Math.Pow((disckPos.X - goalXPos), 2);
+			int y1 = (int)Math.Pow((disckPos.Y - goalYPos), 2);
+			int z1 = (int)Math.Pow((disckPos.Z - goalZPos), 2);
+
+			// distance between the 
+			// centre and given point 
+			float distanceFromGoalCenter = x1 + y1 + z1;
+			//LogRow(LogType.File, frame.sessionid, "Steal distance from goal: " + distanceFromGoalCenter + " X" + disckPos.X + " Y" + disckPos.Y + " Z" + disckPos.Z + " " + playerTeamColor);
+			if (distanceFromGoalCenter > (stealSaveRadius * stealSaveRadius))
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
 		/// <summary>
 		/// Function used to extracted data from frame given
 		/// Delays a bit to avoid disk extrapolation
@@ -1919,6 +2333,29 @@ namespace IgniteBot2
 			else
 			{
 				goalPos = new Vector2(frame.disc.position.ToVector3().X, frame.disc.position.ToVector3().Y);
+			}
+			string highlightGroupName = IsPlayerHighlightEnabled(frame.last_score.person_scored, frame);
+			if (highlightGroupName.Length > 0)
+			{
+				Highlights.VideoHighlightParams vhp = new Highlights.VideoHighlightParams();
+				vhp.groupId = highlightGroupName;
+				vhp.highlightId = "SCORE";
+				vhp.startDelta = -3000;
+				vhp.endDelta = 2000;
+				Highlights.SetVideoHighlight(vhp, videoCallback);
+			}
+			else
+			{
+				highlightGroupName = IsPlayerHighlightEnabled(frame.last_score.assist_scored, frame);
+				if (highlightGroupName.Length > 0)
+				{
+					Highlights.VideoHighlightParams vhp = new Highlights.VideoHighlightParams();
+					vhp.groupId = highlightGroupName;
+					vhp.highlightId = "ASSIST";
+					vhp.startDelta = -3000;
+					vhp.endDelta = 2000;
+					Highlights.SetVideoHighlight(vhp, videoCallback);
+				}
 			}
 
 			// Call the Score event
@@ -2049,7 +2486,7 @@ namespace IgniteBot2
 			matchData.endTime = endTime;
 			matchData.finishReason = reason;
 
-			LogRow(LogType.File, frame.sessionid, "Match Finished: " + reason.ToString());
+			LogRow(LogType.File, frame.sessionid, "Match Finished: " + reason);
 			UpdateStatsIngame(frame, true);
 
 			// if we here reset for public matches as well, then there would be super small files at the end of matches
@@ -2281,6 +2718,34 @@ namespace IgniteBot2
 				}
 			}
 		}
+		/// <summary>
+		/// Clears ALL NVidia Highlight clips that were not saved by the user via the NVidia UI.
+		/// </summary>
+		public static void ClearUnsavedNVHighlights(bool reopenGroup = false)
+		{
+			if (didHighlightsInit)
+			{
+				Highlights.CloseGroupParams cgp = new Highlights.CloseGroupParams { id = "PERSONAL_HIGHLIGHT_GROUP", destroyHighlights = true };
+				Highlights.CloseGroup(cgp, closeGroupCallback);
+				cgp = new Highlights.CloseGroupParams { id = "PERSONAL_TEAM_HIGHLIGHT_GROUP", destroyHighlights = true };
+				Highlights.CloseGroup(cgp, closeGroupCallback);
+				cgp = new Highlights.CloseGroupParams { id = "OPPOSING_TEAM_HIGHLIGHT_GROUP", destroyHighlights = true };
+				Highlights.CloseGroup(cgp, closeGroupCallback);
+				if (reopenGroup)
+				{
+					Highlights.OpenGroupParams ogp1 = new Highlights.OpenGroupParams();
+					ogp1.Id = "PERSONAL_HIGHLIGHT_GROUP";
+					ogp1.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Personal Highlight Group"), };
+					Highlights.OpenGroup(ogp1, configStepCallback);
+					ogp1.Id = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
+					ogp1.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Personal Team Highlight Group"), };
+					Highlights.OpenGroup(ogp1, configStepCallback);
+					ogp1.Id = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
+					ogp1.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Opposing Team Highlight Group"), };
+					Highlights.OpenGroup(ogp1, configStepCallback);
+				}
+			}
+		}
 
 
 		/// <summary>
@@ -2298,7 +2763,7 @@ namespace IgniteBot2
 				{
 					if (File.Exists(Path.Combine(saveFolder, lastFilename + ".echoreplay")))
 					{
-						string tempDir = Path.Combine(saveFolder, "temp_zip").ToString();
+						string tempDir = Path.Combine(saveFolder, "temp_zip");
 						Directory.CreateDirectory(tempDir);
 						File.Move(Path.Combine(saveFolder, lastFilename + ".echoreplay"), Path.Combine(saveFolder, "temp_zip", lastFilename + ".echoreplay"));      // TODO can fail because in use
 						ZipFile.CreateFromDirectory(tempDir, Path.Combine(saveFolder, lastFilename + ".echoreplay"));
@@ -2365,10 +2830,8 @@ namespace IgniteBot2
 
 					return AuthCode.approved;
 				}
-				else
-				{
-					return AuthCode.denied;
-				}
+
+				return AuthCode.denied;
 			}
 			catch
 			{
@@ -2434,7 +2897,7 @@ namespace IgniteBot2
 				if (parts.Length != 4)
 				{
 					LogRow(LogType.Error, "ERROR 3452. Incorrectly formatted IgniteBot or Atlas link");
-					new MessageBox("Incorrectly formatted IgniteBot or Atlas link: wrong number of '/' characters for link:\n" + args[0] + "\n" + parts.Length).Show();
+					new MessageBox($"Incorrectly formatted IgniteBot or Atlas link: wrong number of '/' characters for link:\n{args[0]}\n{parts.Length}", "Error", Quit).Show();
 				}
 
 				bool spectating = false;
@@ -2455,7 +2918,7 @@ namespace IgniteBot2
 						return true;
 					default:
 						LogRow(LogType.Error, "ERROR 8675. Incorrectly formatted IgniteBot or Atlas link");
-						new MessageBox("Incorrectly formatted IgniteBot or Atlas link: Incorrect join type.").Show();
+						new MessageBox("Incorrectly formatted IgniteBot or Atlas link: Incorrect join type.", "Error", Quit).Show();
 						return true;
 				}
 
@@ -2468,20 +2931,25 @@ namespace IgniteBot2
 				}
 				else
 				{
-					new MessageBox("EchoVR exe path not set. Run the IgniteBot while in a lobby or game with the API enabled at least once first.").Show();
+					new MessageBox("EchoVR exe path not set. Run the IgniteBot while in a lobby or game with the API enabled at least once first.", "Error", Quit).Show();
 				}
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+
+			return false;
 		}
 
 		internal static void Quit()
 		{
-			_ = KillAll(statsThread, fullLogThread, autorestartThread, fetchThread, milkThread);
-			app.ExitApplication();
+			if (closingWindow != null)
+			{
+				// already trying to close
+				return;
+			}
+			closingWindow = new ClosingDialog();
+			closingWindow.Show();
+
+			_ = GentleClose();
 		}
 	}
 

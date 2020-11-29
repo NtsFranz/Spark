@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
+using Newtonsoft.Json;
 
 namespace IgniteBot2
 {
@@ -60,16 +60,15 @@ namespace IgniteBot2
 			}
 		}
 		public string TrajectoryJSON {
-			get {
+			get
+			{
 
 				if (DiscTrajectory.Count > 0)
 				{
 					return JsonConvert.SerializeObject(DiscTrajectory);
 				}
-				else
-				{
-					return "";
-				}
+
+				return "";
 			}
 		}
 

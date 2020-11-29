@@ -7,10 +7,18 @@
     <StartupObject>IgniteBot2.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
+    <PackageProjectUrl>https://www.ignitevr.gg/ignitebot</PackageProjectUrl>
+    <Company>IgniteVR</Company>
+    <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DefineConstants>TRACE;INCLUDE_FIRESTORE</DefineConstants>
   </PropertyGroup>
 
@@ -18,12 +26,27 @@
     <DefineConstants>TRACE;INCLUDE_FIRESTORE</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
+    <None Remove="GfeSDK.dll" />
+    <None Remove="HighlightsPlugin64.dll" />
     <None Remove="ignite_logo.png" />
     <None Remove="ignite_logo_128.png" />
     <None Remove="img\baseline_replay_white_24px.png" />
     <None Remove="img\ignite_logo.ico" />
     <None Remove="img\ignite_logo_128.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="GfeSDK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HighlightsPlugin64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
