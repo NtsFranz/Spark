@@ -2262,6 +2262,7 @@ namespace IgniteBot
 
 		private static string IsPlayerHighlightEnabled(string playerName, g_Instance frame)
 		{
+			if (playerName == "[INVALID]") return "";
 			g_Player highlightPlayer = frame.teams.Find(t => t.players.Exists(p => p.name == playerName)).players.Find(p => p.name == playerName);
 			return IsPlayerHighlightEnabled(highlightPlayer, frame);
 		}

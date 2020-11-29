@@ -146,10 +146,11 @@ namespace IgniteBot
 				{ "orange_team_score", teams[TeamColor.orange].points },
 				{ "winning_team", teams[TeamColor.blue].points > teams[TeamColor.orange].points ? TeamColor.blue.ToString() : TeamColor.orange.ToString() },
 				{ "game_clock_end", endTime },	// TODO change value when reset or overtime
-				{ "overtime_count", overtimeCount },	// TODO increment this
+				{ "overtime_count", overtimeCount },
 				{ "finish_reason", finishReason.ToString() },
 				{ "custom_id", Program.customId },
-				{ "disabled", false }
+				{ "disabled", false },
+				{ "discord_userid", DiscordOAuth.DiscordUserID },
 			};
 
 			return values;

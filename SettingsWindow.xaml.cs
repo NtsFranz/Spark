@@ -14,13 +14,11 @@ namespace IgniteBot
 	/// </summary>
 	public partial class SettingsWindow : Window
 	{
+		bool initialized = false;
 		public SettingsWindow()
 		{
 			InitializeComponent();
-		}
 
-		private void SettingsWindow_Load(object sender, RoutedEventArgs e)
-		{
 			startWithWindowsCheckbox.IsChecked = Settings.Default.startOnBoot;
 			startMinimizedCheckbox.IsChecked = Settings.Default.startMinimized;
 			autorestartCheckbox.IsChecked = Settings.Default.autoRestart;
@@ -53,10 +51,17 @@ namespace IgniteBot
 			fullLoggingBox.Opacity = Program.enableFullLogging ? 1 : .5;
 
 			versionNum.Content = "v" + Program.AppVersion();
+
+			initialized = true;
+		}
+
+		private void SettingsWindow_Load(object sender, RoutedEventArgs e)
+		{
 		}
 
 		void RestartOnCrashEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Program.autoRestart = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.autoRestart = Program.autoRestart;
 			Settings.Default.Save();
@@ -64,6 +69,7 @@ namespace IgniteBot
 
 		private void StartWithWindowsEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Settings.Default.startOnBoot = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 			SetStartWithWindows(Settings.Default.startOnBoot);
@@ -85,6 +91,7 @@ namespace IgniteBot
 
 		private void SlowModeEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Program.deltaTimeIndexStats = ((CheckBox)sender).IsChecked == true ? 1 : 0;
 			Settings.Default.targetDeltaTimeIndexStats = Program.deltaTimeIndexStats;
 			Settings.Default.Save();
@@ -92,6 +99,7 @@ namespace IgniteBot
 
 		private void ShowDBLogEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Settings.Default.showDatabaseLog = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 
@@ -100,6 +108,7 @@ namespace IgniteBot
 
 		private void LogToServerEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Settings.Default.logToServer = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 
@@ -108,6 +117,7 @@ namespace IgniteBot
 
 		private void EnableStatsLoggingEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Program.enableStatsLogging = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.enableStatsLogging = Program.enableStatsLogging;
 			Settings.Default.Save();
@@ -118,6 +128,7 @@ namespace IgniteBot
 
 		private void EnableFullLoggingEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Program.enableFullLogging = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.enableFullLogging = Program.enableFullLogging;
 			Settings.Default.Save();
@@ -128,11 +139,13 @@ namespace IgniteBot
 
 		private void CloseButtonEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Close();
 		}
 
 		private void SetStorageLocation(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			string selectedPath = "";
 			var folderBrowserDialog = new CommonOpenFileDialog
 			{
@@ -161,6 +174,7 @@ namespace IgniteBot
 
 		private void SpeedChangeEvent(object sender, SelectionChangedEventArgs e)
 		{
+			if (!initialized) return;
 			int index = ((ComboBox)sender).SelectedIndex;
 
 			Program.deltaTimeIndexFull = index;
@@ -170,6 +184,7 @@ namespace IgniteBot
 
 		private void UseCompressionEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Settings.Default.useCompression = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 
@@ -178,6 +193,7 @@ namespace IgniteBot
 
 		private void BatchWritesEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Settings.Default.batchWrites = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 
@@ -186,6 +202,7 @@ namespace IgniteBot
 
 		private void SplitFileEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Program.NewFilename();
 
 			currentFilenameLabel.Content = Program.fileName;
@@ -193,12 +210,14 @@ namespace IgniteBot
 
 		private void ShowConsoleOnStartEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Settings.Default.showConsoleOnStart = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 		}
 
 		private void LoggingTimeChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (!initialized) return;
 			int index = ((ComboBox)sender).SelectedIndex;
 
 			Settings.Default.whenToUploadLogs = index;
@@ -207,24 +226,28 @@ namespace IgniteBot
 
 		private void UploadToFirestoreChanged(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Settings.Default.uploadToFirestore = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 		}
 
 		private void StartMinimizedEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Settings.Default.startMinimized = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 		}
 
 		private void onlyRecordPrivateMatches_CheckedChanged(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Settings.Default.onlyRecordPrivateMatches = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 		}
 
 		private void resetReplayFolder_Click(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Program.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "IgniteBot\\replays");
 			Directory.CreateDirectory(Program.saveFolder);
 			storageLocationTextBox.Text = Program.saveFolder;
@@ -234,6 +257,7 @@ namespace IgniteBot
 
 		private void whenToSplitReplaysChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (!initialized) return;
 			int index = ((ComboBox)sender).SelectedIndex;
 			Settings.Default.whenToSplitReplays = index;
 			Settings.Default.Save();
@@ -246,6 +270,7 @@ namespace IgniteBot
 
 		private void EchoVRIPChanged(object sender, TextChangedEventArgs e)
 		{
+			if (!initialized) return;
 			Program.echoVRIP = ((TextBox)sender).Text;
 			Settings.Default.echoVRIP = Program.echoVRIP;
 			Settings.Default.Save();
@@ -253,6 +278,7 @@ namespace IgniteBot
 
 		private void EchoVRPortChanged(object sender, TextChangedEventArgs e)
 		{
+			if (!initialized) return;
 			if (Program.overrideEchoVRPort)
 			{
 				echoVRPortTextBox.Text = Program.echoVRPort.ToString();
@@ -269,6 +295,7 @@ namespace IgniteBot
 
 		private void resetIP_Click(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Program.echoVRIP = "127.0.0.1";
 			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
 			echoVRIPTextBox.Text = Program.echoVRIP;
@@ -280,6 +307,7 @@ namespace IgniteBot
 
 		private void ShowTTSSettingsWindow(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			if (Program.ttsWindow == null)
 			{
 				Program.ttsWindow = new TTSSettingsWindow();
@@ -294,12 +322,14 @@ namespace IgniteBot
 
 		private void EnableDiscordRichPresenceEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Settings.Default.discordRichPresence = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 		}
 
 		private void OpenReplayFolder(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			Process.Start(new ProcessStartInfo
 			{
 				FileName = Settings.Default.saveFolder,

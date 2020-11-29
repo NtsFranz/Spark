@@ -26,6 +26,7 @@ namespace IgniteBot
 
 		public static Dictionary<string, string> discordUserData;
 		public static string DiscordUsername => discordUserData?["username"];
+		public static string DiscordUserID => discordUserData?["id"];
 		public static string DiscordPFPURL => $"https://cdn.discordapp.com/avatars/{discordUserData["id"]}/{discordUserData["avatar"]}";
 		public static List<Dictionary<string, string>> availableAccessCodes = new List<Dictionary<string, string>>();
 
