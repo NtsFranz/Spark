@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IgniteBot2", "IgniteBot2.csproj", "{F2EA4914-2372-49D5-83CC-A11302747291}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IgniteBot", "IgniteBot.csproj", "{F2EA4914-2372-49D5-83CC-A11302747291}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "IgniteBot.Installer", "IgniteBot.Installer\IgniteBot.Installer.wixproj", "{0C43DBB5-030A-433A-8730-CC575062A9C5}"
-EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "IgniteBot2.Installer", "IgniteBot2.Installer\IgniteBot2.Installer.wixproj", "{E145DF16-1EF4-459A-B2C5-9150541E580F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,14 +37,6 @@ Global
 		{0C43DBB5-030A-433A-8730-CC575062A9C5}.Release|x64.ActiveCfg = Release|x86
 		{0C43DBB5-030A-433A-8730-CC575062A9C5}.Release|x86.ActiveCfg = Release|x86
 		{0C43DBB5-030A-433A-8730-CC575062A9C5}.Release|x86.Build.0 = Release|x86
-		{E145DF16-1EF4-459A-B2C5-9150541E580F}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{E145DF16-1EF4-459A-B2C5-9150541E580F}.Debug|x64.ActiveCfg = Debug|x64
-		{E145DF16-1EF4-459A-B2C5-9150541E580F}.Debug|x86.ActiveCfg = Debug|x86
-		{E145DF16-1EF4-459A-B2C5-9150541E580F}.Debug|x86.Build.0 = Debug|x86
-		{E145DF16-1EF4-459A-B2C5-9150541E580F}.Release|Any CPU.ActiveCfg = Release|x86
-		{E145DF16-1EF4-459A-B2C5-9150541E580F}.Release|x64.ActiveCfg = Release|x64
-		{E145DF16-1EF4-459A-B2C5-9150541E580F}.Release|x86.ActiveCfg = Release|x86
-		{E145DF16-1EF4-459A-B2C5-9150541E580F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

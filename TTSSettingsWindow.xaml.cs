@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using IgniteBot2.Properties;
+using IgniteBot.Properties;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Interaction logic for TTSSettingsWindow.xaml

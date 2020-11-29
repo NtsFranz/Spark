@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Data container interface. Parent for other data containers such as Events, Matches, Goals, Players...

@@ -14,11 +14,11 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using IgniteBot2.Properties;
+using IgniteBot.Properties;
 using Newtonsoft.Json.Linq;
 using static Logger;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Interaction logic for LiveWindow.xaml

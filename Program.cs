@@ -19,15 +19,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using IgniteBot2.Properties;
+using IgniteBot.Properties;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using static IgniteBot2.g_Team;
+using static IgniteBot.g_Team;
 using static Logger;
 using NVIDIA;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Main
@@ -219,7 +219,7 @@ namespace IgniteBot2
 		public static void Main(string[] args, App app)
 		{
 			Program.app = app;
-			using (Mutex mutex = new Mutex(false, "Global\\ignitebot2"))
+			using (Mutex mutex = new Mutex(false, "Global\\ignitebot"))
 			{
 
 				if (args.Contains("-port"))

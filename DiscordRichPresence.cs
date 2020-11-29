@@ -5,10 +5,10 @@ using System.Threading;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using DiscordRPC.Message;
-using IgniteBot2.Properties;
+using IgniteBot.Properties;
 using static Logger;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	class DiscordRichPresence
 	{

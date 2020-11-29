@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Interaction logic for MessageBox.xaml

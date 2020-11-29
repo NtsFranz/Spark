@@ -2,7 +2,7 @@
 using System.Numerics;
 using Newtonsoft.Json;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Object containing a player's throw of the disc.

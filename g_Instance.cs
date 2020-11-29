@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using static IgniteBot2.g_Team;
+using static IgniteBot.g_Team;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// A recreation of the JSON object given by EchoVR

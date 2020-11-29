@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using static IgniteBot2.g_Team;
+using static IgniteBot.g_Team;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Object containing all match data.

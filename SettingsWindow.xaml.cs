@@ -3,11 +3,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using IgniteBot2.Properties;
+using IgniteBot.Properties;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Interaction logic for SettingsWindow.xaml

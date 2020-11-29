@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Google.Cloud.TextToSpeech.V1;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// 📖➡🔊 An abstraction layer for whatever TTS engine is being used

@@ -1,9 +1,9 @@
-﻿using IgniteBot2.Properties;
+﻿using IgniteBot.Properties;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	public enum HighlightLevel : int
 	{

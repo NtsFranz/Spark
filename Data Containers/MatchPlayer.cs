@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Numerics;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// The idea is this will contain the entire set of data for the match, and will be used to review and then commit the data all at once 

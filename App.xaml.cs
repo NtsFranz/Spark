@@ -2,7 +2,7 @@
 using System.Windows;
 using Hardcodet.Wpf.TaskbarNotification;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Interaction logic for App.xaml
@@ -21,7 +21,7 @@ namespace IgniteBot2
 
 			//trayIcon = new TaskbarIcon();
 			////trayIcon.Double += (s, args) => ShowMainWindow();
-			//trayIcon.Icon = IgniteBot2.Properties.Resources.ignite_logo;
+			//trayIcon.Icon = IgniteBot.Properties.Resources.ignite_logo;
 			//trayIcon.Visibility = Visibility.Visible;
 
 			CreateContextMenu();

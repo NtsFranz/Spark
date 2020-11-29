@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	class BatchOutputFormat
 	{

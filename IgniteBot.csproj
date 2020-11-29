@@ -4,14 +4,19 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <StartupObject>IgniteBot2.App</StartupObject>
+    <StartupObject>IgniteBot.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.0.1</Version>
+    <Version>2.0.4</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/ignitebot</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
     <Platforms>AnyCPU;x64</Platforms>
+    <Description>A tool to record and process EchoVR API data.</Description>
+    <Copyright>IgniteVR 2020</Copyright>
+    <PackageId>IgniteBot</PackageId>
+    <AssemblyName>IgniteBot</AssemblyName>
+    <RootNamespace>IgniteBot</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -54,7 +59,6 @@
     <PackageReference Include="Google.Cloud.Firestore" Version="2.3.0" />
     <PackageReference Include="Google.Cloud.TextToSpeech.V1" Version="2.1.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.14" />
-    <PackageReference Include="Microsoft.CognitiveServices.Speech" Version="1.14.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>

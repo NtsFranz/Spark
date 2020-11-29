@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
-using IgniteBot2;
+using IgniteBot;
 
 /// <summary>
 /// ✍ Logs any data to a file or remotely

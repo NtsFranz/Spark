@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using static IgniteBot2.g_Team;
+using static IgniteBot.g_Team;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Object containing a teams basic data and MatchPlayer for the corresponding team.

@@ -6,7 +6,7 @@ using System.Net;
 using System.Threading;
 using System.Web;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// Http server for local use, similar to how the EchoVR API works.

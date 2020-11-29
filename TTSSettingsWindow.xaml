@@ -1,9 +1,9 @@
-﻿<Window x:Class="IgniteBot2.TTSSettingsWindow"
+﻿<Window x:Class="IgniteBot.TTSSettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IgniteBot2"
+        xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
         Title="IgniteBot | TTS Settings" Height="810" Width="418" Background="{DynamicResource BackgroundColour}" FontSize="14" SizeToContent="Height" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png" Loaded="TTSSettingsWindow_Load">
 	<Grid>

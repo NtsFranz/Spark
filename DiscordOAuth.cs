@@ -6,10 +6,10 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
-using IgniteBot2.Properties;
+using IgniteBot.Properties;
 using Newtonsoft.Json;
 
-namespace IgniteBot2
+namespace IgniteBot
 {
 	/// <summary>
 	/// 🔑
