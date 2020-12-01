@@ -57,6 +57,7 @@ namespace IgniteBot
 				}
 				catch (Exception)
 				{
+					LogRow(LogType.Error, "Can't read EchoVR settings file. It exists, but something went wrong.");
 					enableAPIButton.Visibility = Visibility.Collapsed;
 				}
 			}
@@ -78,6 +79,9 @@ namespace IgniteBot
 			showHighlights.IsEnabled = Program.DoNVClipsExist();
 			showHighlights.Visibility = (Program.didHighlightsInit && Program.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
 			showHighlights.Content = Program.DoNVClipsExist() ? "Show " + Program.nvHighlightClipCount + " Highlights" : "No clips available";
+
+
+			tabControl.SelectionChanged += TabControl_SelectionChanged;
 		}
 
 		private void Update(object source, ElapsedEventArgs e)
@@ -645,11 +649,14 @@ namespace IgniteBot
 		private void showEventLogFileButton_Click(object sender, RoutedEventArgs e)
 		{
 			string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteBot\\" + logFolder);
-			Process.Start(new ProcessStartInfo
+			if (File.Exists(folder))
 			{
-				FileName = folder,
-				UseShellExecute = true
-			});
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = folder,
+					UseShellExecute = true
+				});
+			}
 		}
 
 		private void openSpeedometer(object sender, RoutedEventArgs e)
@@ -673,19 +680,26 @@ namespace IgniteBot
 
 		private void enableAPIButton_Click(object sender, RoutedEventArgs e)
 		{
-			JToken settings = Program.ReadEchoVRSettings();
-			if (settings != null)
+			try
 			{
-				new MessageBox("Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!").Show();
+				JToken settings = Program.ReadEchoVRSettings();
+				if (settings != null)
+				{
+					new MessageBox("Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!").Show();
 
-				settings["game"]["EnableAPIAccess"] = true;
-				Program.WriteEchoVRSettings(settings);
-				enableAPIButton.Visibility = Visibility.Collapsed;
+					settings["game"]["EnableAPIAccess"] = true;
+					Program.WriteEchoVRSettings(settings);
+					enableAPIButton.Visibility = Visibility.Collapsed;
 
+				}
+				else
+				{
+					new MessageBox("Could not read EchoVR settings. \n How are you even here?").Show();
+				}
 			}
-			else
+			catch (Exception)
 			{
-				new MessageBox("Could not read EchoVR settings. \n How are you even here?").Show();
+				LogRow(LogType.Error, "Can't write to EchoVR settings file.");
 			}
 		}
 
@@ -785,6 +799,15 @@ namespace IgniteBot
 				showHideMenuItem.Header = "Show Main Window";
 			}
 			hidden = !hidden;
+		}
+
+		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			// switched to event log tab
+			if (((TabControl)sender).SelectedIndex == 1)
+			{
+				mainOutputTextBox.ScrollToEnd();
+			}
 		}
 	}
 }

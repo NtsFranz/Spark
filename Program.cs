@@ -400,7 +400,8 @@ namespace IgniteBot
 
 		public static string AppVersion()
 		{
-			return Application.Current.GetType().Assembly.GetName().Version.ToString();
+			var version = Application.Current.GetType().Assembly.GetName().Version;
+			return $"{version.Major}.{version.Minor}.{version.Build}";
 		}
 
 		public static void CloseNVHighlights(bool wasDisableNVHCall = false)
@@ -1163,33 +1164,40 @@ namespace IgniteBot
 			// skip if we already have a valid path
 			if (File.Exists(Settings.Default.echoVRPath)) return;
 
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			try
 			{
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+				{
 
-				const string key = "Software\\Oculus VR, LLC\\Oculus\\Libraries";
-				RegistryKey oculusReg = Registry.CurrentUser.OpenSubKey(key);
-				if (oculusReg == null)
-				{
-					// Oculus not installed
-					return;
-				}
-				var paths = new List<string>();
-				foreach (string subkey in oculusReg.GetSubKeyNames())
-				{
-					paths.Add((string)oculusReg.OpenSubKey(subkey).GetValue("OriginalPath"));
-				}
-
-				const string echoDir = "Software\\ready-at-dawn-echo-arena\\bin\\win7\\echovr.exe";
-				foreach (var path in paths)
-				{
-					string file = Path.Combine(path, echoDir);
-					if (File.Exists(file))
+					const string key = "Software\\Oculus VR, LLC\\Oculus\\Libraries";
+					RegistryKey oculusReg = Registry.CurrentUser.OpenSubKey(key);
+					if (oculusReg == null)
 					{
-						Settings.Default.echoVRPath = file;
-						Settings.Default.Save();
+						// Oculus not installed
 						return;
 					}
+					var paths = new List<string>();
+					foreach (string subkey in oculusReg.GetSubKeyNames())
+					{
+						paths.Add((string)oculusReg.OpenSubKey(subkey).GetValue("OriginalPath"));
+					}
+
+					const string echoDir = "Software\\ready-at-dawn-echo-arena\\bin\\win7\\echovr.exe";
+					foreach (var path in paths)
+					{
+						string file = Path.Combine(path, echoDir);
+						if (File.Exists(file))
+						{
+							Settings.Default.echoVRPath = file;
+							Settings.Default.Save();
+							return;
+						}
+					}
 				}
+			}
+			catch (Exception)
+			{
+				LogRow(LogType.Error, "Can't get EchoVR path from registry");
 			}
 		}
 

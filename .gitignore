@@ -354,3 +354,5 @@ IgniteBotInstaller/IgniteBotInstaller-SetupFiles/
 IgniteBot.Installer/Installs/
 .idea/
 IgniteBot.Installer/ComponentsGenerated.wxs
+ConfuserEx_bin/
+IgniteBot.crproj

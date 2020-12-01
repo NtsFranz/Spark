@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,11 +54,13 @@ namespace IgniteBot
 			mediaPlayer.MediaEnded += (sender, e) =>
 			{
 				playing = false;
+				Debug.WriteLine("stopped playing");
 			};
 			while (Program.running)
 			{
 				if (ttsQueue.TryDequeue(out string result))
 				{
+					mediaPlayer.Stop();
 					mediaPlayer.Open(new Uri(result));
 
 					playing = true;
@@ -76,8 +79,7 @@ namespace IgniteBot
 					//{
 					//	Thread.Sleep(10);
 					//}
-
-					File.Delete(result);
+					Task.Run(() => File.Delete(result));
 				}
 				else
 				{
@@ -103,7 +105,7 @@ namespace IgniteBot
 			Task.Run(() => Speak(text));
 		}
 
-		private async Task Speak(string text)
+		private void Speak(string text)
 		{
 			// Set the text input to be synthesized.
 			SynthesisInput input = new SynthesisInput
