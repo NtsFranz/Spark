@@ -24,22 +24,22 @@ namespace IgniteBot
 
 		private void NVHighlightsSettingsWindow_Load(object sender, RoutedEventArgs e)
 		{
-			Program.isNVHighlightsEnabled &= Program.isNVHighlightsSupported;
-			Settings.Default.isNVHighlightsEnabled = Program.isNVHighlightsEnabled;   // This shouldn't change anything
+			HighlightsHelper.isNVHighlightsEnabled &= HighlightsHelper.isNVHighlightsSupported;
+			Settings.Default.isNVHighlightsEnabled = HighlightsHelper.isNVHighlightsEnabled;   // This shouldn't change anything
 			Settings.Default.Save();
 
-			enableNVHighlightsCheckbox.IsChecked = Program.isNVHighlightsEnabled;
+			enableNVHighlightsCheckbox.IsChecked = HighlightsHelper.isNVHighlightsEnabled;
 			clearHighlightsOnExitCheckbox.IsChecked = Settings.Default.clearHighlightsOnExit;
 			highlightScope.SelectedIndex = Settings.Default.clientHighlightScope;
-			clearHighlightsButton.IsEnabled = Program.DoNVClipsExist();
+			clearHighlightsButton.IsEnabled = HighlightsHelper.DoNVClipsExist();
 
-			enableNVHighlightsCheckbox.IsEnabled = Program.isNVHighlightsSupported;
-			enableNVHighlightsCheckbox.Content = Program.isNVHighlightsSupported ? "Enable NVIDIA Highlights" : "NVIDIA Highlights isn't supported by your PC";
+			enableNVHighlightsCheckbox.IsEnabled = HighlightsHelper.isNVHighlightsSupported;
+			enableNVHighlightsCheckbox.Content = HighlightsHelper.isNVHighlightsSupported ? "Enable NVIDIA Highlights" : "NVIDIA Highlights isn't supported by your PC";
 
 
-			nvHighlightsBox.IsEnabled = Program.isNVHighlightsEnabled;
-			nvHighlightsBox.Opacity = Program.isNVHighlightsEnabled ? 1 : .5;
-			clearHighlightsButton.Content = "Clear " + Program.nvHighlightClipCount + " Unsaved Highlights";
+			nvHighlightsBox.IsEnabled = HighlightsHelper.isNVHighlightsEnabled;
+			nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
+			clearHighlightsButton.Content = "Clear " + HighlightsHelper.nvHighlightClipCount + " Unsaved Highlights";
 
 			Console.WriteLine(highlightScope.SelectedIndex);
 		}
@@ -47,31 +47,31 @@ namespace IgniteBot
 		private void HighlightScopeChanged(object sender, SelectionChangedEventArgs e)
 		{
 			int index = ((ComboBox)sender).SelectedIndex;
-			Program.ClientHighlightScope = (HighlightLevel)index;
+			HighlightsHelper.ClientHighlightScope = (HighlightLevel)index;
 			Settings.Default.clientHighlightScope = index;
 			Settings.Default.Save();
 		}
 
 		private void ClearHighlightsOnExitEvent(object sender, RoutedEventArgs e)
 		{
-			Program.clearHighlightsOnExit = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.clearHighlightsOnExit = Program.clearHighlightsOnExit;
+			HighlightsHelper.clearHighlightsOnExit = ((CheckBox)sender).IsChecked == true;
+			Settings.Default.clearHighlightsOnExit = HighlightsHelper.clearHighlightsOnExit;
 			Settings.Default.Save();
 
-			clearHighlightsOnExitCheckbox.IsEnabled = Program.clearHighlightsOnExit;
+			clearHighlightsOnExitCheckbox.IsEnabled = HighlightsHelper.clearHighlightsOnExit;
 		}
 
 		private void EnableNVHighlightsEvent(object sender, RoutedEventArgs e)
 		{
-			if (Program.isNVHighlightsEnabled && !((CheckBox)sender).IsChecked == true)
+			if (HighlightsHelper.isNVHighlightsEnabled && !((CheckBox)sender).IsChecked == true)
 			{
-				Program.CloseNVHighlights(true);
+				HighlightsHelper.CloseNVHighlights(true);
 			}
-			else if (!Program.isNVHighlightsEnabled && ((CheckBox)sender).IsChecked == true)
+			else if (!HighlightsHelper.isNVHighlightsEnabled && ((CheckBox)sender).IsChecked == true)
 			{
-				if (Program.SetupNVHighlights() < 0)
+				if (HighlightsHelper.SetupNVHighlights() < 0)
 				{
-					Program.isNVHighlightsEnabled = false;
+					HighlightsHelper.isNVHighlightsEnabled = false;
 					Settings.Default.isNVHighlightsEnabled = false;
 					Settings.Default.Save();
 					enableNVHighlightsCheckbox.IsChecked = false;
@@ -85,17 +85,17 @@ namespace IgniteBot
 				}
 			}
 
-			Program.isNVHighlightsEnabled = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.isNVHighlightsEnabled = Program.isNVHighlightsEnabled;
+			HighlightsHelper.isNVHighlightsEnabled = ((CheckBox)sender).IsChecked == true;
+			Settings.Default.isNVHighlightsEnabled = HighlightsHelper.isNVHighlightsEnabled;
 			Settings.Default.Save();
 
-			nvHighlightsBox.IsEnabled = Program.isNVHighlightsEnabled;
-			nvHighlightsBox.Opacity = Program.isNVHighlightsEnabled ? 1 : .5;
+			nvHighlightsBox.IsEnabled = HighlightsHelper.isNVHighlightsEnabled;
+			nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
 		}
 
 		private void ClearHighlightsEvent(object sender, RoutedEventArgs e)
 		{
-			Program.ClearUnsavedNVHighlights(true);
+			HighlightsHelper.ClearUnsavedNVHighlights(true);
 			clearHighlightsButton.IsEnabled = false;
 			clearHighlightsButton.Content = "Clear 0 Unsaved Highlights";
 			new MessageBox("Highlights Cleared: All unsaved highlights have been cleared from the temporary highlights directory.").Show();

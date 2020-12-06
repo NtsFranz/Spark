@@ -75,9 +75,9 @@ namespace IgniteBot
 			RefreshDiscordLogin();
 
 			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
-			showHighlights.IsEnabled = Program.DoNVClipsExist();
-			showHighlights.Visibility = (Program.didHighlightsInit && Program.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
-			showHighlights.Content = Program.DoNVClipsExist() ? "Show " + Program.nvHighlightClipCount + " Highlights" : "No clips available";
+			showHighlights.IsEnabled = HighlightsHelper.DoNVClipsExist();
+			showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
+			showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? "Show " + HighlightsHelper.nvHighlightClipCount + " Highlights" : "No clips available";
 
 
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
@@ -126,9 +126,9 @@ namespace IgniteBot
 						}
 						unusedFileCache.Clear();
 					}
-					showHighlights.IsEnabled = Program.DoNVClipsExist();
-					showHighlights.Visibility = (Program.didHighlightsInit && Program.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
-					showHighlights.Content = Program.DoNVClipsExist() ? "Show " + Program.nvHighlightClipCount + " Highlights" : "No clips available";
+					showHighlights.IsEnabled = HighlightsHelper.DoNVClipsExist();
+					showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
+					showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? "Show " + HighlightsHelper.nvHighlightClipCount + " Highlights" : "No clips available";
 
 
 					// update the other labels in the stats box
@@ -746,7 +746,7 @@ namespace IgniteBot
 
 		private void showHighlights_Click(object sender, RoutedEventArgs e)
 		{
-			Program.ShowNVHighlights();
+			HighlightsHelper.ShowNVHighlights();
 		}
 
 		private void showNVHighlightsSettings_Click(object sender, RoutedEventArgs e)
