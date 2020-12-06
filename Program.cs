@@ -2285,26 +2285,22 @@ namespace IgniteBot
 		/// </summary>
 		private static async Task ProcessScore(MatchData matchData)
 		{
+			g_Instance initialFrame = lastLastFrame;
+
 			// wait some time before re-checking the throw velocity
 			await Task.Delay(100);
 
-			var frame = lastFrame;
+			g_Instance frame = lastFrame;
 
-			// Calculate the exact position within the goal that the disc was shot
-			Vector3 discPos = frame.disc.position.ToVector3();
-			Vector3 discVel = lastFrame.disc.velocity.ToVector3();
+			Vector3 discVel = initialFrame.disc.velocity.ToVector3();
+			Vector3 discPos = initialFrame.disc.position.ToVector3();
 			Vector2 goalPos;
 			bool backboard = false;
 			float angleIntoGoal = 0;
 			if (discVel != Vector3.Zero)
 			{
-				Vector3 actualGoalPos = discPos.Z < 0 ? new Vector3(0, 0, -36) : new Vector3(0, 0, 36);
 				float angleIntoGoalRad = (float)(Math.Acos(Vector3.Dot(discVel, new Vector3(0, 0, 1) * (discPos.Z < 0 ? -1 : 1)) / discVel.Length()));
 				angleIntoGoal = (float)(angleIntoGoalRad * (180 / Math.PI));
-				float distToGoal = (float)((actualGoalPos.Z - discPos.Z) / Math.Cos(angleIntoGoalRad));
-				Vector3 discDirection = discVel / discVel.Length();
-				Vector3 goalPos3D = discPos + distToGoal * discDirection;
-				goalPos = new Vector2(goalPos3D.X * (goalPos3D.Z < 0 ? -1 : 1), goalPos3D.Y);
 
 				// make the angle negative if backboard
 				if (angleIntoGoal > 90)
@@ -2313,10 +2309,9 @@ namespace IgniteBot
 					backboard = true;
 				}
 			}
-			else
-			{
-				goalPos = new Vector2(frame.disc.position.ToVector3().X, frame.disc.position.ToVector3().Y);
-			}
+			goalPos = new Vector2(initialFrame.disc.position.ToVector3().X, initialFrame.disc.position.ToVector3().Y);
+
+			// nvidia highlights
 			string highlightGroupName = IsPlayerHighlightEnabled(frame.last_score.person_scored, frame);
 			if (highlightGroupName.Length > 0)
 			{
@@ -2346,6 +2341,8 @@ namespace IgniteBot
 				frame.game_clock_display + " - " + frame.last_score.person_scored + " scored at " +
 				frame.last_score.disc_speed.ToString("N2") + " m/s from " + frame.last_score.distance_thrown.ToString("N2") + " m away" +
 				(frame.last_score.assist_scored == "[INVALID]" ? "!" : (", assisted by " + frame.last_score.assist_scored + "!")));
+			LogRow(LogType.File, frame.sessionid,
+				frame.game_clock_display + " - Goal angle: " + angleIntoGoal.ToString("N2") + "deg, from " + (backboard ? "behind" : "the front"));
 
 			// show the scores in the log
 			LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - ORANGE: " + frame.orange_points + "  BLUE: " + frame.blue_points);
