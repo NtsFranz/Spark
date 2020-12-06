@@ -9,7 +9,7 @@
 	<Grid>
 		<StackPanel>
 			<Label x:Name="label" Content="Settings" FontSize="20" Margin="10,10,10,4"/>
-			<Button x:Name="echoVRSettings" Content="EchoVR Settings" Margin="10,4,10,4" HorizontalAlignment="Left" Width="120" Padding="4,4,4,4" Click="echoVRSettings_Click"/>
+			<Button x:Name="echoVRSettings" Content="EchoVR Settings" Margin="10,4,10,4" HorizontalAlignment="Left" Width="120" Padding="4,4,4,4" Click="echoVRSettings_Click" Visibility="Collapsed"/>
 			<Button x:Name="ttsSettingsButton" Content="TTS Settings" Margin="10,4,10,4" HorizontalAlignment="Left" Width="120" Padding="4,4,4,4" Click="ShowTTSSettingsWindow"/>
 			<CheckBox x:Name="startWithWindowsCheckbox" Content="Start with Windows" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="StartWithWindowsEvent" Unchecked="StartWithWindowsEvent"/>
 			<CheckBox x:Name="startMinimizedCheckbox" Content="Start Minimized" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="StartMinimizedEvent" Unchecked="StartMinimizedEvent"/>

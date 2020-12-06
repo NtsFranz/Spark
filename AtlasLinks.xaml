@@ -8,11 +8,11 @@
         Title="IgniteBot | Atlas Links" Height="301" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterScreen" SizeToContent="Height" ResizeMode="NoResize" Icon="/img/ignite_logo_128.png">
 	<StackPanel>
 		<Label x:Name="label" Content="Join as Player" Margin="10,10,10,-8"/>
-		<TextBox x:Name="joinLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+		<TextBox x:Name="joinLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top" HorizontalAlignment="Stretch" IsReadOnly="True"/>
 		<Label x:Name="label_Copy1" Content="Join as Spectator" Margin="10,10,10,-8"/>
-		<TextBox x:Name="spectateLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top"/>
+		<TextBox x:Name="spectateLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top" IsReadOnly="True"/>
 		<Label x:Name="label_Copy" Content="Choose" Margin="10,10,10,-8"/>
-		<TextBox x:Name="chooseLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top"/>
+		<TextBox x:Name="chooseLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top" IsReadOnly="True"/>
 		<Button x:Name="closeButton" Content="Close" Margin="8,8,8,10" HorizontalAlignment="Right" IsCancel="True" IsDefault="True" Padding="4,4,4,4" Width="81" Click="closeButton_Click"/>
 	</StackPanel>
 </Window>

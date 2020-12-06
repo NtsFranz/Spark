@@ -6,8 +6,10 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
+using System.Windows;
 using IgniteBot.Properties;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace IgniteBot
 {
@@ -16,6 +18,12 @@ namespace IgniteBot
 	/// </summary>
 	public class DiscordOAuth
 	{
+		/// <summary>
+		/// Called when the program get's authenticated with Discord
+		/// </summary>
+		public static Action authenticated;
+
+
 		const string REDIRECT_URI = "http://localhost:6722/oauth_login";
 
 		static WebServer2 webServer;
@@ -28,19 +36,34 @@ namespace IgniteBot
 		public static string DiscordUsername => discordUserData?["username"];
 		public static string DiscordUserID => discordUserData?["id"];
 		public static string DiscordPFPURL => $"https://cdn.discordapp.com/avatars/{discordUserData["id"]}/{discordUserData["avatar"]}";
-		public static List<Dictionary<string, string>> availableAccessCodes = new List<Dictionary<string, string>>();
 
-		public static string GetAccessCode(string username)
+		public static string igniteUploadKey = string.Empty;
+		public static string firebaseCred;
+
+		public static List<Dictionary<string, string>> availableAccessCodes = new List<Dictionary<string, string>>();
+		private static readonly Dictionary<string, string> personalAccessCode = new Dictionary<string, string>()
 		{
-			foreach (var key in availableAccessCodes)
-			{
-				if (key["username"] == username)
+			{ "username","Personal" },
+			{ "pw","personal" },
+			{ "season_name","personal" }
+		};
+		public static Dictionary<string, string> CurrentKeys {
+			get {
+				foreach (var key in availableAccessCodes)
 				{
-					return key["pw"];
+					if (key["username"] == Program.currentAccessCodeUsername)
+					{
+						return key;
+					}
 				}
+				return personalAccessCode;
 			}
-			return "";
 		}
+
+		public static string AccessCode => CurrentKeys?["pw"];
+		public static string SeasonName => CurrentKeys?["season_name"];
+
+		public static bool IsLoggedIn { get => oauthToken != string.Empty; }
 
 		public static int GetAccessCodeIndex(string hash)
 		{
@@ -53,17 +76,16 @@ namespace IgniteBot
 			}
 			return 0;
 		}
-
-		internal static string GetSeasonName(string username)
+		public static string GetAccessCodeUsername(string hash)
 		{
 			foreach (var key in availableAccessCodes)
 			{
-				if (key["username"] == username)
+				if (SecretKeys.Hash(key["pw"]) == hash)
 				{
-					return key["season_name"];
+					return key["username"];
 				}
 			}
-			return "";
+			return personalAccessCode["username"];
 		}
 
 		public static void OAuthLogin(bool force = false)
@@ -77,11 +99,6 @@ namespace IgniteBot
 					UseShellExecute = true
 				});
 
-				//create server with auto assigned port
-				//httpServer = new HTTPServer("localhost", 6722);
-				//httpServer.Start();
-
-
 				webServer = new WebServer2(OAuthResponse, "http://localhost:6722/");
 				webServer.Run();
 			}
@@ -93,6 +110,7 @@ namespace IgniteBot
 
 		internal static void Unlink()
 		{
+			oauthToken = string.Empty;
 			discordUserData = null;
 			availableAccessCodes.Clear();
 			Settings.Default.discordOAuthRefreshToken = string.Empty;
@@ -122,16 +140,7 @@ namespace IgniteBot
 
 			if (!response.IsSuccessStatusCode)
 			{
-				//Process.Start(new ProcessStartInfo
-				//{
-				//	FileName = SecretKeys.OAuthURL,
-				//	UseShellExecute = true
-				//});
-
-				//create server with auto assigned port
-				//httpServer = new HTTPServer("localhost", 6722);
-				//httpServer.Start();
-
+				RevertToPersonal();
 			}
 			else
 			{
@@ -169,6 +178,12 @@ namespace IgniteBot
 
 		public static async void ProcessResponse(Dictionary<string, string> response)
 		{
+			if (response.ContainsKey("error"))
+			{
+				RevertToPersonal();
+				Settings.Default.discordOAuthRefreshToken = string.Empty;
+				oauthToken = string.Empty;
+			}
 
 			Settings.Default.discordOAuthRefreshToken = response["refresh_token"];
 			Settings.Default.Save();
@@ -194,8 +209,18 @@ namespace IgniteBot
 			// get the access codes for this user
 			HttpResponseMessage accessCodesResponse = await client.GetAsync(SecretKeys.accessCodesURL + oauthToken);
 			string accessCodesResponseString = await accessCodesResponse.Content.ReadAsStringAsync();
-			Dictionary<string, List<Dictionary<string, string>>> accessCodesData = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, string>>>>(accessCodesResponseString);
-			availableAccessCodes = accessCodesData["keys"];
+
+			Dictionary<string, JToken> accessCodesResponseData = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(accessCodesResponseString);
+			availableAccessCodes = accessCodesResponseData["keys"].ToObject<List<Dictionary<string, string>>>();
+			if (accessCodesResponseData.ContainsKey("write"))
+			{
+				igniteUploadKey = accessCodesResponseData["write"].ToObject<string>();
+			}
+			if (accessCodesResponseData.ContainsKey("firebase_cred"))
+			{
+				firebaseCred = accessCodesResponseData["firebase_cred"].ToObject<string>();
+			}
+
 			availableAccessCodes.Insert(0, new Dictionary<string, string>
 			{
 				{ "pw", "personal" },
@@ -203,7 +228,18 @@ namespace IgniteBot
 				{ "username", "Personal" }
 			});
 
-			Program.loginWindow?.Refresh();
+			Program.currentAccessCodeUsername = GetAccessCodeUsername(Settings.Default.accessCode);
+
+
+			authenticated?.Invoke();
+		}
+
+		public static void RevertToPersonal()
+		{
+			// revert to personal
+			Program.currentAccessCodeUsername = personalAccessCode["username"];
+			Settings.Default.accessCode = SecretKeys.Hash(personalAccessCode["pw"]);
+			Settings.Default.Save();
 		}
 	}
 }

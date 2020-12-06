@@ -63,7 +63,6 @@ namespace IgniteBot
 			}
 			//hostLiveReplayButton.Visible = !Program.Personal;
 
-			accessCodeLabel.Content = "Mode: " + Settings.Default.accessMode;
 			versionLabel.Content = "v" + Program.AppVersion();
 
 			GenerateNewStatsId();
@@ -649,7 +648,7 @@ namespace IgniteBot
 		private void showEventLogFileButton_Click(object sender, RoutedEventArgs e)
 		{
 			string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteBot\\" + logFolder);
-			if (File.Exists(folder))
+			if (Directory.Exists(folder))
 			{
 				Process.Start(new ProcessStartInfo
 				{

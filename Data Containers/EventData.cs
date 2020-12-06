@@ -49,6 +49,7 @@ namespace IgniteBot
 			player_joined,
 			player_left,
 			joust_speed,
+			defensive_joust,
 			big_boost,
 			restart_request,
 			pause_request,

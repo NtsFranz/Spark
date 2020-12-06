@@ -14,6 +14,12 @@ namespace IgniteBot
 			InitializeComponent();
 
 			Refresh();
+			DiscordOAuth.authenticated += Refresh;
+		}
+
+		~LoginWindow()
+		{
+			DiscordOAuth.authenticated -= Refresh;
 		}
 
 		public void Refresh()
@@ -46,9 +52,8 @@ namespace IgniteBot
 		private void StartButtonClicked(object sender, RoutedEventArgs e)
 		{
 			string username = accessCodeComboBox.SelectedValue.ToString();
-			Settings.Default.accessCode = SecretKeys.Hash(DiscordOAuth.GetAccessCode(username));
 			Program.currentAccessCodeUsername = username;
-			Program.currentSeasonName = DiscordOAuth.GetSeasonName(username);
+			Settings.Default.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
 			Settings.Default.Save();
 
 			if (Program.liveWindow == null)
@@ -73,6 +78,11 @@ namespace IgniteBot
 			}
 
 			Refresh();
+
+			string username = accessCodeComboBox.SelectedValue.ToString();
+			Program.currentAccessCodeUsername = username;
+			Settings.Default.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
+			Settings.Default.Save();
 		}
 	}
 }

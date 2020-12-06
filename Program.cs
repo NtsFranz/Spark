@@ -90,7 +90,6 @@ namespace IgniteBot
 		public static readonly HttpClient client = new HttpClient();
 
 		public static string currentAccessCodeUsername = "";
-		public static string currentSeasonName = "";
 
 		public static bool autoRestart;
 		public static bool showDatabaseLog;
@@ -267,24 +266,9 @@ namespace IgniteBot
 				{
 					DiscordOAuth.OAuthLoginRefresh(Settings.Default.discordOAuthRefreshToken);
 				}
-
-
-				if (string.IsNullOrEmpty(Settings.Default.accessCode))
-				{
-					Settings.Default.accessCode = SecretKeys.Hash("personal");
-				}
 				else
 				{
-					// checkaccesscode checks and sets the access code as active
-					switch (CheckAccessCode(Settings.Default.accessCode))
-					{
-						case AuthCode.network_error:
-							// TODO show that there's a network error
-							break;
-						case AuthCode.denied:
-							// TODO show that you were denied
-							break;
-					}
+					DiscordOAuth.RevertToPersonal();
 				}
 
 				liveWindow = new LiveWindow();
@@ -318,14 +302,6 @@ namespace IgniteBot
 					Settings.Default.whenToUploadLogs = 1;
 				}
 
-				if (currentAccessCodeUsername == "Personal")
-				{
-					if (Settings.Default.whenToUploadLogs == 1)
-					{
-						Settings.Default.whenToUploadLogs = 0;
-					}
-				}
-
 				if (currentAccessCodeUsername == "ignitevr")
 				{
 					ENABLE_LOGGER = false;
@@ -335,16 +311,10 @@ namespace IgniteBot
 
 				ReadSettings();
 
-				client.DefaultRequestHeaders.Add("x-api-key", SecretKeys.IgniteAPIKey);
 				client.DefaultRequestHeaders.Add("version", AppVersion());
 				client.DefaultRequestHeaders.Add("User-Agent", "IgniteBot/" + AppVersion());
 
 				client.BaseAddress = new Uri(APIURL);
-
-#if INCLUDE_FIRESTORE
-				var builder = new FirestoreClientBuilder { JsonCredentials = SecretKeys.firebaseJSONCredentials };
-				db = FirestoreDb.Create("ignitevr-echostats", builder.Build());
-#endif
 
 				if (isNVHighlightsEnabled)
 				{
@@ -355,12 +325,16 @@ namespace IgniteBot
 					InitHighlightsSDK(true);
 				}
 
-				// Initialize a new instance of the SpeechSynthesizer.
 				synth = new SpeechSynthesizer();
+				// Initialize a new instance of the SpeechSynthesizer.
+				DiscordOAuth.authenticated += () =>
+				{
+					synth = new SpeechSynthesizer();
+					// Configure the audio output.
+					synth.SetOutputToDefaultAudioDevice();
+					synth.SetRate(Settings.Default.TTSSpeed);
+				};
 
-				// Configure the audio output.
-				synth.SetOutputToDefaultAudioDevice();
-				synth.SetRate(Settings.Default.TTSSpeed);
 
 
 				UpdateEchoExeLocation();
@@ -2551,6 +2525,12 @@ namespace IgniteBot
 
 		static async Task DoUploadMatchBatch(string data, string hash, string client_name)
 		{
+			client.DefaultRequestHeaders.Remove("x-api-key");
+			client.DefaultRequestHeaders.Add("x-api-key", DiscordOAuth.igniteUploadKey);
+
+			client.DefaultRequestHeaders.Remove("access-code");
+			client.DefaultRequestHeaders.Add("access-code", DiscordOAuth.SeasonName);
+
 			var content = new StringContent(data, Encoding.UTF8, "application/json");
 
 			try
@@ -2571,7 +2551,9 @@ namespace IgniteBot
 			{
 				if (!Personal)
 				{
-					string season = currentSeasonName;
+					if (!TryCreateFirebaseDB()) return;
+
+					string season = DiscordOAuth.SeasonName;
 
 					var match_data = matchData.ToDict();
 
@@ -2605,7 +2587,9 @@ namespace IgniteBot
 			{
 				if (!Personal)
 				{
-					string season = currentSeasonName;
+					if (!TryCreateFirebaseDB()) return;
+
+					string season = DiscordOAuth.SeasonName;
 
 					var match_data = matchData.ToDict();
 
@@ -2637,9 +2621,11 @@ namespace IgniteBot
 			{
 				if (!Personal)
 				{
+					if (!TryCreateFirebaseDB()) return;
+
 					WriteBatch batch = db.StartBatch();
 
-					string season = currentSeasonName;
+					string season = DiscordOAuth.SeasonName;
 
 					// update the cumulative player stats
 					CollectionReference playersRef = db.Collection("series/" + season + "/player_stats");
@@ -2675,6 +2661,31 @@ namespace IgniteBot
 				}
 			}
 #endif
+		}
+
+		static bool TryCreateFirebaseDB()
+		{
+			if (db != null)
+			{
+				return true;
+			}
+			else if (DiscordOAuth.firebaseCred != null)
+			{
+				try
+				{
+					var builder = new FirestoreClientBuilder { JsonCredentials = DiscordOAuth.firebaseCred };
+					db = FirestoreDb.Create("ignitevr-echostats", builder.Build());
+					return true;
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		// Update existing player with stats from game.
@@ -2797,6 +2808,7 @@ namespace IgniteBot
 			approved
 		}
 
+		[Obsolete("delete soon")]
 		public static AuthCode CheckAccessCode(string accessCode)
 		{
 			if (accessCode == "") return AuthCode.denied;
@@ -2832,10 +2844,10 @@ namespace IgniteBot
 				if (respObj["auth"] == "true")
 				{
 					currentAccessCodeUsername = respObj["username"];
-					currentSeasonName = respObj["season_name"];
+					//currentSeasonName = respObj["season_name"];
 
 					client.DefaultRequestHeaders.Remove("access-code");
-					client.DefaultRequestHeaders.Add("access-code", currentSeasonName);
+					client.DefaultRequestHeaders.Add("access-code", respObj["season_name"]);
 
 					return AuthCode.approved;
 				}

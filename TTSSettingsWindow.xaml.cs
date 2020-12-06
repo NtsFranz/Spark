@@ -26,6 +26,7 @@ namespace IgniteBot
 			goalDistance.IsChecked = Settings.Default.goalDistanceTTS;
 			playerJoinCheckbox.IsChecked = Settings.Default.playerJoinTTS;
 			playerLeaveCheckbox.IsChecked = Settings.Default.playerLeaveTTS;
+			discordLoginWarning.Visibility = DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
 
 			speechSpeed.SelectionChanged += SpeechSpeedChanged;
 			serverLocationCheckbox.Checked += ServerLocationClicked;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace IgniteBot
 {
@@ -10,6 +11,7 @@ namespace IgniteBot
 	{
 		private readonly HttpListener _listener = new HttpListener();
 		private readonly Func<HttpListenerRequest, string> _responderMethod;
+		private bool running = false;
 
 		public WebServer2(IReadOnlyCollection<string> prefixes, Func<HttpListenerRequest, string> method)
 		{
@@ -34,6 +36,8 @@ namespace IgniteBot
 				_listener.Prefixes.Add(s);
 			}
 
+			running = true;
+
 			_responderMethod = method;
 			_listener.Start();
 		}
@@ -50,7 +54,7 @@ namespace IgniteBot
 				Console.WriteLine("Webserver running...");
 				try
 				{
-					while (_listener.IsListening)
+					while (_listener.IsListening && running)
 					{
 						ThreadPool.QueueUserWorkItem(c =>
 						{
@@ -91,8 +95,14 @@ namespace IgniteBot
 
 		public void Stop()
 		{
-			_listener.Stop();
-			_listener.Close();
+			running = false;
+
+			Task.Run(() =>
+			{
+				Task.Delay(1000);
+				_listener.Stop();
+				_listener.Close();
+			});
 		}
 	}
 }

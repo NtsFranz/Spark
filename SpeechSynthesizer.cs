@@ -17,6 +17,7 @@ namespace IgniteBot
 		private readonly TextToSpeechClient client;
 		private readonly VoiceSelectionParams voice;
 		bool playing = true;
+		Thread ttsThread;
 
 		/// <summary>
 		/// Queue of filenames to read
@@ -25,11 +26,13 @@ namespace IgniteBot
 
 		public SpeechSynthesizer()
 		{
+			// TTS won't work without Discord auth
+			if (DiscordOAuth.firebaseCred == null) return;
 
 			// Instantiate a client
 			TextToSpeechClientBuilder builder = new TextToSpeechClientBuilder
 			{
-				JsonCredentials = SecretKeys.firebaseJSONCredentials
+				JsonCredentials = DiscordOAuth.firebaseCred
 			};
 			client = builder.Build();
 
@@ -42,10 +45,15 @@ namespace IgniteBot
 			};
 
 
-			Thread ttsThread = new Thread(TTSThread);
+			ttsThread = new Thread(TTSThread);
 			ttsThread.IsBackground = true;
 			ttsThread.Start();
 
+		}
+
+		~SpeechSynthesizer()  // finalizer
+		{
+			ttsThread?.Abort();
 		}
 
 		private void TTSThread()
@@ -107,6 +115,8 @@ namespace IgniteBot
 
 		private void Speak(string text)
 		{
+			if (client == null) return;
+
 			// Set the text input to be synthesized.
 			SynthesisInput input = new SynthesisInput
 			{

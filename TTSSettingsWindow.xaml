@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
-        Title="IgniteBot | TTS Settings" Height="810" Width="418" Background="{DynamicResource BackgroundColour}" FontSize="14" SizeToContent="Height" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png" Loaded="TTSSettingsWindow_Load">
+        Title="IgniteBot | TTS Settings" Height="810" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="14" SizeToContent="Height" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png" Loaded="TTSSettingsWindow_Load">
 	<Grid>
 		<StackPanel Margin="15,15,15,15">
-			<Label x:Name="label" Content="Text-to-Speech (TTS) Settings" FontSize="20" Margin="4,4,4,4"/>
+			<Label x:Name="Title" Content="Text-to-Speech (TTS) Settings" FontSize="20" Margin="4,4,4,4"/>
+			<TextBlock x:Name="discordLoginWarning" Margin="16,16,16,16" Padding="10,10,10,11" Background="#FF492727" TextWrapping="Wrap"><Run Text="TTS only works when logged in with Discord!"/><LineBreak/><Run Text="(top left of main window)"/></TextBlock>
+			<TextBlock x:Name="instructions" TextWrapping="Wrap" Background="{DynamicResource ControlBrightDefaultBackground}" Padding="10,10,10,10"><Run Text="TTS allows you to hear events while in game. Make sure to set up your speakers appropriately to be able to hear the output. "/><LineBreak/><Run/><LineBreak/><Run Text="On Rift, set your default Windows sound output to the Rift headphones. "/><LineBreak/><Run/><LineBreak/><Run Text="On Quest, use headphones attached to your PC or turn up the speakers."/></TextBlock>
 			<Label x:Name="label1" Content="Speech Speed"/>
 			<ComboBox x:Name="speechSpeed" Width="146" HorizontalAlignment="Left" SelectedIndex="1" Margin="0,0,0,8" >
 				<ComboBoxItem Content="Slow"/>

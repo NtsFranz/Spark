@@ -16,7 +16,7 @@
 			<ColumnDefinition Width="200"/>
 		</Grid.ColumnDefinitions>
 		<StackPanel x:Name="Left_Sidebar" HorizontalAlignment="Stretch" Height="Auto">
-			<Button x:Name="loginButton" Height="40" Width="200" Click="LoginWindowButtonClicked" Padding="0,0,0,0" HorizontalContentAlignment="Left">
+			<Button x:Name="loginButton" Height="40" Width="200" Click="LoginWindowButtonClicked" Padding="0,0,0,0" HorizontalContentAlignment="Left" ToolTip="Log in to the program with Discord to enable features such as stat uploading and TTS.">
 				<StackPanel Orientation="Horizontal" Width="200" ScrollViewer.VerticalScrollBarVisibility="Disabled">
 					<Image x:Name="discordPFPImage" Height="40" Width="40" Source="https://cdn.discordapp.com/avatars/174743468004868097/f15fadcd0b3c236ebaf4744227f68086" Visibility="Collapsed"/>
 					<Label x:Name="discordUsernameLabel" Content="Discord Login" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="200" HorizontalAlignment="Center"/>
@@ -67,14 +67,14 @@
 							<TextBlock x:Name="lastGoalsTextBlock"/>
 						</GroupBox>
 						<GroupBox x:Name="lastJoustsBox" Header="Previous Joust TImes" Width="180" Margin="0,90,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="201">
-							<TextBlock x:Name="lastJoustsTextBlock"/>
+							<TextBlock x:Name="lastJoustsTextBlock" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
 						</GroupBox>
 					</Grid>
 				</TabItem>
 				<TabItem x:Name="eventLogTab" Header="Event Log" FontSize="14" Padding="10,6,10,6">
 					<Grid>
 						<TextBox x:Name="mainOutputTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsReadOnly="True"/>
-						<Button x:Name="showEventLogFileButton" Content="Open Event Log Folder" Width="183" Margin="0,10,30,0" HorizontalAlignment="Right" Click="showEventLogFileButton_Click" VerticalAlignment="Top" Height="30"/>
+						<Button x:Name="showEventLogFileButton" Content="Open Event Log Folder" Width="183" Margin="0,10,30,0" HorizontalAlignment="Right" Click="showEventLogFileButton_Click" VerticalAlignment="Top" Height="30" ToolTip="Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event."/>
 					</Grid>
 				</TabItem>
 			</TabControl>
@@ -95,26 +95,26 @@
 						<Button x:Name="button4" Content="Split Stats" Margin="4,4,4,4" Width="85" Click="splitStatsButtonClick"/>
 						<Button x:Name="button5" Content="Upload Now" Margin="4,4,4,4" Width="85" Click="UploadStatsManual"/>
 					</StackPanel>
-					<Button x:Name="button6" Content="Restart as Spectator" Height="35" Margin="4,4,4,4" Click="RestartAsSpectatorClick"/>
+					<Button x:Name="button6" Content="Restart as Spectator" Height="35" Margin="4,4,4,4" Click="RestartAsSpectatorClick" ToolTip="Restarts the game in the 2D spectator mode"/>
 					<Button x:Name="startSpectatorStream" Content="Open Spectatorstream" Height="35" Click="startSpectatorStream_Click" Margin="4,4,4,4" ToolTip="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing"/>
 				</StackPanel>
 			</GroupBox>
 			<GroupBox x:Name="toolsBox" Header="Tools" Margin="0,8,0,0" VerticalAlignment="Top">
 				<StackPanel VerticalAlignment="Top">
-					<Button x:Name="updateButton" Content="Download Update" Height="40" Margin="4,4,4,4" Background="#FF8B3434" Click="updateButton_Click" ToolTip="Downloads and installs the most recent update"/>
+					<Button x:Name="updateButton" Content="Download Update" Height="40" Margin="4,4,4,4" Background="#FF8B3434" Click="updateButton_Click" ToolTip="Downloads and installs the most recent update (recommended)"/>
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton" Content="Enable API in Settings" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
-					<Button x:Name="showAtlasLinks" Content="Show Atlas Links" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click"/>
+					<Button x:Name="showAtlasLinks" Content="Show Atlas Links" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click" ToolTip="Shows copy-pastable links to let others join your match"/>
 					<Button x:Name="playspaceButton" Content="Show Playspace" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Collapsed"/>
 					<Button x:Name="showPlayerSpeedsButton" Content="Show Player Speeds" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
-					<Button x:Name="ttsSettings" Content="TTS Settings" Height="40" Margin="4,4,4,4" Click="ttsSettings_Click"/>
+					<Button x:Name="ttsSettings" Content="TTS Settings" Height="40" Margin="4,4,4,4" Click="ttsSettings_Click" ToolTip="Settings for Text-to-Speech callouts during the game."/>
 					<Button x:Name="nvHighlightsSettings" Content="NV Highlights Settings" Height="40" Click="showNVHighlightsSettings_Click" Margin="4,4,4,4"/>
 					<Button x:Name="showHighlights" Content="Show NV Highlights" Height="40" Click="showHighlights_Click" Margin="4,4,4,4"/>
 				</StackPanel>
 			</GroupBox>
 		</StackPanel>
-		<Label x:Name="accessCodeLabel" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3"/>
-		<Label x:Name="versionLabel" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5"/>
+		<Label x:Name="accessCodeLabel" Content="Mode: Logging in..." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3"/>
+		<Label x:Name="versionLabel" Content="Version: ???" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5"/>
 
 
 

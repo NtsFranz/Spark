@@ -55,7 +55,14 @@
 							 Event="NewDialog"
 							 Value="WelcomeDlg"
 							 Order="2">1</Publish>
+			<Publish Dialog="ExitDialog"
+							 Control="Finish"
+							 Event="DoAction"
+							 Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+			
 		</UI>
+		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch IgniteBot"  />
+		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1"  />
 
 		<!-- Change the installer UI background images -->
 		<WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\Assets\Background.bmp" />
@@ -72,6 +79,20 @@
 			<ComponentGroupRef Id="PublishedComponents" />
 
 		</Feature>
+
+
+		<!-- Run the program after install -->
+		<!-- FileKey is from ComponentsGenerated, so it may change?-->
+		<CustomAction Id="LaunchApplication"
+              Execute="immediate"
+              Impersonate="no"
+              Return="asyncNoWait"
+              FileKey="fil95845DE29198D84B5F96DB6DBEA81404" 
+              ExeCommand="" />
+		
+		<!--<InstallExecuteSequence>
+			<Custom Action="EXECUTE_AFTER_FINALIZE" After="InstallFinalize"/>
+		</InstallExecuteSequence>-->
 
 	</Product>
 

@@ -34,27 +34,50 @@
 
     <!-- Colourful theme  Colours -->
 
-    <SolidColorBrush x:Key="ControlPrimaryDarkerBackground"             Color="#FF1565C0"/>
-    <SolidColorBrush x:Key="ControlPrimaryDarkerBorderBrush"            Color="#FF1976D2"/>
-    <SolidColorBrush x:Key="ControlPrimaryDefaultBackground"            Color="#FF2084E8"/>
-    <SolidColorBrush x:Key="ControlPrimaryDefaultBorderBrush"           Color="#FF3294E8"/>
-    <SolidColorBrush x:Key="ControlPrimaryBrightDefaultBackground"      Color="#FF3296FA"/>
-    <SolidColorBrush x:Key="ControlPrimaryBrightDefaultBorderBrush"     Color="#FF50A4FA"/>
-    <SolidColorBrush x:Key="ControlPrimaryDisabledBackground"           Color="#FF3278C8"/>
-    <SolidColorBrush x:Key="ControlPrimaryDisabledBorderBrush"          Color="#FF3C78C8"/>
-    <SolidColorBrush x:Key="ControlPrimaryMouseOverBackground"          Color="#FF208CF0"/>
-    <SolidColorBrush x:Key="ControlPrimaryMouseOverBorderBrush"         Color="#FF2896F5"/>
-    <SolidColorBrush x:Key="ControlPrimarySelectedBackground"           Color="#FF1482DC"/>
-    <SolidColorBrush x:Key="ControlPrimarySelectedBorderBrush"          Color="#FF28A0F0"/>
-    <SolidColorBrush x:Key="ControlPrimarySelectedMouseOverBackground"  Color="#FF1484D1"/>
-    <SolidColorBrush x:Key="ControlPrimarySelectedMouseOverBorderBrush" Color="#FF1491E8"/>
-    <SolidColorBrush x:Key="ControlPrimaryCaretSelectionBackground"     Color="#FF3297E8"/>
-    <SolidColorBrush x:Key="ControlPrimaryCaretBackground"              Color="#FF1992F1"/>
-    <SolidColorBrush x:Key="ControlPrimaryGlythColour"                  Color="#FF1E88E5"/>
-    <SolidColorBrush x:Key="ControlPrimaryMouseOverGlythColour"         Color="#FF2196F3"/>
-    <SolidColorBrush x:Key="ControlPrimarySelectedGlythColour"          Color="#FF42A5F5"/>
-    <SolidColorBrush x:Key="ControlPrimarySelectedMouseOverGlythColour" Color="#FF339AF7"/>
-    <SolidColorBrush x:Key="ControlPrimaryDisabledGlythColour"          Color="#FF081E3C"/>
+	<SolidColorBrush x:Key="ControlPrimaryDarkerBackground"             Color="#FFd0a406"/>
+	<SolidColorBrush x:Key="ControlPrimaryDarkerBorderBrush"            Color="#FFe8b602"/>
+	<SolidColorBrush x:Key="ControlPrimaryDefaultBackground"            Color="#FFe8bc20"/>
+	<SolidColorBrush x:Key="ControlPrimaryDefaultBorderBrush"           Color="#FFe6bf33"/>
+	<SolidColorBrush x:Key="ControlPrimaryBrightDefaultBackground"      Color="#FFe1c14c"/>
+	<SolidColorBrush x:Key="ControlPrimaryBrightDefaultBorderBrush"     Color="#FFd6c176"/>
+	<SolidColorBrush x:Key="ControlPrimaryDisabledBackground"           Color="#FFf5c105"/>
+	<SolidColorBrush x:Key="ControlPrimaryDisabledBorderBrush"          Color="#FFe6bb1e"/>
+	<SolidColorBrush x:Key="ControlPrimaryMouseOverBackground"          Color="#FF665A2C"/>
+	<SolidColorBrush x:Key="ControlPrimaryMouseOverBorderBrush"         Color="#FFe2be3c"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedBackground"           Color="#FF4F482E"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedBorderBrush"          Color="#FFe7c032"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedMouseOverBackground"  Color="#FF5D5537"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedMouseOverBorderBrush" Color="#FFf4c006"/>
+	<SolidColorBrush x:Key="ControlPrimaryCaretSelectionBackground"     Color="#FFe6bf33"/>
+	<SolidColorBrush x:Key="ControlPrimaryCaretBackground"              Color="#FFf4c415"/>
+	<SolidColorBrush x:Key="ControlPrimaryGlythColour"                  Color="#FFf4c210"/>
+	<SolidColorBrush x:Key="ControlPrimaryMouseOverGlythColour"         Color="#FFedc226"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedGlythColour"          Color="#FFdbc05c"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedMouseOverGlythColour" Color="#FFe2c046"/>
+	<SolidColorBrush x:Key="ControlPrimaryDisabledGlythColour"          Color="#FF423401"/>
+
+	<!--HUE SHIFTED-->
+	<!--<SolidColorBrush x:Key="ControlPrimaryDarkerBackground"             Color="#FFd0a406"/>
+	<SolidColorBrush x:Key="ControlPrimaryDarkerBorderBrush"            Color="#FFe8b602"/>
+	<SolidColorBrush x:Key="ControlPrimaryDefaultBackground"            Color="#FFe8bc20"/>
+	<SolidColorBrush x:Key="ControlPrimaryDefaultBorderBrush"           Color="#FFe6bf33"/>
+	<SolidColorBrush x:Key="ControlPrimaryBrightDefaultBackground"      Color="#FFe1c14c"/>
+	<SolidColorBrush x:Key="ControlPrimaryBrightDefaultBorderBrush"     Color="#FFd6c176"/>
+	<SolidColorBrush x:Key="ControlPrimaryDisabledBackground"           Color="#FFf5c105"/>
+	<SolidColorBrush x:Key="ControlPrimaryDisabledBorderBrush"          Color="#FFe6bb1e"/>
+	<SolidColorBrush x:Key="ControlPrimaryMouseOverBackground"          Color="#FFefc21f"/>
+	<SolidColorBrush x:Key="ControlPrimaryMouseOverBorderBrush"         Color="#FFe2be3c"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedBackground"           Color="#FFedba02"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedBorderBrush"          Color="#FFe7c032"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedMouseOverBackground"  Color="#FFe0b106"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedMouseOverBorderBrush" Color="#FFf4c006"/>
+	<SolidColorBrush x:Key="ControlPrimaryCaretSelectionBackground"     Color="#FFe6bf33"/>
+	<SolidColorBrush x:Key="ControlPrimaryCaretBackground"              Color="#FFf4c415"/>
+	<SolidColorBrush x:Key="ControlPrimaryGlythColour"                  Color="#FFf4c210"/>
+	<SolidColorBrush x:Key="ControlPrimaryMouseOverGlythColour"         Color="#FFedc226"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedGlythColour"          Color="#FFdbc05c"/>
+	<SolidColorBrush x:Key="ControlPrimarySelectedMouseOverGlythColour" Color="#FFe2c046"/>
+	<SolidColorBrush x:Key="ControlPrimaryDisabledGlythColour"          Color="#FF423401"/>-->
 
     <!-- Setup Stuff -->
 
