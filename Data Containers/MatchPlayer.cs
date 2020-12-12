@@ -53,6 +53,7 @@ namespace IgniteBot
 				{"blocks", Blocks },
 				{"interceptions", Interceptions },
 				{"assists", Assists },
+				// {"turnovers", Turnovers },	// TODO enable once the db supports it
 				{"average_speed", averageSpeed[0] },
 				{"average_speed_lhand", averageSpeed[1] },
 				{"average_speed_rhand", averageSpeed[2] },
@@ -158,6 +159,7 @@ namespace IgniteBot
 			}
 		}
 		public int Won { get; set; }
+		public int Turnovers { get; set; }
 		public MatchData matchData;
 		public TeamData teamData;
 		public Vector3 playspaceLocation;
@@ -256,7 +258,7 @@ namespace IgniteBot
 		/// <summary>
 		/// Store players stats from last round for later use in determining stats on a per round basis.
 		/// </summary>
-		/// <param name="playerStats"></param>
+		/// <param name="lastPlayer"></param>
 		public void StoreLastRoundStats(MatchPlayer lastPlayer)
 		{
 			lastRoundStats = lastPlayer.lastRoundStats;
@@ -270,7 +272,7 @@ namespace IgniteBot
 			lastRoundStats.steals += lastPlayer.Steals;
 			lastRoundStats.stuns += lastPlayer.Stuns;
 			lastRoundStats.blocks += lastPlayer.Blocks;
-			lastRoundStats.interceptions += lastPlayer.Interceptions;
+			lastRoundStats.interceptions += lastPlayer.Interceptions;	// TODO do we save this if it's being set by us anyway?
 			lastRoundStats.assists += lastPlayer.Assists;
 			lastRoundStats.goals += lastPlayer.GoalsNum;
 		}

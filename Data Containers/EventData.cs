@@ -53,7 +53,9 @@ namespace IgniteBot
 			big_boost,
 			restart_request,
 			pause_request,
-			unpause_request
+			unpause_request,
+			interception,	// not in db yet
+			turnover,		// not in db yet
 		}
 
 

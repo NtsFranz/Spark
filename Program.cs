@@ -184,24 +184,20 @@ namespace IgniteBot
 		public static int echoVRPort = 6721;
 		public static bool overrideEchoVRPort;
 
-		public static bool Personal {
-			get {
-				return currentAccessCodeUsername == "Personal";
-			}
-		}
+		public static bool Personal => currentAccessCodeUsername == "Personal";
 
 
 		public static SpeechSynthesizer synth;
 
 
-		static Thread statsThread;
-		static Thread fullLogThread;
-		static Thread autorestartThread;
-		static Thread fetchThread;
-		static Thread liveReplayThread;
-		static Thread milkThread;
+		private static Thread statsThread;
+		private static Thread fullLogThread;
+		private static Thread autorestartThread;
+		private static Thread fetchThread;
+		private static Thread liveReplayThread;
+		private static Thread milkThread;
 
-		public static App app;
+		private static App app;
 
 		public static void Main(string[] args, App app)
 		{
@@ -356,7 +352,7 @@ namespace IgniteBot
 
 				Init();
 
-				HighlightsHelper.CloseNVHighlights();
+				//HighlightsHelper.CloseNVHighlights();
 			}
 		}
 
@@ -681,7 +677,7 @@ namespace IgniteBot
 			}
 		}
 
-		public static void MilkThread()
+		private static void MilkThread()
 		{
 			Thread.Sleep(2000);
 			int frameCount = 0;
@@ -716,7 +712,7 @@ namespace IgniteBot
 		/// <summary>
 		/// Thread for logging all JSON data
 		/// </summary>
-		public static void FullLogThread()
+		private static void FullLogThread()
 		{
 			Thread.Sleep(2000);
 			lastDataTime = DateTime.Now;
@@ -904,7 +900,7 @@ namespace IgniteBot
 
 		public static void KillEchoVR()
 		{
-			var process = Process.GetProcessesByName("echovr");
+			Process[] process = Process.GetProcessesByName("echovr");
 			if (process != null && process.Length > 0)
 			{
 				try
@@ -927,7 +923,7 @@ namespace IgniteBot
 			});
 		}
 
-		public static void UpdateEchoExeLocation()
+		private static void UpdateEchoExeLocation()
 		{
 			// skip if we already have a valid path
 			if (File.Exists(Settings.Default.echoVRPath)) return;
@@ -1108,14 +1104,12 @@ namespace IgniteBot
 				UpdateStatsIngame(frame);
 			}
 
-			/// <summary>
-			/// The time between the current frame and last frame in seconds based on the game clock
-			/// </summary>
+			// The time between the current frame and last frame in seconds based on the game clock
 			float deltaTime = lastFrame.game_clock - frame.game_clock;
 			if (deltaTime != 0)
 			{
 				if (smoothDeltaTime == -1) smoothDeltaTime = deltaTime;
-				float smoothingFactor = .99f;
+				const float smoothingFactor = .99f;
 				smoothDeltaTime = smoothDeltaTime * smoothingFactor + deltaTime * (1 - smoothingFactor);
 			}
 
@@ -1480,9 +1474,11 @@ namespace IgniteBot
 						if (!lastPlayer.possession && player.possession)
 						{
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.@catch, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
+							playerData.Catches++;
 							bool caughtThrow = false;
-							string throwPlayerName = "";
-							bool wasInt = false;
+							g_Team throwTeam = null;
+							g_Player throwPlayer = null;
+							bool wasTurnoverCatch = false;
 
 							if (lastThrowPlayerId > 0)
 							{
@@ -1496,10 +1492,11 @@ namespace IgniteBot
 										if (lplayer.playerid == lastThrowPlayerId && lplayer.possession == true)
 										{
 											caughtThrow = true;
-											throwPlayerName = lplayer.name;
+											throwPlayer = lplayer;
+											throwTeam = lteam;
 											if (lteam.color != team.color)
 											{
-												wasInt = true;
+												wasTurnoverCatch = true;
 											}
 										}
 									}
@@ -1508,14 +1505,19 @@ namespace IgniteBot
 							}
 							if (caughtThrow)
 							{
-								if (wasInt && lastPlayer.stats.saves == player.stats.saves)
+								if (wasTurnoverCatch && lastPlayer.stats.saves == player.stats.saves)
 								{
-									_ = DelayedCatchEvent(player, throwPlayerName);
-									//LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " intercepted a throw from " + throwPlayerName);
+									_ = DelayedCatchEvent(player, throwPlayer);
+									LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + throwPlayer.name + " turned over the disk to " + player.name);
+									// TODO enable once the db can handle it
+									// matchData.Events.Add(new EventData(matchData, EventData.EventType.turnover, frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position, player.head.Position));
+									matchData.GetPlayerData(throwTeam, throwPlayer).Turnovers++;
 								}
 								else
 								{
-									LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " made a catch from a pass from " + throwPlayerName);
+									LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " received a pass from " + throwPlayer.name);
+									matchData.Events.Add(new EventData(matchData, EventData.EventType.pass, frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position, player.head.Position));
+									matchData.GetPlayerData(throwTeam, throwPlayer).Passes++;
 								}
 							}
 							else
@@ -1525,12 +1527,14 @@ namespace IgniteBot
 						}
 
 						// check if the disk was caught using stats 🥊
+						// This doesn't happen, because the API just reports 0
 						if (lastPlayer.stats.catches != player.stats.catches)
 						{
 							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " made a catch (stat)");
 						}
 
 						// check blocks 🧱
+						// This doesn't happen, because the API just reports 0
 						if (lastPlayer.stats.blocks != player.stats.blocks)
 						{
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.block, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
@@ -1575,16 +1579,13 @@ namespace IgniteBot
 							}
 
 							// find out underhandedness
-							float underhandedness = 0;
-							if (Vector3.Distance(lastPlayer.lhand.Position, lastFrame.disc.position.ToVector3()) <
-								Vector3.Distance(lastPlayer.rhand.Position, lastFrame.disc.position.ToVector3()))
-							{
-								underhandedness = Vector3.Dot(lastPlayer.head.up.ToVector3(), lastPlayer.lhand.Position - lastPlayer.head.Position);
-							}
-							else
-							{
-								underhandedness = Vector3.Dot(lastPlayer.head.up.ToVector3(), lastPlayer.rhand.Position - lastPlayer.head.Position);
-							}
+							float underhandedness = 
+								Vector3.Distance(lastPlayer.lhand.Position, lastFrame.disc.position.ToVector3()) <
+							    Vector3.Distance(lastPlayer.rhand.Position, lastFrame.disc.position.ToVector3())
+								? Vector3.Dot(lastPlayer.head.up.ToVector3(),
+									lastPlayer.lhand.Position - lastPlayer.head.Position)
+								: Vector3.Dot(lastPlayer.head.up.ToVector3(),
+									lastPlayer.rhand.Position - lastPlayer.head.Position);
 
 							// wait to actually log this throw to get more accurate velocity
 							_ = DelayedThrowEvent(player, leftHanded, underhandedness, frame.disc.velocity.ToVector3().Length());
@@ -1713,26 +1714,27 @@ namespace IgniteBot
 			lastFrame = frame;
 		}
 
-		private static async Task DelayedCatchEvent(g_Player originalPlayer, string throwPlayerName)
+		private static async Task DelayedCatchEvent(g_Player originalPlayer, g_Player throwPlayer)
 		{
 			// TODO look through again
-			// wait some time before re-checking the throw velocity
+			// wait some time before checking if a save happened (then it wouldn't be an interception)
 			await Task.Delay(2000);
 
 			g_Instance frame = lastFrame;
 
-			foreach (var team in frame.teams)
+			foreach (g_Team team in frame.teams)
 			{
-				foreach (var player in team.players)
+				foreach (g_Player player in team.players)
 				{
-					if (player.playerid == originalPlayer.playerid)
-					{
-						if (player.stats.saves == originalPlayer.stats.saves)
-						{
-							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " intercepted a throw from " + throwPlayerName);
-							HighlightsHelper.SaveHighlightMaybe(player, frame, "INTERCEPTION");
-						}
-					}
+					if (player.playerid != originalPlayer.playerid) continue;
+					if (player.stats.saves != originalPlayer.stats.saves) continue;
+					
+					LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " intercepted a throw from " + throwPlayer.name);
+					// TODO enable this once the db supports it
+					// matchData.Events.Add(new EventData(matchData, EventData.EventType.interception, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
+					matchData.GetPlayerData(team, player).Interceptions++;
+							
+					HighlightsHelper.SaveHighlightMaybe(player, frame, "INTERCEPTION");
 
 				}
 			}
@@ -2406,7 +2408,7 @@ namespace IgniteBot
 		}
 
 		// Update existing player with stats from game.
-		static void UpdateSinglePlayer(g_Instance frame, g_Team team, g_Player player, int won)
+		private static void UpdateSinglePlayer(g_Instance frame, g_Team team, g_Player player, int won)
 		{
 			if (!matchData.teams.ContainsKey(team.color))
 			{
@@ -2429,13 +2431,13 @@ namespace IgniteBot
 			playerData.Points = player.stats.points;
 			playerData.ShotsTaken = player.stats.shots_taken;
 			playerData.Saves = player.stats.saves;
-			//playerData.GoalsNum = player.stats.goals;	// disabled in favor of manual increment because the api is broken here
-			playerData.Passes = player.stats.passes;
-			playerData.Catches = player.stats.catches;
+			// playerData.GoalsNum = player.stats.goals;	// disabled in favor of manual increment because the api is broken here
+			// playerData.Passes = player.stats.passes;		// api reports 0
+			// playerData.Catches = player.stats.catches;  	// api reports 0
 			playerData.Steals = player.stats.steals;
 			playerData.Stuns = player.stats.stuns;
-			playerData.Blocks = player.stats.blocks;
-			playerData.Interceptions = player.stats.interceptions;
+			playerData.Blocks = player.stats.blocks;		// api reports 0
+			// playerData.Interceptions = player.stats.interceptions;	// api reports 0
 			playerData.Assists = player.stats.assists;
 			playerData.Won = won;
 		}
@@ -2530,18 +2532,17 @@ namespace IgniteBot
 
 				// Display the content.
 				Dictionary<string, string> respObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseFromServer);
-				if (respObj["auth"] == "true")
-				{
-					currentAccessCodeUsername = respObj["username"];
-					//currentSeasonName = respObj["season_name"];
+				
+				if (respObj["auth"] != "true") return AuthCode.denied;
+				
+				currentAccessCodeUsername = respObj["username"];
+				//currentSeasonName = respObj["season_name"];
 
-					client.DefaultRequestHeaders.Remove("access-code");
-					client.DefaultRequestHeaders.Add("access-code", respObj["season_name"]);
+				client.DefaultRequestHeaders.Remove("access-code");
+				client.DefaultRequestHeaders.Add("access-code", respObj["season_name"]);
 
-					return AuthCode.approved;
-				}
+				return AuthCode.approved;
 
-				return AuthCode.denied;
 			}
 			catch
 			{
@@ -2579,74 +2580,73 @@ namespace IgniteBot
 
 		public static void RegisterUriScheme(string UriScheme, string FriendlyName)
 		{
-			using (var key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\" + UriScheme))
+			try
 			{
-				string applicationLocation = typeof(Program).Assembly.Location;
+				using RegistryKey key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\" + UriScheme);
+				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "IgniteBot.exe");
 
 				key.SetValue("", "URL:" + FriendlyName);
 				key.SetValue("URL Protocol", "");
 
-				using (var defaultIcon = key.CreateSubKey("DefaultIcon"))
-				{
-					defaultIcon.SetValue("", applicationLocation + ",1");
-				}
+				using RegistryKey defaultIcon = key.CreateSubKey("DefaultIcon");
+				defaultIcon.SetValue("", applicationLocation + ",1");
 
-				using (var commandKey = key.CreateSubKey(@"shell\open\command"))
-				{
-					commandKey.SetValue("", "\"" + applicationLocation + "\" \"%1\"");
-				}
+				using RegistryKey commandKey = key.CreateSubKey(@"shell\open\command");
+				commandKey.SetValue("", "\"" + applicationLocation + "\" \"%1\"");
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, "Failed to set URI scheme");
 			}
 		}
 
 		public static bool CheckIfLaunchedWithCustomURLHandlerParam(string[] args)
 		{
-			// join a match directly
-			if (args.Length > 0 && (args[0].Contains("ignitebot://") || args[0].Contains("atlas://")))
+			if (args.Length <= 0 || (!args[0].Contains("ignitebot://") && !args[0].Contains("atlas://"))) return false;
+		
+			// join a match directly	
+			string[] parts = args[0].Split('/');
+			if (parts.Length != 4)
 			{
-				string[] parts = args[0].Split('/');
-				if (parts.Length != 4)
-				{
-					LogRow(LogType.Error, "ERROR 3452. Incorrectly formatted IgniteBot or Atlas link");
-					new MessageBox($"Incorrectly formatted IgniteBot or Atlas link: wrong number of '/' characters for link:\n{args[0]}\n{parts.Length}", "Error", Quit).Show();
-				}
-
-				bool spectating = false;
-				switch (parts[2])
-				{
-					case "spectate":
-					case "s":
-						spectating = true;
-						break;
-					case "join":
-					case "j":
-						spectating = false;
-						break;
-					case "choose":
-					case "c":
-						// hand the whole thing off to the popup window
-						new ChooseJoinTypeDialog(parts[3]).Show();
-						return true;
-					default:
-						LogRow(LogType.Error, "ERROR 8675. Incorrectly formatted IgniteBot or Atlas link");
-						new MessageBox("Incorrectly formatted IgniteBot or Atlas link: Incorrect join type.", "Error", Quit).Show();
-						return true;
-				}
-
-
-				// start client
-				var echoPath = Settings.Default.echoVRPath;
-				if (!string.IsNullOrEmpty(echoPath))
-				{
-					Process.Start(echoPath, (spectating ? "-spectatorstream " : " ") + "-lobbyid " + parts[3]);
-				}
-				else
-				{
-					new MessageBox("EchoVR exe path not set. Run the IgniteBot while in a lobby or game with the API enabled at least once first.", "Error", Quit).Show();
-				}
-				return true;
+				LogRow(LogType.Error, "ERROR 3452. Incorrectly formatted IgniteBot or Atlas link");
+				new MessageBox($"Incorrectly formatted IgniteBot or Atlas link: wrong number of '/' characters for link:\n{args[0]}\n{parts.Length}", "Error", Quit).Show();
 			}
 
-			return false;
+			bool spectating = false;
+			switch (parts[2])
+			{
+				case "spectate":
+				case "s":
+					spectating = true;
+					break;
+				case "join":
+				case "j":
+					spectating = false;
+					break;
+				case "choose":
+				case "c":
+					// hand the whole thing off to the popup window
+					new ChooseJoinTypeDialog(parts[3]).Show();
+					return true;
+				default:
+					LogRow(LogType.Error, "ERROR 8675. Incorrectly formatted IgniteBot or Atlas link");
+					new MessageBox("Incorrectly formatted IgniteBot or Atlas link: Incorrect join type.", "Error", Quit).Show();
+					return true;
+			}
+
+
+			// start client
+			string echoPath = Settings.Default.echoVRPath;
+			if (!string.IsNullOrEmpty(echoPath))
+			{
+				Process.Start(echoPath, (spectating ? "-spectatorstream " : " ") + "-lobbyid " + parts[3]);
+			}
+			else
+			{
+				new MessageBox("EchoVR exe path not set. Run the IgniteBot while in a lobby or game with the API enabled at least once first.", "Error", Quit).Show();
+			}
+			return true;
+
 		}
 
 		internal static void Quit()

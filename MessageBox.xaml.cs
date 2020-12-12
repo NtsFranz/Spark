@@ -22,7 +22,7 @@ namespace IgniteBot
 			this.callback = callback;
 		}
 
-		private void button_Click(object sender, RoutedEventArgs e)
+		private void ButtonClicked(object sender, RoutedEventArgs e)
 		{
 			callback?.Invoke();
 			Close();
