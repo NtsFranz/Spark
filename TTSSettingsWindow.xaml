@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
-        Title="IgniteBot | TTS Settings" Height="810" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="14" SizeToContent="Height" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png" Loaded="TTSSettingsWindow_Load">
+        Title="IgniteBot | TTS Settings" Height="860" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="14" SizeToContent="Height" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png" Loaded="TTSSettingsWindow_Load">
 	<Grid>
 		<StackPanel Margin="15,15,15,15">
 			<Label x:Name="Title" Content="Text-to-Speech (TTS) Settings" FontSize="20" Margin="4,4,4,4"/>
@@ -18,14 +18,14 @@
 				<ComboBoxItem Content="Fast"/>
 				<ComboBoxItem Content="Very Fast"/>
 			</ComboBox>
+			<CheckBox x:Name="serverLocationCheckbox" Content="Server Location" Margin="4,10,4,0" />
+			<TextBlock x:Name="label2_Copy2" TextWrapping="WrapWithOverflow" Text="Estimated location of the server as you join" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
 			<CheckBox x:Name="joustTimeCheckbox" Content="Joust Time" Margin="4,10,4,0" />
 			<TextBlock x:Name="label2" TextWrapping="WrapWithOverflow" Text="Time in seconds to reach the midline on neutral jousts for the fastest player on each team" HorizontalAlignment="Stretch" Margin="4,4,4,4"/>
 			<CheckBox x:Name="joustSpeedCheckbox" Content="Joust Speed" Margin="4,10,4,0" />
 			<TextBlock x:Name="label2_Copy" TextWrapping="WrapWithOverflow" Text="Speed in m/s of the first player on each team to cross the midline on neutral joust" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
 			<CheckBox x:Name="tubeExitSpeedCheckbox" Content="Tube Exit Speed (self)" Margin="4,10,4,0" />
 			<TextBlock x:Name="label2_Copy1" TextWrapping="WrapWithOverflow" Text="Speed in m/s as you exit the launch tube" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
-			<CheckBox x:Name="serverLocationCheckbox" Content="Server Location" Margin="4,10,4,0" />
-			<TextBlock x:Name="label2_Copy2" TextWrapping="WrapWithOverflow" Text="Estimated location of the server as you join" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
 			<CheckBox x:Name="maxBoostSpeedCheckbox" Content="Max Boost Speed" Margin="4,10,4,0" />
 			<TextBlock x:Name="label2_Copy3" TextWrapping="WrapWithOverflow" Text="Maximum speed achieved for times when you are faster than 20 m/s" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
 			<CheckBox x:Name="throwSpeedCheckbox" Content="Throw Speed" Margin="4,10,4,0" Visibility="Collapsed"/>

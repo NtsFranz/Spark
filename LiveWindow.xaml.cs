@@ -153,6 +153,15 @@ namespace IgniteBot
 					if (Program.lastFrame != null && Program.lastFrame.map_name != "mpl_lobby_b2")  // 'mpl_lobby_b2' may change in the future
 					{
 						discSpeedLabel.Content = Program.lastFrame.disc.velocity.ToVector3().Length().ToString("N2");
+						switch (Program.lastFrame.possession[0])
+						{
+							case 0:
+								discSpeedLabel.BorderBrush = System.Windows.Media.Brushes.DarkBlue;
+								break;
+							case 1:
+								discSpeedLabel.BorderBrush = System.Windows.Media.Brushes.DarkRed;
+								break;
+						}
 						//discSpeedProgressBar.Value = (int)Program.lastFrame.disc.Velocity.Length();
 						//if (Program.lastFrame.teams[0].possession)
 						//{
@@ -183,6 +192,7 @@ namespace IgniteBot
 							new StringBuilder(),
 							new StringBuilder()
 						};
+						List<List<int>> pings = new List<List<int>> { new List<int>(), new List<int>() };
 
 						// loop through all the players and set their speed progress bars and pings
 						int i = 0;
@@ -212,6 +222,8 @@ namespace IgniteBot
 									pingsTextNames.AppendLine(player.name);
 									pingsTextPings.AppendLine(player.ping.ToString());
 
+									pings[t].Add(player.ping);
+
 									speedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 								}
 								teamNames[t].AppendLine(player.name);
@@ -220,6 +232,16 @@ namespace IgniteBot
 
 						playerPingsNames.Text = pingsTextNames.ToString();
 						playerPingsPings.Text = pingsTextPings.ToString();
+
+						float serverScore = Program.CalculateServerScore(pings[0], pings[1]);
+						if (serverScore < 0)
+						{
+							playerPingsGroupbox.Header = $"Player Pings\t >150";	
+						}
+						else
+						{	
+							playerPingsGroupbox.Header = $"Player Pings\tScore: {serverScore:N2}";
+						}
 
 						playersSpeedsNames.Text = pingsTextNames.ToString();
 						playerSpeedsSpeeds.Text = speedsTextSpeeds.ToString();
@@ -437,6 +459,8 @@ namespace IgniteBot
 			}
 		}
 
+
+
 		private void CloseButtonClicked(object sender, RoutedEventArgs e)
 		{
 			Hide();
@@ -636,13 +660,13 @@ namespace IgniteBot
 		private void RejoinClicked(object sender, RoutedEventArgs e)
 		{
 			Program.KillEchoVR();
-			Program.StartEchoVR("player");
+			Program.StartEchoVR("j");
 		}
 
 		private void RestartAsSpectatorClick(object sender, RoutedEventArgs e)
 		{
 			Program.KillEchoVR();
-			Program.StartEchoVR("spectator");
+			Program.StartEchoVR("s");
 		}
 
 		private void showEventLogFileButton_Click(object sender, RoutedEventArgs e)

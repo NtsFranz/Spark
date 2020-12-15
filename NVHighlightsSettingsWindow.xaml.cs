@@ -34,12 +34,14 @@ namespace IgniteBot
 			clearHighlightsButton.IsEnabled = HighlightsHelper.DoNVClipsExist();
 
 			enableNVHighlightsCheckbox.IsEnabled = HighlightsHelper.isNVHighlightsSupported;
-			enableNVHighlightsCheckbox.Content = HighlightsHelper.isNVHighlightsSupported ? "Enable NVIDIA Highlights" : "NVIDIA Highlights isn't supported by your PC";
+			enableNVHighlightsCheckbox.Content = HighlightsHelper.isNVHighlightsSupported 
+				? "Enable NVIDIA Highlights" 
+				: "NVIDIA Highlights isn't supported by your PC";
 
 
 			nvHighlightsBox.IsEnabled = HighlightsHelper.isNVHighlightsEnabled;
 			nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
-			clearHighlightsButton.Content = "Clear " + HighlightsHelper.nvHighlightClipCount + " Unsaved Highlights";
+			clearHighlightsButton.Content = $"Clear {HighlightsHelper.nvHighlightClipCount} Unsaved Highlights";
 
 			Console.WriteLine(highlightScope.SelectedIndex);
 		}

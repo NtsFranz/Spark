@@ -162,6 +162,9 @@ namespace IgniteBot
 		public int Turnovers { get; set; }
 		public MatchData matchData;
 		public TeamData teamData;
+		/// <summary>
+		/// The location of the playspace within the arena. This is not the position of the player within the playspace
+		/// </summary>
 		public Vector3 playspaceLocation;
 		public int PlayspaceAbuses { get; set; }
 

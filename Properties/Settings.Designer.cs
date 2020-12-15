@@ -289,13 +289,13 @@ namespace IgniteBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int whenToUploadLogs {
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool uploadToIgniteDB {
             get {
-                return ((int)(this["whenToUploadLogs"]));
+                return ((bool)(this["uploadToIgniteDB"]));
             }
             set {
-                this["whenToUploadLogs"] = value;
+                this["uploadToIgniteDB"] = value;
             }
         }
         

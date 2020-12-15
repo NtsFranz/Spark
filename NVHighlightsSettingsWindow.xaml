@@ -6,22 +6,28 @@
         xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
         Title="IgniteBot | NVIDIA Highlights Settings"
-        Height="454" Width="500" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png"
+        Height="517" Width="500" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png"
         Background="{DynamicResource BackgroundColour}" SizeToContent="Height"
         Loaded="NVHighlightsSettingsWindow_Load" FontSize="14">
     <Grid>
         <StackPanel Margin="10,10,10,10">
             <Label x:Name="title" Content="NVIDIA Highlights Settings" FontSize="16" Margin="5,5,5,5" />
+			
             <TextBlock x:Name="instructionsLabel"
-                       Text="To enable NVIDIA Highlights, first enable the NVIDIA overlay in Geforce Experience, then enable the Highlights feature from within the overlay (ALT+Z). The events that you want to trigger a clip can be customized in the NVIDIA overlay while the game is open. "
+                       Text="To enable NVIDIA Highlights, first enable the NVIDIA overlay in Geforce Experience, then enable the Highlights feature from within the overlay (ALT+Z). The events that you want to trigger a clip can be customized in the NVIDIA overlay while the game is open."
                        TextWrapping="Wrap" Margin="5,5,5,5" />
-            <CheckBox x:Name="enableNVHighlightsCheckbox" Content="Enable NVIDIA Highlights" Margin="5,5,5,5" Checked="EnableNVHighlightsEvent" Unchecked="EnableNVHighlightsEvent"/>
+
+			<TextBlock x:Name="instructionsLabel_Copy"
+				Text="Make sure to enable Desktop recording (under the 'Privacy control' section in the overlay), otherwise only this program will be recorded."
+				TextWrapping="Wrap" Margin="5,5,5,5" />
+			
+			<CheckBox x:Name="enableNVHighlightsCheckbox" Content="Enable NVIDIA Highlights" Margin="5,5,5,5" Checked="EnableNVHighlightsEvent" Unchecked="EnableNVHighlightsEvent"/>
             <GroupBox x:Name="nvHighlightsBox" Header="NVIDIA Highlights" Margin="5,5,5,5">
                 <StackPanel>
-                    <Label x:Name="label2" Content="Highlight Scope" Width="488" Margin="5,5,5,0" />
-                    <ComboBox x:Name="highlightScope" Width="197" HorizontalAlignment="Left" Margin="5,5,5,5" SelectionChanged="HighlightScopeChanged">
-                        <ComboBoxItem Content="Client Player Only" />
-                        <ComboBoxItem Content="Client Team Only" />
+                    <Label x:Name="label2" Content="Highlight Scope" Margin="5,5,5,0" />
+                    <ComboBox x:Name="highlightScope" Width="197" HorizontalAlignment="Left" Margin="5,5,5,5" SelectionChanged="HighlightScopeChanged" ToolTip="Which events are clipped. All events are clipped when in Spectator mode.">
+                        <ComboBoxItem Content="Me Only" />
+                        <ComboBoxItem Content="My Team Only" />
                         <ComboBoxItem Content="All Players (both teams)" />
                     </ComboBox>
                     <TextBlock x:Name="textBlock"
@@ -33,7 +39,7 @@
                             HorizontalAlignment="Left" Margin="5,5,5,5" Height="32" Click="ClearHighlightsEvent" />
                 </StackPanel>
             </GroupBox>
-        </StackPanel>
+		</StackPanel>
         <Button x:Name="closeButton" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                 Margin="10,10,10,10" Width="128" Height="32" IsDefault="True" Click="CloseButtonClick"/>
 

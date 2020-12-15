@@ -25,12 +25,8 @@
 			<CheckBox x:Name="enableStatsLogging" Content="Enable Stats Logging" Margin="10,20,4,4" Checked="EnableStatsLoggingEvent" Unchecked="EnableStatsLoggingEvent"/>
 			<GroupBox x:Name="statsLoggingBox" Header="Stats Logging" Margin="10,4,10,4">
 				<StackPanel>
-					<Label x:Name="label2" Content="When to upload data to the Ignite database:" Width="588" Margin="4,4,4,4"/>
-					<ComboBox x:Name="uploadTimesComboBox" Width="437" SelectedIndex="0" HorizontalAlignment="Left" Margin="4,4,4,4" SelectionChanged="LoggingTimeChanged">
-						<ComboBoxItem Content="Only at end of matches"/>
-						<ComboBoxItem Content="After goals, player leave/join, and end of matches"/>
-						<ComboBoxItem Content="Never"/>
-					</ComboBox>
+					<TextBlock x:Name="label2" Text="Uploads data to the Personal Ignite database. This is separate from the public match stats, but is still visible on the website. Discord Login is required for stat uploading. Only public matches are uploaded." Margin="4,4,4,4" TextWrapping="Wrap"/>
+					<CheckBox x:Name="uploadToIgniteDB" Content="Upload to IgniteVR Database" Margin="4,4,4,4" Checked="UploadToIgniteDBChanged" Visibility="Visible" Unchecked="UploadToIgniteDBChanged"/>
 					<CheckBox x:Name="uploadToFirestoreCheckBox" Content="Upload to Firestore" Margin="4,4,4,4" Checked="UploadToFirestoreChanged" Visibility="Visible" Unchecked="UploadToFirestoreChanged"/>
 				</StackPanel>
 			</GroupBox>

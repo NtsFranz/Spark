@@ -6,7 +6,13 @@
         xmlns:local="clr-namespace:IgniteBot"
 		xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
-        Title="IgniteBot | Live Data Output" Height="600" Width="1060" FontSize="14" Background="{DynamicResource BackgroundColour}" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png" Initialized="LiveWindow_Load">
+        Title="IgniteBot | Live Data Output" 
+        Height="600" Width="1060" 
+        FontSize="14" 
+        Background="{DynamicResource BackgroundColour}" 
+        ResizeMode="CanMinimize" 
+        Icon="/img/ignite_logo_128.png" 
+        Initialized="LiveWindow_Load">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="200"/>
@@ -105,7 +111,7 @@
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton" Content="Enable API in Settings" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
 					<Button x:Name="showAtlasLinks" Content="Show Atlas Links" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click" ToolTip="Shows copy-pastable links to let others join your match"/>
-					<Button x:Name="playspaceButton" Content="Show Playspace" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Collapsed"/>
+					<Button x:Name="playspaceButton" Content="Show Playspace" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
 					<Button x:Name="showPlayerSpeedsButton" Content="Show Player Speeds" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
 					<Button x:Name="ttsSettings" Content="TTS Settings" Height="40" Margin="4,4,4,4" Click="ttsSettings_Click" ToolTip="Settings for Text-to-Speech callouts during the game."/>
 					<Button x:Name="nvHighlightsSettings" Content="NV Highlights Settings" Height="40" Click="showNVHighlightsSettings_Click" Margin="4,4,4,4"/>
@@ -114,7 +120,7 @@
 			</GroupBox>
 		</StackPanel>
 		<Label x:Name="accessCodeLabel" Content="Mode: Logging in..." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3"/>
-		<Label x:Name="versionLabel" Content="Version: ???" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5"/>
+		<Label x:Name="versionLabel" Content="Version: ???" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5" Foreground="#FFA42525"/>
 
 
 

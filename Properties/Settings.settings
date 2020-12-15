@@ -68,9 +68,9 @@
     <Setting Name="outputOther" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="whenToUploadLogs" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
+		<Setting Name="uploadToIgniteDB" Type="System.Boolean" Scope="User">
+			<Value Profile="(Default)">True</Value>
+		</Setting>
     <Setting Name="uploadToFirestore" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

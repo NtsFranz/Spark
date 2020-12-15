@@ -14,7 +14,7 @@ namespace IgniteBot
 	/// </summary>
 	public partial class SettingsWindow : Window
 	{
-		bool initialized = false;
+		private bool initialized = false;
 		public SettingsWindow()
 		{
 			InitializeComponent();
@@ -29,9 +29,9 @@ namespace IgniteBot
 
 			enableStatsLogging.IsChecked = Settings.Default.enableStatsLogging;
 			statsLoggingBox.IsEnabled = enableStatsLogging.IsChecked == true;
-			uploadTimesComboBox.SelectedIndex = Settings.Default.whenToUploadLogs;
 
 			onlyRecordPrivateMatches.IsChecked = Settings.Default.onlyRecordPrivateMatches;
+			uploadToIgniteDB.IsChecked = Settings.Default.uploadToIgniteDB;
 #if INCLUDE_FIRESTORE
 			uploadToFirestoreCheckBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 #else
@@ -215,12 +215,10 @@ namespace IgniteBot
 			Settings.Default.Save();
 		}
 
-		private void LoggingTimeChanged(object sender, SelectionChangedEventArgs e)
+		private void UploadToIgniteDBChanged(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			int index = ((ComboBox)sender).SelectedIndex;
-
-			Settings.Default.whenToUploadLogs = index;
+			Settings.Default.uploadToIgniteDB = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 		}
 

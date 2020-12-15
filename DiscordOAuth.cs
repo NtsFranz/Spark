@@ -120,8 +120,15 @@ namespace IgniteBot
 		private static string OAuthResponse(HttpListenerRequest request)
 		{
 			NameValueCollection queryStrings = HttpUtility.ParseQueryString(request.Url.Query);
-			OAuthLoginResponse(queryStrings["code"]);
-			return "<html><body onload=\"javascript: close(); \">You can close this window</body></html>";
+			if (queryStrings["code"] != null)
+			{
+				OAuthLoginResponse(queryStrings["code"]);
+				return "<html><body onload=\"javascript: close(); \">You can close this window</body></html>";
+			}
+			else
+			{
+				return "<html><body onload=\"javascript: close(); \">There was an error. Close this window and try again.</body></html>";
+			}
 		}
 
 		public static async void OAuthLoginRefresh(string refresh_token)

@@ -270,7 +270,7 @@ namespace IgniteBot
 
 		private static string IsPlayerHighlightEnabled(g_Player player, g_Instance frame)
 		{
-			if (didHighlightsInit && isNVHighlightsEnabled)
+			if (player != null && didHighlightsInit && isNVHighlightsEnabled)
 			{
 				TeamColor clientTeam = frame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
 				if (player.name == frame.client_name)
@@ -296,7 +296,7 @@ namespace IgniteBot
 		private static string IsPlayerHighlightEnabled(string playerName, g_Instance frame)
 		{
 			if (playerName == "[INVALID]") return "";
-			g_Player highlightPlayer = frame.teams.Find(t => t.players.Exists(p => p.name == playerName)).players.Find(p => p.name == playerName);
+			g_Player highlightPlayer = frame.GetPlayer(playerName);
 			return IsPlayerHighlightEnabled(highlightPlayer, frame);
 		}
 
