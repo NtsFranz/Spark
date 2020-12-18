@@ -61,6 +61,10 @@ namespace IgniteBot
 					enableAPIButton.Visibility = Visibility.Collapsed;
 				}
 			}
+			else
+			{
+				enableAPIButton.Visibility = Visibility.Collapsed;
+			}
 			//hostLiveReplayButton.Visible = !Program.Personal;
 
 			versionLabel.Content = "v" + Program.AppVersion();
@@ -236,10 +240,10 @@ namespace IgniteBot
 						float serverScore = Program.CalculateServerScore(pings[0], pings[1]);
 						if (serverScore < 0)
 						{
-							playerPingsGroupbox.Header = $"Player Pings\t >150";	
+							playerPingsGroupbox.Header = $"Player Pings\t >150";
 						}
 						else
-						{	
+						{
 							playerPingsGroupbox.Header = $"Player Pings\tScore: {serverScore:N2}";
 						}
 
@@ -329,6 +333,15 @@ namespace IgniteBot
 					RefreshDiscordLogin();
 
 					RefreshAccessCode();
+
+					if (Settings.Default.echoVRIP != "127.0.0.1")
+					{
+						spectateMeButton.Visibility = Visibility.Visible;
+					}
+					else
+					{
+						spectateMeButton.Visibility = Visibility.Collapsed;
+					}
 
 					if (!Program.running)
 					{
@@ -830,6 +843,35 @@ namespace IgniteBot
 			if (((TabControl)sender).SelectedIndex == 1)
 			{
 				mainOutputTextBox.ScrollToEnd();
+			}
+		}
+
+		private void SpectateMeClicked(object sender, RoutedEventArgs e)
+		{
+			Program.spectateMe = !Program.spectateMe;
+			try
+			{
+				if (Program.spectateMe)
+				{
+					if (Program.inGame)
+					{
+						if (Program.lastFrame != null && !Program.lastFrame.inLobby)
+						{
+							Program.KillEchoVR();
+							Program.StartEchoVR("spectate");
+						}
+					}
+					spectateMeButton.Content = "Stop Spectating Me";
+				}
+				else
+				{
+					Program.KillEchoVR();
+					spectateMeButton.Content = "Spectate Me";
+				}
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, "Broke something in the spectator follow system.\n" + ex.ToString());
 			}
 		}
 	}

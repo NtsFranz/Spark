@@ -35,6 +35,7 @@ namespace IgniteBot
 		/// Time of remaining in match (in seconds)
 		/// </summary>
 		public float game_clock { get; set; }
+		public bool inLobby => map_name == "mpl_lobby_b2";
 		public string match_type { get; set; }
 		public string map_name { get; set; }
 		/// <summary>

@@ -76,4 +76,7 @@
     <Exec Command="if not exist Installs mkdir Installs" />
     <Exec Command="move bin\$(Configuration)\en-us\$(OutputName).msi Installs\IgniteBotInstaller_v%(AssemblyVersion.Version).msi" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent />
+  </PropertyGroup>
 </Project>

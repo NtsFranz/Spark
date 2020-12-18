@@ -1,7 +1,9 @@
 ﻿using IgniteBot.Properties;
 using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace IgniteBot
 {
@@ -34,13 +36,15 @@ namespace IgniteBot
 			clearHighlightsButton.IsEnabled = HighlightsHelper.DoNVClipsExist();
 
 			enableNVHighlightsCheckbox.IsEnabled = HighlightsHelper.isNVHighlightsSupported;
-			enableNVHighlightsCheckbox.Content = HighlightsHelper.isNVHighlightsSupported 
-				? "Enable NVIDIA Highlights" 
+			enableNVHighlightsCheckbox.Content = HighlightsHelper.isNVHighlightsSupported
+				? "Enable NVIDIA Highlights"
 				: "NVIDIA Highlights isn't supported by your PC";
 
 
 			nvHighlightsBox.IsEnabled = HighlightsHelper.isNVHighlightsEnabled;
 			nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
+			secondsBefore.Text = Settings.Default.nvHighlightsSecondsBefore.ToString();
+			secondsAfter.Text = Settings.Default.nvHighlightsSecondsAfter.ToString();
 			clearHighlightsButton.Content = $"Clear {HighlightsHelper.nvHighlightClipCount} Unsaved Highlights";
 
 			Console.WriteLine(highlightScope.SelectedIndex);
@@ -95,6 +99,12 @@ namespace IgniteBot
 			nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
 		}
 
+		private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+		{
+			Regex regex = new Regex("[^0-9]+");
+			e.Handled = regex.IsMatch(e.Text);
+		}
+
 		private void ClearHighlightsEvent(object sender, RoutedEventArgs e)
 		{
 			HighlightsHelper.ClearUnsavedNVHighlights(true);
@@ -106,6 +116,24 @@ namespace IgniteBot
 		private void CloseButtonClick(object sender, RoutedEventArgs e)
 		{
 			Close();
+		}
+
+		private void SecondsBeforeChanged(object sender, TextChangedEventArgs e)
+		{
+			if (float.TryParse(((TextBox)sender).Text, out float value))
+			{
+				Settings.Default.nvHighlightsSecondsBefore = value;
+				Settings.Default.Save();
+			}
+		}
+
+		private void SecondsAfterChanged(object sender, TextChangedEventArgs e)
+		{
+			if (float.TryParse(((TextBox)sender).Text, out float value))
+			{
+				Settings.Default.nvHighlightsSecondsAfter = value;
+				Settings.Default.Save();
+			}
 		}
 	}
 }

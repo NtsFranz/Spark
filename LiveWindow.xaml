@@ -93,7 +93,7 @@
 		</StackPanel>
 		<GridSplitter x:Name="gridSplitter_Copy" HorizontalAlignment="Stretch" Margin="1055,242,0,242" Grid.Column="3"/>
 		<StackPanel x:Name="Right_Sidebar" Grid.Column="4" HorizontalAlignment="Stretch" Height="Auto">
-			<GroupBox x:Name="casterToolsBox" Header="Caster Tools">
+			<GroupBox x:Name="casterToolsBox" Header="Caster Tools" Visibility="Collapsed">
 				<StackPanel>
 					<Label x:Name="label" Content="Stats ID:"/>
 					<TextBox x:Name="customIdTextbox" Text="---" MaxLines="1" TextWrapping="NoWrap" Height="16" IsReadOnly="True" FontSize="14" FontFamily="Courier New"/>
@@ -116,6 +116,7 @@
 					<Button x:Name="ttsSettings" Content="TTS Settings" Height="40" Margin="4,4,4,4" Click="ttsSettings_Click" ToolTip="Settings for Text-to-Speech callouts during the game."/>
 					<Button x:Name="nvHighlightsSettings" Content="NV Highlights Settings" Height="40" Click="showNVHighlightsSettings_Click" Margin="4,4,4,4"/>
 					<Button x:Name="showHighlights" Content="Show NV Highlights" Height="40" Click="showHighlights_Click" Margin="4,4,4,4"/>
+					<Button x:Name="spectateMeButton" Content="Spectate Me" Height="40" Click="SpectateMeClicked" Margin="4,4,4,4"/>
 				</StackPanel>
 			</GroupBox>
 		</StackPanel>

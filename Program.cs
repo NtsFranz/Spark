@@ -25,7 +25,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static IgniteBot.g_Team;
 using static Logger;
-using NVIDIA;
 
 namespace IgniteBot
 {
@@ -150,13 +149,12 @@ namespace IgniteBot
 		public static int deltaTimeIndexStats;
 		public static int deltaTimeIndexFull = 1;
 
-		public static int StatsHz
-		{
+		public static int StatsHz {
 			get => statsDeltaTimes[deltaTimeIndexStats];
 		}
 
-		public static List<int> statsDeltaTimes = new List<int> {16, 100};
-		public static List<int> fullDeltaTimes = new List<int> {16, 33, 1000};
+		public static List<int> statsDeltaTimes = new List<int> { 16, 100 };
+		public static List<int> fullDeltaTimes = new List<int> { 16, 33, 100 };
 
 		/// <summary>
 		/// The folder to save all the full data logs to
@@ -193,6 +191,8 @@ namespace IgniteBot
 
 		public static bool Personal => currentAccessCodeUsername == "Personal";
 
+		public static bool spectateMe;
+		public static string lastSpectatedSessionId;
 
 		public static SpeechSynthesizer synth;
 
@@ -664,6 +664,7 @@ namespace IgniteBot
 
 						ProcessFrame(game_Instance);
 
+
 						//if (DateTime.Now - DiscordRichPresence.lastDiscordPresenceTime > TimeSpan.FromSeconds(1))
 						//{
 						//	DiscordRichPresence.ProcessDiscordPresence(game_Instance);
@@ -813,10 +814,10 @@ namespace IgniteBot
 					if (DateTime.Compare(lastDataTime.AddMinutes(.25f), DateTime.Now) < 0)
 					{
 						LogRow(LogType.Info, "Time left until restart: " +
-						                     (lastDataTime.AddMinutes(minTillAutorestart) - DateTime.Now).Minutes +
-						                     " min " +
-						                     (lastDataTime.AddMinutes(minTillAutorestart) - DateTime.Now).Seconds +
-						                     " sec");
+											 (lastDataTime.AddMinutes(minTillAutorestart) - DateTime.Now).Minutes +
+											 " min " +
+											 (lastDataTime.AddMinutes(minTillAutorestart) - DateTime.Now).Seconds +
+											 " sec");
 
 						// If `minTillAutorestart` minutes have passed, restart EchoVR
 						if (DateTime.Compare(lastDataTime.AddMinutes(minTillAutorestart), DateTime.Now) < 0)
@@ -966,7 +967,7 @@ namespace IgniteBot
 					var paths = new List<string>();
 					foreach (string subkey in oculusReg.GetSubKeyNames())
 					{
-						paths.Add((string) oculusReg.OpenSubKey(subkey).GetValue("OriginalPath"));
+						paths.Add((string)oculusReg.OpenSubKey(subkey).GetValue("OriginalPath"));
 					}
 
 					const string echoDir = "Software\\ready-at-dawn-echo-arena\\bin\\win7\\echovr.exe";
@@ -1040,7 +1041,7 @@ namespace IgniteBot
 			deltaTimeIndexFull = Settings.Default.targetDeltaTimeIndexFull;
 			echoVRIP = Settings.Default.echoVRIP;
 			HighlightsHelper.clearHighlightsOnExit = Settings.Default.clearHighlightsOnExit;
-			HighlightsHelper.ClientHighlightScope = (HighlightLevel) Settings.Default.clientHighlightScope;
+			HighlightsHelper.ClientHighlightScope = (HighlightLevel)Settings.Default.clientHighlightScope;
 			HighlightsHelper.isNVHighlightsEnabled = Settings.Default.isNVHighlightsEnabled;
 			if (!overrideEchoVRPort) echoVRPort = Settings.Default.echoVRPort;
 
@@ -1114,7 +1115,7 @@ namespace IgniteBot
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null || string.IsNullOrWhiteSpace(frame.game_status)) return;
 
-			if (frame.map_name == "mpl_lobby_b2") return;
+			if (frame.inLobby) return;
 
 			// if we entered a different match
 			if (frame.sessionid != lastFrame.sessionid || lastFrame == null)
@@ -1122,11 +1123,27 @@ namespace IgniteBot
 				// We just discard the old match and hope it was already submitted
 
 				lastFrame = frame; // don't detect stats changes across matches
-				// TODO discard old players
+								   // TODO discard old players
 
 				inPostMatch = false;
 				matchData = new MatchData(frame);
 				UpdateStatsIngame(frame);
+
+
+
+				if (spectateMe)
+				{
+					try
+					{
+						KillEchoVR();
+						StartEchoVR("spectate");
+						lastSpectatedSessionId = lastFrame.sessionid;
+					}
+					catch (Exception e)
+					{
+						LogRow(LogType.Error, "Broke something in the spectator follow system.\n" + e.ToString());
+					}
+				}
 			}
 
 			// The time between the current frame and last frame in seconds based on the game clock
@@ -1359,8 +1376,8 @@ namespace IgniteBot
 							playerData.playspaceLocation += offset;
 
 							if (team.team != "SPECTATORS" && Math.Abs(smoothDeltaTime) < .1f &&
-							    Math.Abs(deltaTime) < .1f &&
-							    Vector3.Distance(player.head.Position, playerData.playspaceLocation) > 1.7f)
+								Math.Abs(deltaTime) < .1f &&
+								Vector3.Distance(player.head.Position, playerData.playspaceLocation) > 1.7f)
 							{
 								// playspace abuse happened
 								matchData.Events.Add(
@@ -1631,9 +1648,9 @@ namespace IgniteBot
 
 						// check disk was thrown ⚾
 						if (!wasThrown && player.possession &&
-						    !lastFrame.disc.velocity.ToVector3().Equals(Vector3.Zero) &&
-						    !frame.disc.velocity.ToVector3().Equals(Vector3.Zero) &&
-						    (frame.disc.velocity.ToVector3() - player.velocity.ToVector3()).Length() > 3)
+							!lastFrame.disc.velocity.ToVector3().Equals(Vector3.Zero) &&
+							!frame.disc.velocity.ToVector3().Equals(Vector3.Zero) &&
+							(frame.disc.velocity.ToVector3() - player.velocity.ToVector3()).Length() > 3)
 						{
 							wasThrown = true;
 							lastThrowPlayerId = player.playerid;
@@ -1645,7 +1662,7 @@ namespace IgniteBot
 
 							// based on position of hands
 							if (Vector3.Distance(lastPlayer.lhand.Position, lastFrame.disc.position.ToVector3()) <
-							    Vector3.Distance(lastPlayer.rhand.Position, lastFrame.disc.position.ToVector3()))
+								Vector3.Distance(lastPlayer.rhand.Position, lastFrame.disc.position.ToVector3()))
 							{
 								leftHanded = true;
 							}
@@ -1674,7 +1691,7 @@ namespace IgniteBot
 						}
 
 						// calculate joust time to center
-						int side = (int) team.color;
+						int side = (int)team.color;
 						if (team.color != TeamColor.spectator && isJousting[side])
 						{
 							if (player.velocity.ToVector3().Length() > joustMaxSpeed[side])
@@ -1700,8 +1717,8 @@ namespace IgniteBot
 										if (player.name == frame.client_name)
 										{
 											synth.SpeakAsync("tube " +
-											                 player.velocity.ToVector3().Length().ToString("N0") +
-											                 " meters per second");
+															 player.velocity.ToVector3().Length().ToString("N0") +
+															 " meters per second");
 										}
 									}
 								}
@@ -1719,7 +1736,7 @@ namespace IgniteBot
 									frame.game_clock,
 									team,
 									player,
-									(long) ((joustStartTime - frame.game_clock) * 1000),
+									(long)((joustStartTime - frame.game_clock) * 1000),
 									Vector3.Zero,
 									new Vector3(
 										joustMaxSpeed[side],
@@ -1733,32 +1750,32 @@ namespace IgniteBot
 								if (Settings.Default.joustTimeTTS && !Settings.Default.joustSpeedTTS)
 								{
 									synth.SpeakAsync(team.color.ToString() + " " +
-									                 (joustStartTime - frame.game_clock).ToString("N1"));
+													 (joustStartTime - frame.game_clock).ToString("N1"));
 								}
 								// only joust speed
 								else if (!Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
 								{
 									synth.SpeakAsync(team.color.ToString() + " " + joustMaxSpeed[side].ToString("N0") +
-									                 " meters per second");
+													 " meters per second");
 								}
 								// both
 								else if (Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
 								{
 									synth.SpeakAsync(team.color.ToString() + " " +
-									                 (joustStartTime - frame.game_clock).ToString("N1") + " " +
-									                 joustMaxSpeed[side].ToString("N0") + " meters per second");
+													 (joustStartTime - frame.game_clock).ToString("N1") + " " +
+													 joustMaxSpeed[side].ToString("N0") + " meters per second");
 								}
 
 								matchData.Events.Add(joustEvent);
 								LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " +
-								                                      team.color.ToString() +
-								                                      " team joust time: " +
-								                                      (joustStartTime - frame.game_clock)
-								                                      .ToString("N2") +
-								                                      " s, Max speed: " +
-								                                      joustMaxSpeed[side].ToString("N2") +
-								                                      " m/s, Tube Exit Speed: " +
-								                                      joustTubeExitSpeed[side].ToString("N2") + " m/s");
+																	  team.color.ToString() +
+																	  " team joust time: " +
+																	  (joustStartTime - frame.game_clock)
+																	  .ToString("N2") +
+																	  " s, Max speed: " +
+																	  joustMaxSpeed[side].ToString("N2") +
+																	  " m/s, Tube Exit Speed: " +
+																	  joustTubeExitSpeed[side].ToString("N2") + " m/s");
 
 								// Upload to Firebase 🔥
 								_ = DoUploadEventFirebase(matchData, joustEvent);
@@ -1782,7 +1799,7 @@ namespace IgniteBot
 					if (!lastFrame.blue_team_restart_request && frame.blue_team_restart_request)
 					{
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
-							lastFrame.game_clock, frame.teams[(int) TeamColor.blue], null, null, Vector3.Zero,
+							lastFrame.game_clock, frame.teams[(int)TeamColor.blue], null, null, Vector3.Zero,
 							Vector3.Zero));
 						LogRow(LogType.File, frame.sessionid,
 							frame.game_clock_display + " - " + "blue team restart request");
@@ -1792,7 +1809,7 @@ namespace IgniteBot
 					if (!lastFrame.orange_team_restart_request && frame.orange_team_restart_request)
 					{
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
-							lastFrame.game_clock, frame.teams[(int) TeamColor.orange], null, null, Vector3.Zero,
+							lastFrame.game_clock, frame.teams[(int)TeamColor.orange], null, null, Vector3.Zero,
 							Vector3.Zero));
 						LogRow(LogType.File, frame.sessionid,
 							frame.game_clock_display + " - " + "orange team restart request");
@@ -1857,10 +1874,10 @@ namespace IgniteBot
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.@throw, frame.game_clock,
 								team, player, null, player.head.Position, frame.disc.velocity.ToVector3()));
 							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name +
-							                                      " threw the disk at " +
-							                                      frame.disc.velocity.ToVector3().Length()
-								                                      .ToString("N2") + " m/s with their " +
-							                                      (leftHanded ? "left" : "right") + " hand");
+																  " threw the disk at " +
+																  frame.disc.velocity.ToVector3().Length()
+																	  .ToString("N2") + " m/s with their " +
+																  (leftHanded ? "left" : "right") + " hand");
 							matchData.currentDiskTrajectory.Clear();
 
 							// add throw data type
@@ -2061,7 +2078,7 @@ namespace IgniteBot
 						EventMatchFinished(frame, MatchData.FinishReason.game_time, 0);
 					}
 					else if (lastFrame.game_clock < deltaTime * 10 || lastFrame.game_status == "post_sudden_death" ||
-					         deltaTime < 0)
+							 deltaTime < 0)
 					{
 						// TODO add the score that ends an overtime
 						// ProcessScore(frame); 
@@ -2111,9 +2128,9 @@ namespace IgniteBot
 				goalZPos *= -1f;
 			}
 
-			int x1 = (int) Math.Pow((disckPos.X - goalXPos), 2);
-			int y1 = (int) Math.Pow((disckPos.Y - goalYPos), 2);
-			int z1 = (int) Math.Pow((disckPos.Z - goalZPos), 2);
+			int x1 = (int)Math.Pow((disckPos.X - goalXPos), 2);
+			int y1 = (int)Math.Pow((disckPos.Y - goalYPos), 2);
+			int z1 = (int)Math.Pow((disckPos.Z - goalZPos), 2);
 
 			// distance between the 
 			// centre and given point 
@@ -2150,9 +2167,9 @@ namespace IgniteBot
 			if (discVel != Vector3.Zero)
 			{
 				float angleIntoGoalRad =
-					(float) (Math.Acos(Vector3.Dot(discVel, new Vector3(0, 0, 1) * (discPos.Z < 0 ? -1 : 1)) /
-					                   discVel.Length()));
-				angleIntoGoal = (float) (angleIntoGoalRad * (180 / Math.PI));
+					(float)(Math.Acos(Vector3.Dot(discVel, new Vector3(0, 0, 1) * (discPos.Z < 0 ? -1 : 1)) /
+									   discVel.Length()));
+				angleIntoGoal = (float)(angleIntoGoalRad * (180 / Math.PI));
 
 				// make the angle negative if backboard
 				if (angleIntoGoal > 90)
@@ -2533,7 +2550,7 @@ namespace IgniteBot
 			{
 				try
 				{
-					var builder = new FirestoreClientBuilder {JsonCredentials = DiscordOAuth.firebaseCred};
+					var builder = new FirestoreClientBuilder { JsonCredentials = DiscordOAuth.firebaseCred };
 					db = FirestoreDb.Create("ignitevr-echostats", builder.Build());
 					return true;
 				}
@@ -2579,7 +2596,7 @@ namespace IgniteBot
 			playerData.Steals = player.stats.steals;
 			playerData.Stuns = player.stats.stuns;
 			playerData.Blocks = player.stats.blocks; // api reports 0
-			// playerData.Interceptions = player.stats.interceptions;	// api reports 0
+													 // playerData.Interceptions = player.stats.interceptions;	// api reports 0
 			playerData.Assists = player.stats.assists;
 			playerData.Won = won;
 		}
@@ -2656,7 +2673,7 @@ namespace IgniteBot
 				WebResponse response = request.GetResponse();
 
 				// Display the status.
-				Console.WriteLine(((HttpWebResponse) response).StatusDescription);
+				Console.WriteLine(((HttpWebResponse)response).StatusDescription);
 
 				string responseFromServer;
 
@@ -2697,28 +2714,43 @@ namespace IgniteBot
 
 		public static JToken ReadEchoVRSettings()
 		{
-			string file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "rad",
-				"loneecho", "settings_mp_v2.json");
-			if (!File.Exists(file))
+			try
 			{
-				LogRow(LogType.Error, "Can't find the EchoVR settings file");
-				return null;
-			}
+				string file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "rad",
+				"loneecho", "settings_mp_v2.json");
+				if (!File.Exists(file))
+				{
+					LogRow(LogType.Error, "Can't find the EchoVR settings file");
+					return null;
+				}
 
-			return JsonConvert.DeserializeObject<JToken>(File.ReadAllText(file));
+				return JsonConvert.DeserializeObject<JToken>(File.ReadAllText(file));
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, "Error when reading Arena settings.\n" + e.ToString());
+			}
+			return null;
 		}
 
 		public static void WriteEchoVRSettings(JToken settings)
 		{
-			string file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "rad",
-				"loneecho", "settings_mp_v2.json");
-			if (!File.Exists(file))
+			try
 			{
-				throw new NullReferenceException("Can't find the EchoVR settings file");
-			}
+				string file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "rad",
+					"loneecho", "settings_mp_v2.json");
+				if (!File.Exists(file))
+				{
+					throw new NullReferenceException("Can't find the EchoVR settings file");
+				}
 
-			var settingsString = JsonConvert.SerializeObject(settings, Formatting.Indented);
-			File.WriteAllText(file, settingsString);
+				var settingsString = JsonConvert.SerializeObject(settings, Formatting.Indented);
+				File.WriteAllText(file, settingsString);
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, "Error when writing Arena settings.\n" + e.ToString());
+			}
 		}
 
 
@@ -2817,13 +2849,13 @@ namespace IgniteBot
 			//   1 - within-team variance
 			//   2 - overall server variance
 			//   3 - overall high/low pings for server
-			int[] points_distribution = new int[] {30, 30, 30, 10};
+			int[] points_distribution = new int[] { 30, 30, 30, 10 };
 
 			// determine max possible server/team variance and max possible sum diff,
 			// given the min/max allowable ping
 			float max_server_var = Variance(new float[]
 				{min_ping, min_ping, min_ping, min_ping, max_ping, max_ping, max_ping, max_ping});
-			float max_team_var = Variance(new float[] {min_ping, min_ping, max_ping, max_ping});
+			float max_team_var = Variance(new float[] { min_ping, min_ping, max_ping, max_ping });
 			float max_sum_diff = (4 * max_ping) - (4 * min_ping);
 
 			// sanity check for ping values
@@ -2844,7 +2876,7 @@ namespace IgniteBot
 			float blueVariance = Variance(bluePings);
 			float orangeVariance = Variance(orangePings);
 
-			float mean_var = new[] {blueVariance, orangeVariance}.Average();
+			float mean_var = new[] { blueVariance, orangeVariance }.Average();
 			float team_points = (1 - (mean_var / max_team_var)) * points_distribution[1];
 
 			// calculate points for server variance
@@ -2875,7 +2907,7 @@ namespace IgniteBot
 
 		public static float Variance(IEnumerable<int> values)
 		{
-			float avg = (float) values.Average();
+			float avg = (float)values.Average();
 			return values.Average(v => MathF.Pow(v - avg, 2));
 		}
 
@@ -2923,7 +2955,7 @@ namespace IgniteBot
 
 		public static float DistanceTo(this Vector3 v1, Vector3 v2)
 		{
-			return (float) Math.Sqrt(Math.Pow(v1.X - v2.X, 2) + Math.Pow(v1.Y - v2.Y, 2) + Math.Pow(v1.Z - v2.Z, 2));
+			return (float)Math.Sqrt(Math.Pow(v1.X - v2.X, 2) + Math.Pow(v1.Y - v2.Y, 2) + Math.Pow(v1.Z - v2.Z, 2));
 		}
 
 		public static Vector3 Normalized(this Vector3 v1)

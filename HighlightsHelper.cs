@@ -1,10 +1,7 @@
 ﻿using IgniteBot.Properties;
 using NVIDIA;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static IgniteBot.g_Team;
 
 namespace IgniteBot
@@ -36,8 +33,8 @@ namespace IgniteBot
 				{
 					groupId = highlightGroupName,
 					highlightId = id,
-					startDelta = -3000,
-					endDelta = 2000
+					startDelta = -(int)(Settings.Default.nvHighlightsSecondsBefore * 1000),
+					endDelta = (int)(Settings.Default.nvHighlightsSecondsAfter * 1000)
 				};
 				Highlights.SetVideoHighlight(vhp, videoCallback);
 				return true;

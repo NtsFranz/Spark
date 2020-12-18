@@ -6,42 +6,52 @@
         xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
         Title="IgniteBot | NVIDIA Highlights Settings"
-        Height="517" Width="500" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png"
-        Background="{DynamicResource BackgroundColour}" SizeToContent="Height"
+        Height="596" Width="500" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png"
+        Background="{DynamicResource BackgroundColour}" SizeToContent="Manual"
         Loaded="NVHighlightsSettingsWindow_Load" FontSize="14">
-    <Grid>
-        <StackPanel Margin="10,10,10,10">
-            <Label x:Name="title" Content="NVIDIA Highlights Settings" FontSize="16" Margin="5,5,5,5" />
-			
-            <TextBlock x:Name="instructionsLabel"
+	<Grid>
+		<StackPanel Margin="10,10,10,10">
+			<Label x:Name="title" Content="NVIDIA Highlights Settings" FontSize="16" Margin="5,5,5,5" />
+
+			<TextBlock x:Name="instructionsLabel"
                        Text="To enable NVIDIA Highlights, first enable the NVIDIA overlay in Geforce Experience, then enable the Highlights feature from within the overlay (ALT+Z). The events that you want to trigger a clip can be customized in the NVIDIA overlay while the game is open."
                        TextWrapping="Wrap" Margin="5,5,5,5" />
 
 			<TextBlock x:Name="instructionsLabel_Copy"
 				Text="Make sure to enable Desktop recording (under the 'Privacy control' section in the overlay), otherwise only this program will be recorded."
 				TextWrapping="Wrap" Margin="5,5,5,5" />
-			
+
 			<CheckBox x:Name="enableNVHighlightsCheckbox" Content="Enable NVIDIA Highlights" Margin="5,5,5,5" Checked="EnableNVHighlightsEvent" Unchecked="EnableNVHighlightsEvent"/>
-            <GroupBox x:Name="nvHighlightsBox" Header="NVIDIA Highlights" Margin="5,5,5,5">
-                <StackPanel>
-                    <Label x:Name="label2" Content="Highlight Scope" Margin="5,5,5,0" />
-                    <ComboBox x:Name="highlightScope" Width="197" HorizontalAlignment="Left" Margin="5,5,5,5" SelectionChanged="HighlightScopeChanged" ToolTip="Which events are clipped. All events are clipped when in Spectator mode.">
-                        <ComboBoxItem Content="Me Only" />
-                        <ComboBoxItem Content="My Team Only" />
-                        <ComboBoxItem Content="All Players (both teams)" />
-                    </ComboBox>
-                    <TextBlock x:Name="textBlock"
+			<GroupBox x:Name="nvHighlightsBox" Header="NVIDIA Highlights" Margin="5,5,5,5">
+				<StackPanel>
+					<Label x:Name="label2" Content="Highlight Scope" Margin="5,5,5,0" />
+					<ComboBox x:Name="highlightScope" Width="197" HorizontalAlignment="Left" Margin="5,5,5,5" SelectionChanged="HighlightScopeChanged" ToolTip="Which events are clipped. All events are clipped when in Spectator mode.">
+						<ComboBoxItem Content="Me Only" />
+						<ComboBoxItem Content="My Team Only" />
+						<ComboBoxItem Content="All Players (both teams)" />
+					</ComboBox>
+
+					<Label x:Name="timeLabel" Content="Clip Duration:" Margin="0,10,0,0"/>
+					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+						<Label x:Name="labelBefore" Content="Seconds Before:"/>
+						<TextBox x:Name="secondsBefore" Text="3" TextWrapping="Wrap" Width="64" FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox" TextChanged="SecondsBeforeChanged"/>
+						<Label x:Name="labelAfter" Content="Seconds After:"/>
+						<TextBox x:Name="secondsAfter" Text="2" TextWrapping="Wrap" Width="64" FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox" TextChanged="SecondsAfterChanged"/>
+					</StackPanel>
+
+					<TextBlock x:Name="textBlock"
                                Text="Clear unsaved highlight clips on Ignite Bot exit. If disabled, highlights will be retained forever unless manually deleted from temp folder"
                                TextWrapping="Wrap" Margin="5,10,5,0" />
-                    <CheckBox x:Name="clearHighlightsOnExitCheckbox" Content="Clear Highlights On Exit"
+					<CheckBox x:Name="clearHighlightsOnExitCheckbox" Content="Clear Highlights On Exit"
                               Margin="5,5,5,5" Checked="ClearHighlightsOnExitEvent" Unchecked="ClearHighlightsOnExitEvent" />
-                    <Button x:Name="clearHighlightsButton" Content="Clear Unsaved Highlights" Width="230"
+					<Button x:Name="clearHighlightsButton" Content="Clear Unsaved Highlights" Width="230"
                             HorizontalAlignment="Left" Margin="5,5,5,5" Height="32" Click="ClearHighlightsEvent" />
-                </StackPanel>
-            </GroupBox>
+
+				</StackPanel>
+			</GroupBox>
 		</StackPanel>
-        <Button x:Name="closeButton" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+		<Button x:Name="closeButton" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                 Margin="10,10,10,10" Width="128" Height="32" IsDefault="True" Click="CloseButtonClick"/>
 
-    </Grid>
+	</Grid>
 </Window>
