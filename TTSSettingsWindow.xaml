@@ -34,8 +34,10 @@
 			<TextBlock x:Name="label2_Copy5" TextWrapping="WrapWithOverflow" Text="Speed in m/s of every goal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
 			<CheckBox x:Name="goalDistance" Content="Goal Distance" Margin="4,10,4,0" />
 			<TextBlock x:Name="label2_Copy6" TextWrapping="WrapWithOverflow" Text="Distance in m of every goal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4"/>
+			<CheckBox x:Name="gamePausedCheckbox" Content="Game Paused" Margin="4,10,4,0" />
 			<CheckBox x:Name="playerJoinCheckbox" Content="Player Join" Margin="4,10,4,0" />
 			<CheckBox x:Name="playerLeaveCheckbox" Content="Player Leave" Margin="4,10,4,0" />
+			<CheckBox x:Name="playerSwitchCheckbox" Content="Player Switch Teams" Margin="4,10,4,0" />
 		</StackPanel>
 		<Button x:Name="closeButton" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Padding="4,4,4,4" Width="85" Click="CloseButtonClick"/>
 

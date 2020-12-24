@@ -1288,6 +1288,45 @@ namespace IgniteBot
 				ProcessGameStateChange(frame, deltaTime);
 			}
 
+
+			// pause state changed
+			try
+			{
+				if (frame.pause.paused_state != lastFrame.pause.paused_state)
+				{
+					if (lastFrame.pause.paused_state == "not_paused" &&
+						frame.pause.paused_state == "paused")
+					{
+						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team paused the game");
+						if (Settings.Default.pausedTTS) synth.SpeakAsync($"{frame.pause.paused_requested_team} team paused the game");
+						matchData.Events.Add(
+							new EventData(
+								matchData,
+								EventData.EventType.pause_request,
+								frame.game_clock,
+								frame.teams[frame.pause.paused_requested_team == "blue" ? (int)TeamColor.blue : (int)TeamColor.orange],
+								null,
+								null,
+								Vector3.Zero,
+								Vector3.Zero)
+							);
+					}
+
+					if (lastFrame.pause.paused_state == "paused" &&
+						frame.pause.paused_state == "not_paused")
+					{
+						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team unpaused the game");
+						if (Settings.Default.pausedTTS) synth.SpeakAsync($"{frame.pause.paused_requested_team} team unpaused the game");
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, "Error with pause request parsing\n" + e.ToString());
+			}
+
+
+
 			// while playing and frames aren't identical
 			if (frame.game_status == "playing" && deltaTime != 0)
 			{
@@ -2630,7 +2669,7 @@ namespace IgniteBot
 			playerData.Steals = player.stats.steals;
 			playerData.Stuns = player.stats.stuns;
 			playerData.Blocks = player.stats.blocks; // api reports 0
-			// playerData.Interceptions = player.stats.interceptions;	// api reports 0
+													 // playerData.Interceptions = player.stats.interceptions;	// api reports 0
 			playerData.Assists = player.stats.assists;
 			playerData.Won = won;
 		}

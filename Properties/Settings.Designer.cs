@@ -658,5 +658,17 @@ namespace IgniteBot.Properties {
                 this["nvHighlightsSecondsAfter"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool pausedTTS {
+            get {
+                return ((bool)(this["pausedTTS"]));
+            }
+            set {
+                this["pausedTTS"] = value;
+            }
+        }
     }
 }

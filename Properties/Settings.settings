@@ -122,9 +122,9 @@
     <Setting Name="playerLeaveTTS" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-		<Setting Name="playerSwitchTeamTTS" Type="System.Boolean" Scope="User">
-			<Value Profile="(Default)">False</Value>
-		</Setting>
+    <Setting Name="playerSwitchTeamTTS" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="tubeExitSpeedTTS" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -160,6 +160,9 @@
     </Setting>
     <Setting Name="nvHighlightsSecondsAfter" Type="System.Single" Scope="User">
       <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="pausedTTS" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

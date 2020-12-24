@@ -26,6 +26,8 @@ namespace IgniteBot
 			goalDistance.IsChecked = Settings.Default.goalDistanceTTS;
 			playerJoinCheckbox.IsChecked = Settings.Default.playerJoinTTS;
 			playerLeaveCheckbox.IsChecked = Settings.Default.playerLeaveTTS;
+			playerSwitchCheckbox.IsChecked = Settings.Default.playerSwitchTeamTTS;
+			gamePausedCheckbox.IsChecked = Settings.Default.pausedTTS;
 			discordLoginWarning.Visibility = DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
 
 			speechSpeed.SelectionChanged += SpeechSpeedChanged;
@@ -47,6 +49,10 @@ namespace IgniteBot
 			playerJoinCheckbox.Unchecked += PlayerJoinClicked;
 			playerLeaveCheckbox.Checked += PlayerLeaveClicked;
 			playerLeaveCheckbox.Unchecked += PlayerLeaveClicked;
+			playerSwitchCheckbox.Checked += PlayerSwitchClicked;
+			playerSwitchCheckbox.Unchecked += PlayerSwitchClicked;
+			gamePausedCheckbox.Checked += GamePausedClicked;
+			gamePausedCheckbox.Unchecked += GamePausedClicked;
 
 
 			// Speak a string.  
@@ -120,14 +126,22 @@ namespace IgniteBot
 			Settings.Default.Save();
 		}
 
+		private void GamePausedClicked(object sender, RoutedEventArgs e)
+		{
+			bool newVal = ((CheckBox)sender).IsChecked == true;
+			Settings.Default.pausedTTS = newVal;
+			Settings.Default.Save();
+
+			if (newVal) Program.synth.SpeakAsync("Game Paused");
+		}
+
 		private void PlayerJoinClicked(object sender, RoutedEventArgs e)
 		{
 			bool newVal = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.playerJoinTTS = newVal;
 			Settings.Default.Save();
 
-			if (newVal)
-				Program.synth.SpeakAsync("NtsFranz joined");
+			if (newVal) Program.synth.SpeakAsync("NtsFranz joined");
 		}
 
 		private void PlayerLeaveClicked(object sender, RoutedEventArgs e)
@@ -136,8 +150,16 @@ namespace IgniteBot
 			Settings.Default.playerLeaveTTS = newVal;
 			Settings.Default.Save();
 
-			if (newVal)
-				Program.synth.SpeakAsync("NtsFranz left");
+			if (newVal) Program.synth.SpeakAsync("NtsFranz left");
+		}
+
+		private void PlayerSwitchClicked(object sender, RoutedEventArgs e)
+		{
+			bool newVal = ((CheckBox)sender).IsChecked == true;
+			Settings.Default.playerSwitchTeamTTS = newVal;
+			Settings.Default.Save();
+
+			if (newVal) Program.synth.SpeakAsync("NtsFranz switched to orange team");
 		}
 
 		private void throwSpeedCheckbox_CheckedChanged(object sender, RoutedEventArgs e)

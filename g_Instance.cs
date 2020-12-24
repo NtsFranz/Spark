@@ -38,13 +38,10 @@ namespace IgniteBot
 		public bool inLobby => map_name == "mpl_lobby_b2";
 		public string match_type { get; set; }
 		public string map_name { get; set; }
-		/// <summary>
-		/// Name of the oculus username recording.
-		/// </summary>
-		public string client_name { get; set; }
-		public g_Playspace player { get; set; }
-		public int orange_points { get; set; }
 		public bool private_match { get; set; }
+		public int orange_points { get; set; }
+		public g_Playspace player { get; set; }
+		public g_Pause pause { get; set; }
 		/// <summary>
 		/// List of integers to determine who currently has possession.
 		/// [ team, player ]
@@ -52,6 +49,10 @@ namespace IgniteBot
 		public List<int> possession { get; set; }
 		public bool tournament_match { get; set; }
 		public bool blue_team_restart_request { get; set; }
+		/// <summary>
+		/// Name of the oculus username recording.
+		/// </summary>
+		public string client_name { get; set; }
 		public int blue_points { get; set; }
 		/// <summary>
 		/// Object containing data from the last goal made.
@@ -213,8 +214,7 @@ namespace IgniteBot
 	public class g_Transform
 	{
 		public Vector3 Position {
-			get
-			{
+			get {
 				if (pos != null) return pos.ToVector3();
 				else if (position != null) return position.ToVector3();
 				else throw new NullReferenceException("Neither pos nor position are set");
@@ -309,7 +309,7 @@ namespace IgniteBot
 		/// <summary>
 		/// Enum declared for our own use.
 		/// </summary>
-		public enum TeamColor:byte { blue, orange, spectator }
+		public enum TeamColor : byte { blue, orange, spectator }
 
 		public List<g_Player> players { get; set; }
 		/// <summary>
@@ -377,5 +377,14 @@ namespace IgniteBot
 		public float[] vr_forward { get; set; }
 		public float[] vr_up { get; set; }
 
+	}
+
+	public class g_Pause
+	{
+		public string paused_state;
+		public string unpaused_team;
+		public string paused_requested_team;
+		public float unpaused_timer;
+		public float paused_timer;
 	}
 }

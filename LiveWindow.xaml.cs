@@ -875,5 +875,15 @@ namespace IgniteBot
 				LogRow(LogType.Error, "Broke something in the spectator follow system.\n" + ex.ToString());
 			}
 		}
+
+		private void EventLogTabClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+			mainOutputTextBox.ScrollToEnd();
+		}
+
+		private void EventLogTabClicked(object sender, System.Windows.Input.TouchEventArgs e)
+		{
+			mainOutputTextBox.ScrollToEnd();
+		}
 	}
 }
