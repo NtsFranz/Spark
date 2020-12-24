@@ -13,20 +13,7 @@ namespace IgniteBot
 	{
 		public Dictionary<TeamColor, TeamData> teams = new Dictionary<TeamColor, TeamData>();
 
-		/// <summary>
-		/// Return new list of all players currently in the match.
-		/// Doesn't seem that efficient. Don't use that often
-		/// </summary>
-		public List<MatchPlayer> AllPlayers {
-			get {
-				var list = new List<MatchPlayer>();
-				foreach (TeamData team in teams.Values.ToList())
-				{
-					list.AddRange(team.players.Values.ToList());
-				}
-				return list;
-			}
-		}
+		public Dictionary<long, MatchPlayer> players = new Dictionary<long, MatchPlayer>();
 
 		public List<GoalData> Goals { get; set; } = new List<GoalData>();
 		public List<EventData> Events { get; set; } = new List<EventData>();
@@ -74,7 +61,7 @@ namespace IgniteBot
 		{
 			this.firstFrame = firstFrame;
 			matchTime = firstFrame.recorded_time;
-			if (matchTime == null || matchTime == DateTime.MinValue)
+			if (matchTime == DateTime.MinValue)
 			{
 				matchTime = DateTime.Now;
 			}
@@ -92,32 +79,13 @@ namespace IgniteBot
 		/// <summary>
 		/// Fetches a player from this match
 		/// </summary>
-		/// <param name="team">The team that the player belongs to.</param>
-		/// <param name="player">The player</param>
-		/// <returns>The PlayerData about the requested player from this match.</returns>
-		public MatchPlayer GetPlayerData(g_Team team, g_Player player)
-		{
-			if (!teams.ContainsKey(team.color) || !teams[team.color].players.ContainsKey(player.userid))
-			{
-				Console.WriteLine("Player not found");
-				return null;
-			}
-			return teams[team.color].players[player.userid];
-		}
-
-		/// <summary>
-		/// Fetches a player from this match
-		/// </summary>
 		/// <param name="player">The player</param>
 		/// <returns>The PlayerData about the requested player from this match.</returns>
 		public MatchPlayer GetPlayerData(g_Player player)
 		{
-			foreach (var team in teams)
+			if (players.ContainsKey(player.userid))
 			{
-				if (team.Value.players.ContainsKey(player.userid))
-				{
-					return team.Value.players[player.userid];
-				}
+				return players[player.userid];
 			}
 
 			Console.WriteLine("Player not found");  // TODO this happens a lot
@@ -159,7 +127,7 @@ namespace IgniteBot
 		public int SumOfStats()
 		{
 			int sum = 0;
-			foreach (var player in AllPlayers)
+			foreach (MatchPlayer player in players.Values)
 			{
 				sum = player.Stuns + player.ShotsTaken + player.Points + (int)player.PossessionTime;
 			}

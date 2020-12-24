@@ -628,10 +628,7 @@ namespace IgniteBot
 									CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime);
 							}
 
-							if (dateTime != null)
-							{
-								game_Instance.recorded_time = dateTime;
-							}
+							game_Instance.recorded_time = dateTime;
 						}
 
 						// prepare the raw api conversion for use
@@ -1166,7 +1163,10 @@ namespace IgniteBot
 				foreach (g_Player player in team.players)
 				{
 					player.team = team;
-					if (lastFrame.GetAllPlayers(true).Any(p => p.userid == player.userid)) continue;
+					if (lastFrame.GetAllPlayers(true).Any(p => p.userid == player.userid))
+					{
+						continue;
+					}
 
 					// TODO find why this is crashing
 					try
@@ -1229,6 +1229,38 @@ namespace IgniteBot
 				}
 			}
 
+			// Did a player switch teams? (Player Switch 🔁)
+			// Loop through current frame teams.
+			foreach (g_Team team in frame.teams)
+			{
+				// Loop through players on team.
+				foreach (g_Player player in team.players)
+				{
+					g_Player lastPlayer = lastFrame.GetPlayer(player.userid);
+					if (lastPlayer == null || lastPlayer.team.color == team.color) continue;
+
+					matchData.Events.Add(new EventData(
+						matchData,
+						EventData.EventType.player_switched_teams,
+						frame.game_clock,
+						team,
+						player,
+						lastPlayer,
+						player.head.Position,
+						player.velocity.ToVector3())
+					);
+
+					LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Player switched to {team.color} team: {player.name}");
+
+					UpdateStatsIngame(frame);
+
+					if (Settings.Default.playerSwitchTeamTTS)
+					{
+						synth.SpeakAsync($"{player.name} switched to {team.color}");
+					}
+				}
+			}
+
 
 			int currentFrameStats = 0;
 			foreach (var team in frame.teams)
@@ -1277,7 +1309,7 @@ namespace IgniteBot
 						var lastPlayer = lastFrame.GetPlayer(player.userid);
 						if (lastPlayer == null) continue;
 
-						MatchPlayer playerData = matchData.GetPlayerData(team, player);
+						MatchPlayer playerData = matchData.GetPlayerData(player);
 						if (playerData != null)
 						{
 							// update player velocity
@@ -1587,7 +1619,7 @@ namespace IgniteBot
 										" turned over the disk to " + player.name);
 									// TODO enable once the db can handle it
 									// matchData.Events.Add(new EventData(matchData, EventData.EventType.turnover, frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position, player.head.Position));
-									matchData.GetPlayerData(throwTeam, throwPlayer).Turnovers++;
+									matchData.GetPlayerData(throwPlayer).Turnovers++;
 								}
 								else
 								{
@@ -1597,7 +1629,7 @@ namespace IgniteBot
 									matchData.Events.Add(new EventData(matchData, EventData.EventType.pass,
 										frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position,
 										player.head.Position));
-									matchData.GetPlayerData(throwTeam, throwPlayer).Passes++;
+									matchData.GetPlayerData(throwPlayer).Passes++;
 								}
 							}
 							else
@@ -1846,7 +1878,7 @@ namespace IgniteBot
 						throwPlayer.name);
 					// TODO enable this once the db supports it
 					// matchData.Events.Add(new EventData(matchData, EventData.EventType.interception, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
-					MatchPlayer otherMatchPlayer = matchData.GetPlayerData(team, player);
+					MatchPlayer otherMatchPlayer = matchData.GetPlayerData(player);
 					if (otherMatchPlayer != null) otherMatchPlayer.Interceptions++;
 					else LogRow(LogType.Error, "Can't find player by name from other team: " + player.name);
 
@@ -1974,14 +2006,14 @@ namespace IgniteBot
 							UpdateStatsIngame(frame, false, false);
 						}
 
-						// This could cause a problem if someone is a spectator (their stats don't get reset, but they're not in the game) during the round transition
-						foreach (MatchPlayer player in matchData.AllPlayers)
+						foreach (MatchPlayer player in matchData.players.Values)
 						{
 							g_Player p = new g_Player
 							{
 								userid = player.Id
 							};
 
+							// TODO isn't this just a shallow copy anyway and won't do anything? How is this working?
 							MatchPlayer lastPlayer = lastMatchData.GetPlayerData(p);
 
 							if (lastPlayer != null)
@@ -2019,7 +2051,7 @@ namespace IgniteBot
 						foreach (var player in team.players)
 						{
 							// reset playspace
-							MatchPlayer playerData = matchData.GetPlayerData(team, player);
+							MatchPlayer playerData = matchData.GetPlayerData(player);
 							if (playerData != null)
 							{
 								playerData.playspaceLocation = player.head.Position;
@@ -2283,6 +2315,7 @@ namespace IgniteBot
 			// team names may have changed
 			matchData.teams[TeamColor.blue].teamName = frame.teams[0].team;
 			matchData.teams[TeamColor.orange].teamName = frame.teams[1].team;
+			matchData.teams[TeamColor.spectator].teamName = frame.teams[2].team;
 
 			if (frame.teams[0].stats != null)
 			{
@@ -2296,23 +2329,15 @@ namespace IgniteBot
 
 			UpdateAllPlayers(frame);
 
-			// don't update right at the end of the match anyway
-			if (Settings.Default.uploadToIgniteDB)
+			// if end of match upload
+			if (endOfMatch)
 			{
-				// if end of match upload
-				if (endOfMatch)
-				{
-					UploadMatchBatch(true);
-				}
-				// if during-match upload
-				else if (manual || (currentAccessCodeUsername == "VRML_S2" && frame.game_status != "pre_match"))
-				{
-					UploadMatchBatch(false);
-				}
-				else
-				{
-					Console.WriteLine("Won't upload right now.");
-				}
+				UploadMatchBatch(true);
+			}
+			// if during-match upload
+			else if (manual || !Personal)
+			{
+				UploadMatchBatch(false);
 			}
 		}
 
@@ -2355,10 +2380,16 @@ namespace IgniteBot
 
 		public static void UploadMatchBatch(bool final = false)
 		{
+			if (!Settings.Default.uploadToIgniteDB && !Settings.Default.uploadToFirestore)
+			{
+				Console.WriteLine("Won't upload right now.");
+			}
+
 			BatchOutputFormat data = new BatchOutputFormat();
 			data.final = final;
 			data.match_data = matchData.ToDict();
-			matchData.AllPlayers.ForEach(e => data.match_players.Add(e.ToDict()));
+			matchData.players.Values.ToList().ForEach(e => data.match_players.Add(e.ToDict()));
+
 			matchData.Events.ForEach(e =>
 			{
 				if (!e.inDB) data.events.Add(e.ToDict());
@@ -2391,11 +2422,15 @@ namespace IgniteBot
 				hash = sb.ToString().ToLower();
 			}
 
-			_ = DoUploadMatchBatch(dataString, hash, matchData.firstFrame.client_name);
+			if (Settings.Default.uploadToIgniteDB)
+			{
+				_ = DoUploadMatchBatchIgniteDB(dataString, hash, matchData.firstFrame.client_name);
+			}
+			// checks whether to upload or not are inside
 			_ = DoUploadMatchBatchFirebase(data);
 		}
 
-		static async Task DoUploadMatchBatch(string data, string hash, string client_name)
+		static async Task DoUploadMatchBatchIgniteDB(string data, string hash, string client_name)
 		{
 			client.DefaultRequestHeaders.Remove("x-api-key");
 			client.DefaultRequestHeaders.Add("x-api-key", DiscordOAuth.igniteUploadKey);
@@ -2420,35 +2455,32 @@ namespace IgniteBot
 		static async Task DoUploadEventFirebase(MatchData matchData, GoalData goalData)
 		{
 #if INCLUDE_FIRESTORE
-			if (Settings.Default.uploadToFirestore)
+			if (Settings.Default.uploadToFirestore && !Personal)
 			{
-				if (!Personal)
+				if (!TryCreateFirebaseDB()) return;
+
+				string season = DiscordOAuth.SeasonName;
+
+				var match_data = matchData.ToDict();
+
+				// update the match stats
+				CollectionReference matchesRef = db.Collection("series/" + season + "/match_stats");
+				DocumentReference matchDataRef =
+					matchesRef.Document(match_data["match_time"] + "_" + match_data["session_id"]);
+				CollectionReference eventsRef = matchDataRef.Collection("events");
+
+				try
 				{
-					if (!TryCreateFirebaseDB()) return;
-
-					string season = DiscordOAuth.SeasonName;
-
-					var match_data = matchData.ToDict();
-
-					// update the match stats
-					CollectionReference matchesRef = db.Collection("series/" + season + "/match_stats");
-					DocumentReference matchDataRef =
-						matchesRef.Document(match_data["match_time"] + "_" + match_data["session_id"]);
-					CollectionReference eventsRef = matchDataRef.Collection("events");
-
-					try
-					{
-						Dictionary<string, object> data = goalData.ToDict();
-						// add the event type, since this isn't a normal type of event
-						data["event_type"] = "goal";
-						DocumentReference eventRef = await eventsRef.AddAsync(data);
-						LogRow(LogType.File, lastFrame.sessionid, "-- Uploading Event Data --");
-					}
-					catch (Exception e)
-					{
-						LogRow(LogType.Error, "Error uploading to firebase.\n" + e.Message + "\n" + e.StackTrace);
-						throw;
-					}
+					Dictionary<string, object> data = goalData.ToDict();
+					// add the event type, since this isn't a normal type of event
+					data["event_type"] = "goal";
+					DocumentReference eventRef = await eventsRef.AddAsync(data);
+					LogRow(LogType.File, lastFrame.sessionid, "-- Uploading Event Data --");
+				}
+				catch (Exception e)
+				{
+					LogRow(LogType.Error, "Error uploading to firebase.\n" + e.Message + "\n" + e.StackTrace);
+					throw;
 				}
 			}
 #endif
@@ -2457,32 +2489,29 @@ namespace IgniteBot
 		static async Task DoUploadEventFirebase(MatchData matchData, EventData eventData)
 		{
 #if INCLUDE_FIRESTORE
-			if (Settings.Default.uploadToFirestore)
+			if (Settings.Default.uploadToFirestore && !Personal)
 			{
-				if (!Personal)
+				if (!TryCreateFirebaseDB()) return;
+
+				string season = DiscordOAuth.SeasonName;
+
+				var match_data = matchData.ToDict();
+
+				// update the match stats
+				CollectionReference matchesRef = db.Collection("series/" + season + "/match_stats");
+				DocumentReference matchDataRef =
+					matchesRef.Document(match_data["match_time"] + "_" + match_data["session_id"]);
+				CollectionReference eventsRef = matchDataRef.Collection("events");
+
+				try
 				{
-					if (!TryCreateFirebaseDB()) return;
-
-					string season = DiscordOAuth.SeasonName;
-
-					var match_data = matchData.ToDict();
-
-					// update the match stats
-					CollectionReference matchesRef = db.Collection("series/" + season + "/match_stats");
-					DocumentReference matchDataRef =
-						matchesRef.Document(match_data["match_time"] + "_" + match_data["session_id"]);
-					CollectionReference eventsRef = matchDataRef.Collection("events");
-
-					try
-					{
-						DocumentReference eventRef = await eventsRef.AddAsync(eventData.ToDict());
-						LogRow(LogType.File, lastFrame.sessionid, "-- Uploading Event Data --");
-					}
-					catch (Exception e)
-					{
-						LogRow(LogType.Error, "Error uploading to firebase.\n" + e.Message + "\n" + e.StackTrace);
-						throw;
-					}
+					DocumentReference eventRef = await eventsRef.AddAsync(eventData.ToDict());
+					LogRow(LogType.File, lastFrame.sessionid, "-- Uploading Event Data --");
+				}
+				catch (Exception e)
+				{
+					LogRow(LogType.Error, "Error uploading to firebase.\n" + e.Message + "\n" + e.StackTrace);
+					throw;
 				}
 			}
 #endif
@@ -2492,49 +2521,47 @@ namespace IgniteBot
 		static async Task DoUploadMatchBatchFirebase(BatchOutputFormat data)
 		{
 #if INCLUDE_FIRESTORE
-			if (Settings.Default.uploadToFirestore)
+			if (Settings.Default.uploadToFirestore && !Personal)
 			{
-				if (!Personal)
+				if (!TryCreateFirebaseDB()) return;
+
+				WriteBatch batch = db.StartBatch();
+
+				string season = DiscordOAuth.SeasonName;
+
+				// update the cumulative player stats
+				CollectionReference playersRef = db.Collection("series/" + season + "/player_stats");
+				foreach (Dictionary<string, object> p in data.match_players)
 				{
-					if (!TryCreateFirebaseDB()) return;
+					DocumentReference playerRef = playersRef.Document(p["player_name"].ToString());
 
-					WriteBatch batch = db.StartBatch();
+					batch.Set(playerRef, p, SetOptions.MergeAll);
+				}
 
-					string season = DiscordOAuth.SeasonName;
+				// update the match stats
+				CollectionReference matchesRef = db.Collection("series/" + season + "/match_stats");
+				DocumentReference matchDataRef =
+					matchesRef.Document(data.match_data["match_time"] + "_" + data.match_data["session_id"]);
+				data.match_data["upload_timestamp"] = DateTime.UtcNow;
+				batch.Set(matchDataRef, data.match_data, SetOptions.MergeAll);
 
-					// update the cumulative player stats
-					CollectionReference playersRef = db.Collection("series/" + season + "/player_stats");
-					foreach (Dictionary<string, object> p in data.match_players)
-					{
-						DocumentReference playerRef = playersRef.Document(p["player_name"].ToString());
+				// update the match players
+				foreach (var p in data.match_players)
+				{
+					DocumentReference matchPlayerRef =
+						matchDataRef.Collection("players").Document(p["player_name"].ToString());
+					batch.Set(matchPlayerRef, p, SetOptions.MergeAll);
+				}
 
-						batch.Set(playerRef, p, SetOptions.MergeAll);
-					}
-
-					// update the match stats
-					CollectionReference matchesRef = db.Collection("series/" + season + "/match_stats");
-					DocumentReference matchDataRef =
-						matchesRef.Document(data.match_data["match_time"] + "_" + data.match_data["session_id"]);
-					batch.Set(matchDataRef, data.match_data, SetOptions.MergeAll);
-
-					// update the match players
-					foreach (var p in data.match_players)
-					{
-						DocumentReference matchPlayerRef =
-							matchDataRef.Collection("players").Document(p["player_name"].ToString());
-						batch.Set(matchPlayerRef, p, SetOptions.MergeAll);
-					}
-
-					try
-					{
-						await batch.CommitAsync();
-						LogRow(LogType.File, lastFrame.sessionid, "-- Uploading Data --");
-					}
-					catch (Exception e)
-					{
-						LogRow(LogType.Error, "Error uploading to firebase.\n" + e.Message + "\n" + e.StackTrace);
-						throw;
-					}
+				try
+				{
+					await batch.CommitAsync();
+					LogRow(LogType.File, lastFrame.sessionid, "-- Uploading Data --");
+				}
+				catch (Exception e)
+				{
+					LogRow(LogType.Error, "Error uploading to firebase.\n" + e.Message + "\n" + e.StackTrace);
+					throw;
 				}
 			}
 #endif
@@ -2574,15 +2601,22 @@ namespace IgniteBot
 				return;
 			}
 
+			if (player.stats == null)
+			{
+				LogRow(LogType.Error, "Player stats are null. Maybe in lobby?");
+				return;
+			}
+
 			TeamData teamData = matchData.teams[team.color];
 
 			// add a new match player if they didn't exist before
-			if (!teamData.players.ContainsKey(player.userid))
+			if (!matchData.players.ContainsKey(player.userid))
 			{
-				teamData.players.Add(player.userid, new MatchPlayer(matchData, teamData, player));
+				matchData.players.Add(player.userid, new MatchPlayer(matchData, teamData, player));
 			}
 
-			MatchPlayer playerData = teamData.players[player.userid];
+			MatchPlayer playerData = matchData.players[player.userid];
+			playerData.teamData = teamData;
 
 			playerData.Level = player.level;
 			playerData.Number = player.number;
@@ -2596,7 +2630,7 @@ namespace IgniteBot
 			playerData.Steals = player.stats.steals;
 			playerData.Stuns = player.stats.stuns;
 			playerData.Blocks = player.stats.blocks; // api reports 0
-													 // playerData.Interceptions = player.stats.interceptions;	// api reports 0
+			// playerData.Interceptions = player.stats.interceptions;	// api reports 0
 			playerData.Assists = player.stats.assists;
 			playerData.Won = won;
 		}
@@ -2604,10 +2638,10 @@ namespace IgniteBot
 		static void UpdateAllPlayers(g_Instance frame)
 		{
 			// Loop through teams.
-			foreach (var team in frame.teams)
+			foreach (g_Team team in frame.teams)
 			{
 				// Loop through players on team.
-				foreach (var player in team.players)
+				foreach (g_Player player in team.players)
 				{
 					TeamColor winningTeam = frame.blue_points > frame.orange_points ? TeamColor.blue : TeamColor.orange;
 					int won = team.color == winningTeam ? 1 : 0;
@@ -2859,11 +2893,18 @@ namespace IgniteBot
 			float max_sum_diff = (4 * max_ping) - (4 * min_ping);
 
 			// sanity check for ping values
+			if (bluePings == null || bluePings.Count == 0 || orangePings == null || orangePings.Count == 0)
+			{
+				// Console.WriteLine("No player's ping can be over 150.");
+				return -1;
+			}
 			if (bluePings.Max() > max_ping || orangePings.Max() > max_ping)
 			{
 				// Console.WriteLine("No player's ping can be over 150.");
 				return -1;
 			}
+
+
 
 			// calculate points for sum diff
 			float blueSum = bluePings.Sum();

@@ -319,7 +319,8 @@ namespace IgniteBot
 					float secondsUntilRejoiner = 1f;
 					if (Program.lastFrame != null &&
 						Program.lastFrame.private_match &&
-						DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.Now) < 0)
+						DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.Now) < 0 &&
+						Settings.Default.echoVRIP == "127.0.0.1")
 					{
 						rejoinButton.Visibility = Visibility.Visible;
 					}

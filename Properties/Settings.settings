@@ -122,6 +122,9 @@
     <Setting Name="playerLeaveTTS" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+		<Setting Name="playerSwitchTeamTTS" Type="System.Boolean" Scope="User">
+			<Value Profile="(Default)">False</Value>
+		</Setting>
     <Setting Name="tubeExitSpeedTTS" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>

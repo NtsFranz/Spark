@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using static IgniteBot.g_Team;
 
 namespace IgniteBot
@@ -12,15 +13,9 @@ namespace IgniteBot
 		public string teamName;
 		public int points;
 
-		/// <summary>
-		/// Dictionary of <userid, PlayerData>
-		/// </summary>
-		public Dictionary<long, MatchPlayer> players;
-
 		public TeamData(TeamColor teamColor, string teamName)
 		{
 			this.teamColor = teamColor;
-			players = new Dictionary<long, MatchPlayer>();
 			this.teamName = teamName;
 		}
 

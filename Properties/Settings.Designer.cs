@@ -506,6 +506,18 @@ namespace IgniteBot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool playerSwitchTeamTTS {
+            get {
+                return ((bool)(this["playerSwitchTeamTTS"]));
+            }
+            set {
+                this["playerSwitchTeamTTS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool tubeExitSpeedTTS {
             get {
                 return ((bool)(this["tubeExitSpeedTTS"]));
