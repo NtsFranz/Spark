@@ -62,14 +62,21 @@ namespace IgniteBot
 
 		public static void CloseNVHighlights(bool wasDisableNVHCall = false)
 		{
-			if (didHighlightsInit)
+			try
 			{
-				if (clearHighlightsOnExit && !wasDisableNVHCall)
+				if (didHighlightsInit)
 				{
-					ClearUnsavedNVHighlights(false);
+					if (clearHighlightsOnExit && !wasDisableNVHCall)
+					{
+						ClearUnsavedNVHighlights(false);
 
+					}
+					Highlights.ReleaseHighlightsSDK();
 				}
-				Highlights.ReleaseHighlightsSDK();
+			}
+			catch (Exception e)
+			{
+				Logger.LogRow(Logger.LogType.Error, "Failed during closenvhighlights\n" + e.ToString());
 			}
 		}
 		public static int InitHighlightsSDK(bool isCheck)

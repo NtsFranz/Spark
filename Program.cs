@@ -189,7 +189,7 @@ namespace IgniteBot
 		public static int echoVRPort = 6721;
 		public static bool overrideEchoVRPort;
 
-		public static bool Personal => currentAccessCodeUsername == "Personal";
+		public static bool Personal => currentAccessCodeUsername == "Personal" || string.IsNullOrEmpty(currentAccessCodeUsername);
 
 		public static bool spectateMe;
 		public static string lastSpectatedSessionId;
@@ -209,159 +209,156 @@ namespace IgniteBot
 		public static void Main(string[] args, App app)
 		{
 			Program.app = app;
-			using (Mutex mutex = new Mutex(false, "Global\\ignitebot"))
+			if (args.Contains("-port"))
 			{
-				if (args.Contains("-port"))
+				int index = args.ToList().IndexOf("-port");
+				if (index > -1)
 				{
-					int index = args.ToList().IndexOf("-port");
-					if (index > -1)
+					if (int.TryParse(args[index + 1], out echoVRPort))
 					{
-						if (int.TryParse(args[index + 1], out echoVRPort))
-						{
-							overrideEchoVRPort = true;
-						}
+						overrideEchoVRPort = true;
 					}
-					else
-					{
-						LogRow(LogType.Error, "ERROR 3984. This shouldn't happen");
-					}
-				}
-
-
-				if (CheckIfLaunchedWithCustomURLHandlerParam(args))
-				{
-					return; // wait for the dialog to quit the program
-				}
-
-				// allow multiple instances if the port is overriden
-				if (!mutex.WaitOne(0, false) && !overrideEchoVRPort)
-				{
-					new MessageBox("Instance already running", "Error", Quit).Show();
-					return; // wait for the dialog to quit the program
-				}
-
-				// Reload old settings file
-				if (Settings.Default.UpdateSettings)
-				{
-					Settings.Default.Upgrade();
-					Settings.Default.UpdateSettings = false;
-					Settings.Default.Save();
-				}
-
-				RegisterUriScheme("ignitebot", "IgniteBot Protocol");
-				RegisterUriScheme("atlas", "ATLAS Protocol"); // TODO see how this would overwrite ATLAS URL opening
-
-				// if logged in with discord
-				if (!string.IsNullOrEmpty(Settings.Default.discordOAuthRefreshToken))
-				{
-					DiscordOAuth.OAuthLoginRefresh(Settings.Default.discordOAuthRefreshToken);
 				}
 				else
 				{
-					DiscordOAuth.RevertToPersonal();
+					LogRow(LogType.Error, "ERROR 3984. This shouldn't happen");
 				}
-
-				liveWindow = new LiveWindow();
-				liveWindow.Closed += (sender, args) => liveWindow = null;
-				liveWindow.Show();
-
-				var argsList = new List<string>(args);
-
-				// Check for command-line flags
-				if (args.Contains("-slowmode"))
-				{
-					deltaTimeIndexStats = 1;
-					Settings.Default.targetDeltaTimeIndexStats = deltaTimeIndexStats;
-				}
-
-				if (args.Contains("-autorestart"))
-				{
-					autoRestart = true;
-					Settings.Default.autoRestart = true;
-				}
-
-				if (args.Contains("-showdatabaselog"))
-				{
-					showDatabaseLog = true;
-					Settings.Default.showDatabaseLog = true;
-				}
+			}
 
 
-				// make an exception for certain users
-				// Note that these usernames are not the access codes. Don't even try.
-				if (currentAccessCodeUsername == "ignitevr")
-				{
-					ENABLE_LOGGER = false;
-				}
+			if (CheckIfLaunchedWithCustomURLHandlerParam(args))
+			{
+				return; // wait for the dialog to quit the program
+			}
 
+			// allow multiple instances if the port is overriden
+			if (IsIgniteBotOpen() && !overrideEchoVRPort)
+			{
+				new MessageBox("Instance already running", "Error", Quit).Show();
+				return; // wait for the dialog to quit the program
+			}
+
+			// Reload old settings file
+			if (Settings.Default.UpdateSettings)
+			{
+				Settings.Default.Upgrade();
+				Settings.Default.UpdateSettings = false;
 				Settings.Default.Save();
+			}
 
-				ReadSettings();
+			RegisterUriScheme("ignitebot", "IgniteBot Protocol");
+			RegisterUriScheme("atlas", "ATLAS Protocol"); // TODO see how this would overwrite ATLAS URL opening
 
-				client.DefaultRequestHeaders.Add("version", AppVersion());
-				client.DefaultRequestHeaders.Add("User-Agent", "IgniteBot/" + AppVersion());
+			// if logged in with discord
+			if (!string.IsNullOrEmpty(Settings.Default.discordOAuthRefreshToken))
+			{
+				DiscordOAuth.OAuthLoginRefresh(Settings.Default.discordOAuthRefreshToken);
+			}
+			else
+			{
+				DiscordOAuth.RevertToPersonal();
+			}
 
-				client.BaseAddress = new Uri(APIURL);
+			liveWindow = new LiveWindow();
+			liveWindow.Closed += (sender, args) => liveWindow = null;
+			liveWindow.Show();
 
-				if (HighlightsHelper.isNVHighlightsEnabled)
-				{
-					HighlightsHelper.SetupNVHighlights();
-				}
-				else
-				{
-					HighlightsHelper.InitHighlightsSDK(true);
-				}
+			var argsList = new List<string>(args);
 
+			// Check for command-line flags
+			if (args.Contains("-slowmode"))
+			{
+				deltaTimeIndexStats = 1;
+				Settings.Default.targetDeltaTimeIndexStats = deltaTimeIndexStats;
+			}
+
+			if (args.Contains("-autorestart"))
+			{
+				autoRestart = true;
+				Settings.Default.autoRestart = true;
+			}
+
+			if (args.Contains("-showdatabaselog"))
+			{
+				showDatabaseLog = true;
+				Settings.Default.showDatabaseLog = true;
+			}
+
+
+			// make an exception for certain users
+			// Note that these usernames are not the access codes. Don't even try.
+			if (currentAccessCodeUsername == "ignitevr")
+			{
+				ENABLE_LOGGER = false;
+			}
+
+			Settings.Default.Save();
+
+			ReadSettings();
+
+			client.DefaultRequestHeaders.Add("version", AppVersion());
+			client.DefaultRequestHeaders.Add("User-Agent", "IgniteBot/" + AppVersion());
+
+			client.BaseAddress = new Uri(APIURL);
+
+			if (HighlightsHelper.isNVHighlightsEnabled)
+			{
+				HighlightsHelper.SetupNVHighlights();
+			}
+			else
+			{
+				HighlightsHelper.InitHighlightsSDK(true);
+			}
+
+			synth = new SpeechSynthesizer();
+			// Initialize a new instance of the SpeechSynthesizer.
+			DiscordOAuth.authenticated += () =>
+			{
 				synth = new SpeechSynthesizer();
-				// Initialize a new instance of the SpeechSynthesizer.
-				DiscordOAuth.authenticated += () =>
-				{
-					synth = new SpeechSynthesizer();
 					// Configure the audio output.
 					synth.SetOutputToDefaultAudioDevice();
-					synth.SetRate(Settings.Default.TTSSpeed);
-				};
+				synth.SetRate(Settings.Default.TTSSpeed);
+			};
 
 
-				// Server Score Tests - this works
-				//float out1 = CalculateServerScore(new List<int> { 34, 78, 50, 53 }, new List<int> { 63, 562, 65, 81 });   // fail too high
-				//float out2 = CalculateServerScore(new List<int> { 29, 60, 59, 30 }, new List<int> { 30, 70, 15, 26 });    // 90.54
-				//float out3 = CalculateServerScore(new List<int> { 61, 59, 69, 67 }, new List<int> { 73, 57, 50, 51 });    // 92.33
+			// Server Score Tests - this works
+			//float out1 = CalculateServerScore(new List<int> { 34, 78, 50, 53 }, new List<int> { 63, 562, 65, 81 });   // fail too high
+			//float out2 = CalculateServerScore(new List<int> { 29, 60, 59, 30 }, new List<int> { 30, 70, 15, 26 });    // 90.54
+			//float out3 = CalculateServerScore(new List<int> { 61, 59, 69, 67 }, new List<int> { 73, 57, 50, 51 });    // 92.33
 
 
-				UpdateEchoExeLocation();
+			UpdateEchoExeLocation();
 
-				DiscordRichPresence.Start();
+			DiscordRichPresence.Start();
 
 
-				statsThread = new Thread(StatsThread);
-				statsThread.IsBackground = true;
-				statsThread.Start();
+			statsThread = new Thread(StatsThread);
+			statsThread.IsBackground = true;
+			statsThread.Start();
 
-				fullLogThread = new Thread(FullLogThread);
-				fullLogThread.IsBackground = true;
-				fullLogThread.Start();
+			fullLogThread = new Thread(FullLogThread);
+			fullLogThread.IsBackground = true;
+			fullLogThread.Start();
 
-				autorestartThread = new Thread(AutorestartThread);
-				autorestartThread.IsBackground = true;
-				autorestartThread.Start();
+			autorestartThread = new Thread(AutorestartThread);
+			autorestartThread.IsBackground = true;
+			autorestartThread.Start();
 
-				fetchThread = new Thread(FetchThread);
-				fetchThread.IsBackground = true;
-				fetchThread.Start();
+			fetchThread = new Thread(FetchThread);
+			fetchThread.IsBackground = true;
+			fetchThread.Start();
 
-				liveReplayThread = new Thread(LiveReplayHostingThread);
-				liveReplayThread.IsBackground = true;
-				liveReplayThread.Start();
+			liveReplayThread = new Thread(LiveReplayHostingThread);
+			liveReplayThread.IsBackground = true;
+			liveReplayThread.Start();
 
-				milkThread = new Thread(MilkThread);
-				milkThread.IsBackground = true;
-				//milkThread.Start();
+			milkThread = new Thread(MilkThread);
+			milkThread.IsBackground = true;
+			//milkThread.Start();
 
-				Logger.Init();
+			Logger.Init();
 
-				//HighlightsHelper.CloseNVHighlights();
-			}
+			//HighlightsHelper.CloseNVHighlights();
 		}
 
 		public static string AppVersion()
@@ -384,7 +381,8 @@ namespace IgniteBot
 		async static Task GentleClose()
 		{
 			running = false;
-			while (statsThread.IsAlive || fullLogThread.IsAlive)
+			while ((statsThread != null && statsThread.IsAlive) ||
+				(fullLogThread != null && fullLogThread.IsAlive))
 			{
 				if (fullLogThread.IsAlive)
 				{
@@ -397,9 +395,24 @@ namespace IgniteBot
 
 				await Task.Delay(10);
 			}
+			HighlightsHelper.CloseNVHighlights();
 
 
 			app.ExitApplication();
+		}
+
+		public static bool IsIgniteBotOpen()
+		{
+			//try
+			//{
+			//	Process[] process = Process.GetProcessesByName("IgniteBot");
+			//	return process?.Length > 1;
+			//}
+			//catch (Exception e)
+			//{
+			//	LogRow(LogType.Error, "Error getting other ignitebot windows\n" + e.ToString());
+			//}
+			return false;
 		}
 
 		/// <summary>
