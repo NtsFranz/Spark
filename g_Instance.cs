@@ -119,6 +119,19 @@ namespace IgniteBot
 
 			return null;
 		}
+
+		public TeamColor GetTeamColor(long userid)
+		{
+			foreach (g_Team team in teams)
+			{
+				foreach (g_Player player in team.players)
+				{
+					if (player.userid == userid) return team.color;
+				}
+			}
+
+			return TeamColor.spectator;
+		}
 	}
 
 	public class g_InstanceSimple

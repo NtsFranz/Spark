@@ -315,8 +315,8 @@ namespace IgniteBot
 			DiscordOAuth.authenticated += () =>
 			{
 				synth = new SpeechSynthesizer();
-					// Configure the audio output.
-					synth.SetOutputToDefaultAudioDevice();
+				// Configure the audio output.
+				synth.SetOutputToDefaultAudioDevice();
 				synth.SetRate(Settings.Default.TTSSpeed);
 			};
 
@@ -403,15 +403,15 @@ namespace IgniteBot
 
 		public static bool IsIgniteBotOpen()
 		{
-			//try
-			//{
-			//	Process[] process = Process.GetProcessesByName("IgniteBot");
-			//	return process?.Length > 1;
-			//}
-			//catch (Exception e)
-			//{
-			//	LogRow(LogType.Error, "Error getting other ignitebot windows\n" + e.ToString());
-			//}
+			try
+			{
+				Process[] process = Process.GetProcessesByName("IgniteBot");
+				return process?.Length > 1;
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, "Error getting other ignitebot windows\n" + e.ToString());
+			}
 			return false;
 		}
 
@@ -1249,8 +1249,8 @@ namespace IgniteBot
 				// Loop through players on team.
 				foreach (g_Player player in team.players)
 				{
-					g_Player lastPlayer = lastFrame.GetPlayer(player.userid);
-					if (lastPlayer == null || lastPlayer.team.color == team.color) continue;
+					TeamColor lastTeamColor = lastFrame.GetTeamColor(player.userid);
+					if (lastTeamColor == team.color) continue;
 
 					matchData.Events.Add(new EventData(
 						matchData,
@@ -1258,7 +1258,7 @@ namespace IgniteBot
 						frame.game_clock,
 						team,
 						player,
-						lastPlayer,
+						null,
 						player.head.Position,
 						player.velocity.ToVector3())
 					);
@@ -1307,8 +1307,7 @@ namespace IgniteBot
 			{
 				if (frame.pause.paused_state != lastFrame.pause.paused_state)
 				{
-					if (lastFrame.pause.paused_state == "not_paused" &&
-						frame.pause.paused_state == "paused")
+					if (frame.pause.paused_state == "paused")
 					{
 						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team paused the game");
 						if (Settings.Default.pausedTTS) synth.SpeakAsync($"{frame.pause.paused_requested_team} team paused the game");
@@ -1325,8 +1324,15 @@ namespace IgniteBot
 							);
 					}
 
+					if (lastFrame.pause.paused_state == "unpaused" &&
+						frame.pause.paused_state == "paused_requested")
+					{
+						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team requested a pause");
+						if (Settings.Default.pausedTTS) synth.SpeakAsync($"{frame.pause.paused_requested_team} team requested a pause");
+					}
+
 					if (lastFrame.pause.paused_state == "paused" &&
-						frame.pause.paused_state == "not_paused")
+						frame.pause.paused_state == "unpausing")
 					{
 						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team unpaused the game");
 						if (Settings.Default.pausedTTS) synth.SpeakAsync($"{frame.pause.paused_requested_team} team unpaused the game");
@@ -2403,6 +2409,13 @@ namespace IgniteBot
 		{
 			matchData.endTime = endTime;
 			matchData.finishReason = reason;
+
+			if (frame == null)
+			{
+				// this happened on a restart right in the beginning once
+				LogRow(LogType.Error, "frame is null on match finished event. INVESTIGATE");
+				return;
+			}
 
 			LogRow(LogType.File, frame.sessionid, "Match Finished: " + reason);
 			UpdateStatsIngame(frame, true);
