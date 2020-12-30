@@ -51,8 +51,8 @@ namespace IgniteBot
 				{
 					groupId = highlightGroupName,
 					highlightId = id,
-					startDelta = -3000,
-					endDelta = 2000
+					startDelta = -(int)(Settings.Default.nvHighlightsSecondsBefore * 1000),
+					endDelta = (int)(Settings.Default.nvHighlightsSecondsAfter * 1000)
 				};
 				Highlights.SetVideoHighlight(vhp, videoCallback);
 				return true;

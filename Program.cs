@@ -1057,8 +1057,8 @@ namespace IgniteBot
 
 			if (saveFolder == "none" || !Directory.Exists(saveFolder))
 			{
-				saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-					"IgniteBot\\replays");
+				saveFolder = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+					"IgniteBot"),"replays");
 				Directory.CreateDirectory(saveFolder);
 				Settings.Default.saveFolder = saveFolder;
 				Settings.Default.Save();
