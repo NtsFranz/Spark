@@ -30,6 +30,8 @@ namespace IgniteBot
 			Settings.Default.isNVHighlightsEnabled = HighlightsHelper.isNVHighlightsEnabled;   // This shouldn't change anything
 			Settings.Default.Save();
 
+			secondsBefore.Text = Settings.Default.nvHighlightsSecondsBefore.ToString();
+			secondsAfter.Text = Settings.Default.nvHighlightsSecondsAfter.ToString();
 			enableNVHighlightsCheckbox.IsChecked = HighlightsHelper.isNVHighlightsEnabled;
 			clearHighlightsOnExitCheckbox.IsChecked = Settings.Default.clearHighlightsOnExit;
 			highlightScope.SelectedIndex = Settings.Default.clientHighlightScope;

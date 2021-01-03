@@ -36,10 +36,14 @@ namespace IgniteBot
 		private string lastDiscordUsername = string.Empty;
 		private bool hidden;
 
+		private bool isExplicitClose = false;
+
 
 		public LiveWindow()
 		{
 			InitializeComponent();
+
+			Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
 			outputUpdateTimer.Interval = 100;
 			outputUpdateTimer.Elapsed += Update;
@@ -352,6 +356,22 @@ namespace IgniteBot
 			}
 		}
 
+
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			base.OnClosing(e);
+
+			// if not specifically a exit button press, hide
+			if (isExplicitClose == false) 
+			{
+				e.Cancel = true;
+				Hide();
+				showHideMenuItem.Header = "Show Main Window";
+				hidden = true;
+			}
+
+		}
+
 		private void RefreshAccessCode()
 		{
 			accessCodeLabel.Content = "Mode: " + Program.currentAccessCodeUsername;
@@ -502,6 +522,7 @@ namespace IgniteBot
 
 		private void QuitButtonClicked(object sender, RoutedEventArgs e)
 		{
+			isExplicitClose = true;
 			Program.Quit();
 		}
 
