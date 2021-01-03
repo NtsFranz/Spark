@@ -438,6 +438,9 @@ namespace IgniteBot
 				{
 					updateFilename = (string)respObj["filename"];
 					updateButton.Visibility = Visibility.Visible;
+				} else
+				{
+					updateButton.Visibility = Visibility.Collapsed;
 				}
 			}
 			catch (HttpRequestException)
