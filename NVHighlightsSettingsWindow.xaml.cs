@@ -19,6 +19,9 @@ namespace IgniteBot
 	/// </summary>
 	public partial class NVHighlightsSettingsWindow : Window
 	{
+
+		private bool initialized;
+
 		public NVHighlightsSettingsWindow()
 		{
 			InitializeComponent();
@@ -30,8 +33,6 @@ namespace IgniteBot
 			Settings.Default.isNVHighlightsEnabled = HighlightsHelper.isNVHighlightsEnabled;   // This shouldn't change anything
 			Settings.Default.Save();
 
-			secondsBefore.Text = Settings.Default.nvHighlightsSecondsBefore.ToString();
-			secondsAfter.Text = Settings.Default.nvHighlightsSecondsAfter.ToString();
 			enableNVHighlightsCheckbox.IsChecked = HighlightsHelper.isNVHighlightsEnabled;
 			clearHighlightsOnExitCheckbox.IsChecked = Settings.Default.clearHighlightsOnExit;
 			highlightScope.SelectedIndex = Settings.Default.clientHighlightScope;
@@ -50,10 +51,13 @@ namespace IgniteBot
 			clearHighlightsButton.Content = $"Clear {HighlightsHelper.nvHighlightClipCount} Unsaved Highlights";
 
 			Console.WriteLine(highlightScope.SelectedIndex);
+
+			initialized = true;
 		}
 
 		private void HighlightScopeChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (!initialized) return;
 			int index = ((ComboBox)sender).SelectedIndex;
 			HighlightsHelper.ClientHighlightScope = (HighlightLevel)index;
 			Settings.Default.clientHighlightScope = index;
@@ -62,6 +66,7 @@ namespace IgniteBot
 
 		private void ClearHighlightsOnExitEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			HighlightsHelper.clearHighlightsOnExit = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.clearHighlightsOnExit = HighlightsHelper.clearHighlightsOnExit;
 			Settings.Default.Save();
@@ -71,6 +76,7 @@ namespace IgniteBot
 
 		private void EnableNVHighlightsEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			if (HighlightsHelper.isNVHighlightsEnabled && !((CheckBox)sender).IsChecked == true)
 			{
 				HighlightsHelper.CloseNVHighlights(true);
@@ -109,6 +115,7 @@ namespace IgniteBot
 
 		private void ClearHighlightsEvent(object sender, RoutedEventArgs e)
 		{
+			if (!initialized) return;
 			HighlightsHelper.ClearUnsavedNVHighlights(true);
 			clearHighlightsButton.IsEnabled = false;
 			clearHighlightsButton.Content = "Clear 0 Unsaved Highlights";
@@ -122,7 +129,8 @@ namespace IgniteBot
 
 		private void SecondsBeforeChanged(object sender, TextChangedEventArgs e)
 		{
-			if (float.TryParse(((TextBox)sender).Text, out float value))
+			if (!initialized) return;
+				if (float.TryParse(((TextBox)sender).Text, out float value))
 			{
 				Settings.Default.nvHighlightsSecondsBefore = value;
 				Settings.Default.Save();
@@ -131,6 +139,7 @@ namespace IgniteBot
 
 		private void SecondsAfterChanged(object sender, TextChangedEventArgs e)
 		{
+			if (!initialized) return;
 			if (float.TryParse(((TextBox)sender).Text, out float value))
 			{
 				Settings.Default.nvHighlightsSecondsAfter = value;

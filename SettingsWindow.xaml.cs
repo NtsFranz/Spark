@@ -24,6 +24,7 @@ namespace IgniteBot
 			autorestartCheckbox.IsChecked = Settings.Default.autoRestart;
 			discordRichPresenceCheckbox.IsChecked = Settings.Default.discordRichPresence;
 			remoteLoggingCheckbox.IsChecked = Settings.Default.logToServer;
+			exeLocationTextBox.Text = Settings.Default.echoVRPath;
 			echoVRIPTextBox.Text = Settings.Default.echoVRIP;
 			echoVRPortTextBox.Text = Program.echoVRPort.ToString();
 
@@ -333,6 +334,21 @@ namespace IgniteBot
 				FileName = Settings.Default.saveFolder,
 				UseShellExecute = true
 			});
+		}
+
+		private void ExecutableLocationChanged(object sender, TextChangedEventArgs e)
+		{
+			if (!initialized) return;
+			string path = ((TextBox)sender).Text;
+			if (File.Exists(path))
+			{
+				exeLocationLabel.Content = "EchoVR Executable Location:";
+				Settings.Default.echoVRPath = path;
+				Settings.Default.Save();
+			} else
+			{
+				exeLocationLabel.Content = "EchoVR Executable Location:   (not valid)";
+			}
 		}
 	}
 }

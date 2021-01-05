@@ -925,9 +925,9 @@ namespace IgniteBot
 
 				return process;
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Error getting process");
+				LogRow(LogType.Error, $"Error getting process\n{e}");
 				return null;
 			}
 		}
@@ -993,9 +993,9 @@ namespace IgniteBot
 					}
 				}
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Can't get EchoVR path from registry");
+				LogRow(LogType.Error, $"Can't get EchoVR path from registry\n{e}");
 			}
 		}
 
@@ -1140,6 +1140,10 @@ namespace IgniteBot
 				UpdateStatsIngame(frame);
 
 
+				if (string.IsNullOrEmpty(Settings.Default.echoVRPath))
+				{
+					GetEchoVRProcess();
+				}
 
 				if (spectateMe)
 				{

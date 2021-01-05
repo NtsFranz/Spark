@@ -7,7 +7,7 @@
     <StartupObject>IgniteBot.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.0.17</Version>
+    <Version>2.0.19</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/ignitebot</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -17,7 +17,7 @@
     <PackageId>IgniteBot</PackageId>
     <AssemblyName>IgniteBot</AssemblyName>
     <RootNamespace>IgniteBot</RootNamespace>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>IgniteBotKey.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <PackageVersion>2.0.9</PackageVersion>

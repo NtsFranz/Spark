@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
-        Title="IgniteBot | Settings" Height="912" Width="600" Background="{DynamicResource BackgroundColour}" Loaded="SettingsWindow_Load" FontSize="14" Padding="10,10,10,10" ResizeMode="CanMinimize" SizeToContent="Height" Icon="/img/ignite_logo_128.png">
+        Title="IgniteBot | Settings" Height="956" Width="600" Background="{DynamicResource BackgroundColour}" Loaded="SettingsWindow_Load" FontSize="14" Padding="10,10,10,10" ResizeMode="CanMinimize" SizeToContent="Height" Icon="/img/ignite_logo_128.png">
 	<Grid>
 		<StackPanel>
 			<Label x:Name="label" Content="Settings" FontSize="20" Margin="10,10,10,4"/>
@@ -15,7 +15,9 @@
 			<CheckBox x:Name="startMinimizedCheckbox" Content="Start Minimized" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="StartMinimizedEvent" Unchecked="StartMinimizedEvent"/>
 			<CheckBox x:Name="autorestartCheckbox" Content="Autorestart EchoVR" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="RestartOnCrashEvent" Unchecked="RestartOnCrashEvent"/>
 			<CheckBox x:Name="discordRichPresenceCheckbox" Content="Discord Rich Presence" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="EnableDiscordRichPresenceEvent" Unchecked="EnableDiscordRichPresenceEvent"/>
-			<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="LogToServerEvent" Unchecked="LogToServerEvent"/>
+			<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="LogToServerEvent" Unchecked="LogToServerEvent" Visibility="Collapsed"/>
+			<Label x:Name="exeLocationLabel" Content="EchoVR Executable Location:" Margin="10,4,10,0"/>
+			<TextBox x:Name="exeLocationTextBox" TextWrapping="NoWrap" HorizontalAlignment="Stretch" Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged" MaxLines="1"/>
 			<StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,4">
 				<Label x:Name="echoVRIPLabel" Content="EchoVR IP (for Quest)" Margin="4,4,4,4"/>
 				<TextBox x:Name="echoVRIPTextBox" Text="127.0.0.1" TextWrapping="Wrap" Width="140" Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas" Padding="4,4,4,4" TextChanged="EchoVRIPChanged"/>
@@ -43,7 +45,7 @@
 					</ComboBox>
 					<Label x:Name="saveLocLabel" Content="Save Folder:" Margin="4,4,4,4"/>
 					<StackPanel Height="30" Margin="4,4,4,4" Orientation="Horizontal">
-						<TextBox x:Name="storageLocationTextBox" TextWrapping="Wrap" Width="322" Margin="4,0,4,0" VerticalContentAlignment="Center"/>
+						<TextBox x:Name="storageLocationTextBox" TextWrapping="NoWrap" Width="322" Margin="4,0,4,0" VerticalContentAlignment="Center" MaxLines="1"/>
 						<Button x:Name="saveLocButton" Content="Browse" Margin="4,0,4,0" Padding="4,4,4,4" Click="SetStorageLocation"/>
 						<Button x:Name="resetReplayFolder" Content="Reset" Margin="4,0,4,0" Padding="4,4,4,4" Click="resetReplayFolder_Click"/>
 						<Button x:Name="openReplayFolderButton" Content="Open Folder" Margin="4,0,4,0" Padding="4,4,4,4" Click="OpenReplayFolder"/>
