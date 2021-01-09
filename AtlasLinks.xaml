@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
-        Title="IgniteBot | Atlas Links" Height="301" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterScreen" SizeToContent="Height" ResizeMode="NoResize" Icon="/img/ignite_logo_128.png">
+        Title="IgniteBot | Atlas Links" Height="373" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterScreen" SizeToContent="Height" ResizeMode="NoResize" Icon="/img/ignite_logo_128.png">
 	<StackPanel>
+		<StackPanel Orientation="Horizontal" Margin="10,10,0,0">
+			<TextBox x:Name="alternateIPTextBox" Text="---" TextWrapping="Wrap" Width="175" Margin="10,10,10,10" FontFamily="Consolas"/>
+			<Button x:Name="getButton" Content="Get" Margin="10,6,10,6" Padding="4,4,4,4" Width="52" Click="GetLinks"/>
+			<Label x:Name="linksFromLabel" Content="Links from local PC:" Margin="4,4,4,4"/>
+		</StackPanel>
 		<Label x:Name="label" Content="Join as Player" Margin="10,10,10,-8"/>
 		<TextBox x:Name="joinLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top" HorizontalAlignment="Stretch" IsReadOnly="True"/>
 		<Label x:Name="label_Copy1" Content="Join as Spectator" Margin="10,10,10,-8"/>

@@ -670,5 +670,17 @@ namespace IgniteBot.Properties {
                 this["pausedTTS"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
+        public string alternateEchoVRIP {
+            get {
+                return ((string)(this["alternateEchoVRIP"]));
+            }
+            set {
+                this["alternateEchoVRIP"] = value;
+            }
+        }
     }
 }

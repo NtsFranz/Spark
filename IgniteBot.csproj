@@ -7,7 +7,7 @@
     <StartupObject>IgniteBot.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.0.19</Version>
+    <Version>2.0.20</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/ignitebot</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>

@@ -136,6 +136,7 @@ namespace IgniteBot
 
 	public class g_InstanceSimple
 	{
+		public string sessionid { get; set; }
 		public bool private_match { get; set; }
 
 		/// <summary>
