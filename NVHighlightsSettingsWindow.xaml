@@ -21,6 +21,7 @@
 				Text="Make sure to enable Desktop recording (under the 'Privacy control' section in the overlay), otherwise only this program will be recorded."
 				TextWrapping="Wrap" Margin="5,5,5,5" />
 
+			<CheckBox x:Name="enableAutoFocusCheckbox" Content="Autofocus EchoVR" Margin="5,5,5,5" Checked="EnableAutofocusEvent" Unchecked="EnableAutofocusEvent"/>
 			<CheckBox x:Name="enableNVHighlightsCheckbox" Content="Enable NVIDIA Highlights" Margin="5,5,5,5" Checked="EnableNVHighlightsEvent" Unchecked="EnableNVHighlightsEvent"/>
 			<GroupBox x:Name="nvHighlightsBox" Header="NVIDIA Highlights" Margin="5,5,5,5">
 				<StackPanel>

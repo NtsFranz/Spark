@@ -626,6 +626,18 @@ namespace IgniteBot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool isAutofocusEnabled {
+            get {
+                return ((bool)(this["isAutofocusEnabled"]));
+            }
+            set {
+                this["isAutofocusEnabled"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool isNVHighlightsEnabled {
             get {
                 return ((bool)(this["isNVHighlightsEnabled"]));

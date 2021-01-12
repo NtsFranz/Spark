@@ -2106,6 +2106,18 @@ namespace IgniteBot
 						UpdateStatsIngame(frame);
 					}
 
+					// Autofocus
+					if (Settings.Default.isAutofocusEnabled) {
+						[System.Runtime.InteropServices.DllImport("User32.dll")]
+						static extern bool SetForegroundWindow(IntPtr handle);
+
+						Process[] process = GetEchoVRProcess();
+						if (process.Length > 0)
+						{
+							SetForegroundWindow(process[0].MainWindowHandle);
+						}
+					}
+
 					// Loop through teams.
 					foreach (var team in frame.teams)
 					{
