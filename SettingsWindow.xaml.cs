@@ -319,6 +319,21 @@ namespace IgniteBot
 			}
 		}
 
+		private void ShowNVHighlightSettingsWindow(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+			if (Program.nvhWindow == null)
+			{
+				Program.nvhWindow = new NVHighlightsSettingsWindow();
+				Program.nvhWindow.Closed += (sender, args) => Program.nvhWindow = null;
+				Program.nvhWindow.Show();
+			}
+			else
+			{
+				Program.nvhWindow.Close();
+			}
+		}
+
 		private void EnableDiscordRichPresenceEvent(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
