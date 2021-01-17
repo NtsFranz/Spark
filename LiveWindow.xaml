@@ -102,7 +102,6 @@
 						<Button x:Name="button5" Content="Upload Now" Margin="4,4,4,4" Width="85" Click="UploadStatsManual"/>
 					</StackPanel>
 					<Button x:Name="button6" Content="Restart as Spectator" Height="35" Margin="4,4,4,4" Click="RestartAsSpectatorClick" ToolTip="Restarts the game in the 2D spectator mode"/>
-					<Button x:Name="startSpectatorStream" Content="Open Spectatorstream" Height="35" Click="startSpectatorStream_Click" Margin="4,4,4,4" ToolTip="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing"/>
 				</StackPanel>
 			</GroupBox>
 			<GroupBox x:Name="toolsBox" Header="Tools" Margin="0,8,0,0" VerticalAlignment="Top">
@@ -111,6 +110,7 @@
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton" Content="Enable API in Settings" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
 					<Button x:Name="showAtlasLinks" Content="Show Atlas Links" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click" ToolTip="Shows copy-pastable links to let others join your match"/>
+					<Button x:Name="startSpectatorStream" Content="Open Spectatorstream" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing"/>
 					<Button x:Name="playspaceButton" Content="Show Playspace" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
 					<Button x:Name="showPlayerSpeedsButton" Content="Show Player Speeds" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
 					<Button x:Name="ttsSettings" Content="TTS Settings" Height="40" Margin="4,4,4,4" Click="ttsSettings_Click" ToolTip="Settings for Text-to-Speech callouts during the game."/>

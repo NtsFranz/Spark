@@ -120,7 +120,7 @@ static class EventTypeExtensions
 {
 	public static bool IsJoust(this EventData.EventType eventType)
 	{
-		if (eventType == EventData.EventType.joust_speed)
+		if (eventType == EventData.EventType.joust_speed || eventType == EventData.EventType.defensive_joust)
 		{
 			return true;
 		}

@@ -139,13 +139,6 @@ namespace IgniteBot
 		static int lastThrowPlayerId = -1;
 		static bool inPostMatch = false;
 
-		/// Joust stats
-		static bool[] isJousting = new bool[2];
-
-		static float[] joustMaxSpeed = new float[2];
-		static float[] joustTubeExitSpeed = new float[2];
-		static float joustStartTime = -1;
-
 		public static int deltaTimeIndexStats;
 		public static int deltaTimeIndexFull = 1;
 
@@ -234,8 +227,8 @@ namespace IgniteBot
 			// allow multiple instances if the port is overriden
 			if (IsIgniteBotOpen() && !overrideEchoVRPort)
 			{
-				new MessageBox("Instance already running", "Error", Quit).Show();
-				return; // wait for the dialog to quit the program
+				new MessageBox("Instance already running", "Error").Show();
+				//return; // wait for the dialog to quit the program
 			}
 
 			// Reload old settings file
@@ -1058,7 +1051,7 @@ namespace IgniteBot
 			if (saveFolder == "none" || !Directory.Exists(saveFolder))
 			{
 				saveFolder = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-					"IgniteBot"),"replays");
+					"IgniteBot"), "replays");
 				Directory.CreateDirectory(saveFolder);
 				Settings.Default.saveFolder = saveFolder;
 				Settings.Default.Save();
@@ -1783,104 +1776,6 @@ namespace IgniteBot
 							LogRow(LogType.File, frame.sessionid,
 								frame.game_clock_display + " - " + player.name + " made a pass");
 						}
-
-						// calculate joust time to center
-						int side = (int)team.color;
-						if (team.color != TeamColor.spectator && isJousting[side])
-						{
-							if (player.velocity.ToVector3().Length() > joustMaxSpeed[side])
-							{
-								joustMaxSpeed[side] = player.velocity.ToVector3().Length();
-							}
-
-							// if the player exited the tube
-							if (player.head.Position.Z * (side * 2 - 1) < 40)
-							{
-								if (!playerData.exitedTube)
-								{
-									// set the max tube speed
-									if (player.velocity.ToVector3().Length() > joustTubeExitSpeed[side])
-									{
-										joustTubeExitSpeed[side] = player.velocity.ToVector3().Length();
-									}
-
-									playerData.exitedTube = true;
-
-									if (Settings.Default.tubeExitSpeedTTS)
-									{
-										if (player.name == frame.client_name)
-										{
-											synth.SpeakAsync("tube " +
-															 player.velocity.ToVector3().Length().ToString("N0") +
-															 " meters per second");
-										}
-									}
-								}
-							}
-							else
-							{
-								playerData.exitedTube = false;
-							}
-
-							if (player.head.Position.Z * (side * 2 - 1) < 0)
-							{
-								EventData joustEvent = new EventData(
-									matchData,
-									EventData.EventType.joust_speed,
-									frame.game_clock,
-									team,
-									player,
-									(long)((joustStartTime - frame.game_clock) * 1000),
-									Vector3.Zero,
-									new Vector3(
-										joustMaxSpeed[side],
-										joustTubeExitSpeed[side],
-										joustStartTime - frame.game_clock)
-								);
-
-								isJousting[side] = false;
-
-								// only joust time
-								if (Settings.Default.joustTimeTTS && !Settings.Default.joustSpeedTTS)
-								{
-									synth.SpeakAsync(team.color.ToString() + " " +
-													 (joustStartTime - frame.game_clock).ToString("N1"));
-								}
-								// only joust speed
-								else if (!Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
-								{
-									synth.SpeakAsync(team.color.ToString() + " " + joustMaxSpeed[side].ToString("N0") +
-													 " meters per second");
-								}
-								// both
-								else if (Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
-								{
-									synth.SpeakAsync(team.color.ToString() + " " +
-													 (joustStartTime - frame.game_clock).ToString("N1") + " " +
-													 joustMaxSpeed[side].ToString("N0") + " meters per second");
-								}
-
-								matchData.Events.Add(joustEvent);
-								LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " +
-																	  team.color.ToString() +
-																	  " team joust time: " +
-																	  (joustStartTime - frame.game_clock)
-																	  .ToString("N2") +
-																	  " s, Max speed: " +
-																	  joustMaxSpeed[side].ToString("N2") +
-																	  " m/s, Tube Exit Speed: " +
-																	  joustTubeExitSpeed[side].ToString("N2") + " m/s");
-
-								// Upload to Firebase 🔥
-								_ = DoUploadEventFirebase(matchData, joustEvent);
-
-								lastJousts.Enqueue(joustEvent);
-								if (lastJousts.Count > 8)
-								{
-									lastJousts.TryDequeue(out var joust);
-								}
-							}
-						}
 					}
 				}
 
@@ -1919,6 +1814,107 @@ namespace IgniteBot
 			lastLastFrame = lastFrame;
 			lastFrame = frame;
 		}
+
+
+		// 💨
+		private static async Task JoustDetection(g_Instance firstFrame, EventData.EventType eventType, TeamColor side)
+		{
+			float startGameClock = firstFrame.game_clock;
+			float maxTubeExitSpeed = 0;
+			float maxSpeed = 0;
+			List<string> playersWhoExitedTube = new List<string>();
+
+			int interval = 8; // time between checks - ms. This is faster than cap rate just to be sure.
+			float maxJoustTimeTimeout = 10000; // time before giving up calculating joust time - ms
+			for (int i = 0; i < maxJoustTimeTimeout / interval; i++)
+			{
+				g_Instance frame = lastFrame;
+				var team = frame.teams[(int)side];
+				foreach (g_Player player in team.players)
+				{
+					float speed = player.velocity.ToVector3().Length();
+					// if the player exited the tube for the first time
+					if (player.head.Position.Z * ((int)side * 2 - 1) < 40 && !playersWhoExitedTube.Contains(player.name))
+					{
+						playersWhoExitedTube.Add(player.name);
+						if (speed > maxTubeExitSpeed)
+						{
+							maxTubeExitSpeed = speed;
+						}
+					}
+
+					if (speed > maxSpeed)
+					{
+						maxSpeed = speed;
+					}
+
+					// if the player crossed the centerline - joust finished 🏁
+					if (player.head.Position.Z * ((int)side * 2 - 1) < 0)
+					{
+
+						EventData joustEvent = new EventData(
+							matchData,
+							eventType,
+							frame.game_clock,
+							team,
+							player,
+							(long)((startGameClock - frame.game_clock) * 1000),
+							Vector3.Zero,
+							new Vector3(
+								maxSpeed,
+								maxTubeExitSpeed,
+								startGameClock - frame.game_clock)
+						);
+
+						// only joust time
+						if (Settings.Default.joustTimeTTS && !Settings.Default.joustSpeedTTS)
+						{
+							synth.SpeakAsync(team.color.ToString() + " " +
+											 (startGameClock - frame.game_clock).ToString("N1"));
+						}
+						// only joust speed
+						else if (!Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
+						{
+							synth.SpeakAsync(team.color.ToString() + " " + maxSpeed.ToString("N0") +
+											 " meters per second");
+						}
+						// both
+						else if (Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
+						{
+							synth.SpeakAsync(team.color.ToString() + " " +
+											 (startGameClock - frame.game_clock).ToString("N1") + " " +
+											 maxSpeed.ToString("N0") + " meters per second");
+						}
+
+						matchData.Events.Add(joustEvent);
+						LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " +
+															  team.color.ToString() +
+															  " team joust time" + 
+															  (eventType == EventData.EventType.defensive_joust ? " (defensive)" : "") + 
+															  ": " +
+															  (startGameClock - frame.game_clock)
+															  .ToString("N2") +
+															  " s, Max speed: " +
+															  maxSpeed.ToString("N2") +
+															  " m/s, Tube Exit Speed: " +
+															  maxTubeExitSpeed.ToString("N2") + " m/s");
+
+						// Upload to Firebase 🔥
+						_ = DoUploadEventFirebase(matchData, joustEvent);
+
+						lastJousts.Enqueue(joustEvent);
+						if (lastJousts.Count > 8)
+						{
+							lastJousts.TryDequeue(out var joust);
+						}
+
+						return;
+					}
+				}
+				await Task.Delay(interval);
+			}
+		}
+
 
 		private static async Task DelayedCatchEvent(g_Player originalPlayer, g_Player throwPlayer)
 		{
@@ -2121,20 +2117,28 @@ namespace IgniteBot
 						}
 					}
 
-					// start a joust if the disc is in the center
+					// start a joust detection
 					if (lastFrame.game_status == "round_start")
 					{
-						// if the disc is in the center of the arena
-						if (Math.Abs(frame.disc.position.ToVector3().Z) < .1f)
+						float zDiscPos = frame.disc.position.ToVector3().Z;
+						// if the disc is in the center of the arena, neutral joust
+						if (Math.Abs(zDiscPos) < .1f)
 						{
-							for (int i = 0; i < 2; i++)
-							{
-								isJousting[i] = true;
-								joustTubeExitSpeed[i] = 0;
-								joustMaxSpeed[i] = 0;
-							}
+							_ = JoustDetection(frame, EventData.EventType.joust_speed, TeamColor.blue);
+							_ = JoustDetection(frame, EventData.EventType.joust_speed, TeamColor.orange);
+						}
 
-							joustStartTime = frame.game_clock;
+						// if the disc is on the orange nest
+						else if (Math.Abs(zDiscPos + 27.5f) < 1)
+						{
+							_ = JoustDetection(frame, EventData.EventType.defensive_joust, TeamColor.orange);
+						}
+
+
+						// if the disc is on the blue nest
+						else if (Math.Abs(zDiscPos - 27.5f) < 1)
+						{
+							_ = JoustDetection(frame, EventData.EventType.defensive_joust, TeamColor.blue);
 						}
 					}
 
