@@ -38,6 +38,9 @@ namespace IgniteBot
 
 		private bool isExplicitClose = false;
 
+		private float smoothedServerScore = 100;
+		private float serverScoreSmoothingFactor = .99f;
+
 
 		public LiveWindow()
 		{
@@ -71,7 +74,7 @@ namespace IgniteBot
 			}
 			//hostLiveReplayButton.Visible = !Program.Personal;
 
-			versionLabel.Content = "v" + Program.AppVersion();
+			versionLabel.Text = "v" + Program.AppVersion();
 
 			GenerateNewStatsId();
 
@@ -160,14 +163,17 @@ namespace IgniteBot
 
 					if (Program.lastFrame != null && Program.lastFrame.map_name != "mpl_lobby_b2")  // 'mpl_lobby_b2' may change in the future
 					{
-						discSpeedLabel.Content = Program.lastFrame.disc.velocity.ToVector3().Length().ToString("N2");
+						discSpeedLabel.Text = Program.lastFrame.disc.velocity.ToVector3().Length().ToString("N2");
 						switch (Program.lastFrame.possession[0])
 						{
 							case 0:
-								discSpeedLabel.BorderBrush = System.Windows.Media.Brushes.DarkBlue;
+								discSpeedLabel.Foreground = System.Windows.Media.Brushes.CornflowerBlue;
 								break;
 							case 1:
-								discSpeedLabel.BorderBrush = System.Windows.Media.Brushes.DarkRed;
+								discSpeedLabel.Foreground = System.Windows.Media.Brushes.Orange;
+								break;
+							default:
+								discSpeedLabel.Foreground = System.Windows.Media.Brushes.White;
 								break;
 						}
 						//discSpeedProgressBar.Value = (int)Program.lastFrame.disc.Velocity.Length();
@@ -192,9 +198,12 @@ namespace IgniteBot
 				<div id = ""player_speeds"">";
 						bool updatedHTML = false;
 
-						StringBuilder pingsTextNames = new StringBuilder();
-						StringBuilder pingsTextPings = new StringBuilder();
-						StringBuilder speedsTextSpeeds = new StringBuilder();
+						StringBuilder blueTextNames = new StringBuilder();
+						StringBuilder orangeTextNames = new StringBuilder();
+						StringBuilder bluePingsTextPings = new StringBuilder();
+						StringBuilder orangePingsTextPings = new StringBuilder();
+						StringBuilder blueSpeedsTextSpeeds = new StringBuilder();
+						StringBuilder orangeSpeedsTextSpeeds = new StringBuilder();
 						StringBuilder[] teamNames = {
 							new StringBuilder(),
 							new StringBuilder(),
@@ -227,32 +236,48 @@ namespace IgniteBot
 										playerSpeedHTML += "<div style=\"width:" + speed + "px;\" class=\"speed_bar " + (g_Team.TeamColor)t + "\"></div>\n";
 									}
 
-									pingsTextNames.AppendLine(player.name);
-									pingsTextPings.AppendLine(player.ping.ToString());
+									if (t == 0)
+									{
+										blueTextNames.AppendLine(player.name);
+										bluePingsTextPings.AppendLine(player.ping.ToString());
+										blueSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
+									}
+
+									if (t == 1)
+									{
+										orangeTextNames.AppendLine(player.name);
+										orangePingsTextPings.AppendLine(player.ping.ToString());
+										orangeSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
+									}
 
 									pings[t].Add(player.ping);
 
-									speedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 								}
 								teamNames[t].AppendLine(player.name);
 							}
 						}
 
-						playerPingsNames.Text = pingsTextNames.ToString();
-						playerPingsPings.Text = pingsTextPings.ToString();
+						bluePlayerPingsNames.Text = blueTextNames.ToString();
+						bluePlayerPingsPings.Text = bluePingsTextPings.ToString();
+						orangePlayerPingsNames.Text = orangeTextNames.ToString();
+						orangePlayerPingsPings.Text = orangePingsTextPings.ToString();
 
 						float serverScore = Program.CalculateServerScore(pings[0], pings[1]);
 						if (serverScore < 0)
 						{
-							playerPingsGroupbox.Header = $"Player Pings\t >150";
+							playerPingsGroupbox.Header = $"Player Pings     >150";
 						}
 						else
 						{
-							playerPingsGroupbox.Header = $"Player Pings\tScore: {serverScore:N2}";
+							smoothedServerScore = smoothedServerScore * serverScoreSmoothingFactor + (1 - serverScoreSmoothingFactor) * serverScore;
+							playerPingsGroupbox.Header = $"Player Pings   Score: {smoothedServerScore:N1}";
 						}
 
-						playersSpeedsNames.Text = pingsTextNames.ToString();
-						playerSpeedsSpeeds.Text = speedsTextSpeeds.ToString();
+
+						bluePlayersSpeedsNames.Text = blueTextNames.ToString();
+						bluePlayerSpeedsSpeeds.Text = blueSpeedsTextSpeeds.ToString();
+						orangePlayersSpeedsNames.Text = orangeTextNames.ToString();
+						orangePlayerSpeedsSpeeds.Text = orangeSpeedsTextSpeeds.ToString();
 
 						blueTeamPlayersLabel.Content = teamNames[0].ToString().Trim();
 						orangeTeamPlayersLabel.Content = teamNames[1].ToString().Trim();
@@ -263,7 +288,7 @@ namespace IgniteBot
 						StringBuilder lastGoalsString = new StringBuilder();
 						foreach (var goal in Program.lastGoals)
 						{
-							lastGoalsString.AppendLine(goal.GameClock.ToString("N0") + "s  " + goal.LastScore.person_scored + "  " + goal.LastScore.point_amount + " pts  " + goal.LastScore.disc_speed.ToString("N1") + " m/s  " + goal.LastScore.distance_thrown.ToString("N1") + " m");
+							lastGoalsString.AppendLine(goal.GameClock.ToString("N0") + "s  " + goal.LastScore.point_amount + " pts  " + goal.LastScore.person_scored + "  " + goal.LastScore.disc_speed.ToString("N1") + " m/s  " + goal.LastScore.distance_thrown.ToString("N1") + " m");
 						}
 						lastGoalsTextBlock.Text = lastGoalsString.ToString();
 
@@ -277,7 +302,7 @@ namespace IgniteBot
 						StringBuilder lastJoustsString = new StringBuilder();
 						foreach (var joust in Program.lastJousts)
 						{
-							lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s");
+							lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventData.EventType.joust_speed ? " N" : ""));
 						}
 						lastJoustsTextBlock.Text = lastJoustsString.ToString();
 
@@ -299,7 +324,8 @@ namespace IgniteBot
 					else
 					{
 						sessionIdTextBox.Text = "---";
-						discSpeedLabel.Content = "---";
+						discSpeedLabel.Text = "---";
+						discSpeedLabel.Foreground = System.Windows.Media.Brushes.LightGray;
 						//discSpeedProgressBar.Value = 0;
 						//discSpeedProgressBar.ForeColor = Color.Gray;
 						foreach (ProgressBar bar in playerSpeedBars)
@@ -362,7 +388,7 @@ namespace IgniteBot
 			base.OnClosing(e);
 
 			// if not specifically a exit button press, hide
-			if (isExplicitClose == false) 
+			if (isExplicitClose == false)
 			{
 				e.Cancel = true;
 				Hide();
@@ -374,7 +400,7 @@ namespace IgniteBot
 
 		private void RefreshAccessCode()
 		{
-			accessCodeLabel.Content = "Mode: " + Program.currentAccessCodeUsername;
+			accessCodeLabel.Text = "Mode: " + Program.currentAccessCodeUsername;
 			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 		}
 
@@ -458,7 +484,8 @@ namespace IgniteBot
 				{
 					updateFilename = (string)respObj["filename"];
 					updateButton.Visibility = Visibility.Visible;
-				} else
+				}
+				else
 				{
 					updateButton.Visibility = Visibility.Collapsed;
 				}
@@ -606,7 +633,7 @@ namespace IgniteBot
 
 			login.Show();
 
-			accessCodeLabel.Content = "Mode: " + Program.currentAccessCodeUsername;
+			accessCodeLabel.Text = "Mode: " + Program.currentAccessCodeUsername;
 
 			login.Close();
 		}
