@@ -10,7 +10,8 @@
         Height="600" Width="1060" 
         FontSize="14" 
         Background="{DynamicResource BackgroundColour}" 
-        ResizeMode="CanMinimize" 
+        ResizeMode="CanResize" 
+		MinHeight="400" MinWidth="900"
         Icon="/img/ignite_logo_128.png" 
         Initialized="LiveWindow_Load">
 	<Grid>
@@ -45,34 +46,61 @@
 			<GroupBox x:Name="spectatorsBox" Header="Spectators" BorderBrush="#FF515151">
 				<Label x:Name="spectatorsLabel" Content=""/>
 			</GroupBox>
+			<Image x:Name="image" Height="175" Source="/alternate_white.png" Opacity="0.1"/>
 		</StackPanel>
 		<GridSplitter x:Name="gridSplitter" Grid.Column="1" HorizontalAlignment="Stretch"/>
-		<StackPanel x:Name="Center_Panel" Grid.Column="2">
-			<TabControl x:Name="tabControl" Height="500" SelectedIndex="0" Margin="0,4,0,0">
+		<Grid x:Name="Center_Panel" Grid.Column="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="1*"/>
+				<RowDefinition Height="56"/>
+			</Grid.RowDefinitions>
+			<TabControl x:Name="tabControl" SelectedIndex="0" Margin="0,4,0,0">
 				<TabItem x:Name="dashboardTab" Header="Dashboard" FontSize="14" Padding="10,6,10,6" Margin="4,-2,-2,0">
 					<Grid Background="{DynamicResource ContainerBackground}">
-						<GroupBox x:Name="playerSpeedsGroupbox" Header="Player Speeds" Width="200" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="281">
-							<StackPanel Orientation="Horizontal" Margin="10,10,10,10">
-								<TextBlock x:Name="playersSpeedsNames" Text="" VerticalAlignment="Top"/>
-								<TextBlock x:Name="playerSpeedsSpeeds" Text="" VerticalAlignment="Top" Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="6*"/>
+							<ColumnDefinition Width="3*"/>
+							<ColumnDefinition Width="3*"/>
+							<ColumnDefinition Width="6*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="4*"/>
+							<RowDefinition Height="3*"/>
+						</Grid.RowDefinitions>
+						<GroupBox x:Name="playerSpeedsGroupbox" Header="Player Speeds" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+							<StackPanel Orientation="Vertical" Margin="0,10,10,10">
+								<StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+									<TextBlock x:Name="bluePlayerSpeedsSpeeds" Text="" VerticalAlignment="Top" Width="35" Padding="0,0,5,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
+									<TextBlock x:Name="bluePlayersSpeedsNames" Text="" VerticalAlignment="Top" Foreground="CornflowerBlue"/>
+								</StackPanel>
+								<StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+									<TextBlock x:Name="orangePlayerSpeedsSpeeds" Text="" VerticalAlignment="Top" Width="35"  Padding="0,0,5,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
+									<TextBlock x:Name="orangePlayersSpeedsNames" Text="" VerticalAlignment="Top" Foreground="#ffd4941e"/>
+								</StackPanel>
 							</StackPanel>
 						</GroupBox>
-						<GroupBox x:Name="discSpeedsGroupbox" Header="Disc Speed (m/s)" Width="180" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Center" VerticalAlignment="Top">
-							<Label x:Name="discSpeedLabel" Content="0" Height="30" Margin="0,0,-3,0" HorizontalContentAlignment="Center" Padding="15,5,15,5" VerticalAlignment="Stretch"/>
+						<GroupBox x:Name="discSpeedsGroupbox" Header="Disc Speed (m/s)" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.ColumnSpan="2" Panel.ZIndex="-2">
+							<TextBlock x:Name="discSpeedLabel" Text="0" Height="30" HorizontalAlignment="Center" Padding="15,5,15,5" VerticalAlignment="Stretch"/>
 						</GroupBox>
-						<GroupBox x:Name="playerPingsGroupbox" Header="Player Pings" Width="200" Margin="0,10,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="281">
-							<StackPanel Orientation="Horizontal" Margin="10,10,10,10">
-								<TextBlock x:Name="playerPingsNames" Text="" VerticalAlignment="Top"/>
-								<TextBlock x:Name="playerPingsPings" Text="" VerticalAlignment="Top" Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
+						<GroupBox x:Name="playerPingsGroupbox" Header="Player Pings" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="3">
+							<StackPanel Orientation="Vertical" Margin="10,10,0,10">
+								<StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+									<TextBlock x:Name="bluePlayerPingsPings" Text="" VerticalAlignment="Top" Width="35"  Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
+									<TextBlock x:Name="bluePlayerPingsNames" Text="" VerticalAlignment="Top" Foreground="CornflowerBlue"/>
+								</StackPanel>
+								<StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+									<TextBlock x:Name="orangePlayerPingsPings" Text="" VerticalAlignment="Top" Width="35" Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
+									<TextBlock x:Name="orangePlayerPingsNames" Text="" VerticalAlignment="Top" Foreground="#ffd4941e"/>
+								</StackPanel>
 							</StackPanel>
 						</GroupBox>
-						<GroupBox x:Name="lastRoundScores" Header="Previous Rounds" Width="300" Margin="10,10,10,10" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="150">
+						<GroupBox x:Name="lastRoundScores" Header="Previous Rounds" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" Grid.Row="1">
 							<TextBlock x:Name="lastRoundScoresTextBlock"/>
 						</GroupBox>
-						<GroupBox x:Name="lastGoals" Header="Previous Goals" Width="300" Margin="10,10,10,10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="150" HorizontalContentAlignment="Left">
+						<GroupBox x:Name="lastGoals" Header="Previous Goals" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1">
 							<TextBlock x:Name="lastGoalsTextBlock"/>
 						</GroupBox>
-						<GroupBox x:Name="lastJoustsBox" Header="Previous Joust TImes" Width="180" Margin="0,90,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="201">
+						<GroupBox x:Name="lastJoustsBox" Header="Previous Joust TImes" Margin="10,90,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2">
 							<TextBlock x:Name="lastJoustsTextBlock" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
 						</GroupBox>
 					</Grid>
@@ -84,13 +112,13 @@
 					</Grid>
 				</TabItem>
 			</TabControl>
-			<StackPanel Height="48" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,0,0">
+			<StackPanel Height="48" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,0,4" Grid.Row="1">
 				<Button x:Name="rejoinButton" Content="REJOIN" Width="110" Background="#FF6E2F2F" VerticalAlignment="Stretch" Margin="4,4,4,5" Click="RejoinClicked" ToolTip="Rejoin the last private match that you were in"/>
 				<Button x:Name="settingsButton" Content="Settings" Width="100" Margin="4,4,4,4" Click="SettingsButtonClicked" ToolTip="Opens IgniteBot settings window"/>
 				<Button x:Name="exitButton" Content="Exit" Width="100" Margin="4,4,4,4" Click="QuitButtonClicked" ToolTip="Close the IgniteBot"/>
 				<Button x:Name="hideButton" Content="Hide" Width="100" Margin="4,4,4,4" Click="CloseButtonClicked" ToolTip="Hides this program in the tray. It will continue to run in the background"/>
 			</StackPanel>
-		</StackPanel>
+		</Grid>
 		<GridSplitter x:Name="gridSplitter_Copy" HorizontalAlignment="Stretch" Margin="1055,242,0,242" Grid.Column="3"/>
 		<StackPanel x:Name="Right_Sidebar" Grid.Column="4" HorizontalAlignment="Stretch" Height="Auto">
 			<GroupBox x:Name="casterToolsBox" Header="Caster Tools" Visibility="Collapsed">
@@ -120,8 +148,8 @@
 				</StackPanel>
 			</GroupBox>
 		</StackPanel>
-		<Label x:Name="accessCodeLabel" Content="Mode: Logging in..." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3"/>
-		<Label x:Name="versionLabel" Content="Version: ???" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5" Foreground="#FFA42525"/>
+		<TextBlock x:Name="accessCodeLabel" Text="Mode: Logging in..." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+		<TextBlock x:Name="versionLabel" Text="Version: ???" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 
 

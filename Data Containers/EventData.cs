@@ -55,7 +55,6 @@ namespace IgniteBot
 			pause_request,
 			unpause_request,
 			interception,	// not in db yet
-			turnover,		// not in db yet
 			player_switched_teams,	// not in db yet
 		}
 

@@ -40,6 +40,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="alternate_white.png" />
     <None Remove="GfeSDK.dll" />
     <None Remove="HighlightsPlugin64.dll" />
     <None Remove="ignite_logo.png" />
@@ -68,6 +69,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="alternate_white.png" />
     <Resource Include="img\baseline_replay_white_24px.png" />
     <Resource Include="img\ignite_logo.ico" />
     <Resource Include="img\ignite_logo_128.png" />
