@@ -22,6 +22,7 @@ namespace IgniteBot
 			startWithWindowsCheckbox.IsChecked = Settings.Default.startOnBoot;
 			startMinimizedCheckbox.IsChecked = Settings.Default.startMinimized;
 			autorestartCheckbox.IsChecked = Settings.Default.autoRestart;
+			capturevp2Checkbox.IsChecked = Settings.Default.capturevp2;
 			discordRichPresenceCheckbox.IsChecked = Settings.Default.discordRichPresence;
 			remoteLoggingCheckbox.IsChecked = Settings.Default.logToServer;
 			exeLocationTextBox.Text = Settings.Default.echoVRPath;
@@ -349,6 +350,13 @@ namespace IgniteBot
 			{
 				exeLocationLabel.Content = "EchoVR Executable Location:   (not valid)";
 			}
+		}
+
+		private void capturevp2CheckedEvent(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+			Settings.Default.capturevp2 = ((CheckBox)sender).IsChecked == true;
+			Settings.Default.Save();
 		}
 	}
 }

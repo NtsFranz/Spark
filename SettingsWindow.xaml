@@ -14,6 +14,7 @@
 			<CheckBox x:Name="startWithWindowsCheckbox" Content="Start with Windows" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="StartWithWindowsEvent" Unchecked="StartWithWindowsEvent"/>
 			<CheckBox x:Name="startMinimizedCheckbox" Content="Start Minimized" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="StartMinimizedEvent" Unchecked="StartMinimizedEvent"/>
 			<CheckBox x:Name="autorestartCheckbox" Content="Autorestart EchoVR" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="RestartOnCrashEvent" Unchecked="RestartOnCrashEvent"/>
+			<CheckBox x:Name="capturevp2Checkbox" Content="Enable -capturevp2 when launching spectator" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="capturevp2CheckedEvent" Unchecked="capturevp2CheckedEvent"/>
 			<CheckBox x:Name="discordRichPresenceCheckbox" Content="Discord Rich Presence" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="EnableDiscordRichPresenceEvent" Unchecked="EnableDiscordRichPresenceEvent"/>
 			<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="LogToServerEvent" Unchecked="LogToServerEvent" Visibility="Collapsed"/>
 			<Label x:Name="exeLocationLabel" Content="EchoVR Executable Location:" Margin="10,4,10,0"/>

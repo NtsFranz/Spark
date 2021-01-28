@@ -836,7 +836,7 @@ namespace IgniteBot
 								// close client
 								echo_.Kill();
 								// restart client
-								Process.Start(echoPath, "-spectatorstream");
+								Process.Start(echoPath, "-spectatorstream" + (Settings.Default.capturevp2 ? " -capturevp2" : ""));
 							}
 							else if (echoPath != null && echoPath != "")
 							{
@@ -943,11 +943,18 @@ namespace IgniteBot
 
 		public static void StartEchoVR(string joinType = "choose")
 		{
-			Process.Start(new ProcessStartInfo
+			if (lastFrame != null)
 			{
-				FileName = "ignitebot://" + joinType + "/" + lastFrame.sessionid,
-				UseShellExecute = true
-			});
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = "ignitebot://" + joinType + "/" + lastFrame.sessionid,
+					UseShellExecute = true
+				});
+			}
+			else
+			{
+				// No session id to launch
+			}
 		}
 
 		private static void UpdateEchoExeLocation()
@@ -1889,8 +1896,8 @@ namespace IgniteBot
 						matchData.Events.Add(joustEvent);
 						LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " +
 															  team.color.ToString() +
-															  " team joust time" + 
-															  (eventType == EventData.EventType.defensive_joust ? " (defensive)" : "") + 
+															  " team joust time" +
+															  (eventType == EventData.EventType.defensive_joust ? " (defensive)" : "") +
 															  ": " +
 															  (startGameClock - frame.game_clock)
 															  .ToString("N2") +
@@ -2928,7 +2935,7 @@ namespace IgniteBot
 			string echoPath = Settings.Default.echoVRPath;
 			if (!string.IsNullOrEmpty(echoPath))
 			{
-				Process.Start(echoPath, (spectating ? "-spectatorstream " : " ") + "-lobbyid " + parts[3]);
+				Process.Start(echoPath, (Settings.Default.capturevp2 ? "-capturevp2 " : " ") + (spectating ? "-spectatorstream " : " ") + "-lobbyid " + parts[3]);
 			}
 			else
 			{

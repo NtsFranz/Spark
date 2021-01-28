@@ -286,23 +286,38 @@ namespace IgniteBot
 
 						// last goals and last matches
 						StringBuilder lastGoalsString = new StringBuilder();
-						foreach (var goal in Program.lastGoals)
+						var lastGoals = Program.lastGoals.ToArray();
+						if (lastGoals.Length > 0)
 						{
-							lastGoalsString.AppendLine(goal.GameClock.ToString("N0") + "s  " + goal.LastScore.point_amount + " pts  " + goal.LastScore.person_scored + "  " + goal.LastScore.disc_speed.ToString("N1") + " m/s  " + goal.LastScore.distance_thrown.ToString("N1") + " m");
+							for (int j = lastGoals.Length - 1; j >= 0; j--)
+							{
+								var goal = lastGoals[j];
+								lastGoalsString.AppendLine(goal.GameClock.ToString("N0") + "s  " + goal.LastScore.point_amount + " pts  " + goal.LastScore.person_scored + "  " + goal.LastScore.disc_speed.ToString("N1") + " m/s  " + goal.LastScore.distance_thrown.ToString("N1") + " m");
+							}
 						}
 						lastGoalsTextBlock.Text = lastGoalsString.ToString();
 
 						StringBuilder lastMatchesString = new StringBuilder();
-						foreach (var match in Program.lastMatches)
+						var lastMatches = Program.lastMatches.ToArray();
+						if (lastMatches.Length > 0)
 						{
-							lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[g_Team.TeamColor.orange].points + "  BLUE: " + match.teams[g_Team.TeamColor.blue].points);
+							for (int j = lastMatches.Length; j >= 0; j--)
+							{
+								var match = lastMatches[j];
+								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[g_Team.TeamColor.orange].points + "  BLUE: " + match.teams[g_Team.TeamColor.blue].points);
+							}
 						}
 						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
 
 						StringBuilder lastJoustsString = new StringBuilder();
-						foreach (var joust in Program.lastJousts)
+						var lastJousts = Program.lastJousts.ToArray();
+						if (lastJousts.Length > 0)
 						{
-							lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventData.EventType.joust_speed ? " N" : ""));
+							for (int j = lastJousts.Length; j >= 0; j--)
+							{
+								var joust = lastJousts[j];
+								lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventData.EventType.joust_speed ? " N" : ""));
+							}
 						}
 						lastJoustsTextBlock.Text = lastJoustsString.ToString();
 
@@ -870,7 +885,7 @@ namespace IgniteBot
 		{
 			if (!string.IsNullOrEmpty(Settings.Default.echoVRPath))
 			{
-				Process.Start(Settings.Default.echoVRPath, "-spectatorstream");
+				Process.Start(Settings.Default.echoVRPath, "-spectatorstream" + (Settings.Default.capturevp2 ? " -capturevp2" : ""));
 			}
 		}
 

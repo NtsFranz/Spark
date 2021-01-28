@@ -81,27 +81,37 @@ namespace IgniteBot
 		}
 		public static int InitHighlightsSDK(bool isCheck)
 		{
-			Highlights.HighlightScope[] RequiredScopes = new
-				Highlights.HighlightScope[3] {
+			try
+			{
+				Highlights.HighlightScope[] RequiredScopes = new
+					Highlights.HighlightScope[3] {
 					Highlights.HighlightScope.Highlights,
 					Highlights.HighlightScope.HighlightsRecordVideo,
 					Highlights.HighlightScope.HighlightsRecordScreenshot
-				};
-			if (Highlights.CreateHighlightsSDK("EchoVR", RequiredScopes) != Highlights.ReturnCode.SUCCESS)
+					};
+				if (Highlights.CreateHighlightsSDK("EchoVR", RequiredScopes) != Highlights.ReturnCode.SUCCESS)
+				{
+					Console.WriteLine("Failed to initialize Highlights");
+					didHighlightsInit = false;
+					isNVHighlightsSupported = false;
+					return -1;
+				}
+				else if (isCheck)
+				{
+					Highlights.ReleaseHighlightsSDK();
+					isNVHighlightsSupported = true;
+					return 1;
+				}
+				didHighlightsInit = true;
+				return 1;
+			}
+			catch (Exception e)
 			{
-				Console.WriteLine("Failed to initialize Highlights");
+				Console.WriteLine($"Failed to initialize Highlights: {e}");
 				didHighlightsInit = false;
 				isNVHighlightsSupported = false;
 				return -1;
 			}
-			else if (isCheck)
-			{
-				Highlights.ReleaseHighlightsSDK();
-				isNVHighlightsSupported = true;
-				return 1;
-			}
-			didHighlightsInit = true;
-			return 1;
 		}
 
 		public static int SetupNVHighlights()

@@ -682,5 +682,17 @@ namespace IgniteBot.Properties {
                 this["alternateEchoVRIP"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool capturevp2 {
+            get {
+                return ((bool)(this["capturevp2"]));
+            }
+            set {
+                this["capturevp2"] = value;
+            }
+        }
     }
 }
