@@ -110,26 +110,26 @@ namespace IgniteBot
 								mainOutputTextBox.AppendText(newText);
 								mainOutputTextBox.ScrollToEnd();
 
-								if (Program.writeToOBSHTMLFile) // TODO this file path won't work
-								{
-									// write to html file for overlay as well
-									File.WriteAllText("html_output/events.html", @"
-								<html>
-								<head>
-								<meta http-equiv=""refresh"" content=""1"">
-								<link rel=""stylesheet"" type=""text/css"" href=""styles.css"">
-								</head>
-								<body>
+							//	if (Program.writeToOBSHTMLFile) // TODO this file path won't work
+							//	{
+							//		// write to html file for overlay as well
+							//		File.WriteAllText("html_output/events.html", @"
+							//	<html>
+							//	<head>
+							//	<meta http-equiv=""refresh"" content=""1"">
+							//	<link rel=""stylesheet"" type=""text/css"" href=""styles.css"">
+							//	</head>
+							//	<body>
 
-								<div id=""info""> " +
-												newText
-												+ @"
-								</div>
+							//	<div id=""info""> " +
+							//					newText
+							//					+ @"
+							//	</div>
 
-								</body>
-								</html>
-							");
-								}
+							//	</body>
+							//	</html>
+							//");
+							//	}
 							}
 							catch (Exception) { }
 
@@ -301,7 +301,7 @@ namespace IgniteBot
 						var lastMatches = Program.lastMatches.ToArray();
 						if (lastMatches.Length > 0)
 						{
-							for (int j = lastMatches.Length; j >= 0; j--)
+							for (int j = lastMatches.Length - 1; j >= 0; j--)
 							{
 								var match = lastMatches[j];
 								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[g_Team.TeamColor.orange].points + "  BLUE: " + match.teams[g_Team.TeamColor.blue].points);
@@ -313,7 +313,7 @@ namespace IgniteBot
 						var lastJousts = Program.lastJousts.ToArray();
 						if (lastJousts.Length > 0)
 						{
-							for (int j = lastJousts.Length; j >= 0; j--)
+							for (int j = lastJousts.Length - 1; j >= 0; j--)
 							{
 								var joust = lastJousts[j];
 								lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventData.EventType.joust_speed ? " N" : ""));

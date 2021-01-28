@@ -1910,7 +1910,7 @@ namespace IgniteBot
 						_ = DoUploadEventFirebase(matchData, joustEvent);
 
 						lastJousts.Enqueue(joustEvent);
-						if (lastJousts.Count > 8)
+						if (lastJousts.Count > 20)
 						{
 							lastJousts.TryDequeue(out var joust);
 						}
@@ -2362,7 +2362,7 @@ namespace IgniteBot
 			);
 			matchData.Goals.Add(goalEvent);
 			lastGoals.Enqueue(goalEvent);
-			if (lastGoals.Count > 5)
+			if (lastGoals.Count > 20)
 			{
 				lastGoals.TryDequeue(out var goal);
 			}
@@ -2443,7 +2443,7 @@ namespace IgniteBot
 			}
 
 			lastMatches.Enqueue(matchData);
-			if (lastMatches.Count > 5)
+			if (lastMatches.Count > 20)
 			{
 				lastMatches.TryDequeue(out var match);
 			}
