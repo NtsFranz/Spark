@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
         Title="IgniteBot | NVIDIA Highlights Settings"
-        Height="596" Width="500" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png"
+        Height="653" Width="500" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png"
         Background="{DynamicResource BackgroundColour}" SizeToContent="Manual"
         Loaded="NVHighlightsSettingsWindow_Load" FontSize="14">
 	<Grid>

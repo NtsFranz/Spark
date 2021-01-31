@@ -2,8 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,22 +15,54 @@ namespace IgniteBot
 	/// </summary>
 	public partial class AtlasLinks : Window
 	{
+		private bool initialized = false;
+
 		public AtlasLinks()
 		{
 			InitializeComponent();
 
-			if (Program.lastFrame != null)
-			{
-				joinLink.Text = "<atlas://j/" + Program.lastFrame.sessionid + ">";
-				spectateLink.Text = "<atlas://s/" + Program.lastFrame.sessionid + ">";
-				chooseLink.Text = "<ignitebot://choose/" + Program.lastFrame.sessionid + ">";
-			}
 
-			linksFromLabel.Content = $"Links from: {Settings.Default.echoVRIP}";
+			alternateIPTextBox.Text = Settings.Default.echoVRIP;
+			ipSourceDropdown.SelectedIndex = Settings.Default.echoVRIP == "127.0.0.1" ? 0 : 1;
 
-			alternateIPTextBox.Text = Settings.Default.alternateEchoVRIP;
+			surroundWithAngleBracketsCheckbox.IsChecked = Settings.Default.atlasLinkUseAngleBrackets;
+			linkTypeComboBox.SelectedIndex = Settings.Default.atlasLinkStyle;
+
+			RefreshCurrentLink();
+
 
 			//GetAtlasMatches();
+
+			initialized = true;
+		}
+
+		private string CurrentLink(string sessionid)
+		{
+			if (Settings.Default.atlasLinkUseAngleBrackets)
+			{
+				switch (Settings.Default.atlasLinkStyle)
+				{
+					case 0:
+						return "<ignitebot://choose/" + sessionid + ">";
+					case 1:
+						return "<atlas://j/" + sessionid + ">";
+					case 2:
+						return "<atlas://s/" + sessionid + ">";
+				}
+			}
+			else
+			{
+				switch (Settings.Default.atlasLinkStyle)
+				{
+					case 0:
+						return "ignitebot://choose/" + sessionid;
+					case 1:
+						return "atlas://j/" + sessionid;
+					case 2:
+						return "atlas://s/" + sessionid;
+				}
+			}
+			return "";
 		}
 
 		public void GetLinks(object sender, RoutedEventArgs e)
@@ -47,11 +78,8 @@ namespace IgniteBot
 					{
 						Dispatcher.Invoke(() =>
 						{
-							joinLink.Text = "<atlas://j/" + obj.sessionid + ">";
-							spectateLink.Text = "<atlas://s/" + obj.sessionid + ">";
-							chooseLink.Text = "<ignitebot://choose/" + obj.sessionid + ">";
+							joinLink.Text = CurrentLink(obj.sessionid);
 
-							linksFromLabel.Content = $"Links from: {alternateIPTextBox.Text}";
 							Settings.Default.alternateEchoVRIP = alternateIPTextBox.Text;
 							Settings.Default.Save();
 						});
@@ -152,18 +180,33 @@ namespace IgniteBot
 						});
 						if (!match.is_protected || !Program.Personal)
 						{
-							header.Children.Add(new Button
+							var copyLinkButton = new Button
 							{
 								Content = "Copy Atlas Link",
 								Margin = new Thickness(100, 0, 0, 0),
-								Padding = new Thickness(10, 0, 10, 0)
-							});
-							header.Children.Add(new Button
+								Padding = new Thickness(10, 0, 10, 0),
+
+							};
+							copyLinkButton.Click += (s, e) =>
+							{
+								Clipboard.SetText(CurrentLink(match.session_id));
+							};
+							header.Children.Add(copyLinkButton);
+							var joinButton = new Button
 							{
 								Content = "Join",
 								Margin = new Thickness(20, 0, 0, 0),
 								Padding = new Thickness(10, 0, 10, 0)
-							});
+							};
+							joinButton.Click += (s, e) =>
+							{
+								Process.Start(new ProcessStartInfo
+								{
+									FileName = "ignitebot://choose/" + match.session_id,
+									UseShellExecute = true
+								});
+							};
+							header.Children.Add(joinButton);
 						}
 
 						content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
@@ -309,6 +352,57 @@ namespace IgniteBot
 		private void RefreshMatchesClicked(object sender, RoutedEventArgs e)
 		{
 			GetAtlasMatches();
+		}
+
+		private void SurroundWithAngleBracketsChecked(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+
+			Settings.Default.atlasLinkUseAngleBrackets = ((CheckBox)sender).IsChecked == true;
+			RefreshCurrentLink();
+		}
+
+		private void RefreshCurrentLink()
+		{
+			if (Program.lastFrame != null)
+			{
+				joinLink.Text = CurrentLink(Program.lastFrame.sessionid);
+			}
+		}
+
+		private void CopyMainLinkToClipboard(object sender, RoutedEventArgs e)
+		{
+			Clipboard.SetText(joinLink.Text);
+		}
+
+		private void FollowMainLink(object sender, RoutedEventArgs e)
+		{
+			if (joinLink.Text.Length > 10)
+			{
+				string text = joinLink.Text;
+				if (joinLink.Text.StartsWith('<'))
+				{
+					text = text.Substring(1, text.Length - 2);
+				}
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = text,
+					UseShellExecute = true
+				});
+			}
+		}
+
+		private void IPSourceDropdownChanged(object sender, SelectionChangedEventArgs e)
+		{
+			// TODO
+		}
+
+		private void LinkTypeChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (!initialized) return;
+
+			Settings.Default.atlasLinkStyle = ((ComboBox)sender).SelectedIndex;
+			RefreshCurrentLink();
 		}
 	}
 }

@@ -706,5 +706,29 @@ namespace IgniteBot.Properties {
                 this["nvHighlightsSpectatorRecord"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int atlasLinkStyle {
+            get {
+                return ((int)(this["atlasLinkStyle"]));
+            }
+            set {
+                this["atlasLinkStyle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool atlasLinkUseAngleBrackets {
+            get {
+                return ((bool)(this["atlasLinkUseAngleBrackets"]));
+            }
+            set {
+                this["atlasLinkUseAngleBrackets"] = value;
+            }
+        }
     }
 }
