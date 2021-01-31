@@ -26,7 +26,7 @@
 						<GroupBox.Header>
 							<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
 								<Label Content="Public" Margin="0,0,10,0"></Label>
-								<Button Content="Copy Atlas Link" Margin="200,0,10,0"/>
+								<Button Content="Copy Atlas Link" Margin="200,0,10,0" Background="{DynamicResource ControlDisabledBackground}"/>
 								<Button Content="Join" Margin="10,0,10,0"/>
 							</StackPanel>
 						</GroupBox.Header>

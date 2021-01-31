@@ -139,11 +139,32 @@ namespace IgniteBot
 					foreach (var match in matches)
 					{
 						var content = new Grid();
-						var matchButton = new Button
+						var header = new StackPanel
 						{
-							Content = content,
-							Margin = new Thickness(10, 10, 10, 10)
+							Orientation = Orientation.Horizontal,
+							VerticalAlignment = VerticalAlignment.Top,
+							HorizontalAlignment = HorizontalAlignment.Right,
+							Margin = new Thickness(0, 0, 10, 0)
 						};
+						header.Children.Add(new Label
+						{
+							Content = match.is_protected ? "Casters Only" : "Public"
+						});
+						if (!match.is_protected || !Program.Personal)
+						{
+							header.Children.Add(new Button
+							{
+								Content = "Copy Atlas Link",
+								Margin = new Thickness(100, 0, 0, 0),
+								Padding = new Thickness(10, 0, 10, 0)
+							});
+							header.Children.Add(new Button
+							{
+								Content = "Join",
+								Margin = new Thickness(20, 0, 0, 0),
+								Padding = new Thickness(10, 0, 10, 0)
+							});
+						}
 
 						content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
 						content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -161,12 +182,6 @@ namespace IgniteBot
 						{
 							blueLogo.Source = new BitmapImage(new Uri(match.blue_team_info.team_logo));
 						}
-						var blueTeamName = new Label
-						{
-							Content = match.blue_team_info.team_name,
-							HorizontalAlignment = HorizontalAlignment.Center
-
-						};
 						var blueLogoBox = new StackPanel
 						{
 							Orientation = Orientation.Vertical,
@@ -174,7 +189,12 @@ namespace IgniteBot
 						};
 						blueLogoBox.SetValue(Grid.ColumnProperty, 0);
 						blueLogoBox.Children.Add(blueLogo);
-						blueLogoBox.Children.Add(blueTeamName);
+						blueLogoBox.Children.Add(new Label
+						{
+							Content = match.blue_team_info.team_name,
+							HorizontalAlignment = HorizontalAlignment.Center
+
+						});
 
 
 						var orangeLogo = new Image
@@ -186,11 +206,6 @@ namespace IgniteBot
 						{
 							orangeLogo.Source = new BitmapImage(new Uri(match.orange_team_info.team_logo));
 						}
-						var orangeTeamName = new Label
-						{
-							Content = match.orange_team_info.team_name,
-							HorizontalAlignment = HorizontalAlignment.Center
-						};
 						var orangeLogoBox = new StackPanel
 						{
 							Orientation = Orientation.Vertical,
@@ -198,7 +213,11 @@ namespace IgniteBot
 						};
 						orangeLogoBox.SetValue(Grid.ColumnProperty, 3);
 						orangeLogoBox.Children.Add(orangeLogo);
-						orangeLogoBox.Children.Add(orangeTeamName);
+						orangeLogoBox.Children.Add(new Label
+						{
+							Content = match.orange_team_info.team_name,
+							HorizontalAlignment = HorizontalAlignment.Center
+						});
 
 						var bluePlayers = new TextBlock
 						{
@@ -222,7 +241,12 @@ namespace IgniteBot
 						content.Children.Add(orangeLogoBox);
 						content.Children.Add(bluePlayers);
 						content.Children.Add(orangePlayers);
-						MatchesBox.Children.Add(matchButton);
+						MatchesBox.Children.Add(new GroupBox
+						{
+							Content = content,
+							Margin = new Thickness(10, 10, 10, 10),
+							Header = header
+						});
 					}
 
 				});
