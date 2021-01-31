@@ -694,5 +694,17 @@ namespace IgniteBot.Properties {
                 this["capturevp2"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool nvHighlightsSpectatorRecord {
+            get {
+                return ((bool)(this["nvHighlightsSpectatorRecord"]));
+            }
+            set {
+                this["nvHighlightsSpectatorRecord"] = value;
+            }
+        }
     }
 }

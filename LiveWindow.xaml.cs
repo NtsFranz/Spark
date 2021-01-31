@@ -110,26 +110,26 @@ namespace IgniteBot
 								mainOutputTextBox.AppendText(newText);
 								mainOutputTextBox.ScrollToEnd();
 
-							//	if (Program.writeToOBSHTMLFile) // TODO this file path won't work
-							//	{
-							//		// write to html file for overlay as well
-							//		File.WriteAllText("html_output/events.html", @"
-							//	<html>
-							//	<head>
-							//	<meta http-equiv=""refresh"" content=""1"">
-							//	<link rel=""stylesheet"" type=""text/css"" href=""styles.css"">
-							//	</head>
-							//	<body>
+								//	if (Program.writeToOBSHTMLFile) // TODO this file path won't work
+								//	{
+								//		// write to html file for overlay as well
+								//		File.WriteAllText("html_output/events.html", @"
+								//	<html>
+								//	<head>
+								//	<meta http-equiv=""refresh"" content=""1"">
+								//	<link rel=""stylesheet"" type=""text/css"" href=""styles.css"">
+								//	</head>
+								//	<body>
 
-							//	<div id=""info""> " +
-							//					newText
-							//					+ @"
-							//	</div>
+								//	<div id=""info""> " +
+								//					newText
+								//					+ @"
+								//	</div>
 
-							//	</body>
-							//	</html>
-							//");
-							//	}
+								//	</body>
+								//	</html>
+								//");
+								//	}
 							}
 							catch (Exception) { }
 
@@ -146,7 +146,7 @@ namespace IgniteBot
 					if (Program.lastFrame != null)  // 'mpl_lobby_b2' may change in the future
 					{
 						// session ID
-						sessionIdTextBox.Text = Program.lastFrame.sessionid;
+						sessionIdTextBox.Text = "<ignitebot://choose/" + Program.lastFrame.sessionid + ">";
 
 						// ip stuff
 						if (Program.lastFrame.sessionip != lastIP)
@@ -272,6 +272,7 @@ namespace IgniteBot
 							smoothedServerScore = smoothedServerScore * serverScoreSmoothingFactor + (1 - serverScoreSmoothingFactor) * serverScore;
 							playerPingsGroupbox.Header = $"Player Pings   Score: {smoothedServerScore:N1}";
 						}
+						Program.matchData.ServerScore = smoothedServerScore;
 
 
 						bluePlayersSpeedsNames.Text = blueTextNames.ToString();
@@ -524,6 +525,7 @@ namespace IgniteBot
 					HttpResponseMessage response = await updateClient.GetAsync(ip);
 					JObject respObj = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 					string loc = (string)respObj["city"] + ", " + (string)respObj["regionName"];
+					Program.matchData.ServerLocation = loc;
 					serverLocationLabel.Content = "Server Location:\n" + loc;
 
 					if (Settings.Default.serverLocationTTS)
@@ -951,5 +953,29 @@ namespace IgniteBot
 		{
 			mainOutputTextBox.ScrollToEnd();
 		}
+
+		private void CopyIgniteJoinLink(object sender, RoutedEventArgs e)
+		{
+			//if (Program.lastFrame != null)
+			//{
+			var link = sessionIdTextBox.Text;
+			Clipboard.SetText(link);
+			Task.Run(() => ShowCopiedText());
+			//}
+		}
+		async Task ShowCopiedText()
+		{
+			Dispatcher.Invoke(() =>
+			{
+				copySessionIdButton.Content = "Copied!";
+			});
+			await Task.Delay(3000);
+
+			Dispatcher.Invoke(() =>
+			{
+				copySessionIdButton.Content = "Copy";
+			});
+		}
+
 	}
 }

@@ -30,6 +30,7 @@
 						<ComboBoxItem Content="My Team Only" />
 						<ComboBoxItem Content="All Players (both teams)" />
 					</ComboBox>
+					<CheckBox x:Name="recordAllInSpectator" Content="Record all events in Spectator" Margin="10,10,10,10" Checked="RecordAllInSpectatorEvent" Unchecked="RecordAllInSpectatorEvent" />
 
 					<Label x:Name="timeLabel" Content="Clip Duration:" Margin="0,10,0,0"/>
 					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">

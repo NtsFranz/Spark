@@ -36,6 +36,7 @@ namespace IgniteBot
 			enableNVHighlightsCheckbox.IsChecked = HighlightsHelper.isNVHighlightsEnabled;
 			clearHighlightsOnExitCheckbox.IsChecked = Settings.Default.clearHighlightsOnExit;
 			highlightScope.SelectedIndex = Settings.Default.clientHighlightScope;
+			recordAllInSpectator.IsChecked = Settings.Default.nvHighlightsSpectatorRecord;
 			clearHighlightsButton.IsEnabled = HighlightsHelper.DoNVClipsExist();
 
 			enableNVHighlightsCheckbox.IsEnabled = HighlightsHelper.isNVHighlightsSupported;
@@ -130,7 +131,7 @@ namespace IgniteBot
 		private void SecondsBeforeChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-				if (float.TryParse(((TextBox)sender).Text, out float value))
+			if (float.TryParse(((TextBox)sender).Text, out float value))
 			{
 				Settings.Default.nvHighlightsSecondsBefore = value;
 				Settings.Default.Save();
@@ -145,6 +146,13 @@ namespace IgniteBot
 				Settings.Default.nvHighlightsSecondsAfter = value;
 				Settings.Default.Save();
 			}
+		}
+
+		private void RecordAllInSpectatorEvent(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+			Settings.Default.nvHighlightsSpectatorRecord = ((CheckBox)sender).IsChecked == true;
+			Settings.Default.Save();
 		}
 	}
 }

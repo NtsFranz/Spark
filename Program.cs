@@ -2826,6 +2826,66 @@ namespace IgniteBot
 		}
 
 
+		/// <summary>
+		/// Generic method for getting data from a web url
+		/// </summary>
+		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
+		public static async Task GetAsync(string uri, Dictionary<string, string> headers, Action<string> callback)
+		{
+			try
+			{
+				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+				if (headers != null)
+				{
+					foreach (var header in headers)
+					{
+						request.Headers[header.Key] = header.Value;
+					}
+				}
+				using HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
+				using Stream stream = response.GetResponseStream();
+				using StreamReader reader = new StreamReader(stream);
+
+				callback(await reader.ReadToEndAsync());
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Can't get data\n{e}");
+				callback("");
+			}
+		}
+
+		/// <summary>
+		/// Generic method for posting data to a web url
+		/// </summary>
+		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
+		public static async Task PostAsync(string uri, Dictionary<string, string> headers, string body, Action<string> callback)
+		{
+			try
+			{
+				//FormUrlEncodedContent content = new FormUrlEncodedContent(values);
+				if (headers != null)
+				{
+					foreach (KeyValuePair<string, string> header in headers)
+					{
+						client.DefaultRequestHeaders.Remove(header.Key);
+						client.DefaultRequestHeaders.Add(header.Key, header.Value);
+					}
+				}
+				var content = new StringContent(body, Encoding.UTF8, "application/json");
+				HttpResponseMessage response = await client.PostAsync(uri, content);
+				string responseString = await response.Content.ReadAsStringAsync();
+
+				callback(responseString);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Can't post data\n{e}");
+				callback("");
+			}
+		}
+
+
 		public static JToken ReadEchoVRSettings()
 		{
 			try
@@ -3030,6 +3090,12 @@ namespace IgniteBot
 		{
 			float avg = (float)values.Average();
 			return values.Average(v => MathF.Pow(v - avg, 2));
+		}
+
+		// TODO
+		public void ShowToast(string text, float duration = 3)
+		{
+
 		}
 
 		internal static void Quit()

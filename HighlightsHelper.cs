@@ -295,7 +295,7 @@ namespace IgniteBot
 				{
 					return "PERSONAL_TEAM_HIGHLIGHT_GROUP";
 				}
-				else if (ClientHighlightScope == HighlightLevel.ALL || clientTeam == TeamColor.spectator)
+				else if (ClientHighlightScope == HighlightLevel.ALL || (clientTeam == TeamColor.spectator && Settings.Default.nvHighlightsSpectatorRecord))
 				{
 					return "OPPOSING_TEAM_HIGHLIGHT_GROUP";
 				}

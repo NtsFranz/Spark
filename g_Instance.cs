@@ -337,6 +337,17 @@ namespace IgniteBot
 		/// Not in the API, but add as soon as this frame is deserialized
 		/// </summary>
 		public TeamColor color { get; set; }
+
+		public List<string> player_names {
+			get {
+				var list = new List<string>();
+				foreach (var p in players)
+				{
+					list.Add(p.name);
+				}
+				return list;
+			}
+		}
 	}
 
 	/// <summary>

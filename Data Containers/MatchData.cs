@@ -25,6 +25,7 @@ namespace IgniteBot
 		public string SessionId { get => firstFrame.sessionid; }
 		public string ServerIP { get; set; }
 		public string ServerLocation { get; set; }
+		public float ServerScore { get; set; }
 
 		/// <summary>
 		/// enum of all possible ways a game could have ended.

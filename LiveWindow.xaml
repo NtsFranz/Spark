@@ -31,8 +31,12 @@
 			</Button>
 			<GroupBox x:Name="statusBox" Header="Server Info">
 				<StackPanel>
+
 					<Label x:Name="connectedLabel" Width="188" Content="Not Connected" Visibility="Collapsed"/>
-					<Label x:Name="sessionIdLabel" Content="Session ID:"/>
+					<StackPanel Orientation="Horizontal">
+						<Label x:Name="sessionIdLabel" Content="Join Link:"/>
+						<Button x:Name="copySessionIdButton" Content="Copy" Margin="45,0,0,0" VerticalAlignment="Center" Padding="10,1,10,1" HorizontalAlignment="Stretch" Click="CopyIgniteJoinLink" Width="75"></Button>
+					</StackPanel>
 					<TextBox x:Name="sessionIdTextBox" Text="********-****-****-****-************" TextWrapping="NoWrap" MaxLines="1" FontSize="14" FontFamily="Courier New" IsReadOnly="True" Height="16"/>
 					<Label x:Name="serverLocationLabel" Content="Server Location:" ToolTip="The server location is estimated using ip-api.com"/>
 				</StackPanel>
