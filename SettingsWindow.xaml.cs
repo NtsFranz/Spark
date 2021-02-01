@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using IgniteBot.Properties;
@@ -360,10 +361,22 @@ namespace IgniteBot
 			Settings.Default.Save();
 		}
 
-		private void FindQuestClick(object sender, RoutedEventArgs e)
+		private async void FindQuestClick(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.echoVRIP = Program.FindQuestIP();
+			findQuestStatusLabel.Content = "Searching for Quest on network";
+			findQuestStatusLabel.Visibility = Visibility.Visible;
+			echoVRIPTextBox.IsEnabled = false;
+			echoVRPortTextBox.IsEnabled = false;
+			findQuest.IsEnabled = false;
+			resetIP.IsEnabled = false;
+			var progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
+            await Task.Factory.StartNew(() => Program.echoVRIP = Program.FindQuestIP(progress),
+                                        TaskCreationOptions.None);
+            echoVRIPTextBox.IsEnabled = true;
+			echoVRPortTextBox.IsEnabled = true;
+			findQuest.IsEnabled = true;
+			resetIP.IsEnabled = true;
 			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
 			echoVRIPTextBox.Text = Program.echoVRIP;
 			echoVRPortTextBox.Text = Program.echoVRPort.ToString();

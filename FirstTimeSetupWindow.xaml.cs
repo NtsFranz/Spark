@@ -1,4 +1,7 @@
 ﻿using IgniteBot.Properties;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace IgniteBot
@@ -14,11 +17,20 @@ namespace IgniteBot
 			InitializeComponent();
 		}
 
-		private void QuestClicked(object sender, RoutedEventArgs e)
+		private async void QuestClicked(object sender, RoutedEventArgs e)
 		{
-			Program.echoVRIP = Program.FindQuestIP();
+			setupLabel.Content = "Searching for Quest on network";
+			setupText.Visibility = Visibility.Hidden;
+			spectatorButton.IsEnabled = false;
+			playerButton.IsEnabled = false;
+			var progress = new Progress<string>(s => setupLabel.Content = s);
+			await Task.Factory.StartNew(() => Program.echoVRIP = Program.FindQuestIP(progress),
+										TaskCreationOptions.None);
+			spectatorButton.IsEnabled = true;
+			playerButton.IsEnabled = true;
 			Settings.Default.echoVRIP = Program.echoVRIP;
 			Settings.Default.Save();
+			Thread.Sleep(2000);
 
 			Close();
 		}
