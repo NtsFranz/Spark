@@ -48,7 +48,7 @@
 			</GroupBox.Header>
 			<ScrollViewer MaxHeight="480">
 				<StackPanel x:Name="MatchesBox">
-					<GroupBox x:Name="button" Margin="10,10,10,10">
+					<GroupBox x:Name="button" Margin="10,10,10,10" Visibility="Collapsed">
 
 						<GroupBox.Header>
 							<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">

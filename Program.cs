@@ -166,6 +166,7 @@ namespace IgniteBot
 		public static TTSSettingsWindow ttsWindow;
 		public static NVHighlightsSettingsWindow nvhWindow;
 		public static LoginWindow loginWindow;
+		public static FirstTimeSetupWindow firstTimeSetupWindow;
 		public static ClosingDialog closingWindow;
 
 		private static float smoothDeltaTime = -1;
@@ -364,9 +365,15 @@ namespace IgniteBot
 		/// <summary>
 		/// This is just a failsafe so that the program doesn't leave a dangling thread.
 		/// </summary>
-		async static Task KillAll(Thread statsThread, Thread fullLogThread, Thread autorestartThread,
-			Thread fetchThread, Thread milkThread, HTTPServer httpServer = null)
+		async static Task KillAll(HTTPServer httpServer = null)
 		{
+			if (liveWindow != null)
+			{
+				liveWindow.Close();
+				liveWindow = null;
+			}
+
+
 			if (httpServer != null)
 				httpServer.Stop();
 		}
@@ -374,24 +381,24 @@ namespace IgniteBot
 		async static Task GentleClose()
 		{
 			running = false;
-			while ((statsThread != null && statsThread.IsAlive) ||
-				(fullLogThread != null && fullLogThread.IsAlive))
-			{
-				if (fullLogThread.IsAlive)
-				{
-					closingWindow.label.Content = "Compressing Replay File...";
-				}
-				else
-				{
-					closingWindow.label.Content = "Closing...";
-				}
 
+			while (fullLogThread != null && fullLogThread.IsAlive)
+			{
+				closingWindow.label.Content = "Compressing Replay File...";
+				await Task.Delay(10);
+			}
+			while (statsThread != null && statsThread.IsAlive)
+			{
+				closingWindow.label.Content = "Closing...";
 				await Task.Delay(10);
 			}
 			HighlightsHelper.CloseNVHighlights();
 
-
 			app.ExitApplication();
+
+			await Task.Delay(100);
+
+			_ = KillAll();
 		}
 
 		public static bool IsIgniteBotOpen()
@@ -3005,6 +3012,16 @@ namespace IgniteBot
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		/// Finds a Quest local IP address on the same network
+		/// </summary>
+		/// <returns>The IP address</returns>
+		public static string FindQuestIP()
+		{
+			// TODO
+			return "127.0.0.1";
 		}
 
 		/// <summary>

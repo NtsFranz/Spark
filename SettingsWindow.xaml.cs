@@ -346,7 +346,8 @@ namespace IgniteBot
 				exeLocationLabel.Content = "EchoVR Executable Location:";
 				Settings.Default.echoVRPath = path;
 				Settings.Default.Save();
-			} else
+			}
+			else
 			{
 				exeLocationLabel.Content = "EchoVR Executable Location:   (not valid)";
 			}
@@ -357,6 +358,33 @@ namespace IgniteBot
 			if (!initialized) return;
 			Settings.Default.capturevp2 = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
+		}
+
+		private void FindQuestClick(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+			Program.echoVRIP = Program.FindQuestIP();
+			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
+			echoVRIPTextBox.Text = Program.echoVRIP;
+			echoVRPortTextBox.Text = Program.echoVRPort.ToString();
+			Settings.Default.echoVRIP = Program.echoVRIP;
+			if (!Program.overrideEchoVRPort) Settings.Default.echoVRPort = Program.echoVRPort;
+			Settings.Default.Save();
+		}
+
+		private void ShowFirstTimeSetupWindowClicked(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+			if (Program.firstTimeSetupWindow == null)
+			{
+				Program.firstTimeSetupWindow = new FirstTimeSetupWindow();
+				Program.firstTimeSetupWindow.Closed += (sender, args) => Program.firstTimeSetupWindow = null;
+				Program.firstTimeSetupWindow.Show();
+			}
+			else
+			{
+				Program.firstTimeSetupWindow.Close();
+			}
 		}
 	}
 }

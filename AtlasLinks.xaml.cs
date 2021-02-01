@@ -31,7 +31,7 @@ namespace IgniteBot
 			RefreshCurrentLink();
 
 
-			//GetAtlasMatches();
+			GetAtlasMatches();
 
 			initialized = true;
 		}

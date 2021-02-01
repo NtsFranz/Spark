@@ -12,10 +12,12 @@
         FontSize="14"
         Icon="/img/ignite_logo_128.png">
 	<Grid>
-		<Label x:Name="label" Content="Player:" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Top"/>
+		<Label x:Name="label" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Top">
+		</Label>
 		<ComboBox x:Name="choosePlayerDropdown" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Top" Width="185"/>
+		<Button x:Name="refreshButton" Content="Refresh" Width="60" Height="25" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="260,10,0,0" Click="RefreshPlayerList"/>
 		<TextBlock x:Name="textBlock" Margin="10,0,0,10" Text="Playspace information for players other than yourself is highly inaccurate and sensitive to rapid acceleration or high ping." VerticalAlignment="Bottom" TextWrapping="Wrap" HorizontalAlignment="Left" Width="412"/>
-		
+
 		<Label x:Name="rawLabel" Content="" HorizontalAlignment="Stretch" Margin="10,40,10,10" VerticalAlignment="Top"/>
 		<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" Height="400" Background="{DynamicResource ContainerBackground}">
 			<Ellipse x:Name="playspaceCircle" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,10,10" Width="300" Height="300" Stroke="{DynamicResource ControlPrimaryMouseOverBorderBrush}" ></Ellipse>
