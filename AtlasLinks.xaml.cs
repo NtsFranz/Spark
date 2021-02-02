@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -16,6 +17,9 @@ namespace IgniteBot
 	public partial class AtlasLinks : Window
 	{
 		private bool initialized = false;
+		private bool onlyCasters = false;
+
+		private readonly Timer outputUpdateTimer = new Timer();
 
 		public AtlasLinks()
 		{
@@ -33,7 +37,23 @@ namespace IgniteBot
 
 			GetAtlasMatches();
 
+
+			outputUpdateTimer.Interval = 100;
+			outputUpdateTimer.Elapsed += Update;
+			outputUpdateTimer.Enabled = true;
+
 			initialized = true;
+		}
+
+		private void Update(object source, ElapsedEventArgs e)
+		{
+			if (Program.running)
+			{
+				Dispatcher.Invoke(() =>
+				{
+					hostMatchButton.IsEnabled = Program.lastFrame != null && Program.lastFrame.private_match == true;
+				});
+			}
 		}
 
 		private string CurrentLink(string sessionid)
@@ -311,7 +331,7 @@ namespace IgniteBot
 				session_id = Program.lastFrame.sessionid,
 				blue_team = Program.lastFrame.teams[0].player_names.ToArray(),
 				orange_team = Program.lastFrame.teams[1].player_names.ToArray(),
-				is_protected = false,
+				is_protected = onlyCasters,
 				server_location = Program.matchData.ServerLocation,
 				server_score = Program.matchData.ServerScore,
 				username = Program.lastFrame.client_name
@@ -359,6 +379,7 @@ namespace IgniteBot
 			if (!initialized) return;
 
 			Settings.Default.atlasLinkUseAngleBrackets = ((CheckBox)sender).IsChecked == true;
+			Settings.Default.Save();
 			RefreshCurrentLink();
 		}
 
@@ -402,7 +423,43 @@ namespace IgniteBot
 			if (!initialized) return;
 
 			Settings.Default.atlasLinkStyle = ((ComboBox)sender).SelectedIndex;
+			Settings.Default.Save();
 			RefreshCurrentLink();
+		}
+
+		private async void FindQuestIP(object sender, RoutedEventArgs e)
+		{
+			findQuestStatusLabel.Content = "Searching for Quest on network";
+			findQuestStatusLabel.Visibility = Visibility.Visible;
+			alternateIPTextBox.IsEnabled = false;
+			findQuest.IsEnabled = false;
+			resetIP.IsEnabled = false;
+			var progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
+			await Task.Factory.StartNew(() => Program.echoVRIP = Program.FindQuestIP(progress),
+										TaskCreationOptions.None);
+			alternateIPTextBox.IsEnabled = true;
+			findQuest.IsEnabled = true;
+			resetIP.IsEnabled = true;
+			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
+			alternateIPTextBox.Text = Program.echoVRIP;
+			Settings.Default.echoVRIP = Program.echoVRIP;
+			if (!Program.overrideEchoVRPort) Settings.Default.echoVRPort = Program.echoVRPort;
+			Settings.Default.Save();
+		}
+
+		private void SetToLocalIP(object sender, RoutedEventArgs e)
+		{
+			Program.echoVRIP = "127.0.0.1";
+			alternateIPTextBox.Text = Program.echoVRIP;
+			Settings.Default.echoVRIP = Program.echoVRIP;
+			Settings.Default.Save();
+		}
+
+		private void PublicToggled(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+
+			onlyCasters = ((CheckBox)sender).IsChecked == true;
 		}
 	}
 }

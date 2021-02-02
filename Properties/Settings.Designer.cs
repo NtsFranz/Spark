@@ -730,5 +730,17 @@ namespace IgniteBot.Properties {
                 this["atlasLinkUseAngleBrackets"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool firstTimeSetupShown {
+            get {
+                return ((bool)(this["firstTimeSetupShown"]));
+            }
+            set {
+                this["firstTimeSetupShown"] = value;
+            }
+        }
     }
 }
