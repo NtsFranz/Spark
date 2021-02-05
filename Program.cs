@@ -3268,7 +3268,7 @@ namespace IgniteBot
 				// Session Contents
 				string textResp = sr.ReadToEnd();
 				VersionJson verionJson = JsonConvert.DeserializeObject<VersionJson>(textResp);
-				ret[0] = verionJson.assets[0].browser_download_url;
+				ret[0] = verionJson.assets.First(url => url.browser_download_url.EndsWith("zip")).browser_download_url;
 				ret[1] = verionJson.tag_name;
 			}
 			catch(Exception e) {
