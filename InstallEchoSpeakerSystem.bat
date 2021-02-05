@@ -4,6 +4,7 @@ set latestVer=%2
 set shouldStartESS=%3
 echo.    
 echo Downloading and installing Echo Speaker System...
+mkdir "C:\Temp" > nul 2> nul
 curl.exe -L -o C:\Temp\%latestVer%.zip "%latestURL%" > nul 2> nul
 REM GOTO endscript
 mkdir "C:\Program Files (x86)\Echo Speaker System" > nul 2> nul
