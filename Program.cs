@@ -29,6 +29,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using NetMQ.Sockets;
 using NetMQ;
+using IgniteBot.Data_Containers.ZMQ_Messages;
 
 namespace IgniteBot
 {
@@ -212,6 +213,8 @@ namespace IgniteBot
 
 		public static void Main(string[] args, App app)
 		{
+			AsyncIO.ForceDotNet.Force();
+			NetMQConfig.Cleanup();
 			pubSocket = new PublisherSocket();
 			pubSocket.Options.SendHighWatermark = 1000;
 			pubSocket.Bind("tcp://*:12345");
@@ -426,6 +429,8 @@ namespace IgniteBot
 			HighlightsHelper.CloseNVHighlights();
 
 			liveWindow.KillSpeakerSystem();
+			AsyncIO.ForceDotNet.Force();
+			NetMQConfig.Cleanup(false);
 			app.ExitApplication();
 
 			await Task.Delay(100);
@@ -560,6 +565,11 @@ namespace IgniteBot
 					}
 					catch (Exception)
 					{
+						if (lastFrame != null && inGame)
+						{
+							MatchEventZMQMessage msg = new MatchEventZMQMessage("LeaveMatch","sessionid", lastFrame.sessionid);
+							pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
+						}
 						// Don't update so quick if we aren't in a match anyway
 						Thread.Sleep(2000);
 
@@ -1183,6 +1193,8 @@ namespace IgniteBot
 			// if we entered a different match
 			if (frame.sessionid != lastFrame.sessionid || lastFrame == null)
 			{
+				MatchEventZMQMessage msg = new MatchEventZMQMessage("NewMatch", "sessionid", frame.sessionid);
+                pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
 				// We just discard the old match and hope it was already submitted
 
 				lastFrame = frame; // don't detect stats changes across matches
