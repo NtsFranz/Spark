@@ -11,11 +11,16 @@
 		<GroupBox Header="Settings" Margin="10,10,10,10">
 			<StackPanel Orientation="Horizontal" Margin="10,5,0,0">
 				<StackPanel>
-					<ComboBox x:Name="ipSourceDropdown" Width="175" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,15,10,0" SelectionChanged="IPSourceDropdownChanged">
+					<StackPanel Orientation="Horizontal" Margin="5,10,0,-10">
+						<Button x:Name="resetIP" Content="Local PC" Margin="5,5,5,5" Padding="7,3,7,3" Click="SetToLocalIP"/>
+						<Button x:Name="findQuest" Content="Find Quest" Margin="5,5,5,5" Padding="5,3,5,3" Click="FindQuestIP"/>
+					</StackPanel>
+					<ComboBox x:Name="ipSourceDropdown" Width="175" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,15,10,0" SelectionChanged="IPSourceDropdownChanged" Visibility="Collapsed">
 						<ComboBoxItem Content="Local PC"/>
 						<ComboBoxItem Content="Quest"/>
 					</ComboBox>
 					<TextBox x:Name="alternateIPTextBox" Text="---" TextWrapping="Wrap" Width="175" Margin="10,10,10,10" FontFamily="Consolas"/>
+					<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="Searching for Quest" Margin="30,-10,0,-20" FontSize="12" FontStyle="Italic"/>
 				</StackPanel>
 				<Button x:Name="getButton" Content="Get" Margin="10,15,80,20" Padding="4,4,4,4" Width="52" Click="GetLinks"/>
 
@@ -83,7 +88,8 @@
 				</StackPanel>
 			</ScrollViewer>
 		</GroupBox>
-		<Button x:Name="hostMatchButton" Content="Host Match" Margin="10,10,10,10" Click="HostMatchClicked" Height="54"/>
+		<Button x:Name="hostMatchButton" Content="Host Match" Margin="10,10,10,10" Click="HostMatchClicked" Height="54" IsEnabled="False"/>
+		<CheckBox Margin="10,0,10,10" Content="Only Casters can Join" Checked="PublicToggled" Unchecked="PublicToggled"/>
 
 		<Button x:Name="closeButton" Content="Close" Margin="8,8,8,10" HorizontalAlignment="Right" IsCancel="True" IsDefault="True" Padding="4,4,4,4" Width="81" Click="closeButton_Click"/>
 	</StackPanel>

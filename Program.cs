@@ -277,6 +277,15 @@ namespace IgniteBot
 			liveWindow.Closed += (sender, args) => liveWindow = null;
 			liveWindow.Show();
 
+			if (!Settings.Default.firstTimeSetupShown)
+			{
+				firstTimeSetupWindow = new FirstTimeSetupWindow();
+				firstTimeSetupWindow.Closed += (sender, args) => firstTimeSetupWindow = null;
+				firstTimeSetupWindow.Show();
+				Settings.Default.firstTimeSetupShown = true;
+				Settings.Default.Save();
+			}
+
 			var argsList = new List<string>(args);
 
 			// Check for command-line flags
