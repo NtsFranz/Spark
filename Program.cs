@@ -27,6 +27,8 @@ using static IgniteBot.g_Team;
 using static Logger;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using NetMQ.Sockets;
+using NetMQ;
 
 namespace IgniteBot
 {
@@ -80,6 +82,8 @@ namespace IgniteBot
 		public static readonly HttpClient client = new HttpClient();
 
 		public static string currentAccessCodeUsername = "";
+		public static string InstalledSpeakerSystemVersion = "";
+		public static bool IsSpeakerSystemUpdateAvailable = false;
 
 		public static bool autoRestart;
 		public static bool showDatabaseLog;
@@ -192,7 +196,6 @@ namespace IgniteBot
 
 		public static SpeechSynthesizer synth;
 
-
 		private static Thread statsThread;
 		private static Thread fullLogThread;
 		private static Thread autorestartThread;
@@ -203,12 +206,16 @@ namespace IgniteBot
 		private static Thread IPSearchthread2;
 		private static Thread thread3;
 		private static Thread thread4;
+		public static PublisherSocket pubSocket;
 
 		private static App app;
 
 		public static void Main(string[] args, App app)
 		{
-			Program.app = app;
+			pubSocket = new PublisherSocket();
+			pubSocket.Options.SendHighWatermark = 1000;
+			pubSocket.Bind("tcp://*:12345");
+				Program.app = app;
 			if (args.Contains("-port"))
 			{
 				int index = args.ToList().IndexOf("-port");
@@ -236,6 +243,13 @@ namespace IgniteBot
 			{
 				new MessageBox("Instance already running", "Error").Show();
 				//return; // wait for the dialog to quit the program
+			}
+
+			InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
+			if(InstalledSpeakerSystemVersion.Length > 0)
+            {
+				string[] latestSpeakerSystemVer = GetLatestSpeakerSystemURLVer();
+				IsSpeakerSystemUpdateAvailable = latestSpeakerSystemVer[1] != InstalledSpeakerSystemVersion;
 			}
 
 			// Reload old settings file
@@ -386,8 +400,10 @@ namespace IgniteBot
 
 		async static Task GentleClose()
 		{
+			pubSocket.SendMoreFrame("CloseApp").SendFrame("");
 			running = false;
 
+			
 			while (fullLogThread != null && fullLogThread.IsAlive)
 			{
 				closingWindow.label.Content = "Compressing Replay File...";
@@ -400,6 +416,7 @@ namespace IgniteBot
 			}
 			HighlightsHelper.CloseNVHighlights();
 
+			liveWindow.KillSpeakerSystem();
 			app.ExitApplication();
 
 			await Task.Delay(100);
@@ -563,7 +580,6 @@ namespace IgniteBot
 
 					// Session Contents
 					string rawJSON = sReader.ReadToEnd();
-
 					// pls close (;-;)
 					if (sReader != null)
 						sReader.Close();
@@ -970,6 +986,21 @@ namespace IgniteBot
 			}
 		}
 
+		public static string FindEchoSpeakerSystemInstallVersion()
+        {
+			string ret = "";
+			try
+			{
+				string[] subdirs = Directory.GetDirectories("C:\\Program Files (x86)\\Echo Speaker System");
+				if (subdirs != null && subdirs.Length > 0)
+				{
+					ret = new DirectoryInfo(subdirs[0]).Name;
+				}
+			}
+			catch { }
+			return ret;
+		}
+
 		private static void UpdateEchoExeLocation()
 		{
 			// skip if we already have a valid path
@@ -1137,9 +1168,9 @@ namespace IgniteBot
 		{
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null || string.IsNullOrWhiteSpace(frame.game_status)) return;
-
+			pubSocket.SendMoreFrame("RawFrame").SendFrame(lastJSON);
 			if (frame.inLobby) return;
-
+			pubSocket.SendMoreFrame("TimeAndScore").SendFrame(String.Format("{0:0.00}", frame.game_clock) + " Orange: " + frame.orange_points.ToString() + " Blue: " + frame.blue_points.ToString());
 			// if we entered a different match
 			if (frame.sessionid != lastFrame.sessionid || lastFrame == null)
 			{
@@ -3212,6 +3243,86 @@ namespace IgniteBot
 			}
 		}
 
+        public static string[] GetLatestSpeakerSystemURLVer()
+        {
+            string[] ret = new string[2];
+			try
+			{
+				HttpWebRequest req = (HttpWebRequest)WebRequest.Create(@"https://api.github.com/repos/iblowatsports/Echo-VR-Speaker-System/releases/latest");
+				req.Accept = "application/json";
+				req.UserAgent = "foo";
+
+				var resp = req.GetResponse();
+				Stream ds = resp.GetResponseStream();
+				StreamReader sr = new StreamReader(ds);
+
+				// Session Contents
+				string textResp = sr.ReadToEnd();
+				VersionJson verionJson = JsonConvert.DeserializeObject<VersionJson>(textResp);
+				ret[0] = verionJson.assets[0].browser_download_url;
+				ret[1] = verionJson.tag_name;
+			}
+			catch(Exception e) {
+				LogRow(LogType.Error, e.Message);
+			}
+            return ret;
+        }
+
+        public static void InstallSpeakerSystem(IProgress<string> progress)
+        {
+			try
+			{
+				string[] SpeakerSystemURLVer = GetLatestSpeakerSystemURLVer();
+				System.Diagnostics.Process process = new System.Diagnostics.Process();
+				System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+				startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+				startInfo.FileName = "cmd.exe";
+				startInfo.Arguments = "/C \"" + AppContext.BaseDirectory + "\\InstallEchoSpeakerSystem.bat\" " + SpeakerSystemURLVer[0] + " " + SpeakerSystemURLVer[1] + " 0";
+				startInfo.Verb = "runas";
+				startInfo.UseShellExecute = true;
+				process.StartInfo = startInfo;
+				process.Start();
+				//process.WaitForExit(15000);
+				//Thread.Sleep(20);
+				int count = 0;
+				string SpeakerSystemInstallLabel = "Installing Echo Speaker System";
+				string statusDots = "";
+				while (!process.HasExited && count < 6000) //Time out after 5 mins
+				{
+					if (count % 16 == 0)
+					{
+						statusDots = "";
+					}
+					else if (count % 4 == 0)
+					{
+						statusDots += ".";
+					}
+					count++;
+
+					progress.Report(SpeakerSystemInstallLabel + statusDots);
+					Thread.Sleep(50);
+				}
+				if (!process.HasExited)
+				{
+					process.Kill();
+					progress.Report("Echo Speaker System install failed!");
+				}
+				else if (true)
+				{
+					progress.Report("Echo Speaker System installed successfully!");
+				}
+				int code = process.ExitCode;
+				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
+				IsSpeakerSystemUpdateAvailable = false;
+            }
+            catch
+            {
+				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
+				IsSpeakerSystemUpdateAvailable = false;
+				progress.Report("Echo Speaker System install failed!");
+			}
+		}
+
 		public static void ClearARPCache()
         {
 			try
@@ -3249,22 +3360,15 @@ namespace IgniteBot
                     GetCurrentIPAndPingNetwork();
                     while (QuestIP == null && (!IPPingThread1Done || !IPPingThread2Done))
                     {
-                        if (count == 4)
-                        {
-                            count = 0;
-                            if (statusDots.Length > 2)
-                            {
-                                statusDots = "";
-                            }
-                            else
-                            {
-                                statusDots += ".";
-                            }
-                        }
-                        else
-                        {
-                            count++;
-                        }
+                        if (count % 16 == 0)
+						{
+							statusDots = "";
+						}
+						else if (count % 4 == 0)
+						{
+							statusDots += ".";
+						}
+						count++;
                         progress.Report(QuestStatusLabel + statusDots);
                         Thread.Sleep(50);
                         CheckARPTable();
