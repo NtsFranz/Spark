@@ -7,14 +7,18 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using IgniteBot.Properties;
+using NetMQ;
 using Newtonsoft.Json.Linq;
 using static Logger;
 
@@ -23,9 +27,10 @@ namespace IgniteBot
 	/// <summary>
 	/// Interaction logic for LiveWindow.xaml
 	/// </summary>
+	/// 
 	public partial class LiveWindow : Window
 	{
-		private readonly Timer outputUpdateTimer = new Timer();
+		private readonly System.Timers.Timer outputUpdateTimer = new System.Timers.Timer();
 
 		List<ProgressBar> playerSpeedBars = new List<ProgressBar>();
 		private string updateFilename = "";
@@ -41,12 +46,33 @@ namespace IgniteBot
 		private float smoothedServerScore = 100;
 		private float serverScoreSmoothingFactor = .99f;
 
+		[DllImport("User32.dll")]
+		static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
+
+		[DllImport("user32.dll")]
+		static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+		internal delegate int WindowEnumProc(IntPtr hwnd, IntPtr lparam);
+		[DllImport("user32.dll")]
+		internal static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc func, IntPtr lParam);
+
+		[DllImport("user32.dll")]
+		static extern int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+		private Process process;
+		private IntPtr unityHWND = IntPtr.Zero;
+
+		private const int WM_ACTIVATE = 0x0006;
+		private readonly IntPtr WA_ACTIVE = new IntPtr(1);
+		private readonly IntPtr WA_INACTIVE = new IntPtr(0);
 
 		public LiveWindow()
 		{
 			InitializeComponent();
 
-			Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+
+
+            System.Windows.Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
 			outputUpdateTimer.Interval = 100;
 			outputUpdateTimer.Elapsed += Update;
@@ -94,6 +120,83 @@ namespace IgniteBot
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
 		}
 
+		private void ActivateUnityWindow()
+		{
+			SendMessage(unityHWND, WM_ACTIVATE, WA_ACTIVE, IntPtr.Zero);
+		}
+
+		private void DeactivateUnityWindow()
+		{
+			SendMessage(unityHWND, WM_ACTIVATE, WA_INACTIVE, IntPtr.Zero);
+		}
+
+		private int WindowEnum(IntPtr hwnd, IntPtr lparam)
+		{
+			unityHWND = hwnd;
+			ActivateUnityWindow();
+			return 0;
+		}
+
+		private void speakerSystemPanel_Resize(object sender, EventArgs e)
+		{
+			if (speakerSystemPanel.IsVisible && process != null && process.Handle.ToInt32() > 0)
+			{
+				System.Windows.Point relativePoint = speakerSystemPanel.TransformToAncestor(this)
+						  .Transform(new System.Windows.Point(0, 0));
+				MoveWindow(unityHWND, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
+				ActivateUnityWindow();
+			}
+		}
+
+		public void MoveSpeakerSystemWindow()
+        {
+			System.Windows.Point relativePoint = speakerSystemPanel.TransformToAncestor(this)
+						  .Transform(new System.Windows.Point(0, 0));
+			MoveWindow(unityHWND, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
+			ActivateUnityWindow();
+		}
+		private void liveWindow_FormClosed(object sender, EventArgs e)
+		{
+			try
+			{
+				KillSpeakerSystem();
+				process.CloseMainWindow();
+
+			}
+			catch (Exception)
+			{
+
+			}
+		}
+
+		public void KillSpeakerSystem()
+        {
+			try
+			{
+
+				if (process != null)
+				{
+					while (!process.HasExited)
+						process.Kill();
+
+					unityHWND = IntPtr.Zero;
+					Thread.Sleep(100);
+				}
+			}
+			catch (Exception)
+			{
+
+			}
+		}
+		private void Form1_Activated(object sender, EventArgs e)
+		{
+			ActivateUnityWindow();
+		}
+
+		private void Form1_Deactivate(object sender, EventArgs e)
+		{
+			DeactivateUnityWindow();
+		}
 		private void Update(object source, ElapsedEventArgs e)
 		{
 			if (Program.running)
@@ -913,6 +1016,15 @@ namespace IgniteBot
 			{
 				mainOutputTextBox.ScrollToEnd();
 			}
+			if (((TabControl)sender).SelectedIndex != 2 && process != null)
+            {
+
+				ShowWindow(unityHWND, 0);
+            }
+            else if(process != null)
+            {
+				ShowWindow(unityHWND, 1);
+			}
 		}
 
 		private void SpectateMeClicked(object sender, RoutedEventArgs e)
@@ -956,12 +1068,9 @@ namespace IgniteBot
 
 		private void CopyIgniteJoinLink(object sender, RoutedEventArgs e)
 		{
-			//if (Program.lastFrame != null)
-			//{
 			var link = sessionIdTextBox.Text;
-			Clipboard.SetText(link);
+            System.Windows.Clipboard.SetText(link);
 			Task.Run(() => ShowCopiedText());
-			//}
 		}
 		async Task ShowCopiedText()
 		{
@@ -975,6 +1084,122 @@ namespace IgniteBot
 			{
 				copySessionIdButton.Content = "Copy";
 			});
+		}
+
+        private void speakerSystemPanel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+			if (speakerSystemPanel.IsVisible)
+			{
+				if (process == null || process.Handle.ToInt32() == 0)
+				{
+					try
+					{
+						
+						LogRow(LogType.Info, AppContext.BaseDirectory);
+						if(Program.InstalledSpeakerSystemVersion.Length > 0)
+                        {
+							installEchoSpeakerSystem.Visibility = Visibility.Hidden;
+							startStopEchoSpeakerSystem.Visibility = Visibility.Visible;
+							speakerSystemInstallLabel.Visibility = Visibility.Hidden;
+						}
+                        else
+                        {
+							installEchoSpeakerSystem.Visibility = Visibility.Visible;
+							startStopEchoSpeakerSystem.Visibility = Visibility.Hidden;
+						}
+						if (Program.IsSpeakerSystemUpdateAvailable)
+						{
+							updateEchoSpeakerSystem.Visibility = Visibility.Visible;
+						}
+						else
+						{
+							updateEchoSpeakerSystem.Visibility = Visibility.Hidden;
+						}
+					}
+					catch
+					{
+					}
+				}
+			}
+		}
+
+        private async void installEchoSpeakerSystem_Click(object sender, RoutedEventArgs e)
+        {
+			speakerSystemInstallLabel.Visibility = Visibility.Hidden;
+			Program.pubSocket.SendMoreFrame("CloseApp").SendFrame("");
+			Thread.Sleep(800);
+			KillSpeakerSystem();
+			startStopEchoSpeakerSystem.Content = "Start Echo Speaker System";
+
+			speakerSystemInstallLabel.Content = "Installing Echo Speaker System";
+			speakerSystemInstallLabel.Visibility = Visibility.Visible;
+			installEchoSpeakerSystem.IsEnabled = false;
+			var progress = new Progress<string>(s => speakerSystemInstallLabel.Content = s);
+			await Task.Factory.StartNew(() => Program.InstallSpeakerSystem(progress),
+										TaskCreationOptions.None);
+
+			if (Program.InstalledSpeakerSystemVersion.Length > 0)
+			{
+				installEchoSpeakerSystem.Visibility = Visibility.Hidden;
+				startStopEchoSpeakerSystem.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				installEchoSpeakerSystem.Visibility = Visibility.Visible;
+				startStopEchoSpeakerSystem.Visibility = Visibility.Hidden;
+			}
+            if (Program.IsSpeakerSystemUpdateAvailable)
+            {
+				updateEchoSpeakerSystem.Visibility = Visibility.Visible;
+            }
+            else
+            {
+				updateEchoSpeakerSystem.Visibility = Visibility.Hidden;
+			}
+		}
+
+
+		private void startStopEchoSpeakerSystem_Click(object sender, RoutedEventArgs e)
+		{
+			if (speakerSystemPanel.IsVisible)
+			{
+				if (process == null || process.HasExited)
+				{
+					try
+					{
+						speakerSystemInstallLabel.Visibility = Visibility.Hidden;
+						startStopEchoSpeakerSystem.Content = "Stop Echo Speaker System";
+						process = new Process();
+						HwndSource source = (HwndSource)PresentationSource.FromVisual(speakerSystemPanel);
+
+						var helper = new WindowInteropHelper(this);
+						var hwndSource = HwndSource.FromHwnd(helper.EnsureHandle());
+						IntPtr unityHandle = hwndSource.Handle;
+						process.StartInfo.FileName = "C:\\Program Files (x86)\\Echo Speaker System\\" + Program.InstalledSpeakerSystemVersion + "\\Echo Speaker System.exe";
+						process.StartInfo.Arguments = "ignitebot -parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
+						process.StartInfo.UseShellExecute = true;
+						process.StartInfo.CreateNoWindow = true;
+
+						process.Start();
+						process.WaitForInputIdle();
+						EnumChildWindows(unityHandle, WindowEnum, IntPtr.Zero);
+						Thread.Sleep(300);
+						MoveSpeakerSystemWindow();
+					}
+					catch (Exception ex)
+					{
+						startStopEchoSpeakerSystem.Content = "Start Echo Speaker System";
+					}
+				}
+                else
+                {
+					speakerSystemInstallLabel.Visibility = Visibility.Hidden;
+					Program.pubSocket.SendMoreFrame("CloseApp").SendFrame("");
+					Thread.Sleep(800);
+					KillSpeakerSystem();
+					startStopEchoSpeakerSystem.Content = "Start Echo Speaker System";
+				}
+			}
 		}
 	}
 }
