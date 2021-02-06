@@ -31,9 +31,13 @@
 			</Button>
 			<GroupBox x:Name="statusBox" Header="Server Info">
 				<StackPanel>
+
 					<Label x:Name="connectedLabel" Width="188" Content="Not Connected" Visibility="Collapsed"/>
-					<Label x:Name="sessionIdLabel" Content="Session ID:"/>
-					<TextBox x:Name="sessionIdTextBox" Text="********-****-****-****-************" TextWrapping="NoWrap" MaxLines="1" FontSize="14" FontFamily="Courier New" IsReadOnly="True" Height="16"/>
+					<StackPanel Orientation="Horizontal">
+						<Label x:Name="sessionIdLabel" Content="Join Link:"/>
+						<Button x:Name="copySessionIdButton" Content="Copy" Margin="45,0,0,0" VerticalAlignment="Center" Padding="10,1,10,1" HorizontalAlignment="Stretch" Click="CopyIgniteJoinLink" Width="75" ToolTip="Copies the IgniteBot join link to the clipboard"></Button>
+					</StackPanel>
+					<TextBox x:Name="sessionIdTextBox" Text="********-****-****-****-************" TextWrapping="NoWrap" MaxLines="1" FontSize="14" FontFamily="Courier New" IsReadOnly="True" Height="16" ToolTip="Share this link with others who have the IgniteBot and play on PC. They will be able to click the link to immediately join your match without an invite."/>
 					<Label x:Name="serverLocationLabel" Content="Server Location:" ToolTip="The server location is estimated using ip-api.com"/>
 				</StackPanel>
 			</GroupBox>
@@ -137,7 +141,7 @@
 					<Button x:Name="updateButton" Content="Download Update" Height="40" Margin="4,4,4,4" Background="#FF8B3434" Click="updateButton_Click" ToolTip="Downloads and installs the most recent update (recommended)" Visibility="Collapsed"/>
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton" Content="Enable API in Settings" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
-					<Button x:Name="showAtlasLinks" Content="Show Atlas Links" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click" ToolTip="Shows copy-pastable links to let others join your match"/>
+					<Button x:Name="showAtlasLinks" Content="Atlas" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click" ToolTip="Shows copy-pastable links to let others join your match"/>
 					<Button x:Name="startSpectatorStream" Content="Open Spectatorstream" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing"/>
 					<Button x:Name="playspaceButton" Content="Show Playspace" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
 					<Button x:Name="showPlayerSpeedsButton" Content="Show Player Speeds" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>

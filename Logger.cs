@@ -62,6 +62,7 @@ public class Logger
 	/// Dictionary of filename and list of lines that haven't been logged yet
 	/// </summary>
 	private static Dictionary<string, List<string>> dataToLog = new Dictionary<string, List<string>>();
+	public static readonly object dataToLogLock = new object();
 
 	public static bool initialized;
 
@@ -195,11 +196,14 @@ public class Logger
 				strBuilder.Append(newElem);
 				strBuilder.Append(delimiter);
 			}
-			if (!dataToLog.ContainsKey(fileName))
+			lock (dataToLogLock)
 			{
-				dataToLog.Add(fileName, new List<string>());
+				if (!dataToLog.ContainsKey(fileName))
+				{
+					dataToLog.Add(fileName, new List<string>());
+				}
+				dataToLog[fileName].Add(strBuilder.ToString());
 			}
-			dataToLog[fileName].Add(strBuilder.ToString());
 		}
 		catch (Exception e)
 		{
@@ -233,71 +237,80 @@ public class Logger
 
 		StringBuilder allOutputData = new StringBuilder();
 
-		foreach (var fileName in dataToLog.Keys)
+		try
 		{
-			StreamWriter fileWriter = null;
-			if (enableLoggingLocal)
+			lock (dataToLogLock)
 			{
-				string filePath, directoryPath;
-
-				// combine with some other data path, such as AppData
-				directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteBot\\" + logFolder);
-
-				if (!Directory.Exists(directoryPath))
+				foreach (var fileName in dataToLog.Keys)
 				{
-					Directory.CreateDirectory(directoryPath);
-				}
-
-				filePath = Path.Combine(directoryPath, fileName + fileExtension);
-
-				// create writer
-				try
-				{
-					fileWriter = new StreamWriter(filePath, true);
-				}
-				catch (IOException e)
-				{
-					LogRow(LogType.Error, "Can't open log file for writing");
-					continue;
-				}
-			}
-
-			allOutputData.Clear();
-
-			// actually log data
-			try
-			{
-				foreach (var row in dataToLog[fileName])
-				{
+					StreamWriter fileWriter = null;
 					if (enableLoggingLocal)
 					{
-						fileWriter.WriteLine(row);
+						string filePath, directoryPath;
+
+						// combine with some other data path, such as AppData
+						directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteBot\\" + logFolder);
+
+						if (!Directory.Exists(directoryPath))
+						{
+							Directory.CreateDirectory(directoryPath);
+						}
+
+						filePath = Path.Combine(directoryPath, fileName + fileExtension);
+
+						// create writer
+						try
+						{
+							fileWriter = new StreamWriter(filePath, true);
+						}
+						catch (IOException e)
+						{
+							LogRow(LogType.Error, "Can't open log file for writing");
+							continue;
+						}
 					}
-					if (enableLoggingRemote)
+
+					allOutputData.Clear();
+
+					// actually log data
+					try
 					{
-						allOutputData.Append(row);
-						allOutputData.Append(newLineChar);
+						foreach (var row in dataToLog[fileName])
+						{
+							if (enableLoggingLocal)
+							{
+								fileWriter.WriteLine(row);
+							}
+							if (enableLoggingRemote)
+							{
+								allOutputData.Append(row);
+								allOutputData.Append(newLineChar);
+							}
+						}
+						dataToLog[fileName].Clear();
+
+						if (enableLoggingRemote)
+						{
+							Upload(fileName + fileExtension, allOutputData.ToString(), folder);
+						}
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine(e.Message);
+					}
+
+					if (enableLoggingLocal)
+					{
+						fileWriter.Close();
 					}
 				}
-				dataToLog[fileName].Clear();
-
-				if (enableLoggingRemote)
-				{
-					Upload(fileName + fileExtension, allOutputData.ToString(), folder);
-				}
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.Message);
-			}
-
-			if (enableLoggingLocal)
-			{
-				fileWriter.Close();
+				numLinesLogged = 0;
 			}
 		}
-
-		numLinesLogged = 0;
+		catch (Exception e)
+		{
+			Console.WriteLine(e.Message);
+		}
 	}
 
 	static async void Upload(string name, string data, string appName)

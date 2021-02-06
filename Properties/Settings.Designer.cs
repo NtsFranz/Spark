@@ -694,5 +694,65 @@ namespace IgniteBot.Properties {
                 this["alternateEchoVRIP"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool capturevp2 {
+            get {
+                return ((bool)(this["capturevp2"]));
+            }
+            set {
+                this["capturevp2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool nvHighlightsSpectatorRecord {
+            get {
+                return ((bool)(this["nvHighlightsSpectatorRecord"]));
+            }
+            set {
+                this["nvHighlightsSpectatorRecord"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int atlasLinkStyle {
+            get {
+                return ((int)(this["atlasLinkStyle"]));
+            }
+            set {
+                this["atlasLinkStyle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool atlasLinkUseAngleBrackets {
+            get {
+                return ((bool)(this["atlasLinkUseAngleBrackets"]));
+            }
+            set {
+                this["atlasLinkUseAngleBrackets"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool firstTimeSetupShown {
+            get {
+                return ((bool)(this["firstTimeSetupShown"]));
+            }
+            set {
+                this["firstTimeSetupShown"] = value;
+            }
+        }
     }
 }

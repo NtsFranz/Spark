@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
         Title="IgniteBot | NVIDIA Highlights Settings"
-        Height="596" Width="500" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png"
+        Height="653" Width="500" ResizeMode="CanMinimize" Icon="/img/ignite_logo_128.png"
         Background="{DynamicResource BackgroundColour}" SizeToContent="Manual"
         Loaded="NVHighlightsSettingsWindow_Load" FontSize="14">
 	<Grid>
@@ -31,6 +31,7 @@
 						<ComboBoxItem Content="My Team Only" />
 						<ComboBoxItem Content="All Players (both teams)" />
 					</ComboBox>
+					<CheckBox x:Name="recordAllInSpectator" Content="Record all events in Spectator" Margin="10,10,10,10" Checked="RecordAllInSpectatorEvent" Unchecked="RecordAllInSpectatorEvent" />
 
 					<Label x:Name="timeLabel" Content="Clip Duration:" Margin="0,10,0,0"/>
 					<StackPanel Orientation="Horizontal" Margin="0,0,0,10">

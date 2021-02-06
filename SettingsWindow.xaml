@@ -9,24 +9,43 @@
 	<Grid>
 		<StackPanel>
 			<Label x:Name="label" Content="Settings" FontSize="20" Margin="10,10,10,4"/>
+			<!--
 			<Button x:Name="echoVRSettings" Content="EchoVR Settings" Margin="10,4,10,4" HorizontalAlignment="Left" Width="120" Padding="4,4,4,4" Click="echoVRSettings_Click" Visibility="Collapsed"/>
 			<StackPanel Orientation="Horizontal">
 				<Button x:Name="ttsSettingsButton" Content="TTS Settings" Width="120" Padding="4,4,4,4" Margin="10,4,10,4" Click="ShowTTSSettingsWindow"/>
 				<Button x:Name="nvHighlightsSettings" Content="NV Highlights Settings" Height="40" Margin="10,4,10,4" Click="ShowNVHighlightSettingsWindow" Width="180"/>
 			</StackPanel>
+			-->
+			<Button x:Name="firstTimeSetupButton" Content="Show first-time setup window" Margin="10,4,10,4" HorizontalAlignment="Left" Width="207" Padding="4,4,4,4" Click="ShowFirstTimeSetupWindowClicked"/>
+			<Button x:Name="echoVRSettings" Content="EchoVR Settings" Margin="10,4,10,4" HorizontalAlignment="Left" Width="120" Padding="4,4,4,4" Click="echoVRSettings_Click" Visibility="Collapsed"/>
+			<StackPanel Orientation="Horizontal">
+				<Button x:Name="ttsSettingsButton" Content="TTS Settings" Margin="10,4,10,4" HorizontalAlignment="Left" Width="120" Padding="4,4,4,4" Click="ShowTTSSettingsWindow"/>
+				<Button x:Name="nvHighlightsSetting" Content="NV Highlights Settings" Margin="10,4,10,4" HorizontalAlignment="Left" Width="180" Padding="4,4,4,4" Click="ShowNVHighlightSettingsWindow"/>
+			</StackPanel>
 			<CheckBox x:Name="startWithWindowsCheckbox" Content="Start with Windows" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="StartWithWindowsEvent" Unchecked="StartWithWindowsEvent"/>
 			<CheckBox x:Name="startMinimizedCheckbox" Content="Start Minimized" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="StartMinimizedEvent" Unchecked="StartMinimizedEvent"/>
-			<CheckBox x:Name="autorestartCheckbox" Content="Autorestart EchoVR" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="RestartOnCrashEvent" Unchecked="RestartOnCrashEvent"/>
+			<CheckBox x:Name="autorestartCheckbox" Content="Autorestart EchoVR into autospectator" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="RestartOnCrashEvent" Unchecked="RestartOnCrashEvent" ToolTip="Automatically restarts spectatorstream when it crashes"/>
+			<CheckBox x:Name="capturevp2Checkbox" Content="Enable -capturevp2 when launching spectator" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="capturevp2CheckedEvent" Unchecked="capturevp2CheckedEvent"/>
 			<CheckBox x:Name="discordRichPresenceCheckbox" Content="Discord Rich Presence" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="EnableDiscordRichPresenceEvent" Unchecked="EnableDiscordRichPresenceEvent"/>
 			<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Checked="LogToServerEvent" Unchecked="LogToServerEvent" Visibility="Collapsed"/>
 			<Label x:Name="exeLocationLabel" Content="EchoVR Executable Location:" Margin="10,4,10,0"/>
 			<TextBox x:Name="exeLocationTextBox" TextWrapping="NoWrap" HorizontalAlignment="Stretch" Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged" MaxLines="1"/>
-			<StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,4">
-				<Label x:Name="echoVRIPLabel" Content="EchoVR IP (for Quest)" Margin="4,4,4,4"/>
-				<TextBox x:Name="echoVRIPTextBox" Text="127.0.0.1" TextWrapping="Wrap" Width="140" Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas" Padding="4,4,4,4" TextChanged="EchoVRIPChanged"/>
-				<TextBox x:Name="echoVRPortTextBox" Text="6721" TextWrapping="Wrap" Width="60" Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas" Padding="4,4,4,4" TextChanged="EchoVRPortChanged"/>
-				<Button x:Name="resetIP" Content="Reset" Margin="4,4,4,4" Padding="4,4,4,4" Click="resetIP_Click"/>
+
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,0" Visibility="Collapsed">
+				<ComboBox x:Name="ipSourceSelector" Width="150" SelectedIndex="0" Margin="10,10,10,0" HorizontalAlignment="Left" SelectionChanged="SpeedChangeEvent">
+					<ComboBoxItem Content="This PC"/>
+					<ComboBoxItem Content="Quest"/>
+				</ComboBox>
+				<Button Margin="10,10,10,0" Content="Find" Padding="10,1,10,1"/>
 			</StackPanel>
+            <StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,-8">
+                <Label x:Name="echoVRIPLabel" Content="EchoVR IP (for Quest)" Margin="4,4,4,4"/>
+                <TextBox x:Name="echoVRIPTextBox" Text="127.0.0.1" TextWrapping="Wrap" Width="140" Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas" Padding="4,4,4,4" TextChanged="EchoVRIPChanged"/>
+                <TextBox x:Name="echoVRPortTextBox" Text="6721" TextWrapping="Wrap" Width="60" Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas" Padding="4,4,4,4" TextChanged="EchoVRPortChanged"/>
+                <Button x:Name="resetIP" Content="Local PC" Margin="4,4,4,4" Padding="4,4,4,4" Click="resetIP_Click"/>
+                <Button x:Name="findQuest" Content="Find Quest IP" Margin="4,4,4,4" Padding="4,4,4,4" Click="FindQuestClick"/>
+            </StackPanel>
+            <Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="Searching for Quest" Margin="30,0,0,-10" FontSize="10" FontStyle="Italic"/>
 			<CheckBox x:Name="enableStatsLogging" Content="Enable Stats Logging" Margin="10,20,4,4" Checked="EnableStatsLoggingEvent" Unchecked="EnableStatsLoggingEvent"/>
 			<GroupBox x:Name="statsLoggingBox" Header="Stats Logging" Margin="10,4,10,4">
 				<StackPanel>

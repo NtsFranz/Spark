@@ -110,26 +110,26 @@ namespace IgniteBot
 								mainOutputTextBox.AppendText(newText);
 								mainOutputTextBox.ScrollToEnd();
 
-								if (Program.writeToOBSHTMLFile) // TODO this file path won't work
-								{
-									// write to html file for overlay as well
-									File.WriteAllText("html_output/events.html", @"
-								<html>
-								<head>
-								<meta http-equiv=""refresh"" content=""1"">
-								<link rel=""stylesheet"" type=""text/css"" href=""styles.css"">
-								</head>
-								<body>
+								//	if (Program.writeToOBSHTMLFile) // TODO this file path won't work
+								//	{
+								//		// write to html file for overlay as well
+								//		File.WriteAllText("html_output/events.html", @"
+								//	<html>
+								//	<head>
+								//	<meta http-equiv=""refresh"" content=""1"">
+								//	<link rel=""stylesheet"" type=""text/css"" href=""styles.css"">
+								//	</head>
+								//	<body>
 
-								<div id=""info""> " +
-												newText
-												+ @"
-								</div>
+								//	<div id=""info""> " +
+								//					newText
+								//					+ @"
+								//	</div>
 
-								</body>
-								</html>
-							");
-								}
+								//	</body>
+								//	</html>
+								//");
+								//	}
 							}
 							catch (Exception) { }
 
@@ -146,7 +146,7 @@ namespace IgniteBot
 					if (Program.lastFrame != null)  // 'mpl_lobby_b2' may change in the future
 					{
 						// session ID
-						sessionIdTextBox.Text = Program.lastFrame.sessionid;
+						sessionIdTextBox.Text = "<ignitebot://choose/" + Program.lastFrame.sessionid + ">";
 
 						// ip stuff
 						if (Program.lastFrame.sessionip != lastIP)
@@ -272,6 +272,7 @@ namespace IgniteBot
 							smoothedServerScore = smoothedServerScore * serverScoreSmoothingFactor + (1 - serverScoreSmoothingFactor) * serverScore;
 							playerPingsGroupbox.Header = $"Player Pings   Score: {smoothedServerScore:N1}";
 						}
+						Program.matchData.ServerScore = smoothedServerScore;
 
 
 						bluePlayersSpeedsNames.Text = blueTextNames.ToString();
@@ -286,23 +287,38 @@ namespace IgniteBot
 
 						// last goals and last matches
 						StringBuilder lastGoalsString = new StringBuilder();
-						foreach (var goal in Program.lastGoals)
+						var lastGoals = Program.lastGoals.ToArray();
+						if (lastGoals.Length > 0)
 						{
-							lastGoalsString.AppendLine(goal.GameClock.ToString("N0") + "s  " + goal.LastScore.point_amount + " pts  " + goal.LastScore.person_scored + "  " + goal.LastScore.disc_speed.ToString("N1") + " m/s  " + goal.LastScore.distance_thrown.ToString("N1") + " m");
+							for (int j = lastGoals.Length - 1; j >= 0; j--)
+							{
+								var goal = lastGoals[j];
+								lastGoalsString.AppendLine(goal.GameClock.ToString("N0") + "s  " + goal.LastScore.point_amount + " pts  " + goal.LastScore.person_scored + "  " + goal.LastScore.disc_speed.ToString("N1") + " m/s  " + goal.LastScore.distance_thrown.ToString("N1") + " m");
+							}
 						}
 						lastGoalsTextBlock.Text = lastGoalsString.ToString();
 
 						StringBuilder lastMatchesString = new StringBuilder();
-						foreach (var match in Program.lastMatches)
+						var lastMatches = Program.lastMatches.ToArray();
+						if (lastMatches.Length > 0)
 						{
-							lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[g_Team.TeamColor.orange].points + "  BLUE: " + match.teams[g_Team.TeamColor.blue].points);
+							for (int j = lastMatches.Length - 1; j >= 0; j--)
+							{
+								var match = lastMatches[j];
+								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[g_Team.TeamColor.orange].points + "  BLUE: " + match.teams[g_Team.TeamColor.blue].points);
+							}
 						}
 						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
 
 						StringBuilder lastJoustsString = new StringBuilder();
-						foreach (var joust in Program.lastJousts)
+						var lastJousts = Program.lastJousts.ToArray();
+						if (lastJousts.Length > 0)
 						{
-							lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventData.EventType.joust_speed ? " N" : ""));
+							for (int j = lastJousts.Length - 1; j >= 0; j--)
+							{
+								var joust = lastJousts[j];
+								lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventData.EventType.joust_speed ? " N" : ""));
+							}
 						}
 						lastJoustsTextBlock.Text = lastJoustsString.ToString();
 
@@ -509,6 +525,7 @@ namespace IgniteBot
 					HttpResponseMessage response = await updateClient.GetAsync(ip);
 					JObject respObj = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 					string loc = (string)respObj["city"] + ", " + (string)respObj["regionName"];
+					Program.matchData.ServerLocation = loc;
 					serverLocationLabel.Content = "Server Location:\n" + loc;
 
 					if (Settings.Default.serverLocationTTS)
@@ -870,7 +887,7 @@ namespace IgniteBot
 		{
 			if (!string.IsNullOrEmpty(Settings.Default.echoVRPath))
 			{
-				Process.Start(Settings.Default.echoVRPath, "-spectatorstream");
+				Process.Start(Settings.Default.echoVRPath, "-spectatorstream" + (Settings.Default.capturevp2 ? " -capturevp2" : ""));
 			}
 		}
 
@@ -935,6 +952,29 @@ namespace IgniteBot
 		private void EventLogTabClicked(object sender, System.Windows.Input.TouchEventArgs e)
 		{
 			mainOutputTextBox.ScrollToEnd();
+		}
+
+		private void CopyIgniteJoinLink(object sender, RoutedEventArgs e)
+		{
+			//if (Program.lastFrame != null)
+			//{
+			var link = sessionIdTextBox.Text;
+			Clipboard.SetText(link);
+			Task.Run(() => ShowCopiedText());
+			//}
+		}
+		async Task ShowCopiedText()
+		{
+			Dispatcher.Invoke(() =>
+			{
+				copySessionIdButton.Content = "Copied!";
+			});
+			await Task.Delay(3000);
+
+			Dispatcher.Invoke(() =>
+			{
+				copySessionIdButton.Content = "Copy";
+			});
 		}
 	}
 }

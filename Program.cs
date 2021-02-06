@@ -25,6 +25,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static IgniteBot.g_Team;
 using static Logger;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace IgniteBot
 {
@@ -166,6 +168,7 @@ namespace IgniteBot
 		public static TTSSettingsWindow ttsWindow;
 		public static NVHighlightsSettingsWindow nvhWindow;
 		public static LoginWindow loginWindow;
+		public static FirstTimeSetupWindow firstTimeSetupWindow;
 		public static ClosingDialog closingWindow;
 
 		private static float smoothDeltaTime = -1;
@@ -196,6 +199,10 @@ namespace IgniteBot
 		private static Thread fetchThread;
 		private static Thread liveReplayThread;
 		private static Thread milkThread;
+		private static Thread IPSearchthread1;
+		private static Thread IPSearchthread2;
+		private static Thread thread3;
+		private static Thread thread4;
 
 		private static App app;
 
@@ -255,6 +262,15 @@ namespace IgniteBot
 			liveWindow = new LiveWindow();
 			liveWindow.Closed += (sender, args) => liveWindow = null;
 			liveWindow.Show();
+
+			if (!Settings.Default.firstTimeSetupShown)
+			{
+				firstTimeSetupWindow = new FirstTimeSetupWindow();
+				firstTimeSetupWindow.Closed += (sender, args) => firstTimeSetupWindow = null;
+				firstTimeSetupWindow.Show();
+				Settings.Default.firstTimeSetupShown = true;
+				Settings.Default.Save();
+			}
 
 			var argsList = new List<string>(args);
 
@@ -364,9 +380,15 @@ namespace IgniteBot
 		/// <summary>
 		/// This is just a failsafe so that the program doesn't leave a dangling thread.
 		/// </summary>
-		async static Task KillAll(Thread statsThread, Thread fullLogThread, Thread autorestartThread,
-			Thread fetchThread, Thread milkThread, HTTPServer httpServer = null)
+		async static Task KillAll(HTTPServer httpServer = null)
 		{
+			if (liveWindow != null)
+			{
+				liveWindow.Close();
+				liveWindow = null;
+			}
+
+
 			if (httpServer != null)
 				httpServer.Stop();
 		}
@@ -374,24 +396,24 @@ namespace IgniteBot
 		async static Task GentleClose()
 		{
 			running = false;
-			while ((statsThread != null && statsThread.IsAlive) ||
-				(fullLogThread != null && fullLogThread.IsAlive))
-			{
-				if (fullLogThread.IsAlive)
-				{
-					closingWindow.label.Content = "Compressing Replay File...";
-				}
-				else
-				{
-					closingWindow.label.Content = "Closing...";
-				}
 
+			while (fullLogThread != null && fullLogThread.IsAlive)
+			{
+				closingWindow.label.Content = "Compressing Replay File...";
+				await Task.Delay(10);
+			}
+			while (statsThread != null && statsThread.IsAlive)
+			{
+				closingWindow.label.Content = "Closing...";
 				await Task.Delay(10);
 			}
 			HighlightsHelper.CloseNVHighlights();
 
-
 			app.ExitApplication();
+
+			await Task.Delay(100);
+
+			_ = KillAll();
 		}
 
 		public static bool IsIgniteBotOpen()
@@ -836,7 +858,7 @@ namespace IgniteBot
 								// close client
 								echo_.Kill();
 								// restart client
-								Process.Start(echoPath, "-spectatorstream");
+								Process.Start(echoPath, "-spectatorstream" + (Settings.Default.capturevp2 ? " -capturevp2" : ""));
 							}
 							else if (echoPath != null && echoPath != "")
 							{
@@ -943,11 +965,45 @@ namespace IgniteBot
 
 		public static void StartEchoVR(string joinType = "choose")
 		{
-			Process.Start(new ProcessStartInfo
+			if (lastFrame != null)
 			{
-				FileName = "ignitebot://" + joinType + "/" + lastFrame.sessionid,
-				UseShellExecute = true
-			});
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = "ignitebot://" + joinType + "/" + lastFrame.sessionid,
+					UseShellExecute = true
+				});
+			}
+			else
+			{
+				// No session id to launch
+			}
+		}
+
+		// Functions required to force focus change, couldn't make them all local because GetWindowThreadProcessId would throw an error (though it likely shouldn't)
+		[DllImport("User32.dll")]
+		static extern bool SetForegroundWindow(IntPtr hWnd);
+		[DllImport("user32.dll")]
+		static extern IntPtr GetForegroundWindow();
+		[DllImport("user32.dll")]
+		static extern bool AttachThreadInput(IntPtr idAttach, IntPtr idAttachTo, bool fAttach);
+		[DllImport("user32.dll")]
+		static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
+		public static void FocusEchoVR()
+		{
+			// Windows dosen't like programs stealing focus, so we have to hook into the current focused thred first
+			IntPtr currentThread = new IntPtr(Thread.CurrentThread.ManagedThreadId);
+			IntPtr foregroundThread = new IntPtr(GetWindowThreadProcessId(GetForegroundWindow(), out _));
+
+			AttachThreadInput(currentThread, foregroundThread, true);
+
+			Process[] echoProcesses = GetEchoVRProcess();
+			if (echoProcesses.Length > 0)
+			{
+				SetForegroundWindow(echoProcesses[0].MainWindowHandle);
+			}
+
+			AttachThreadInput(currentThread, foregroundThread, false);
 		}
 
 		private static void UpdateEchoExeLocation()
@@ -1889,8 +1945,8 @@ namespace IgniteBot
 						matchData.Events.Add(joustEvent);
 						LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " +
 															  team.color.ToString() +
-															  " team joust time" + 
-															  (eventType == EventData.EventType.defensive_joust ? " (defensive)" : "") + 
+															  " team joust time" +
+															  (eventType == EventData.EventType.defensive_joust ? " (defensive)" : "") +
 															  ": " +
 															  (startGameClock - frame.game_clock)
 															  .ToString("N2") +
@@ -1903,7 +1959,7 @@ namespace IgniteBot
 						_ = DoUploadEventFirebase(matchData, joustEvent);
 
 						lastJousts.Enqueue(joustEvent);
-						if (lastJousts.Count > 8)
+						if (lastJousts.Count > 20)
 						{
 							lastJousts.TryDequeue(out var joust);
 						}
@@ -2104,14 +2160,7 @@ namespace IgniteBot
 
 					// Autofocus
 					if (Settings.Default.isAutofocusEnabled) {
-						[System.Runtime.InteropServices.DllImport("User32.dll")]
-						static extern bool SetForegroundWindow(IntPtr handle);
-
-						Process[] process = GetEchoVRProcess();
-						if (process.Length > 0)
-						{
-							SetForegroundWindow(process[0].MainWindowHandle);
-						}
+						FocusEchoVR();
 					}
 
 					// Loop through teams.
@@ -2367,7 +2416,7 @@ namespace IgniteBot
 			);
 			matchData.Goals.Add(goalEvent);
 			lastGoals.Enqueue(goalEvent);
-			if (lastGoals.Count > 5)
+			if (lastGoals.Count > 20)
 			{
 				lastGoals.TryDequeue(out var goal);
 			}
@@ -2448,7 +2497,7 @@ namespace IgniteBot
 			}
 
 			lastMatches.Enqueue(matchData);
-			if (lastMatches.Count > 5)
+			if (lastMatches.Count > 20)
 			{
 				lastMatches.TryDequeue(out var match);
 			}
@@ -2831,6 +2880,66 @@ namespace IgniteBot
 		}
 
 
+		/// <summary>
+		/// Generic method for getting data from a web url
+		/// </summary>
+		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
+		public static async Task GetAsync(string uri, Dictionary<string, string> headers, Action<string> callback)
+		{
+			try
+			{
+				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+				if (headers != null)
+				{
+					foreach (var header in headers)
+					{
+						request.Headers[header.Key] = header.Value;
+					}
+				}
+				using HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
+				using Stream stream = response.GetResponseStream();
+				using StreamReader reader = new StreamReader(stream);
+
+				callback(await reader.ReadToEndAsync());
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Can't get data\n{e}");
+				callback("");
+			}
+		}
+
+		/// <summary>
+		/// Generic method for posting data to a web url
+		/// </summary>
+		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
+		public static async Task PostAsync(string uri, Dictionary<string, string> headers, string body, Action<string> callback)
+		{
+			try
+			{
+				//FormUrlEncodedContent content = new FormUrlEncodedContent(values);
+				if (headers != null)
+				{
+					foreach (KeyValuePair<string, string> header in headers)
+					{
+						client.DefaultRequestHeaders.Remove(header.Key);
+						client.DefaultRequestHeaders.Add(header.Key, header.Value);
+					}
+				}
+				var content = new StringContent(body, Encoding.UTF8, "application/json");
+				HttpResponseMessage response = await client.PostAsync(uri, content);
+				string responseString = await response.Content.ReadAsStringAsync();
+
+				callback(responseString);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Can't post data\n{e}");
+				callback("");
+			}
+		}
+
+
 		public static JToken ReadEchoVRSettings()
 		{
 			try
@@ -2940,7 +3049,7 @@ namespace IgniteBot
 			string echoPath = Settings.Default.echoVRPath;
 			if (!string.IsNullOrEmpty(echoPath))
 			{
-				Process.Start(echoPath, (spectating ? "-spectatorstream " : " ") + "-lobbyid " + parts[3]);
+				Process.Start(echoPath, (Settings.Default.capturevp2 ? "-capturevp2 " : " ") + (spectating ? "-spectatorstream " : " ") + "-lobbyid " + parts[3]);
 			}
 			else
 			{
@@ -2950,6 +3059,291 @@ namespace IgniteBot
 			}
 
 			return true;
+		}
+
+		// The max number of physical addresses.
+		const int MAXLEN_PHYSADDR = 8;
+
+		// Define the MIB_IPNETROW structure.
+		[StructLayout(LayoutKind.Sequential)]
+		struct MIB_IPNETROW
+		{
+			[MarshalAs(UnmanagedType.U4)]
+			public int dwIndex;
+			[MarshalAs(UnmanagedType.U4)]
+			public int dwPhysAddrLen;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac0;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac1;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac2;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac3;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac4;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac5;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac6;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac7;
+			[MarshalAs(UnmanagedType.U4)]
+			public int dwAddr;
+			[MarshalAs(UnmanagedType.U4)]
+			public int dwType;
+		}
+		[DllImport("iphlpapi.dll", ExactSpelling = true)]
+		public static extern int SendARP(int DestIP, int SrcIP, [Out] byte[] pMacAddr, ref int PhyAddrLen);
+
+		public static IPAddress QuestIP = null;
+		public static bool IPPingThread1Done = false;
+		public static bool IPPingThread2Done = false;
+
+		public static void GetCurrentIPAndPingNetwork()
+		{
+			foreach (NetworkInterface adapter in NetworkInterface.GetAllNetworkInterfaces().Where(ni => ni.OperationalStatus == OperationalStatus.Up && (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)))
+			{
+				var addr = adapter.GetIPProperties().GatewayAddresses.FirstOrDefault();
+				if (addr != null && !addr.Address.ToString().Equals("0.0.0.0"))
+				{
+					foreach (UnicastIPAddressInformation unicastIPAddressInformation in adapter.GetIPProperties().UnicastAddresses)
+					{
+						if (unicastIPAddressInformation.Address.AddressFamily == AddressFamily.InterNetwork)
+						{
+							Console.WriteLine("PC IP Address: " + unicastIPAddressInformation.Address);
+							Console.Write("PC Subnet Mask: " + unicastIPAddressInformation.IPv4Mask + "\n Searching for Quest on network...");
+							PingNetworkIPs(unicastIPAddressInformation.Address, unicastIPAddressInformation.IPv4Mask);
+						}
+					}
+				}
+			}
+		}
+		public static async void PingIPList(List<IPAddress> IPs, int threadID)
+		{
+			var tasks = IPs.Select(ip => new Ping().SendPingAsync(ip, 4000));
+			var results = await Task.WhenAll(tasks);
+			switch (threadID)
+			{
+				case 1:
+					IPPingThread1Done = true;
+					break;
+				case 2:
+					IPPingThread2Done = true;
+					break;
+				default:
+					break;
+			}
+		}
+		public static void PingNetworkIPs(IPAddress address, IPAddress mask)
+		{
+			uint ipAddress = BitConverter.ToUInt32(address.GetAddressBytes(), 0);
+			uint ipMaskV4 = BitConverter.ToUInt32(mask.GetAddressBytes(), 0);
+			uint broadCastIpAddress = ipAddress | ~ipMaskV4;
+
+			IPAddress start = new IPAddress(BitConverter.GetBytes(broadCastIpAddress));
+
+            var bytes = start.GetAddressBytes();
+			var leastSigByte = address.GetAddressBytes().Last();
+			var range = 255 - leastSigByte;
+
+			var pingReplyTasks = Enumerable.Range(leastSigByte, range)
+				.Select(x => {
+					var bb = start.GetAddressBytes();
+					bb[3] = (byte)x;
+					var destIp = new IPAddress(bb);
+					return destIp;
+				})
+				.ToList();
+			var pingReplyTasks2 = Enumerable.Range(0, leastSigByte - 1)
+				.Select(x => {
+
+					var bb = start.GetAddressBytes();
+					bb[3] = (byte)x;
+					var destIp = new IPAddress(bb);
+					return destIp;
+				})
+				.ToList();
+			IPSearchthread1 = new Thread(new ThreadStart(() => PingIPList(pingReplyTasks, 1)));
+			IPSearchthread2 = new Thread(new ThreadStart(() => PingIPList(pingReplyTasks2, 2)));
+			IPPingThread1Done = false;
+			IPPingThread2Done = false;
+			IPSearchthread1.Start();
+			IPSearchthread2.Start();
+        }
+
+		// Declare the GetIpNetTable function.
+		[DllImport("IpHlpApi.dll")]
+		[return: MarshalAs(UnmanagedType.U4)]
+		static extern int GetIpNetTable(
+		   IntPtr pIpNetTable,
+		   [MarshalAs(UnmanagedType.U4)]
+		 ref int pdwSize,
+		   bool bOrder);
+
+		[DllImport("IpHlpApi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		internal static extern int FreeMibTable(IntPtr plpNetTable);
+
+		// The insufficient buffer error.
+		const int ERROR_INSUFFICIENT_BUFFER = 122;
+		static IntPtr buffer;
+
+		static void CheckARPTable()
+		{
+
+			int bytesNeeded = 0;
+
+			// The result from the API call.
+			int result = GetIpNetTable(IntPtr.Zero, ref bytesNeeded, false);
+
+			// Call the function, expecting an insufficient buffer.
+			if (result != ERROR_INSUFFICIENT_BUFFER)
+			{
+				// Throw an exception.
+				throw new Exception();
+			}
+
+			// Allocate the memory, do it in a try/finally block, to ensure
+			// that it is released.
+			buffer = IntPtr.Zero;
+			// Allocate the memory.
+			buffer = Marshal.AllocCoTaskMem(bytesNeeded);
+
+			// Make the call again. If it did not succeed, then
+			// raise an error.
+			result = GetIpNetTable(buffer, ref bytesNeeded, false);
+
+			// If the result is not 0 (no error), then throw an exception.
+			if (result != 0)
+			{
+				// Throw an exception.
+				throw new Exception();
+			}
+
+			// Now we have the buffer, we have to marshal it. We can read
+			// the first 4 bytes to get the length of the buffer.
+			int entries = Marshal.ReadInt32(buffer);
+
+			// Increment the memory pointer by the size of the int.
+			IntPtr currentBuffer = new IntPtr(buffer.ToInt64() +
+				Marshal.SizeOf(typeof(int)));
+
+			// Allocate an array of entries.
+			MIB_IPNETROW[] table = new MIB_IPNETROW[entries];
+
+			// Cycle through the entries.
+			for (int index = 0; index < entries; index++)
+			{
+				// Call PtrToStructure, getting the structure information.
+				table[index] = (MIB_IPNETROW)Marshal.PtrToStructure(new
+					IntPtr(currentBuffer.ToInt64() + (index *
+					Marshal.SizeOf(typeof(MIB_IPNETROW)))), typeof(MIB_IPNETROW));
+			}
+
+			for (int index = 0; index < entries; index++)
+			{
+				MIB_IPNETROW row = table[index];
+
+				if (row.mac0 == 0x2C && row.mac1 == 0x26 && row.mac2 == 0x17)
+				{
+					QuestIP = new IPAddress(BitConverter.GetBytes(row.dwAddr));
+					break;
+				}
+
+			}
+		}
+
+		public static void ClearARPCache()
+        {
+			try
+			{
+				System.Diagnostics.Process process = new System.Diagnostics.Process();
+				System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+				startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+				startInfo.FileName = "cmd.exe";
+				startInfo.Arguments = "/C netsh interface ip delete arpcache";
+				startInfo.Verb = "runas";
+				startInfo.UseShellExecute = true;
+				process.StartInfo = startInfo;
+				process.Start();
+				process.WaitForExit(500);
+				Thread.Sleep(20);
+            }
+            catch { }
+		}
+		/// <summary>
+		/// Finds a Quest local IP address on the same network
+		/// </summary>
+		/// <returns>The IP address</returns>
+		public static string FindQuestIP(IProgress<string> progress)
+		{
+            try
+            {
+                string QuestStatusLabel = "Searching for Quest on network";
+				QuestIP = null;
+				ClearARPCache();
+				CheckARPTable();
+                int count = 0;
+                string statusDots = "";
+                if (QuestIP == null)
+                {
+                    GetCurrentIPAndPingNetwork();
+                    while (QuestIP == null && (!IPPingThread1Done || !IPPingThread2Done))
+                    {
+                        if (count == 4)
+                        {
+                            count = 0;
+                            if (statusDots.Length > 2)
+                            {
+                                statusDots = "";
+                            }
+                            else
+                            {
+                                statusDots += ".";
+                            }
+                        }
+                        else
+                        {
+                            count++;
+                        }
+                        progress.Report(QuestStatusLabel + statusDots);
+                        Thread.Sleep(50);
+                        CheckARPTable();
+                    }
+					IPSearchthread1 = null;
+					IPSearchthread2 = null;
+					if (QuestIP != null)
+                    {
+                        progress.Report("Found Quest on network!");
+                    }
+                    else
+                    {
+                        Thread.Sleep(1000);
+                        CheckARPTable();
+                        if (QuestIP != null)
+                        {
+                            progress.Report("Found Quest on network!");
+                        }
+                        else
+                        {
+                            progress.Report("Failed to find Quest on network!");
+                        }
+                    }
+                }
+                else
+                {
+                    progress.Report("Found Quest on network!");
+                }
+
+            }
+            finally
+            {
+                // Release the memory.
+                FreeMibTable(buffer);
+            }
+			Thread.Sleep(500);
+            echoVRIP = QuestIP == null ? "127.0.0.1" : QuestIP.ToString();
+			return echoVRIP;
 		}
 
 		/// <summary>
@@ -3035,6 +3429,12 @@ namespace IgniteBot
 		{
 			float avg = (float)values.Average();
 			return values.Average(v => MathF.Pow(v - avg, 2));
+		}
+
+		// TODO
+		public void ShowToast(string text, float duration = 3)
+		{
+
 		}
 
 		internal static void Quit()

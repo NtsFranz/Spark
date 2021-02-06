@@ -16,6 +16,8 @@ namespace IgniteBot
 		private Vector2 lastPosition = Vector2.Zero;
 		private const int deltaMillis = 67; // about 15 fps
 
+		public static readonly object playerDropdownLock = new object();
+
 		public Playspace()
 		{
 			InitializeComponent();
@@ -33,34 +35,37 @@ namespace IgniteBot
 		{
 			if (Program.running)
 			{
-				Dispatcher.Invoke(() =>
+				lock (playerDropdownLock)
 				{
-					if (Program.lastFrame != null && Program.lastFrame.game_status == "playing")
+					Dispatcher.Invoke(() =>
 					{
-						if (choosePlayerDropdown.SelectedIndex == 0)
+						if (Program.lastFrame != null && Program.lastFrame.game_status == "playing")
 						{
-							Vector3 pos = Program.lastFrame.player.vr_position.ToVector3();
-							SetPosition(pos.X, pos.Z);
+							if (choosePlayerDropdown.SelectedIndex == 0)
+							{
+								Vector3 pos = Program.lastFrame.player.vr_position.ToVector3();
+								SetPosition(pos.X, pos.Z);
+							}
+							else
+							{
+								string playerName = choosePlayerDropdown.SelectedValue.ToString();
+								g_Player player = Program.lastFrame.GetPlayer(playerName);
+								if (player == null) return;
+								MatchPlayer playerData = Program.matchData.GetPlayerData(player);
+								if (playerData == null) return;
+								Vector3 pos = player.head.Position - playerData.playspaceLocation;
+								SetPosition(pos.X, pos.Y);
+							}
+
+							playerCircle.Visibility = Visibility.Visible;
 						}
 						else
 						{
-							string playerName = choosePlayerDropdown.SelectedValue.ToString();
-							g_Player player = Program.lastFrame.GetPlayer(playerName);
-							if (player == null) return;
-							MatchPlayer playerData = Program.matchData.GetPlayerData(player);
-							if (playerData == null) return;
-							Vector3 pos = player.head.Position - playerData.playspaceLocation;
-							SetPosition(pos.X, pos.Y);
+							SetPosition(0, 0);
+							playerCircle.Visibility = Visibility.Hidden;
 						}
-
-						playerCircle.Visibility = Visibility.Visible;
-					}
-					else
-					{
-						SetPosition(0, 0);
-						playerCircle.Visibility = Visibility.Hidden;
-					}
-				});
+					});
+				}
 			}
 		}
 
@@ -88,19 +93,37 @@ namespace IgniteBot
 
 		private void RefreshPlayers()
 		{
-			choosePlayerDropdown.Items.Clear();
-			choosePlayerDropdown.Items.Add("Local Player");
-			if (Program.lastFrame == null) return;
-			List<g_Player> players = Program.lastFrame.GetAllPlayers();
-			foreach (g_Player p in players)
+			lock (playerDropdownLock)
 			{
-				choosePlayerDropdown.Items.Add(p.name);
+				int lastSelectedIndex = choosePlayerDropdown.SelectedIndex;
+				choosePlayerDropdown.Items.Clear();
+				choosePlayerDropdown.Items.Add("Local Player");
+				if (Program.lastFrame == null) return;
+				List<g_Player> players = Program.lastFrame.GetAllPlayers();
+				foreach (g_Player p in players)
+				{
+					choosePlayerDropdown.Items.Add(p.name);
+				}
+
+				if (lastSelectedIndex <= players.Count)
+				{
+					choosePlayerDropdown.SelectedIndex = lastSelectedIndex;
+				}
+				else
+				{
+					choosePlayerDropdown.SelectedIndex = 0;
+				}
 			}
 		}
 
 		private void CloseButtonClicked(object sender, RoutedEventArgs e)
 		{
 			Close();
+		}
+
+		private void RefreshPlayerList(object sender, RoutedEventArgs e)
+		{
+			RefreshPlayers();
 		}
 	}
 }

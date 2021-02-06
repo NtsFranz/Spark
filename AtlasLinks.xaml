@@ -5,19 +5,92 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
-        Title="IgniteBot | Atlas Links" Height="373" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterScreen" SizeToContent="Height" ResizeMode="NoResize" Icon="/img/ignite_logo_128.png">
+        Title="IgniteBot | Atlas Links" Height="644" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterScreen" SizeToContent="Height" ResizeMode="NoResize" Icon="/img/ignite_logo_128.png">
 	<StackPanel>
-		<StackPanel Orientation="Horizontal" Margin="10,10,0,0">
-			<TextBox x:Name="alternateIPTextBox" Text="---" TextWrapping="Wrap" Width="175" Margin="10,10,10,10" FontFamily="Consolas"/>
-			<Button x:Name="getButton" Content="Get" Margin="10,6,10,6" Padding="4,4,4,4" Width="52" Click="GetLinks"/>
-			<Label x:Name="linksFromLabel" Content="Links from local PC:" Margin="4,4,4,4"/>
+
+		<GroupBox Header="Settings" Margin="10,10,10,10">
+			<StackPanel Orientation="Horizontal" Margin="10,5,0,0">
+				<StackPanel>
+					<StackPanel Orientation="Horizontal" Margin="5,10,0,-10">
+						<Button x:Name="resetIP" Content="Local PC" Margin="5,5,5,5" Padding="7,3,7,3" Click="SetToLocalIP"/>
+						<Button x:Name="findQuest" Content="Find Quest" Margin="5,5,5,5" Padding="5,3,5,3" Click="FindQuestIP"/>
+					</StackPanel>
+					<ComboBox x:Name="ipSourceDropdown" Width="175" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,15,10,0" SelectionChanged="IPSourceDropdownChanged" Visibility="Collapsed">
+						<ComboBoxItem Content="Local PC"/>
+						<ComboBoxItem Content="Quest"/>
+					</ComboBox>
+					<TextBox x:Name="alternateIPTextBox" Text="---" TextWrapping="Wrap" Width="175" Margin="10,10,10,10" FontFamily="Consolas"/>
+					<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="Searching for Quest" Margin="30,-10,0,-20" FontSize="12" FontStyle="Italic"/>
+				</StackPanel>
+				<Button x:Name="getButton" Content="Get" Margin="10,15,80,20" Padding="4,4,4,4" Width="52" Click="GetLinks"/>
+
+				<StackPanel>
+					<Label Content="Link Type:" Margin="10,-5,10,0"/>
+					<ComboBox x:Name="linkTypeComboBox" Width="120" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,0,10,10" SelectionChanged="LinkTypeChanged">
+						<ComboBoxItem Content="Choose"/>
+						<ComboBoxItem Content="Player"/>
+						<ComboBoxItem Content="Spectator"/>
+					</ComboBox>
+					<CheckBox x:Name="surroundWithAngleBracketsCheckbox" Content=" Surround with &lt;&gt;" Margin="10,0,0,10" Checked="SurroundWithAngleBracketsChecked" Unchecked="SurroundWithAngleBracketsChecked"/>
+				</StackPanel>
+			</StackPanel>
+
+		</GroupBox>
+
+		<StackPanel Orientation="Horizontal">
+			<Button Content="Copy to Clipboard" Margin="10,0,10,0" Padding="4,4,4,4" Click="CopyMainLinkToClipboard"/>
+			<Button Content="Follow Link" Margin="10,0,10,0" Padding="4,4,4,4" Click="FollowMainLink"/>
 		</StackPanel>
-		<Label x:Name="label" Content="Join as Player" Margin="10,10,10,-8"/>
 		<TextBox x:Name="joinLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top" HorizontalAlignment="Stretch" IsReadOnly="True"/>
-		<Label x:Name="label_Copy1" Content="Join as Spectator" Margin="10,10,10,-8"/>
-		<TextBox x:Name="spectateLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top" IsReadOnly="True"/>
-		<Label x:Name="label_Copy" Content="Choose" Margin="10,10,10,-8"/>
-		<TextBox x:Name="chooseLink" Text="---" TextWrapping="Wrap" Margin="8,8,8,8" VerticalAlignment="Top" IsReadOnly="True"/>
+
+
+		<GroupBox x:Name="groupBox" Margin="10,10,10,10">
+			<GroupBox.Header>
+				<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
+					<Label Content="Hosted Matches"/>
+					<Button x:Name="refreshMatchesButton" Content="Refresh" Margin="350,0,0,0" Click="RefreshMatchesClicked" HorizontalAlignment="Left" Padding="5,5,5,5"/>
+				</StackPanel>
+			</GroupBox.Header>
+			<ScrollViewer MaxHeight="480">
+				<StackPanel x:Name="MatchesBox">
+					<GroupBox x:Name="button" Margin="10,10,10,10" Visibility="Collapsed">
+
+						<GroupBox.Header>
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
+								<Label Content="Public" Margin="0,0,10,0"></Label>
+								<Button Content="Copy Atlas Link" Margin="200,0,10,0" Background="{DynamicResource ControlDisabledBackground}"/>
+								<Button Content="Join" Margin="10,0,10,0"/>
+							</StackPanel>
+						</GroupBox.Header>
+
+						<Grid HorizontalAlignment="Stretch" ShowGridLines="True">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="100"/>
+								<ColumnDefinition Width="5*"/>
+								<ColumnDefinition Width="5*"/>
+								<ColumnDefinition Width="100"/>
+							</Grid.ColumnDefinitions>
+
+
+							<StackPanel>
+								<Image Source="https://vrmasterleague.com/images/logos/teams/09093858-5626-404d-97a3-10b8353fcc47.png" Width="100" Height="100"></Image>
+								<Label Content="Ignite" HorizontalAlignment="Center"></Label>
+							</StackPanel>
+							<TextBlock x:Name="textBlock" FlowDirection="RightToLeft" Margin="10,10,10,10" Grid.Column="1"><Run Text="Player 1"/><LineBreak/><Run Text="Player 2 Long"/><LineBreak/><Run Text="Player 3"/><LineBreak/><Run Text="Player 4"/><LineBreak/><Run Text="Player 5"/></TextBlock>
+							<TextBlock x:Name="textBlock2" Margin="10,10,10,10" Grid.Column="2"><Run Text="Player 1"/><LineBreak/><Run Text="Player 2"/><LineBreak/><Run Text="Player 3 Long"/><LineBreak/><Run Text="Player 4"/></TextBlock>
+
+							<StackPanel Grid.Column="3">
+								<Image Source="https://vrmasterleague.com/images/logos/teams/f5850b3b-0f78-42d1-8b57-119af08195be.png" Width="100" Height="100"></Image>
+								<Label Content="Kangorillaz" HorizontalAlignment="Center"></Label>
+							</StackPanel>
+						</Grid>
+					</GroupBox>
+				</StackPanel>
+			</ScrollViewer>
+		</GroupBox>
+		<Button x:Name="hostMatchButton" Content="Host Match" Margin="10,10,10,10" Click="HostMatchClicked" Height="54" IsEnabled="False"/>
+		<CheckBox Margin="10,0,10,10" Content="Only Casters can Join" Checked="PublicToggled" Unchecked="PublicToggled"/>
+
 		<Button x:Name="closeButton" Content="Close" Margin="8,8,8,10" HorizontalAlignment="Right" IsCancel="True" IsDefault="True" Padding="4,4,4,4" Width="81" Click="closeButton_Click"/>
 	</StackPanel>
 </Window>

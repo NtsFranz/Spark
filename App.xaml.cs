@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace IgniteBot
 {
@@ -19,6 +20,7 @@ namespace IgniteBot
 		{
 			Program.running = false;
 			Current.Shutdown();
+			Environment.Exit(Environment.ExitCode);
 		}
 	}
 }

@@ -1,0 +1,23 @@
+﻿<Window x:Class="IgniteBot.FirstTimeSetupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IgniteBot"
+        mc:Ignorable="d"
+        Title="IgniteBot | First-time Setup" 
+		Height="240" 
+		Width="350" 
+		WindowStartupLocation="CenterScreen" 
+		ResizeMode="NoResize" 
+		Icon="/img/ignite_logo.ico" 
+		Background="#FF232323" 
+		FontSize="16">
+	<Grid>
+		<Label x:Name="setupLabel" Content="Do you play EchoVR on PC or Quest?" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
+		<TextBlock x:Name="setupText" Text="This changes where IgniteBot looks for API data. You can change your preference in Settings later. Quest+Link counts as PC." TextWrapping="Wrap" Margin="15,60,15,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="65" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+		<Button x:Name="playerButton" Width="150" Height="50" Margin="10,0,0,10" Content="This PC" Click="PCClicked" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+		<Button x:Name="spectatorButton" Margin="0,0,10,10" Width="150" Height="50" Content="Quest" Click="QuestClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.RowSpan="1"/>
+
+	</Grid>
+</Window>

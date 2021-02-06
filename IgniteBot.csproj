@@ -7,10 +7,10 @@
     <StartupObject>IgniteBot.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.0.21</Version>
+    <Version>2.0.24</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/ignitebot</PackageProjectUrl>
     <Company>IgniteVR</Company>
-    <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
+    <Authors>NtsFranz, VTSxKING, iblowatsports, Graic</Authors>
     <Platforms>AnyCPU;x64</Platforms>
     <Description>A tool to record and process EchoVR API data.</Description>
     <Copyright>IgniteVR 2020</Copyright>
@@ -76,6 +76,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="FirstTimeSetupWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -100,6 +103,13 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="FirstTimeSetupWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

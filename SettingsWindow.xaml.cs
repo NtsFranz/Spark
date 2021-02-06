@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using IgniteBot.Properties;
@@ -22,6 +23,7 @@ namespace IgniteBot
 			startWithWindowsCheckbox.IsChecked = Settings.Default.startOnBoot;
 			startMinimizedCheckbox.IsChecked = Settings.Default.startMinimized;
 			autorestartCheckbox.IsChecked = Settings.Default.autoRestart;
+			capturevp2Checkbox.IsChecked = Settings.Default.capturevp2;
 			discordRichPresenceCheckbox.IsChecked = Settings.Default.discordRichPresence;
 			remoteLoggingCheckbox.IsChecked = Settings.Default.logToServer;
 			exeLocationTextBox.Text = Settings.Default.echoVRPath;
@@ -360,9 +362,56 @@ namespace IgniteBot
 				exeLocationLabel.Content = "EchoVR Executable Location:";
 				Settings.Default.echoVRPath = path;
 				Settings.Default.Save();
-			} else
+			}
+			else
 			{
 				exeLocationLabel.Content = "EchoVR Executable Location:   (not valid)";
+			}
+		}
+
+		private void capturevp2CheckedEvent(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+			Settings.Default.capturevp2 = ((CheckBox)sender).IsChecked == true;
+			Settings.Default.Save();
+		}
+
+		private async void FindQuestClick(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+			findQuestStatusLabel.Content = "Searching for Quest on network";
+			findQuestStatusLabel.Visibility = Visibility.Visible;
+			echoVRIPTextBox.IsEnabled = false;
+			echoVRPortTextBox.IsEnabled = false;
+			findQuest.IsEnabled = false;
+			resetIP.IsEnabled = false;
+			var progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
+            await Task.Factory.StartNew(() => Program.echoVRIP = Program.FindQuestIP(progress),
+                                        TaskCreationOptions.None);
+            echoVRIPTextBox.IsEnabled = true;
+			echoVRPortTextBox.IsEnabled = true;
+			findQuest.IsEnabled = true;
+			resetIP.IsEnabled = true;
+			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
+			echoVRIPTextBox.Text = Program.echoVRIP;
+			echoVRPortTextBox.Text = Program.echoVRPort.ToString();
+			Settings.Default.echoVRIP = Program.echoVRIP;
+			if (!Program.overrideEchoVRPort) Settings.Default.echoVRPort = Program.echoVRPort;
+			Settings.Default.Save();
+		}
+
+		private void ShowFirstTimeSetupWindowClicked(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+			if (Program.firstTimeSetupWindow == null)
+			{
+				Program.firstTimeSetupWindow = new FirstTimeSetupWindow();
+				Program.firstTimeSetupWindow.Closed += (sender, args) => Program.firstTimeSetupWindow = null;
+				Program.firstTimeSetupWindow.Show();
+			}
+			else
+			{
+				Program.firstTimeSetupWindow.Close();
 			}
 		}
 	}
