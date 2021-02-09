@@ -1038,10 +1038,12 @@ namespace IgniteBot
 			string ret = "";
 			try
 			{
-				string[] subdirs = Directory.GetDirectories("C:\\Program Files (x86)\\Echo Speaker System");
-				if (subdirs != null && subdirs.Length > 0)
+				string filePath = Path.Combine("C:\\Program Files (x86)\\Echo Speaker System", "latestversion.txt");
+
+				string[] lines = File.ReadAllLines(filePath);
+				if (lines != null && lines.Length > 0)
 				{
-					ret = new DirectoryInfo(subdirs[0]).Name;
+					ret = "v" + lines[0];
 				}
 			}
 			catch { }
