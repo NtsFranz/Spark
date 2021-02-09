@@ -30,6 +30,7 @@ using System.Net.Sockets;
 using NetMQ.Sockets;
 using NetMQ;
 using IgniteBot.Data_Containers.ZMQ_Messages;
+using System.Windows.Interop;
 
 namespace IgniteBot
 {
@@ -3280,7 +3281,7 @@ namespace IgniteBot
 				// Session Contents
 				string textResp = sr.ReadToEnd();
 				VersionJson verionJson = JsonConvert.DeserializeObject<VersionJson>(textResp);
-				ret[0] = verionJson.assets.First(url => url.browser_download_url.EndsWith("zip")).browser_download_url;
+				ret[0] = verionJson.assets.First(url => url.browser_download_url.EndsWith("exe")).browser_download_url;
 				ret[1] = verionJson.tag_name;
 			}
 			catch(Exception e) {
@@ -3293,22 +3294,23 @@ namespace IgniteBot
         {
 			try
 			{
+				IntPtr unityHandle = liveWindow.GetUnityHandler();
 				string[] SpeakerSystemURLVer = GetLatestSpeakerSystemURLVer();
-				System.Diagnostics.Process process = new System.Diagnostics.Process();
-				System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-				startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-				startInfo.FileName = "cmd.exe";
-				startInfo.Arguments = "/C \"" + AppContext.BaseDirectory + "\\InstallEchoSpeakerSystem.bat\" " + SpeakerSystemURLVer[0] + " " + SpeakerSystemURLVer[1] + " 0";
-				startInfo.Verb = "runas";
-				startInfo.UseShellExecute = true;
-				process.StartInfo = startInfo;
-				process.Start();
-				//process.WaitForExit(15000);
-				//Thread.Sleep(20);
+				string updateFileName = "EchoSpeakerSystemInstall_" + SpeakerSystemURLVer[1] + ".exe";
+				WebClient webClient = new WebClient();
+				//webClient.DownloadFileCompleted += Completed;
+				//webClient.DownloadProgressChanged += ProgressChanged;
+				webClient.DownloadFile(new Uri(SpeakerSystemURLVer[0]), Path.GetTempPath() + updateFileName);
+				Process process = Process.Start(new ProcessStartInfo
+				{
+					FileName = Path.Combine(Path.GetTempPath(), updateFileName),
+					UseShellExecute = true,
+					Arguments = "/ignite=true /HWND=" + unityHandle.ToInt32() + " "
+			});
 				int count = 0;
 				string SpeakerSystemInstallLabel = "Installing Echo Speaker System";
 				string statusDots = "";
-				while (!process.HasExited && count < 6000) //Time out after 5 mins
+				while (!process.HasExited && count <12000) //Time out after 10 mins
 				{
 					if (count % 16 == 0)
 					{
@@ -3328,15 +3330,21 @@ namespace IgniteBot
 					process.Kill();
 					progress.Report("Echo Speaker System install failed!");
 				}
-				else if (true)
+				else if (process.ExitCode > -1)
 				{
+					Process[] speakerSystemProcs = Process.GetProcessesByName("Echo Speaker System");
+					if (speakerSystemProcs.Length > 0)
+					{
+						liveWindow.SpeakerSystemProcess = speakerSystemProcs[0];
+						liveWindow.SpeakerSystemStart(unityHandle);
+					}
 					progress.Report("Echo Speaker System installed successfully!");
 				}
 				int code = process.ExitCode;
 				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
 				IsSpeakerSystemUpdateAvailable = false;
             }
-            catch
+            catch (Exception e)
             {
 				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
 				IsSpeakerSystemUpdateAvailable = false;
