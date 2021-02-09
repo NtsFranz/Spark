@@ -33,6 +33,7 @@ namespace IgniteBot
 			Settings.Default.isNVHighlightsEnabled = HighlightsHelper.isNVHighlightsEnabled;   // This shouldn't change anything
 			Settings.Default.Save();
 
+			enableAutoFocusCheckbox.IsChecked = Settings.Default.isAutofocusEnabled;
 			enableNVHighlightsCheckbox.IsChecked = HighlightsHelper.isNVHighlightsEnabled;
 			clearHighlightsOnExitCheckbox.IsChecked = Settings.Default.clearHighlightsOnExit;
 			highlightScope.SelectedIndex = Settings.Default.clientHighlightScope;
@@ -73,6 +74,13 @@ namespace IgniteBot
 			Settings.Default.Save();
 
 			clearHighlightsOnExitCheckbox.IsEnabled = HighlightsHelper.clearHighlightsOnExit;
+		}
+
+		private void EnableAutofocusEvent(object sender, RoutedEventArgs e)
+		{
+			if (!initialized) return;
+			Settings.Default.isAutofocusEnabled = ((CheckBox)sender).IsChecked == true;
+			Settings.Default.Save();
 		}
 
 		private void EnableNVHighlightsEvent(object sender, RoutedEventArgs e)

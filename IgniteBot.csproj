@@ -10,7 +10,7 @@
     <Version>2.0.24</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/ignitebot</PackageProjectUrl>
     <Company>IgniteVR</Company>
-    <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
+    <Authors>NtsFranz, VTSxKING, iblowatsports, Graic</Authors>
     <Platforms>AnyCPU;x64</Platforms>
     <Description>A tool to record and process EchoVR API data.</Description>
     <Copyright>IgniteVR 2020</Copyright>

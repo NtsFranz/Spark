@@ -1006,6 +1006,33 @@ namespace IgniteBot
 			}
 		}
 
+		// Functions required to force focus change, couldn't make them all local because GetWindowThreadProcessId would throw an error (though it likely shouldn't)
+		[DllImport("User32.dll")]
+		static extern bool SetForegroundWindow(IntPtr hWnd);
+		[DllImport("user32.dll")]
+		static extern IntPtr GetForegroundWindow();
+		[DllImport("user32.dll")]
+		static extern bool AttachThreadInput(IntPtr idAttach, IntPtr idAttachTo, bool fAttach);
+		[DllImport("user32.dll")]
+		static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
+		public static void FocusEchoVR()
+		{
+			// Windows dosen't like programs stealing focus, so we have to hook into the current focused thred first
+			IntPtr currentThread = new IntPtr(Thread.CurrentThread.ManagedThreadId);
+			IntPtr foregroundThread = new IntPtr(GetWindowThreadProcessId(GetForegroundWindow(), out _));
+
+			AttachThreadInput(currentThread, foregroundThread, true);
+
+			Process[] echoProcesses = GetEchoVRProcess();
+			if (echoProcesses.Length > 0)
+			{
+				SetForegroundWindow(echoProcesses[0].MainWindowHandle);
+			}
+
+			AttachThreadInput(currentThread, foregroundThread, false);
+		}
+
 		public static string FindEchoSpeakerSystemInstallVersion()
         {
 			string ret = "";
@@ -2173,6 +2200,11 @@ namespace IgniteBot
 					if (!READ_FROM_FILE)
 					{
 						UpdateStatsIngame(frame);
+					}
+
+					// Autofocus
+					if (Settings.Default.isAutofocusEnabled) {
+						FocusEchoVR();
 					}
 
 					// Loop through teams.
