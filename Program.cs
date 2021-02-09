@@ -414,6 +414,7 @@ namespace IgniteBot
 		async static Task GentleClose()
 		{
 			pubSocket.SendMoreFrame("CloseApp").SendFrame("");
+			await Task.Delay(50);
 			running = false;
 
 			

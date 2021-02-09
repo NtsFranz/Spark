@@ -17,7 +17,7 @@
     <PackageId>IgniteBot</PackageId>
     <AssemblyName>IgniteBot</AssemblyName>
     <RootNamespace>IgniteBot</RootNamespace>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>IgniteBotKey.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <PackageVersion>2.0.9</PackageVersion>

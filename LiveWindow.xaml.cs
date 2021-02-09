@@ -1163,7 +1163,11 @@ namespace IgniteBot
 			this.Dispatcher.Invoke(() =>
 			{
 				EnumChildWindows(unityHandle, WindowEnum, IntPtr.Zero);
-				Thread.Sleep(150);
+				Thread.Sleep(100);
+				MoveSpeakerSystemWindow();
+				Thread.Sleep(100);
+				MoveSpeakerSystemWindow();
+				Thread.Sleep(500);
 				MoveSpeakerSystemWindow();
 				speakerSystemInstallLabel.Visibility = Visibility.Hidden;
 				startStopEchoSpeakerSystem.Content = "Stop Echo Speaker System";
