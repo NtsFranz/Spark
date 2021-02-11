@@ -2359,6 +2359,11 @@ namespace IgniteBot
 		private static async Task ProcessScore(MatchData matchData)
 		{
 			g_Instance initialFrame = lastLastFrame;
+			TeamColor clientTeam = lastFrame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == lastFrame.client_name)).color;
+			bool shouldPlayHorn = clientTeam == TeamColor.spectator || clientTeam.ToString() == lastFrame.last_score.team;
+
+			MatchEventZMQMessage msg = new MatchEventZMQMessage("GoalScored", "isClientTeam", shouldPlayHorn.ToString());
+			pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
 
 			// wait some time before re-checking the throw velocity
 			await Task.Delay(100);
