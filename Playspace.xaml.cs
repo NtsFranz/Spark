@@ -1,8 +1,11 @@
-﻿using System;
+﻿using IgniteBot.Properties;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace IgniteBot
 {
@@ -124,6 +127,11 @@ namespace IgniteBot
 		private void RefreshPlayerList(object sender, RoutedEventArgs e)
 		{
 			RefreshPlayers();
+		}
+
+		private void StreamerModeChecked(object sender, RoutedEventArgs e)
+		{
+			playspaceBackground.Background = ((CheckBox)sender).IsChecked == true ? Brushes.Green : (Brush)FindResource("ContainerBackground");
 		}
 	}
 }

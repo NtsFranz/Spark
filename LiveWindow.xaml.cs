@@ -72,7 +72,7 @@ namespace IgniteBot
 
 
 
-            System.Windows.Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+			System.Windows.Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
 			outputUpdateTimer.Interval = 100;
 			outputUpdateTimer.Elapsed += Update;
@@ -149,7 +149,7 @@ namespace IgniteBot
 		}
 
 		public void MoveSpeakerSystemWindow()
-        {
+		{
 			System.Windows.Point relativePoint = speakerSystemPanel.TransformToAncestor(this)
 						  .Transform(new System.Windows.Point(0, 0));
 			MoveWindow(unityHWND, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
@@ -160,7 +160,7 @@ namespace IgniteBot
 			try
 			{
 				KillSpeakerSystem();
-				SpeakerSystemProcess.CloseMainWindow();
+				SpeakerSystemProcess?.CloseMainWindow();
 
 			}
 			catch (Exception)
@@ -170,7 +170,7 @@ namespace IgniteBot
 		}
 
 		public void KillSpeakerSystem()
-        {
+		{
 			try
 			{
 
@@ -375,7 +375,10 @@ namespace IgniteBot
 							smoothedServerScore = smoothedServerScore * serverScoreSmoothingFactor + (1 - serverScoreSmoothingFactor) * serverScore;
 							playerPingsGroupbox.Header = $"Player Pings   Score: {smoothedServerScore:N1}";
 						}
-						Program.matchData.ServerScore = smoothedServerScore;
+						if (Program.matchData != null)
+						{
+							Program.matchData.ServerScore = smoothedServerScore;
+						}
 
 
 						bluePlayersSpeedsNames.Text = blueTextNames.ToString();
@@ -1017,12 +1020,12 @@ namespace IgniteBot
 				mainOutputTextBox.ScrollToEnd();
 			}
 			if (((TabControl)sender).SelectedIndex != 2 && SpeakerSystemProcess != null)
-            {
+			{
 
 				ShowWindow(unityHWND, 0);
-            }
-            else if(SpeakerSystemProcess != null)
-            {
+			}
+			else if (SpeakerSystemProcess != null)
+			{
 				ShowWindow(unityHWND, 1);
 			}
 		}
@@ -1069,7 +1072,7 @@ namespace IgniteBot
 		private void CopyIgniteJoinLink(object sender, RoutedEventArgs e)
 		{
 			var link = sessionIdTextBox.Text;
-            System.Windows.Clipboard.SetText(link);
+			System.Windows.Clipboard.SetText(link);
 			Task.Run(() => ShowCopiedText());
 		}
 		async Task ShowCopiedText()
@@ -1086,24 +1089,24 @@ namespace IgniteBot
 			});
 		}
 
-        private void speakerSystemPanel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
+		private void speakerSystemPanel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
 			if (speakerSystemPanel.IsVisible)
 			{
 				if (SpeakerSystemProcess == null || SpeakerSystemProcess.Handle.ToInt32() == 0)
 				{
 					try
 					{
-						
+
 						LogRow(LogType.Info, AppContext.BaseDirectory);
-						if(Program.InstalledSpeakerSystemVersion.Length > 0)
-                        {
+						if (Program.InstalledSpeakerSystemVersion.Length > 0)
+						{
 							installEchoSpeakerSystem.Visibility = Visibility.Hidden;
 							startStopEchoSpeakerSystem.Visibility = Visibility.Visible;
 							speakerSystemInstallLabel.Visibility = Visibility.Hidden;
 						}
-                        else
-                        {
+						else
+						{
 							installEchoSpeakerSystem.Visibility = Visibility.Visible;
 							startStopEchoSpeakerSystem.Visibility = Visibility.Hidden;
 						}
@@ -1123,8 +1126,8 @@ namespace IgniteBot
 			}
 		}
 
-        private async void installEchoSpeakerSystem_Click(object sender, RoutedEventArgs e)
-        {
+		private async void installEchoSpeakerSystem_Click(object sender, RoutedEventArgs e)
+		{
 			speakerSystemInstallLabel.Visibility = Visibility.Hidden;
 			Program.pubSocket.SendMoreFrame("CloseApp").SendFrame("");
 			Thread.Sleep(800);
@@ -1149,17 +1152,17 @@ namespace IgniteBot
 				installEchoSpeakerSystem.Visibility = Visibility.Visible;
 				startStopEchoSpeakerSystem.Visibility = Visibility.Hidden;
 			}
-            if (Program.IsSpeakerSystemUpdateAvailable)
-            {
+			if (Program.IsSpeakerSystemUpdateAvailable)
+			{
 				updateEchoSpeakerSystem.Visibility = Visibility.Visible;
-            }
-            else
-            {
+			}
+			else
+			{
 				updateEchoSpeakerSystem.Visibility = Visibility.Hidden;
 			}
 		}
 		public void SpeakerSystemStart(IntPtr unityHandle)
-        {
+		{
 			this.Dispatcher.Invoke(() =>
 			{
 				EnumChildWindows(unityHandle, WindowEnum, IntPtr.Zero);
@@ -1176,7 +1179,7 @@ namespace IgniteBot
 		}
 
 		public IntPtr GetUnityHandler()
-        {
+		{
 			IntPtr unityHandle = IntPtr.Zero;
 			this.Dispatcher.Invoke(() =>
 			{
@@ -1221,8 +1224,8 @@ namespace IgniteBot
 						startStopEchoSpeakerSystem.Content = "Start Echo Speaker System";
 					}
 				}
-                else
-                {
+				else
+				{
 					speakerSystemInstallLabel.Visibility = Visibility.Hidden;
 					Program.pubSocket.SendMoreFrame("CloseApp").SendFrame("");
 					Thread.Sleep(800);

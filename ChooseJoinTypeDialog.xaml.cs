@@ -21,17 +21,17 @@ namespace IgniteBot
 		private void JoinAsPlayerClicked(object sender, RoutedEventArgs e)
 		{
 			if (string.IsNullOrEmpty(Settings.Default.echoVRPath)) return;
-			Process.Start(Settings.Default.echoVRPath, "-lobbyid " + sessionid);
+			Process.Start(Settings.Default.echoVRPath, (Settings.Default.capturevp2 ? "-capturevp2 " : "") + "-lobbyid " + sessionid);
 			Close();
-			//Program.Quit();
+			Program.Quit();
 		}
 
 		private void JoinAsSpectatorClicked(object sender, RoutedEventArgs e)
 		{
 			if (string.IsNullOrEmpty(Settings.Default.echoVRPath)) return;
-			Process.Start(Settings.Default.echoVRPath, "-spectatorstream -lobbyid " + sessionid);
+			Process.Start(Settings.Default.echoVRPath, (Settings.Default.capturevp2 ? "-capturevp2 " : "") + "-spectatorstream -lobbyid " + sessionid);
 			Close();
-			//Program.Quit();
+			Program.Quit();
 		}
 	}
 }

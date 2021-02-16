@@ -206,20 +206,13 @@ namespace IgniteBot
 		private static Thread milkThread;
 		private static Thread IPSearchthread1;
 		private static Thread IPSearchthread2;
-		private static Thread thread3;
-		private static Thread thread4;
 		public static PublisherSocket pubSocket;
 
 		private static App app;
 
 		public static void Main(string[] args, App app)
 		{
-			AsyncIO.ForceDotNet.Force();
-			NetMQConfig.Cleanup();
-			pubSocket = new PublisherSocket();
-			pubSocket.Options.SendHighWatermark = 1000;
-			pubSocket.Bind("tcp://*:12345");
-				Program.app = app;
+			Program.app = app;
 			if (args.Contains("-port"))
 			{
 				int index = args.ToList().IndexOf("-port");
@@ -245,9 +238,23 @@ namespace IgniteBot
 			// allow multiple instances if the port is overriden
 			if (IsIgniteBotOpen() && !overrideEchoVRPort)
 			{
-				new MessageBox("Instance already running", "Error").Show();
+				var box = new MessageBox("Instance already running", "Error");
+				box.Show();
+				//while(box!= null)
+				{
+					Thread.Sleep(10);
+				}
+
+
 				//return; // wait for the dialog to quit the program
 			}
+
+
+			AsyncIO.ForceDotNet.Force();
+			NetMQConfig.Cleanup();
+			pubSocket = new PublisherSocket();
+			pubSocket.Options.SendHighWatermark = 1000;
+			pubSocket.Bind("tcp://*:12345");
 
 			InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
 			if(InstalledSpeakerSystemVersion.Length > 0)
@@ -413,11 +420,14 @@ namespace IgniteBot
 
 		async static Task GentleClose()
 		{
-			pubSocket.SendMoreFrame("CloseApp").SendFrame("");
-			await Task.Delay(50);
+			if (pubSocket != null)
+			{
+				pubSocket.SendMoreFrame("CloseApp").SendFrame("");
+				await Task.Delay(50);
+			}
+
 			running = false;
 
-			
 			while (fullLogThread != null && fullLogThread.IsAlive)
 			{
 				closingWindow.label.Content = "Compressing Replay File...";
@@ -428,15 +438,21 @@ namespace IgniteBot
 				closingWindow.label.Content = "Closing...";
 				await Task.Delay(10);
 			}
+			closingWindow.label.Content = "Closing NVIDIA Highlights...";
 			HighlightsHelper.CloseNVHighlights();
 
-			liveWindow.KillSpeakerSystem();
+			closingWindow.label.Content = "Closing Speaker System...";
+			liveWindow?.KillSpeakerSystem();
+
+			closingWindow.label.Content = "Closing PubSub System...";
 			AsyncIO.ForceDotNet.Force();
 			NetMQConfig.Cleanup(false);
+			closingWindow.label.Content = "Closing...";
 			app.ExitApplication();
 
 			await Task.Delay(100);
 
+			closingWindow.label.Content = "Failed to close gracefully. Using an axe instead...";
 			_ = KillAll();
 		}
 
@@ -452,6 +468,22 @@ namespace IgniteBot
 				LogRow(LogType.Error, "Error getting other ignitebot windows\n" + e.ToString());
 			}
 			return false;
+		}
+
+		public static void KillAllOtherIgniteBotInstances()
+		{
+			try
+			{
+				Process[] processes = Process.GetProcessesByName("IgniteBot");
+				foreach (Process process in processes)
+				{
+					process.Kill();
+				}
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, "Error killing other ignitebot windows\n" + e.ToString());
+			}
 		}
 
 		/// <summary>
@@ -2006,7 +2038,7 @@ namespace IgniteBot
 						_ = DoUploadEventFirebase(matchData, joustEvent);
 
 						lastJousts.Enqueue(joustEvent);
-						if (lastJousts.Count > 20)
+						if (lastJousts.Count > 30)
 						{
 							lastJousts.TryDequeue(out var joust);
 						}
@@ -2468,7 +2500,7 @@ namespace IgniteBot
 			);
 			matchData.Goals.Add(goalEvent);
 			lastGoals.Enqueue(goalEvent);
-			if (lastGoals.Count > 20)
+			if (lastGoals.Count > 30)
 			{
 				lastGoals.TryDequeue(out var goal);
 			}
@@ -2549,7 +2581,7 @@ namespace IgniteBot
 			}
 
 			lastMatches.Enqueue(matchData);
-			if (lastMatches.Count > 20)
+			if (lastMatches.Count > 30)
 			{
 				lastMatches.TryDequeue(out var match);
 			}
@@ -3102,6 +3134,7 @@ namespace IgniteBot
 			if (!string.IsNullOrEmpty(echoPath))
 			{
 				Process.Start(echoPath, (Settings.Default.capturevp2 ? "-capturevp2 " : " ") + (spectating ? "-spectatorstream " : " ") + "-lobbyid " + parts[3]);
+				Quit();
 			}
 			else
 			{
