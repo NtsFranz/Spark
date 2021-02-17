@@ -197,7 +197,7 @@ namespace IgniteBot
 			try
 			{
 				KillSpeakerSystem();
-				SpeakerSystemProcess.CloseMainWindow();
+				SpeakerSystemProcess?.CloseMainWindow();
 
 			}
 			catch (Exception)
@@ -412,7 +412,10 @@ namespace IgniteBot
 							smoothedServerScore = smoothedServerScore * serverScoreSmoothingFactor + (1 - serverScoreSmoothingFactor) * serverScore;
 							playerPingsGroupbox.Header = $"Player Pings   Score: {smoothedServerScore:N1}";
 						}
-						Program.matchData.ServerScore = smoothedServerScore;
+						if (Program.matchData != null)
+						{
+							Program.matchData.ServerScore = smoothedServerScore;
+						}
 
 
 						bluePlayersSpeedsNames.Text = blueTextNames.ToString();
