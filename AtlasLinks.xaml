@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IgniteBot"
         mc:Ignorable="d"
-        Title="IgniteBot | Atlas Links" Height="644" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterScreen" SizeToContent="Height" ResizeMode="NoResize" Icon="/img/ignite_logo_128.png">
+        Title="IgniteBot | Atlas Links" Height="644" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterOwner" SizeToContent="Height" ResizeMode="NoResize" Icon="/img/ignite_logo_128.png">
 	<StackPanel>
 
 		<GroupBox Header="Settings" Margin="10,10,10,10">

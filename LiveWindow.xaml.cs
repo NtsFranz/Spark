@@ -696,7 +696,8 @@ namespace IgniteBot
 		{
 			if (Program.settingsWindow == null)
 			{
-				Program.settingsWindow = new SettingsWindow();
+				Program.settingsWindow = new UnifiedSettingsWindow();
+				Program.settingsWindow.Owner = this;
 				Program.settingsWindow.Closed += (sender, args) => Program.settingsWindow = null;
 				Program.settingsWindow.Show();
 			}
@@ -956,6 +957,7 @@ namespace IgniteBot
 			if (Program.atlasLinksWindow == null)
 			{
 				Program.atlasLinksWindow = new AtlasLinks();
+				Program.atlasLinksWindow.Owner = this;
 				Program.atlasLinksWindow.Closed += (sender, args) => Program.atlasLinksWindow = null;
 				Program.atlasLinksWindow.Show();
 			}
