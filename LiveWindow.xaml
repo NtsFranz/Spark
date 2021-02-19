@@ -156,8 +156,8 @@
                     <Button x:Name="startSpectatorStream" Content="Open Spectatorstream" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing"/>
                     <Button x:Name="playspaceButton" Content="Show Playspace" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
                     <Button x:Name="showPlayerSpeedsButton" Content="Show Player Speeds" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
-                    <Button x:Name="ttsSettings" Content="TTS Settings" Height="40" Margin="4,4,4,4" Click="ttsSettings_Click" ToolTip="Settings for Text-to-Speech callouts during the game."/>
-                    <Button x:Name="nvHighlightsSettings" Content="NV Highlights Settings" Height="40" Click="showNVHighlightsSettings_Click" Margin="4,4,4,4"/>
+                    <Button x:Name="ttsSettings" Content="TTS Settings" Visibility="Collapsed" Height="40" Margin="4,4,4,4" Click="ttsSettings_Click" ToolTip="Settings for Text-to-Speech callouts during the game."/>
+					<Button x:Name="nvHighlightsSettings" Content="NV Highlights Settings" Visibility="Collapsed" Height="40" Click="showNVHighlightsSettings_Click" Margin="4,4,4,4"/>
                     <Button x:Name="showHighlights" Content="Show NV Highlights" Height="40" Click="showHighlights_Click" Margin="4,4,4,4"/>
                     <Button x:Name="spectateMeButton" Content="Spectate Me" Height="40" Click="SpectateMeClicked" Margin="4,4,4,4"/>
                 </StackPanel>

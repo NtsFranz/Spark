@@ -167,7 +167,7 @@ namespace IgniteBot
 		public static bool batchWrites;
 
 		public static LiveWindow liveWindow;
-		public static SettingsWindow settingsWindow;
+		public static UnifiedSettingsWindow settingsWindow;
 		public static Speedometer speedometerWindow;
 		public static AtlasLinks atlasLinksWindow;
 		public static Playspace playspaceWindow;
