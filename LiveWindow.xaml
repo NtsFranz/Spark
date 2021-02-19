@@ -117,11 +117,11 @@
                         <Button x:Name="showEventLogFileButton" Content="Open Event Log Folder" Width="183" Margin="0,10,30,0" HorizontalAlignment="Right" Click="showEventLogFileButton_Click" VerticalAlignment="Top" Height="30" ToolTip="Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event."/>
                     </Grid>
                 </TabItem>
-                <TabItem x:Name="speakerSystemTab" Header="Speaker System" FontSize="14" Padding="20,6,10,6" Visibility="Collapsed">
+                <TabItem x:Name="speakerSystemTab" Header="Speaker System" FontSize="14" Padding="20,6,10,6">
                     <Grid>
-                        <Button x:Name="installEchoSpeakerSystem" Content="Install Echo Speaker System" Width="183" Margin="0,10,10,0" HorizontalAlignment="Right" Click="installEchoSpeakerSystem_Click" VerticalAlignment="Top" Height="30" ToolTip=""/>
-                        <Button x:Name="updateEchoSpeakerSystem" Content="Update Echo Speaker System" Width="190" Margin="0,10,210,0" HorizontalAlignment="Right" Click="installEchoSpeakerSystem_Click" VerticalAlignment="Top" Height="30" ToolTip=""/>
-                        <Button x:Name="startStopEchoSpeakerSystem" Content="Start Echo Speaker System" Width="183" Margin="0,10,10,0" HorizontalAlignment="Right" Click="startStopEchoSpeakerSystem_Click"  VerticalAlignment="Top" Height="30" ToolTip=""/>
+                        <Button x:Name="installEchoSpeakerSystem" Content="Install Echo Speaker System" Width="183" Margin="0,10,10,0" HorizontalAlignment="Right" Click="installEchoSpeakerSystem_Click" VerticalAlignment="Top" Height="30"/>
+                        <Button x:Name="updateEchoSpeakerSystem" Content="Update Echo Speaker System" Width="190" Margin="0,10,210,0" HorizontalAlignment="Right" Click="installEchoSpeakerSystem_Click" VerticalAlignment="Top" Height="30"/>
+                        <Button x:Name="startStopEchoSpeakerSystem" Content="Start Echo Speaker System" Width="183" Margin="0,10,10,0" HorizontalAlignment="Right" Click="startStopEchoSpeakerSystem_Click"  VerticalAlignment="Top" Height="30"/>
                         <Label x:Name="speakerSystemInstallLabel" Visibility="Hidden" Content="Installing Echo Speaker System" Width="200" Margin="10,10,00,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="10" FontStyle="Italic"/>
                         <ContentPresenter x:Name="speakerSystemPanel" Visibility="Visible" Margin="0,50,0,0" SizeChanged="speakerSystemPanel_Resize" IsVisibleChanged="speakerSystemPanel_IsVisibleChanged"/>
                     </Grid>
