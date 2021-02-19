@@ -643,6 +643,7 @@ namespace IgniteBot
 					{
 						lastJSON = rawJSON;
 						lastJSONUsed = false;
+						pubSocket.SendMoreFrame("RawFrame").SendFrame(lastJSON);
 					}
 				}
 			}
@@ -1250,7 +1251,6 @@ namespace IgniteBot
 		{
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null || string.IsNullOrWhiteSpace(frame.game_status)) return;
-			pubSocket.SendMoreFrame("RawFrame").SendFrame(lastJSON);
 			if (frame.inLobby) return;
 			pubSocket.SendMoreFrame("TimeAndScore").SendFrame(String.Format("{0:0.00}", frame.game_clock) + " Orange: " + frame.orange_points.ToString() + " Blue: " + frame.blue_points.ToString());
 			// if we entered a different match
