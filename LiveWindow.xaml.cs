@@ -1204,6 +1204,9 @@ namespace IgniteBot
 		{
 			this.Dispatcher.Invoke(() =>
 			{
+				SpeakerSystemProcess.Refresh();
+				SetParent(unityHWND, unityHandle);
+				SetWindowLong(SpeakerSystemProcess.MainWindowHandle, GWL_STYLE, WS_VISIBLE);
 				EnumChildWindows(unityHandle, WindowEnum, IntPtr.Zero);
 				speakerSystemInstallLabel.Visibility = Visibility.Hidden;
 				startStopEchoSpeakerSystem.Content = "Stop Echo Speaker System";
@@ -1250,9 +1253,6 @@ namespace IgniteBot
 
 						SpeakerSystemProcess.Start();
 						SpeakerSystemProcess.WaitForInputIdle();
-						SpeakerSystemProcess.Refresh();
-						SetParent(unityHWND, unityHandle);
-						SetWindowLong(SpeakerSystemProcess.MainWindowHandle, GWL_STYLE, WS_VISIBLE);
 						SpeakerSystemStart(unityHandle);
 					}
 					catch (Exception ex)
