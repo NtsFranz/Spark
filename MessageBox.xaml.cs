@@ -25,7 +25,7 @@ namespace IgniteBot
 		private void ButtonClicked(object sender, RoutedEventArgs e)
 		{
 			callback?.Invoke();
-			Close();
+			Hide();
 		}
 	}
 }

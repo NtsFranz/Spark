@@ -10,6 +10,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows.Input;
 using System.Text.RegularExpressions;
 using System.Windows.Navigation;
+using System.Windows.Data;
 
 namespace IgniteBot
 {
@@ -29,7 +30,18 @@ namespace IgniteBot
 
 		private void WindowLoad(object sender, RoutedEventArgs e)
 		{
-			#region General
+			//InitializeGeneral();
+			// InitializeReplaysTab();
+			// InitializeTTSTab();
+			// InitializeNVHighlightsTab();
+
+			// versionNum.Content = "v" + Program.AppVersion();
+
+			initialized = true;
+		}
+
+		private void InitializeGeneral()
+		{
 			startWithWindowsCheckbox.IsChecked = Settings.Default.startOnBoot;
 			startMinimizedCheckbox.IsChecked = Settings.Default.startMinimized;
 			autorestartCheckbox.IsChecked = Settings.Default.autoRestart;
@@ -40,30 +52,32 @@ namespace IgniteBot
 			echoVRIPTextBox.Text = Settings.Default.echoVRIP;
 			echoVRPortTextBox.Text = Program.echoVRPort.ToString();
 
-			enableStatsLogging.IsChecked = Settings.Default.enableStatsLogging;
-			statsLoggingBox.IsEnabled = enableStatsLogging.IsChecked == true;
+			enableStatsLoggingCheckBox.IsChecked = Settings.Default.enableStatsLogging;
+			statsLoggingBox.IsEnabled = enableStatsLoggingCheckBox.IsChecked == true;
 
-			uploadToIgniteDB.IsChecked = Settings.Default.uploadToIgniteDB;
+			uploadToIgniteDBCheckBox.IsChecked = Settings.Default.uploadToIgniteDB;
 			uploadToFirestoreCheckBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 			uploadToFirestoreCheckBox.IsChecked = Settings.Default.uploadToFirestore;
 
-			statsLoggingBox.Opacity = Program.enableStatsLogging ? 1 : .5;
-			#endregion
+			statsLoggingBox.Opacity = Settings.Default.enableStatsLogging ? 1 : .5;
+		}
 
-			#region Replays
+		private void InitializeReplaysTab()
+		{
 			storageLocationTextBox.Text = Settings.Default.saveFolder;
-			fullLoggingBox.IsEnabled = enableFullLoggingCheckbox.IsChecked == true;
-			whenToSplitReplays.SelectedIndex = Settings.Default.whenToSplitReplays;
+			whenToSplitReplaysDropdown.SelectedIndex = Settings.Default.whenToSplitReplays;
 			enableFullLoggingCheckbox.IsChecked = Settings.Default.enableFullLogging;
+			fullLoggingBox.IsEnabled = enableFullLoggingCheckbox.IsChecked == true;
 			currentFilenameLabel.Content = Program.fileName;
 			batchWritesButton.IsChecked = Settings.Default.batchWrites;
 			useCompressionButton.IsChecked = Settings.Default.useCompression;
 			speedSelector.SelectedIndex = Settings.Default.targetDeltaTimeIndexFull;
-			onlyRecordPrivateMatches.IsChecked = Settings.Default.onlyRecordPrivateMatches;
-			fullLoggingBox.Opacity = Program.enableFullLogging ? 1 : .5;
-			#endregion
+			onlyRecordPrivateMatchesCheckBox.IsChecked = Settings.Default.onlyRecordPrivateMatches;
+			fullLoggingBox.Opacity = Settings.Default.enableFullLogging ? 1 : .5;
+		}
 
-			#region TTS
+		private void InitializeTTSTab()
+		{
 			speechSpeed.SelectedIndex = Settings.Default.TTSSpeed;
 			serverLocationCheckbox.IsChecked = Settings.Default.serverLocationTTS;
 			joustTimeCheckbox.IsChecked = Settings.Default.joustTimeTTS;
@@ -77,11 +91,13 @@ namespace IgniteBot
 			playerSwitchCheckbox.IsChecked = Settings.Default.playerSwitchTeamTTS;
 			gamePausedCheckbox.IsChecked = Settings.Default.pausedTTS;
 			discordLoginWarning.Visibility = DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
-			#endregion
+		}
 
-			#region NVIDIA Highlights
+		private void InitializeNVHighlightsTab()
+		{
 			HighlightsHelper.isNVHighlightsEnabled &= HighlightsHelper.isNVHighlightsSupported;
-			Settings.Default.isNVHighlightsEnabled = HighlightsHelper.isNVHighlightsEnabled;   // This shouldn't change anything
+			Settings.Default.isNVHighlightsEnabled =
+				HighlightsHelper.isNVHighlightsEnabled; // This shouldn't change anything
 			Settings.Default.Save();
 
 			enableAutoFocusCheckbox.IsChecked = Settings.Default.isAutofocusEnabled;
@@ -102,119 +118,41 @@ namespace IgniteBot
 			secondsBefore.Text = Settings.Default.nvHighlightsSecondsBefore.ToString();
 			secondsAfter.Text = Settings.Default.nvHighlightsSecondsAfter.ToString();
 			clearHighlightsButton.Content = $"Clear {HighlightsHelper.nvHighlightClipCount} Unsaved Highlights";
-			#endregion
-
-			versionNum.Content = "v" + Program.AppVersion();
-
-			initialized = true;
 		}
 
 		#region General
-		void RestartOnCrashEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Program.autoRestart = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.autoRestart = Program.autoRestart;
-			Settings.Default.Save();
-		}
 
-		private void StartWithWindowsEvent(object sender, RoutedEventArgs e)
+		public static bool StartWithWindows
 		{
-			if (!initialized) return;
-			Settings.Default.startOnBoot = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-			SetStartWithWindows(Settings.Default.startOnBoot);
-		}
-
-		private static void SetStartWithWindows(bool val)
-		{
-			RegistryKey rk = Registry.CurrentUser.OpenSubKey
-						("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
-			if (val)
+			get => Settings.Default.startOnBoot;
+			set
 			{
-				string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "IgniteBot.exe");
-				rk.SetValue(Properties.Resources.AppName, path);
+				Settings.Default.startOnBoot = value;
+				Settings.Default.Save();
+
+				RegistryKey rk =
+					Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+				if (value)
+				{
+					string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "IgniteBot.exe");
+					rk?.SetValue(Properties.Resources.AppName, path);
+				}
+				else
+					rk?.DeleteValue(Properties.Resources.AppName, false);
 			}
-			else
-				rk.DeleteValue(Properties.Resources.AppName, false);
-		}
-
-		private void SlowModeEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Program.deltaTimeIndexStats = ((CheckBox)sender).IsChecked == true ? 1 : 0;
-			Settings.Default.targetDeltaTimeIndexStats = Program.deltaTimeIndexStats;
-			Settings.Default.Save();
-		}
-
-		private void ShowDBLogEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.showDatabaseLog = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-
-			Program.showDatabaseLog = Settings.Default.showDatabaseLog;
-		}
-
-		private void LogToServerEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.logToServer = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-
-			Logger.enableLoggingRemote = Settings.Default.logToServer;
-		}
-
-		private void EnableStatsLoggingEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Program.enableStatsLogging = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.enableStatsLogging = Program.enableStatsLogging;
-			Settings.Default.Save();
-
-			statsLoggingBox.IsEnabled = Program.enableStatsLogging;
-			statsLoggingBox.Opacity = Program.enableStatsLogging ? 1 : .5;
 		}
 
 		private void CloseButtonEvent(object sender, RoutedEventArgs e)
 		{
-			if (!initialized) return;
+			Settings.Default.Save();
 			Close();
-		}
-
-		private void ShowConsoleOnStartEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.showConsoleOnStart = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-		}
-
-		private void UploadToIgniteDBChanged(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.uploadToIgniteDB = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-		}
-
-		private void UploadToFirestoreChanged(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.uploadToFirestore = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-		}
-
-		private void StartMinimizedEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.startMinimized = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
 		}
 
 		private void EchoVRIPChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.echoVRIP = ((TextBox)sender).Text;
+			Program.echoVRIP = ((TextBox) sender).Text;
 			Settings.Default.echoVRIP = Program.echoVRIP;
 			Settings.Default.Save();
 		}
@@ -224,11 +162,11 @@ namespace IgniteBot
 			if (!initialized) return;
 			if (Program.overrideEchoVRPort)
 			{
-				echoVRPortTextBox.Text = Program.echoVRPort.ToString();
+				echoVRPortTextBox.Text = Settings.Default.echoVRPort.ToString();
 			}
 			else
 			{
-				if (int.TryParse(((TextBox)sender).Text, out Program.echoVRPort))
+				if (int.TryParse(((TextBox) sender).Text, out Program.echoVRPort))
 				{
 					Settings.Default.echoVRPort = Program.echoVRPort;
 					Settings.Default.Save();
@@ -248,17 +186,10 @@ namespace IgniteBot
 			Settings.Default.Save();
 		}
 
-		private void EnableDiscordRichPresenceEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.discordRichPresence = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-		}
-
 		private void ExecutableLocationChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			string path = ((TextBox)sender).Text;
+			string path = ((TextBox) sender).Text;
 			if (File.Exists(path))
 			{
 				exeLocationLabel.Content = "EchoVR Executable Location:";
@@ -271,13 +202,6 @@ namespace IgniteBot
 			}
 		}
 
-		private void capturevp2CheckedEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.capturevp2 = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-		}
-
 		private async void FindQuestClick(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
@@ -287,9 +211,9 @@ namespace IgniteBot
 			echoVRPortTextBox.IsEnabled = false;
 			findQuest.IsEnabled = false;
 			resetIP.IsEnabled = false;
-			var progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
+			Progress<string> progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
 			await Task.Factory.StartNew(() => Program.echoVRIP = Program.FindQuestIP(progress),
-										TaskCreationOptions.None);
+				TaskCreationOptions.None);
 			echoVRIPTextBox.IsEnabled = true;
 			echoVRPortTextBox.IsEnabled = true;
 			findQuest.IsEnabled = true;
@@ -329,21 +253,10 @@ namespace IgniteBot
 				Logger.LogRow(Logger.LogType.Error, ex.ToString());
 			}
 		}
+
 		#endregion
 
 		#region Replays
-
-
-		private void EnableFullLoggingEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Program.enableFullLogging = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.enableFullLogging = Program.enableFullLogging;
-			Settings.Default.Save();
-
-			fullLoggingBox.IsEnabled = Program.enableFullLogging;
-			fullLoggingBox.Opacity = Program.enableFullLogging ? 1 : .5;
-		}
 
 		private void OpenReplayFolder(object sender, RoutedEventArgs e)
 		{
@@ -355,28 +268,13 @@ namespace IgniteBot
 			});
 		}
 
-		private void onlyRecordPrivateMatches_CheckedChanged(object sender, RoutedEventArgs e)
+		private void ResetReplayFolder(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			Settings.Default.onlyRecordPrivateMatches = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-		}
-
-		private void resetReplayFolder_Click(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Program.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "IgniteBot\\replays");
-			Directory.CreateDirectory(Program.saveFolder);
-			storageLocationTextBox.Text = Program.saveFolder;
-			Settings.Default.saveFolder = Program.saveFolder;
-			Settings.Default.Save();
-		}
-
-		private void whenToSplitReplaysChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (!initialized) return;
-			int index = ((ComboBox)sender).SelectedIndex;
-			Settings.Default.whenToSplitReplays = index;
+			Settings.Default.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+				"IgniteBot\\replays");
+			Directory.CreateDirectory(Settings.Default.saveFolder);
+			storageLocationTextBox.Text = Settings.Default.saveFolder;
 			Settings.Default.Save();
 		}
 
@@ -384,7 +282,7 @@ namespace IgniteBot
 		{
 			if (!initialized) return;
 			string selectedPath = "";
-			var folderBrowserDialog = new CommonOpenFileDialog
+			CommonOpenFileDialog folderBrowserDialog = new CommonOpenFileDialog
 			{
 				InitialDirectory = Settings.Default.saveFolder,
 				IsFolderPicker = true
@@ -403,38 +301,9 @@ namespace IgniteBot
 
 		private void SetStorageLocation(string path)
 		{
-			Program.saveFolder = path;
-			Settings.Default.saveFolder = Program.saveFolder;
+			Settings.Default.saveFolder = path;
 			Settings.Default.Save();
-			storageLocationTextBox.Text = Program.saveFolder;
-		}
-
-		private void SpeedChangeEvent(object sender, SelectionChangedEventArgs e)
-		{
-			if (!initialized) return;
-			int index = ((ComboBox)sender).SelectedIndex;
-
-			Program.deltaTimeIndexFull = index;
-			Settings.Default.targetDeltaTimeIndexFull = index;
-			Settings.Default.Save();
-		}
-
-		private void UseCompressionEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.useCompression = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-
-			Program.useCompression = Settings.Default.useCompression;
-		}
-
-		private void BatchWritesEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.batchWrites = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-
-			Program.batchWrites = Settings.Default.batchWrites;
+			storageLocationTextBox.Text = Settings.Default.saveFolder;
 		}
 
 		private void SplitFileEvent(object sender, RoutedEventArgs e)
@@ -444,209 +313,213 @@ namespace IgniteBot
 
 			currentFilenameLabel.Content = Program.fileName;
 		}
+
 		#endregion
 
 		#region TTS
-		private void JoustTimeClicked(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.joustTimeTTS = newVal;
-			Settings.Default.Save();
 
-			if (newVal)
-				Program.synth.SpeakAsync("orange 1.8");
+		public static Visibility DiscordLoginWarningVisible =>
+			DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
+
+		public static bool JoustTime
+		{
+			get => Settings.Default.joustTimeTTS;
+			set
+			{
+				Settings.Default.joustTimeTTS = value;
+				Settings.Default.Save();
+
+				if (value) Program.synth.SpeakAsync("orange 1.8");
+			}
 		}
 
-		private void JoustSpeedClicked(object sender, RoutedEventArgs e)
+		public static bool JoustSpeed
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.joustSpeedTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.joustSpeedTTS;
+			set
+			{
+				Settings.Default.joustSpeedTTS = value;
+				Settings.Default.Save();
 
-			if (newVal)
-				Program.synth.SpeakAsync("orange 32 meters per second");
+				if (value) Program.synth.SpeakAsync("orange 32 meters per second");
+			}
 		}
 
-		private void ServerLocationClicked(object sender, RoutedEventArgs e)
+		public static bool ServerLocation
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.serverLocationTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.serverLocationTTS;
+			set
+			{
+				Settings.Default.serverLocationTTS = value;
+				Settings.Default.Save();
 
-			if (newVal)
-				Program.synth.SpeakAsync("Chicago, Illinois");
+				if (value) Program.synth.SpeakAsync("Chicago, Illinois");
+			}
 		}
 
-		private void MaxBoostClicked(object sender, RoutedEventArgs e)
+		public static bool MaxBoostSpeed
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.maxBoostSpeedTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.maxBoostSpeedTTS;
+			set
+			{
+				Settings.Default.maxBoostSpeedTTS = value;
+				Settings.Default.Save();
 
-			if (newVal)
-				Program.synth.SpeakAsync("32 meters per second");
+				if (value) Program.synth.SpeakAsync("32 meters per second");
+			}
 		}
 
-		private void TubeExitSpeedClicked(object sender, RoutedEventArgs e)
+		public static bool TubeExitSpeed
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.tubeExitSpeedTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.tubeExitSpeedTTS;
+			set
+			{
+				Settings.Default.tubeExitSpeedTTS = value;
+				Settings.Default.Save();
 
-			if (newVal)
-				Program.synth.SpeakAsync("32 meters per second");
+				if (value) Program.synth.SpeakAsync("32 meters per second");
+			}
 		}
 
-		private void SpeechSpeedChanged(object sender, SelectionChangedEventArgs e)
+		public static int SpeechSpeed
 		{
-			if (!initialized) return;
-			var newVal = ((ComboBox)sender).SelectedIndex;
-			Program.synth.SetRate(newVal);
+			get => Settings.Default.TTSSpeed;
+			set
+			{
+				Program.synth.SetRate(value);
 
-			if (newVal != Settings.Default.TTSSpeed)
-				Program.synth.SpeakAsync("This is the new speed");
+				if (value != Settings.Default.TTSSpeed)
+					Program.synth.SpeakAsync("This is the new speed");
 
-			Settings.Default.TTSSpeed = newVal;
-			Settings.Default.Save();
+				Settings.Default.TTSSpeed = value;
+				Settings.Default.Save();
+			}
 		}
 
-		private void GamePausedClicked(object sender, RoutedEventArgs e)
+		public static bool GamePaused
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.pausedTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.pausedTTS;
+			set
+			{
+				Settings.Default.pausedTTS = value;
+				Settings.Default.Save();
 
-			if (newVal) Program.synth.SpeakAsync("Game Paused");
+				if (value) Program.synth.SpeakAsync("Game Paused");
+			}
 		}
 
-		private void PlayerJoinClicked(object sender, RoutedEventArgs e)
+		public static bool PlayerJoin
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.playerJoinTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.playerJoinTTS;
+			set
+			{
+				Settings.Default.playerJoinTTS = value;
+				Settings.Default.Save();
 
-			if (newVal) Program.synth.SpeakAsync("NtsFranz joined");
+				if (value) Program.synth.SpeakAsync("NtsFranz joined");
+			}
 		}
 
-		private void PlayerLeaveClicked(object sender, RoutedEventArgs e)
+		public static bool PlayerLeave
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.playerLeaveTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.playerLeaveTTS;
+			set
+			{
+				Settings.Default.playerLeaveTTS = value;
+				Settings.Default.Save();
 
-			if (newVal) Program.synth.SpeakAsync("NtsFranz left");
+				if (value) Program.synth.SpeakAsync("NtsFranz left");
+			}
 		}
 
-		private void PlayerSwitchClicked(object sender, RoutedEventArgs e)
+		public static bool PlayerSwitch
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.playerSwitchTeamTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.playerSwitchTeamTTS;
+			set
+			{
+				Settings.Default.playerSwitchTeamTTS = value;
+				Settings.Default.Save();
 
-			if (newVal) Program.synth.SpeakAsync("NtsFranz switched to orange team");
+				if (value) Program.synth.SpeakAsync("NtsFranz switched to orange team");
+			}
 		}
 
-		private void throwSpeedCheckbox_CheckedChanged(object sender, RoutedEventArgs e)
+		public static bool ThrowSpeed
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.throwSpeedTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.throwSpeedTTS;
+			set
+			{
+				Settings.Default.throwSpeedTTS = value;
+				Settings.Default.Save();
 
-			if (newVal)
-				Program.synth.SpeakAsync("19");
+				if (value) Program.synth.SpeakAsync("19");
+			}
 		}
 
-		private void goalSpeed_CheckedChanged(object sender, RoutedEventArgs e)
+		public static bool GoalSpeed
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.goalSpeedTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.goalSpeedTTS;
+			set
+			{
+				Settings.Default.goalSpeedTTS = value;
+				Settings.Default.Save();
 
-			if (newVal)
-				Program.synth.SpeakAsync("19 meters per second");
+				if (value) Program.synth.SpeakAsync("19 meters per second");
+			}
 		}
 
-		private void goalDistance_CheckedChanged(object sender, RoutedEventArgs e)
+		public static bool GoalDistance
 		{
-			if (!initialized) return;
-			bool newVal = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.goalDistanceTTS = newVal;
-			Settings.Default.Save();
+			get => Settings.Default.goalDistanceTTS;
+			set
+			{
+				Settings.Default.goalDistanceTTS = value;
+				Settings.Default.Save();
 
-			if (newVal)
-				Program.synth.SpeakAsync("23 meters");
+				if (value) Program.synth.SpeakAsync("23 meters");
+			}
 		}
+
 		#endregion
 
 		#region NVIDIA Highlights
-		private void HighlightScopeChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (!initialized) return;
-			int index = ((ComboBox)sender).SelectedIndex;
-			HighlightsHelper.ClientHighlightScope = (HighlightLevel)index;
-			Settings.Default.clientHighlightScope = index;
-			Settings.Default.Save();
-		}
 
-		private void ClearHighlightsOnExitEvent(object sender, RoutedEventArgs e)
+		public bool NVHighlightsEnabled
 		{
-			if (!initialized) return;
-			HighlightsHelper.clearHighlightsOnExit = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.clearHighlightsOnExit = HighlightsHelper.clearHighlightsOnExit;
-			Settings.Default.Save();
-
-			clearHighlightsOnExitCheckbox.IsEnabled = HighlightsHelper.clearHighlightsOnExit;
-		}
-
-		private void EnableAutofocusEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.isAutofocusEnabled = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-		}
-
-		private void EnableNVHighlightsEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			if (HighlightsHelper.isNVHighlightsEnabled && !((CheckBox)sender).IsChecked == true)
+			get => Settings.Default.isNVHighlightsEnabled;
+			set
 			{
-				HighlightsHelper.CloseNVHighlights(true);
-			}
-			else if (!HighlightsHelper.isNVHighlightsEnabled && ((CheckBox)sender).IsChecked == true)
-			{
-				if (HighlightsHelper.SetupNVHighlights() < 0)
+				switch (HighlightsHelper.isNVHighlightsEnabled)
 				{
-					HighlightsHelper.isNVHighlightsEnabled = false;
-					Settings.Default.isNVHighlightsEnabled = false;
-					Settings.Default.Save();
-					enableNVHighlightsCheckbox.IsChecked = false;
-					enableNVHighlightsCheckbox.IsEnabled = false;
-					enableNVHighlightsCheckbox.Content = "NVIDIA Highlights failed to initialize or isn't supported by your PC";
-					return;
+					case true when !value:
+						HighlightsHelper.CloseNVHighlights(true);
+						break;
+					case false when value:
+					{
+						if (HighlightsHelper.SetupNVHighlights() < 0)
+						{
+							HighlightsHelper.isNVHighlightsEnabled = false;
+							Settings.Default.isNVHighlightsEnabled = false;
+							Settings.Default.Save();
+							enableNVHighlightsCheckbox.IsChecked = false;
+							enableNVHighlightsCheckbox.IsEnabled = false;
+							enableNVHighlightsCheckbox.Content =
+								"NVIDIA Highlights failed to initialize or isn't supported by your PC";
+							return;
+						}
+
+						enableNVHighlightsCheckbox.Content = "Enable NVIDIA Highlights";
+						break;
+					}
 				}
-				else
-				{
-					enableNVHighlightsCheckbox.Content = "Enable NVIDIA Highlights";
-				}
+
+				HighlightsHelper.isNVHighlightsEnabled = value;
+				Settings.Default.isNVHighlightsEnabled = HighlightsHelper.isNVHighlightsEnabled;
+				Settings.Default.Save();
+
+				nvHighlightsBox.IsEnabled = HighlightsHelper.isNVHighlightsEnabled;
+				nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
 			}
-
-			HighlightsHelper.isNVHighlightsEnabled = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.isNVHighlightsEnabled = HighlightsHelper.isNVHighlightsEnabled;
-			Settings.Default.Save();
-
-			nvHighlightsBox.IsEnabled = HighlightsHelper.isNVHighlightsEnabled;
-			nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
 		}
 
 		private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
@@ -661,35 +534,65 @@ namespace IgniteBot
 			HighlightsHelper.ClearUnsavedNVHighlights(true);
 			clearHighlightsButton.IsEnabled = false;
 			clearHighlightsButton.Content = "Clear 0 Unsaved Highlights";
-			new MessageBox("Highlights Cleared: All unsaved highlights have been cleared from the temporary highlights directory.").Show();
+			new MessageBox(
+					"Highlights Cleared: All unsaved highlights have been cleared from the temporary highlights directory.")
+				.Show();
 		}
 
 		private void SecondsBeforeChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			if (float.TryParse(((TextBox)sender).Text, out float value))
-			{
-				Settings.Default.nvHighlightsSecondsBefore = value;
-				Settings.Default.Save();
-			}
+			if (!float.TryParse(((TextBox) sender).Text, out float value)) return;
+			Settings.Default.nvHighlightsSecondsBefore = value;
+			Settings.Default.Save();
 		}
 
 		private void SecondsAfterChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			if (float.TryParse(((TextBox)sender).Text, out float value))
-			{
-				Settings.Default.nvHighlightsSecondsAfter = value;
-				Settings.Default.Save();
-			}
-		}
-
-		private void RecordAllInSpectatorEvent(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-			Settings.Default.nvHighlightsSpectatorRecord = ((CheckBox)sender).IsChecked == true;
+			if (!float.TryParse(((TextBox) sender).Text, out float value)) return;
+			Settings.Default.nvHighlightsSecondsAfter = value;
 			Settings.Default.Save();
 		}
+
 		#endregion
+	}
+
+	public class SettingBindingExtension : Binding
+	{
+		public SettingBindingExtension()
+		{
+			Initialize();
+		}
+
+		public SettingBindingExtension(string path) : base(path)
+		{
+			Initialize();
+		}
+
+		private void Initialize()
+		{
+			Source = Settings.Default;
+			Mode = BindingMode.TwoWay;
+		}
+	}
+
+	public class SettingLoadExtension : Binding
+	{
+		public SettingLoadExtension()
+		{
+			Initialize();
+		}
+
+		public SettingLoadExtension(string path) : base(path)
+		{
+			Initialize();
+		}
+
+		private void Initialize()
+		{
+			Source = Settings.Default;
+			Mode = BindingMode.OneWay;
+		}
 	}
 }

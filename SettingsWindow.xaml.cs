@@ -50,8 +50,8 @@ namespace IgniteBot
 			storageLocationTextBox.Text = Settings.Default.saveFolder;
 			fullLoggingBox.IsEnabled = enableFullLoggingCheckbox.IsChecked == true;
 			whenToSplitReplays.SelectedIndex = Settings.Default.whenToSplitReplays;
-			statsLoggingBox.Opacity = Program.enableStatsLogging ? 1 : .5;
-			fullLoggingBox.Opacity = Program.enableFullLogging ? 1 : .5;
+			statsLoggingBox.Opacity = Settings.Default.enableStatsLogging ? 1 : .5;
+			fullLoggingBox.Opacity = Settings.Default.enableFullLogging ? 1 : .5;
 
 			versionNum.Content = "v" + Program.AppVersion();
 
@@ -65,8 +65,7 @@ namespace IgniteBot
 		void RestartOnCrashEvent(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.autoRestart = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.autoRestart = Program.autoRestart;
+			Settings.Default.autoRestart = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 		}
 
@@ -95,8 +94,7 @@ namespace IgniteBot
 		private void SlowModeEvent(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.deltaTimeIndexStats = ((CheckBox)sender).IsChecked == true ? 1 : 0;
-			Settings.Default.targetDeltaTimeIndexStats = Program.deltaTimeIndexStats;
+			Settings.Default.targetDeltaTimeIndexStats = ((CheckBox)sender).IsChecked == true ? 1 : 0;
 			Settings.Default.Save();
 		}
 
@@ -105,8 +103,6 @@ namespace IgniteBot
 			if (!initialized) return;
 			Settings.Default.showDatabaseLog = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
-
-			Program.showDatabaseLog = Settings.Default.showDatabaseLog;
 		}
 
 		private void LogToServerEvent(object sender, RoutedEventArgs e)
@@ -114,30 +110,26 @@ namespace IgniteBot
 			if (!initialized) return;
 			Settings.Default.logToServer = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
-
-			Logger.enableLoggingRemote = Settings.Default.logToServer;
 		}
 
 		private void EnableStatsLoggingEvent(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.enableStatsLogging = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.enableStatsLogging = Program.enableStatsLogging;
+			Settings.Default.enableStatsLogging = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 
-			statsLoggingBox.IsEnabled = Program.enableStatsLogging;
-			statsLoggingBox.Opacity = Program.enableStatsLogging ? 1 : .5;
+			statsLoggingBox.IsEnabled = Settings.Default.enableStatsLogging;
+			statsLoggingBox.Opacity = Settings.Default.enableStatsLogging ? 1 : .5;
 		}
 
 		private void EnableFullLoggingEvent(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.enableFullLogging = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.enableFullLogging = Program.enableFullLogging;
+			Settings.Default.enableFullLogging = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 
-			fullLoggingBox.IsEnabled = Program.enableFullLogging;
-			fullLoggingBox.Opacity = Program.enableFullLogging ? 1 : .5;
+			fullLoggingBox.IsEnabled = Settings.Default.enableFullLogging;
+			fullLoggingBox.Opacity = Settings.Default.enableFullLogging ? 1 : .5;
 		}
 
 		private void CloseButtonEvent(object sender, RoutedEventArgs e)
@@ -169,10 +161,9 @@ namespace IgniteBot
 
 		private void SetStorageLocation(string path)
 		{
-			Program.saveFolder = path;
-			Settings.Default.saveFolder = Program.saveFolder;
+			Settings.Default.saveFolder = path;
 			Settings.Default.Save();
-			storageLocationTextBox.Text = Program.saveFolder;
+			storageLocationTextBox.Text = path;
 		}
 
 		private void SpeedChangeEvent(object sender, SelectionChangedEventArgs e)
@@ -180,7 +171,6 @@ namespace IgniteBot
 			if (!initialized) return;
 			int index = ((ComboBox)sender).SelectedIndex;
 
-			Program.deltaTimeIndexFull = index;
 			Settings.Default.targetDeltaTimeIndexFull = index;
 			Settings.Default.Save();
 		}
@@ -190,8 +180,6 @@ namespace IgniteBot
 			if (!initialized) return;
 			Settings.Default.useCompression = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
-
-			Program.useCompression = Settings.Default.useCompression;
 		}
 
 		private void BatchWritesEvent(object sender, RoutedEventArgs e)
@@ -199,8 +187,6 @@ namespace IgniteBot
 			if (!initialized) return;
 			Settings.Default.batchWrites = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
-
-			Program.batchWrites = Settings.Default.batchWrites;
 		}
 
 		private void SplitFileEvent(object sender, RoutedEventArgs e)
@@ -249,10 +235,9 @@ namespace IgniteBot
 		private void resetReplayFolder_Click(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "IgniteBot\\replays");
-			Directory.CreateDirectory(Program.saveFolder);
-			storageLocationTextBox.Text = Program.saveFolder;
-			Settings.Default.saveFolder = Program.saveFolder;
+			Settings.Default.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "IgniteBot\\replays");
+			Directory.CreateDirectory(Settings.Default.saveFolder);
+			storageLocationTextBox.Text = Settings.Default.saveFolder;
 			Settings.Default.Save();
 		}
 

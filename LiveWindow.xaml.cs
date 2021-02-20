@@ -913,6 +913,7 @@ namespace IgniteBot
 			if (Program.speedometerWindow == null)
 			{
 				Program.speedometerWindow = new Speedometer();
+				Program.speedometerWindow.Owner = this;
 				Program.speedometerWindow.Closed += (sender, args) => Program.speedometerWindow = null;
 				Program.speedometerWindow.Show();
 			}
@@ -972,6 +973,7 @@ namespace IgniteBot
 			if (Program.playspaceWindow == null)
 			{
 				Program.playspaceWindow = new Playspace();
+				Program.playspaceWindow.Owner = this;
 				Program.playspaceWindow.Closed += (sender, args) => Program.playspaceWindow = null;
 				Program.playspaceWindow.Show();
 			}
@@ -986,6 +988,7 @@ namespace IgniteBot
 			if (Program.ttsWindow == null)
 			{
 				Program.ttsWindow = new TTSSettingsWindow();
+				Program.ttsWindow.Owner = this;
 				Program.ttsWindow.Closed += (sender, args) => Program.ttsWindow = null;
 				Program.ttsWindow.Show();
 			}
@@ -1005,6 +1008,7 @@ namespace IgniteBot
 			if (Program.nvhWindow == null)
 			{
 				Program.nvhWindow = new NVHighlightsSettingsWindow();
+				Program.nvhWindow.Owner = this;
 				Program.nvhWindow.Closed += (sender, args) => Program.nvhWindow = null;
 				Program.nvhWindow.Show();
 			}
@@ -1019,6 +1023,7 @@ namespace IgniteBot
 			if (Program.loginWindow == null)
 			{
 				Program.loginWindow = new LoginWindow();
+				Program.loginWindow.Owner = this;
 				Program.loginWindow.Closed += (sender, args) => Program.loginWindow = null;
 				Program.loginWindow.Show();
 			}

@@ -61,7 +61,6 @@ namespace IgniteBot
 		{
 			if (!initialized) return;
 			int index = ((ComboBox)sender).SelectedIndex;
-			HighlightsHelper.ClientHighlightScope = (HighlightLevel)index;
 			Settings.Default.clientHighlightScope = index;
 			Settings.Default.Save();
 		}
@@ -69,11 +68,10 @@ namespace IgniteBot
 		private void ClearHighlightsOnExitEvent(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			HighlightsHelper.clearHighlightsOnExit = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.clearHighlightsOnExit = HighlightsHelper.clearHighlightsOnExit;
+			Settings.Default.clearHighlightsOnExit = ((CheckBox)sender).IsChecked == true;
 			Settings.Default.Save();
 
-			clearHighlightsOnExitCheckbox.IsEnabled = HighlightsHelper.clearHighlightsOnExit;
+			clearHighlightsOnExitCheckbox.IsEnabled = ((CheckBox)sender).IsChecked == true;
 		}
 
 		private void EnableAutofocusEvent(object sender, RoutedEventArgs e)

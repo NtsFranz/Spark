@@ -6,19 +6,17 @@ using static IgniteBot.g_Team;
 
 namespace IgniteBot
 {
-	class HighlightsHelper
+	internal class HighlightsHelper
 	{
-		public static bool clearHighlightsOnExit = false;
 		public static bool isNVHighlightsEnabled = false;
-		public static bool didHighlightsInit = false;
+		public static bool didHighlightsInit;
 		public static bool isNVHighlightsSupported = true;
-		public static HighlightLevel ClientHighlightScope = HighlightLevel.CLIENT_ONLY;
-
-		public static Highlights.EmptyCallbackDelegate videoCallback = NVSetVideoCallback;
-		public static Highlights.EmptyCallbackDelegate openSummaryCallback = Highlights.DefaultOpenSummaryCallback;
-		public static Highlights.EmptyCallbackDelegate closeGroupCallback = NVCloseGroupCallback;
-		public static Highlights.GetNumberOfHighlightsCallbackDelegate getNumOfHighlightsCallback = NVGetNumberOfHighlightsCallback;
-		public static Highlights.EmptyCallbackDelegate configStepCallback = NVConfigCallback;
+		private static HighlightLevel ClientHighlightScope => (HighlightLevel) Settings.Default.clientHighlightScope;
+		private static Highlights.EmptyCallbackDelegate videoCallback = NVSetVideoCallback;
+		private static Highlights.EmptyCallbackDelegate openSummaryCallback = Highlights.DefaultOpenSummaryCallback;
+		private static Highlights.EmptyCallbackDelegate closeGroupCallback = NVCloseGroupCallback;
+		private static Highlights.GetNumberOfHighlightsCallbackDelegate getNumOfHighlightsCallback = NVGetNumberOfHighlightsCallback;
+		private static Highlights.EmptyCallbackDelegate configStepCallback = NVConfigCallback;
 
 		public static int nvHighlightClipCount = 0;
 
@@ -66,7 +64,7 @@ namespace IgniteBot
 			{
 				if (didHighlightsInit)
 				{
-					if (clearHighlightsOnExit && !wasDisableNVHCall)
+					if (Settings.Default.clearHighlightsOnExit && !wasDisableNVHCall)
 					{
 						ClearUnsavedNVHighlights(false);
 
@@ -76,38 +74,41 @@ namespace IgniteBot
 			}
 			catch (Exception e)
 			{
-				Logger.LogRow(Logger.LogType.Error, "Failed during closenvhighlights\n" + e.ToString());
+				Logger.LogRow(Logger.LogType.Error, $"Failed during CloseNVHighlights\n{e}");
 			}
 		}
+
 		public static int InitHighlightsSDK(bool isCheck)
 		{
 			try
 			{
-				Highlights.HighlightScope[] RequiredScopes = new
-					Highlights.HighlightScope[3] {
+				Highlights.HighlightScope[] RequiredScopes =
+				{
 					Highlights.HighlightScope.Highlights,
 					Highlights.HighlightScope.HighlightsRecordVideo,
 					Highlights.HighlightScope.HighlightsRecordScreenshot
-					};
+				};
 				if (Highlights.CreateHighlightsSDK("EchoVR", RequiredScopes) != Highlights.ReturnCode.SUCCESS)
 				{
-					Console.WriteLine("Failed to initialize Highlights");
+					Logger.LogRow(Logger.LogType.Error, "Failed to initialize Highlights");
 					didHighlightsInit = false;
 					isNVHighlightsSupported = false;
 					return -1;
 				}
-				else if (isCheck)
+
+				if (isCheck)
 				{
 					Highlights.ReleaseHighlightsSDK();
 					isNVHighlightsSupported = true;
 					return 1;
 				}
+
 				didHighlightsInit = true;
 				return 1;
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine($"Failed to initialize Highlights: {e}");
+				Logger.LogRow(Logger.LogType.Error, $"Failed to initialize Highlights: {e}");
 				didHighlightsInit = false;
 				isNVHighlightsSupported = false;
 				return -1;
@@ -120,60 +121,80 @@ namespace IgniteBot
 			{
 				return -1;
 			}
+
 			Highlights.RequestPermissions(configStepCallback);
 			// Configure Highlights
-			Highlights.HighlightDefinition[] highlightDefinitions = new Highlights.HighlightDefinition[5];
-
-			highlightDefinitions[0] = new Highlights.HighlightDefinition()
+			Highlights.HighlightDefinition[] highlightDefinitions =
 			{
-				Id = "SAVE",
-				HighlightTags = Highlights.HighlightType.Achievement,
-				Significance = Highlights.HighlightSignificance.Good,
-				UserDefaultInterest = true,
-				NameTranslationTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Save!"), }
+				new()
+				{
+					Id = "SAVE",
+					HighlightTags = Highlights.HighlightType.Achievement,
+					Significance = Highlights.HighlightSignificance.Good,
+					UserDefaultInterest = true,
+					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Save!"),}
+				},
+				new()
+				{
+					Id = "SCORE",
+					HighlightTags = Highlights.HighlightType.Achievement,
+					Significance = Highlights.HighlightSignificance.Good,
+					UserDefaultInterest = true,
+					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Goal!"),}
+				},
+				new()
+				{
+					Id = "INTERCEPTION",
+					HighlightTags = Highlights.HighlightType.Achievement,
+					Significance = Highlights.HighlightSignificance.Good,
+					UserDefaultInterest = true,
+					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Interception!"),}
+				},
+				new()
+				{
+					Id = "STEAL_SAVE",
+					HighlightTags = Highlights.HighlightType.Achievement,
+					Significance = Highlights.HighlightSignificance.Good,
+					UserDefaultInterest = true,
+					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Steal counts as Save!"),}
+				},
+				new()
+				{
+					Id = "ASSIST",
+					HighlightTags = Highlights.HighlightType.Achievement,
+					Significance = Highlights.HighlightSignificance.Good,
+					UserDefaultInterest = true,
+					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Scoring Assist!"),}
+				},
 			};
-
-			highlightDefinitions[1].Id = "SCORE";
-			highlightDefinitions[1].HighlightTags = Highlights.HighlightType.Achievement;
-			highlightDefinitions[1].Significance = Highlights.HighlightSignificance.Good;
-			highlightDefinitions[1].UserDefaultInterest = true;
-			highlightDefinitions[1].NameTranslationTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Goal!"), };
-
-			highlightDefinitions[2].Id = "INTERCEPTION";
-			highlightDefinitions[2].HighlightTags = Highlights.HighlightType.Achievement;
-			highlightDefinitions[2].Significance = Highlights.HighlightSignificance.Good;
-			highlightDefinitions[2].UserDefaultInterest = true;
-			highlightDefinitions[2].NameTranslationTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Interception!"), };
-
-			highlightDefinitions[3].Id = "STEAL_SAVE";
-			highlightDefinitions[3].HighlightTags = Highlights.HighlightType.Achievement;
-			highlightDefinitions[3].Significance = Highlights.HighlightSignificance.Good;
-			highlightDefinitions[3].UserDefaultInterest = true;
-			highlightDefinitions[3].NameTranslationTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Steal counts as Save!"), };
-
-			highlightDefinitions[4].Id = "ASSIST";
-			highlightDefinitions[4].HighlightTags = Highlights.HighlightType.Achievement;
-			highlightDefinitions[4].Significance = Highlights.HighlightSignificance.Good;
-			highlightDefinitions[4].UserDefaultInterest = true;
-			highlightDefinitions[4].NameTranslationTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Scoring Assist!"), };
 
 			Highlights.ConfigureHighlights(highlightDefinitions, "en-US", configStepCallback);
 
 			// Open Groups
-			Highlights.OpenGroupParams ogp1 = new Highlights.OpenGroupParams();
-			ogp1.Id = "PERSONAL_HIGHLIGHT_GROUP";
-			ogp1.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Personal Highlight Group"), };
-			Highlights.OpenGroup(ogp1, configStepCallback);
+			Highlights.OpenGroup(new Highlights.OpenGroupParams
+			{
+				Id = "PERSONAL_HIGHLIGHT_GROUP",
+				GroupDescriptionTable =
+					new[] {new Highlights.TranslationEntry("en-US", "Personal Highlight Group"),}
+			}, configStepCallback);
 
-			Highlights.OpenGroupParams ogp2 = new Highlights.OpenGroupParams();
-			ogp2.Id = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
-			ogp2.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Personal Team Highlight Group"), };
-			Highlights.OpenGroup(ogp2, configStepCallback);
+			Highlights.OpenGroup(new Highlights.OpenGroupParams
+			{
+				Id = "PERSONAL_TEAM_HIGHLIGHT_GROUP",
+				GroupDescriptionTable = new[]
+				{
+					new Highlights.TranslationEntry("en-US", "Personal Team Highlight Group"),
+				}
+			}, configStepCallback);
 
-			Highlights.OpenGroupParams ogp3 = new Highlights.OpenGroupParams();
-			ogp3.Id = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
-			ogp3.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Opposing Team Highlight Group"), };
-			Highlights.OpenGroup(ogp3, configStepCallback);
+			Highlights.OpenGroup(new Highlights.OpenGroupParams
+			{
+				Id = "OPPOSING_TEAM_HIGHLIGHT_GROUP",
+				GroupDescriptionTable = new[]
+				{
+					new Highlights.TranslationEntry("en-US", "Opposing Team Highlight Group"),
+				}
+			}, configStepCallback);
 
 			GetNVHighlightsCount();
 			return 1;
@@ -186,49 +207,44 @@ namespace IgniteBot
 
 		public static void ShowNVHighlights()
 		{
-			if (didHighlightsInit)
+			if (!didHighlightsInit) return;
+			
+			Highlights.GroupView[] gViews = new Highlights.GroupView[3];
+			gViews[0] = new Highlights.GroupView
 			{
-				Highlights.GroupView[] gViews = new Highlights.GroupView[3];
-				gViews[0] = new Highlights.GroupView
-				{
-					GroupId = "PERSONAL_HIGHLIGHT_GROUP",
-					SignificanceFilter = Highlights.HighlightSignificance.Good,
-					TagFilter = Highlights.HighlightType.Achievement
-				};
-				gViews[1] = new Highlights.GroupView
-				{
-					GroupId = "PERSONAL_TEAM_HIGHLIGHT_GROUP",
-					SignificanceFilter = Highlights.HighlightSignificance.Good,
-					TagFilter = Highlights.HighlightType.Achievement
-				};
-				gViews[2] = new Highlights.GroupView
-				{
-					GroupId = "OPPOSING_TEAM_HIGHLIGHT_GROUP",
-					SignificanceFilter = Highlights.HighlightSignificance.Good,
-					TagFilter = Highlights.HighlightType.Achievement
-				};
+				GroupId = "PERSONAL_HIGHLIGHT_GROUP",
+				SignificanceFilter = Highlights.HighlightSignificance.Good,
+				TagFilter = Highlights.HighlightType.Achievement
+			};
+			gViews[1] = new Highlights.GroupView
+			{
+				GroupId = "PERSONAL_TEAM_HIGHLIGHT_GROUP",
+				SignificanceFilter = Highlights.HighlightSignificance.Good,
+				TagFilter = Highlights.HighlightType.Achievement
+			};
+			gViews[2] = new Highlights.GroupView
+			{
+				GroupId = "OPPOSING_TEAM_HIGHLIGHT_GROUP",
+				SignificanceFilter = Highlights.HighlightSignificance.Good,
+				TagFilter = Highlights.HighlightType.Achievement
+			};
 
-				Highlights.OpenSummary(gViews, openSummaryCallback);
-			}
+			Highlights.OpenSummary(gViews, openSummaryCallback);
 		}
 
-		public static void GetNVHighlightsCount()
+		private static void GetNVHighlightsCount()
 		{
-			if (didHighlightsInit)
-			{
-				nvHighlightClipCount = 0;
-				Highlights.GroupView groupView = new Highlights.GroupView();
-				groupView.GroupId = "PERSONAL_HIGHLIGHT_GROUP";
-				Highlights.GetNumberOfHighlights(groupView, getNumOfHighlightsCallback);
+			if (!didHighlightsInit) return;
+			
+			nvHighlightClipCount = 0;
+			Highlights.GroupView groupView = new() {GroupId = "PERSONAL_HIGHLIGHT_GROUP"};
+			Highlights.GetNumberOfHighlights(groupView, getNumOfHighlightsCallback);
 
-				Highlights.GroupView groupView2 = new Highlights.GroupView();
-				groupView2.GroupId = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
-				Highlights.GetNumberOfHighlights(groupView2, getNumOfHighlightsCallback);
+			Highlights.GroupView groupView2 = new() {GroupId = "PERSONAL_TEAM_HIGHLIGHT_GROUP"};
+			Highlights.GetNumberOfHighlights(groupView2, getNumOfHighlightsCallback);
 
-				Highlights.GroupView groupView3 = new Highlights.GroupView();
-				groupView3.GroupId = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
-				Highlights.GetNumberOfHighlights(groupView3, getNumOfHighlightsCallback);
-			}
+			Highlights.GroupView groupView3 = new() {GroupId = "OPPOSING_TEAM_HIGHLIGHT_GROUP"};
+			Highlights.GetNumberOfHighlights(groupView3, getNumOfHighlightsCallback);
 		}
 
 		public static void NVSetVideoCallback(Highlights.ReturnCode ret, int id)
@@ -236,11 +252,11 @@ namespace IgniteBot
 			if (ret == Highlights.ReturnCode.SUCCESS)
 			{
 				nvHighlightClipCount++;
-				Console.WriteLine("SetVideoCallback " + id + " returns success");
+				Console.WriteLine($"SetVideoCallback {id} returns success");
 			}
 			else
 			{
-				Console.WriteLine("SetVideoCallback " + id + " returns unsuccess");
+				Console.WriteLine($"SetVideoCallback {id} returns unsuccess");
 			}
 		}
 		public static void NVCloseGroupCallback(Highlights.ReturnCode ret, int id)
@@ -248,11 +264,11 @@ namespace IgniteBot
 			if (ret == Highlights.ReturnCode.SUCCESS)
 			{
 				nvHighlightClipCount = 0;
-				Console.WriteLine("CloseGroupCallback " + id + " returns success");
+				Console.WriteLine($"CloseGroupCallback {id} returns success");
 			}
 			else
 			{
-				Console.WriteLine("CloseGroupCallback " + id + " returns unsuccess");
+				Console.WriteLine($"CloseGroupCallback {id} returns unsuccess");
 			}
 		}
 		public static void NVConfigCallback(Highlights.ReturnCode ret, int id)
@@ -260,11 +276,11 @@ namespace IgniteBot
 			if (ret == Highlights.ReturnCode.SUCCESS)
 			{
 				nvHighlightClipCount = 0;
-				Console.WriteLine("ConfigStep " + id + " returns success");
+				Console.WriteLine($"ConfigStep {id} returns success");
 			}
 			else
 			{
-				Console.WriteLine("ConfigStep " + id + " returns unsuccess");
+				Console.WriteLine($"ConfigStep {id} returns unsuccess");
 			}
 		}
 		public static void NVGetNumberOfHighlightsCallback(Highlights.ReturnCode ret, int number, int id)
@@ -272,11 +288,11 @@ namespace IgniteBot
 			if (ret == Highlights.ReturnCode.SUCCESS)
 			{
 				nvHighlightClipCount += number;
-				Console.WriteLine("GetNumberOfHighlightsCallback " + id + " returns " + number);
+				Console.WriteLine($"GetNumberOfHighlightsCallback {id} returns " + number);
 			}
 			else
 			{
-				Console.WriteLine("GetNumberOfHighlightsCallback " + id + " returns unsuccess");
+				Console.WriteLine($"GetNumberOfHighlightsCallback {id} returns unsuccess");
 			}
 		}
 
@@ -284,27 +300,25 @@ namespace IgniteBot
 
 		private static string IsPlayerHighlightEnabled(g_Player player, g_Instance frame)
 		{
-			if (player != null && didHighlightsInit && isNVHighlightsEnabled)
+			if (player == null || !didHighlightsInit || !isNVHighlightsEnabled) return "";
+			
+			TeamColor clientTeam = frame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
+			if (player.name == frame.client_name)
 			{
-				TeamColor clientTeam = frame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
-				if (player.name == frame.client_name)
-				{
-					return "PERSONAL_HIGHLIGHT_GROUP";
-				}
-				else if (ClientHighlightScope != HighlightLevel.CLIENT_ONLY && player.team.color == clientTeam)
-				{
-					return "PERSONAL_TEAM_HIGHLIGHT_GROUP";
-				}
-				else if (ClientHighlightScope == HighlightLevel.ALL || (clientTeam == TeamColor.spectator && Settings.Default.nvHighlightsSpectatorRecord))
-				{
-					return "OPPOSING_TEAM_HIGHLIGHT_GROUP";
-				}
-				else
-				{
-					return "";
-				}
+				return "PERSONAL_HIGHLIGHT_GROUP";
 			}
-			return "";
+			else if (ClientHighlightScope != HighlightLevel.CLIENT_ONLY && player.team.color == clientTeam)
+			{
+				return "PERSONAL_TEAM_HIGHLIGHT_GROUP";
+			}
+			else if (ClientHighlightScope == HighlightLevel.ALL || (clientTeam == TeamColor.spectator && Settings.Default.nvHighlightsSpectatorRecord))
+			{
+				return "OPPOSING_TEAM_HIGHLIGHT_GROUP";
+			}
+			else
+			{
+				return "";
+			}
 		}
 
 		private static string IsPlayerHighlightEnabled(string playerName, g_Instance frame)
@@ -319,27 +333,26 @@ namespace IgniteBot
 		/// </summary>
 		public static void ClearUnsavedNVHighlights(bool reopenGroup = false)
 		{
-			if (didHighlightsInit)
+			if (!didHighlightsInit) return;
+			
+			Highlights.CloseGroupParams cgp = new() { id = "PERSONAL_HIGHLIGHT_GROUP", destroyHighlights = true };
+			Highlights.CloseGroup(cgp, closeGroupCallback);
+			cgp = new Highlights.CloseGroupParams { id = "PERSONAL_TEAM_HIGHLIGHT_GROUP", destroyHighlights = true };
+			Highlights.CloseGroup(cgp, closeGroupCallback);
+			cgp = new Highlights.CloseGroupParams { id = "OPPOSING_TEAM_HIGHLIGHT_GROUP", destroyHighlights = true };
+			Highlights.CloseGroup(cgp, closeGroupCallback);
+			if (reopenGroup)
 			{
-				Highlights.CloseGroupParams cgp = new Highlights.CloseGroupParams { id = "PERSONAL_HIGHLIGHT_GROUP", destroyHighlights = true };
-				Highlights.CloseGroup(cgp, closeGroupCallback);
-				cgp = new Highlights.CloseGroupParams { id = "PERSONAL_TEAM_HIGHLIGHT_GROUP", destroyHighlights = true };
-				Highlights.CloseGroup(cgp, closeGroupCallback);
-				cgp = new Highlights.CloseGroupParams { id = "OPPOSING_TEAM_HIGHLIGHT_GROUP", destroyHighlights = true };
-				Highlights.CloseGroup(cgp, closeGroupCallback);
-				if (reopenGroup)
-				{
-					Highlights.OpenGroupParams ogp1 = new Highlights.OpenGroupParams();
-					ogp1.Id = "PERSONAL_HIGHLIGHT_GROUP";
-					ogp1.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Personal Highlight Group"), };
-					Highlights.OpenGroup(ogp1, configStepCallback);
-					ogp1.Id = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
-					ogp1.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Personal Team Highlight Group"), };
-					Highlights.OpenGroup(ogp1, configStepCallback);
-					ogp1.Id = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
-					ogp1.GroupDescriptionTable = new Highlights.TranslationEntry[] { new Highlights.TranslationEntry("en-US", "Opposing Team Highlight Group"), };
-					Highlights.OpenGroup(ogp1, configStepCallback);
-				}
+				Highlights.OpenGroupParams ogp1 = new();
+				ogp1.Id = "PERSONAL_HIGHLIGHT_GROUP";
+				ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Personal Highlight Group"), };
+				Highlights.OpenGroup(ogp1, configStepCallback);
+				ogp1.Id = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
+				ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Personal Team Highlight Group"), };
+				Highlights.OpenGroup(ogp1, configStepCallback);
+				ogp1.Id = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
+				ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Opposing Team Highlight Group"), };
+				Highlights.OpenGroup(ogp1, configStepCallback);
 			}
 		}
 	}

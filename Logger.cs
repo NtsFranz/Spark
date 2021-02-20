@@ -7,6 +7,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using IgniteBot;
+using IgniteBot.Properties;
 
 /// <summary>
 /// ✍ Logs any data to a file or remotely
@@ -34,7 +35,6 @@ public class Logger
 	public static bool usePerDeviceFolder = true;
 	public static bool usePerLaunchFolder = true;
 	public static bool enableLoggingLocal = true;
-	public static bool enableLoggingRemote = false;
 
 	public static bool useFullFileCache = true;
 	public static List<string> fullFileCache = new List<string>();
@@ -122,7 +122,7 @@ public class Logger
 			case LogType.Info:
 				if (elements.Length == 1)
 				{
-					if (Program.showDatabaseLog || !elements[0].Contains("[DB]"))
+					if (Settings.Default.showDatabaseLog || !elements[0].Contains("[DB]"))
 					{
 						Console.WriteLine(elements[0]);
 					}
@@ -281,7 +281,7 @@ public class Logger
 							{
 								fileWriter.WriteLine(row);
 							}
-							if (enableLoggingRemote)
+							if (Settings.Default.logToServer)
 							{
 								allOutputData.Append(row);
 								allOutputData.Append(newLineChar);
@@ -289,7 +289,7 @@ public class Logger
 						}
 						dataToLog[fileName].Clear();
 
-						if (enableLoggingRemote)
+						if (Settings.Default.logToServer)
 						{
 							Upload(fileName + fileExtension, allOutputData.ToString(), folder);
 						}

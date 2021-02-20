@@ -78,8 +78,6 @@ namespace IgniteBot
 
 		public const string UpdateURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
 
-		public static bool enableStatsLogging = true;
-		public static bool enableFullLogging = true;
 
 		public static readonly HttpClient client = new HttpClient();
 
@@ -87,8 +85,6 @@ namespace IgniteBot
 		public static string InstalledSpeakerSystemVersion = "";
 		public static bool IsSpeakerSystemUpdateAvailable = false;
 
-		public static bool autoRestart;
-		public static bool showDatabaseLog;
 
 		// declarations.
 		public static MatchData matchData;
@@ -147,24 +143,15 @@ namespace IgniteBot
 		static int lastThrowPlayerId = -1;
 		static bool inPostMatch = false;
 
-		public static int deltaTimeIndexStats;
-		public static int deltaTimeIndexFull = 1;
 
 		public static int StatsHz {
-			get => statsDeltaTimes[deltaTimeIndexStats];
+			get => statsDeltaTimes[Settings.Default.targetDeltaTimeIndexStats];
 		}
 
 		public static List<int> statsDeltaTimes = new List<int> { 16, 100 };
 		public static List<int> fullDeltaTimes = new List<int> { 16, 33, 100 };
 
-		/// <summary>
-		/// The folder to save all the full data logs to
-		/// </summary>
-		public static string saveFolder;
-
 		public static string fileName;
-		public static bool useCompression;
-		public static bool batchWrites;
 
 		public static LiveWindow liveWindow;
 		public static UnifiedSettingsWindow settingsWindow;
@@ -238,27 +225,33 @@ namespace IgniteBot
 			// allow multiple instances if the port is overriden
 			if (IsIgniteBotOpen() && !overrideEchoVRPort)
 			{
-				var box = new MessageBox("Instance already running", "Error");
+				var box = new MessageBox("Instance already running. Running two instances of the IgniteBot at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke.", "Error");
 				box.Show();
 				//while(box!= null)
 				{
 					Thread.Sleep(10);
 				}
 
-
+				
 				//return; // wait for the dialog to quit the program
 			}
 
-
-			AsyncIO.ForceDotNet.Force();
-			NetMQConfig.Cleanup();
-			pubSocket = new PublisherSocket();
-			pubSocket.Options.SendHighWatermark = 1000;
-			pubSocket.Bind("tcp://*:12345");
+			try
+			{
+				AsyncIO.ForceDotNet.Force();
+				NetMQConfig.Cleanup();
+				pubSocket = new PublisherSocket();
+				pubSocket.Options.SendHighWatermark = 1000;
+				pubSocket.Bind("tcp://*:12345");
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, $"Error setting up pub/sub system: {e}");
+			}
 
 			InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
-			if(InstalledSpeakerSystemVersion.Length > 0)
-            {
+			if (InstalledSpeakerSystemVersion.Length > 0)
+			{
 				string[] latestSpeakerSystemVer = GetLatestSpeakerSystemURLVer();
 				IsSpeakerSystemUpdateAvailable = latestSpeakerSystemVer[1] != InstalledSpeakerSystemVersion;
 			}
@@ -302,19 +295,16 @@ namespace IgniteBot
 			// Check for command-line flags
 			if (args.Contains("-slowmode"))
 			{
-				deltaTimeIndexStats = 1;
-				Settings.Default.targetDeltaTimeIndexStats = deltaTimeIndexStats;
+				Settings.Default.targetDeltaTimeIndexStats = 1;
 			}
 
 			if (args.Contains("-autorestart"))
 			{
-				autoRestart = true;
 				Settings.Default.autoRestart = true;
 			}
 
 			if (args.Contains("-showdatabaselog"))
 			{
-				showDatabaseLog = true;
 				Settings.Default.showDatabaseLog = true;
 			}
 
@@ -601,7 +591,7 @@ namespace IgniteBot
 					{
 						if (lastFrame != null && inGame)
 						{
-							MatchEventZMQMessage msg = new MatchEventZMQMessage("LeaveMatch","sessionid", lastFrame.sessionid);
+							MatchEventZMQMessage msg = new MatchEventZMQMessage("LeaveMatch", "sessionid", lastFrame.sessionid);
 							pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
 						}
 						// Don't update so quick if we aren't in a match anyway
@@ -657,14 +647,14 @@ namespace IgniteBot
 			// TODO these times aren't used, but we could do a difference on before and after times to 
 			// calculate an accurate deltaTime. Right now the execution time isn't taken into account.
 			var time = DateTime.Now;
-			var deltaTimeSpan = new TimeSpan(0, 0, 0, 0, statsDeltaTimes[deltaTimeIndexStats]);
+			var deltaTimeSpan = new TimeSpan(0, 0, 0, 0, statsDeltaTimes[Settings.Default.targetDeltaTimeIndexStats]);
 
 			Thread.Sleep(10);
 
 			// Session pull loop.
 			while (running)
 			{
-				if (enableStatsLogging && inGame)
+				if (Settings.Default.enableStatsLogging && inGame)
 				{
 					try
 					{
@@ -774,7 +764,7 @@ namespace IgniteBot
 						}
 					}
 
-					Thread.Sleep(statsDeltaTimes[deltaTimeIndexStats]);
+					Thread.Sleep(statsDeltaTimes[Settings.Default.targetDeltaTimeIndexStats]);
 				}
 				else
 				{
@@ -808,11 +798,11 @@ namespace IgniteBot
 				if (frameCount > 200)
 				{
 					frameCount = 0;
-					string filePath = Path.Combine(saveFolder, fileName + ".milk");
+					string filePath = Path.Combine(Settings.Default.saveFolder, fileName + ".milk");
 					File.WriteAllBytes(filePath, milkData.GetBytes());
 				}
 
-				Thread.Sleep(fullDeltaTimes[deltaTimeIndexFull]);
+				Thread.Sleep(fullDeltaTimes[Settings.Default.targetDeltaTimeIndexFull]);
 			}
 		}
 
@@ -829,7 +819,7 @@ namespace IgniteBot
 			// Session pull loop.
 			while (running)
 			{
-				if (enableFullLogging && inGame)
+				if (Settings.Default.enableFullLogging && inGame)
 				{
 					try
 					{
@@ -870,7 +860,7 @@ namespace IgniteBot
 						Console.WriteLine("Big oopsie. Please catch inside. " + ex);
 					}
 
-					Thread.Sleep(fullDeltaTimes[deltaTimeIndexFull]);
+					Thread.Sleep(fullDeltaTimes[Settings.Default.targetDeltaTimeIndexFull]);
 				}
 				else
 				{
@@ -889,12 +879,12 @@ namespace IgniteBot
 		{
 			lastDataTime = DateTime.Now;
 
-			if (READ_FROM_FILE) autoRestart = false;
+			if (READ_FROM_FILE) Settings.Default.autoRestart = false;
 
 			// Session pull loop.
 			while (running)
 			{
-				if (autoRestart)
+				if (Settings.Default.autoRestart)
 				{
 					// only start worrying once 15 seconds have passed
 					if (DateTime.Compare(lastDataTime.AddMinutes(.25f), DateTime.Now) < 0)
@@ -1068,7 +1058,7 @@ namespace IgniteBot
 		}
 
 		public static string FindEchoSpeakerSystemInstallVersion()
-        {
+		{
 			string ret = "";
 			try
 			{
@@ -1128,7 +1118,7 @@ namespace IgniteBot
 
 		private static StreamReader ExtractFile(StreamReader fileReader, string fileName)
 		{
-			string tempDir = Path.Combine(saveFolder, "temp_zip_read\\");
+			string tempDir = Path.Combine(Settings.Default.saveFolder, "temp_zip_read\\");
 
 			if (Directory.Exists(tempDir))
 			{
@@ -1166,28 +1156,15 @@ namespace IgniteBot
 
 		private static void ReadSettings()
 		{
-			showDatabaseLog = Settings.Default.showDatabaseLog;
-			enableLoggingRemote = Settings.Default.logToServer;
-			autoRestart = Settings.Default.autoRestart;
-			deltaTimeIndexStats = Settings.Default.targetDeltaTimeIndexStats;
-			useCompression = Settings.Default.useCompression;
-			batchWrites = Settings.Default.batchWrites;
-			saveFolder = Settings.Default.saveFolder;
-			enableFullLogging = Settings.Default.enableFullLogging;
-			enableStatsLogging = Settings.Default.enableStatsLogging;
-			deltaTimeIndexFull = Settings.Default.targetDeltaTimeIndexFull;
 			echoVRIP = Settings.Default.echoVRIP;
-			HighlightsHelper.clearHighlightsOnExit = Settings.Default.clearHighlightsOnExit;
-			HighlightsHelper.ClientHighlightScope = (HighlightLevel)Settings.Default.clientHighlightScope;
 			HighlightsHelper.isNVHighlightsEnabled = Settings.Default.isNVHighlightsEnabled;
 			if (!overrideEchoVRPort) echoVRPort = Settings.Default.echoVRPort;
 
-			if (saveFolder == "none" || !Directory.Exists(saveFolder))
+			if (Settings.Default.saveFolder == "none" || !Directory.Exists(Settings.Default.saveFolder))
 			{
-				saveFolder = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+				Settings.Default.saveFolder = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
 					"IgniteBot"), "replays");
-				Directory.CreateDirectory(saveFolder);
-				Settings.Default.saveFolder = saveFolder;
+				Directory.CreateDirectory(Settings.Default.saveFolder);
 				Settings.Default.Save();
 			}
 		}
@@ -1198,19 +1175,19 @@ namespace IgniteBot
 		/// <param name="data">The data to write</param>
 		static void WriteToFile(string data)
 		{
-			if (batchWrites)
+			if (Settings.Default.batchWrites)
 			{
 				dataCache.Add(data);
 
 				// if the time elapsed since last write is less than cutoff
-				if (dataCache.Count * fullDeltaTimes[deltaTimeIndexFull] < 5000)
+				if (dataCache.Count * fullDeltaTimes[Settings.Default.targetDeltaTimeIndexFull] < 5000)
 				{
 					return;
 				}
 			}
 
 			// Fail if the folder doesn't even exist
-			if (!Directory.Exists(saveFolder))
+			if (!Directory.Exists(Settings.Default.saveFolder))
 			{
 				return;
 			}
@@ -1218,7 +1195,7 @@ namespace IgniteBot
 			string filePath, directoryPath;
 
 			// could combine with some other data path, such as AppData
-			directoryPath = saveFolder;
+			directoryPath = Settings.Default.saveFolder;
 
 			filePath = Path.Combine(directoryPath, fileName + ".echoreplay");
 
@@ -1226,9 +1203,9 @@ namespace IgniteBot
 			{
 				StreamWriter streamWriter = new StreamWriter(filePath, true);
 
-				if (batchWrites)
+				if (Settings.Default.batchWrites)
 				{
-					foreach (var row in dataCache)
+					foreach (string row in dataCache)
 					{
 						streamWriter.WriteLine(row);
 					}
@@ -1257,7 +1234,7 @@ namespace IgniteBot
 			if (frame.sessionid != lastFrame.sessionid || lastFrame == null)
 			{
 				MatchEventZMQMessage msg = new MatchEventZMQMessage("NewMatch", "sessionid", frame.sessionid);
-                pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
+				pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
 				// We just discard the old match and hope it was already submitted
 
 				lastFrame = frame; // don't detect stats changes across matches
@@ -2238,7 +2215,8 @@ namespace IgniteBot
 					}
 
 					// Autofocus
-					if (Settings.Default.isAutofocusEnabled) {
+					if (Settings.Default.isAutofocusEnabled)
+					{
 						FocusEchoVR();
 					}
 
@@ -2881,16 +2859,16 @@ namespace IgniteBot
 				fileName = DateTime.Now.ToString("rec_yyyy-MM-dd_HH-mm-ss");
 
 				// compress the file
-				if (useCompression)
+				if (Settings.Default.useCompression)
 				{
-					if (File.Exists(Path.Combine(saveFolder, lastFilename + ".echoreplay")))
+					if (File.Exists(Path.Combine(Settings.Default.saveFolder, lastFilename + ".echoreplay")))
 					{
-						string tempDir = Path.Combine(saveFolder, "temp_zip");
+						string tempDir = Path.Combine(Settings.Default.saveFolder, "temp_zip");
 						Directory.CreateDirectory(tempDir);
-						File.Move(Path.Combine(saveFolder, lastFilename + ".echoreplay"),
-							Path.Combine(saveFolder, "temp_zip",
+						File.Move(Path.Combine(Settings.Default.saveFolder, lastFilename + ".echoreplay"),
+							Path.Combine(Settings.Default.saveFolder, "temp_zip",
 								lastFilename + ".echoreplay")); // TODO can fail because in use
-						ZipFile.CreateFromDirectory(tempDir, Path.Combine(saveFolder, lastFilename + ".echoreplay"));
+						ZipFile.CreateFromDirectory(tempDir, Path.Combine(Settings.Default.saveFolder, lastFilename + ".echoreplay"));
 						Directory.Delete(tempDir, true);
 					}
 				}
@@ -3228,12 +3206,13 @@ namespace IgniteBot
 
 			IPAddress start = new IPAddress(BitConverter.GetBytes(broadCastIpAddress));
 
-            var bytes = start.GetAddressBytes();
+			var bytes = start.GetAddressBytes();
 			var leastSigByte = address.GetAddressBytes().Last();
 			var range = 255 - leastSigByte;
 
 			var pingReplyTasks = Enumerable.Range(leastSigByte, range)
-				.Select(x => {
+				.Select(x =>
+				{
 					var bb = start.GetAddressBytes();
 					bb[3] = (byte)x;
 					var destIp = new IPAddress(bb);
@@ -3241,7 +3220,8 @@ namespace IgniteBot
 				})
 				.ToList();
 			var pingReplyTasks2 = Enumerable.Range(0, leastSigByte - 1)
-				.Select(x => {
+				.Select(x =>
+				{
 
 					var bb = start.GetAddressBytes();
 					bb[3] = (byte)x;
@@ -3255,7 +3235,7 @@ namespace IgniteBot
 			IPPingThread2Done = false;
 			IPSearchthread1.Start();
 			IPSearchthread2.Start();
-        }
+		}
 
 		// Declare the GetIpNetTable function.
 		[DllImport("IpHlpApi.dll")]
@@ -3338,9 +3318,9 @@ namespace IgniteBot
 			}
 		}
 
-        public static string[] GetLatestSpeakerSystemURLVer()
-        {
-            string[] ret = new string[2];
+		public static string[] GetLatestSpeakerSystemURLVer()
+		{
+			string[] ret = new string[2];
 			try
 			{
 				HttpWebRequest req = (HttpWebRequest)WebRequest.Create(@"https://api.github.com/repos/iblowatsports/Echo-VR-Speaker-System/releases/latest");
@@ -3357,14 +3337,15 @@ namespace IgniteBot
 				ret[0] = verionJson.assets.First(url => url.browser_download_url.EndsWith("exe")).browser_download_url;
 				ret[1] = verionJson.tag_name;
 			}
-			catch(Exception e) {
+			catch (Exception e)
+			{
 				LogRow(LogType.Error, e.Message);
 			}
-            return ret;
-        }
+			return ret;
+		}
 
-        public static void InstallSpeakerSystem(IProgress<string> progress)
-        {
+		public static void InstallSpeakerSystem(IProgress<string> progress)
+		{
 			try
 			{
 				IntPtr unityHandle = liveWindow.GetUnityHandler();
@@ -3379,11 +3360,11 @@ namespace IgniteBot
 					FileName = Path.Combine(Path.GetTempPath(), updateFileName),
 					UseShellExecute = true,
 					Arguments = "/ignite=true /HWND=" + unityHandle.ToInt32() + " "
-			});
+				});
 				int count = 0;
 				string SpeakerSystemInstallLabel = "Installing Echo Speaker System";
 				string statusDots = "";
-				while (!process.HasExited && count <12000) //Time out after 10 mins
+				while (!process.HasExited && count < 12000) //Time out after 10 mins
 				{
 					if (count % 16 == 0)
 					{
@@ -3416,9 +3397,9 @@ namespace IgniteBot
 				int code = process.ExitCode;
 				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
 				IsSpeakerSystemUpdateAvailable = false;
-            }
-            catch (Exception e)
-            {
+			}
+			catch (Exception e)
+			{
 				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
 				IsSpeakerSystemUpdateAvailable = false;
 				progress.Report("Echo Speaker System install failed!");
@@ -3426,7 +3407,7 @@ namespace IgniteBot
 		}
 
 		public static void ClearARPCache()
-        {
+		{
 			try
 			{
 				System.Diagnostics.Process process = new System.Diagnostics.Process();
@@ -3440,8 +3421,8 @@ namespace IgniteBot
 				process.Start();
 				process.WaitForExit(500);
 				Thread.Sleep(20);
-            }
-            catch { }
+			}
+			catch { }
 		}
 		/// <summary>
 		/// Finds a Quest local IP address on the same network
@@ -3449,20 +3430,20 @@ namespace IgniteBot
 		/// <returns>The IP address</returns>
 		public static string FindQuestIP(IProgress<string> progress)
 		{
-            try
-            {
-                string QuestStatusLabel = "Searching for Quest on network";
+			try
+			{
+				string QuestStatusLabel = "Searching for Quest on network";
 				QuestIP = null;
 				ClearARPCache();
 				CheckARPTable();
-                int count = 0;
-                string statusDots = "";
-                if (QuestIP == null)
-                {
-                    GetCurrentIPAndPingNetwork();
-                    while (QuestIP == null && (!IPPingThread1Done || !IPPingThread2Done))
-                    {
-                        if (count % 16 == 0)
+				int count = 0;
+				string statusDots = "";
+				if (QuestIP == null)
+				{
+					GetCurrentIPAndPingNetwork();
+					while (QuestIP == null && (!IPPingThread1Done || !IPPingThread2Done))
+					{
+						if (count % 16 == 0)
 						{
 							statusDots = "";
 						}
@@ -3471,43 +3452,43 @@ namespace IgniteBot
 							statusDots += ".";
 						}
 						count++;
-                        progress.Report(QuestStatusLabel + statusDots);
-                        Thread.Sleep(50);
-                        CheckARPTable();
-                    }
+						progress.Report(QuestStatusLabel + statusDots);
+						Thread.Sleep(50);
+						CheckARPTable();
+					}
 					IPSearchthread1 = null;
 					IPSearchthread2 = null;
 					if (QuestIP != null)
-                    {
-                        progress.Report("Found Quest on network!");
-                    }
-                    else
-                    {
-                        Thread.Sleep(1000);
-                        CheckARPTable();
-                        if (QuestIP != null)
-                        {
-                            progress.Report("Found Quest on network!");
-                        }
-                        else
-                        {
-                            progress.Report("Failed to find Quest on network!");
-                        }
-                    }
-                }
-                else
-                {
-                    progress.Report("Found Quest on network!");
-                }
+					{
+						progress.Report("Found Quest on network!");
+					}
+					else
+					{
+						Thread.Sleep(1000);
+						CheckARPTable();
+						if (QuestIP != null)
+						{
+							progress.Report("Found Quest on network!");
+						}
+						else
+						{
+							progress.Report("Failed to find Quest on network!");
+						}
+					}
+				}
+				else
+				{
+					progress.Report("Found Quest on network!");
+				}
 
-            }
-            finally
-            {
-                // Release the memory.
-                FreeMibTable(buffer);
-            }
+			}
+			finally
+			{
+				// Release the memory.
+				FreeMibTable(buffer);
+			}
 			Thread.Sleep(500);
-            echoVRIP = QuestIP == null ? "127.0.0.1" : QuestIP.ToString();
+			echoVRIP = QuestIP == null ? "127.0.0.1" : QuestIP.ToString();
 			return echoVRIP;
 		}
 
@@ -3605,6 +3586,7 @@ namespace IgniteBot
 		internal static void Quit()
 		{
 			running = false;
+			Settings.Default.Save();
 			if (closingWindow != null)
 			{
 				// already trying to close

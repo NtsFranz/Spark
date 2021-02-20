@@ -117,4 +117,8 @@
     </Page>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SettingsBindings" />
+  </ItemGroup>
+
 </Project>
