@@ -274,8 +274,8 @@
 
 						<CheckBox x:Name="enableAutoFocusCheckbox" Content="Autofocus EchoVR" Margin="5,5,5,5"
                                       IsChecked="{l:SettingBinding isAutofocusEnabled}" />
-						<CheckBox x:Name="enableNVHighlightsCheckbox" Content="Enable NVIDIA Highlights"
-                                      Margin="5,5,5,5" IsChecked="{Binding NVHighlightsEnabled}" />
+						<CheckBox x:Name="enableNVHighlightsCheckbox" Content="{Binding EnableHighlightsContent}"
+                                      Margin="5,5,5,5" IsChecked="{Binding NVHighlightsEnabled}" IsEnabled="{Binding HighlightsSupported}" />
 						<GroupBox x:Name="nvHighlightsBox" Header="NVIDIA Highlights" Margin="5,5,5,5">
 							<StackPanel>
 								<Label Content="Highlight Scope" Margin="5,5,5,0" />
@@ -307,8 +307,8 @@
                                                TextWrapping="Wrap" Margin="5,10,5,0" />
 								<CheckBox x:Name="clearHighlightsOnExitCheckbox" Content="Clear Highlights On Exit"
                                               Margin="5,5,5,5" IsChecked="{l:SettingBinding clearHighlightsOnExit}" />
-								<Button x:Name="clearHighlightsButton" Content="Clear Unsaved Highlights"
-                                            Width="230"
+								<Button x:Name="clearHighlightsButton" Content="{Binding ClearHighlightsButtonContent}"
+                                            Width="230" IsEnabled="{Binding DoNVClipsExist}"
                                             HorizontalAlignment="Left" Margin="5,5,5,5" Height="32"
                                             Click="ClearHighlightsEvent" />
 
@@ -331,7 +331,7 @@
 				<StackPanel>
 					<Image x:Name="logo" Margin="10,10,10,10" Source="/img/ignite_logo_128.png" Width="128"
                                Height="128" HorizontalAlignment="Center" VerticalAlignment="Top" />
-					<Label x:Name="versionNum" Content="version ?" Width="128" Margin="10,10,10,10"
+					<Label x:Name="versionNum" Content="{Binding VersionNumberString}" Width="128" Margin="10,10,10,10"
                                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0,0,0,0" Height="30"
                                HorizontalAlignment="Center" VerticalAlignment="Top" />

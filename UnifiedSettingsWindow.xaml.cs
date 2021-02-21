@@ -30,94 +30,19 @@ namespace IgniteBot
 
 		private void WindowLoad(object sender, RoutedEventArgs e)
 		{
-			//InitializeGeneral();
-			// InitializeReplaysTab();
-			// InitializeTTSTab();
-			// InitializeNVHighlightsTab();
-
-			// versionNum.Content = "v" + Program.AppVersion();
+			//Initialize();
 
 			initialized = true;
 		}
 
-		private void InitializeGeneral()
+		private void Initialize()
 		{
-			startWithWindowsCheckbox.IsChecked = Settings.Default.startOnBoot;
-			startMinimizedCheckbox.IsChecked = Settings.Default.startMinimized;
-			autorestartCheckbox.IsChecked = Settings.Default.autoRestart;
-			capturevp2Checkbox.IsChecked = Settings.Default.capturevp2;
-			discordRichPresenceCheckbox.IsChecked = Settings.Default.discordRichPresence;
-			remoteLoggingCheckbox.IsChecked = Settings.Default.logToServer;
-			exeLocationTextBox.Text = Settings.Default.echoVRPath;
-			echoVRIPTextBox.Text = Settings.Default.echoVRIP;
-			echoVRPortTextBox.Text = Program.echoVRPort.ToString();
-
-			enableStatsLoggingCheckBox.IsChecked = Settings.Default.enableStatsLogging;
-			statsLoggingBox.IsEnabled = enableStatsLoggingCheckBox.IsChecked == true;
-
-			uploadToIgniteDBCheckBox.IsChecked = Settings.Default.uploadToIgniteDB;
-			uploadToFirestoreCheckBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
-			uploadToFirestoreCheckBox.IsChecked = Settings.Default.uploadToFirestore;
-
+			// TODO add this in binding form
 			statsLoggingBox.Opacity = Settings.Default.enableStatsLogging ? 1 : .5;
-		}
-
-		private void InitializeReplaysTab()
-		{
-			storageLocationTextBox.Text = Settings.Default.saveFolder;
-			whenToSplitReplaysDropdown.SelectedIndex = Settings.Default.whenToSplitReplays;
-			enableFullLoggingCheckbox.IsChecked = Settings.Default.enableFullLogging;
-			fullLoggingBox.IsEnabled = enableFullLoggingCheckbox.IsChecked == true;
-			currentFilenameLabel.Content = Program.fileName;
-			batchWritesButton.IsChecked = Settings.Default.batchWrites;
-			useCompressionButton.IsChecked = Settings.Default.useCompression;
-			speedSelector.SelectedIndex = Settings.Default.targetDeltaTimeIndexFull;
-			onlyRecordPrivateMatchesCheckBox.IsChecked = Settings.Default.onlyRecordPrivateMatches;
+			// TODO add this in binding form
 			fullLoggingBox.Opacity = Settings.Default.enableFullLogging ? 1 : .5;
-		}
-
-		private void InitializeTTSTab()
-		{
-			speechSpeed.SelectedIndex = Settings.Default.TTSSpeed;
-			serverLocationCheckbox.IsChecked = Settings.Default.serverLocationTTS;
-			joustTimeCheckbox.IsChecked = Settings.Default.joustTimeTTS;
-			joustSpeedCheckbox.IsChecked = Settings.Default.joustSpeedTTS;
-			tubeExitSpeedCheckbox.IsChecked = Settings.Default.tubeExitSpeedTTS;
-			maxBoostSpeedCheckbox.IsChecked = Settings.Default.maxBoostSpeedTTS;
-			goalSpeed.IsChecked = Settings.Default.goalSpeedTTS;
-			goalDistance.IsChecked = Settings.Default.goalDistanceTTS;
-			playerJoinCheckbox.IsChecked = Settings.Default.playerJoinTTS;
-			playerLeaveCheckbox.IsChecked = Settings.Default.playerLeaveTTS;
-			playerSwitchCheckbox.IsChecked = Settings.Default.playerSwitchTeamTTS;
-			gamePausedCheckbox.IsChecked = Settings.Default.pausedTTS;
-			discordLoginWarning.Visibility = DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
-		}
-
-		private void InitializeNVHighlightsTab()
-		{
-			HighlightsHelper.isNVHighlightsEnabled &= HighlightsHelper.isNVHighlightsSupported;
-			Settings.Default.isNVHighlightsEnabled =
-				HighlightsHelper.isNVHighlightsEnabled; // This shouldn't change anything
-			Settings.Default.Save();
-
-			enableAutoFocusCheckbox.IsChecked = Settings.Default.isAutofocusEnabled;
-			enableNVHighlightsCheckbox.IsChecked = HighlightsHelper.isNVHighlightsEnabled;
-			clearHighlightsOnExitCheckbox.IsChecked = Settings.Default.clearHighlightsOnExit;
-			highlightScope.SelectedIndex = Settings.Default.clientHighlightScope;
-			recordAllInSpectator.IsChecked = Settings.Default.nvHighlightsSpectatorRecord;
-			clearHighlightsButton.IsEnabled = HighlightsHelper.DoNVClipsExist();
-
-			enableNVHighlightsCheckbox.IsEnabled = HighlightsHelper.isNVHighlightsSupported;
-			enableNVHighlightsCheckbox.Content = HighlightsHelper.isNVHighlightsSupported
-				? "Enable NVIDIA Highlights"
-				: "NVIDIA Highlights isn't supported by your PC";
-
-
-			nvHighlightsBox.IsEnabled = HighlightsHelper.isNVHighlightsEnabled;
+			// TODO add this in binding form
 			nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
-			secondsBefore.Text = Settings.Default.nvHighlightsSecondsBefore.ToString();
-			secondsAfter.Text = Settings.Default.nvHighlightsSecondsAfter.ToString();
-			clearHighlightsButton.Content = $"Clear {HighlightsHelper.nvHighlightClipCount} Unsaved Highlights";
 		}
 
 		#region General
@@ -531,7 +456,16 @@ namespace IgniteBot
 			Settings.Default.Save();
 		}
 
+		public string ClearHighlightsButtonContent => $"Clear {HighlightsHelper.nvHighlightClipCount} Unsaved Highlights";
+		public string EnableHighlightsContent => HighlightsHelper.isNVHighlightsSupported
+				? "Enable NVIDIA Highlights"
+				: "NVIDIA Highlights isn't supported by your PC";
+		public bool HighlightsSupported => HighlightsHelper.isNVHighlightsSupported;
+		public bool DoNVClipsExist => HighlightsHelper.DoNVClipsExist();
+
 		#endregion
+
+		public static string VersionNumberString => $"v{Program.AppVersion()}";
 	}
 
 	public class SettingBindingExtension : Binding
