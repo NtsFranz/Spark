@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IgniteBot"
+        xmlns:l="clr-namespace:IgniteBot"
         mc:Ignorable="d"
         Title="IgniteBot | Atlas Links" Height="644" Width="600" Background="{DynamicResource BackgroundColour}" FontSize="16" WindowStartupLocation="CenterOwner" SizeToContent="Height" ResizeMode="NoResize" Icon="/img/ignite_logo_128.png">
 	<StackPanel>
@@ -19,10 +19,10 @@
 						<ComboBoxItem Content="Local PC"/>
 						<ComboBoxItem Content="Quest"/>
 					</ComboBox>
-					<TextBox x:Name="alternateIPTextBox" Text="---" TextWrapping="Wrap" Width="175" Margin="10,10,10,10" FontFamily="Consolas"/>
+					<TextBox x:Name="alternateIPTextBox" Text="{l:SettingLoad echoVRIP}" TextChanged="EchoVRIPChanged" TextWrapping="Wrap" Width="175" Margin="10,10,10,10" FontFamily="Consolas"/>
 					<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="Searching for Quest" Margin="30,-10,0,-20" FontSize="12" FontStyle="Italic"/>
 				</StackPanel>
-				<Button x:Name="getButton" Content="Get" Margin="10,15,80,20" Padding="4,4,4,4" Width="52" Click="GetLinks"/>
+				<Button x:Name="getButton" Content="Refresh" Margin="10,15,40,20" Padding="4,4,4,4" Width="130" Click="GetLinks"/>
 
 				<StackPanel>
 					<Label Content="Link Type:" Margin="10,-5,10,0"/>

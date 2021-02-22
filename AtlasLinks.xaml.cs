@@ -461,5 +461,13 @@ namespace IgniteBot
 
 			onlyCasters = ((CheckBox)sender).IsChecked == true;
 		}
+
+		private void EchoVRIPChanged(object sender, TextChangedEventArgs e)
+		{
+			if (!initialized) return;
+			Program.echoVRIP = ((TextBox)sender).Text;
+			Settings.Default.echoVRIP = Program.echoVRIP;
+			Settings.Default.Save();
+		}
 	}
 }

@@ -60,10 +60,10 @@
 
 						<StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,-8">
 							<Label x:Name="echoVRIPLabel" Content="EchoVR IP (for Quest)" Margin="4,4,4,4" />
-							<TextBox x:Name="echoVRIPTextBox" Text="127.0.0.1" TextWrapping="Wrap" Width="140"
+							<TextBox x:Name="echoVRIPTextBox" Text="{l:SettingLoad echoVRIP}" TextWrapping="Wrap" Width="140"
                                          Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
                                          Padding="4,4,4,4" TextChanged="EchoVRIPChanged" />
-							<TextBox x:Name="echoVRPortTextBox" Text="6721" TextWrapping="Wrap" Width="60"
+							<TextBox x:Name="echoVRPortTextBox" Text="{l:SettingLoad echoVRPort}" TextWrapping="Wrap" Width="60"
                                          Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
                                          Padding="4,4,4,4" TextChanged="EchoVRPortChanged" />
 							<Button x:Name="resetIP" Content="Local PC" Margin="4,4,4,4" Padding="4,4,4,4"
