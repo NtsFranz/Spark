@@ -164,6 +164,8 @@ namespace IgniteBot
 		public static FirstTimeSetupWindow firstTimeSetupWindow;
 		public static ClosingDialog closingWindow;
 
+		private static Dictionary<string, Window> popupWindows = new Dictionary<string, Window>();
+
 		private static float smoothDeltaTime = -1;
 
 		public static string customId;
@@ -391,11 +393,10 @@ namespace IgniteBot
 			return $"{version.Major}.{version.Minor}.{version.Build}";
 		}
 
-
 		/// <summary>
 		/// This is just a failsafe so that the program doesn't leave a dangling thread.
 		/// </summary>
-		async static Task KillAll(HTTPServer httpServer = null)
+		static async Task KillAll(HTTPServer httpServer = null)
 		{
 			if (liveWindow != null)
 			{
@@ -3490,6 +3491,30 @@ namespace IgniteBot
 			Thread.Sleep(500);
 			echoVRIP = QuestIP == null ? "127.0.0.1" : QuestIP.ToString();
 			return echoVRIP;
+		}
+
+		/// <summary>
+		/// Shows or hides the requested popup window
+		/// </summary>
+		/// <param name="type">The class of the window</param>
+		/// <param name="windowName">The identifier of the window. This is used to hide if a window of that name was already shown</param>
+		/// <param name="ownedBy">The window to be owned by. This makes the popup always on top of the parent</param>
+		/// <returns>True if the window was opened, false if the window was closed</returns>
+		public static bool ToggleWindow(Type type, string windowName, Window ownedBy = null)
+		{
+			if (!popupWindows.ContainsKey(windowName) || popupWindows[windowName] == null)
+			{
+				popupWindows[windowName] = (Window)Activator.CreateInstance(type);
+				popupWindows[windowName].Owner = ownedBy;
+				popupWindows[windowName].Closed += (_, _) => popupWindows[windowName] = null;
+				popupWindows[windowName].Show();
+				return true;
+			}
+			else
+			{
+				popupWindows[windowName].Close();
+				return false;
+			}
 		}
 
 		/// <summary>

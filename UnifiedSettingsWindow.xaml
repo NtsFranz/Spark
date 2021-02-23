@@ -331,7 +331,7 @@
 				<StackPanel>
 					<Image x:Name="logo" Margin="10,10,10,10" Source="/img/ignite_logo_128.png" Width="128"
                                Height="128" HorizontalAlignment="Center" VerticalAlignment="Top" />
-					<Label x:Name="versionNum" Content="{Binding VersionNumberString}" Width="128" Margin="10,10,10,10"
+					<Label x:Name="versionNum" Content="{Binding AppVersionLabelText}" Width="128" Margin="10,10,10,10"
                                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0,0,0,0" Height="30"
                                HorizontalAlignment="Center" VerticalAlignment="Top" />

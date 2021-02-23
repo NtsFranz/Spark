@@ -97,9 +97,7 @@ namespace IgniteBot
 		{
 			InitializeComponent();
 
-
-
-			System.Windows.Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+			Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
 			outputUpdateTimer.Interval = 100;
 			outputUpdateTimer.Elapsed += Update;
@@ -127,8 +125,6 @@ namespace IgniteBot
 			}
 			//hostLiveReplayButton.Visible = !Program.Personal;
 
-			versionLabel.Text = "v" + Program.AppVersion();
-
 			GenerateNewStatsId();
 
 			for (int i = 0; i < 10; i++)
@@ -146,6 +142,8 @@ namespace IgniteBot
 
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
 		}
+
+		public static string AppVersionLabelText => $"v{Program.AppVersion()}";
 
 		private void ActivateUnityWindow()
 		{
@@ -167,16 +165,14 @@ namespace IgniteBot
 
 		private void speakerSystemPanel_Resize(object sender, EventArgs e)
 		{
-			if (speakerSystemPanel.IsVisible && SpeakerSystemProcess != null && SpeakerSystemProcess.Handle.ToInt32() > 0)
-			{
-				System.Windows.Point relativePoint = speakerSystemPanel.TransformToAncestor(this)
-						  .Transform(new System.Windows.Point(0, 0));
-				MoveWindow(unityHWND, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
-				ActivateUnityWindow();
-			}
+			if (!speakerSystemPanel.IsVisible || SpeakerSystemProcess == null || SpeakerSystemProcess.Handle.ToInt32() <= 0) return;
+			
+			System.Windows.Point relativePoint = speakerSystemPanel.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+			MoveWindow(unityHWND, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
+			ActivateUnityWindow();
 		}
 
-		public void MoveSpeakerSystemWindow()
+		private void MoveSpeakerSystemWindow()
 		{
 			//Wait until unity app is ready to be resized
 			int count = 0;
@@ -200,9 +196,9 @@ namespace IgniteBot
 				SpeakerSystemProcess?.CloseMainWindow();
 
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-
+				LogRow(LogType.Error, $"Error closing live window\n{ex}");
 			}
 		}
 
@@ -210,19 +206,19 @@ namespace IgniteBot
 		{
 			try
 			{
+				if (SpeakerSystemProcess == null) return;
 
-				if (SpeakerSystemProcess != null)
+				while (!SpeakerSystemProcess.HasExited)
 				{
-					while (!SpeakerSystemProcess.HasExited)
-						SpeakerSystemProcess.Kill();
-
-					unityHWND = IntPtr.Zero;
-					Thread.Sleep(100);
+					SpeakerSystemProcess.Kill();
 				}
-			}
-			catch (Exception)
-			{
 
+				unityHWND = IntPtr.Zero;
+				Thread.Sleep(100);
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, $"Error killing speaker system\n{e}");
 			}
 		}
 		private void Form1_Activated(object sender, EventArgs e)
@@ -271,7 +267,10 @@ namespace IgniteBot
 								//");
 								//	}
 							}
-							catch (Exception) { }
+							catch (Exception ex)
+							{
+								LogRow(LogType.Error, $"Error writing to output log.\n{ex}");
+							}
 
 							//ColorizeOutput("Entered state:", gameStateChangedCheckBox.ForeColor, mainOutputTextBox.Text.Length - newText.Length);
 						}
@@ -430,7 +429,7 @@ namespace IgniteBot
 
 						// last goals and last matches
 						StringBuilder lastGoalsString = new StringBuilder();
-						var lastGoals = Program.lastGoals.ToArray();
+						GoalData[] lastGoals = Program.lastGoals.ToArray();
 						if (lastGoals.Length > 0)
 						{
 							for (int j = lastGoals.Length - 1; j >= 0; j--)
@@ -694,30 +693,13 @@ namespace IgniteBot
 
 		private void SettingsButtonClicked(object sender, RoutedEventArgs e)
 		{
-			if (Program.settingsWindow == null)
-			{
-				Program.settingsWindow = new UnifiedSettingsWindow();
-				Program.settingsWindow.Owner = this;
-				Program.settingsWindow.Closed += (sender, args) => Program.settingsWindow = null;
-				Program.settingsWindow.Show();
-			}
-			else
-			{
-				Program.settingsWindow.Close();
-				// TODO maybe add Program.settingsWindow = null here. Check if it's necessary
-			}
+			Program.ToggleWindow(typeof(UnifiedSettingsWindow), "Settings");
 		}
 
 		private void QuitButtonClicked(object sender, RoutedEventArgs e)
 		{
 			isExplicitClose = true;
 			Program.Quit();
-		}
-
-		private void pauseButton_Click(object sender, RoutedEventArgs e)
-		{
-			Program.paused = !Program.paused;
-			((Button)sender).Content = Program.paused ? "Continue" : "Pause";
 		}
 
 		private string FilterLines(string input)
@@ -788,22 +770,6 @@ namespace IgniteBot
 			return string.Join(Environment.NewLine, input);
 		}
 
-		private void accessCodeLabel_Click(object sender, RoutedEventArgs e)
-		{
-			LoginWindow login = new LoginWindow();
-
-			login.Show();
-
-			accessCodeLabel.Text = "Mode: " + Program.currentAccessCodeUsername;
-
-			login.Close();
-		}
-
-		private void SessionIDFocused(object sender, RoutedEventArgs e)
-		{
-			sessionIdTextBox.SelectAll();
-		}
-
 		private void clearButton_Click(object sender, RoutedEventArgs e)
 		{
 			lock (Program.logOutputWriteLock)
@@ -825,18 +791,17 @@ namespace IgniteBot
 
 		private void GenerateNewStatsId()
 		{
-			using (SHA256 sha = SHA256.Create())
+			using SHA256 sha = SHA256.Create();
+			
+			byte[] hash = sha.ComputeHash(BitConverter.GetBytes(DateTime.Now.Ticks));
+			// Convert the byte array to hexadecimal string
+			StringBuilder sb = new StringBuilder();
+			foreach (byte b in hash)
 			{
-				byte[] hash = sha.ComputeHash(BitConverter.GetBytes(DateTime.Now.Ticks));
-				// Convert the byte array to hexadecimal string
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < hash.Length; i++)
-				{
-					sb.Append(hash[i].ToString("X2"));
-				}
-				Program.customId = sb.ToString();
-				customIdTextbox.Text = Program.customId;
+				sb.Append(b.ToString("X2"));
 			}
+			Program.customId = sb.ToString();
+			customIdTextbox.Text = Program.customId;
 		}
 
 		private void updateButton_Click(object sender, RoutedEventArgs e)
@@ -983,19 +948,10 @@ namespace IgniteBot
 			}
 		}
 
+		[Obsolete("This is in UnifiedSettingsWindow now")]
 		private void ttsSettings_Click(object sender, RoutedEventArgs e)
 		{
-			if (Program.ttsWindow == null)
-			{
-				Program.ttsWindow = new TTSSettingsWindow();
-				Program.ttsWindow.Owner = this;
-				Program.ttsWindow.Closed += (sender, args) => Program.ttsWindow = null;
-				Program.ttsWindow.Show();
-			}
-			else
-			{
-				Program.ttsWindow.Close();
-			}
+			Program.ToggleWindow(typeof(TTSSettingsWindow), "TTS");
 		}
 
 		private void showHighlights_Click(object sender, RoutedEventArgs e)
@@ -1003,34 +959,15 @@ namespace IgniteBot
 			HighlightsHelper.ShowNVHighlights();
 		}
 
+		[Obsolete("This is in UnifiedSettingsWindow now")]
 		private void showNVHighlightsSettings_Click(object sender, RoutedEventArgs e)
 		{
-			if (Program.nvhWindow == null)
-			{
-				Program.nvhWindow = new NVHighlightsSettingsWindow();
-				Program.nvhWindow.Owner = this;
-				Program.nvhWindow.Closed += (sender, args) => Program.nvhWindow = null;
-				Program.nvhWindow.Show();
-			}
-			else
-			{
-				Program.nvhWindow.Close();
-			}
+			Program.ToggleWindow(typeof(NVHighlightsSettingsWindow), "NVHighlights Settings");
 		}
 
 		private void LoginWindowButtonClicked(object sender, RoutedEventArgs e)
 		{
-			if (Program.loginWindow == null)
-			{
-				Program.loginWindow = new LoginWindow();
-				Program.loginWindow.Owner = this;
-				Program.loginWindow.Closed += (sender, args) => Program.loginWindow = null;
-				Program.loginWindow.Show();
-			}
-			else
-			{
-				Program.loginWindow.Close();
-			}
+			Program.ToggleWindow(typeof(LoginWindow), "Login", this);
 		}
 
 		private void startSpectatorStream_Click(object sender, RoutedEventArgs e)
@@ -1099,27 +1036,34 @@ namespace IgniteBot
 			}
 			catch (Exception ex)
 			{
-				LogRow(LogType.Error, "Broke something in the spectator follow system.\n" + ex.ToString());
+				LogRow(LogType.Error, $"Broke something in the spectator follow system.\n{ex}");
 			}
 		}
 
 		private void EventLogTabClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			mainOutputTextBox.ScrollToEnd();
+			lock (Program.logOutputWriteLock)
+			{
+				mainOutputTextBox.ScrollToEnd();
+			}
 		}
 
 		private void EventLogTabClicked(object sender, System.Windows.Input.TouchEventArgs e)
 		{
-			mainOutputTextBox.ScrollToEnd();
+			lock (Program.logOutputWriteLock)
+			{
+				mainOutputTextBox.ScrollToEnd();
+			}
 		}
 
 		private void CopyIgniteJoinLink(object sender, RoutedEventArgs e)
 		{
-			var link = sessionIdTextBox.Text;
-			System.Windows.Clipboard.SetText(link);
-			Task.Run(() => ShowCopiedText());
+			string link = sessionIdTextBox.Text;
+			Clipboard.SetText(link);
+			Task.Run(ShowCopiedText);
 		}
-		async Task ShowCopiedText()
+
+		private async Task ShowCopiedText()
 		{
 			Dispatcher.Invoke(() =>
 			{
@@ -1135,38 +1079,35 @@ namespace IgniteBot
 
 		private void speakerSystemPanel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
-			if (speakerSystemPanel.IsVisible)
+			if (!speakerSystemPanel.IsVisible) return;
+			if (SpeakerSystemProcess != null && SpeakerSystemProcess.Handle.ToInt32() != 0) return;
+			
+			try
 			{
-				if (SpeakerSystemProcess == null || SpeakerSystemProcess.Handle.ToInt32() == 0)
+				LogRow(LogType.Info, AppContext.BaseDirectory);
+				if (Program.InstalledSpeakerSystemVersion.Length > 0)
 				{
-					try
-					{
-
-						LogRow(LogType.Info, AppContext.BaseDirectory);
-						if (Program.InstalledSpeakerSystemVersion.Length > 0)
-						{
-							installEchoSpeakerSystem.Visibility = Visibility.Hidden;
-							startStopEchoSpeakerSystem.Visibility = Visibility.Visible;
-							speakerSystemInstallLabel.Visibility = Visibility.Hidden;
-						}
-						else
-						{
-							installEchoSpeakerSystem.Visibility = Visibility.Visible;
-							startStopEchoSpeakerSystem.Visibility = Visibility.Hidden;
-						}
-						if (Program.IsSpeakerSystemUpdateAvailable)
-						{
-							updateEchoSpeakerSystem.Visibility = Visibility.Visible;
-						}
-						else
-						{
-							updateEchoSpeakerSystem.Visibility = Visibility.Hidden;
-						}
-					}
-					catch
-					{
-					}
+					installEchoSpeakerSystem.Visibility = Visibility.Hidden;
+					startStopEchoSpeakerSystem.Visibility = Visibility.Visible;
+					speakerSystemInstallLabel.Visibility = Visibility.Hidden;
 				}
+				else
+				{
+					installEchoSpeakerSystem.Visibility = Visibility.Visible;
+					startStopEchoSpeakerSystem.Visibility = Visibility.Hidden;
+				}
+				if (Program.IsSpeakerSystemUpdateAvailable)
+				{
+					updateEchoSpeakerSystem.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					updateEchoSpeakerSystem.Visibility = Visibility.Hidden;
+				}
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, $"Error showing or hiding speaker system.\n{ex}");
 			}
 		}
 
@@ -1276,6 +1217,11 @@ namespace IgniteBot
 					startStopEchoSpeakerSystem.IsEnabled = true;
 				}
 			}
+		}
+
+		private void LoneEchoSubtitlesClick(object sender, RoutedEventArgs e)
+		{
+			Program.ToggleWindow(typeof(LoneEchoSubtitles), "Lone Echo Subtitles");
 		}
 	}
 }

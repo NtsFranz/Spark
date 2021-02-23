@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IgniteBot"
-		xmlns:tb="http://www.hardcodet.net/taskbar" xmlns:interop="clr-namespace:System.Windows.Interop;assembly=PresentationFramework"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
         Title="IgniteBot | Live Data Output" 
         Height="600" Width="1060" 
@@ -15,7 +14,8 @@
         Closed="liveWindow_FormClosed"
 		MinHeight="400" MinWidth="900"
         Icon="/img/ignite_logo_128.png" 
-        Initialized="LiveWindow_Load">
+        Initialized="LiveWindow_Load"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -73,7 +73,7 @@
                             <RowDefinition Height="4*"/>
                             <RowDefinition Height="3*"/>
                         </Grid.RowDefinitions>
-                        <GroupBox x:Name="playerSpeedsGroupbox" Header="Player Speeds" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <GroupBox x:Name="playerSpeedsGroupbox" Header="Player Speeds" Grid.Row="0" Grid.Column="0" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <StackPanel Orientation="Vertical" Margin="0,10,10,10">
                                 <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
                                     <TextBlock x:Name="bluePlayerSpeedsSpeeds" Text="" VerticalAlignment="Top" Width="35" Padding="0,0,5,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
@@ -85,10 +85,10 @@
                                 </StackPanel>
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox x:Name="discSpeedsGroupbox" Header="Disc Speed (m/s)" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.ColumnSpan="2" Panel.ZIndex="-2">
+                        <GroupBox x:Name="discSpeedsGroupbox" Header="Disc Speed (m/s)" Grid.Row="0" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.ColumnSpan="2" Panel.ZIndex="-2">
                             <TextBlock x:Name="discSpeedLabel" Text="0" Height="30" HorizontalAlignment="Center" Padding="15,5,15,5" VerticalAlignment="Stretch"/>
                         </GroupBox>
-                        <GroupBox x:Name="playerPingsGroupbox" Header="Player Pings" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="3">
+                        <GroupBox x:Name="playerPingsGroupbox" Header="Player Pings" Grid.Row="0" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="3">
                             <StackPanel Orientation="Vertical" Margin="10,10,0,10">
                                 <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
                                     <TextBlock x:Name="bluePlayerPingsPings" Text="" VerticalAlignment="Top" Width="35"  Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
@@ -100,13 +100,13 @@
                                 </StackPanel>
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox x:Name="lastRoundScores" Header="Previous Rounds" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" Grid.Row="1">
+                        <GroupBox x:Name="lastRoundScores" Header="Previous Rounds" Grid.Column="0" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" Grid.Row="1">
                             <TextBlock x:Name="lastRoundScoresTextBlock"/>
                         </GroupBox>
-                        <GroupBox x:Name="lastGoals" Header="Previous Goals" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1">
+                        <GroupBox x:Name="lastGoalsBox" Header="Previous Goals" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1">
                             <TextBlock x:Name="lastGoalsTextBlock"/>
                         </GroupBox>
-                        <GroupBox x:Name="lastJoustsBox" Header="Previous Joust TImes" Margin="10,90,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2">
+                        <GroupBox x:Name="lastJoustsBox" Header="Previous Joust TImes" Grid.Row="0" Margin="10,90,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2">
                             <TextBlock x:Name="lastJoustsTextBlock" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
                         </GroupBox>
                     </Grid>
@@ -155,6 +155,7 @@
                     <Button x:Name="showAtlasLinks" Content="Atlas" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click" ToolTip="Shows copy-pastable links to let others join your match"/>
                     <Button x:Name="startSpectatorStream" Content="Open Spectatorstream" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing"/>
                     <Button x:Name="playspaceButton" Content="Show Playspace" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
+                    <Button x:Name="loneEchoSubtitlesButton" Content="Lone Echo Subtitles" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
                     <Button x:Name="showPlayerSpeedsButton" Content="Show Player Speeds" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
                     <Button x:Name="ttsSettings" Content="TTS Settings" Visibility="Collapsed" Height="40" Margin="4,4,4,4" Click="ttsSettings_Click" ToolTip="Settings for Text-to-Speech callouts during the game."/>
 					<Button x:Name="nvHighlightsSettings" Content="NV Highlights Settings" Visibility="Collapsed" Height="40" Click="showNVHighlightsSettings_Click" Margin="4,4,4,4"/>
@@ -164,7 +165,7 @@
             </GroupBox>
         </StackPanel>
         <TextBlock x:Name="accessCodeLabel" Text="Mode: Logging in..." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
-        <TextBlock x:Name="versionLabel" Text="Version: ???" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+        <TextBlock x:Name="versionLabel" Text="{Binding AppVersionLabelText}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 
 

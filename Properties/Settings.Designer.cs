@@ -26,12 +26,48 @@ namespace IgniteBot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool startOnBoot {
+            get {
+                return ((bool)(this["startOnBoot"]));
+            }
+            set {
+                this["startOnBoot"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool startMinimized {
+            get {
+                return ((bool)(this["startMinimized"]));
+            }
+            set {
+                this["startMinimized"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool autoRestart {
             get {
                 return ((bool)(this["autoRestart"]));
             }
             set {
                 this["autoRestart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool capturevp2 {
+            get {
+                return ((bool)(this["capturevp2"]));
+            }
+            set {
+                this["capturevp2"] = value;
             }
         }
         
@@ -50,6 +86,18 @@ namespace IgniteBot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool discordRichPresence {
+            get {
+                return ((bool)(this["discordRichPresence"]));
+            }
+            set {
+                this["discordRichPresence"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool logToServer {
             get {
                 return ((bool)(this["logToServer"]));
@@ -61,13 +109,49 @@ namespace IgniteBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool startOnBoot {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string echoVRPath {
             get {
-                return ((bool)(this["startOnBoot"]));
+                return ((string)(this["echoVRPath"]));
             }
             set {
-                this["startOnBoot"] = value;
+                this["echoVRPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
+        public string echoVRIP {
+            get {
+                return ((string)(this["echoVRIP"]));
+            }
+            set {
+                this["echoVRIP"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6721")]
+        public int echoVRPort {
+            get {
+                return ((int)(this["echoVRPort"]));
+            }
+            set {
+                this["echoVRPort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool enableStatsLogging {
+            get {
+                return ((bool)(this["enableStatsLogging"]));
+            }
+            set {
+                this["enableStatsLogging"] = value;
             }
         }
         
@@ -86,36 +170,24 @@ namespace IgniteBot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool useCompression {
+        public bool uploadToIgniteDB {
             get {
-                return ((bool)(this["useCompression"]));
+                return ((bool)(this["uploadToIgniteDB"]));
             }
             set {
-                this["useCompression"] = value;
+                this["uploadToIgniteDB"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool batchWrites {
+        public bool uploadToFirestore {
             get {
-                return ((bool)(this["batchWrites"]));
+                return ((bool)(this["uploadToFirestore"]));
             }
             set {
-                this["batchWrites"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("none")]
-        public string saveFolder {
-            get {
-                return ((string)(this["saveFolder"]));
-            }
-            set {
-                this["saveFolder"] = value;
+                this["uploadToFirestore"] = value;
             }
         }
         
@@ -133,13 +205,37 @@ namespace IgniteBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool enableStatsLogging {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool onlyRecordPrivateMatches {
             get {
-                return ((bool)(this["enableStatsLogging"]));
+                return ((bool)(this["onlyRecordPrivateMatches"]));
             }
             set {
-                this["enableStatsLogging"] = value;
+                this["onlyRecordPrivateMatches"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool batchWrites {
+            get {
+                return ((bool)(this["batchWrites"]));
+            }
+            set {
+                this["batchWrites"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool useCompression {
+            get {
+                return ((bool)(this["useCompression"]));
+            }
+            set {
+                this["useCompression"] = value;
             }
         }
         
@@ -152,6 +248,30 @@ namespace IgniteBot.Properties {
             }
             set {
                 this["targetDeltaTimeIndexFull"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("none")]
+        public string saveFolder {
+            get {
+                return ((string)(this["saveFolder"]));
+            }
+            set {
+                this["saveFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int whenToSplitReplays {
+            get {
+                return ((int)(this["whenToSplitReplays"]));
+            }
+            set {
+                this["whenToSplitReplays"] = value;
             }
         }
         
@@ -254,18 +374,6 @@ namespace IgniteBot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string echoVRPath {
-            get {
-                return ((string)(this["echoVRPath"]));
-            }
-            set {
-                this["echoVRPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string accessCode {
             get {
                 return ((string)(this["accessCode"]));
@@ -284,42 +392,6 @@ namespace IgniteBot.Properties {
             }
             set {
                 this["outputOther"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool uploadToIgniteDB {
-            get {
-                return ((bool)(this["uploadToIgniteDB"]));
-            }
-            set {
-                this["uploadToIgniteDB"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool uploadToFirestore {
-            get {
-                return ((bool)(this["uploadToFirestore"]));
-            }
-            set {
-                this["uploadToFirestore"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool startMinimized {
-            get {
-                return ((bool)(this["startMinimized"]));
-            }
-            set {
-                this["startMinimized"] = value;
             }
         }
         
@@ -350,48 +422,12 @@ namespace IgniteBot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool onlyRecordPrivateMatches {
-            get {
-                return ((bool)(this["onlyRecordPrivateMatches"]));
-            }
-            set {
-                this["onlyRecordPrivateMatches"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool speedometerStreamerMode {
             get {
                 return ((bool)(this["speedometerStreamerMode"]));
             }
             set {
                 this["speedometerStreamerMode"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int whenToSplitReplays {
-            get {
-                return ((int)(this["whenToSplitReplays"]));
-            }
-            set {
-                this["whenToSplitReplays"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
-        public string echoVRIP {
-            get {
-                return ((string)(this["echoVRIP"]));
-            }
-            set {
-                this["echoVRIP"] = value;
             }
         }
         
@@ -404,18 +440,6 @@ namespace IgniteBot.Properties {
             }
             set {
                 this["playspaceStreamerMode"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6721")]
-        public int echoVRPort {
-            get {
-                return ((int)(this["echoVRPort"]));
-            }
-            set {
-                this["echoVRPort"] = value;
             }
         }
         
@@ -529,18 +553,6 @@ namespace IgniteBot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool discordRichPresence {
-            get {
-                return ((bool)(this["discordRichPresence"]));
-            }
-            set {
-                this["discordRichPresence"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string discordOAuthRefreshToken {
             get {
@@ -626,18 +638,6 @@ namespace IgniteBot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool isAutofocusEnabled {
-            get {
-                return ((bool)(this["isAutofocusEnabled"]));
-            }
-            set {
-                this["isAutofocusEnabled"] = value;
-            }
-        }
-
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool isNVHighlightsEnabled {
             get {
                 return ((bool)(this["isNVHighlightsEnabled"]));
@@ -698,18 +698,6 @@ namespace IgniteBot.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool capturevp2 {
-            get {
-                return ((bool)(this["capturevp2"]));
-            }
-            set {
-                this["capturevp2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool nvHighlightsSpectatorRecord {
             get {
                 return ((bool)(this["nvHighlightsSpectatorRecord"]));
@@ -752,6 +740,42 @@ namespace IgniteBot.Properties {
             }
             set {
                 this["firstTimeSetupShown"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool isAutofocusEnabled {
+            get {
+                return ((bool)(this["isAutofocusEnabled"]));
+            }
+            set {
+                this["isAutofocusEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool loneEchoSubtitlesStreamerMode {
+            get {
+                return ((bool)(this["loneEchoSubtitlesStreamerMode"]));
+            }
+            set {
+                this["loneEchoSubtitlesStreamerMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string loneEchoPath {
+            get {
+                return ((string)(this["loneEchoPath"]));
+            }
+            set {
+                this["loneEchoPath"] = value;
             }
         }
     }

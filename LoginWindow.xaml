@@ -10,7 +10,7 @@
         Background="{DynamicResource BackgroundColour}" 
         FontSize="14" 
         SizeToContent="WidthAndHeight" 
-        WindowStartupLocation="CenterScreen" 
+        WindowStartupLocation="CenterOwner" 
         ResizeMode="NoResize" 
         Icon="/img/ignite_logo_128.png">
 	<Grid>

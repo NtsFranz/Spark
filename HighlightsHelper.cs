@@ -6,19 +6,19 @@ using static IgniteBot.g_Team;
 
 namespace IgniteBot
 {
-	internal class HighlightsHelper
+	internal static class HighlightsHelper
 	{
 		public static bool isNVHighlightsEnabled = false;
 		public static bool didHighlightsInit;
 		public static bool isNVHighlightsSupported = true;
 		private static HighlightLevel ClientHighlightScope => (HighlightLevel) Settings.Default.clientHighlightScope;
-		private static Highlights.EmptyCallbackDelegate videoCallback = NVSetVideoCallback;
-		private static Highlights.EmptyCallbackDelegate openSummaryCallback = Highlights.DefaultOpenSummaryCallback;
-		private static Highlights.EmptyCallbackDelegate closeGroupCallback = NVCloseGroupCallback;
-		private static Highlights.GetNumberOfHighlightsCallbackDelegate getNumOfHighlightsCallback = NVGetNumberOfHighlightsCallback;
-		private static Highlights.EmptyCallbackDelegate configStepCallback = NVConfigCallback;
+		private static readonly Highlights.EmptyCallbackDelegate videoCallback = NVSetVideoCallback;
+		private static readonly Highlights.EmptyCallbackDelegate openSummaryCallback = Highlights.DefaultOpenSummaryCallback;
+		private static readonly Highlights.EmptyCallbackDelegate closeGroupCallback = NVCloseGroupCallback;
+		private static readonly Highlights.GetNumberOfHighlightsCallbackDelegate getNumOfHighlightsCallback = NVGetNumberOfHighlightsCallback;
+		private static readonly Highlights.EmptyCallbackDelegate configStepCallback = NVConfigCallback;
 
-		public static int nvHighlightClipCount = 0;
+		public static int nvHighlightClipCount;
 
 
 
@@ -43,34 +43,32 @@ namespace IgniteBot
 		internal static bool SaveHighlightMaybe(string player, g_Instance frame, string id)
 		{
 			string highlightGroupName = IsPlayerHighlightEnabled(player, frame);
-			if (highlightGroupName.Length > 0)
+			if (highlightGroupName.Length <= 0) return false;
+			
+			Highlights.VideoHighlightParams vhp = new()
 			{
-				Highlights.VideoHighlightParams vhp = new Highlights.VideoHighlightParams
-				{
-					groupId = highlightGroupName,
-					highlightId = id,
-					startDelta = -(int)(Settings.Default.nvHighlightsSecondsBefore * 1000),
-					endDelta = (int)(Settings.Default.nvHighlightsSecondsAfter * 1000)
-				};
-				Highlights.SetVideoHighlight(vhp, videoCallback);
-				return true;
-			}
-			else return false;
+				groupId = highlightGroupName,
+				highlightId = id,
+				startDelta = -(int)(Settings.Default.nvHighlightsSecondsBefore * 1000),
+				endDelta = (int)(Settings.Default.nvHighlightsSecondsAfter * 1000)
+			};
+			Highlights.SetVideoHighlight(vhp, videoCallback);
+			return true;
+
 		}
 
 		public static void CloseNVHighlights(bool wasDisableNVHCall = false)
 		{
 			try
 			{
-				if (didHighlightsInit)
+				if (!didHighlightsInit) return;
+				
+				if (Settings.Default.clearHighlightsOnExit && !wasDisableNVHCall)
 				{
-					if (Settings.Default.clearHighlightsOnExit && !wasDisableNVHCall)
-					{
-						ClearUnsavedNVHighlights(false);
+					ClearUnsavedNVHighlights(false);
 
-					}
-					Highlights.ReleaseHighlightsSDK();
 				}
+				Highlights.ReleaseHighlightsSDK();
 			}
 			catch (Exception e)
 			{
@@ -297,28 +295,34 @@ namespace IgniteBot
 		}
 
 
-
 		private static string IsPlayerHighlightEnabled(g_Player player, g_Instance frame)
 		{
-			if (player == null || !didHighlightsInit || !isNVHighlightsEnabled) return "";
+			try
+			{
+				if (player == null || !didHighlightsInit || !isNVHighlightsEnabled) return "";
+
+				TeamColor clientTeam = frame.teams
+					.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
+				if (player.name == frame.client_name)
+				{
+					return "PERSONAL_HIGHLIGHT_GROUP";
+				}
+				else if (ClientHighlightScope != HighlightLevel.CLIENT_ONLY && player.team.color == clientTeam)
+				{
+					return "PERSONAL_TEAM_HIGHLIGHT_GROUP";
+				}
+				else if (ClientHighlightScope == HighlightLevel.ALL || (clientTeam == TeamColor.spectator &&
+				                                                        Settings.Default.nvHighlightsSpectatorRecord))
+				{
+					return "OPPOSING_TEAM_HIGHLIGHT_GROUP";
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.LogRow(Logger.LogType.Error, $"Something broke while checking if player highlights is enabled\n{ex}");
+			}
 			
-			TeamColor clientTeam = frame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
-			if (player.name == frame.client_name)
-			{
-				return "PERSONAL_HIGHLIGHT_GROUP";
-			}
-			else if (ClientHighlightScope != HighlightLevel.CLIENT_ONLY && player.team.color == clientTeam)
-			{
-				return "PERSONAL_TEAM_HIGHLIGHT_GROUP";
-			}
-			else if (ClientHighlightScope == HighlightLevel.ALL || (clientTeam == TeamColor.spectator && Settings.Default.nvHighlightsSpectatorRecord))
-			{
-				return "OPPOSING_TEAM_HIGHLIGHT_GROUP";
-			}
-			else
-			{
-				return "";
-			}
+			return "";
 		}
 
 		private static string IsPlayerHighlightEnabled(string playerName, g_Instance frame)
