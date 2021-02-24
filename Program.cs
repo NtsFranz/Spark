@@ -2525,7 +2525,7 @@ namespace IgniteBot
 				UploadMatchBatch(true);
 			}
 			// if during-match upload
-			else if (manual || !Personal)
+			else if (manual || (!Personal && currentAccessCodeUsername != "ignitevr"))
 			{
 				UploadMatchBatch(false);
 			}
