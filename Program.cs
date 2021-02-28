@@ -85,8 +85,6 @@ namespace IgniteBot
 		public static string InstalledSpeakerSystemVersion = "";
 		public static bool IsSpeakerSystemUpdateAvailable = false;
 
-
-		// declarations.
 		public static MatchData matchData;
 		static MatchData lastMatchData;
 
@@ -185,6 +183,8 @@ namespace IgniteBot
 		public static bool spectateMe;
 		public static string lastSpectatedSessionId;
 
+		public static string hostedAtlasSessionId;
+
 		public static SpeechSynthesizer synth;
 
 		private static Thread statsThread;
@@ -192,6 +192,7 @@ namespace IgniteBot
 		private static Thread autorestartThread;
 		private static Thread fetchThread;
 		private static Thread liveReplayThread;
+		public static Thread atlasHostingThread;
 		private static Thread milkThread;
 		private static Thread IPSearchthread1;
 		private static Thread IPSearchthread2;
@@ -418,6 +419,12 @@ namespace IgniteBot
 			}
 
 			running = false;
+
+			while (atlasHostingThread != null && atlasHostingThread.IsAlive)
+			{
+				closingWindow.label.Content = "Shutting down Atlas...";
+				await Task.Delay(10);
+			}
 
 			while (fullLogThread != null && fullLogThread.IsAlive)
 			{
@@ -1230,7 +1237,7 @@ namespace IgniteBot
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null || string.IsNullOrWhiteSpace(frame.game_status)) return;
 			if (frame.inLobby) return;
-			pubSocket.SendMoreFrame("TimeAndScore").SendFrame(String.Format("{0:0.00}", frame.game_clock) + " Orange: " + frame.orange_points.ToString() + " Blue: " + frame.blue_points.ToString());
+			pubSocket.SendMoreFrame("TimeAndScore").SendFrame(string.Format("{0:0.00}", frame.game_clock) + " Orange: " + frame.orange_points.ToString() + " Blue: " + frame.blue_points.ToString());
 			// if we entered a different match
 			if (frame.sessionid != lastFrame.sessionid || lastFrame == null)
 			{
@@ -1244,6 +1251,12 @@ namespace IgniteBot
 				inPostMatch = false;
 				matchData = new MatchData(frame);
 				UpdateStatsIngame(frame);
+
+				if (frame.teams != null)
+				{
+					FindTeamNamesFromPlayerList(matchData, frame.teams[0]);
+					FindTeamNamesFromPlayerList(matchData, frame.teams[1]);
+				}
 
 
 				if (string.IsNullOrEmpty(Settings.Default.echoVRPath))
@@ -1286,10 +1299,7 @@ namespace IgniteBot
 				foreach (g_Player player in team.players)
 				{
 					player.team = team;
-					if (lastFrame.GetAllPlayers(true).Any(p => p.userid == player.userid))
-					{
-						continue;
-					}
+					if (lastFrame.GetAllPlayers(true).Any(p => p.userid == player.userid)) continue;
 
 					// TODO find why this is crashing
 					try
@@ -1313,6 +1323,9 @@ namespace IgniteBot
 						{
 							synth.SpeakAsync(player.name + " joined " + team.color);
 						}
+
+						// find the vrml team names
+						FindTeamNamesFromPlayerList(matchData, team);
 					}
 					catch (Exception ex)
 					{
@@ -1926,6 +1939,42 @@ namespace IgniteBot
 			lastLastLastFrame = lastLastFrame;
 			lastLastFrame = lastFrame;
 			lastFrame = frame;
+		}
+
+		public static void FindTeamNamesFromPlayerList(MatchData matchDataLocal, g_Team team)
+		{
+			//if (frame.private_match)
+			{
+				if (team.players.Count > 0 && matchDataLocal != null)
+				{
+					Task.Run(() => GetAsync(
+						$"https://ignitevr.gg/cgi-bin/EchoStats.cgi/get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
+						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
+						returnJSON =>
+						{
+							try
+							{
+								if (!string.IsNullOrEmpty(returnJSON))
+								{
+									Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(returnJSON);
+									if (data != null)
+									{
+										if (data.ContainsKey("count") && int.Parse(data["count"]) > 0)
+										{
+											matchDataLocal.teams[team.color].vrmlTeamName = data["team_name"];
+											matchDataLocal.teams[team.color].vrmlTeamLogo = data["team_logo"];
+										}
+									}
+								}
+							}
+							catch (Exception ex)
+							{
+								LogRow(LogType.Error, $"Can't parse get_team_name_from_list response: {ex}");
+							}
+						})
+					);
+				}
+			}
 		}
 
 

@@ -46,6 +46,9 @@ namespace IgniteBot
 		private float smoothedServerScore = 100;
 		private float serverScoreSmoothingFactor = .99f;
 
+		string blueLogo = "";
+		string orangeLogo = "";
+
 		[DllImport("User32.dll")]
 		static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
 
@@ -98,6 +101,16 @@ namespace IgniteBot
 			InitializeComponent();
 
 			Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+
+			Loaded += (_,_) =>
+			{
+				if (Settings.Default.startMinimized)
+				{
+					Hide();
+					showHideMenuItem.Header = "Show Main Window";
+					hidden = true;
+				}
+			};
 
 			outputUpdateTimer.Interval = 100;
 			outputUpdateTimer.Elapsed += Update;
@@ -414,6 +427,19 @@ namespace IgniteBot
 						if (Program.matchData != null)
 						{
 							Program.matchData.ServerScore = smoothedServerScore;
+
+							if (blueLogo != Program.matchData.teams[g_Team.TeamColor.blue].vrmlTeamLogo)
+							{
+								blueLogo = Program.matchData.teams[g_Team.TeamColor.blue].vrmlTeamLogo;
+								blueTeamLogo.Source = string.IsNullOrEmpty(blueLogo) ? null : new BitmapImage(new Uri(blueLogo));
+								blueTeamLogo.ToolTip = Program.matchData.teams[g_Team.TeamColor.blue].vrmlTeamName;
+							}
+							if (orangeLogo != Program.matchData.teams[g_Team.TeamColor.orange].vrmlTeamLogo)
+							{
+								orangeLogo = Program.matchData.teams[g_Team.TeamColor.orange].vrmlTeamLogo;
+								orangeTeamLogo.Source = string.IsNullOrEmpty(orangeLogo) ? null : new BitmapImage(new Uri(orangeLogo));
+								orangeTeamLogo.ToolTip = Program.matchData.teams[g_Team.TeamColor.orange].vrmlTeamName;
+							}
 						}
 
 
@@ -425,6 +451,7 @@ namespace IgniteBot
 						blueTeamPlayersLabel.Content = teamNames[0].ToString().Trim();
 						orangeTeamPlayersLabel.Content = teamNames[1].ToString().Trim();
 						spectatorsLabel.Content = teamNames[2].ToString().Trim();
+
 
 
 						// last goals and last matches
@@ -920,6 +947,7 @@ namespace IgniteBot
 
 		private void showAtlasLinks_Click(object sender, RoutedEventArgs e)
 		{
+			
 			if (Program.atlasLinksWindow == null)
 			{
 				Program.atlasLinksWindow = new AtlasLinks();

@@ -7,7 +7,7 @@
     <StartupObject>IgniteBot.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.1.2</Version>
+    <Version>2.1.3</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/ignitebot</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports, Graic</Authors>
@@ -46,8 +46,11 @@
     <None Remove="ignite_logo.png" />
     <None Remove="ignite_logo_128.png" />
     <None Remove="img\baseline_replay_white_24px.png" />
+    <None Remove="img\baseline_replay_white_48dp.png" />
+    <None Remove="img\clipboard-outline.png" />
     <None Remove="img\ignite_logo.ico" />
     <None Remove="img\ignite_logo_128.png" />
+    <None Remove="img\open-in-new.png" />
     <None Remove="InstallEchoSpeakerSystem.bat" />
   </ItemGroup>
 
@@ -76,8 +79,11 @@
   <ItemGroup>
     <Resource Include="alternate_white.png" />
     <Resource Include="img\baseline_replay_white_24px.png" />
+    <Resource Include="img\baseline_replay_white_48dp.png" />
+    <Resource Include="img\clipboard-outline.png" />
     <Resource Include="img\ignite_logo.ico" />
     <Resource Include="img\ignite_logo_128.png" />
+    <Resource Include="img\open-in-new.png" />
   </ItemGroup>
 
   <ItemGroup>

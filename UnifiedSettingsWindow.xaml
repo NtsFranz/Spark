@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="IgniteBot | Settings"
         Height="680" Width="600"
+		Top="{l:SettingBinding settingsWindowTop}"
+		Left="{l:SettingBinding settingsWindowLeft}"
         Background="{DynamicResource BackgroundColour}"
         Loaded="WindowLoad"
         FontSize="14"
@@ -14,7 +16,7 @@
         ResizeMode="CanResize"
         SizeToContent="Manual"
         Icon="/img/ignite_logo_128.png"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="Manual"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
 	<Grid>
 		<Grid.RowDefinitions>

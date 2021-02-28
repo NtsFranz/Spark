@@ -74,6 +74,14 @@ namespace IgniteBot
 			};
 			ServerIP = firstFrame.sessionip;
 
+
+
+			if (firstFrame.teams != null)
+			{
+				Program.FindTeamNamesFromPlayerList(this, firstFrame.teams[0]);
+				Program.FindTeamNamesFromPlayerList(this, firstFrame.teams[1]);
+			}
+
 			//_ = InitializeInDatabase();
 		}
 

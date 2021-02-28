@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using static IgniteBot.g_Team;
+﻿using static IgniteBot.g_Team;
 
 namespace IgniteBot
 {
@@ -12,6 +10,9 @@ namespace IgniteBot
 		public TeamColor teamColor;
 		public string teamName;
 		public int points;
+
+		public string vrmlTeamName = "";
+		public string vrmlTeamLogo = "";
 
 		public TeamData(TeamColor teamColor, string teamName)
 		{

@@ -778,5 +778,77 @@ namespace IgniteBot.Properties {
                 this["loneEchoPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double liveWindowTop {
+            get {
+                return ((double)(this["liveWindowTop"]));
+            }
+            set {
+                this["liveWindowTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double liveWindowLeft {
+            get {
+                return ((double)(this["liveWindowLeft"]));
+            }
+            set {
+                this["liveWindowLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double settingsWindowTop {
+            get {
+                return ((double)(this["settingsWindowTop"]));
+            }
+            set {
+                this["settingsWindowTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double settingsWindowLeft {
+            get {
+                return ((double)(this["settingsWindowLeft"]));
+            }
+            set {
+                this["settingsWindowLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string client_name {
+            get {
+                return ((string)(this["client_name"]));
+            }
+            set {
+                this["client_name"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool atlasLinkAppendTeamNames {
+            get {
+                return ((bool)(this["atlasLinkAppendTeamNames"]));
+            }
+            set {
+                this["atlasLinkAppendTeamNames"] = value;
+            }
+        }
     }
 }

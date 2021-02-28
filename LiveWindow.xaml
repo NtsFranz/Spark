@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:l="clr-namespace:IgniteBot"
         mc:Ignorable="d"
         Title="IgniteBot | Live Data Output" 
         Height="600" Width="1060" 
@@ -15,7 +16,10 @@
 		MinHeight="400" MinWidth="900"
         Icon="/img/ignite_logo_128.png" 
         Initialized="LiveWindow_Load"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+		Top="{l:SettingBinding liveWindowTop}"
+		Left="{l:SettingBinding liveWindowLeft}"
+		>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -43,11 +47,23 @@
                     <Label x:Name="serverLocationLabel" Content="Server Location:" ToolTip="The server location is estimated using ip-api.com"/>
                 </StackPanel>
             </GroupBox>
-            <GroupBox x:Name="blueTeamBox" Header="Blue Team" BorderBrush="#FF2A384B">
-                <Label x:Name="blueTeamPlayersLabel" Content=""/>
-            </GroupBox>
-            <GroupBox x:Name="orangeTeamBox" Header="Orange Team" Width="Auto" VerticalAlignment="Top" BorderBrush="#FF6C5339">
-                <Label x:Name="orangeTeamPlayersLabel" Content=""/>
+			<GroupBox x:Name="blueTeamBox" BorderBrush="#FF2A384B">
+				<GroupBox.Header>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Blue Team"/>
+						<Image x:Name="blueTeamLogo" Height="26" DockPanel.Dock="Right" Margin="84,0,0,0"/>
+					</StackPanel>
+				</GroupBox.Header>
+				<Label x:Name="blueTeamPlayersLabel" Content=""/>
+			</GroupBox>
+			<GroupBox x:Name="orangeTeamBox" Width="Auto" VerticalAlignment="Top" BorderBrush="#FF6C5339">
+				<GroupBox.Header>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Orange Team"/>
+						<Image x:Name="orangeTeamLogo" Height="26" DockPanel.Dock="Right" Margin="65,0,0,0"/>
+					</StackPanel>
+				</GroupBox.Header>
+				<Label x:Name="orangeTeamPlayersLabel" Content=""/>
             </GroupBox>
             <GroupBox x:Name="spectatorsBox" Header="Spectators" BorderBrush="#FF515151">
                 <Label x:Name="spectatorsLabel" Content=""/>
@@ -171,7 +187,7 @@
 
         <tb:TaskbarIcon x:Name="trayIcon"
 			IconSource="/img/ignite_logo.ico"
-			ToolTipText="IgniteBot2" PopupActivation="DoubleClick">
+			ToolTipText="IgniteBot2" PopupActivation="DoubleClick" Grid.Column="12" Grid.Row="1">
 
             <!-- Set a simple context menu  -->
             <tb:TaskbarIcon.ContextMenu>
