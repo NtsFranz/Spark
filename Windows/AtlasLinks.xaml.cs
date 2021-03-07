@@ -3,11 +3,13 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace IgniteBot
@@ -17,8 +19,7 @@ namespace IgniteBot
 	/// </summary>
 	public partial class AtlasLinks : Window
 	{
-		private bool initialized = false;
-		public bool OnlyCastersChecked { get; set; }
+		private readonly bool initialized;
 
 		private readonly System.Timers.Timer outputUpdateTimer = new System.Timers.Timer();
 
@@ -37,6 +38,12 @@ namespace IgniteBot
 
 
 			GetAtlasMatches();
+
+			if (!string.IsNullOrEmpty(Program.hostedAtlasSessionId))
+			{
+				hostingMatchCheckbox.IsChecked = true;
+				hostingMatchLabel.Content = "Stop Hosting";
+			}
 
 
 			outputUpdateTimer.Interval = 500;
@@ -63,7 +70,7 @@ namespace IgniteBot
 			}
 		}
 
-		private string CurrentLink(string sessionid)
+		private static string CurrentLink(string sessionid)
 		{
 			string link = "";
 			if (Settings.Default.atlasLinkUseAngleBrackets)
@@ -112,7 +119,7 @@ namespace IgniteBot
 			return link;
 		}
 
-		public void GetLinks(object sender, RoutedEventArgs e)
+		private void GetLinks(object sender, RoutedEventArgs e)
 		{
 			string ip = alternateIPTextBox.Text;
 			Task.Run(() => Program.GetAsync($"http://{ip}:6721/session", null, (responseJSON) =>
@@ -133,21 +140,42 @@ namespace IgniteBot
 					}
 
 				}
-				catch (Exception e)
+				catch (Exception ex)
 				{
-					Logger.LogRow(Logger.LogType.Error, $"Can't parse response\n{e}");
+					Logger.LogRow(Logger.LogType.Error, $"Can't parse response\n{ex}");
 				}
 			}));
 		}
 
-		private void closeButton_Click(object sender, RoutedEventArgs e)
+		//public int HostingVisibilityDropdown {
+		//	get => Settings.Default.atlasHostingVisibility;
+		//	set {
+		//		Settings.Default.atlasHostingVisibility = value;
+		//		Settings.Default.Save();
+		//	}
+		//}
+
+		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
 		}
 
 		private void HostMatchClicked(object sender, RoutedEventArgs e)
 		{
-			HostAtlasMatch();
+			if (string.IsNullOrEmpty(Program.hostedAtlasSessionId))
+			{
+				Program.atlasHostingThread = new Thread(AtlasHostingThread);
+				Program.atlasHostingThread.IsBackground = true;
+				Program.atlasHostingThread.Start();
+				hostingMatchCheckbox.IsChecked = true;
+				hostingMatchLabel.Content = "Stop Hosting";
+			}
+			else
+			{
+				Program.hostedAtlasSessionId = "";
+				hostingMatchCheckbox.IsChecked = false;
+				hostingMatchLabel.Content = "Host Match";
+			}
 		}
 
 		public class AtlasMatchResponse
@@ -166,7 +194,12 @@ namespace IgniteBot
 				public string team_logo;
 				public string team_name;
 			}
+			[Obsolete("Use matchid instead")]
 			public string session_id;
+			/// <summary>
+			/// Session id. This could be empty if the match isn't available to join
+			/// </summary>
+			public string matchid;
 			/// <summary>
 			/// Who hosted this match?
 			/// </summary>
@@ -182,7 +215,7 @@ namespace IgniteBot
 			/// </summary>
 			public string[] orange_team;
 			/// <summary>
-			/// If this is true, users with the casteer login in the IgniteBot can see this match
+			/// If this is true, users with the caster login in the IgniteBot can see this match
 			/// </summary>
 			public bool visible_to_casters;
 			/// <summary>
@@ -213,7 +246,6 @@ namespace IgniteBot
 			public int orange_points;
 			public string title;
 			public string map_name;
-			public string matchid;
 			public string game_type;
 			public bool tournament_match;
 			public string game_status;
@@ -224,33 +256,71 @@ namespace IgniteBot
 
 			public Dictionary<string, object> ToDict()
 			{
-
 				try
 				{
-					var values = new Dictionary<string, object>
+					Dictionary<string, object> values = new()
 					{
-						{"session_id", session_id },
-						{"blue_team_members", blue_team },
-						{"orange_team_members", orange_team },
-						{"is_protected", is_protected },
-						{"server_location", server_location},
-						{"server_score", server_score},
-						{"username", username },
+						{ "matchid", matchid },
+						{ "username", username },
+						{ "blue_team", blue_team },
+						{ "orange_team", orange_team },
+						{ "is_protected", is_protected },
+						{ "visible_to_casters", visible_to_casters },
+						{ "server_location", server_location },
+						{ "server_score", server_score },
+						{ "private_match", private_match },
+						{ "whitelist", whitelist },
+						{ "blue_points", blue_points },
+						{ "orange_points", orange_points },
+						{ "slots", slots },
+						{ "allow_spectators", allow_spectators },
+						{ "game_status", game_status },
+						{ "game_clock", game_clock },
 					};
 					return values;
 				}
 				catch (Exception e)
 				{
-					Logger.LogRow(Logger.LogType.Error, "Can't serialize atlas match data.\n" + e.Message + "\n" + e.StackTrace);
+					Logger.LogRow(Logger.LogType.Error, $"Can't serialize atlas match data.\n{e.Message}\n{e.StackTrace}");
 					return new Dictionary<string, object>
 					{
-						{"none", 0 }
+						{"none", 0}
 					};
 				}
 			}
 		}
 
-		public void UpdateUIWithAtlasMatches(IEnumerable<AtlasMatch> matches)
+		public class AtlasWhitelist
+		{
+			public class AtlasTeam
+			{
+				public string teamName;
+				public List<string> players = new();
+
+				public AtlasTeam(string teamName)
+				{
+					this.teamName = teamName;
+				}
+			}
+
+			public List<AtlasTeam> teams = new();
+			public List<string> players = new();
+
+			public List<string> TeamNames => teams.Select(t => t.teamName).ToList();
+			public List<string> AllPlayers {
+				get {
+					List<string> allPlayers = new List<string>(players);
+					foreach (AtlasTeam team in teams)
+					{
+						allPlayers.AddRange(team.players);
+					}
+
+					return allPlayers;
+				}
+			}
+		}
+
+		private void UpdateUIWithAtlasMatches(IEnumerable<AtlasMatch> matches)
 		{
 			try
 			{
@@ -261,8 +331,8 @@ namespace IgniteBot
 
 					foreach (AtlasMatch match in matches)
 					{
-						var content = new Grid();
-						var header = new StackPanel
+						Grid content = new Grid();
+						StackPanel header = new StackPanel
 						{
 							Orientation = Orientation.Horizontal,
 							VerticalAlignment = VerticalAlignment.Top,
@@ -271,108 +341,122 @@ namespace IgniteBot
 						};
 						header.Children.Add(new Label
 						{
-							Content = match.is_protected ? "Casters Only" : "Public"
+							Content = match.is_protected ? (match.visible_to_casters ? "Casters Only" : "Private") : "Public"
 						});
-						if (!match.is_protected || !Program.Personal)
-						{
-							var copyLinkButton = new Button
-							{
-								Content = "Copy Atlas Link",
-								Margin = new Thickness(100, 0, 0, 0),
-								Padding = new Thickness(10, 0, 10, 0),
 
-							};
-							copyLinkButton.Click += (s, e) =>
+						byte buttonColor = 70;
+						Button copyLinkButton = new Button
+						{
+							Content = "Copy Atlas Link",
+							Margin = new Thickness(50, 0, 0, 0),
+							Padding = new Thickness(10, 0, 10, 0),
+							Background = new SolidColorBrush(Color.FromRgb(buttonColor, buttonColor, buttonColor)),
+						};
+						copyLinkButton.Click += (_, _) =>
+						{
+							Clipboard.SetText(CurrentLink(match.matchid));
+						};
+						header.Children.Add(copyLinkButton);
+						Button joinButton = new Button
+						{
+							Content = "Join",
+							Margin = new Thickness(20, 0, 0, 0),
+							Padding = new Thickness(10, 0, 10, 0),
+							Background = new SolidColorBrush(Color.FromRgb(buttonColor, buttonColor, buttonColor)),
+						};
+						joinButton.Click += (_, _) =>
+						{
+							Process.Start(new ProcessStartInfo
 							{
-								Clipboard.SetText(CurrentLink(match.session_id));
-							};
-							header.Children.Add(copyLinkButton);
-							var joinButton = new Button
+								FileName = "ignitebot://choose/" + match.matchid,
+								UseShellExecute = true
+							});
+						};
+						header.Children.Add(joinButton);
+
+						if (!string.IsNullOrEmpty(match.title) && match.title != "Default Lobby Name")
+						{
+							header.Children.Add(new Label
 							{
-								Content = "Join",
-								Margin = new Thickness(20, 0, 0, 0),
-								Padding = new Thickness(10, 0, 10, 0)
-							};
-							joinButton.Click += (s, e) =>
+								Content = match.title
+							});
+						} else if (!string.IsNullOrEmpty(match.server_location))
+						{
+							header.Children.Add(new Label
 							{
-								Process.Start(new ProcessStartInfo
-								{
-									FileName = "ignitebot://choose/" + match.session_id,
-									UseShellExecute = true
-								});
-							};
-							header.Children.Add(joinButton);
+								Content = match.server_location
+							});
 						}
 
-						content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
+						content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(130) });
 						content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 						content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-						content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
+						content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(130) });
 
 						content.ShowGridLines = true;
 
-						var blueLogo = new Image
+						Image blueLogo = new Image
 						{
 							Width = 100,
 							Height = 100
 						};
-						if (match.blue_team_info.team_logo != string.Empty)
+						if (match.blue_team_info?.team_logo != string.Empty)
 						{
-							blueLogo.Source = new BitmapImage(new Uri(match.blue_team_info.team_logo));
+							blueLogo.Source = string.IsNullOrEmpty(match.blue_team_info?.team_logo) ? null : (new BitmapImage(new Uri(match.blue_team_info.team_logo)));
 						}
-						var blueLogoBox = new StackPanel
+						StackPanel blueLogoBox = new StackPanel
 						{
 							Orientation = Orientation.Vertical,
-							Margin = new Thickness(10, 10, 10, 10)
+							Margin = new Thickness(5, 10, 5, 10)
 						};
 						blueLogoBox.SetValue(Grid.ColumnProperty, 0);
 						blueLogoBox.Children.Add(blueLogo);
 						blueLogoBox.Children.Add(new Label
 						{
-							Content = match.blue_team_info.team_name,
+							Content = match.blue_team_info?.team_name,
 							HorizontalAlignment = HorizontalAlignment.Center
 
 						});
 
 
-						var orangeLogo = new Image
+						Image orangeLogo = new Image
 						{
 							Width = 100,
 							Height = 100
 						};
-						if (match.orange_team_info.team_logo != string.Empty)
+						if (match.orange_team_info?.team_logo != string.Empty)
 						{
-							orangeLogo.Source = new BitmapImage(new Uri(match.orange_team_info.team_logo));
+							orangeLogo.Source = string.IsNullOrEmpty(match.orange_team_info?.team_logo) ? null : (new BitmapImage(new Uri(match.orange_team_info.team_logo)));
 						}
-						var orangeLogoBox = new StackPanel
+						StackPanel orangeLogoBox = new StackPanel
 						{
 							Orientation = Orientation.Vertical,
-							Margin = new Thickness(10, 10, 10, 10)
+							Margin = new Thickness(5, 10, 5, 10)
 						};
 						orangeLogoBox.SetValue(Grid.ColumnProperty, 3);
 						orangeLogoBox.Children.Add(orangeLogo);
 						orangeLogoBox.Children.Add(new Label
 						{
-							Content = match.orange_team_info.team_name,
+							Content = match.orange_team_info?.team_name,
 							HorizontalAlignment = HorizontalAlignment.Center
 						});
 
-						var bluePlayers = new TextBlock
+						TextBlock bluePlayers = new TextBlock
 						{
 							Text = string.Join('\n', match.blue_team),
 							Margin = new Thickness(10, 10, 10, 10),
 							TextAlignment = TextAlignment.Right
 						};
 						bluePlayers.SetValue(Grid.ColumnProperty, 1);
-						var orangePlayers = new TextBlock
+						TextBlock orangePlayers = new TextBlock
 						{
 							Text = string.Join('\n', match.orange_team),
 							Margin = new Thickness(10, 10, 10, 10)
 						};
 						orangePlayers.SetValue(Grid.ColumnProperty, 2);
-						var sessionIdTextBox = new Label
+						Label sessionIdTextBox = new Label
 						{
-							Content = match.session_id
+							Content = match.matchid
 						};
 						//content.Children.Add(sessionIdTextBox);
 						content.Children.Add(blueLogoBox);
@@ -395,16 +479,10 @@ namespace IgniteBot
 			}
 		}
 
-		public void HostAtlasMatch()
-		{
-			Program.atlasHostingThread = new Thread(AtlasHostingThread);
-			Program.atlasHostingThread.IsBackground = true;
-			Program.atlasHostingThread.Start();
-		}
-
 		private void AtlasHostingThread()
 		{
-			string matchesAPIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/host_atlas_match";
+			const string hostURL = Program.APIURL + "host_atlas_match_v2";
+			const string unhostURL = Program.APIURL + "unhost_atlas_match_v2";
 
 			// TODO show error message instead of just quitting
 			if (Program.lastFrame == null || Program.lastFrame.teams == null) return;
@@ -413,30 +491,32 @@ namespace IgniteBot
 
 			AtlasMatch match = new AtlasMatch
 			{
-				session_id = Program.lastFrame.sessionid,
+				matchid = Program.lastFrame.sessionid,
 				blue_team = Program.lastFrame.teams[0].player_names.ToArray(),
 				orange_team = Program.lastFrame.teams[1].player_names.ToArray(),
-				is_protected = OnlyCastersChecked,
-				visible_to_casters = OnlyCastersChecked,
+				is_protected = (Settings.Default.atlasHostingVisibility > 0),
+				visible_to_casters = (Settings.Default.atlasHostingVisibility == 1),
 				server_location = Program.matchData.ServerLocation,
 				server_score = Program.matchData.ServerScore,
-				username = Program.lastFrame.client_name
+				private_match = Program.lastFrame.private_match,
+				username = Program.lastFrame.client_name,
+				whitelist = Program.atlasWhitelist.AllPlayers.ToArray(),
 			};
 
-			while (Program.running)
+			while (Program.running &&
+				   Program.inGame &&
+				   Program.lastFrame != null &&
+				   Program.lastFrame.teams != null &&
+				   Program.hostedAtlasSessionId == Program.lastFrame.sessionid)
 			{
-				if (Program.lastFrame == null || Program.lastFrame.teams == null) return;
-
-				// TODO take down the match
-				if (Program.hostedAtlasSessionId != Program.lastFrame.sessionid) return;
-
-				bool diff = 
+				bool diff =
 					match.blue_team.Length != Program.lastFrame.teams[0].players.Count ||
 					match.orange_team.Length != Program.lastFrame.teams[1].players.Count ||
 					match.blue_points != Program.lastFrame.teams[0].stats.points ||
 					match.orange_points != Program.lastFrame.teams[1].stats.points ||
-					match.is_protected != OnlyCastersChecked ||
-					match.visible_to_casters != OnlyCastersChecked;
+					match.is_protected != (Settings.Default.atlasHostingVisibility > 0) ||
+					match.visible_to_casters != (Settings.Default.atlasHostingVisibility == 1) ||
+					match.whitelist.Length != Program.atlasWhitelist.AllPlayers.Count;
 
 				if (diff)
 				{
@@ -445,13 +525,17 @@ namespace IgniteBot
 					match.orange_team = Program.lastFrame.teams[1].player_names.ToArray();
 					match.blue_points = Program.lastFrame.teams[0].stats.points;
 					match.orange_points = Program.lastFrame.teams[1].stats.points;
-					match.is_protected = OnlyCastersChecked;
-					match.visible_to_casters = OnlyCastersChecked;
+					match.is_protected = (Settings.Default.atlasHostingVisibility > 0);
+					match.visible_to_casters = (Settings.Default.atlasHostingVisibility == 1);
 					match.server_score = Program.matchData.ServerScore;
 					match.username = Program.lastFrame.client_name;
+					match.whitelist = Program.atlasWhitelist.AllPlayers.ToArray();
+					match.slots = Program.lastFrame.GetAllPlayers().Count;
 
 					string data = JsonConvert.SerializeObject(match.ToDict());
-					Task.Run(() => Program.PostAsync(matchesAPIURL, new Dictionary<string, string>() { { "x-api-key", DiscordOAuth.igniteUploadKey } }, data, (responseJSON) =>
+
+					// post new data, then fetch the updated list
+					Task.Run(() => Program.PostAsync(hostURL, new Dictionary<string, string>() { { "x-api-key", DiscordOAuth.igniteUploadKey } }, data, (responseJSON) =>
 					{
 						GetAtlasMatches();
 					}));
@@ -459,9 +543,23 @@ namespace IgniteBot
 
 				Thread.Sleep(100);
 			}
+
+			// post new data, then fetch the updated list
+			string matchInfo = JsonConvert.SerializeObject(match.ToDict());
+			Task.Run(() => Program.PostAsync(unhostURL, new Dictionary<string, string>() { { "x-api-key", DiscordOAuth.igniteUploadKey } }, matchInfo, (responseJSON) =>
+			{
+				Program.hostedAtlasSessionId = string.Empty;
+				Dispatcher.Invoke(() =>
+				{
+					hostingMatchCheckbox.IsChecked = false;
+					hostingMatchLabel.Content = "Host Match";
+				});
+				Thread.Sleep(10);
+				GetAtlasMatches();
+			}));
 		}
 
-		public void GetAtlasMatches()
+		private void GetAtlasMatches()
 		{
 			AtlasMatchResponse oldAtlasResponse = null;
 			AtlasMatchResponse igniteAtlasResponse = null;
@@ -484,21 +582,28 @@ namespace IgniteBot
 			}));
 
 
-			string matchesAPIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/atlas_matches";
-			Task.Run(() => Program.GetAsync(matchesAPIURL, new Dictionary<string, string>() { { "x-api-key", DiscordOAuth.igniteUploadKey } }, (responseJSON) =>
-			{
-				try
+			string matchesAPIURL = Program.APIURL + "atlas_matches_v2/" + Settings.Default.client_name;
+			Task.Run(() => Program.GetAsync(
+				matchesAPIURL,
+				new Dictionary<string, string>() {
+					{ "x-api-key", DiscordOAuth.igniteUploadKey },
+					{ "access_code", DiscordOAuth.AccessCode }
+				},
+				(responseJSON) =>
 				{
-					igniteAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
-					igniteAtlasDone = true;
+					try
+					{
+						igniteAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
+						igniteAtlasDone = true;
 
+					}
+					catch (Exception e)
+					{
+						igniteAtlasDone = true;
+						Logger.LogRow(Logger.LogType.Error, $"Can't parse Atlas matches response\n{e}");
+					}
 				}
-				catch (Exception e)
-				{
-					igniteAtlasDone = true;
-					Logger.LogRow(Logger.LogType.Error, $"Can't parse Atlas matches response\n{e}");
-				}
-			}));
+			 ));
 
 			// once both requests are done....
 			Task.Run(() =>
@@ -532,26 +637,6 @@ namespace IgniteBot
 		private void RefreshMatchesClicked(object sender, RoutedEventArgs e)
 		{
 			GetAtlasMatches();
-		}
-
-		private void SurroundWithAngleBracketsChecked(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-
-			Settings.Default.atlasLinkUseAngleBrackets = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-			RefreshCurrentLink();
-		}
-
-
-
-		private void AppendTeamNamesChecked(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-
-			Settings.Default.atlasLinkAppendTeamNames = ((CheckBox)sender).IsChecked == true;
-			Settings.Default.Save();
-			RefreshCurrentLink();
 		}
 
 		private void RefreshCurrentLink()
@@ -597,6 +682,11 @@ namespace IgniteBot
 			// TODO
 		}
 
+		private void WhitelistButtonClicked(object sender, RoutedEventArgs e)
+		{
+			Program.ToggleWindow(typeof(AtlasWhitelistWindow), "Atlas Whitelist", this);
+		}
+
 		private void LinkTypeChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (!initialized) return;
@@ -632,13 +722,6 @@ namespace IgniteBot
 			alternateIPTextBox.Text = Program.echoVRIP;
 			Settings.Default.echoVRIP = Program.echoVRIP;
 			Settings.Default.Save();
-		}
-
-		private void PublicToggled(object sender, RoutedEventArgs e)
-		{
-			if (!initialized) return;
-
-			OnlyCastersChecked = ((CheckBox)sender).IsChecked == true;
 		}
 
 		private void EchoVRIPChanged(object sender, TextChangedEventArgs e)

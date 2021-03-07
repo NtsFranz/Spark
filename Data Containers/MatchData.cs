@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IgniteBot.Properties;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -74,7 +75,7 @@ namespace IgniteBot
 			};
 			ServerIP = firstFrame.sessionip;
 
-
+			Settings.Default.client_name = firstFrame.client_name;
 
 			if (firstFrame.teams != null)
 			{

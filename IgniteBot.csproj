@@ -50,7 +50,11 @@
     <None Remove="img\clipboard-outline.png" />
     <None Remove="img\ignite_logo.ico" />
     <None Remove="img\ignite_logo_128.png" />
+    <None Remove="img\link.png" />
     <None Remove="img\open-in-new.png" />
+    <None Remove="img\speaker.png" />
+    <None Remove="img\text-box-outline.png" />
+    <None Remove="img\view-dashboard.png" />
     <None Remove="InstallEchoSpeakerSystem.bat" />
   </ItemGroup>
 
@@ -83,11 +87,15 @@
     <Resource Include="img\clipboard-outline.png" />
     <Resource Include="img\ignite_logo.ico" />
     <Resource Include="img\ignite_logo_128.png" />
+    <Resource Include="img\link.png" />
     <Resource Include="img\open-in-new.png" />
+    <Resource Include="img\speaker.png" />
+    <Resource Include="img\text-box-outline.png" />
+    <Resource Include="img\view-dashboard.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="FirstTimeSetupWindow.xaml.cs">
+    <Compile Update="Windows\FirstTimeSetupWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -117,7 +125,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="FirstTimeSetupWindow.xaml">
+    <Page Update="Windows\FirstTimeSetupWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

@@ -294,31 +294,15 @@ namespace IgniteBot
 		private void ShowTTSSettingsWindow(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			if (Program.ttsWindow == null)
-			{
-				Program.ttsWindow = new TTSSettingsWindow();
-				Program.ttsWindow.Closed += (sender, args) => Program.ttsWindow = null;
-				Program.ttsWindow.Show();
-			}
-			else
-			{
-				Program.ttsWindow.Close();
-			}
+
+			Program.ToggleWindow(typeof(TTSSettingsWindow));
 		}
 
 		private void ShowNVHighlightSettingsWindow(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			if (Program.nvhWindow == null)
-			{
-				Program.nvhWindow = new NVHighlightsSettingsWindow();
-				Program.nvhWindow.Closed += (sender, args) => Program.nvhWindow = null;
-				Program.nvhWindow.Show();
-			}
-			else
-			{
-				Program.nvhWindow.Close();
-			}
+
+			Program.ToggleWindow(typeof(NVHighlightsSettingsWindow));
 		}
 
 		private void EnableDiscordRichPresenceEvent(object sender, RoutedEventArgs e)
@@ -388,16 +372,8 @@ namespace IgniteBot
 		private void ShowFirstTimeSetupWindowClicked(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			if (Program.firstTimeSetupWindow == null)
-			{
-				Program.firstTimeSetupWindow = new FirstTimeSetupWindow();
-				Program.firstTimeSetupWindow.Closed += (sender, args) => Program.firstTimeSetupWindow = null;
-				Program.firstTimeSetupWindow.Show();
-			}
-			else
-			{
-				Program.firstTimeSetupWindow.Close();
-			}
+			
+			Program.ToggleWindow(typeof(FirstTimeSetupWindow));
 		}
 	}
 }

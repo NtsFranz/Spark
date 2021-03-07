@@ -152,16 +152,8 @@ namespace IgniteBot
 		private void ShowFirstTimeSetupWindowClicked(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			if (Program.firstTimeSetupWindow == null)
-			{
-				Program.firstTimeSetupWindow = new FirstTimeSetupWindow();
-				Program.firstTimeSetupWindow.Closed += (sender, args) => Program.firstTimeSetupWindow = null;
-				Program.firstTimeSetupWindow.Show();
-			}
-			else
-			{
-				Program.firstTimeSetupWindow.Close();
-			}
+
+			Program.ToggleWindow(typeof(FirstTimeSetupWindow));
 		}
 
 		public static Visibility FirestoreVisible {

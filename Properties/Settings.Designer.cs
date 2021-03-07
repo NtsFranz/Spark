@@ -850,5 +850,17 @@ namespace IgniteBot.Properties {
                 this["atlasLinkAppendTeamNames"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int atlasHostingVisibility {
+            get {
+                return ((int)(this["atlasHostingVisibility"]));
+            }
+            set {
+                this["atlasHostingVisibility"] = value;
+            }
+        }
     }
 }

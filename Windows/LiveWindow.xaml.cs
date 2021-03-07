@@ -44,7 +44,8 @@ namespace IgniteBot
 		private bool isExplicitClose = false;
 
 		private float smoothedServerScore = 100;
-		private float serverScoreSmoothingFactor = .99f;
+		private bool lastFrameWasValidSmoothedScore = false;
+		private float serverScoreSmoothingFactor = .95f;
 
 		string blueLogo = "";
 		string orangeLogo = "";
@@ -102,7 +103,7 @@ namespace IgniteBot
 
 			Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
-			Loaded += (_,_) =>
+			Loaded += (_, _) =>
 			{
 				if (Settings.Default.startMinimized)
 				{
@@ -179,7 +180,7 @@ namespace IgniteBot
 		private void speakerSystemPanel_Resize(object sender, EventArgs e)
 		{
 			if (!speakerSystemPanel.IsVisible || SpeakerSystemProcess == null || SpeakerSystemProcess.Handle.ToInt32() <= 0) return;
-			
+
 			System.Windows.Point relativePoint = speakerSystemPanel.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
 			MoveWindow(unityHWND, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
 			ActivateUnityWindow();
@@ -415,13 +416,27 @@ namespace IgniteBot
 						orangePlayerPingsPings.Text = orangePingsTextPings.ToString();
 
 						float serverScore = Program.CalculateServerScore(pings[0], pings[1]);
-						if (serverScore < 0)
+
+						if (pings[0].Count != 4 || pings[1].Count != 4)
+						{
+							playerPingsGroupbox.Header = "Player Pings   Score: --";
+						}
+						else if (serverScore < 0)
 						{
 							playerPingsGroupbox.Header = $"Player Pings     >150";
 						}
 						else
 						{
-							smoothedServerScore = smoothedServerScore * serverScoreSmoothingFactor + (1 - serverScoreSmoothingFactor) * serverScore;
+							// reset the smoothing every time it switches to being valid
+							if (!lastFrameWasValidSmoothedScore)
+							{
+								smoothedServerScore = serverScore;
+								lastFrameWasValidSmoothedScore = true;
+							}
+							else
+							{
+								smoothedServerScore = smoothedServerScore * serverScoreSmoothingFactor + (1 - serverScoreSmoothingFactor) * serverScore;
+							}
 							playerPingsGroupbox.Header = $"Player Pings   Score: {smoothedServerScore:N1}";
 						}
 						if (Program.matchData != null)
@@ -819,7 +834,7 @@ namespace IgniteBot
 		private void GenerateNewStatsId()
 		{
 			using SHA256 sha = SHA256.Create();
-			
+
 			byte[] hash = sha.ComputeHash(BitConverter.GetBytes(DateTime.Now.Ticks));
 			// Convert the byte array to hexadecimal string
 			StringBuilder sb = new StringBuilder();
@@ -902,17 +917,7 @@ namespace IgniteBot
 
 		private void openSpeedometer(object sender, RoutedEventArgs e)
 		{
-			if (Program.speedometerWindow == null)
-			{
-				Program.speedometerWindow = new Speedometer();
-				Program.speedometerWindow.Owner = this;
-				Program.speedometerWindow.Closed += (sender, args) => Program.speedometerWindow = null;
-				Program.speedometerWindow.Show();
-			}
-			else
-			{
-				Program.speedometerWindow.Close();
-			}
+			Program.ToggleWindow(typeof(Speedometer), ownedBy: this);
 		}
 
 		private void hostLiveReplayButton_CheckedChanged(object sender, RoutedEventArgs e)
@@ -947,39 +952,18 @@ namespace IgniteBot
 
 		private void showAtlasLinks_Click(object sender, RoutedEventArgs e)
 		{
-			
-			if (Program.atlasLinksWindow == null)
-			{
-				Program.atlasLinksWindow = new AtlasLinks();
-				Program.atlasLinksWindow.Owner = this;
-				Program.atlasLinksWindow.Closed += (sender, args) => Program.atlasLinksWindow = null;
-				Program.atlasLinksWindow.Show();
-			}
-			else
-			{
-				Program.atlasLinksWindow.Close();
-			}
+			Program.ToggleWindow(typeof(AtlasLinks));
 		}
 
 		private void playspaceButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (Program.playspaceWindow == null)
-			{
-				Program.playspaceWindow = new Playspace();
-				Program.playspaceWindow.Owner = this;
-				Program.playspaceWindow.Closed += (sender, args) => Program.playspaceWindow = null;
-				Program.playspaceWindow.Show();
-			}
-			else
-			{
-				Program.playspaceWindow.Close();
-			}
+			Program.ToggleWindow(typeof(Playspace));
 		}
 
 		[Obsolete("This is in UnifiedSettingsWindow now")]
 		private void ttsSettings_Click(object sender, RoutedEventArgs e)
 		{
-			Program.ToggleWindow(typeof(TTSSettingsWindow), "TTS");
+			Program.ToggleWindow(typeof(TTSSettingsWindow));
 		}
 
 		private void showHighlights_Click(object sender, RoutedEventArgs e)
@@ -990,12 +974,12 @@ namespace IgniteBot
 		[Obsolete("This is in UnifiedSettingsWindow now")]
 		private void showNVHighlightsSettings_Click(object sender, RoutedEventArgs e)
 		{
-			Program.ToggleWindow(typeof(NVHighlightsSettingsWindow), "NVHighlights Settings");
+			Program.ToggleWindow(typeof(NVHighlightsSettingsWindow));
 		}
 
 		private void LoginWindowButtonClicked(object sender, RoutedEventArgs e)
 		{
-			Program.ToggleWindow(typeof(LoginWindow), "Login", this);
+			Program.ToggleWindow(typeof(LoginWindow), ownedBy: this);
 		}
 
 		private void startSpectatorStream_Click(object sender, RoutedEventArgs e)
@@ -1109,7 +1093,7 @@ namespace IgniteBot
 		{
 			if (!speakerSystemPanel.IsVisible) return;
 			if (SpeakerSystemProcess != null && SpeakerSystemProcess.Handle.ToInt32() != 0) return;
-			
+
 			try
 			{
 				LogRow(LogType.Info, AppContext.BaseDirectory);
@@ -1176,7 +1160,7 @@ namespace IgniteBot
 		}
 		public void SpeakerSystemStart(IntPtr unityHandle)
 		{
-			this.Dispatcher.Invoke(() =>
+			Dispatcher.Invoke(() =>
 			{
 				SpeakerSystemProcess.Refresh();
 				SetParent(unityHWND, unityHandle);
@@ -1190,7 +1174,7 @@ namespace IgniteBot
 		public IntPtr GetUnityHandler()
 		{
 			IntPtr unityHandle = IntPtr.Zero;
-			this.Dispatcher.Invoke(() =>
+			Dispatcher.Invoke(() =>
 			{
 
 				HwndSource source = (HwndSource)PresentationSource.FromVisual(speakerSystemPanel);
@@ -1205,51 +1189,50 @@ namespace IgniteBot
 
 		private void startStopEchoSpeakerSystem_Click(object sender, RoutedEventArgs e)
 		{
-			if (speakerSystemPanel.IsVisible)
+			if (!speakerSystemPanel.IsVisible) return;
+
+			if (SpeakerSystemProcess == null || SpeakerSystemProcess.HasExited)
 			{
-				if (SpeakerSystemProcess == null || SpeakerSystemProcess.HasExited)
-				{
-					try
-					{
-						speakerSystemInstallLabel.Visibility = Visibility.Hidden;
-						startStopEchoSpeakerSystem.IsEnabled = false;
-						startStopEchoSpeakerSystem.Content = "Stop Echo Speaker System";
-						SpeakerSystemProcess = new Process();
-						HwndSource source = (HwndSource)PresentationSource.FromVisual(speakerSystemPanel);
-
-						var helper = new WindowInteropHelper(this);
-						var hwndSource = HwndSource.FromHwnd(helper.EnsureHandle());
-						IntPtr unityHandle = hwndSource.Handle;
-						SpeakerSystemProcess.StartInfo.FileName = "C:\\Program Files (x86)\\Echo Speaker System\\Echo Speaker System.exe";
-						SpeakerSystemProcess.StartInfo.Arguments = "ignitebot -parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
-						SpeakerSystemProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-						SpeakerSystemProcess.StartInfo.CreateNoWindow = true;
-
-						SpeakerSystemProcess.Start();
-						SpeakerSystemProcess.WaitForInputIdle();
-						SpeakerSystemStart(unityHandle);
-					}
-					catch (Exception ex)
-					{
-						startStopEchoSpeakerSystem.Content = "Start Echo Speaker System";
-						startStopEchoSpeakerSystem.IsEnabled = true;
-					}
-				}
-				else
+				try
 				{
 					speakerSystemInstallLabel.Visibility = Visibility.Hidden;
-					Program.pubSocket.SendMoreFrame("CloseApp").SendFrame("");
-					Thread.Sleep(800);
-					KillSpeakerSystem();
+					startStopEchoSpeakerSystem.IsEnabled = false;
+					startStopEchoSpeakerSystem.Content = "Stop Echo Speaker System";
+					SpeakerSystemProcess = new Process();
+					HwndSource source = (HwndSource)PresentationSource.FromVisual(speakerSystemPanel);
+
+					var helper = new WindowInteropHelper(this);
+					var hwndSource = HwndSource.FromHwnd(helper.EnsureHandle());
+					IntPtr unityHandle = hwndSource.Handle;
+					SpeakerSystemProcess.StartInfo.FileName = "C:\\Program Files (x86)\\Echo Speaker System\\Echo Speaker System.exe";
+					SpeakerSystemProcess.StartInfo.Arguments = "ignitebot -parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
+					SpeakerSystemProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+					SpeakerSystemProcess.StartInfo.CreateNoWindow = true;
+
+					SpeakerSystemProcess.Start();
+					SpeakerSystemProcess.WaitForInputIdle();
+					SpeakerSystemStart(unityHandle);
+				}
+				catch (Exception ex)
+				{
 					startStopEchoSpeakerSystem.Content = "Start Echo Speaker System";
 					startStopEchoSpeakerSystem.IsEnabled = true;
 				}
+			}
+			else
+			{
+				speakerSystemInstallLabel.Visibility = Visibility.Hidden;
+				Program.pubSocket.SendMoreFrame("CloseApp").SendFrame("");
+				Thread.Sleep(800);
+				KillSpeakerSystem();
+				startStopEchoSpeakerSystem.Content = "Start Echo Speaker System";
+				startStopEchoSpeakerSystem.IsEnabled = true;
 			}
 		}
 
 		private void LoneEchoSubtitlesClick(object sender, RoutedEventArgs e)
 		{
-			Program.ToggleWindow(typeof(LoneEchoSubtitles), "Lone Echo Subtitles");
+			Program.ToggleWindow(typeof(LoneEchoSubtitles));
 		}
 	}
 }

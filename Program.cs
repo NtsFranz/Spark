@@ -146,23 +146,15 @@ namespace IgniteBot
 			get => statsDeltaTimes[Settings.Default.targetDeltaTimeIndexStats];
 		}
 
-		public static List<int> statsDeltaTimes = new List<int> { 16, 100 };
-		public static List<int> fullDeltaTimes = new List<int> { 16, 33, 100 };
+		private static readonly List<int> statsDeltaTimes = new() { 16, 100 };
+		private static readonly List<int> fullDeltaTimes = new() { 16, 33, 100 };
 
 		public static string fileName;
 
 		public static LiveWindow liveWindow;
-		public static UnifiedSettingsWindow settingsWindow;
-		public static Speedometer speedometerWindow;
-		public static AtlasLinks atlasLinksWindow;
-		public static Playspace playspaceWindow;
-		public static TTSSettingsWindow ttsWindow;
-		public static NVHighlightsSettingsWindow nvhWindow;
-		public static LoginWindow loginWindow;
-		public static FirstTimeSetupWindow firstTimeSetupWindow;
-		public static ClosingDialog closingWindow;
+		private static ClosingDialog closingWindow;
 
-		private static Dictionary<string, Window> popupWindows = new Dictionary<string, Window>();
+		private static readonly Dictionary<string, Window> popupWindows = new();
 
 		private static float smoothDeltaTime = -1;
 
@@ -181,9 +173,10 @@ namespace IgniteBot
 		public static bool Personal => currentAccessCodeUsername == "Personal" || string.IsNullOrEmpty(currentAccessCodeUsername);
 
 		public static bool spectateMe;
-		public static string lastSpectatedSessionId;
+		private static string lastSpectatedSessionId;
 
 		public static string hostedAtlasSessionId;
+		public static AtlasLinks.AtlasWhitelist atlasWhitelist = new();
 
 		public static SpeechSynthesizer synth;
 
@@ -228,7 +221,7 @@ namespace IgniteBot
 			// allow multiple instances if the port is overriden
 			if (IsIgniteBotOpen() && !overrideEchoVRPort)
 			{
-				var box = new MessageBox("Instance already running. Running two instances of the IgniteBot at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke.", "Error");
+				MessageBox box = new MessageBox("Instance already running. Running two instances of the IgniteBot at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke.", "Error");
 				box.Show();
 				//while(box!= null)
 				{
@@ -281,14 +274,12 @@ namespace IgniteBot
 			}
 
 			liveWindow = new LiveWindow();
-			liveWindow.Closed += (sender, args) => liveWindow = null;
+			liveWindow.Closed += (_, _) => liveWindow = null;
 			liveWindow.Show();
 
 			if (!Settings.Default.firstTimeSetupShown)
 			{
-				firstTimeSetupWindow = new FirstTimeSetupWindow();
-				firstTimeSetupWindow.Closed += (sender, args) => firstTimeSetupWindow = null;
-				firstTimeSetupWindow.Show();
+				ToggleWindow(typeof(FirstTimeSetupWindow));
 				Settings.Default.firstTimeSetupShown = true;
 				Settings.Default.Save();
 			}
@@ -410,7 +401,7 @@ namespace IgniteBot
 				httpServer.Stop();
 		}
 
-		async static Task GentleClose()
+		static async Task GentleClose()
 		{
 			if (pubSocket != null)
 			{
@@ -1252,13 +1243,6 @@ namespace IgniteBot
 				matchData = new MatchData(frame);
 				UpdateStatsIngame(frame);
 
-				if (frame.teams != null)
-				{
-					FindTeamNamesFromPlayerList(matchData, frame.teams[0]);
-					FindTeamNamesFromPlayerList(matchData, frame.teams[1]);
-				}
-
-
 				if (string.IsNullOrEmpty(Settings.Default.echoVRPath))
 				{
 					GetEchoVRProcess();
@@ -1315,6 +1299,9 @@ namespace IgniteBot
 							MatchPlayer playerData = matchData.GetPlayerData(player);
 							// if player was in this match before
 							playerData?.CacheStats(player.stats);
+
+							// find the vrml team names
+							FindTeamNamesFromPlayerList(matchData, team);
 						}
 
 						UpdateStatsIngame(frame);
@@ -1323,9 +1310,6 @@ namespace IgniteBot
 						{
 							synth.SpeakAsync(player.name + " joined " + team.color);
 						}
-
-						// find the vrml team names
-						FindTeamNamesFromPlayerList(matchData, team);
 					}
 					catch (Exception ex)
 					{
@@ -1689,8 +1673,8 @@ namespace IgniteBot
 									{
 										stunningMatchedPairs.Remove(stunEvent);
 
-										var stunner = player;
-										var stunnee = stunEvent[1].player;
+										g_Player stunner = player;
+										g_Player stunnee = stunEvent[1].player;
 
 										matchData.Events.Add(new EventData(matchData, EventData.EventType.stun,
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
@@ -1726,7 +1710,7 @@ namespace IgniteBot
 								else return false;
 							});
 							bool added = false;
-							foreach (var stunEvent in stunningMatchedPairs)
+							foreach (UserAtTime[] stunEvent in stunningMatchedPairs)
 							{
 								if (stunEvent[1] == null)
 								{
@@ -1772,11 +1756,11 @@ namespace IgniteBot
 							{
 								g_Instance lframe = lastFrame;
 
-								foreach (var lteam in lframe.teams)
+								foreach (g_Team lteam in lframe.teams)
 								{
-									foreach (var lplayer in lteam.players)
+									foreach (g_Player lplayer in lteam.players)
 									{
-										if (lplayer.playerid == lastThrowPlayerId && lplayer.possession == true)
+										if (lplayer.playerid == lastThrowPlayerId && lplayer.possession)
 										{
 											caughtThrow = true;
 											throwPlayer = lplayer;
@@ -1948,7 +1932,7 @@ namespace IgniteBot
 				if (team.players.Count > 0 && matchDataLocal != null)
 				{
 					Task.Run(() => GetAsync(
-						$"https://ignitevr.gg/cgi-bin/EchoStats.cgi/get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
+						$"{APIURL}get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
 						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						returnJSON =>
 						{
@@ -1959,7 +1943,8 @@ namespace IgniteBot
 									Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(returnJSON);
 									if (data != null)
 									{
-										if (data.ContainsKey("count") && int.Parse(data["count"]) > 0)
+										// if there are at least 3 players from that team
+										if (data.ContainsKey("count") && int.Parse(data["count"]) > 3)
 										{
 											matchDataLocal.teams[team.color].vrmlTeamName = data["team_name"];
 											matchDataLocal.teams[team.color].vrmlTeamLogo = data["team_logo"];
@@ -3094,13 +3079,13 @@ namespace IgniteBot
 		}
 
 
-		public static void RegisterUriScheme(string UriScheme, string FriendlyName)
+		private static void RegisterUriScheme(string UriScheme, string FriendlyName)
 		{
 			try
 			{
 				using RegistryKey key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\" + UriScheme);
 				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "IgniteBot.exe");
-
+		
 				key.SetValue("", "URL:" + FriendlyName);
 				key.SetValue("URL Protocol", "");
 
@@ -3116,7 +3101,7 @@ namespace IgniteBot
 			}
 		}
 
-		public static bool CheckIfLaunchedWithCustomURLHandlerParam(string[] args)
+		private static bool CheckIfLaunchedWithCustomURLHandlerParam(string[] args)
 		{
 			if (args.Length <= 0 || (!args[0].Contains("ignitebot://") && !args[0].Contains("atlas://"))) return false;
 
@@ -3549,8 +3534,10 @@ namespace IgniteBot
 		/// <param name="windowName">The identifier of the window. This is used to hide if a window of that name was already shown</param>
 		/// <param name="ownedBy">The window to be owned by. This makes the popup always on top of the parent</param>
 		/// <returns>True if the window was opened, false if the window was closed</returns>
-		public static bool ToggleWindow(Type type, string windowName, Window ownedBy = null)
+		public static bool ToggleWindow(Type type, string windowName = null, Window ownedBy = null)
 		{
+			windowName ??= type.ToString();
+			
 			if (!popupWindows.ContainsKey(windowName) || popupWindows[windowName] == null)
 			{
 				popupWindows[windowName] = (Window)Activator.CreateInstance(type);
