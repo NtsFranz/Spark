@@ -60,7 +60,7 @@ namespace IgniteBot
 			{
 				Dispatcher.Invoke(() =>
 				{
-					hostMatchButton.IsEnabled = Program.lastFrame != null && Program.lastFrame.private_match == false;
+					hostMatchButton.IsEnabled = Program.lastFrame != null && Program.lastFrame.private_match == true;
 
 					if (Program.lastFrame != null)
 					{
@@ -502,6 +502,7 @@ namespace IgniteBot
 				username = Program.lastFrame.client_name,
 				whitelist = Program.atlasWhitelist.AllPlayers.ToArray(),
 			};
+			bool firstHost = true;
 
 			while (Program.running &&
 				   Program.inGame &&
@@ -510,10 +511,11 @@ namespace IgniteBot
 				   Program.hostedAtlasSessionId == Program.lastFrame.sessionid)
 			{
 				bool diff =
+					firstHost || 
 					match.blue_team.Length != Program.lastFrame.teams[0].players.Count ||
 					match.orange_team.Length != Program.lastFrame.teams[1].players.Count ||
-					match.blue_points != Program.lastFrame.teams[0].stats.points ||
-					match.orange_points != Program.lastFrame.teams[1].stats.points ||
+					(Program.lastFrame.teams[0].stats != null && match.blue_points != Program.lastFrame.teams[0].stats.points) ||
+					(Program.lastFrame.teams[1].stats != null && match.orange_points != Program.lastFrame.teams[1].stats.points) ||
 					match.is_protected != (Settings.Default.atlasHostingVisibility > 0) ||
 					match.visible_to_casters != (Settings.Default.atlasHostingVisibility == 1) ||
 					match.whitelist.Length != Program.atlasWhitelist.AllPlayers.Count;
@@ -523,8 +525,8 @@ namespace IgniteBot
 					// actually update values
 					match.blue_team = Program.lastFrame.teams[0].player_names.ToArray();
 					match.orange_team = Program.lastFrame.teams[1].player_names.ToArray();
-					match.blue_points = Program.lastFrame.teams[0].stats.points;
-					match.orange_points = Program.lastFrame.teams[1].stats.points;
+					match.blue_points = Program.lastFrame.teams[0].stats != null ? Program.lastFrame.teams[0].stats.points : 0;
+					match.orange_points = Program.lastFrame.teams[1].stats != null ? Program.lastFrame.teams[1].stats.points : 0;
 					match.is_protected = (Settings.Default.atlasHostingVisibility > 0);
 					match.visible_to_casters = (Settings.Default.atlasHostingVisibility == 1);
 					match.server_score = Program.matchData.ServerScore;
@@ -533,6 +535,7 @@ namespace IgniteBot
 					match.slots = Program.lastFrame.GetAllPlayers().Count;
 
 					string data = JsonConvert.SerializeObject(match.ToDict());
+					firstHost = false;
 
 					// post new data, then fetch the updated list
 					Task.Run(() => Program.PostAsync(hostURL, new Dictionary<string, string>() { { "x-api-key", DiscordOAuth.igniteUploadKey } }, data, (responseJSON) =>
