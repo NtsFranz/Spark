@@ -984,9 +984,16 @@ namespace IgniteBot
 
 		private void startSpectatorStream_Click(object sender, RoutedEventArgs e)
 		{
-			if (!string.IsNullOrEmpty(Settings.Default.echoVRPath))
+			try
 			{
-				Process.Start(Settings.Default.echoVRPath, "-spectatorstream" + (Settings.Default.capturevp2 ? " -capturevp2" : ""));
+				if (!string.IsNullOrEmpty(Settings.Default.echoVRPath))
+				{
+					Process.Start(Settings.Default.echoVRPath, "-spectatorstream" + (Settings.Default.capturevp2 ? " -capturevp2" : ""));
+				}
+			}
+			catch (Exception ex)
+			{
+				// TODO show message about path not set
 			}
 		}
 

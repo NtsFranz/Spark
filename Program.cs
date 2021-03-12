@@ -688,7 +688,7 @@ namespace IgniteBot
 						}
 
 						// make sure there is a valid echovr path saved
-						if (Settings.Default.echoVRPath == "")
+						if (Settings.Default.echoVRPath == "" || Settings.Default.echoVRPath.Contains("win7"))
 						{
 							UpdateEchoExeLocation();
 						}
@@ -1096,7 +1096,7 @@ namespace IgniteBot
 						paths.Add((string)oculusReg.OpenSubKey(subkey).GetValue("OriginalPath"));
 					}
 
-					const string echoDir = "Software\\ready-at-dawn-echo-arena\\bin\\win7\\echovr.exe";
+					const string echoDir = "Software\\ready-at-dawn-echo-arena\\bin\\win10\\echovr.exe";
 					foreach (var path in paths)
 					{
 						string file = Path.Combine(path, echoDir);
