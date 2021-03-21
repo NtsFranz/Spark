@@ -170,7 +170,7 @@ namespace IgniteBot
 		public static int echoVRPort = 6721;
 		public static bool overrideEchoVRPort;
 
-		public static bool Personal => currentAccessCodeUsername == "Personal" || string.IsNullOrEmpty(currentAccessCodeUsername);
+		public static bool Personal => currentAccessCodeUsername == Resources.Personal || string.IsNullOrEmpty(currentAccessCodeUsername);
 
 		public static bool spectateMe;
 		private static string lastSpectatedSessionId;
@@ -190,6 +190,10 @@ namespace IgniteBot
 		private static Thread IPSearchthread1;
 		private static Thread IPSearchthread2;
 		public static PublisherSocket pubSocket;
+
+		#region Detected Events
+		public static Action<g_Instance, g_Team, g_Player> PlayerJoined;
+		#endregion
 
 		private static App app;
 
@@ -221,7 +225,7 @@ namespace IgniteBot
 			// allow multiple instances if the port is overriden
 			if (IsIgniteBotOpen() && !overrideEchoVRPort)
 			{
-				MessageBox box = new MessageBox("Instance already running. Running two instances of the IgniteBot at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke.", "Error");
+				MessageBox box = new MessageBox(Resources.instance_already_running_message, Resources.Error);
 				box.Show();
 				//while(box!= null)
 				{
@@ -424,7 +428,7 @@ namespace IgniteBot
 			}
 			while (statsThread != null && statsThread.IsAlive)
 			{
-				closingWindow.label.Content = "Closing...";
+				closingWindow.label.Content = Resources.Closing___;
 				await Task.Delay(10);
 			}
 			closingWindow.label.Content = "Closing NVIDIA Highlights...";
@@ -436,7 +440,7 @@ namespace IgniteBot
 			closingWindow.label.Content = "Closing PubSub System...";
 			AsyncIO.ForceDotNet.Force();
 			NetMQConfig.Cleanup(false);
-			closingWindow.label.Content = "Closing...";
+			closingWindow.label.Content = Resources.Closing___;
 			app.ExitApplication();
 
 			await Task.Delay(100);
@@ -1290,8 +1294,7 @@ namespace IgniteBot
 					{
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.player_joined,
 							frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
-						LogRow(LogType.File, frame.sessionid,
-							frame.game_clock_display + " - Player Joined: " + player.name);
+						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Player Joined: {player.name}");
 
 						if (team.color != TeamColor.spectator)
 						{

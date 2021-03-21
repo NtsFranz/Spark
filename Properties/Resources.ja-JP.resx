@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About" xml:space="preserve">
-    <value>About</value>
+    <value>アバウト</value>
     <comment>tab in Settings</comment>
   </data>
   <data name="AppName" xml:space="preserve">
-    <value>Spark (Japanese)</value>
+    <value>IgniteBot</value>
   </data>
   <data name="Atlas" xml:space="preserve">
     <value>アトラス</value>
@@ -136,10 +136,10 @@
     <value>ブルーチーム</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Close</value>
+    <value>閉じる</value>
   </data>
   <data name="Copy" xml:space="preserve">
-    <value>複写</value>
+    <value>コピー</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
     <value>ダッシュボード</value>
@@ -165,7 +165,7 @@
     <comment>button on bottom of main window</comment>
   </data>
   <data name="Highlights" xml:space="preserve">
-    <value>ハイライトを</value>
+    <value>ハイライト</value>
     <comment>product name for NVIDIA Highlights</comment>
   </data>
   <data name="ignite_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -175,7 +175,7 @@
     <value>..\img\ignite_logo_128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Join Link:" xml:space="preserve">
-    <value>Join Link:</value>
+    <value>リンクに参加</value>
   </data>
   <data name="Lone Echo Subtitles" xml:space="preserve">
     <value>Lone Echoの字幕</value>
@@ -186,7 +186,7 @@
     <comment>bottom left of main window</comment>
   </data>
   <data name="NVIDIAHighlights" xml:space="preserve">
-    <value>NIVIDIA Highlights</value>
+    <value>NIVIDIA ハイライト</value>
     <comment>tab in Settings</comment>
   </data>
   <data name="Open Spectatorstream" xml:space="preserve">
@@ -216,7 +216,7 @@
     <value>ラウンド情報</value>
   </data>
   <data name="Replays" xml:space="preserve">
-    <value>Replays</value>
+    <value>リプレイ</value>
     <comment>tab in Settings</comment>
   </data>
   <data name="Server Info" xml:space="preserve">
@@ -242,7 +242,7 @@
     <value>スペクテーター</value>
   </data>
   <data name="Text-to-Speech" xml:space="preserve">
-    <value>Text-to-Speech</value>
+    <value>テキスト読み上げ</value>
     <comment>tab in Settings</comment>
   </data>
   <data name="Show first-time setup window" xml:space="preserve">
@@ -290,6 +290,156 @@
 </value>
   </data>
   <data name="Server IP:" xml:space="preserve">
-    <value>Server IP:</value>
+    <value>サーバーIP</value>
+  </data>
+  <data name="(Requires Restart)" xml:space="preserve">
+    <value>（再起動が必要です）</value>
+  </data>
+  <data name="atlas_button_tooltip" xml:space="preserve">
+    <value>他のプレーヤーが参加できるリンクを表示</value>
+  </data>
+  <data name="Batch Writes" xml:space="preserve">
+    <value>バッチ書き込み</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>ブラウズ</value>
+  </data>
+  <data name="close_tooltip" xml:space="preserve">
+    <value>IginiteBotを閉じる</value>
+  </data>
+  <data name="copy_link_tooltip" xml:space="preserve">
+    <value>IgniteBotの参加リンクをクリップボードにコピー</value>
+  </data>
+  <data name="Discord Login" xml:space="preserve">
+    <value>ディスコードにログイン</value>
+  </data>
+  <data name="Download Update" xml:space="preserve">
+    <value>アップデートをダウンロード</value>
+  </data>
+  <data name="Echo Arena Replay Viewer" xml:space="preserve">
+    <value>Echo Arenaリプレイ・ビューア</value>
+  </data>
+  <data name="Enable API in Settings" xml:space="preserve">
+    <value>設定でAPIを有効にする</value>
+  </data>
+  <data name="Every Match (Scoreboard)" xml:space="preserve">
+    <value>全てのマッチ（スコアボード）</value>
+  </data>
+  <data name="Every Round" xml:space="preserve">
+    <value>全てのラウンド</value>
+  </data>
+  <data name="For help, join the Discord" xml:space="preserve">
+    <value>ヘルプが必要な場合はディスコードに参加してください</value>
+  </data>
+  <data name="Hide Main Window" xml:space="preserve">
+    <value>メインウィンドウを非表示</value>
+  </data>
+  <data name="hide_tooltip" xml:space="preserve">
+    <value>このプログラムを非表示（バックグラウンドで実行され続けます）</value>
+  </data>
+  <data name="IgniteBot | Settings" xml:space="preserve">
+    <value>IgniteBot | 設定</value>
+  </data>
+  <data name="Install Echo Speaker System" xml:space="preserve">
+    <value>Echoスピーカーシステムをインストール</value>
+  </data>
+  <data name="Installing Echo Speaker System" xml:space="preserve">
+    <value>Echoスピーカーシステムをインストール中</value>
+  </data>
+  <data name="join_link_tooltip" xml:space="preserve">
+    <value>このリンクを他のIgniteBotユーザーに共有すると招待なしですぐに試合に参加できます。</value>
+  </data>
+  <data name="Language:" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="Logging in..." xml:space="preserve">
+    <value>…にログイン</value>
+  </data>
+  <data name="login_button_tooltip" xml:space="preserve">
+    <value>Discordを使用してプログラムにログインし、統計のアップロードやTTSなどの機能を有効にします。</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>ノーマル</value>
+  </data>
+  <data name="Only Record Private Matches" xml:space="preserve">
+    <value>プライベートマッチのみ録画</value>
+  </data>
+  <data name="Open Folder" xml:space="preserve">
+    <value>フォルダーを開く</value>
+  </data>
+  <data name="Rejoin" xml:space="preserve">
+    <value>もう一度参加</value>
+  </data>
+  <data name="rejoin_tooltip" xml:space="preserve">
+    <value>前回のプライベートマッチにもう一度参加</value>
+  </data>
+  <data name="Replay File Splitting:" xml:space="preserve">
+    <value>リプレイファイルの分割</value>
+  </data>
+  <data name="Replay Logging" xml:space="preserve">
+    <value>リプレイの記録</value>
+  </data>
+  <data name="Replay Recording Settings" xml:space="preserve">
+    <value>リプレイ録画の設定</value>
+  </data>
+  <data name="replays_description_part_1" xml:space="preserve">
+    <value>リプレイは、ゲームのすべてのAPIデータを含む.echoreplayファイル形式で記録されます。echoreplayファイルには、ビデオやオーディオのデータは含まれません。</value>
+  </data>
+  <data name="replays_description_part_4" xml:space="preserve">
+    <value>Echopediaのページ</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>リセット</value>
+  </data>
+  <data name="Save Folder:" xml:space="preserve">
+    <value>フォルダーの保存</value>
+  </data>
+  <data name="Save Replays" xml:space="preserve">
+    <value>リプレイの保存</value>
+  </data>
+  <data name="Searching for Quest" xml:space="preserve">
+    <value>Questを検索中</value>
+  </data>
+  <data name="Send Logs to Ignite" xml:space="preserve">
+    <value>ログをIgniteに送る</value>
+  </data>
+  <data name="server_location_tooltip" xml:space="preserve">
+    <value>サーバーの場所は、ip-api.comを使用して推定しています</value>
+  </data>
+  <data name="settings_button_tooltip" xml:space="preserve">
+    <value>IgniteBotの設定画面を表示</value>
+  </data>
+  <data name="Spectate Me" xml:space="preserve">
+    <value>自分をスペクテート</value>
+  </data>
+  <data name="Speech Speed" xml:space="preserve">
+    <value>読み上げ速度</value>
+  </data>
+  <data name="Split File" xml:space="preserve">
+    <value>ファイルを分割</value>
+  </data>
+  <data name="Start Echo Speaker System" xml:space="preserve">
+    <value>Echoスピーカーシステムを起動</value>
+  </data>
+  <data name="Text-to-Speech (TTS) Settings" xml:space="preserve">
+    <value>テキスト読み上げ（TTS）の設定</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>ツール</value>
+  </data>
+  <data name="TTS only works when logged in with Discord!" xml:space="preserve">
+    <value>テキスト読み上げは、Discordでログインした場合にのみ利用可能</value>
+  </data>
+  <data name="tts_description_1" xml:space="preserve">
+    <value>テキスト読み上げを使用すると、ゲーム中に聞くことができます。その際、出力が聞こえるようにスピーカーを適切に設置してください。</value>
+  </data>
+  <data name="tts_description_2" xml:space="preserve">
+    <value>Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッドフォンに設定します。</value>
+  </data>
+  <data name="tts_description_3" xml:space="preserve">
+    <value>クエストでは、PCに接続したヘッドホンを使うか、スピーカーの音量をあげて下さい。</value>
+  </data>
+  <data name="Update Echo Speaker System" xml:space="preserve">
+    <value>Echoスピーカーシステムをアップデート</value>
   </data>
 </root>

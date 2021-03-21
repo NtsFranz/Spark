@@ -122,6 +122,7 @@
   </data>
   <data name="(top left of main window)" xml:space="preserve">
     <value>(top left of main window)</value>
+    <comment>referring to where to log into Discord to enable this feature</comment>
   </data>
   <data name="About" xml:space="preserve">
     <value>About</value>
@@ -129,6 +130,7 @@
   </data>
   <data name="AppName" xml:space="preserve">
     <value>IgniteBot</value>
+    <comment>Title of the app</comment>
   </data>
   <data name="Atlas" xml:space="preserve">
     <value>Atlas</value>
@@ -212,9 +214,11 @@
   </data>
   <data name="Fast" xml:space="preserve">
     <value>Fast</value>
+    <comment>an option in the dropdown refers to the speed of the TTS</comment>
   </data>
   <data name="Fast (60 Hz)" xml:space="preserve">
     <value>Fast (60 Hz)</value>
+    <comment>an option in the dropdown that refers to the speed of replay recording</comment>
   </data>
   <data name="Find Quest IP" xml:space="preserve">
     <value>Find Quest IP</value>
@@ -279,6 +283,7 @@
   </data>
   <data name="Med (30 Hz)" xml:space="preserve">
     <value>Med (30 Hz)</value>
+    <comment>an option in the dropdown that refers to the speed of replay recording</comment>
   </data>
   <data name="Mode" xml:space="preserve">
     <value>Mode: </value>
@@ -286,6 +291,7 @@
   </data>
   <data name="Normal" xml:space="preserve">
     <value>Normal</value>
+    <comment>an option in the dropdown refers to the speed of the TTS</comment>
   </data>
   <data name="NVIDIAHighlights" xml:space="preserve">
     <value>NIVIDIA Highlights</value>
@@ -293,9 +299,11 @@
   </data>
   <data name="On Server Change" xml:space="preserve">
     <value>On Server Change</value>
+    <comment>an option in the dropdown that refers to when to split replay files (when switching to a different server ingame)</comment>
   </data>
   <data name="Only on IgniteBot Restart" xml:space="preserve">
     <value>Only on IgniteBot Restart</value>
+    <comment>an option in the dropdown that refers to when to split replay files</comment>
   </data>
   <data name="Only Record Private Matches" xml:space="preserve">
     <value>Only Record Private Matches</value>
@@ -350,15 +358,19 @@
   </data>
   <data name="replays_description_part_1" xml:space="preserve">
     <value>Replays are recorded in the .echoreplay file format, which contains all API data from the game. Echoreplay files to not contain any video or audio data.</value>
+    <comment>replay description part 1</comment>
   </data>
   <data name="replays_description_part_2" xml:space="preserve">
     <value>The most common use of .echoreplay files is in the</value>
+    <comment>replay description part 2</comment>
   </data>
   <data name="replays_description_part_3" xml:space="preserve">
     <value>For the technical details on the .echoreplay format, check out the</value>
+    <comment>replay description part 3</comment>
   </data>
   <data name="replays_description_part_4" xml:space="preserve">
     <value>Echopedia page</value>
+    <comment>replay description part 4</comment>
   </data>
   <data name="Reset" xml:space="preserve">
     <value>Reset</value>
@@ -407,9 +419,11 @@
   </data>
   <data name="Slow" xml:space="preserve">
     <value>Slow</value>
+    <comment>an option in the dropdown that refers to the speed of the TTS</comment>
   </data>
   <data name="Slow (10 Hz)" xml:space="preserve">
     <value>Slow (10 Hz)</value>
+    <comment>an option in the dropdown that refers to the speed of replay recording</comment>
   </data>
   <data name="Speaker System" xml:space="preserve">
     <value>Speaker System</value>
@@ -466,6 +480,7 @@
   </data>
   <data name="Upload to Firestore" xml:space="preserve">
     <value>Upload to Firestore</value>
+    <comment>not in the public version, so not really necessary</comment>
   </data>
   <data name="Upload to IgniteVR Database" xml:space="preserve">
     <value>Upload to IgniteVR Database</value>
@@ -478,8 +493,100 @@
   </data>
   <data name="Very Fast" xml:space="preserve">
     <value>Very Fast</value>
+    <comment>refers to putting the replay files in a .zip file</comment>
   </data>
   <data name="Closing..." xml:space="preserve">
     <value>Closing...</value>
+  </data>
+  <data name="Contribute" xml:space="preserve">
+    <value>Contribute</value>
+  </data>
+  <data name="Distance in m of every goal" xml:space="preserve">
+    <value>Distance in m of every goal</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Estimated location of the server as you join" xml:space="preserve">
+    <value>Estimated location of the server as you join</value>
+  </data>
+  <data name="Game Paused" xml:space="preserve">
+    <value>Game Paused</value>
+  </data>
+  <data name="Goal Distance" xml:space="preserve">
+    <value>Goal Distance</value>
+  </data>
+  <data name="Goal Speed" xml:space="preserve">
+    <value>Goal Speed</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="IgniteBot was made from contributions by these community members:" xml:space="preserve">
+    <value>IgniteBot was made from contributions by these community members:</value>
+  </data>
+  <data name="instance_already_running_message" xml:space="preserve">
+    <value>Instance already running. Running two instances of the IgniteBot at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke.</value>
+  </data>
+  <data name="Japanese Translation:" xml:space="preserve">
+    <value>Japanese Translation:</value>
+  </data>
+  <data name="Joust Speed" xml:space="preserve">
+    <value>Joust Speed</value>
+  </data>
+  <data name="Joust Time" xml:space="preserve">
+    <value>Joust Time</value>
+  </data>
+  <data name="Max Boost Speed" xml:space="preserve">
+    <value>Max Boost Speed</value>
+  </data>
+  <data name="Maximum speed achieved for times when you are faster than 20 m/s" xml:space="preserve">
+    <value>Maximum speed achieved for times when you are faster than 20 m/s</value>
+  </data>
+  <data name="nvhighlights_description_1" xml:space="preserve">
+    <value>To enable NVIDIA Highlights, first enable the NVIDIA overlay in Geforce Experience, then enable the Highlights feature from within the overlay (ALT+Z). The events that you want to trigger a clip can be customized in the NVIDIA overlay while the game is open.</value>
+  </data>
+  <data name="nvhighlights_description_2" xml:space="preserve">
+    <value>Make sure to enable Desktop recording (under the 'Privacy control' section in the overlay), otherwise only this program will be recorded.</value>
+  </data>
+  <data name="NVIDIA Highlights Settings" xml:space="preserve">
+    <value>NVIDIA Highlights Settings</value>
+  </data>
+  <data name="Open Event Log Folder" xml:space="preserve">
+    <value>Open Event Log Folder</value>
+    <comment>an option in the dropdown that refers to the speed of the TTS</comment>
+  </data>
+  <data name="Player Join" xml:space="preserve">
+    <value>Player Join</value>
+  </data>
+  <data name="Player Leave" xml:space="preserve">
+    <value>Player Leave</value>
+  </data>
+  <data name="Player Switch Teams" xml:space="preserve">
+    <value>Player Switch Teams</value>
+  </data>
+  <data name="Server Location" xml:space="preserve">
+    <value>Server Location</value>
+  </data>
+  <data name="Speed in m/s as you exit the launch tube" xml:space="preserve">
+    <value>Speed in m/s as you exit the launch tube</value>
+  </data>
+  <data name="Speed in m/s of every goal" xml:space="preserve">
+    <value>Speed in m/s of every goal</value>
+  </data>
+  <data name="Speed in m/s of the first player on each team to cross the midline on neutral joust" xml:space="preserve">
+    <value>Speed in m/s of the first player on each team to cross the midline on neutral joust</value>
+  </data>
+  <data name="Speed in m/s of your throws" xml:space="preserve">
+    <value>Speed in m/s of your throws</value>
+  </data>
+  <data name="Throw Speed" xml:space="preserve">
+    <value>Throw Speed</value>
+  </data>
+  <data name="Time in seconds to reach the midline on neutral jousts for the fastest player on each team" xml:space="preserve">
+    <value>Time in seconds to reach the midline on neutral jousts for the fastest player on each team</value>
+  </data>
+  <data name="Tube Exit Speed (self)" xml:space="preserve">
+    <value>Tube Exit Speed (self)</value>
   </data>
 </root>

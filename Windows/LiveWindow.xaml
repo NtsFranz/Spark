@@ -201,7 +201,7 @@
 					<Button x:Name="spectateMeButton" Content="{x:Static p:Resources.Spectate_Me}" Height="40" Click="SpectateMeClicked" Margin="4,4,4,4"/>
 				</StackPanel>
 			</GroupBox>
-			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5"><Hyperlink NavigateUri="https://discord.gg/CGXR86C" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static p:Resources.For_help__join_the_Discord}"/>
+			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://discord.gg/CGXR86C" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static p:Resources.For_help__join_the_Discord}"/>
 			</Hyperlink></TextBlock>
 		</StackPanel>
 		<TextBlock x:Name="accessCodeLabel" Text="{x:Static p:Resources.Mode}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
