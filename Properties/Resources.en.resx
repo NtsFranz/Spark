@@ -117,53 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="(Requires Restart)" xml:space="preserve">
-    <value>(Requires Restart)</value>
-  </data>
-  <data name="(top left of main window)" xml:space="preserve">
-    <value>(top left of main window)</value>
-  </data>
   <data name="About" xml:space="preserve">
     <value>About</value>
     <comment>tab in Settings</comment>
   </data>
   <data name="AppName" xml:space="preserve">
-    <value>IgniteBot</value>
+    <value>Spark</value>
   </data>
   <data name="Atlas" xml:space="preserve">
     <value>Atlas</value>
     <comment>button on right side of main window</comment>
   </data>
-  <data name="atlas_button_tooltip" xml:space="preserve">
-    <value>Shows copy-pastable links to let others join your match</value>
-  </data>
-  <data name="Autorestart EchoVR into autospectator" xml:space="preserve">
-    <value>Autorestart EchoVR into autospectator</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="baseline_replay_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\img\baseline_replay_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Batch Writes" xml:space="preserve">
-    <value>Batch Writes</value>
-  </data>
   <data name="Blue Team" xml:space="preserve">
     <value>Blue Team</value>
-  </data>
-  <data name="Browse" xml:space="preserve">
-    <value>Browse</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
   </data>
-  <data name="close_tooltip" xml:space="preserve">
-    <value>Close the IgniteBot</value>
-  </data>
   <data name="Copy" xml:space="preserve">
     <value>Copy</value>
-  </data>
-  <data name="copy_link_tooltip" xml:space="preserve">
-    <value>Copies the IgniteBot join link to the clipboard</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
     <value>Dashboard</value>
@@ -172,55 +148,13 @@
   <data name="Disc Speed" xml:space="preserve">
     <value>Disc Speed (m/s)</value>
   </data>
-  <data name="Discord Login" xml:space="preserve">
-    <value>Discord Login</value>
-  </data>
-  <data name="Discord Rich Presence" xml:space="preserve">
-    <value>Discord Rich Presence</value>
-  </data>
-  <data name="Download Update" xml:space="preserve">
-    <value>Download Update</value>
-  </data>
-  <data name="Echo Arena Replay Viewer" xml:space="preserve">
-    <value>Echo Arena Replay Viewer</value>
-  </data>
-  <data name="EchoVR Executable Location:" xml:space="preserve">
-    <value>EchoVR Executable Location:</value>
-  </data>
-  <data name="EchoVR IP (for Quest)" xml:space="preserve">
-    <value>EchoVR IP (for Quest)</value>
-  </data>
-  <data name="Enable -capturevp2 when launching spectator" xml:space="preserve">
-    <value>Enable -capturevp2 when launching spectator</value>
-  </data>
-  <data name="Enable API in Settings" xml:space="preserve">
-    <value>Enable API in Settings</value>
-  </data>
   <data name="Event Log" xml:space="preserve">
     <value>Event Log</value>
     <comment>tab in main window</comment>
   </data>
-  <data name="Every Match (Scoreboard)" xml:space="preserve">
-    <value>Every Match (Scoreboard)</value>
-  </data>
-  <data name="Every Round" xml:space="preserve">
-    <value>Every Round</value>
-  </data>
   <data name="Exit" xml:space="preserve">
     <value>Exit</value>
     <comment>button on bottom of main window</comment>
-  </data>
-  <data name="Fast" xml:space="preserve">
-    <value>Fast</value>
-  </data>
-  <data name="Fast (60 Hz)" xml:space="preserve">
-    <value>Fast (60 Hz)</value>
-  </data>
-  <data name="Find Quest IP" xml:space="preserve">
-    <value>Find Quest IP</value>
-  </data>
-  <data name="For help, join the Discord" xml:space="preserve">
-    <value>For help, join the Discord</value>
   </data>
   <data name="General" xml:space="preserve">
     <value>General</value>
@@ -230,18 +164,9 @@
     <value>Hide</value>
     <comment>button on bottom of main window</comment>
   </data>
-  <data name="Hide Main Window" xml:space="preserve">
-    <value>Hide Main Window</value>
-  </data>
-  <data name="hide_tooltip" xml:space="preserve">
-    <value>Hides this program in the tray. It will continue to run in the background</value>
-  </data>
   <data name="Highlights" xml:space="preserve">
     <value>Highlights</value>
     <comment>product name for NVIDIA Highlights</comment>
-  </data>
-  <data name="IgniteBot | Settings" xml:space="preserve">
-    <value>IgniteBot | Settings</value>
   </data>
   <data name="ignite_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\img\ignite_logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -249,59 +174,20 @@
   <data name="ignite_logo_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\img\ignite_logo_128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Install Echo Speaker System" xml:space="preserve">
-    <value>Install Echo Speaker System</value>
-  </data>
-  <data name="Installing Echo Speaker System" xml:space="preserve">
-    <value>Installing Echo Speaker System</value>
-  </data>
   <data name="Join Link:" xml:space="preserve">
     <value>Join Link:</value>
-  </data>
-  <data name="join_link_tooltip" xml:space="preserve">
-    <value>Share this link with others who have the IgniteBot and play on PC. They will be able to click the link to immediately join your match without an invite.</value>
-  </data>
-  <data name="Language:" xml:space="preserve">
-    <value>Language:</value>
-  </data>
-  <data name="Local PC" xml:space="preserve">
-    <value>Local PC</value>
-  </data>
-  <data name="Logging in..." xml:space="preserve">
-    <value>Logging in...</value>
-  </data>
-  <data name="login_button_tooltip" xml:space="preserve">
-    <value>Log in to the program with Discord to enable features such as stat uploading and TTS.</value>
   </data>
   <data name="Lone Echo Subtitles" xml:space="preserve">
     <value>Lone Echo Subtitles</value>
     <comment>button on right side of main window</comment>
   </data>
-  <data name="Med (30 Hz)" xml:space="preserve">
-    <value>Med (30 Hz)</value>
-  </data>
   <data name="Mode" xml:space="preserve">
     <value>Mode: </value>
     <comment>bottom left of main window</comment>
   </data>
-  <data name="Normal" xml:space="preserve">
-    <value>Normal</value>
-  </data>
   <data name="NVIDIAHighlights" xml:space="preserve">
     <value>NIVIDIA Highlights</value>
     <comment>tab in Settings</comment>
-  </data>
-  <data name="On Server Change" xml:space="preserve">
-    <value>On Server Change</value>
-  </data>
-  <data name="Only on IgniteBot Restart" xml:space="preserve">
-    <value>Only on IgniteBot Restart</value>
-  </data>
-  <data name="Only Record Private Matches" xml:space="preserve">
-    <value>Only Record Private Matches</value>
-  </data>
-  <data name="Open Folder" xml:space="preserve">
-    <value>Open Folder</value>
   </data>
   <data name="Open Spectatorstream" xml:space="preserve">
     <value>Open Spectatorstream</value>
@@ -329,51 +215,9 @@
   <data name="Previous Rounds" xml:space="preserve">
     <value>Previous Rounds</value>
   </data>
-  <data name="Rejoin" xml:space="preserve">
-    <value>Rejoin</value>
-  </data>
-  <data name="rejoin_tooltip" xml:space="preserve">
-    <value>Rejoin the last private match that you were in</value>
-  </data>
-  <data name="Replay File Splitting:" xml:space="preserve">
-    <value>Replay File Splitting:</value>
-  </data>
-  <data name="Replay Logging" xml:space="preserve">
-    <value>Replay Logging</value>
-  </data>
-  <data name="Replay Recording Settings" xml:space="preserve">
-    <value>Replay Recording Settings</value>
-  </data>
   <data name="Replays" xml:space="preserve">
     <value>Replays</value>
     <comment>tab in Settings</comment>
-  </data>
-  <data name="replays_description_part_1" xml:space="preserve">
-    <value>Replays are recorded in the .echoreplay file format, which contains all API data from the game. Echoreplay files to not contain any video or audio data.</value>
-  </data>
-  <data name="replays_description_part_2" xml:space="preserve">
-    <value>The most common use of .echoreplay files is in the</value>
-  </data>
-  <data name="replays_description_part_3" xml:space="preserve">
-    <value>For the technical details on the .echoreplay format, check out the</value>
-  </data>
-  <data name="replays_description_part_4" xml:space="preserve">
-    <value>Echopedia page</value>
-  </data>
-  <data name="Reset" xml:space="preserve">
-    <value>Reset</value>
-  </data>
-  <data name="Save Folder:" xml:space="preserve">
-    <value>Save Folder:</value>
-  </data>
-  <data name="Save Replays" xml:space="preserve">
-    <value>Save Replays</value>
-  </data>
-  <data name="Searching for Quest" xml:space="preserve">
-    <value>Searching for Quest</value>
-  </data>
-  <data name="Send Logs to Ignite" xml:space="preserve">
-    <value>Send Logs to Ignite</value>
   </data>
   <data name="Server Info" xml:space="preserve">
     <value>Server Info</value>
@@ -381,105 +225,30 @@
   <data name="Server IP:" xml:space="preserve">
     <value>Server IP:</value>
   </data>
-  <data name="Server Location:" xml:space="preserve">
-    <value>Server Location:</value>
-  </data>
-  <data name="server_location_tooltip" xml:space="preserve">
-    <value>The server location is estimated using ip-api.com</value>
-  </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
     <comment>button on bottom of main window</comment>
-  </data>
-  <data name="settings_button_tooltip" xml:space="preserve">
-    <value>Opens IgniteBot settings window</value>
   </data>
   <data name="Show" xml:space="preserve">
     <value>Show</value>
     <comment>as in "Show 13 Highlights"</comment>
   </data>
-  <data name="Show first-time setup window" xml:space="preserve">
-    <value>Show first-time setup window</value>
-  </data>
   <data name="Show Playspace" xml:space="preserve">
     <value>Show Playspace</value>
     <comment>button on right side of main window</comment>
-  </data>
-  <data name="Slow" xml:space="preserve">
-    <value>Slow</value>
-  </data>
-  <data name="Slow (10 Hz)" xml:space="preserve">
-    <value>Slow (10 Hz)</value>
   </data>
   <data name="Speaker System" xml:space="preserve">
     <value>Speaker System</value>
     <comment>tab in main window</comment>
   </data>
-  <data name="Spectate Me" xml:space="preserve">
-    <value>Spectate Me</value>
-  </data>
   <data name="Spectators" xml:space="preserve">
     <value>Spectators</value>
-  </data>
-  <data name="Speech Speed" xml:space="preserve">
-    <value>Speech Speed</value>
-  </data>
-  <data name="Split File" xml:space="preserve">
-    <value>Split File</value>
-  </data>
-  <data name="Start Echo Speaker System" xml:space="preserve">
-    <value>Start Echo Speaker System</value>
-  </data>
-  <data name="Start Minimized" xml:space="preserve">
-    <value>Start Minimized</value>
-  </data>
-  <data name="Start with Windows" xml:space="preserve">
-    <value>Start with Windows</value>
-  </data>
-  <data name="Stats Logging" xml:space="preserve">
-    <value>Stats Logging</value>
   </data>
   <data name="Text-to-Speech" xml:space="preserve">
     <value>Text-to-Speech</value>
     <comment>tab in Settings</comment>
   </data>
-  <data name="Text-to-Speech (TTS) Settings" xml:space="preserve">
-    <value>Text-to-Speech (TTS) Settings</value>
-  </data>
-  <data name="Tools" xml:space="preserve">
-    <value>Tools</value>
-  </data>
-  <data name="TTS only works when logged in with Discord!" xml:space="preserve">
-    <value>TTS only works when logged in with Discord!</value>
-  </data>
-  <data name="tts_description_1" xml:space="preserve">
-    <value>TTS allows you to hear events while in game. Make sure to set up your speakers appropriately to be able to hear the output.</value>
-  </data>
-  <data name="tts_description_2" xml:space="preserve">
-    <value>On Rift, set your default Windows sound output to the Rift headphones.</value>
-  </data>
-  <data name="tts_description_3" xml:space="preserve">
-    <value>On Quest, use headphones attached to your PC or turn up the speakers.</value>
-  </data>
-  <data name="Update Echo Speaker System" xml:space="preserve">
-    <value>Update Echo Speaker System</value>
-  </data>
-  <data name="Upload to Firestore" xml:space="preserve">
-    <value>Upload to Firestore</value>
-  </data>
-  <data name="Upload to IgniteVR Database" xml:space="preserve">
-    <value>Upload to IgniteVR Database</value>
-  </data>
-  <data name="upload_description" xml:space="preserve">
-    <value>Uploads data to the Personal Ignite database. This is separate from the public match stats, but is still visible on the website. Discord Login is required for stat uploading. Only public matches are uploaded.</value>
-  </data>
-  <data name="Use Compression" xml:space="preserve">
-    <value>Use Compression</value>
-  </data>
-  <data name="Very Fast" xml:space="preserve">
-    <value>Very Fast</value>
-  </data>
-  <data name="Closing..." xml:space="preserve">
-    <value>Closing...</value>
+  <data name="Discord Rich Presence" xml:space="preserve">
+    <value>Discord Rich Presence</value>
   </data>
 </root>

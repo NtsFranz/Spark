@@ -1241,5 +1241,18 @@ namespace IgniteBot
 		{
 			Program.ToggleWindow(typeof(LoneEchoSubtitles));
 		}
+
+		private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+		{
+			try
+			{
+				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+				e.Handled = true;
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, ex.ToString());
+			}
+		}
 	}
 }

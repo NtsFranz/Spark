@@ -19,27 +19,27 @@ namespace IgniteBot.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources_en {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Resources_en() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("IgniteBot.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("IgniteBot.Properties.Resources.en", typeof(Resources_en).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace IgniteBot.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,18 +61,36 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IgniteBot.
+        ///   Looks up a localized string similar to About.
         /// </summary>
-        internal static string AppName {
+        public static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spark.
+        /// </summary>
+        public static string AppName {
             get {
                 return ResourceManager.GetString("AppName", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Atlas.
+        /// </summary>
+        public static string Atlas {
+            get {
+                return ResourceManager.GetString("Atlas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap baseline_replay_white_24px {
+        public static System.Drawing.Bitmap baseline_replay_white_24px {
             get {
                 object obj = ResourceManager.GetObject("baseline_replay_white_24px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -80,9 +98,108 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Blue Team.
+        /// </summary>
+        public static string Blue_Team {
+            get {
+                return ResourceManager.GetString("Blue Team", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string Copy {
+            get {
+                return ResourceManager.GetString("Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dashboard.
+        /// </summary>
+        public static string Dashboard {
+            get {
+                return ResourceManager.GetString("Dashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disc Speed (m/s).
+        /// </summary>
+        public static string Disc_Speed {
+            get {
+                return ResourceManager.GetString("Disc Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discord Rich Presence.
+        /// </summary>
+        public static string Discord_Rich_Presence {
+            get {
+                return ResourceManager.GetString("Discord Rich Presence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event Log.
+        /// </summary>
+        public static string Event_Log {
+            get {
+                return ResourceManager.GetString("Event Log", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit.
+        /// </summary>
+        public static string Exit {
+            get {
+                return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string General {
+            get {
+                return ResourceManager.GetString("General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide.
+        /// </summary>
+        public static string Hide {
+            get {
+                return ResourceManager.GetString("Hide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highlights.
+        /// </summary>
+        public static string Highlights {
+            get {
+                return ResourceManager.GetString("Highlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon ignite_logo {
+        public static System.Drawing.Icon ignite_logo {
             get {
                 object obj = ResourceManager.GetObject("ignite_logo", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
@@ -92,10 +209,199 @@ namespace IgniteBot.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ignite_logo_128 {
+        public static System.Drawing.Bitmap ignite_logo_128 {
             get {
                 object obj = ResourceManager.GetObject("ignite_logo_128", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join Link:.
+        /// </summary>
+        public static string Join_Link_ {
+            get {
+                return ResourceManager.GetString("Join Link:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lone Echo Subtitles.
+        /// </summary>
+        public static string Lone_Echo_Subtitles {
+            get {
+                return ResourceManager.GetString("Lone Echo Subtitles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mode: .
+        /// </summary>
+        public static string Mode {
+            get {
+                return ResourceManager.GetString("Mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NIVIDIA Highlights.
+        /// </summary>
+        public static string NVIDIAHighlights {
+            get {
+                return ResourceManager.GetString("NVIDIAHighlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Spectatorstream.
+        /// </summary>
+        public static string Open_Spectatorstream {
+            get {
+                return ResourceManager.GetString("Open Spectatorstream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orange Team.
+        /// </summary>
+        public static string Orange_Team {
+            get {
+                return ResourceManager.GetString("Orange Team", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal.
+        /// </summary>
+        public static string Personal {
+            get {
+                return ResourceManager.GetString("Personal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player Pings.
+        /// </summary>
+        public static string Player_Pings {
+            get {
+                return ResourceManager.GetString("Player Pings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player Speeds.
+        /// </summary>
+        public static string Player_Speeds {
+            get {
+                return ResourceManager.GetString("Player Speeds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous Goals.
+        /// </summary>
+        public static string Previous_Goals {
+            get {
+                return ResourceManager.GetString("Previous Goals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous Joust Times.
+        /// </summary>
+        public static string Previous_Joust_Times {
+            get {
+                return ResourceManager.GetString("Previous Joust Times", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous Rounds.
+        /// </summary>
+        public static string Previous_Rounds {
+            get {
+                return ResourceManager.GetString("Previous Rounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replays.
+        /// </summary>
+        public static string Replays {
+            get {
+                return ResourceManager.GetString("Replays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server Info.
+        /// </summary>
+        public static string Server_Info {
+            get {
+                return ResourceManager.GetString("Server Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server IP:.
+        /// </summary>
+        public static string Server_IP_ {
+            get {
+                return ResourceManager.GetString("Server IP:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show.
+        /// </summary>
+        public static string Show {
+            get {
+                return ResourceManager.GetString("Show", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Playspace.
+        /// </summary>
+        public static string Show_Playspace {
+            get {
+                return ResourceManager.GetString("Show Playspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speaker System.
+        /// </summary>
+        public static string Speaker_System {
+            get {
+                return ResourceManager.GetString("Speaker System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spectators.
+        /// </summary>
+        public static string Spectators {
+            get {
+                return ResourceManager.GetString("Spectators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text-to-Speech.
+        /// </summary>
+        public static string Text_to_Speech {
+            get {
+                return ResourceManager.GetString("Text-to-Speech", resourceCulture);
             }
         }
     }

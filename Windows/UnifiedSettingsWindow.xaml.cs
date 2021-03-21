@@ -458,6 +458,7 @@ namespace IgniteBot
 		#endregion
 
 		public static string AppVersionLabelText => $"v{Program.AppVersion()}";
+
 	}
 
 	public class SettingBindingExtension : Binding
