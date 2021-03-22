@@ -108,7 +108,7 @@ namespace IgniteBot
 				if (Settings.Default.startMinimized)
 				{
 					Hide();
-					showHideMenuItem.Header = "Show Main Window";
+					showHideMenuItem.Header = Properties.Resources.Show_Main_Window;
 					hidden = true;
 				}
 			};
@@ -151,7 +151,7 @@ namespace IgniteBot
 			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 			showHighlights.IsEnabled = HighlightsHelper.DoNVClipsExist();
 			showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
-			showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? "Show " + HighlightsHelper.nvHighlightClipCount + " Highlights" : "No clips available";
+			showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? Properties.Resources.Show + " " + HighlightsHelper.nvHighlightClipCount + " " + Properties.Resources.Highlights : Properties.Resources.No_clips_available;
 
 
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
@@ -311,7 +311,7 @@ namespace IgniteBot
 					}
 					else
 					{
-						serverLocationLabel.Content = "Server IP: ---";
+						serverLocationLabel.Content = $"{Properties.Resources.Server_IP_} ---";
 					}
 
 					if (Program.lastFrame != null && Program.lastFrame.map_name != "mpl_lobby_b2")  // 'mpl_lobby_b2' may change in the future
@@ -419,11 +419,11 @@ namespace IgniteBot
 
 						if (pings[0].Count != 4 || pings[1].Count != 4)
 						{
-							playerPingsGroupbox.Header = "Player Pings   Score: --";
+							playerPingsGroupbox.Header = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} --";
 						}
 						else if (serverScore < 0)
 						{
-							playerPingsGroupbox.Header = $"Player Pings     >150";
+							playerPingsGroupbox.Header = $"{Properties.Resources.Player_Pings}     >150";
 						}
 						else
 						{
@@ -437,7 +437,7 @@ namespace IgniteBot
 							{
 								smoothedServerScore = smoothedServerScore * serverScoreSmoothingFactor + (1 - serverScoreSmoothingFactor) * serverScore;
 							}
-							playerPingsGroupbox.Header = $"Player Pings   Score: {smoothedServerScore:N1}";
+							playerPingsGroupbox.Header = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {smoothedServerScore:N1}";
 						}
 						if (Program.matchData != null)
 						{
@@ -592,7 +592,7 @@ namespace IgniteBot
 			{
 				e.Cancel = true;
 				Hide();
-				showHideMenuItem.Header = "Show Main Window";
+				showHideMenuItem.Header = Properties.Resources.Show_Main_Window;
 				hidden = true;
 			}
 
@@ -600,7 +600,8 @@ namespace IgniteBot
 
 		private void RefreshAccessCode()
 		{
-			accessCodeLabel.Text = "Mode: " + Program.currentAccessCodeUsername;
+			string accessCodeLocal = Program.currentAccessCodeUsername == "Personal" ? Properties.Resources.Personal : Program.currentAccessCodeUsername;
+			accessCodeLabel.Text = Properties.Resources.Mode + accessCodeLocal;
 			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 		}
 
@@ -611,7 +612,7 @@ namespace IgniteBot
 			{
 				if (string.IsNullOrEmpty(username))
 				{
-					discordUsernameLabel.Content = "Discord Login";
+					discordUsernameLabel.Content = Properties.Resources.Discord_Login;
 					discordUsernameLabel.Width = 200;
 					discordPFPImage.Source = null;
 					discordPFPImage.Visibility = Visibility.Collapsed;
@@ -710,7 +711,7 @@ namespace IgniteBot
 					JObject respObj = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 					string loc = (string)respObj["city"] + ", " + (string)respObj["regionName"];
 					Program.matchData.ServerLocation = loc;
-					serverLocationLabel.Content = "Server Location:\n" + loc;
+					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
 
 					if (Settings.Default.serverLocationTTS)
 					{
@@ -729,7 +730,7 @@ namespace IgniteBot
 		private void CloseButtonClicked(object sender, RoutedEventArgs e)
 		{
 			Hide();
-			showHideMenuItem.Header = "Show Main Window";
+			showHideMenuItem.Header = Properties.Resources.Show_Main_Window;
 			hidden = true;
 		}
 
@@ -932,7 +933,7 @@ namespace IgniteBot
 				JToken settings = Program.ReadEchoVRSettings();
 				if (settings != null)
 				{
-					new MessageBox("Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!").Show();
+					new MessageBox(Properties.Resources.Enabled_API_access_in_the_game_settings__nCLOSE_ECHOVR_BEFORE_PRESSING_OK_).Show();
 
 					settings["game"]["EnableAPIAccess"] = true;
 					Program.WriteEchoVRSettings(settings);
@@ -960,21 +961,9 @@ namespace IgniteBot
 			Program.ToggleWindow(typeof(Playspace));
 		}
 
-		[Obsolete("This is in UnifiedSettingsWindow now")]
-		private void ttsSettings_Click(object sender, RoutedEventArgs e)
-		{
-			Program.ToggleWindow(typeof(TTSSettingsWindow));
-		}
-
 		private void showHighlights_Click(object sender, RoutedEventArgs e)
 		{
 			HighlightsHelper.ShowNVHighlights();
-		}
-
-		[Obsolete("This is in UnifiedSettingsWindow now")]
-		private void showNVHighlightsSettings_Click(object sender, RoutedEventArgs e)
-		{
-			Program.ToggleWindow(typeof(NVHighlightsSettingsWindow));
 		}
 
 		private void LoginWindowButtonClicked(object sender, RoutedEventArgs e)
@@ -1002,12 +991,12 @@ namespace IgniteBot
 			if (hidden)
 			{
 				Show();
-				showHideMenuItem.Header = "Hide Main Window";
+				showHideMenuItem.Header = Properties.Resources.Hide_Main_Window;
 			}
 			else
 			{
 				Hide();
-				showHideMenuItem.Header = "Show Main Window";
+				showHideMenuItem.Header = Properties.Resources.Show_Main_Window;
 			}
 			hidden = !hidden;
 		}
@@ -1045,12 +1034,12 @@ namespace IgniteBot
 							Program.StartEchoVR("spectate");
 						}
 					}
-					spectateMeButton.Content = "Stop Spectating Me";
+					spectateMeButton.Content = Properties.Resources.Stop_Spectating_Me;
 				}
 				else
 				{
 					Program.KillEchoVR();
-					spectateMeButton.Content = "Spectate Me";
+					spectateMeButton.Content = Properties.Resources.Spectate_Me;
 				}
 			}
 			catch (Exception ex)
@@ -1086,13 +1075,13 @@ namespace IgniteBot
 		{
 			Dispatcher.Invoke(() =>
 			{
-				copySessionIdButton.Content = "Copied!";
+				copySessionIdButton.Content = Properties.Resources.Copied_;
 			});
 			await Task.Delay(3000);
 
 			Dispatcher.Invoke(() =>
 			{
-				copySessionIdButton.Content = "Copy";
+				copySessionIdButton.Content = Properties.Resources.Copy;
 			});
 		}
 
@@ -1136,9 +1125,9 @@ namespace IgniteBot
 			Program.pubSocket.SendMoreFrame("CloseApp").SendFrame("");
 			Thread.Sleep(800);
 			KillSpeakerSystem();
-			startStopEchoSpeakerSystem.Content = "Start Echo Speaker System";
+			startStopEchoSpeakerSystem.Content = Properties.Resources.Start_Echo_Speaker_System;
 
-			speakerSystemInstallLabel.Content = "Installing Echo Speaker System";
+			speakerSystemInstallLabel.Content = Properties.Resources.Installing_Echo_Speaker_System;
 			speakerSystemInstallLabel.Visibility = Visibility.Visible;
 			installEchoSpeakerSystem.IsEnabled = false;
 			startStopEchoSpeakerSystem.IsEnabled = false;
@@ -1174,7 +1163,7 @@ namespace IgniteBot
 				SetWindowLong(SpeakerSystemProcess.MainWindowHandle, GWL_STYLE, WS_VISIBLE);
 				EnumChildWindows(unityHandle, WindowEnum, IntPtr.Zero);
 				speakerSystemInstallLabel.Visibility = Visibility.Hidden;
-				startStopEchoSpeakerSystem.Content = "Stop Echo Speaker System";
+				startStopEchoSpeakerSystem.Content = Properties.Resources.Stop_Echo_Speaker_System;
 			});
 		}
 
@@ -1204,7 +1193,7 @@ namespace IgniteBot
 				{
 					speakerSystemInstallLabel.Visibility = Visibility.Hidden;
 					startStopEchoSpeakerSystem.IsEnabled = false;
-					startStopEchoSpeakerSystem.Content = "Stop Echo Speaker System";
+					startStopEchoSpeakerSystem.Content = Properties.Resources.Stop_Echo_Speaker_System;
 					SpeakerSystemProcess = new Process();
 					HwndSource source = (HwndSource)PresentationSource.FromVisual(speakerSystemPanel);
 
@@ -1222,7 +1211,7 @@ namespace IgniteBot
 				}
 				catch (Exception ex)
 				{
-					startStopEchoSpeakerSystem.Content = "Start Echo Speaker System";
+					startStopEchoSpeakerSystem.Content = Properties.Resources.Start_Echo_Speaker_System;
 					startStopEchoSpeakerSystem.IsEnabled = true;
 				}
 			}
@@ -1232,7 +1221,7 @@ namespace IgniteBot
 				Program.pubSocket.SendMoreFrame("CloseApp").SendFrame("");
 				Thread.Sleep(800);
 				KillSpeakerSystem();
-				startStopEchoSpeakerSystem.Content = "Start Echo Speaker System";
+				startStopEchoSpeakerSystem.Content = Properties.Resources.Start_Echo_Speaker_System;
 				startStopEchoSpeakerSystem.IsEnabled = true;
 			}
 		}

@@ -120,6 +120,19 @@ namespace IgniteBot
 			return null;
 		}
 
+		public g_Team GetTeam(long userid)
+		{
+			foreach (g_Team team in teams)
+			{
+				foreach (g_Player player in team.players)
+				{
+					if (player.userid == userid) return team;
+				}
+			}
+
+			return null;
+		}
+
 		public TeamColor GetTeamColor(long userid)
 		{
 			foreach (g_Team team in teams)

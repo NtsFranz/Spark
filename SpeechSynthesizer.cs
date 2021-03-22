@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Google.Cloud.TextToSpeech.V1;
+using IgniteBot.Properties;
 
 namespace IgniteBot
 {
@@ -14,8 +15,10 @@ namespace IgniteBot
 	/// </summary>
 	class SpeechSynthesizer
 	{
+		private string[,] voiceTypes = { { "en-US-Wavenet-D", "en-US-Wavenet-C" }, { "ja-JP-Wavenet-D", "ja-JP-Wavenet-B" } };
+		public string[] languages = { "en-US", "ja-JP" };
+
 		private readonly TextToSpeechClient client;
-		private readonly VoiceSelectionParams voice;
 		bool playing = true;
 		Thread ttsThread;
 
@@ -36,18 +39,103 @@ namespace IgniteBot
 			};
 			client = builder.Build();
 
-			// Build the voice request, select the language code ("en-US"),
-			// and the SSML voice gender ("neutral").
-			voice = new VoiceSelectionParams
-			{
-				LanguageCode = "en-US",
-				Name = "en-US-Wavenet-D"
-			};
-
-
 			ttsThread = new Thread(TTSThread);
 			ttsThread.IsBackground = true;
 			ttsThread.Start();
+
+
+			#region Set up the event listeners to actually use TTS
+
+			Program.PlayerJoined += (frame, team, player) =>
+			{
+				if (Settings.Default.playerJoinTTS)
+				{
+					Program.synth.SpeakAsync($"{player.name} joined {team.color}");
+				}
+			};
+			Program.PlayerLeft += (frame, team, player) =>
+			{
+				if (Settings.Default.playerLeaveTTS)
+				{
+					Program.synth.SpeakAsync($"{player.name} left {team.color}");
+				}
+			};
+			Program.PlayerSwitchedTeams += (frame, fromTeam, toTeam, player) =>
+			{
+				if (Settings.Default.playerSwitchTeamTTS)
+				{
+					Program.synth.SpeakAsync($"{player.name} switched from {fromTeam.color} to {toTeam.color}");
+				}
+			};
+			Program.PauseRequest += (frame) =>
+			{
+				if (Settings.Default.pausedTTS)
+				{
+					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} team requested a pause");
+				}
+			};
+			Program.GamePaused += (frame) =>
+			{
+				if (Settings.Default.pausedTTS)
+				{
+					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} team paused the game");
+				}
+			};
+			Program.GameUnpaused += (frame) =>
+			{
+				if (Settings.Default.pausedTTS)
+				{
+					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} team unpaused the game");
+				}
+			};
+			Program.BigBoost += (frame, team, player, speed, howLongAgo) =>
+			{
+				if (player.name == frame.client_name)
+				{
+					if (Settings.Default.maxBoostSpeedTTS)
+					{
+						Program.synth.SpeakAsync($"{speed:N0} meters per second");
+					}
+				}
+			};
+			Program.PlayspaceAbuse += (frame, team, player, playspacePos) =>
+			{
+				if (Settings.Default.playspaceTTS)
+				{
+					Program.synth.SpeakAsync($"{player.name} abused their playspace");
+				}
+			};
+			Program.Joust += (frame, team, player, isNeutral, joustTime, maxSpeed, maxTubeExitSpeed) =>
+			{
+				// only joust time
+				if (Settings.Default.joustTimeTTS && !Settings.Default.joustSpeedTTS)
+				{
+					Program.synth.SpeakAsync($"{team.color} {joustTime:N1}");
+				}
+				// only joust speed
+				else if (!Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
+				{
+					Program.synth.SpeakAsync($"{team.color} {maxSpeed:N0} meters per second");
+				}
+				// both
+				else if (Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
+				{
+					Program.synth.SpeakAsync($"{team.color} {joustTime:N1} {maxSpeed:N0} meters per second");
+				}
+			};
+			Program.Goal += (frame, goalEvent) =>
+			{
+				if (Settings.Default.goalDistanceTTS)
+				{
+					Program.synth.SpeakAsync($"{frame.last_score.distance_thrown:N1} meters");
+				}
+
+				if (Settings.Default.goalSpeedTTS)
+				{
+					Program.synth.SpeakAsync($"{frame.last_score.disc_speed:N1} meters per second");
+				}
+			};
+			#endregion
 
 		}
 
@@ -137,7 +225,11 @@ namespace IgniteBot
 			var response = client.SynthesizeSpeech(new SynthesizeSpeechRequest
 			{
 				Input = input,
-				Voice = voice,
+				Voice = new VoiceSelectionParams
+				{
+					LanguageCode = languages[Settings.Default.ttsLanguage],
+					Name = voiceTypes[Settings.Default.ttsLanguage, Settings.Default.ttsVoice]
+				},
 				AudioConfig = config
 			});
 

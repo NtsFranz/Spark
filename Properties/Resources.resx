@@ -265,8 +265,8 @@
   <data name="join_link_tooltip" xml:space="preserve">
     <value>Share this link with others who have the IgniteBot and play on PC. They will be able to click the link to immediately join your match without an invite.</value>
   </data>
-  <data name="Language:" xml:space="preserve">
-    <value>Language:</value>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
   </data>
   <data name="Local PC" xml:space="preserve">
     <value>Local PC</value>
@@ -299,11 +299,11 @@
   </data>
   <data name="On Server Change" xml:space="preserve">
     <value>On Server Change</value>
-    <comment>an option in the dropdown that refers to when to split replay files (when switching to a different server ingame)</comment>
+    <comment>an option in the dropdown that refers to when to split replay files (when switching to a different server ingame) https://cdn.discordapp.com/attachments/706393776918364211/823409603802169354/unknown.png</comment>
   </data>
   <data name="Only on IgniteBot Restart" xml:space="preserve">
     <value>Only on IgniteBot Restart</value>
-    <comment>an option in the dropdown that refers to when to split replay files</comment>
+    <comment>an option in the dropdown that refers to when to split replay files https://cdn.discordapp.com/attachments/706393776918364211/823409603802169354/unknown.png</comment>
   </data>
   <data name="Only Record Private Matches" xml:space="preserve">
     <value>Only Record Private Matches</value>
@@ -358,7 +358,7 @@
   </data>
   <data name="replays_description_part_1" xml:space="preserve">
     <value>Replays are recorded in the .echoreplay file format, which contains all API data from the game. Echoreplay files to not contain any video or audio data.</value>
-    <comment>replay description part 1</comment>
+    <comment>replay description part 1 https://cdn.discordapp.com/attachments/706393776918364211/823409407400083506/unknown.png</comment>
   </data>
   <data name="replays_description_part_2" xml:space="preserve">
     <value>The most common use of .echoreplay files is in the</value>
@@ -588,5 +588,69 @@
   </data>
   <data name="Tube Exit Speed (self)" xml:space="preserve">
     <value>Tube Exit Speed (self)</value>
+  </data>
+  <data name=", or join the" xml:space="preserve">
+    <value>, or join the</value>
+  </data>
+  <data name="and ask questions in the #ignitebot-support channel." xml:space="preserve">
+    <value>and ask questions in the #ignitebot-support channel.</value>
+  </data>
+  <data name="contributions_welcome" xml:space="preserve">
+    <value>Contributions to the IgniteBot are welcome. Check it out on</value>
+  </data>
+  <data name="Echopedia page" xml:space="preserve">
+    <value>Echopedia page</value>
+  </data>
+  <data name="for_help_check_out" xml:space="preserve">
+    <value>For help using the IgniteBot, check out the</value>
+  </data>
+  <data name="Ignite Discord Server" xml:space="preserve">
+    <value>Ignite Discord Server</value>
+  </data>
+  <data name="link" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\img\link.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Copied!" xml:space="preserve">
+    <value>Copied!</value>
+    <comment>successfully copied text to clipboard</comment>
+  </data>
+  <data name="Downloads and installs the most recent update (recommended)" xml:space="preserve">
+    <value>Downloads and installs the most recent update (recommended)</value>
+  </data>
+  <data name="Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!" xml:space="preserve">
+    <value>Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Female</value>
+    <comment>for voice type</comment>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Male</value>
+    <comment>for voice type</comment>
+  </data>
+  <data name="No clips available" xml:space="preserve">
+    <value>No clips available</value>
+  </data>
+  <data name="Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event." xml:space="preserve">
+    <value>Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event.</value>
+  </data>
+  <data name="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing" xml:space="preserve">
+    <value>Runs EchoVR with the -spectatorstream option enabled. This is useful for testing</value>
+  </data>
+  <data name="Score:" xml:space="preserve">
+    <value>Score:</value>
+    <comment>as in server score for pings</comment>
+  </data>
+  <data name="Show Main Window" xml:space="preserve">
+    <value>Show Main Window</value>
+  </data>
+  <data name="Stop Echo Speaker System" xml:space="preserve">
+    <value>Stop Echo Speaker System</value>
+  </data>
+  <data name="Stop Spectating Me" xml:space="preserve">
+    <value>Stop Spectating Me</value>
+  </data>
+  <data name="Voice" xml:space="preserve">
+    <value>Voice</value>
   </data>
 </root>

@@ -33,7 +33,7 @@
 				<ScrollViewer  VerticalScrollBarVisibility="Auto">
 					<StackPanel Margin="10,0,10,10">
 						<StackPanel Orientation="Horizontal">
-							<Label Content="{x:Static p:Resources.Language_}" Margin="10,10,4,4" />
+							<Label Content="{x:Static p:Resources.Language}" Margin="10,10,4,4" />
 							<ComboBox Margin="4,10,10,4" HorizontalAlignment="Left" Width="148" SelectedIndex="{l:SettingBinding language}" >
 								<ComboBoxItem>English</ComboBoxItem>
 								<ComboBoxItem>日本語</ComboBoxItem>
@@ -202,15 +202,40 @@
 								<Run Text="{x:Static p:Resources.tts_description_2}"/><LineBreak/><LineBreak/>
 								<Run Text="{x:Static p:Resources.tts_description_3}"/>
 							</TextBlock>
-							<Label x:Name="label1" Content="{x:Static p:Resources.Speech_Speed}" />
-							<ComboBox x:Name="speechSpeed" Width="146" HorizontalAlignment="Left"
+							<Grid Margin="5,5,5,5">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="*"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+								<Label x:Name="label1" Content="{x:Static p:Resources.Speech_Speed}" />
+								<ComboBox Width="146" HorizontalAlignment="Left"
                                           SelectedIndex="{Binding SpeechSpeed}"
-                                          Margin="0,0,0,8">
-								<ComboBoxItem Content="{x:Static p:Resources.Slow}" />
-								<ComboBoxItem Content="{x:Static p:Resources.Normal}" />
-								<ComboBoxItem Content="{x:Static p:Resources.Fast}" />
-								<ComboBoxItem Content="{x:Static p:Resources.Very_Fast}" />
-							</ComboBox>
+                                          Margin="0,0,0,8" Grid.Row="1">
+									<ComboBoxItem Content="{x:Static p:Resources.Slow}" />
+									<ComboBoxItem Content="{x:Static p:Resources.Normal}" />
+									<ComboBoxItem Content="{x:Static p:Resources.Fast}" />
+									<ComboBoxItem Content="{x:Static p:Resources.Very_Fast}" />
+								</ComboBox>
+								<Label Content="{x:Static p:Resources.Voice}" Grid.Column="1" />
+								<ComboBox Width="146" HorizontalAlignment="Left"
+                                          SelectedIndex="{l:SettingBinding ttsVoice}"
+                                          Margin="0,0,0,8" Grid.Column="1" Grid.Row="1">
+									<ComboBoxItem Content="{x:Static p:Resources.Male}" />
+									<ComboBoxItem Content="{x:Static p:Resources.Female}" />
+								</ComboBox>
+								<Label Content="{x:Static p:Resources.Language}" Grid.Column="2" />
+								<ComboBox Width="146" HorizontalAlignment="Left"
+                                          SelectedIndex="{l:SettingBinding ttsLanguage}"
+                                          Margin="0,0,0,8" Grid.Column="2" Grid.Row="1">
+									<ComboBoxItem Content="English" />
+									<ComboBoxItem Content="日本語" />
+								</ComboBox>
+							</Grid>
 							<CheckBox x:Name="serverLocationCheckbox" Content="{x:Static p:Resources.Server_Location}" Margin="4,10,4,0"
                                           IsChecked="{Binding ServerLocation}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
@@ -267,23 +292,14 @@
 
 
 			<TabItem Header="{x:Static p:Resources.NVIDIAHighlights}" Padding="8,6,8,6">
-				<!-- <TabItem.DataContext> -->
-				<!--     <l:UnifiedSettingsWindow /> -->
-				<!-- </TabItem.DataContext> -->
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Margin="10,0,10,10">
 						<Label Content="{x:Static p:Resources.NVIDIA_Highlights_Settings}" FontSize="16" Margin="5,5,5,5" />
 
-						<TextBlock x:Name="instructionsLabel"
-                                       Text="{x:Static p:Resources.nvhighlights_description_1}"
-                                       TextWrapping="Wrap" Margin="5,5,5,5" />
+						<TextBlock x:Name="instructionsLabel" Text="{x:Static p:Resources.nvhighlights_description_1}" TextWrapping="Wrap" Margin="5,5,5,5" />
+						<TextBlock x:Name="instructionsLabel_Copy" Text="{x:Static p:Resources.nvhighlights_description_2}" TextWrapping="Wrap" Margin="5,5,5,5" />
 
-						<TextBlock x:Name="instructionsLabel_Copy"
-                                       Text="{x:Static p:Resources.nvhighlights_description_2}"
-                                       TextWrapping="Wrap" Margin="5,5,5,5" />
-
-						<CheckBox x:Name="enableAutoFocusCheckbox" Content="Autofocus EchoVR" Margin="5,5,5,5"
-                                      IsChecked="{l:SettingBinding isAutofocusEnabled}" />
+						<CheckBox x:Name="enableAutoFocusCheckbox" Content="Autofocus EchoVR" Margin="5,5,5,5" IsChecked="{l:SettingBinding isAutofocusEnabled}" />
 						<CheckBox x:Name="enableNVHighlightsCheckbox" Content="{Binding EnableHighlightsContent}"
                                       Margin="5,5,5,5" IsChecked="{Binding NVHighlightsEnabled}" IsEnabled="{Binding HighlightsSupported}" />
 						<GroupBox x:Name="nvHighlightsBox" Header="NVIDIA Highlights" Margin="5,5,5,5">
@@ -339,7 +355,7 @@
 
 			<TabItem Header="{x:Static p:Resources.About}" Padding="8,6,8,6">
 				<StackPanel>
-					<Grid Margin="0,10,0,0">
+					<Grid Margin="10,10,10,10">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="150"/>
 							<ColumnDefinition Width="*"/>
@@ -354,7 +370,7 @@
 						</StackPanel>
 						<StackPanel Grid.Column="1">
 							<TextBlock TextWrapping="Wrap" TextAlignment="Center" Margin="10,4,10,10">
-<Run Text="{x:Static p:Resources.IgniteBot_was_made_from_contributions_by_these_community_members_}" Foreground="{DynamicResource ControlDisabledGlythColour}" />
+							<Run Text="{x:Static p:Resources.IgniteBot_was_made_from_contributions_by_these_community_members_}" Foreground="{DynamicResource ControlDisabledGlythColour}" />
 							
 							<LineBreak />
 							NtsFranz
@@ -379,26 +395,24 @@
 					</Grid>
 					<TextBlock Margin="20,10,0,-5" Foreground="{DynamicResource ControlDisabledGlythColour}" Text="{x:Static p:Resources.Contribute}"/>
 					<TextBlock TextWrapping="Wrap" Margin="10,10,10,10">
-                            Contributions to the IgniteBot are welcome. Check it out on
-                            <Hyperlink NavigateUri="https://github.com/NtsFranz/IgniteBot2"
-                                       RequestNavigate="Hyperlink_RequestNavigate">
+						<Run Text="{x:Static p:Resources.contributions_welcome}"/>
+                            <Hyperlink NavigateUri="https://github.com/NtsFranz/IgniteBot2" RequestNavigate="Hyperlink_RequestNavigate">
                                 GitHub
                             </Hyperlink>
-                            .
 					</TextBlock>
 					<TextBlock Margin="20,10,0,-5" Foreground="{DynamicResource ControlDisabledGlythColour}" Text="{x:Static p:Resources.Help}"/>
 					<TextBlock TextWrapping="Wrap" Margin="10,10,10,10">
-                            For help using the IgniteBot, check out the
+                            <Run Text="{x:Static p:Resources.for_help_check_out}"/>
                             <Hyperlink NavigateUri="https://echopedia.gg/wiki/IgniteBot_Personal"
                                        RequestNavigate="Hyperlink_RequestNavigate">
-                                Echopedia page
+                                <Run Text="{x:Static p:Resources.Echopedia_page}"/>
                             </Hyperlink>
-                            , or join the
+						<Run Text="{x:Static p:Resources.__or_join_the}"/>
                             <Hyperlink NavigateUri="https://discord.gg/CGXR86C"
                                        RequestNavigate="Hyperlink_RequestNavigate">
-                                Ignite Discord Server
+                                <Run Text="{x:Static p:Resources.Ignite_Discord_Server}"/>
                             </Hyperlink>
-                            and ask questions in the #ignitebot-support channel.
+                            <Run Text="and ask questions in the #ignitebot-support channel."/>
 					</TextBlock>
 				</StackPanel>
 			</TabItem>

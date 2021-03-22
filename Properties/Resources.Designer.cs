@@ -61,6 +61,15 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to , or join the.
+        /// </summary>
+        public static string @__or_join_the {
+            get {
+                return ResourceManager.GetString(", or join the", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to (Requires Restart).
         /// </summary>
         public static string _Requires_Restart_ {
@@ -84,6 +93,15 @@ namespace IgniteBot.Properties {
         public static string About {
             get {
                 return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to and ask questions in the #ignitebot-support channel..
+        /// </summary>
+        public static string and_ask_questions_in_the__ignitebot_support_channel_ {
+            get {
+                return ResourceManager.GetString("and ask questions in the #ignitebot-support channel.", resourceCulture);
             }
         }
         
@@ -197,6 +215,24 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contributions to the IgniteBot are welcome. Check it out on.
+        /// </summary>
+        public static string contributions_welcome {
+            get {
+                return ResourceManager.GetString("contributions_welcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copied!.
+        /// </summary>
+        public static string Copied_ {
+            get {
+                return ResourceManager.GetString("Copied!", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string Copy {
@@ -269,11 +305,29 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downloads and installs the most recent update (recommended).
+        /// </summary>
+        public static string Downloads_and_installs_the_most_recent_update__recommended_ {
+            get {
+                return ResourceManager.GetString("Downloads and installs the most recent update (recommended)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Echo Arena Replay Viewer.
         /// </summary>
         public static string Echo_Arena_Replay_Viewer {
             get {
                 return ResourceManager.GetString("Echo Arena Replay Viewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Echopedia page.
+        /// </summary>
+        public static string Echopedia_page {
+            get {
+                return ResourceManager.GetString("Echopedia page", resourceCulture);
             }
         }
         
@@ -310,6 +364,15 @@ namespace IgniteBot.Properties {
         public static string Enable_API_in_Settings {
             get {
                 return ResourceManager.GetString("Enable API in Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!.
+        /// </summary>
+        public static string Enabled_API_access_in_the_game_settings__nCLOSE_ECHOVR_BEFORE_PRESSING_OK_ {
+            get {
+                return ResourceManager.GetString("Enabled API access in the game settings.\\nCLOSE ECHOVR BEFORE PRESSING OK!", resourceCulture);
             }
         }
         
@@ -386,6 +449,15 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Female.
+        /// </summary>
+        public static string Female {
+            get {
+                return ResourceManager.GetString("Female", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find Quest IP.
         /// </summary>
         public static string Find_Quest_IP {
@@ -400,6 +472,15 @@ namespace IgniteBot.Properties {
         public static string For_help__join_the_Discord {
             get {
                 return ResourceManager.GetString("For help, join the Discord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For help using the IgniteBot, check out the.
+        /// </summary>
+        public static string for_help_check_out {
+            get {
+                return ResourceManager.GetString("for_help_check_out", resourceCulture);
             }
         }
         
@@ -481,6 +562,15 @@ namespace IgniteBot.Properties {
         public static string Highlights {
             get {
                 return ResourceManager.GetString("Highlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignite Discord Server.
+        /// </summary>
+        public static string Ignite_Discord_Server {
+            get {
+                return ResourceManager.GetString("Ignite Discord Server", resourceCulture);
             }
         }
         
@@ -595,11 +685,21 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language:.
+        ///   Looks up a localized string similar to Language.
         /// </summary>
-        public static string Language_ {
+        public static string Language {
             get {
-                return ResourceManager.GetString("Language:", resourceCulture);
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap link {
+            get {
+                object obj = ResourceManager.GetObject("link", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -640,6 +740,15 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Male.
+        /// </summary>
+        public static string Male {
+            get {
+                return ResourceManager.GetString("Male", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max Boost Speed.
         /// </summary>
         public static string Max_Boost_Speed {
@@ -672,6 +781,15 @@ namespace IgniteBot.Properties {
         public static string Mode {
             get {
                 return ResourceManager.GetString("Mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No clips available.
+        /// </summary>
+        public static string No_clips_available {
+            get {
+                return ResourceManager.GetString("No clips available", resourceCulture);
             }
         }
         
@@ -771,6 +889,16 @@ namespace IgniteBot.Properties {
         public static string Open_Spectatorstream {
             get {
                 return ResourceManager.GetString("Open Spectatorstream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event..
+        /// </summary>
+        public static string Opens_the_folder_where_the_event_logs_are_stored_on_your_computer__Only_works_once_you_have_logged_at_least_one_event_ {
+            get {
+                return ResourceManager.GetString("Opens the folder where the event logs are stored on your computer. Only works onc" +
+                        "e you have logged at least one event.", resourceCulture);
             }
         }
         
@@ -964,6 +1092,15 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Runs EchoVR with the -spectatorstream option enabled. This is useful for testing.
+        /// </summary>
+        public static string Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing {
+            get {
+                return ResourceManager.GetString("Runs EchoVR with the -spectatorstream option enabled. This is useful for testing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save Folder:.
         /// </summary>
         public static string Save_Folder_ {
@@ -978,6 +1115,15 @@ namespace IgniteBot.Properties {
         public static string Save_Replays {
             get {
                 return ResourceManager.GetString("Save Replays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Score:.
+        /// </summary>
+        public static string Score_ {
+            get {
+                return ResourceManager.GetString("Score:", resourceCulture);
             }
         }
         
@@ -1077,6 +1223,15 @@ namespace IgniteBot.Properties {
         public static string Show_first_time_setup_window {
             get {
                 return ResourceManager.GetString("Show first-time setup window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Main Window.
+        /// </summary>
+        public static string Show_Main_Window {
+            get {
+                return ResourceManager.GetString("Show Main Window", resourceCulture);
             }
         }
         
@@ -1226,6 +1381,24 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stop Echo Speaker System.
+        /// </summary>
+        public static string Stop_Echo_Speaker_System {
+            get {
+                return ResourceManager.GetString("Stop Echo Speaker System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Spectating Me.
+        /// </summary>
+        public static string Stop_Spectating_Me {
+            get {
+                return ResourceManager.GetString("Stop Spectating Me", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Text-to-Speech.
         /// </summary>
         public static string Text_to_Speech {
@@ -1367,6 +1540,15 @@ namespace IgniteBot.Properties {
         public static string Very_Fast {
             get {
                 return ResourceManager.GetString("Very Fast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Voice.
+        /// </summary>
+        public static string Voice {
+            get {
+                return ResourceManager.GetString("Voice", resourceCulture);
             }
         }
     }

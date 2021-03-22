@@ -349,7 +349,7 @@
   <data name="join_link_tooltip" xml:space="preserve">
     <value>このリンクを他のIgniteBotユーザーに共有すると招待なしですぐに試合に参加できます。</value>
   </data>
-  <data name="Language:" xml:space="preserve">
+  <data name="Language" xml:space="preserve">
     <value>言語</value>
   </data>
   <data name="Logging in..." xml:space="preserve">

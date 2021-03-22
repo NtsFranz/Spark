@@ -143,7 +143,7 @@
 					</TabItem.Header>
 					<Grid>
 						<TextBox x:Name="mainOutputTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsReadOnly="True"/>
-						<Button x:Name="showEventLogFileButton" Content="Open Event Log Folder" Width="183" Margin="0,10,30,0" HorizontalAlignment="Right" Click="showEventLogFileButton_Click" VerticalAlignment="Top" Height="30" ToolTip="Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event."/>
+						<Button x:Name="showEventLogFileButton" Content="Open Event Log Folder" Width="183" Margin="0,10,30,0" HorizontalAlignment="Right" Click="showEventLogFileButton_Click" VerticalAlignment="Top" Height="30" ToolTip="{x:Static p:Resources.Opens_the_folder_where_the_event_logs_are_stored_on_your_computer__Only_works_once_you_have_logged_at_least_one_event_}"/>
 					</Grid>
 				</TabItem>
 				<TabItem x:Name="speakerSystemTab" FontSize="14" Padding="10,0,10,0">
@@ -184,7 +184,7 @@
 			</GroupBox>
 			<GroupBox x:Name="toolsBox" Header="{x:Static p:Resources.Tools}" Margin="0,8,0,0" VerticalAlignment="Top">
 				<StackPanel VerticalAlignment="Top">
-					<Button x:Name="updateButton" Content="{x:Static p:Resources.Download_Update}" Height="40" Margin="4,4,4,4" Background="#FF8B3434" Click="updateButton_Click" ToolTip="Downloads and installs the most recent update (recommended)" Visibility="Collapsed"/>
+					<Button x:Name="updateButton" Content="{x:Static p:Resources.Download_Update}" Height="40" Margin="4,4,4,4" Background="#FF8B3434" Click="updateButton_Click" ToolTip="{x:Static p:Resources.Downloads_and_installs_the_most_recent_update__recommended_}" Visibility="Collapsed"/>
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
 					<Button x:Name="showAtlasLinks" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click" ToolTip="{x:Static p:Resources.atlas_button_tooltip}">
@@ -193,7 +193,7 @@
 							<Image Source="/img/link.png" Height="20" Margin="8,0,0,0"/>
 						</StackPanel>
 					</Button>
-					<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing"/>
+					<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="{x:Static p:Resources.Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing}"/>
 					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
 					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
 					<Button x:Name="showPlayerSpeedsButton" Content="{x:Static p:Resources.Player_Speeds}" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
