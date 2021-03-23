@@ -1127,13 +1127,12 @@ namespace IgniteBot
 			
 			if (EchoHandle != GetForegroundWindow())
 			{
-				liveWindow.FocusIgniteBot();
 				IntPtr foregroundThread = new IntPtr(GetWindowThreadProcessId(GetForegroundWindow(), out _));
 				AttachThreadInput(
 					foregroundThread,
 					echoThread, true
 				);
-				AttachThreadInput(foregroundThread, echoThread, false);
+				
 				//get the hWnd of the process
 				Windowplacement placement = new Windowplacement();
 				GetWindowPlacement(EchoHandle, ref placement);
@@ -1146,9 +1145,11 @@ namespace IgniteBot
                 }
                 else
                 {
-					ShowWindow(EchoHandle, ShowWindowEnum.ShowNormal);
-				}
+					ShowWindow(EchoHandle, ShowWindowEnum.Hide);
+					ShowWindow(EchoHandle, ShowWindowEnum.Show);
+                }
 				SetForegroundWindow(EchoHandle);
+				AttachThreadInput(foregroundThread, echoThread, false);
 			}
 		}
 
@@ -1549,7 +1550,7 @@ namespace IgniteBot
 			if (frame.game_status == "playing" && deltaTime != 0)
 			{
 				inPostMatch = false;
-				if(Settings.Default.isAutofocusEnabled && (Math.Round(frame.game_clock, 0, MidpointRounding.AwayFromZero) % 10 == 0))
+				if(Settings.Default.isAutofocusEnabled && (Math.Round(frame.game_clock, 2, MidpointRounding.AwayFromZero) % 10 == 0))
                 {
 					FocusEchoVR();
 				}
