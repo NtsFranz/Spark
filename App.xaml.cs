@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using IgniteBot.Properties;
 
 namespace IgniteBot
 {
@@ -11,6 +12,12 @@ namespace IgniteBot
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
+			System.Threading.Thread.CurrentThread.CurrentUICulture = Settings.Default.language switch
+			{
+				0 => new System.Globalization.CultureInfo("en"),
+				1 => new System.Globalization.CultureInfo("ja-JP"),
+				_ => System.Threading.Thread.CurrentThread.CurrentUICulture
+			};
 			base.OnStartup(e);
 
 			Program.Main(e.Args, this);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using IgniteBot.Properties;
 using static IgniteBot.g_Team;
 
 namespace IgniteBot
@@ -114,6 +115,19 @@ namespace IgniteBot
 				foreach (var player in team.players)
 				{
 					if (player.userid == userid) return player;
+				}
+			}
+
+			return null;
+		}
+
+		public g_Team GetTeam(long userid)
+		{
+			foreach (g_Team team in teams)
+			{
+				foreach (g_Player player in team.players)
+				{
+					if (player.userid == userid) return team;
 				}
 			}
 
@@ -325,6 +339,7 @@ namespace IgniteBot
 		/// </summary>
 		public enum TeamColor : byte { blue, orange, spectator }
 
+
 		public List<g_Player> players { get; set; }
 		/// <summary>
 		/// Team name
@@ -411,5 +426,20 @@ namespace IgniteBot
 		public string paused_requested_team;
 		public float unpaused_timer;
 		public float paused_timer;
+	}
+	
+	
+	public static class TeamColorExtensions
+	{
+		public static string ToLocalizedString(this TeamColor color)
+		{
+			return color switch
+			{
+				TeamColor.blue => Resources.blue,
+				TeamColor.orange => Resources.orange,
+				TeamColor.spectator => Resources.spectator,
+				_ => ""
+			};
+		}
 	}
 }

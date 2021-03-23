@@ -862,5 +862,53 @@ namespace IgniteBot.Properties {
                 this["atlasHostingVisibility"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int language {
+            get {
+                return ((int)(this["language"]));
+            }
+            set {
+                this["language"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool playspaceTTS {
+            get {
+                return ((bool)(this["playspaceTTS"]));
+            }
+            set {
+                this["playspaceTTS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int ttsLanguage {
+            get {
+                return ((int)(this["ttsLanguage"]));
+            }
+            set {
+                this["ttsLanguage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int ttsVoice {
+            get {
+                return ((int)(this["ttsVoice"]));
+            }
+            set {
+                this["ttsVoice"] = value;
+            }
+        }
     }
 }

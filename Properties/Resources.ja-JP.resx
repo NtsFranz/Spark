@@ -1,0 +1,685 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value>アバウト</value>
+    <comment>tab in Settings</comment>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>IgniteBot</value>
+  </data>
+  <data name="Atlas" xml:space="preserve">
+    <value>アトラス</value>
+    <comment>button on right side of main window</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="baseline_replay_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\img\baseline_replay_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Blue Team" xml:space="preserve">
+    <value>ブルーチーム</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>コピー</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>ダッシュボード</value>
+    <comment>tab in main window</comment>
+  </data>
+  <data name="Disc Speed" xml:space="preserve">
+    <value>ディスク速度</value>
+  </data>
+  <data name="Event Log" xml:space="preserve">
+    <value>イベントログ</value>
+    <comment>tab in main window</comment>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>終了</value>
+    <comment>button on bottom of main window</comment>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>一般</value>
+    <comment>tab in Settings</comment>
+  </data>
+  <data name="Hide" xml:space="preserve">
+    <value>非表示</value>
+    <comment>button on bottom of main window</comment>
+  </data>
+  <data name="Highlights" xml:space="preserve">
+    <value>ハイライト</value>
+    <comment>product name for NVIDIA Highlights</comment>
+  </data>
+  <data name="ignite_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\img\ignite_logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ignite_logo_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\img\ignite_logo_128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Join Link:" xml:space="preserve">
+    <value>リンクに参加</value>
+  </data>
+  <data name="Lone Echo Subtitles" xml:space="preserve">
+    <value>Lone Echoの字幕</value>
+    <comment>button on right side of main window</comment>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value>モード：</value>
+    <comment>bottom left of main window</comment>
+  </data>
+  <data name="NVIDIAHighlights" xml:space="preserve">
+    <value>NIVIDIA ハイライト</value>
+    <comment>tab in Settings</comment>
+  </data>
+  <data name="Open Spectatorstream" xml:space="preserve">
+    <value>スペクテーター起動</value>
+    <comment>button on right side of main window</comment>
+  </data>
+  <data name="Orange Team" xml:space="preserve">
+    <value>オレンジチーム</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>パーソナル</value>
+    <comment>mode name</comment>
+  </data>
+  <data name="Player Pings" xml:space="preserve">
+    <value>プレーヤーのピング</value>
+  </data>
+  <data name="Player Speeds" xml:space="preserve">
+    <value>プレーヤー速度</value>
+  </data>
+  <data name="Previous Goals" xml:space="preserve">
+    <value>ゴール情報</value>
+  </data>
+  <data name="Previous Joust Times" xml:space="preserve">
+    <value>ジャウストタイム情報</value>
+  </data>
+  <data name="Previous Rounds" xml:space="preserve">
+    <value>ラウンド情報</value>
+  </data>
+  <data name="Replays" xml:space="preserve">
+    <value>リプレイ</value>
+    <comment>tab in Settings</comment>
+  </data>
+  <data name="Server Info" xml:space="preserve">
+    <value>サーバー情報</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>設定</value>
+    <comment>button on bottom of main window</comment>
+  </data>
+  <data name="Show" xml:space="preserve">
+    <value>表示</value>
+    <comment>as in "Show 13 Highlights"</comment>
+  </data>
+  <data name="Show Playspace" xml:space="preserve">
+    <value>移動範囲を表示</value>
+    <comment>button on right side of main window</comment>
+  </data>
+  <data name="Speaker System" xml:space="preserve">
+    <value>スピーカーシステム</value>
+    <comment>tab in main window</comment>
+  </data>
+  <data name="Spectators" xml:space="preserve">
+    <value>スペクテーター</value>
+  </data>
+  <data name="Text-to-Speech" xml:space="preserve">
+    <value>テキスト読み上げ</value>
+    <comment>tab in Settings</comment>
+  </data>
+  <data name="Show first-time setup window" xml:space="preserve">
+    <value>初期設定画面の表示</value>
+  </data>
+  <data name="Start with Windows" xml:space="preserve">
+    <value>初期設定画面の表示
+</value>
+  </data>
+  <data name="Start Minimized" xml:space="preserve">
+    <value>最小画面で起動
+</value>
+  </data>
+  <data name="Autorestart EchoVR into autospectator" xml:space="preserve">
+    <value>EchoVRをスペクテイターモードに自動再起動</value>
+  </data>
+  <data name="Discord Rich Presence" xml:space="preserve">
+    <value>Discord Rich Presence</value>
+  </data>
+  <data name="Enable -capturevp2 when launching spectator" xml:space="preserve">
+    <value>スペクテイターを起動する際に-capturevp2を有効化</value>
+  </data>
+  <data name="EchoVR Executable Location:" xml:space="preserve">
+    <value>起動可能なEchoVRのファイル:</value>
+  </data>
+  <data name="EchoVR IP (for Quest)" xml:space="preserve">
+    <value>EchoVR IP (Quest用)</value>
+  </data>
+  <data name="Local PC" xml:space="preserve">
+    <value>ローカルPC</value>
+  </data>
+  <data name="Find Quest IP" xml:space="preserve">
+    <value>QuestのIPを探す</value>
+  </data>
+  <data name="upload_description" xml:space="preserve">
+    <value>個人用Igniteデータベースにデータをアップロードします。
+これは公開マッチの統計情報とは別ですが、Webサイトで閲覧できます。統計情報のアップロードにはDiscordにログインすることが必要です。公開マッチのみアップロードされます。</value>
+  </data>
+  <data name="Upload to IgniteVR Database" xml:space="preserve">
+    <value>IgniteVR データベースにアップロード
+</value>
+  </data>
+  <data name="Stats Logging" xml:space="preserve">
+    <value>スタッツの記録
+</value>
+  </data>
+  <data name="Server IP:" xml:space="preserve">
+    <value>サーバーIP</value>
+  </data>
+  <data name="(Requires Restart)" xml:space="preserve">
+    <value>（再起動が必要です）</value>
+  </data>
+  <data name="atlas_button_tooltip" xml:space="preserve">
+    <value>他のプレーヤーが参加できるリンクを表示</value>
+  </data>
+  <data name="Batch Writes" xml:space="preserve">
+    <value>バッチ書き込み</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>ブラウズ</value>
+  </data>
+  <data name="close_tooltip" xml:space="preserve">
+    <value>IginiteBotを閉じる</value>
+  </data>
+  <data name="copy_link_tooltip" xml:space="preserve">
+    <value>IgniteBotの参加リンクをクリップボードにコピー</value>
+  </data>
+  <data name="Discord Login" xml:space="preserve">
+    <value>ディスコードにログイン</value>
+  </data>
+  <data name="Download Update" xml:space="preserve">
+    <value>アップデートをダウンロード</value>
+  </data>
+  <data name="Echo Arena Replay Viewer" xml:space="preserve">
+    <value>Echo Arenaリプレイ・ビューア</value>
+  </data>
+  <data name="Enable API in Settings" xml:space="preserve">
+    <value>設定でAPIを有効にする</value>
+  </data>
+  <data name="Every Match (Scoreboard)" xml:space="preserve">
+    <value>全てのマッチ（スコアボード）</value>
+  </data>
+  <data name="Every Round" xml:space="preserve">
+    <value>全てのラウンド</value>
+  </data>
+  <data name="For help, join the Discord" xml:space="preserve">
+    <value>ヘルプが必要な場合はディスコードに参加してください</value>
+  </data>
+  <data name="Hide Main Window" xml:space="preserve">
+    <value>メインウィンドウを非表示</value>
+  </data>
+  <data name="hide_tooltip" xml:space="preserve">
+    <value>このプログラムを非表示（バックグラウンドで実行され続けます）</value>
+  </data>
+  <data name="IgniteBot | Settings" xml:space="preserve">
+    <value>IgniteBot | 設定</value>
+  </data>
+  <data name="Install Echo Speaker System" xml:space="preserve">
+    <value>Echoスピーカーシステムをインストール</value>
+  </data>
+  <data name="Installing Echo Speaker System" xml:space="preserve">
+    <value>Echoスピーカーシステムをインストール中</value>
+  </data>
+  <data name="join_link_tooltip" xml:space="preserve">
+    <value>このリンクを他のIgniteBotユーザーに共有すると招待なしですぐに試合に参加できます。</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="Logging in..." xml:space="preserve">
+    <value>…にログイン</value>
+  </data>
+  <data name="login_button_tooltip" xml:space="preserve">
+    <value>Discordを使用してプログラムにログインし、統計のアップロードやTTSなどの機能を有効にします。</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>ノーマル</value>
+  </data>
+  <data name="Only Record Private Matches" xml:space="preserve">
+    <value>プライベートマッチのみ録画</value>
+  </data>
+  <data name="Open Folder" xml:space="preserve">
+    <value>フォルダーを開く</value>
+  </data>
+  <data name="Rejoin" xml:space="preserve">
+    <value>もう一度参加</value>
+  </data>
+  <data name="rejoin_tooltip" xml:space="preserve">
+    <value>前回のプライベートマッチにもう一度参加</value>
+  </data>
+  <data name="Replay File Splitting:" xml:space="preserve">
+    <value>リプレイファイルの分割</value>
+  </data>
+  <data name="Replay Logging" xml:space="preserve">
+    <value>リプレイの記録</value>
+  </data>
+  <data name="Replay Recording Settings" xml:space="preserve">
+    <value>リプレイ録画の設定</value>
+  </data>
+  <data name="replays_description_part_1" xml:space="preserve">
+    <value>リプレイは、ゲームのすべてのAPIデータを含む.echoreplayファイル形式で記録されます。echoreplayファイルには、ビデオやオーディオのデータは含まれません。</value>
+  </data>
+  <data name="replays_description_part_4" xml:space="preserve">
+    <value>Echopediaのページ</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>リセット</value>
+  </data>
+  <data name="Save Folder:" xml:space="preserve">
+    <value>フォルダーの保存</value>
+  </data>
+  <data name="Save Replays" xml:space="preserve">
+    <value>リプレイの保存</value>
+  </data>
+  <data name="Searching for Quest" xml:space="preserve">
+    <value>Questを検索中</value>
+  </data>
+  <data name="Send Logs to Ignite" xml:space="preserve">
+    <value>ログをIgniteに送る</value>
+  </data>
+  <data name="server_location_tooltip" xml:space="preserve">
+    <value>サーバーの場所は、ip-api.comを使用して推定しています</value>
+  </data>
+  <data name="settings_button_tooltip" xml:space="preserve">
+    <value>IgniteBotの設定画面を表示</value>
+  </data>
+  <data name="Spectate Me" xml:space="preserve">
+    <value>自分をスペクテート</value>
+  </data>
+  <data name="Speech Speed" xml:space="preserve">
+    <value>読み上げ速度</value>
+  </data>
+  <data name="Split File" xml:space="preserve">
+    <value>ファイルを分割</value>
+  </data>
+  <data name="Start Echo Speaker System" xml:space="preserve">
+    <value>Echoスピーカーシステムを起動</value>
+  </data>
+  <data name="Text-to-Speech (TTS) Settings" xml:space="preserve">
+    <value>テキスト読み上げ（TTS）の設定</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>ツール</value>
+  </data>
+  <data name="TTS only works when logged in with Discord!" xml:space="preserve">
+    <value>テキスト読み上げは、Discordでログインした場合にのみ利用可能</value>
+  </data>
+  <data name="tts_description_1" xml:space="preserve">
+    <value>テキスト読み上げを使用すると、ゲーム中に聞くことができます。その際、出力が聞こえるようにスピーカーを適切に設置してください。</value>
+  </data>
+  <data name="tts_description_2" xml:space="preserve">
+    <value>Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッドフォンに設定します。</value>
+  </data>
+  <data name="tts_description_3" xml:space="preserve">
+    <value>クエストでは、PCに接続したヘッドホンを使うか、スピーカーの音量をあげて下さい。</value>
+  </data>
+  <data name="Update Echo Speaker System" xml:space="preserve">
+    <value>Echoスピーカーシステムをアップデート</value>
+  </data>
+  <data name="(top left of main window)" xml:space="preserve">
+    <value>メインウィンドウの左上です</value>
+  </data>
+  <data name=", or join the" xml:space="preserve">
+    <value>、もしくは参加する</value>
+  </data>
+  <data name="and ask questions in the #ignitebot-support channel." xml:space="preserve">
+    <value>＃ignitebot-supportのチャンネルで質問してください</value>
+  </data>
+  <data name="Closing..." xml:space="preserve">
+    <value>閉じています…</value>
+  </data>
+  <data name="Contribute" xml:space="preserve">
+    <value>貢献</value>
+  </data>
+  <data name="contributions_welcome" xml:space="preserve">
+    <value>IgniteBotへの貢献を歓迎します。こちらをチェックしてみてください。</value>
+  </data>
+  <data name="Copied!" xml:space="preserve">
+    <value>コピー完了！</value>
+  </data>
+  <data name="Distance in m of every goal" xml:space="preserve">
+    <value>各ゴールの距離（m）</value>
+  </data>
+  <data name="Downloads and installs the most recent update (recommended)" xml:space="preserve">
+    <value>（推奨）最新のアップデートをダウンロードしてインストールします</value>
+  </data>
+  <data name="Echopedia page" xml:space="preserve">
+    <value>Echopediaのページ</value>
+  </data>
+  <data name="Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!" xml:space="preserve">
+    <value>ゲーム設定でAPIアクセスを有効にする。OKを押す前に、ECHOVRを閉じてください。</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="Estimated location of the server as you join" xml:space="preserve">
+    <value>参加するときのサーバー推定位置</value>
+  </data>
+  <data name="Fast" xml:space="preserve">
+    <value>速</value>
+  </data>
+  <data name="Fast (60 Hz)" xml:space="preserve">
+    <value>速 (60 Hz)</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>女性の声</value>
+  </data>
+  <data name="for_help_check_out" xml:space="preserve">
+    <value>IgniteBotの使用についてはこちらを見てください</value>
+  </data>
+  <data name="Game Paused" xml:space="preserve">
+    <value>ゲームの一時停止</value>
+  </data>
+  <data name="Goal Distance" xml:space="preserve">
+    <value>ゴールの距離</value>
+  </data>
+  <data name="Goal Speed" xml:space="preserve">
+    <value>シュート速度</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>ヘルプ</value>
+  </data>
+  <data name="Ignite Discord Server" xml:space="preserve">
+    <value>Ignite ディスコードサーバー</value>
+  </data>
+  <data name="IgniteBot was made from contributions by these community members:" xml:space="preserve">
+    <value>IgniteBotは、以下のコミュニティメンバーによって作成されました。</value>
+  </data>
+  <data name="instance_already_running_message" xml:space="preserve">
+    <value>インスタンスがすでに実行されています。IgniteBotの2つのインスタンスを同時に実行すると問題が発生することがあります。右下のタスクトレイ、またはタスクマネージャを確認して、何かが壊れた場合は古いインスタンスを強制終了してください。</value>
+  </data>
+  <data name="Japanese Translation:" xml:space="preserve">
+    <value>日本語翻訳</value>
+  </data>
+  <data name="Joust Speed" xml:space="preserve">
+    <value>ジャウスト速度</value>
+  </data>
+  <data name="Joust Time" xml:space="preserve">
+    <value>ジャウストタイム</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>男性の声</value>
+  </data>
+  <data name="Max Boost Speed" xml:space="preserve">
+    <value>最大ブースト速度</value>
+  </data>
+  <data name="Maximum speed achieved for times when you are faster than 20 m/s" xml:space="preserve">
+    <value>20m/sを超えた時に達した最高速度</value>
+  </data>
+  <data name="Med (30 Hz)" xml:space="preserve">
+    <value>中 (30 Hz)</value>
+  </data>
+  <data name="No clips available" xml:space="preserve">
+    <value>利用可能なクリップはありません</value>
+  </data>
+  <data name="nvhighlights_description_1" xml:space="preserve">
+    <value>NVIDIA ハイライトを有効にするには、まず Geforce Experience で NVIDIA オーバーレイを有効にし、次にオーバーレイの中からハイライト機能を有効にします（ALT+Z）。クリップするシーンは、ゲームを開いている間にNVIDIAオーバーレイでカスタマイズすることができます。</value>
+  </data>
+  <data name="nvhighlights_description_2" xml:space="preserve">
+    <value>（オーバーレイの「プライバシーコントロール」で）デスクトップ録画を有効にしないと、このプログラムだけが録画されます。</value>
+  </data>
+  <data name="NVIDIA Highlights Settings" xml:space="preserve">
+    <value>NVIDIAハイライト設定</value>
+  </data>
+  <data name="On Server Change" xml:space="preserve">
+    <value>サーバー変更時</value>
+  </data>
+  <data name="Only on IgniteBot Restart" xml:space="preserve">
+    <value>IgniteBotの再起動時のみ</value>
+  </data>
+  <data name="Open Event Log Folder" xml:space="preserve">
+    <value>イベントログフォルダを開く</value>
+  </data>
+  <data name="Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event." xml:space="preserve">
+    <value>コンピュータのイベントログが保存されているフォルダを開きます。少なくとも1つのイベントを記録した場合にのみ機能します。</value>
+  </data>
+  <data name="Player Join" xml:space="preserve">
+    <value>プレイヤー参加</value>
+  </data>
+  <data name="Player Leave" xml:space="preserve">
+    <value>プレイヤー退出</value>
+  </data>
+  <data name="Player Switch Teams" xml:space="preserve">
+    <value>プレーヤーのチーム切り替え</value>
+  </data>
+  <data name="replays_description_part_2" xml:space="preserve">
+    <value>.echoreplayファイルは以下のソフトで利用可能です。</value>
+  </data>
+  <data name="replays_description_part_3" xml:space="preserve">
+    <value>.echoreplayフォーマットの技術的な詳細については、以下をご覧ください。</value>
+  </data>
+  <data name="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing" xml:space="preserve">
+    <value>EchoVRを-spectatorstreamオプションを有効にして実行します。これは、次のようなテストに役立ちます。</value>
+  </data>
+  <data name="Score:" xml:space="preserve">
+    <value>スコア：</value>
+  </data>
+  <data name="Server Location" xml:space="preserve">
+    <value>サーバーの場所</value>
+  </data>
+  <data name="Server Location:" xml:space="preserve">
+    <value>サーバーの場所：</value>
+  </data>
+  <data name="Show Main Window" xml:space="preserve">
+    <value>メインウィンドウを表示</value>
+  </data>
+  <data name="Slow" xml:space="preserve">
+    <value>遅</value>
+  </data>
+  <data name="Slow (10 Hz)" xml:space="preserve">
+    <value>遅 (10 Hz)</value>
+  </data>
+  <data name="Speed in m/s as you exit the launch tube" xml:space="preserve">
+    <value>カタパルトを出るときの速度（m / s）</value>
+  </data>
+  <data name="Speed in m/s of every goal" xml:space="preserve">
+    <value>各ゴールの速度（m / s）</value>
+  </data>
+  <data name="Speed in m/s of your throws" xml:space="preserve">
+    <value>ディスク速度（m / s）</value>
+  </data>
+  <data name="Stop Echo Speaker System" xml:space="preserve">
+    <value>エコースピーカーシステムを停止</value>
+  </data>
+  <data name="Stop Spectating Me" xml:space="preserve">
+    <value>自分をスペクテートするのを停止</value>
+  </data>
+  <data name="Throw Speed" xml:space="preserve">
+    <value>ディスク速度</value>
+  </data>
+  <data name="Tube Exit Speed (self)" xml:space="preserve">
+    <value>（自分が）カタパルトを出た速度</value>
+  </data>
+  <data name="Upload to Firestore" xml:space="preserve">
+    <value>Firestoreにアップロード</value>
+  </data>
+  <data name="Use Compression" xml:space="preserve">
+    <value>.zip ファイルに圧縮する</value>
+  </data>
+  <data name="Very Fast" xml:space="preserve">
+    <value>とても速い</value>
+  </data>
+  <data name="Voice" xml:space="preserve">
+    <value>音声</value>
+  </data>
+  <data name="Speed in m/s of the first player on each team to cross the midline on neutral joust" xml:space="preserve">
+    <value>ディスクが中央にある時、中間ラインを最初に超えた各チームのプレイヤーの速度（m/s）</value>
+  </data>
+  <data name="Time in seconds to reach the midline on neutral jousts for the fastest player on each team" xml:space="preserve">
+    <value>ディスクが中央にある時、中間ラインを最初に超えた各チームのプレイヤーの到達時間</value>
+  </data>
+  <data name="orange" xml:space="preserve">
+    <value>オレンジ</value>
+  </data>
+  <data name="blue" xml:space="preserve">
+    <value>ブルー</value>
+  </data>
+  <data name="spectator" xml:space="preserve">
+    <value>スペクテーター</value>
+  </data>
+  <data name="tts_join_1" xml:space="preserve">
+    <value>が</value>
+  </data>
+  <data name="tts_join_2" xml:space="preserve">
+    <value>にさんか</value>
+  </data>
+  <data name="tts_leave_1" xml:space="preserve">
+    <value>が</value>
+  </data>
+  <data name="tts_leave_2" xml:space="preserve">
+    <value>をたいしゅつ</value>
+  </data>
+  <data name="tts_switch_1" xml:space="preserve">
+    <value>が</value>
+  </data>
+  <data name="tts_switch_2" xml:space="preserve">
+    <value>から</value>
+  </data>
+  <data name="tts_switch_3" xml:space="preserve">
+    <value>にかわりました</value>
+  </data>
+  <data name="tts_pause_req" xml:space="preserve">
+    <value>チームがいちじていしをリクエスト</value>
+  </data>
+  <data name="tts_paused" xml:space="preserve">
+    <value>チームがゲームをいちじていし</value>
+  </data>
+  <data name="tts_unpause" xml:space="preserve">
+    <value>チームがゲームのいちじていしをかいじょ</value>
+  </data>
+  <data name="tts_meters_per_second" xml:space="preserve">
+    <value>メートルまいびょう</value>
+  </data>
+  <data name="tts_abused" xml:space="preserve">
+    <value>が、いどうはんいをあくよう</value>
+  </data>
+  <data name="tts_meters" xml:space="preserve">
+    <value>メートル</value>
+  </data>
+</root>

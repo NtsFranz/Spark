@@ -19,10 +19,10 @@ namespace IgniteBot.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace IgniteBot.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("IgniteBot.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace IgniteBot.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,18 +61,90 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to , or join the.
+        /// </summary>
+        public static string @__or_join_the {
+            get {
+                return ResourceManager.GetString(", or join the", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Requires Restart).
+        /// </summary>
+        public static string _Requires_Restart_ {
+            get {
+                return ResourceManager.GetString("(Requires Restart)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (top left of main window).
+        /// </summary>
+        public static string _top_left_of_main_window_ {
+            get {
+                return ResourceManager.GetString("(top left of main window)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to and ask questions in the #ignitebot-support channel..
+        /// </summary>
+        public static string and_ask_questions_in_the__ignitebot_support_channel_ {
+            get {
+                return ResourceManager.GetString("and ask questions in the #ignitebot-support channel.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IgniteBot.
         /// </summary>
-        internal static string AppName {
+        public static string AppName {
             get {
                 return ResourceManager.GetString("AppName", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Atlas.
+        /// </summary>
+        public static string Atlas {
+            get {
+                return ResourceManager.GetString("Atlas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shows copy-pastable links to let others join your match.
+        /// </summary>
+        public static string atlas_button_tooltip {
+            get {
+                return ResourceManager.GetString("atlas_button_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autorestart EchoVR into autospectator.
+        /// </summary>
+        public static string Autorestart_EchoVR_into_autospectator {
+            get {
+                return ResourceManager.GetString("Autorestart EchoVR into autospectator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap baseline_replay_white_24px {
+        public static System.Drawing.Bitmap baseline_replay_white_24px {
             get {
                 object obj = ResourceManager.GetObject("baseline_replay_white_24px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -80,9 +152,468 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Batch Writes.
+        /// </summary>
+        public static string Batch_Writes {
+            get {
+                return ResourceManager.GetString("Batch Writes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to blue.
+        /// </summary>
+        public static string blue {
+            get {
+                return ResourceManager.GetString("blue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blue Team.
+        /// </summary>
+        public static string Blue_Team {
+            get {
+                return ResourceManager.GetString("Blue Team", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        public static string Browse {
+            get {
+                return ResourceManager.GetString("Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close the IgniteBot.
+        /// </summary>
+        public static string close_tooltip {
+            get {
+                return ResourceManager.GetString("close_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Closing....
+        /// </summary>
+        public static string Closing___ {
+            get {
+                return ResourceManager.GetString("Closing...", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contribute.
+        /// </summary>
+        public static string Contribute {
+            get {
+                return ResourceManager.GetString("Contribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contributions to the IgniteBot are welcome. Check it out on.
+        /// </summary>
+        public static string contributions_welcome {
+            get {
+                return ResourceManager.GetString("contributions_welcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copied!.
+        /// </summary>
+        public static string Copied_ {
+            get {
+                return ResourceManager.GetString("Copied!", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string Copy {
+            get {
+                return ResourceManager.GetString("Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copies the IgniteBot join link to the clipboard.
+        /// </summary>
+        public static string copy_link_tooltip {
+            get {
+                return ResourceManager.GetString("copy_link_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dashboard.
+        /// </summary>
+        public static string Dashboard {
+            get {
+                return ResourceManager.GetString("Dashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disc Speed (m/s).
+        /// </summary>
+        public static string Disc_Speed {
+            get {
+                return ResourceManager.GetString("Disc Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discord Login.
+        /// </summary>
+        public static string Discord_Login {
+            get {
+                return ResourceManager.GetString("Discord Login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discord Rich Presence.
+        /// </summary>
+        public static string Discord_Rich_Presence {
+            get {
+                return ResourceManager.GetString("Discord Rich Presence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Distance in m of every goal.
+        /// </summary>
+        public static string Distance_in_m_of_every_goal {
+            get {
+                return ResourceManager.GetString("Distance in m of every goal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download Update.
+        /// </summary>
+        public static string Download_Update {
+            get {
+                return ResourceManager.GetString("Download Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads and installs the most recent update (recommended).
+        /// </summary>
+        public static string Downloads_and_installs_the_most_recent_update__recommended_ {
+            get {
+                return ResourceManager.GetString("Downloads and installs the most recent update (recommended)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Echo Arena Replay Viewer.
+        /// </summary>
+        public static string Echo_Arena_Replay_Viewer {
+            get {
+                return ResourceManager.GetString("Echo Arena Replay Viewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Echopedia page.
+        /// </summary>
+        public static string Echopedia_page {
+            get {
+                return ResourceManager.GetString("Echopedia page", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EchoVR Executable Location:.
+        /// </summary>
+        public static string EchoVR_Executable_Location_ {
+            get {
+                return ResourceManager.GetString("EchoVR Executable Location:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EchoVR IP (for Quest).
+        /// </summary>
+        public static string EchoVR_IP__for_Quest_ {
+            get {
+                return ResourceManager.GetString("EchoVR IP (for Quest)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable -capturevp2 when launching spectator.
+        /// </summary>
+        public static string Enable__capturevp2_when_launching_spectator {
+            get {
+                return ResourceManager.GetString("Enable -capturevp2 when launching spectator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable API in Settings.
+        /// </summary>
+        public static string Enable_API_in_Settings {
+            get {
+                return ResourceManager.GetString("Enable API in Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable NVIDIA Highlights.
+        /// </summary>
+        public static string Enable_NVIDIA_Highlights {
+            get {
+                return ResourceManager.GetString("Enable_NVIDIA_Highlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!.
+        /// </summary>
+        public static string Enabled_API_access_in_the_game_settings__nCLOSE_ECHOVR_BEFORE_PRESSING_OK_ {
+            get {
+                return ResourceManager.GetString("Enabled API access in the game settings.\\nCLOSE ECHOVR BEFORE PRESSING OK!", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Estimated location of the server as you join.
+        /// </summary>
+        public static string Estimated_location_of_the_server_as_you_join {
+            get {
+                return ResourceManager.GetString("Estimated location of the server as you join", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Event Log.
+        /// </summary>
+        public static string Event_Log {
+            get {
+                return ResourceManager.GetString("Event Log", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every Match (Scoreboard).
+        /// </summary>
+        public static string Every_Match__Scoreboard_ {
+            get {
+                return ResourceManager.GetString("Every Match (Scoreboard)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every Round.
+        /// </summary>
+        public static string Every_Round {
+            get {
+                return ResourceManager.GetString("Every Round", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit.
+        /// </summary>
+        public static string Exit {
+            get {
+                return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fast.
+        /// </summary>
+        public static string Fast {
+            get {
+                return ResourceManager.GetString("Fast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fast (60 Hz).
+        /// </summary>
+        public static string Fast__60_Hz_ {
+            get {
+                return ResourceManager.GetString("Fast (60 Hz)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Female.
+        /// </summary>
+        public static string Female {
+            get {
+                return ResourceManager.GetString("Female", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Quest IP.
+        /// </summary>
+        public static string Find_Quest_IP {
+            get {
+                return ResourceManager.GetString("Find Quest IP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For help, join the Discord.
+        /// </summary>
+        public static string For_help__join_the_Discord {
+            get {
+                return ResourceManager.GetString("For help, join the Discord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For help using the IgniteBot, check out the.
+        /// </summary>
+        public static string for_help_check_out {
+            get {
+                return ResourceManager.GetString("for_help_check_out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game Paused.
+        /// </summary>
+        public static string Game_Paused {
+            get {
+                return ResourceManager.GetString("Game Paused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string General {
+            get {
+                return ResourceManager.GetString("General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Goal Distance.
+        /// </summary>
+        public static string Goal_Distance {
+            get {
+                return ResourceManager.GetString("Goal Distance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Goal Speed.
+        /// </summary>
+        public static string Goal_Speed {
+            get {
+                return ResourceManager.GetString("Goal Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        public static string Help {
+            get {
+                return ResourceManager.GetString("Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide.
+        /// </summary>
+        public static string Hide {
+            get {
+                return ResourceManager.GetString("Hide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide Main Window.
+        /// </summary>
+        public static string Hide_Main_Window {
+            get {
+                return ResourceManager.GetString("Hide Main Window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hides this program in the tray. It will continue to run in the background.
+        /// </summary>
+        public static string hide_tooltip {
+            get {
+                return ResourceManager.GetString("hide_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highlights.
+        /// </summary>
+        public static string Highlights {
+            get {
+                return ResourceManager.GetString("Highlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highlights Cleared: All unsaved highlights have been cleared from the temporary highlights directory..
+        /// </summary>
+        public static string highlights_cleared {
+            get {
+                return ResourceManager.GetString("highlights_cleared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NVIDIA Highlights isn&apos;t supported by your PC.
+        /// </summary>
+        public static string Highlights_isn_t_supported_by_your_PC {
+            get {
+                return ResourceManager.GetString("Highlights_isn_t_supported_by_your_PC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignite Discord Server.
+        /// </summary>
+        public static string Ignite_Discord_Server {
+            get {
+                return ResourceManager.GetString("Ignite Discord Server", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon ignite_logo {
+        public static System.Drawing.Icon ignite_logo {
             get {
                 object obj = ResourceManager.GetObject("ignite_logo", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
@@ -92,10 +623,1121 @@ namespace IgniteBot.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ignite_logo_128 {
+        public static System.Drawing.Bitmap ignite_logo_128 {
             get {
                 object obj = ResourceManager.GetObject("ignite_logo_128", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IgniteBot | Settings.
+        /// </summary>
+        public static string IgniteBot___Settings {
+            get {
+                return ResourceManager.GetString("IgniteBot | Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IgniteBot was made from contributions by these community members:.
+        /// </summary>
+        public static string IgniteBot_was_made_from_contributions_by_these_community_members_ {
+            get {
+                return ResourceManager.GetString("IgniteBot was made from contributions by these community members:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install Echo Speaker System.
+        /// </summary>
+        public static string Install_Echo_Speaker_System {
+            get {
+                return ResourceManager.GetString("Install Echo Speaker System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installing Echo Speaker System.
+        /// </summary>
+        public static string Installing_Echo_Speaker_System {
+            get {
+                return ResourceManager.GetString("Installing Echo Speaker System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance already running. Running two instances of the IgniteBot at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke..
+        /// </summary>
+        public static string instance_already_running_message {
+            get {
+                return ResourceManager.GetString("instance_already_running_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Japanese Translation:.
+        /// </summary>
+        public static string Japanese_Translation_ {
+            get {
+                return ResourceManager.GetString("Japanese Translation:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join Link:.
+        /// </summary>
+        public static string Join_Link_ {
+            get {
+                return ResourceManager.GetString("Join Link:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share this link with others who have the IgniteBot and play on PC. They will be able to click the link to immediately join your match without an invite..
+        /// </summary>
+        public static string join_link_tooltip {
+            get {
+                return ResourceManager.GetString("join_link_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Joust Speed.
+        /// </summary>
+        public static string Joust_Speed {
+            get {
+                return ResourceManager.GetString("Joust Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Joust Time.
+        /// </summary>
+        public static string Joust_Time {
+            get {
+                return ResourceManager.GetString("Joust Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap link {
+            get {
+                object obj = ResourceManager.GetObject("link", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local PC.
+        /// </summary>
+        public static string Local_PC {
+            get {
+                return ResourceManager.GetString("Local PC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logging in....
+        /// </summary>
+        public static string Logging_in___ {
+            get {
+                return ResourceManager.GetString("Logging in...", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log in to the program with Discord to enable features such as stat uploading and TTS..
+        /// </summary>
+        public static string login_button_tooltip {
+            get {
+                return ResourceManager.GetString("login_button_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lone Echo Subtitles.
+        /// </summary>
+        public static string Lone_Echo_Subtitles {
+            get {
+                return ResourceManager.GetString("Lone Echo Subtitles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Male.
+        /// </summary>
+        public static string Male {
+            get {
+                return ResourceManager.GetString("Male", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max Boost Speed.
+        /// </summary>
+        public static string Max_Boost_Speed {
+            get {
+                return ResourceManager.GetString("Max Boost Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum speed achieved for times when you are faster than 20 m/s.
+        /// </summary>
+        public static string Maximum_speed_achieved_for_times_when_you_are_faster_than_20_m_s {
+            get {
+                return ResourceManager.GetString("Maximum speed achieved for times when you are faster than 20 m/s", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Med (30 Hz).
+        /// </summary>
+        public static string Med__30_Hz_ {
+            get {
+                return ResourceManager.GetString("Med (30 Hz)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mode: .
+        /// </summary>
+        public static string Mode {
+            get {
+                return ResourceManager.GetString("Mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No clips available.
+        /// </summary>
+        public static string No_clips_available {
+            get {
+                return ResourceManager.GetString("No clips available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Normal.
+        /// </summary>
+        public static string Normal {
+            get {
+                return ResourceManager.GetString("Normal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To enable NVIDIA Highlights, first enable the NVIDIA overlay in Geforce Experience, then enable the Highlights feature from within the overlay (ALT+Z). The events that you want to trigger a clip can be customized in the NVIDIA overlay while the game is open..
+        /// </summary>
+        public static string nvhighlights_description_1 {
+            get {
+                return ResourceManager.GetString("nvhighlights_description_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make sure to enable Desktop recording (under the &apos;Privacy control&apos; section in the overlay), otherwise only this program will be recorded..
+        /// </summary>
+        public static string nvhighlights_description_2 {
+            get {
+                return ResourceManager.GetString("nvhighlights_description_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NVIDIA Highlights failed to initialize or isn&apos;t supported by your PC.
+        /// </summary>
+        public static string NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC {
+            get {
+                return ResourceManager.GetString("NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NVIDIA Highlights Settings.
+        /// </summary>
+        public static string NVIDIA_Highlights_Settings {
+            get {
+                return ResourceManager.GetString("NVIDIA Highlights Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NIVIDIA Highlights.
+        /// </summary>
+        public static string NVIDIAHighlights {
+            get {
+                return ResourceManager.GetString("NVIDIAHighlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On Server Change.
+        /// </summary>
+        public static string On_Server_Change {
+            get {
+                return ResourceManager.GetString("On Server Change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only on IgniteBot Restart.
+        /// </summary>
+        public static string Only_on_IgniteBot_Restart {
+            get {
+                return ResourceManager.GetString("Only on IgniteBot Restart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only Record Private Matches.
+        /// </summary>
+        public static string Only_Record_Private_Matches {
+            get {
+                return ResourceManager.GetString("Only Record Private Matches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Event Log Folder.
+        /// </summary>
+        public static string Open_Event_Log_Folder {
+            get {
+                return ResourceManager.GetString("Open Event Log Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Folder.
+        /// </summary>
+        public static string Open_Folder {
+            get {
+                return ResourceManager.GetString("Open Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Spectatorstream.
+        /// </summary>
+        public static string Open_Spectatorstream {
+            get {
+                return ResourceManager.GetString("Open Spectatorstream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event..
+        /// </summary>
+        public static string Opens_the_folder_where_the_event_logs_are_stored_on_your_computer__Only_works_once_you_have_logged_at_least_one_event_ {
+            get {
+                return ResourceManager.GetString("Opens the folder where the event logs are stored on your computer. Only works onc" +
+                        "e you have logged at least one event.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to orange.
+        /// </summary>
+        public static string orange {
+            get {
+                return ResourceManager.GetString("orange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orange Team.
+        /// </summary>
+        public static string Orange_Team {
+            get {
+                return ResourceManager.GetString("Orange Team", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal.
+        /// </summary>
+        public static string Personal {
+            get {
+                return ResourceManager.GetString("Personal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player Join.
+        /// </summary>
+        public static string Player_Join {
+            get {
+                return ResourceManager.GetString("Player Join", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player Leave.
+        /// </summary>
+        public static string Player_Leave {
+            get {
+                return ResourceManager.GetString("Player Leave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player Pings.
+        /// </summary>
+        public static string Player_Pings {
+            get {
+                return ResourceManager.GetString("Player Pings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player Speeds.
+        /// </summary>
+        public static string Player_Speeds {
+            get {
+                return ResourceManager.GetString("Player Speeds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Player Switch Teams.
+        /// </summary>
+        public static string Player_Switch_Teams {
+            get {
+                return ResourceManager.GetString("Player Switch Teams", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous Goals.
+        /// </summary>
+        public static string Previous_Goals {
+            get {
+                return ResourceManager.GetString("Previous Goals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous Joust Times.
+        /// </summary>
+        public static string Previous_Joust_Times {
+            get {
+                return ResourceManager.GetString("Previous Joust Times", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous Rounds.
+        /// </summary>
+        public static string Previous_Rounds {
+            get {
+                return ResourceManager.GetString("Previous Rounds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rejoin.
+        /// </summary>
+        public static string Rejoin {
+            get {
+                return ResourceManager.GetString("Rejoin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rejoin the last private match that you were in.
+        /// </summary>
+        public static string rejoin_tooltip {
+            get {
+                return ResourceManager.GetString("rejoin_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replay File Splitting:.
+        /// </summary>
+        public static string Replay_File_Splitting_ {
+            get {
+                return ResourceManager.GetString("Replay File Splitting:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replay Logging.
+        /// </summary>
+        public static string Replay_Logging {
+            get {
+                return ResourceManager.GetString("Replay Logging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replay Recording Settings.
+        /// </summary>
+        public static string Replay_Recording_Settings {
+            get {
+                return ResourceManager.GetString("Replay Recording Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replays.
+        /// </summary>
+        public static string Replays {
+            get {
+                return ResourceManager.GetString("Replays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replays are recorded in the .echoreplay file format, which contains all API data from the game. Echoreplay files to not contain any video or audio data..
+        /// </summary>
+        public static string replays_description_part_1 {
+            get {
+                return ResourceManager.GetString("replays_description_part_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The most common use of .echoreplay files is in the.
+        /// </summary>
+        public static string replays_description_part_2 {
+            get {
+                return ResourceManager.GetString("replays_description_part_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For the technical details on the .echoreplay format, check out the.
+        /// </summary>
+        public static string replays_description_part_3 {
+            get {
+                return ResourceManager.GetString("replays_description_part_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Echopedia page.
+        /// </summary>
+        public static string replays_description_part_4 {
+            get {
+                return ResourceManager.GetString("replays_description_part_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string Reset {
+            get {
+                return ResourceManager.GetString("Reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runs EchoVR with the -spectatorstream option enabled. This is useful for testing.
+        /// </summary>
+        public static string Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing {
+            get {
+                return ResourceManager.GetString("Runs EchoVR with the -spectatorstream option enabled. This is useful for testing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Folder:.
+        /// </summary>
+        public static string Save_Folder_ {
+            get {
+                return ResourceManager.GetString("Save Folder:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Replays.
+        /// </summary>
+        public static string Save_Replays {
+            get {
+                return ResourceManager.GetString("Save Replays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Score:.
+        /// </summary>
+        public static string Score_ {
+            get {
+                return ResourceManager.GetString("Score:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Searching for Quest.
+        /// </summary>
+        public static string Searching_for_Quest {
+            get {
+                return ResourceManager.GetString("Searching for Quest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Logs to Ignite.
+        /// </summary>
+        public static string Send_Logs_to_Ignite {
+            get {
+                return ResourceManager.GetString("Send Logs to Ignite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server Info.
+        /// </summary>
+        public static string Server_Info {
+            get {
+                return ResourceManager.GetString("Server Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server IP:.
+        /// </summary>
+        public static string Server_IP_ {
+            get {
+                return ResourceManager.GetString("Server IP:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server Location.
+        /// </summary>
+        public static string Server_Location {
+            get {
+                return ResourceManager.GetString("Server Location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server Location:.
+        /// </summary>
+        public static string Server_Location_ {
+            get {
+                return ResourceManager.GetString("Server Location:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The server location is estimated using ip-api.com.
+        /// </summary>
+        public static string server_location_tooltip {
+            get {
+                return ResourceManager.GetString("server_location_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opens IgniteBot settings window.
+        /// </summary>
+        public static string settings_button_tooltip {
+            get {
+                return ResourceManager.GetString("settings_button_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show.
+        /// </summary>
+        public static string Show {
+            get {
+                return ResourceManager.GetString("Show", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show first-time setup window.
+        /// </summary>
+        public static string Show_first_time_setup_window {
+            get {
+                return ResourceManager.GetString("Show first-time setup window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Main Window.
+        /// </summary>
+        public static string Show_Main_Window {
+            get {
+                return ResourceManager.GetString("Show Main Window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Playspace.
+        /// </summary>
+        public static string Show_Playspace {
+            get {
+                return ResourceManager.GetString("Show Playspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slow.
+        /// </summary>
+        public static string Slow {
+            get {
+                return ResourceManager.GetString("Slow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Slow (10 Hz).
+        /// </summary>
+        public static string Slow__10_Hz_ {
+            get {
+                return ResourceManager.GetString("Slow (10 Hz)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speaker System.
+        /// </summary>
+        public static string Speaker_System {
+            get {
+                return ResourceManager.GetString("Speaker System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spectate Me.
+        /// </summary>
+        public static string Spectate_Me {
+            get {
+                return ResourceManager.GetString("Spectate Me", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to spectator.
+        /// </summary>
+        public static string spectator {
+            get {
+                return ResourceManager.GetString("spectator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spectators.
+        /// </summary>
+        public static string Spectators {
+            get {
+                return ResourceManager.GetString("Spectators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speech Speed.
+        /// </summary>
+        public static string Speech_Speed {
+            get {
+                return ResourceManager.GetString("Speech Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed in m/s as you exit the launch tube.
+        /// </summary>
+        public static string Speed_in_m_s_as_you_exit_the_launch_tube {
+            get {
+                return ResourceManager.GetString("Speed in m/s as you exit the launch tube", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed in m/s of every goal.
+        /// </summary>
+        public static string Speed_in_m_s_of_every_goal {
+            get {
+                return ResourceManager.GetString("Speed in m/s of every goal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed in m/s of the first player on each team to cross the midline on neutral joust.
+        /// </summary>
+        public static string Speed_in_m_s_of_the_first_player_on_each_team_to_cross_the_midline_on_neutral_joust {
+            get {
+                return ResourceManager.GetString("Speed in m/s of the first player on each team to cross the midline on neutral jou" +
+                        "st", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed in m/s of your throws.
+        /// </summary>
+        public static string Speed_in_m_s_of_your_throws {
+            get {
+                return ResourceManager.GetString("Speed in m/s of your throws", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split File.
+        /// </summary>
+        public static string Split_File {
+            get {
+                return ResourceManager.GetString("Split File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Echo Speaker System.
+        /// </summary>
+        public static string Start_Echo_Speaker_System {
+            get {
+                return ResourceManager.GetString("Start Echo Speaker System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Minimized.
+        /// </summary>
+        public static string Start_Minimized {
+            get {
+                return ResourceManager.GetString("Start Minimized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start with Windows.
+        /// </summary>
+        public static string Start_with_Windows {
+            get {
+                return ResourceManager.GetString("Start with Windows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stats Logging.
+        /// </summary>
+        public static string Stats_Logging {
+            get {
+                return ResourceManager.GetString("Stats Logging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Echo Speaker System.
+        /// </summary>
+        public static string Stop_Echo_Speaker_System {
+            get {
+                return ResourceManager.GetString("Stop Echo Speaker System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Spectating Me.
+        /// </summary>
+        public static string Stop_Spectating_Me {
+            get {
+                return ResourceManager.GetString("Stop Spectating Me", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text-to-Speech.
+        /// </summary>
+        public static string Text_to_Speech {
+            get {
+                return ResourceManager.GetString("Text-to-Speech", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text-to-Speech (TTS) Settings.
+        /// </summary>
+        public static string Text_to_Speech__TTS__Settings {
+            get {
+                return ResourceManager.GetString("Text-to-Speech (TTS) Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the new speed.
+        /// </summary>
+        public static string This_is_the_new_speed {
+            get {
+                return ResourceManager.GetString("This is the new speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Throw Speed.
+        /// </summary>
+        public static string Throw_Speed {
+            get {
+                return ResourceManager.GetString("Throw Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time in seconds to reach the midline on neutral jousts for the fastest player on each team.
+        /// </summary>
+        public static string Time_in_seconds_to_reach_the_midline_on_neutral_jousts_for_the_fastest_player_on_each_team {
+            get {
+                return ResourceManager.GetString("Time in seconds to reach the midline on neutral jousts for the fastest player on " +
+                        "each team", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tools.
+        /// </summary>
+        public static string Tools {
+            get {
+                return ResourceManager.GetString("Tools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to abused their playspace.
+        /// </summary>
+        public static string tts_abused {
+            get {
+                return ResourceManager.GetString("tts_abused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TTS allows you to hear events while in game. Make sure to set up your speakers appropriately to be able to hear the output..
+        /// </summary>
+        public static string tts_description_1 {
+            get {
+                return ResourceManager.GetString("tts_description_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On Rift, set your default Windows sound output to the Rift headphones..
+        /// </summary>
+        public static string tts_description_2 {
+            get {
+                return ResourceManager.GetString("tts_description_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On Quest, use headphones attached to your PC or turn up the speakers..
+        /// </summary>
+        public static string tts_description_3 {
+            get {
+                return ResourceManager.GetString("tts_description_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to joined.
+        /// </summary>
+        public static string tts_join_1 {
+            get {
+                return ResourceManager.GetString("tts_join_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..
+        /// </summary>
+        public static string tts_join_2 {
+            get {
+                return ResourceManager.GetString("tts_join_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to left.
+        /// </summary>
+        public static string tts_leave_1 {
+            get {
+                return ResourceManager.GetString("tts_leave_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..
+        /// </summary>
+        public static string tts_leave_2 {
+            get {
+                return ResourceManager.GetString("tts_leave_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to meters.
+        /// </summary>
+        public static string tts_meters {
+            get {
+                return ResourceManager.GetString("tts_meters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to meters per second.
+        /// </summary>
+        public static string tts_meters_per_second {
+            get {
+                return ResourceManager.GetString("tts_meters_per_second", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TTS only works when logged in with Discord!.
+        /// </summary>
+        public static string TTS_only_works_when_logged_in_with_Discord_ {
+            get {
+                return ResourceManager.GetString("TTS only works when logged in with Discord!", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to team requested a pause.
+        /// </summary>
+        public static string tts_pause_req {
+            get {
+                return ResourceManager.GetString("tts_pause_req", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to team paused the game.
+        /// </summary>
+        public static string tts_paused {
+            get {
+                return ResourceManager.GetString("tts_paused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to switched from.
+        /// </summary>
+        public static string tts_switch_1 {
+            get {
+                return ResourceManager.GetString("tts_switch_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to.
+        /// </summary>
+        public static string tts_switch_2 {
+            get {
+                return ResourceManager.GetString("tts_switch_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..
+        /// </summary>
+        public static string tts_switch_3 {
+            get {
+                return ResourceManager.GetString("tts_switch_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to team unpaused the game.
+        /// </summary>
+        public static string tts_unpause {
+            get {
+                return ResourceManager.GetString("tts_unpause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tube Exit Speed (self).
+        /// </summary>
+        public static string Tube_Exit_Speed__self_ {
+            get {
+                return ResourceManager.GetString("Tube Exit Speed (self)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Echo Speaker System.
+        /// </summary>
+        public static string Update_Echo_Speaker_System {
+            get {
+                return ResourceManager.GetString("Update Echo Speaker System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploads data to the Personal Ignite database. This is separate from the public match stats, but is still visible on the website. Discord Login is required for stat uploading. Only public matches are uploaded..
+        /// </summary>
+        public static string upload_description {
+            get {
+                return ResourceManager.GetString("upload_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload to Firestore.
+        /// </summary>
+        public static string Upload_to_Firestore {
+            get {
+                return ResourceManager.GetString("Upload to Firestore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload to IgniteVR Database.
+        /// </summary>
+        public static string Upload_to_IgniteVR_Database {
+            get {
+                return ResourceManager.GetString("Upload to IgniteVR Database", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Compression.
+        /// </summary>
+        public static string Use_Compression {
+            get {
+                return ResourceManager.GetString("Use Compression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Very Fast.
+        /// </summary>
+        public static string Very_Fast {
+            get {
+                return ResourceManager.GetString("Very Fast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Voice.
+        /// </summary>
+        public static string Voice {
+            get {
+                return ResourceManager.GetString("Voice", resourceCulture);
             }
         }
     }

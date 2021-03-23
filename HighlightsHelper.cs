@@ -21,6 +21,12 @@ namespace IgniteBot
 		public static int nvHighlightClipCount;
 
 
+		public enum HighlightLevel : int
+		{
+			CLIENT_ONLY,
+			CLIENT_TEAM,
+			ALL
+		};
 
 		internal static bool SaveHighlightMaybe(g_Player player, g_Instance frame, string id)
 		{

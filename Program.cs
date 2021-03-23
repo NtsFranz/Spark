@@ -191,6 +191,61 @@ namespace IgniteBot
 		private static Thread IPSearchthread2;
 		public static PublisherSocket pubSocket;
 
+
+		#region Event Callbacks
+		public static Action<g_Instance, g_Team, g_Player> PlayerJoined;
+		public static Action<g_Instance, g_Team, g_Player> PlayerLeft;
+		/// <summary>
+		/// frame, fromteam, toteam, player
+		/// </summary>
+		public static Action<g_Instance, g_Team, g_Team, g_Player> PlayerSwitchedTeams;
+		public static Action<g_Instance> MatchReset;
+		public static Action<g_Instance> PauseRequest;
+		public static Action<g_Instance> GamePaused;
+		public static Action<g_Instance> GameUnpaused;
+		/// <summary>
+		/// frame, team, player, speed, howlongago
+		/// </summary>
+		public static Action<g_Instance, g_Team, g_Player, float, float> BigBoost;
+		/// <summary>
+		/// frame, team, player, playspacelocation (compare to head.Pos)
+		/// </summary>
+		public static Action<g_Instance, g_Team, g_Player, Vector3> PlayspaceAbuse;
+		public static Action<g_Instance, g_Team, g_Player> Save;
+		public static Action<g_Instance, g_Team, g_Player> Steal;
+		/// <summary>
+		/// frame, stunner_team, stunner_player, stunee_player
+		/// </summary>
+		public static Action<g_Instance, g_Team, g_Player, g_Player> Stun;
+		/// <summary>
+		/// Catch by other team from throw within 7 seconds
+		/// frame, team, throwplayer, catchplayer
+		/// </summary>
+		public static Action<g_Instance, g_Team, g_Player, g_Player> Interception;
+		/// <summary>
+		/// Catch by same team as throw within 7 seconds
+		/// frame, team, throwplayer, catchplayer
+		/// </summary>
+		public static Action<g_Instance, g_Team, g_Player, g_Player> Pass;
+		/// <summary>
+		/// Any catch, including interceptions and passes
+		/// frame, team, player
+		/// </summary>
+		public static Action<g_Instance, g_Team, g_Player> Catch;
+		/// <summary>
+		/// frame, team, player, lefthanded, underhandedness
+		/// </summary>
+		public static Action<g_Instance, g_Team, g_Player, bool, float> Throw;
+		public static Action<g_Instance, g_Team, g_Player> ShotTaken;
+		public static Action<g_Instance, TeamColor> RestartRequest;
+		/// <summary>
+		/// frame, team, player
+		/// </summary>
+		public static Action<g_Instance, g_Team, g_Player, bool, float, float, float> Joust;
+		public static Action<g_Instance, GoalData> Goal;
+
+		#endregion
+
 		private static App app;
 
 		public static void Main(string[] args, App app)
@@ -221,7 +276,7 @@ namespace IgniteBot
 			// allow multiple instances if the port is overriden
 			if (IsIgniteBotOpen() && !overrideEchoVRPort)
 			{
-				MessageBox box = new MessageBox("Instance already running. Running two instances of the IgniteBot at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke.", "Error");
+				MessageBox box = new MessageBox(Resources.instance_already_running_message, Resources.Error);
 				box.Show();
 				//while(box!= null)
 				{
@@ -424,7 +479,7 @@ namespace IgniteBot
 			}
 			while (statsThread != null && statsThread.IsAlive)
 			{
-				closingWindow.label.Content = "Closing...";
+				closingWindow.label.Content = Resources.Closing___;
 				await Task.Delay(10);
 			}
 			closingWindow.label.Content = "Closing NVIDIA Highlights...";
@@ -436,7 +491,7 @@ namespace IgniteBot
 			closingWindow.label.Content = "Closing PubSub System...";
 			AsyncIO.ForceDotNet.Force();
 			NetMQConfig.Cleanup(false);
-			closingWindow.label.Content = "Closing...";
+			closingWindow.label.Content = Resources.Closing___;
 			app.ExitApplication();
 
 			await Task.Delay(100);
@@ -688,7 +743,7 @@ namespace IgniteBot
 						}
 
 						// make sure there is a valid echovr path saved
-						if (Settings.Default.echoVRPath == "")
+						if (Settings.Default.echoVRPath == "" || Settings.Default.echoVRPath.Contains("win7"))
 						{
 							UpdateEchoExeLocation();
 						}
@@ -1137,7 +1192,7 @@ namespace IgniteBot
 						paths.Add((string)oculusReg.OpenSubKey(subkey).GetValue("OriginalPath"));
 					}
 
-					const string echoDir = "Software\\ready-at-dawn-echo-arena\\bin\\win7\\echovr.exe";
+					const string echoDir = "Software\\ready-at-dawn-echo-arena\\bin\\win10\\echovr.exe";
 					foreach (var path in paths)
 					{
 						string file = Path.Combine(path, echoDir);
@@ -1331,8 +1386,7 @@ namespace IgniteBot
 					{
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.player_joined,
 							frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
-						LogRow(LogType.File, frame.sessionid,
-							frame.game_clock_display + " - Player Joined: " + player.name);
+						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Player Joined: {player.name}");
 
 						if (team.color != TeamColor.spectator)
 						{
@@ -1347,10 +1401,9 @@ namespace IgniteBot
 
 						UpdateStatsIngame(frame);
 
-						if (Settings.Default.playerJoinTTS)
-						{
-							synth.SpeakAsync(player.name + " joined " + team.color);
-						}
+						PlayerJoined?.Invoke(frame, team, player);
+
+						
 					}
 					catch (Exception ex)
 					{
@@ -1383,10 +1436,7 @@ namespace IgniteBot
 
 					UpdateStatsIngame(frame);
 
-					if (Settings.Default.playerLeaveTTS)
-					{
-						synth.SpeakAsync(player.name + " left " + team.color);
-					}
+					PlayerLeft?.Invoke(frame, team, player);
 				}
 			}
 
@@ -1415,10 +1465,8 @@ namespace IgniteBot
 
 					UpdateStatsIngame(frame);
 
-					if (Settings.Default.playerSwitchTeamTTS)
-					{
-						synth.SpeakAsync($"{player.name} switched to {team.color}");
-					}
+					g_Team lastTeam = lastFrame.GetTeam(player.userid);
+					PlayerSwitchedTeams?.Invoke(frame, lastTeam, team, player);
 				}
 			}
 
@@ -1458,7 +1506,6 @@ namespace IgniteBot
 					if (frame.pause.paused_state == "paused")
 					{
 						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team paused the game");
-						if (Settings.Default.pausedTTS) synth.SpeakAsync($"{frame.pause.paused_requested_team} team paused the game");
 						matchData.Events.Add(
 							new EventData(
 								matchData,
@@ -1470,20 +1517,24 @@ namespace IgniteBot
 								Vector3.Zero,
 								Vector3.Zero)
 							);
+
+						GamePaused?.Invoke(frame);
 					}
 
 					if (lastFrame.pause.paused_state == "unpaused" &&
 						frame.pause.paused_state == "paused_requested")
 					{
+						PauseRequest?.Invoke(frame);
+
 						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team requested a pause");
-						if (Settings.Default.pausedTTS) synth.SpeakAsync($"{frame.pause.paused_requested_team} team requested a pause");
 					}
 
 					if (lastFrame.pause.paused_state == "paused" &&
 						frame.pause.paused_state == "unpausing")
 					{
+						GameUnpaused?.Invoke(frame);
+
 						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team unpaused the game");
-						if (Settings.Default.pausedTTS) synth.SpeakAsync($"{frame.pause.paused_requested_team} team unpaused the game");
 					}
 				}
 			}
@@ -1549,6 +1600,8 @@ namespace IgniteBot
 								float boostSpeed = boost.Item1;
 								float howLongAgoBoost = boost.Item2;
 
+								BigBoost?.Invoke(frame, team, player, boostSpeed, howLongAgoBoost);
+
 								matchData.Events.Add(
 									new EventData(
 										matchData,
@@ -1565,16 +1618,6 @@ namespace IgniteBot
 								LogRow(LogType.File, frame.sessionid,
 									frame.game_clock_display + " - " + player.name + " boosted to " +
 									boostSpeed.ToString("N1") + " m/s");
-
-
-								// TTS
-								if (playerData.Name == frame.client_name)
-								{
-									if (Settings.Default.maxBoostSpeedTTS)
-									{
-										synth.SpeakAsync(boostSpeed.ToString("N0") + " meters per second");
-									}
-								}
 							}
 
 							// update hand velocities
@@ -1621,6 +1664,8 @@ namespace IgniteBot
 								Vector3.Distance(player.head.Position, playerData.playspaceLocation) > 1.7f)
 							{
 								// playspace abuse happened
+								PlayspaceAbuse?.Invoke(frame, team, player, playerData.playspaceLocation);
+
 								matchData.Events.Add(
 									new EventData(
 										matchData,
@@ -1666,6 +1711,8 @@ namespace IgniteBot
 						// check saves 
 						if (lastPlayer.stats.saves != player.stats.saves)
 						{
+							Save?.Invoke(frame, team, player);
+
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.save, frame.game_clock,
 								team, player, null, player.head.Position, Vector3.Zero));
 							LogRow(LogType.File, frame.sessionid,
@@ -1676,6 +1723,8 @@ namespace IgniteBot
 						// check steals 🕵️‍
 						if (lastPlayer.stats.steals != player.stats.steals)
 						{
+							Steal?.Invoke(frame, team, player);
+
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.steal, frame.game_clock,
 								team, player, null, player.head.Position, Vector3.Zero));
 
@@ -1727,6 +1776,10 @@ namespace IgniteBot
 											frame.game_clock_display + " - " + stunner.name + " just stunned " +
 											stunnee.name);
 										added = true;
+
+										Stun?.Invoke(frame, team, player, stunnee);
+
+
 										break;
 									}
 								}
@@ -1773,6 +1826,9 @@ namespace IgniteBot
 											frame.game_clock_display + " - " + stunner.name + " just stunned " +
 											stunnee.name);
 										added = true;
+
+										Stun?.Invoke(frame, team, player, stunnee);
+
 										break;
 									}
 								}
@@ -1822,7 +1878,7 @@ namespace IgniteBot
 							{
 								if (wasTurnoverCatch && lastPlayer.stats.saves == player.stats.saves)
 								{
-									_ = DelayedCatchEvent(player, throwPlayer);
+									_ = DelayedCatchEvent(frame, team, player, throwPlayer);
 									LogRow(LogType.File, frame.sessionid,
 										frame.game_clock_display + " - " + throwPlayer.name +
 										" turned over the disk to " + player.name);
@@ -1832,6 +1888,7 @@ namespace IgniteBot
 								}
 								else
 								{
+									Pass?.Invoke(frame, team, throwPlayer, player);
 									LogRow(LogType.File, frame.sessionid,
 										frame.game_clock_display + " - " + player.name + " received a pass from " +
 										throwPlayer.name);
@@ -1843,32 +1900,16 @@ namespace IgniteBot
 							}
 							else
 							{
+								Catch?.Invoke(frame, team, player);
 								LogRow(LogType.File, frame.sessionid,
 									frame.game_clock_display + " - " + player.name + " made a catch");
 							}
 						}
 
-						// check if the disk was caught using stats 🥊
-						// This doesn't happen, because the API just reports 0
-						if (lastPlayer.stats.catches != player.stats.catches)
-						{
-							LogRow(LogType.File, frame.sessionid,
-								frame.game_clock_display + " - " + player.name + " made a catch (stat)");
-						}
-
-						// check blocks 🧱
-						// This doesn't happen, because the API just reports 0
-						if (lastPlayer.stats.blocks != player.stats.blocks)
-						{
-							matchData.Events.Add(new EventData(matchData, EventData.EventType.block, frame.game_clock,
-								team, player, null, player.head.Position, Vector3.Zero));
-							LogRow(LogType.File, frame.sessionid,
-								frame.game_clock_display + " - " + player.name + " just blocked");
-						}
-
 						// check shots taken 🧺
 						if (lastPlayer.stats.shots_taken != player.stats.shots_taken)
 						{
+							ShotTaken?.Invoke(frame, team, player);
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.shot_taken,
 								frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
 							LogRow(LogType.File, frame.sessionid,
@@ -1877,14 +1918,6 @@ namespace IgniteBot
 							{
 								lastThrowPlayerId = -1;
 							}
-						}
-
-						// check blocks 🧱
-						if (lastPlayer.stats.passes != player.stats.passes)
-						{
-							//matchData.Events.Add(new EventData(matchData, EventData.EventType.block, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
-							LogRow(LogType.File, frame.sessionid,
-								frame.game_clock_display + " - " + player.name + " made a pass");
 						}
 
 						// check disk was thrown ⚾
@@ -1941,6 +1974,7 @@ namespace IgniteBot
 					// check blue restart request ↩
 					if (!lastFrame.blue_team_restart_request && frame.blue_team_restart_request)
 					{
+						RestartRequest?.Invoke(frame, TeamColor.blue);
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
 							lastFrame.game_clock, frame.teams[(int)TeamColor.blue], null, null, Vector3.Zero,
 							Vector3.Zero));
@@ -1951,6 +1985,7 @@ namespace IgniteBot
 					// check orange restart request ↩
 					if (!lastFrame.orange_team_restart_request && frame.orange_team_restart_request)
 					{
+						RestartRequest?.Invoke(frame, TeamColor.orange);
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
 							lastFrame.game_clock, frame.teams[(int)TeamColor.orange], null, null, Vector3.Zero,
 							Vector3.Zero));
@@ -2057,26 +2092,7 @@ namespace IgniteBot
 								startGameClock - frame.game_clock)
 						);
 
-						// only joust time
-						if (Settings.Default.joustTimeTTS && !Settings.Default.joustSpeedTTS)
-						{
-							synth.SpeakAsync(team.color.ToString() + " " +
-											 (startGameClock - frame.game_clock).ToString("N1"));
-						}
-						// only joust speed
-						else if (!Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
-						{
-							synth.SpeakAsync(team.color.ToString() + " " + maxSpeed.ToString("N0") +
-											 " meters per second");
-						}
-						// both
-						else if (Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
-						{
-							synth.SpeakAsync(team.color.ToString() + " " +
-											 (startGameClock - frame.game_clock).ToString("N1") + " " +
-											 maxSpeed.ToString("N0") + " meters per second");
-						}
-
+						
 						matchData.Events.Add(joustEvent);
 						LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " +
 															  team.color.ToString() +
@@ -2089,6 +2105,9 @@ namespace IgniteBot
 															  maxSpeed.ToString("N2") +
 															  " m/s, Tube Exit Speed: " +
 															  maxTubeExitSpeed.ToString("N2") + " m/s");
+
+						
+						Joust?.Invoke(frame, team, player, eventType == EventData.EventType.joust_speed, startGameClock - frame.game_clock, maxSpeed, maxTubeExitSpeed);
 
 						// Upload to Firebase 🔥
 						_ = DoUploadEventFirebase(matchData, joustEvent);
@@ -2107,7 +2126,7 @@ namespace IgniteBot
 		}
 
 
-		private static async Task DelayedCatchEvent(g_Player originalPlayer, g_Player throwPlayer)
+		private static async Task DelayedCatchEvent(g_Instance originalFrame, g_Team originalTeam, g_Player originalPlayer, g_Player throwPlayer)
 		{
 			// TODO look through again
 			// wait some time before checking if a save happened (then it wouldn't be an interception)
@@ -2121,6 +2140,8 @@ namespace IgniteBot
 				{
 					if (player.playerid != originalPlayer.playerid) continue;
 					if (player.stats.saves != originalPlayer.stats.saves) continue;
+
+					Interception?.Invoke(originalFrame, originalTeam, throwPlayer, originalPlayer);
 
 					LogRow(LogType.File, frame.sessionid,
 						frame.game_clock_display + " - " + player.name + " intercepted a throw from " +
@@ -2136,8 +2157,7 @@ namespace IgniteBot
 			}
 		}
 
-		private static async Task DelayedThrowEvent(g_Player originalPlayer, bool leftHanded, float underhandedness,
-			float origSpeed)
+		private static async Task DelayedThrowEvent(g_Player originalPlayer, bool leftHanded, float underhandedness, float origSpeed)
 		{
 			// wait some time before re-checking the throw velocity
 			await Task.Delay(100);
@@ -2152,6 +2172,8 @@ namespace IgniteBot
 					{
 						if (player.possession && !frame.disc.velocity.ToVector3().Equals(Vector3.Zero))
 						{
+							Throw?.Invoke(frame, team, player,leftHanded, underhandedness);
+
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.@throw, frame.game_clock,
 								team, player, null, player.head.Position, frame.disc.velocity.ToVector3()));
 							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name +
@@ -2239,6 +2261,8 @@ namespace IgniteBot
 						}
 
 						EventMatchFinished(frameToUse, MatchData.FinishReason.reset, lastFrame.game_clock);
+
+						MatchReset?.Invoke(frameToUse);
 					}
 					// Autofocus
 					if (Settings.Default.isAutofocusEnabled)
@@ -2521,16 +2545,6 @@ namespace IgniteBot
 			LogRow(LogType.File, frame.sessionid,
 				frame.game_clock_display + " - ORANGE: " + frame.orange_points + "  BLUE: " + frame.blue_points);
 
-			if (Settings.Default.goalDistanceTTS)
-			{
-				synth.SpeakAsync(frame.last_score.distance_thrown.ToString("N1") + " meters");
-			}
-
-			if (Settings.Default.goalSpeedTTS)
-			{
-				synth.SpeakAsync(frame.last_score.disc_speed.ToString("N1") + " meters per second");
-			}
-
 			g_Player scorer = frame.GetPlayer(frame.last_score.person_scored);
 			var scorerPlayerData = matchData.GetPlayerData(scorer);
 			if (scorerPlayerData != null)
@@ -2579,6 +2593,10 @@ namespace IgniteBot
 			{
 				lastGoals.TryDequeue(out var goal);
 			}
+
+
+
+			Goal?.Invoke(frame, goalEvent);
 
 			// Upload to Firebase 🔥
 			_ = DoUploadEventFirebase(matchData, goalEvent);

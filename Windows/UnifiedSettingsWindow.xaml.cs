@@ -47,9 +47,11 @@ namespace IgniteBot
 
 		#region General
 
-		public static bool StartWithWindows {
+		public static bool StartWithWindows
+		{
 			get => Settings.Default.startOnBoot;
-			set {
+			set
+			{
 				Settings.Default.startOnBoot = value;
 				Settings.Default.Save();
 
@@ -75,7 +77,7 @@ namespace IgniteBot
 		private void EchoVRIPChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.echoVRIP = ((TextBox)sender).Text;
+			Program.echoVRIP = ((TextBox) sender).Text;
 			Settings.Default.echoVRIP = Program.echoVRIP;
 			Settings.Default.Save();
 		}
@@ -89,7 +91,7 @@ namespace IgniteBot
 			}
 			else
 			{
-				if (int.TryParse(((TextBox)sender).Text, out Program.echoVRPort))
+				if (int.TryParse(((TextBox) sender).Text, out Program.echoVRPort))
 				{
 					Settings.Default.echoVRPort = Program.echoVRPort;
 					Settings.Default.Save();
@@ -112,7 +114,7 @@ namespace IgniteBot
 		private void ExecutableLocationChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			string path = ((TextBox)sender).Text;
+			string path = ((TextBox) sender).Text;
 			if (File.Exists(path))
 			{
 				exeLocationLabel.Content = "EchoVR Executable Location:";
@@ -156,11 +158,13 @@ namespace IgniteBot
 			Program.ToggleWindow(typeof(FirstTimeSetupWindow));
 		}
 
-		public static Visibility FirestoreVisible {
+		public static Visibility FirestoreVisible
+		{
 			get => !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 		}
 
-		public static string ReplayFilename {
+		public static string ReplayFilename
+		{
 			get => string.IsNullOrEmpty(Program.fileName) ? "---" : Program.fileName;
 		}
 
@@ -168,7 +172,7 @@ namespace IgniteBot
 		{
 			try
 			{
-				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) {UseShellExecute = true});
 				e.Handled = true;
 			}
 			catch (Exception ex)
@@ -242,29 +246,36 @@ namespace IgniteBot
 		public static Visibility DiscordLoginWarningVisible =>
 			DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
 
-		public static bool JoustTime {
+		public static bool JoustTime
+		{
 			get => Settings.Default.joustTimeTTS;
-			set {
+			set
+			{
 				Settings.Default.joustTimeTTS = value;
 				Settings.Default.Save();
 
-				if (value) Program.synth.SpeakAsync("orange 1.8");
+				if (value) Program.synth.SpeakAsync($"{g_Team.TeamColor.orange.ToLocalizedString()} 1.8");
+				Console.WriteLine($"{g_Team.TeamColor.orange.ToLocalizedString()} 1.8");
 			}
 		}
 
-		public static bool JoustSpeed {
+		public static bool JoustSpeed
+		{
 			get => Settings.Default.joustSpeedTTS;
-			set {
+			set
+			{
 				Settings.Default.joustSpeedTTS = value;
 				Settings.Default.Save();
 
-				if (value) Program.synth.SpeakAsync("orange 32 meters per second");
+				if (value) Program.synth.SpeakAsync($"{g_Team.TeamColor.orange.ToLocalizedString()} 32 {Properties.Resources.tts_meters_per_second}");
 			}
 		}
 
-		public static bool ServerLocation {
+		public static bool ServerLocation
+		{
 			get => Settings.Default.serverLocationTTS;
-			set {
+			set
+			{
 				Settings.Default.serverLocationTTS = value;
 				Settings.Default.Save();
 
@@ -272,82 +283,104 @@ namespace IgniteBot
 			}
 		}
 
-		public static bool MaxBoostSpeed {
+		public static bool MaxBoostSpeed
+		{
 			get => Settings.Default.maxBoostSpeedTTS;
-			set {
+			set
+			{
 				Settings.Default.maxBoostSpeedTTS = value;
 				Settings.Default.Save();
 
-				if (value) Program.synth.SpeakAsync("32 meters per second");
+				if (value) Program.synth.SpeakAsync($"32 {Properties.Resources.tts_meters_per_second}");
 			}
 		}
 
-		public static bool TubeExitSpeed {
+		public static bool TubeExitSpeed
+		{
 			get => Settings.Default.tubeExitSpeedTTS;
-			set {
+			set
+			{
 				Settings.Default.tubeExitSpeedTTS = value;
 				Settings.Default.Save();
 
-				if (value) Program.synth.SpeakAsync("32 meters per second");
+				if (value) Program.synth.SpeakAsync($"32 {Properties.Resources.tts_meters_per_second}");
 			}
 		}
 
-		public static int SpeechSpeed {
+		public static int SpeechSpeed
+		{
 			get => Settings.Default.TTSSpeed;
-			set {
+			set
+			{
 				Program.synth.SetRate(value);
 
 				if (value != Settings.Default.TTSSpeed)
-					Program.synth.SpeakAsync("This is the new speed");
+					Program.synth.SpeakAsync(Properties.Resources.This_is_the_new_speed);
 
 				Settings.Default.TTSSpeed = value;
 				Settings.Default.Save();
 			}
 		}
 
-		public static bool GamePaused {
+		public static bool GamePaused
+		{
 			get => Settings.Default.pausedTTS;
-			set {
+			set
+			{
 				Settings.Default.pausedTTS = value;
 				Settings.Default.Save();
 
-				if (value) Program.synth.SpeakAsync("Game Paused");
+				if (value)
+					Program.synth.SpeakAsync(
+						$"{g_Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_paused}");
 			}
 		}
 
-		public static bool PlayerJoin {
+		public static bool PlayerJoin
+		{
 			get => Settings.Default.playerJoinTTS;
-			set {
+			set
+			{
 				Settings.Default.playerJoinTTS = value;
 				Settings.Default.Save();
 
-				if (value) Program.synth.SpeakAsync("NtsFranz joined");
+				if (value)
+					Program.synth.SpeakAsync(
+						$"NtsFranz {Properties.Resources.tts_join_1} {g_Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_join_2}");
 			}
 		}
 
-		public static bool PlayerLeave {
+		public static bool PlayerLeave
+		{
 			get => Settings.Default.playerLeaveTTS;
-			set {
+			set
+			{
 				Settings.Default.playerLeaveTTS = value;
 				Settings.Default.Save();
 
-				if (value) Program.synth.SpeakAsync("NtsFranz left");
+				if (value)
+					Program.synth.SpeakAsync($"NtsFranz {Properties.Resources.tts_leave_1} {g_Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_leave_2}");
 			}
 		}
 
-		public static bool PlayerSwitch {
+		public static bool PlayerSwitch
+		{
 			get => Settings.Default.playerSwitchTeamTTS;
-			set {
+			set
+			{
 				Settings.Default.playerSwitchTeamTTS = value;
 				Settings.Default.Save();
 
-				if (value) Program.synth.SpeakAsync("NtsFranz switched to orange team");
+				if (value)
+					Program.synth.SpeakAsync($"NtsFranz {Properties.Resources.tts_switch_1} {g_Team.TeamColor.blue.ToLocalizedString()} {Properties.Resources.tts_switch_2} {g_Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_switch_3}");
 			}
 		}
 
-		public static bool ThrowSpeed {
+		public static bool ThrowSpeed
+		{
 			get => Settings.Default.throwSpeedTTS;
-			set {
+			set
+			{
 				Settings.Default.throwSpeedTTS = value;
 				Settings.Default.Save();
 
@@ -355,23 +388,27 @@ namespace IgniteBot
 			}
 		}
 
-		public static bool GoalSpeed {
+		public static bool GoalSpeed
+		{
 			get => Settings.Default.goalSpeedTTS;
-			set {
+			set
+			{
 				Settings.Default.goalSpeedTTS = value;
 				Settings.Default.Save();
 
-				if (value) Program.synth.SpeakAsync("19 meters per second");
+				if (value) Program.synth.SpeakAsync($"19 {Properties.Resources.tts_meters_per_second}");
 			}
 		}
 
-		public static bool GoalDistance {
+		public static bool GoalDistance
+		{
 			get => Settings.Default.goalDistanceTTS;
-			set {
+			set
+			{
 				Settings.Default.goalDistanceTTS = value;
 				Settings.Default.Save();
 
-				if (value) Program.synth.SpeakAsync("23 meters");
+				if (value) Program.synth.SpeakAsync($"23 {Properties.Resources.tts_meters}");
 			}
 		}
 
@@ -379,31 +416,32 @@ namespace IgniteBot
 
 		#region NVIDIA Highlights
 
-		public bool NVHighlightsEnabled {
+		public bool NVHighlightsEnabled
+		{
 			get => Settings.Default.isNVHighlightsEnabled;
-			set {
+			set
+			{
 				switch (HighlightsHelper.isNVHighlightsEnabled)
 				{
 					case true when !value:
 						HighlightsHelper.CloseNVHighlights(true);
 						break;
 					case false when value:
+					{
+						if (HighlightsHelper.SetupNVHighlights() < 0)
 						{
-							if (HighlightsHelper.SetupNVHighlights() < 0)
-							{
-								HighlightsHelper.isNVHighlightsEnabled = false;
-								Settings.Default.isNVHighlightsEnabled = false;
-								Settings.Default.Save();
-								enableNVHighlightsCheckbox.IsChecked = false;
-								enableNVHighlightsCheckbox.IsEnabled = false;
-								enableNVHighlightsCheckbox.Content =
-									"NVIDIA Highlights failed to initialize or isn't supported by your PC";
-								return;
-							}
-
-							enableNVHighlightsCheckbox.Content = "Enable NVIDIA Highlights";
-							break;
+							HighlightsHelper.isNVHighlightsEnabled = false;
+							Settings.Default.isNVHighlightsEnabled = false;
+							Settings.Default.Save();
+							enableNVHighlightsCheckbox.IsChecked = false;
+							enableNVHighlightsCheckbox.IsEnabled = false;
+							enableNVHighlightsCheckbox.Content = Properties.Resources.NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC;
+							return;
 						}
+
+						enableNVHighlightsCheckbox.Content = Properties.Resources.Enable_NVIDIA_Highlights ;
+						break;
+					}
 				}
 
 				HighlightsHelper.isNVHighlightsEnabled = value;
@@ -428,14 +466,14 @@ namespace IgniteBot
 			clearHighlightsButton.IsEnabled = false;
 			clearHighlightsButton.Content = "Clear 0 Unsaved Highlights";
 			new MessageBox(
-					"Highlights Cleared: All unsaved highlights have been cleared from the temporary highlights directory.")
+					Properties.Resources.highlights_cleared)
 				.Show();
 		}
 
 		private void SecondsBeforeChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			if (!float.TryParse(((TextBox)sender).Text, out float value)) return;
+			if (!float.TryParse(((TextBox) sender).Text, out float value)) return;
 			Settings.Default.nvHighlightsSecondsBefore = value;
 			Settings.Default.Save();
 		}
@@ -443,15 +481,17 @@ namespace IgniteBot
 		private void SecondsAfterChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			if (!float.TryParse(((TextBox)sender).Text, out float value)) return;
+			if (!float.TryParse(((TextBox) sender).Text, out float value)) return;
 			Settings.Default.nvHighlightsSecondsAfter = value;
 			Settings.Default.Save();
 		}
 
 		public string ClearHighlightsButtonContent => $"Clear {HighlightsHelper.nvHighlightClipCount} Unsaved Highlights";
+
 		public string EnableHighlightsContent => HighlightsHelper.isNVHighlightsSupported
-				? "Enable NVIDIA Highlights"
-				: "NVIDIA Highlights isn't supported by your PC";
+			? Properties.Resources.Enable_NVIDIA_Highlights
+			: Properties.Resources.Highlights_isn_t_supported_by_your_PC;
+
 		public bool HighlightsSupported => HighlightsHelper.isNVHighlightsSupported;
 		public bool DoNVClipsExist => HighlightsHelper.DoNVClipsExist();
 
