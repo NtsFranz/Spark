@@ -8,7 +8,7 @@
         xmlns:p="clr-namespace:IgniteBot.Properties"
         mc:Ignorable="d"
         Title="{x:Static p:Resources.AppName}" 
-        Height="600" Width="1060" 
+        Height="650" Width="1060" 
         FontSize="14" 
         Background="{DynamicResource BackgroundColour}" 
         ResizeMode="CanResize" 
@@ -42,7 +42,7 @@
 					<Label x:Name="connectedLabel" Width="188" Content="Not Connected" Visibility="Collapsed"/>
 					<StackPanel Orientation="Horizontal">
 						<Label x:Name="sessionIdLabel" Content="{x:Static p:Resources.Join_Link_}"/>
-						<Button x:Name="copySessionIdButton" Content="{x:Static p:Resources.Copy}" Margin="45,0,0,0" VerticalAlignment="Center" Padding="10,1,10,1" HorizontalAlignment="Stretch" Click="CopyIgniteJoinLink" Width="75" ToolTip="{x:Static p:Resources.copy_link_tooltip}"></Button>
+						<Button x:Name="copySessionIdButton" Content="{x:Static p:Resources.Copy}" Margin="40,0,0,0" VerticalAlignment="Center" Padding="1,1,1,1" HorizontalAlignment="Stretch" Click="CopyIgniteJoinLink" Width="75" ToolTip="{x:Static p:Resources.copy_link_tooltip}"></Button>
 					</StackPanel>
 					<TextBox x:Name="sessionIdTextBox" Text="********-****-****-****-************" TextWrapping="NoWrap" MaxLines="1" FontSize="14" FontFamily="Courier New" IsReadOnly="True" Height="16" ToolTip="{x:Static p:Resources.join_link_tooltip}"/>
 					<Label x:Name="serverLocationLabel" Content="{x:Static p:Resources.Server_IP_}" ToolTip="{x:Static p:Resources.server_location_tooltip}"/>
@@ -134,6 +134,143 @@
 						</GroupBox>
 					</Grid>
 				</TabItem>
+				<TabItem FontSize="14" Padding="10,0,10,0" >
+					<TabItem.Header>
+						<StackPanel Orientation="Horizontal">
+							<Label Content="{x:Static p:Resources.Atlas}"/>
+							<Image Source="/img/link.png" Height="16"/>
+						</StackPanel>
+					</TabItem.Header>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="210"/>
+							<RowDefinition Height="1*"/>
+							<RowDefinition Height="106"/>
+						</Grid.RowDefinitions>
+
+						<StackPanel>
+							<GroupBox Header="{x:Static p:Resources.Settings}" Margin="10,10,10,10">
+								<StackPanel Orientation="Horizontal" Margin="10,5,0,0">
+									<StackPanel>
+										<StackPanel Orientation="Horizontal" Margin="5,10,0,-10">
+											<Button x:Name="resetIP" Content="{x:Static p:Resources.Local_PC}" Margin="5,5,5,5" Padding="7,3,7,3" Click="SetToLocalIP" ToolTip="Resets the IP to 127.0.0.1"/>
+											<Button x:Name="findQuest" Content="{x:Static p:Resources.Find_Quest_IP}" Margin="5,5,5,5" Padding="5,3,5,3" Click="FindQuestIP" ToolTip="Tries to find a Quest on your network. Make sure your Quest is turned on (not sleeping) and connected to WiFi."/>
+										</StackPanel>
+										<ComboBox x:Name="ipSourceDropdown" Width="175" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,15,10,0" SelectionChanged="IPSourceDropdownChanged" Visibility="Collapsed">
+											<ComboBoxItem Content="Local PC"/>
+											<ComboBoxItem Content="Quest"/>
+										</ComboBox>
+										<TextBox x:Name="alternateIPTextBox" Text="{l:SettingLoad echoVRIP}" TextChanged="EchoVRIPChanged" TextWrapping="Wrap" Width="175" Margin="10,10,10,10" FontFamily="Consolas"/>
+										<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="Searching for Quest" Margin="30,-10,0,-20" FontSize="12" FontStyle="Italic"/>
+									</StackPanel>
+									<Button x:Name="getButton" Margin="10,15,20,20" Padding="4,4,4,4" Width="130" Click="GetLinks" Height="40" Visibility="Collapsed">
+										<StackPanel Orientation="Horizontal">
+											<Label Content="Refresh"/>
+											<Image Source="/img/baseline_replay_white_48dp.png" Width="20"/>
+										</StackPanel>
+									</Button>
+
+									<StackPanel>
+										<Label Content="Link Type:" Margin="10,-5,10,0"/>
+										<ComboBox x:Name="linkTypeComboBox" Width="120" HorizontalAlignment="Left" Margin="10,0,10,10" SelectedIndex="{Binding LinkType}">
+											<ComboBoxItem Content="Choose" ToolTip="The Choose type shows a popup when you click the link to either join as a player or spectator."/>
+											<ComboBoxItem Content="Player" ToolTip="Join directly as a player."/>
+											<ComboBoxItem Content="Spectator" ToolTip="Join directly as a spectator."/>
+										</ComboBox>
+									</StackPanel>
+									<StackPanel>
+										<CheckBox x:Name="surroundWithAngleBracketsCheckbox" Content=" Surround with &lt;&gt;" Margin="10,0,0,10" IsChecked="{l:SettingBinding atlasLinkUseAngleBrackets}" ToolTip="Angle brackes allow you to click on the link when it's pasted in Discord."/>
+										<CheckBox Content=" Append team names" Margin="10,0,0,10" IsChecked="{l:SettingBinding atlasLinkAppendTeamNames}" ToolTip="Appends the team names of the participating teams if enough players from the same VRML team are in the match."/>
+									</StackPanel>
+								</StackPanel>
+
+							</GroupBox>
+
+							<StackPanel Orientation="Horizontal" Grid.Row="1">
+								<Button Margin="10,0,10,0" Click="CopyMainLinkToClipboard">
+									<StackPanel Orientation="Horizontal" >
+										<Label Content="Copy to Clipboard"/>
+										<Image Source="/img/clipboard-outline.png" Height="18"/>
+									</StackPanel>
+								</Button>
+								<Button Margin="10,0,10,0" Click="FollowMainLink">
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Follow Link"/>
+										<Image Source="/img/open-in-new.png" Height="18"/>
+									</StackPanel>
+								</Button>
+							</StackPanel>
+							<TextBox x:Name="joinLink" Text="---" TextWrapping="NoWrap" Margin="8,8,8,8" VerticalAlignment="Top" HorizontalAlignment="Stretch" IsReadOnly="True"/>
+
+						</StackPanel>
+
+						<GroupBox x:Name="groupBox" Margin="10,10,10,10" Grid.Row="1">
+							<GroupBox.Header>
+								<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
+									<Label Content="Hosted Matches"/>
+									<Button x:Name="refreshMatchesButton" Margin="0,0,0,0" Click="RefreshMatchesClicked" HorizontalAlignment="Right" Padding="5,5,5,5">
+										<StackPanel Orientation="Horizontal">
+											<Image Source="/img/baseline_replay_white_48dp.png" Width="20"/>
+										</StackPanel>
+									</Button>
+								</StackPanel>
+							</GroupBox.Header>
+							<ScrollViewer MaxHeight="480">
+								<StackPanel x:Name="MatchesBox">
+									<GroupBox x:Name="button" Margin="10,10,10,10" Visibility="Collapsed">
+
+										<GroupBox.Header>
+											<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
+												<TextBlock Text="Public" Margin="0,0,10,0" Foreground="{DynamicResource ControlDisabledGlythColour}"></TextBlock>
+												<Button Content="Copy Atlas Link" Margin="200,0,10,0" Background="{DynamicResource ControlDisabledBackground}"/>
+												<Button Content="Join" Margin="10,0,10,0"/>
+											</StackPanel>
+										</GroupBox.Header>
+
+										<Grid HorizontalAlignment="Stretch" ShowGridLines="True">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="100"/>
+												<ColumnDefinition Width="5*"/>
+												<ColumnDefinition Width="5*"/>
+												<ColumnDefinition Width="100"/>
+											</Grid.ColumnDefinitions>
+
+
+											<StackPanel>
+												<Image Source="https://vrmasterleague.com/images/logos/teams/09093858-5626-404d-97a3-10b8353fcc47.png" Width="100" Height="100"></Image>
+												<Label Content="Ignite" HorizontalAlignment="Center"></Label>
+											</StackPanel>
+											<TextBlock x:Name="textBlock" FlowDirection="RightToLeft" Margin="10,10,10,10" Grid.Column="1"><Run Text="Player 1"/><LineBreak/><Run Text="Player 2 Long"/><LineBreak/><Run Text="Player 3"/><LineBreak/><Run Text="Player 4"/><LineBreak/><Run Text="Player 5"/></TextBlock>
+											<TextBlock x:Name="textBlock2" Margin="10,10,10,10" Grid.Column="2"><Run Text="Player 1"/><LineBreak/><Run Text="Player 2"/><LineBreak/><Run Text="Player 3 Long"/><LineBreak/><Run Text="Player 4"/></TextBlock>
+
+											<StackPanel Grid.Column="3">
+												<Image Source="https://vrmasterleague.com/images/logos/teams/f5850b3b-0f78-42d1-8b57-119af08195be.png" Width="100" Height="100"></Image>
+												<Label Content="Kangorillaz" HorizontalAlignment="Center"></Label>
+											</StackPanel>
+										</Grid>
+									</GroupBox>
+								</StackPanel>
+							</ScrollViewer>
+						</GroupBox>
+						<StackPanel Grid.Row="2">
+							<Button x:Name="hostMatchButton" Margin="10,10,10,10" Click="HostMatchClicked" Height="54" IsEnabled="False">
+								<StackPanel Orientation="Horizontal">
+									<CheckBox x:Name="hostingMatchCheckbox" Margin="10,0,10,0"/>
+									<Label x:Name="hostingMatchLabel" Content="Host Match"/>
+								</StackPanel>
+							</Button>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Visibility: "/>
+								<ComboBox Width="150" SelectedIndex="{l:SettingBinding atlasHostingVisibility}">
+									<ComboBoxItem Content="Public"/>
+									<ComboBoxItem Content="Casters Only"/>
+									<ComboBoxItem Content="Private"/>
+								</ComboBox>
+								<Button Content="Whitelist" Click="WhitelistButtonClicked" Margin="10,0,10,0" Padding="10,0,10,0"/>
+							</StackPanel>
+						</StackPanel>
+					</Grid>
+				</TabItem>
 				<TabItem x:Name="eventLogTab" FontSize="14" Padding="10,0,10,0" MouseUp="EventLogTabClicked" TouchUp="EventLogTabClicked">
 					<TabItem.Header>
 						<StackPanel Orientation="Horizontal">
@@ -186,8 +323,8 @@
 				<StackPanel VerticalAlignment="Top">
 					<Button x:Name="updateButton" Content="{x:Static p:Resources.Download_Update}" Height="40" Margin="4,4,4,4" Background="#FF8B3434" Click="updateButton_Click" ToolTip="{x:Static p:Resources.Downloads_and_installs_the_most_recent_update__recommended_}" Visibility="Collapsed"/>
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
-					<Button x:Name="enableAPIButton" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
-					<Button x:Name="showAtlasLinks" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click" ToolTip="{x:Static p:Resources.atlas_button_tooltip}">
+					<Button x:Name="enableAPIButton"  Visibility="Collapsed" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
+					<Button x:Name="showAtlasLinks" Visibility="Collapsed" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click" ToolTip="{x:Static p:Resources.atlas_button_tooltip}">
 						<StackPanel Orientation="Horizontal">
 							<Label Content="{x:Static p:Resources.Atlas}"/>
 							<Image Source="/img/link.png" Height="20" Margin="8,0,0,0"/>
