@@ -1033,27 +1033,68 @@ namespace IgniteBot
 		[DllImport("User32.dll")]
 		static extern bool SetForegroundWindow(IntPtr hWnd);
 		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool ShowWindow(IntPtr hWnd, ShowWindowEnum flags);
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool GetWindowPlacement(IntPtr hWnd, ref Windowplacement lpwndpl);
+		[DllImport("user32.dll")]
 		static extern IntPtr GetForegroundWindow();
 		[DllImport("user32.dll")]
 		static extern bool AttachThreadInput(IntPtr idAttach, IntPtr idAttachTo, bool fAttach);
 		[DllImport("user32.dll")]
 		static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
 
+		[DllImport("user32.dll", CharSet = CharSet.Unicode)]
+		public static extern IntPtr FindWindow(String lpClassName, String lpWindowName);
+		private enum ShowWindowEnum
+		{
+			Hide = 0,
+			ShowNormal = 1, ShowMinimized = 2, ShowMaximized = 3,
+			Maximize = 3, ShowNormalNoActivate = 4, Show = 5,
+			Minimize = 6, ShowMinNoActivate = 7, ShowNoActivate = 8,
+			Restore = 9, ShowDefault = 10, ForceMinimized = 11
+		};
+		private struct Windowplacement
+		{
+			public int length;
+			public int flags;
+			public int showCmd;
+			public System.Drawing.Point ptMinPosition;
+			public System.Drawing.Point ptMaxPosition;
+			public System.Drawing.Rectangle rcNormalPosition;
+		}
+
 		public static void FocusEchoVR()
 		{
-			// Windows dosen't like programs stealing focus, so we have to hook into the current focused thred first
-			IntPtr currentThread = new IntPtr(Thread.CurrentThread.ManagedThreadId);
-			IntPtr foregroundThread = new IntPtr(GetWindowThreadProcessId(GetForegroundWindow(), out _));
-
-			AttachThreadInput(currentThread, foregroundThread, true);
-
-			Process[] echoProcesses = GetEchoVRProcess();
-			if (echoProcesses.Length > 0)
+			IntPtr EchoHandle = FindWindow(null, "Echo VR");
+			IntPtr echoThread = new IntPtr(GetWindowThreadProcessId(EchoHandle, out _));
+			
+			if (EchoHandle != GetForegroundWindow())
 			{
-				SetForegroundWindow(echoProcesses[0].MainWindowHandle);
-			}
+				liveWindow.FocusIgniteBot();
+				IntPtr foregroundThread = new IntPtr(GetWindowThreadProcessId(GetForegroundWindow(), out _));
+				AttachThreadInput(
+					foregroundThread,
+					echoThread, true
+				);
+				AttachThreadInput(foregroundThread, echoThread, false);
+				//get the hWnd of the process
+				Windowplacement placement = new Windowplacement();
+				GetWindowPlacement(EchoHandle, ref placement);
 
-			AttachThreadInput(currentThread, foregroundThread, false);
+				// Check if window is minimized
+				if (placement.showCmd == 2)
+				{
+					//the window is hidden so we restore it
+					ShowWindow(EchoHandle, ShowWindowEnum.Restore);
+                }
+                else
+                {
+					ShowWindow(EchoHandle, ShowWindowEnum.ShowNormal);
+				}
+				SetForegroundWindow(EchoHandle);
+			}
 		}
 
 		public static string FindEchoSpeakerSystemInstallVersion()
@@ -1457,7 +1498,10 @@ namespace IgniteBot
 			if (frame.game_status == "playing" && deltaTime != 0)
 			{
 				inPostMatch = false;
-
+				if(Settings.Default.isAutofocusEnabled && (Math.Round(frame.game_clock, 0, MidpointRounding.AwayFromZero) % 10 == 0))
+                {
+					FocusEchoVR();
+				}
 
 				matchData.currentDiskTrajectory.Add(frame.disc.position.ToVector3());
 
@@ -1961,7 +2005,7 @@ namespace IgniteBot
 				}
 			}
 		}
-
+		
 
 		// 💨
 		private static async Task JoustDetection(g_Instance firstFrame, EventData.EventType eventType, TeamColor side)
@@ -2196,7 +2240,11 @@ namespace IgniteBot
 
 						EventMatchFinished(frameToUse, MatchData.FinishReason.reset, lastFrame.game_clock);
 					}
-
+					// Autofocus
+					if (Settings.Default.isAutofocusEnabled)
+					{
+						FocusEchoVR();
+					}
 					break;
 
 				// round began
@@ -2230,6 +2278,11 @@ namespace IgniteBot
 								LogRow(LogType.Error, "Player exists in this round but not in last. Y");
 							}
 						}
+					}
+					// Autofocus
+					if (Settings.Default.isAutofocusEnabled)
+					{
+						FocusEchoVR();
 					}
 
 					if (!READ_FROM_FILE)
@@ -2305,7 +2358,6 @@ namespace IgniteBot
 					#region Process Score
 
 					_ = ProcessScore(matchData);
-
 					#endregion
 
 					break;
@@ -2355,9 +2407,19 @@ namespace IgniteBot
 					break;
 
 				case "pre_sudden_death":
+					// Autofocus
+					if (Settings.Default.isAutofocusEnabled)
+					{
+						FocusEchoVR();
+					}
 					LogRow(LogType.Error, "pre_sudden_death");
 					break;
 				case "sudden_death":
+					// Autofocus
+					if (Settings.Default.isAutofocusEnabled)
+					{
+						FocusEchoVR();
+					}
 					// this happens right as the match finishes in a tie
 					matchData.overtimeCount++;
 					break;
