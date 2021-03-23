@@ -653,4 +653,69 @@
   <data name="Voice" xml:space="preserve">
     <value>Voice</value>
   </data>
+  <data name="orange" xml:space="preserve">
+    <value>orange</value>
+  </data>
+  <data name="blue" xml:space="preserve">
+    <value>blue</value>
+  </data>
+  <data name="spectator" xml:space="preserve">
+    <value>spectator</value>
+  </data>
+  <data name="tts_join_1" xml:space="preserve">
+    <value>joined</value>
+  </data>
+  <data name="tts_join_2" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="tts_leave_1" xml:space="preserve">
+    <value>left</value>
+  </data>
+  <data name="tts_leave_2" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="tts_switch_1" xml:space="preserve">
+    <value>switched from</value>
+  </data>
+  <data name="tts_switch_2" xml:space="preserve">
+    <value>to</value>
+  </data>
+  <data name="tts_switch_3" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="tts_pause_req" xml:space="preserve">
+    <value>team requested a pause</value>
+  </data>
+  <data name="tts_paused" xml:space="preserve">
+    <value>team paused the game</value>
+  </data>
+  <data name="tts_unpause" xml:space="preserve">
+    <value>team unpaused the game</value>
+  </data>
+  <data name="tts_meters_per_second" xml:space="preserve">
+    <value>meters per second</value>
+  </data>
+  <data name="tts_abused" xml:space="preserve">
+    <value>abused their playspace</value>
+  </data>
+  <data name="tts_meters" xml:space="preserve">
+    <value>meters</value>
+  </data>
+  <data name="This is the new speed" xml:space="preserve">
+    <value>This is the new speed</value>
+  </data>
+  <data name="NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC" xml:space="preserve">
+    <value>NVIDIA Highlights failed to initialize or isn't supported by your PC</value>
+    <comment>error message for nvidia highlights setting</comment>
+  </data>
+  <data name="Enable_NVIDIA_Highlights" xml:space="preserve">
+    <value>Enable NVIDIA Highlights</value>
+    <comment>checkbox label</comment>
+  </data>
+  <data name="highlights_cleared" xml:space="preserve">
+    <value>Highlights Cleared: All unsaved highlights have been cleared from the temporary highlights directory.</value>
+  </data>
+  <data name="Highlights_isn_t_supported_by_your_PC" xml:space="preserve">
+    <value>NVIDIA Highlights isn't supported by your PC</value>
+  </data>
 </root>

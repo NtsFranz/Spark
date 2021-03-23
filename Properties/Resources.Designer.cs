@@ -19,7 +19,7 @@ namespace IgniteBot.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -157,6 +157,15 @@ namespace IgniteBot.Properties {
         public static string Batch_Writes {
             get {
                 return ResourceManager.GetString("Batch Writes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to blue.
+        /// </summary>
+        public static string blue {
+            get {
+                return ResourceManager.GetString("blue", resourceCulture);
             }
         }
         
@@ -368,6 +377,15 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable NVIDIA Highlights.
+        /// </summary>
+        public static string Enable_NVIDIA_Highlights {
+            get {
+                return ResourceManager.GetString("Enable_NVIDIA_Highlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!.
         /// </summary>
         public static string Enabled_API_access_in_the_game_settings__nCLOSE_ECHOVR_BEFORE_PRESSING_OK_ {
@@ -562,6 +580,24 @@ namespace IgniteBot.Properties {
         public static string Highlights {
             get {
                 return ResourceManager.GetString("Highlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highlights Cleared: All unsaved highlights have been cleared from the temporary highlights directory..
+        /// </summary>
+        public static string highlights_cleared {
+            get {
+                return ResourceManager.GetString("highlights_cleared", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NVIDIA Highlights isn&apos;t supported by your PC.
+        /// </summary>
+        public static string Highlights_isn_t_supported_by_your_PC {
+            get {
+                return ResourceManager.GetString("Highlights_isn_t_supported_by_your_PC", resourceCulture);
             }
         }
         
@@ -821,6 +857,15 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NVIDIA Highlights failed to initialize or isn&apos;t supported by your PC.
+        /// </summary>
+        public static string NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC {
+            get {
+                return ResourceManager.GetString("NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NVIDIA Highlights Settings.
         /// </summary>
         public static string NVIDIA_Highlights_Settings {
@@ -899,6 +944,15 @@ namespace IgniteBot.Properties {
             get {
                 return ResourceManager.GetString("Opens the folder where the event logs are stored on your computer. Only works onc" +
                         "e you have logged at least one event.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to orange.
+        /// </summary>
+        public static string orange {
+            get {
+                return ResourceManager.GetString("orange", resourceCulture);
             }
         }
         
@@ -1281,6 +1335,15 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to spectator.
+        /// </summary>
+        public static string spectator {
+            get {
+                return ResourceManager.GetString("spectator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spectators.
         /// </summary>
         public static string Spectators {
@@ -1417,6 +1480,15 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This is the new speed.
+        /// </summary>
+        public static string This_is_the_new_speed {
+            get {
+                return ResourceManager.GetString("This is the new speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Throw Speed.
         /// </summary>
         public static string Throw_Speed {
@@ -1441,6 +1513,15 @@ namespace IgniteBot.Properties {
         public static string Tools {
             get {
                 return ResourceManager.GetString("Tools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to abused their playspace.
+        /// </summary>
+        public static string tts_abused {
+            get {
+                return ResourceManager.GetString("tts_abused", resourceCulture);
             }
         }
         
@@ -1472,11 +1553,119 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to joined.
+        /// </summary>
+        public static string tts_join_1 {
+            get {
+                return ResourceManager.GetString("tts_join_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..
+        /// </summary>
+        public static string tts_join_2 {
+            get {
+                return ResourceManager.GetString("tts_join_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to left.
+        /// </summary>
+        public static string tts_leave_1 {
+            get {
+                return ResourceManager.GetString("tts_leave_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..
+        /// </summary>
+        public static string tts_leave_2 {
+            get {
+                return ResourceManager.GetString("tts_leave_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to meters.
+        /// </summary>
+        public static string tts_meters {
+            get {
+                return ResourceManager.GetString("tts_meters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to meters per second.
+        /// </summary>
+        public static string tts_meters_per_second {
+            get {
+                return ResourceManager.GetString("tts_meters_per_second", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to TTS only works when logged in with Discord!.
         /// </summary>
         public static string TTS_only_works_when_logged_in_with_Discord_ {
             get {
                 return ResourceManager.GetString("TTS only works when logged in with Discord!", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to team requested a pause.
+        /// </summary>
+        public static string tts_pause_req {
+            get {
+                return ResourceManager.GetString("tts_pause_req", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to team paused the game.
+        /// </summary>
+        public static string tts_paused {
+            get {
+                return ResourceManager.GetString("tts_paused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to switched from.
+        /// </summary>
+        public static string tts_switch_1 {
+            get {
+                return ResourceManager.GetString("tts_switch_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to.
+        /// </summary>
+        public static string tts_switch_2 {
+            get {
+                return ResourceManager.GetString("tts_switch_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ..
+        /// </summary>
+        public static string tts_switch_3 {
+            get {
+                return ResourceManager.GetString("tts_switch_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to team unpaused the game.
+        /// </summary>
+        public static string tts_unpause {
+            get {
+                return ResourceManager.GetString("tts_unpause", resourceCulture);
             }
         }
         

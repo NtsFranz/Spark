@@ -228,13 +228,13 @@
 									<ComboBoxItem Content="{x:Static p:Resources.Male}" />
 									<ComboBoxItem Content="{x:Static p:Resources.Female}" />
 								</ComboBox>
-								<Label Content="{x:Static p:Resources.Language}" Grid.Column="2" />
-								<ComboBox Width="146" HorizontalAlignment="Left"
-                                          SelectedIndex="{l:SettingBinding ttsLanguage}"
-                                          Margin="0,0,0,8" Grid.Column="2" Grid.Row="1">
-									<ComboBoxItem Content="English" />
-									<ComboBoxItem Content="日本語" />
-								</ComboBox>
+								<!-- <Label Content="{x:Static p:Resources.Language}" Grid.Column="2" /> -->
+								<!-- <ComboBox Width="146" HorizontalAlignment="Left" -->
+        <!--                                   SelectedIndex="{l:SettingBinding ttsLanguage}" -->
+        <!--                                   Margin="0,0,0,8" Grid.Column="2" Grid.Row="1"> -->
+								<!-- 	<ComboBoxItem Content="English" /> -->
+								<!-- 	<ComboBoxItem Content="日本語" /> -->
+								<!-- </ComboBox> -->
 							</Grid>
 							<CheckBox x:Name="serverLocationCheckbox" Content="{x:Static p:Resources.Server_Location}" Margin="4,10,4,0"
                                           IsChecked="{Binding ServerLocation}" />

@@ -442,4 +442,244 @@
   <data name="Update Echo Speaker System" xml:space="preserve">
     <value>Echoスピーカーシステムをアップデート</value>
   </data>
+  <data name="(top left of main window)" xml:space="preserve">
+    <value>メインウィンドウの左上です</value>
+  </data>
+  <data name=", or join the" xml:space="preserve">
+    <value>、もしくは参加する</value>
+  </data>
+  <data name="and ask questions in the #ignitebot-support channel." xml:space="preserve">
+    <value>＃ignitebot-supportのチャンネルで質問してください</value>
+  </data>
+  <data name="Closing..." xml:space="preserve">
+    <value>閉じています…</value>
+  </data>
+  <data name="Contribute" xml:space="preserve">
+    <value>貢献</value>
+  </data>
+  <data name="contributions_welcome" xml:space="preserve">
+    <value>IgniteBotへの貢献を歓迎します。こちらをチェックしてみてください。</value>
+  </data>
+  <data name="Copied!" xml:space="preserve">
+    <value>コピー完了！</value>
+  </data>
+  <data name="Distance in m of every goal" xml:space="preserve">
+    <value>各ゴールの距離（m）</value>
+  </data>
+  <data name="Downloads and installs the most recent update (recommended)" xml:space="preserve">
+    <value>（推奨）最新のアップデートをダウンロードしてインストールします</value>
+  </data>
+  <data name="Echopedia page" xml:space="preserve">
+    <value>Echopediaのページ</value>
+  </data>
+  <data name="Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!" xml:space="preserve">
+    <value>ゲーム設定でAPIアクセスを有効にする。OKを押す前に、ECHOVRを閉じてください。</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="Estimated location of the server as you join" xml:space="preserve">
+    <value>参加するときのサーバー推定位置</value>
+  </data>
+  <data name="Fast" xml:space="preserve">
+    <value>速</value>
+  </data>
+  <data name="Fast (60 Hz)" xml:space="preserve">
+    <value>速 (60 Hz)</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>女性の声</value>
+  </data>
+  <data name="for_help_check_out" xml:space="preserve">
+    <value>IgniteBotの使用についてはこちらを見てください</value>
+  </data>
+  <data name="Game Paused" xml:space="preserve">
+    <value>ゲームの一時停止</value>
+  </data>
+  <data name="Goal Distance" xml:space="preserve">
+    <value>ゴールの距離</value>
+  </data>
+  <data name="Goal Speed" xml:space="preserve">
+    <value>シュート速度</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>ヘルプ</value>
+  </data>
+  <data name="Ignite Discord Server" xml:space="preserve">
+    <value>Ignite ディスコードサーバー</value>
+  </data>
+  <data name="IgniteBot was made from contributions by these community members:" xml:space="preserve">
+    <value>IgniteBotは、以下のコミュニティメンバーによって作成されました。</value>
+  </data>
+  <data name="instance_already_running_message" xml:space="preserve">
+    <value>インスタンスがすでに実行されています。IgniteBotの2つのインスタンスを同時に実行すると問題が発生することがあります。右下のタスクトレイ、またはタスクマネージャを確認して、何かが壊れた場合は古いインスタンスを強制終了してください。</value>
+  </data>
+  <data name="Japanese Translation:" xml:space="preserve">
+    <value>日本語翻訳</value>
+  </data>
+  <data name="Joust Speed" xml:space="preserve">
+    <value>ジャウスト速度</value>
+  </data>
+  <data name="Joust Time" xml:space="preserve">
+    <value>ジャウストタイム</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>男性の声</value>
+  </data>
+  <data name="Max Boost Speed" xml:space="preserve">
+    <value>最大ブースト速度</value>
+  </data>
+  <data name="Maximum speed achieved for times when you are faster than 20 m/s" xml:space="preserve">
+    <value>20m/sを超えた時に達した最高速度</value>
+  </data>
+  <data name="Med (30 Hz)" xml:space="preserve">
+    <value>中 (30 Hz)</value>
+  </data>
+  <data name="No clips available" xml:space="preserve">
+    <value>利用可能なクリップはありません</value>
+  </data>
+  <data name="nvhighlights_description_1" xml:space="preserve">
+    <value>NVIDIA ハイライトを有効にするには、まず Geforce Experience で NVIDIA オーバーレイを有効にし、次にオーバーレイの中からハイライト機能を有効にします（ALT+Z）。クリップするシーンは、ゲームを開いている間にNVIDIAオーバーレイでカスタマイズすることができます。</value>
+  </data>
+  <data name="nvhighlights_description_2" xml:space="preserve">
+    <value>（オーバーレイの「プライバシーコントロール」で）デスクトップ録画を有効にしないと、このプログラムだけが録画されます。</value>
+  </data>
+  <data name="NVIDIA Highlights Settings" xml:space="preserve">
+    <value>NVIDIAハイライト設定</value>
+  </data>
+  <data name="On Server Change" xml:space="preserve">
+    <value>サーバー変更時</value>
+  </data>
+  <data name="Only on IgniteBot Restart" xml:space="preserve">
+    <value>IgniteBotの再起動時のみ</value>
+  </data>
+  <data name="Open Event Log Folder" xml:space="preserve">
+    <value>イベントログフォルダを開く</value>
+  </data>
+  <data name="Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event." xml:space="preserve">
+    <value>コンピュータのイベントログが保存されているフォルダを開きます。少なくとも1つのイベントを記録した場合にのみ機能します。</value>
+  </data>
+  <data name="Player Join" xml:space="preserve">
+    <value>プレイヤー参加</value>
+  </data>
+  <data name="Player Leave" xml:space="preserve">
+    <value>プレイヤー退出</value>
+  </data>
+  <data name="Player Switch Teams" xml:space="preserve">
+    <value>プレーヤーのチーム切り替え</value>
+  </data>
+  <data name="replays_description_part_2" xml:space="preserve">
+    <value>.echoreplayファイルは以下のソフトで利用可能です。</value>
+  </data>
+  <data name="replays_description_part_3" xml:space="preserve">
+    <value>.echoreplayフォーマットの技術的な詳細については、以下をご覧ください。</value>
+  </data>
+  <data name="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing" xml:space="preserve">
+    <value>EchoVRを-spectatorstreamオプションを有効にして実行します。これは、次のようなテストに役立ちます。</value>
+  </data>
+  <data name="Score:" xml:space="preserve">
+    <value>スコア：</value>
+  </data>
+  <data name="Server Location" xml:space="preserve">
+    <value>サーバーの場所</value>
+  </data>
+  <data name="Server Location:" xml:space="preserve">
+    <value>サーバーの場所：</value>
+  </data>
+  <data name="Show Main Window" xml:space="preserve">
+    <value>メインウィンドウを表示</value>
+  </data>
+  <data name="Slow" xml:space="preserve">
+    <value>遅</value>
+  </data>
+  <data name="Slow (10 Hz)" xml:space="preserve">
+    <value>遅 (10 Hz)</value>
+  </data>
+  <data name="Speed in m/s as you exit the launch tube" xml:space="preserve">
+    <value>カタパルトを出るときの速度（m / s）</value>
+  </data>
+  <data name="Speed in m/s of every goal" xml:space="preserve">
+    <value>各ゴールの速度（m / s）</value>
+  </data>
+  <data name="Speed in m/s of your throws" xml:space="preserve">
+    <value>ディスク速度（m / s）</value>
+  </data>
+  <data name="Stop Echo Speaker System" xml:space="preserve">
+    <value>エコースピーカーシステムを停止</value>
+  </data>
+  <data name="Stop Spectating Me" xml:space="preserve">
+    <value>自分をスペクテートするのを停止</value>
+  </data>
+  <data name="Throw Speed" xml:space="preserve">
+    <value>ディスク速度</value>
+  </data>
+  <data name="Tube Exit Speed (self)" xml:space="preserve">
+    <value>（自分が）カタパルトを出た速度</value>
+  </data>
+  <data name="Upload to Firestore" xml:space="preserve">
+    <value>Firestoreにアップロード</value>
+  </data>
+  <data name="Use Compression" xml:space="preserve">
+    <value>.zip ファイルに圧縮する</value>
+  </data>
+  <data name="Very Fast" xml:space="preserve">
+    <value>とても速い</value>
+  </data>
+  <data name="Voice" xml:space="preserve">
+    <value>音声</value>
+  </data>
+  <data name="Speed in m/s of the first player on each team to cross the midline on neutral joust" xml:space="preserve">
+    <value>ディスクが中央にある時、中間ラインを最初に超えた各チームのプレイヤーの速度（m/s）</value>
+  </data>
+  <data name="Time in seconds to reach the midline on neutral jousts for the fastest player on each team" xml:space="preserve">
+    <value>ディスクが中央にある時、中間ラインを最初に超えた各チームのプレイヤーの到達時間</value>
+  </data>
+  <data name="orange" xml:space="preserve">
+    <value>オレンジ</value>
+  </data>
+  <data name="blue" xml:space="preserve">
+    <value>ブルー</value>
+  </data>
+  <data name="spectator" xml:space="preserve">
+    <value>スペクテーター</value>
+  </data>
+  <data name="tts_join_1" xml:space="preserve">
+    <value>が</value>
+  </data>
+  <data name="tts_join_2" xml:space="preserve">
+    <value>にさんか</value>
+  </data>
+  <data name="tts_leave_1" xml:space="preserve">
+    <value>が</value>
+  </data>
+  <data name="tts_leave_2" xml:space="preserve">
+    <value>をたいしゅつ</value>
+  </data>
+  <data name="tts_switch_1" xml:space="preserve">
+    <value>が</value>
+  </data>
+  <data name="tts_switch_2" xml:space="preserve">
+    <value>から</value>
+  </data>
+  <data name="tts_switch_3" xml:space="preserve">
+    <value>にかわりました</value>
+  </data>
+  <data name="tts_pause_req" xml:space="preserve">
+    <value>チームがいちじていしをリクエスト</value>
+  </data>
+  <data name="tts_paused" xml:space="preserve">
+    <value>チームがゲームをいちじていし</value>
+  </data>
+  <data name="tts_unpause" xml:space="preserve">
+    <value>チームがゲームのいちじていしをかいじょ</value>
+  </data>
+  <data name="tts_meters_per_second" xml:space="preserve">
+    <value>メートルまいびょう</value>
+  </data>
+  <data name="tts_abused" xml:space="preserve">
+    <value>が、いどうはんいをあくよう</value>
+  </data>
+  <data name="tts_meters" xml:space="preserve">
+    <value>メートル</value>
+  </data>
 </root>
