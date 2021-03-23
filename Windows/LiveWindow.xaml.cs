@@ -159,6 +159,27 @@ namespace IgniteBot
 
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
 		}
+		public void FocusIgniteBot()
+		{
+			//WPF focus the Ignite Bot Window 
+			this.Dispatcher.Invoke(() =>
+			{
+				if (!this.IsVisible)
+				{
+					this.Show();
+				}
+
+				if (this.WindowState == WindowState.Minimized)
+				{
+					this.WindowState = WindowState.Normal;
+				}
+
+				this.Activate();
+				this.Topmost = true;
+				this.Topmost = false;
+				this.Focus();
+			});
+		}
 
 		public static string AppVersionLabelText => $"v{Program.AppVersion()}";
 
