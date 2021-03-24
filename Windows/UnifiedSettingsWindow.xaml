@@ -412,7 +412,7 @@
                                        RequestNavigate="Hyperlink_RequestNavigate">
                                 <Run Text="{x:Static p:Resources.Ignite_Discord_Server}"/>
                             </Hyperlink>
-                            <Run Text="and ask questions in the #ignitebot-support channel."/>
+                            <Run Text="{x:Static p:Resources.and_ask_questions_in_the__ignitebot_support_channel_}"/>
 					</TextBlock>
 				</StackPanel>
 			</TabItem>
