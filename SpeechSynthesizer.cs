@@ -88,6 +88,13 @@ namespace IgniteBot
 					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_unpause}");
 				}
 			};
+			Program.LocalThrow += (frame) =>
+			{
+				if (Settings.Default.throwSpeedTTS)
+				{
+					Program.synth.SpeakAsync($"{frame.last_throw.total_speed}");
+				}
+			};
 			Program.BigBoost += (frame, team, player, speed, howLongAgo) =>
 			{
 				if (player.name == frame.client_name)

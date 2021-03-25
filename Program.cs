@@ -203,6 +203,7 @@ namespace IgniteBot
 		public static Action<g_Instance> PauseRequest;
 		public static Action<g_Instance> GamePaused;
 		public static Action<g_Instance> GameUnpaused;
+		public static Action<g_Instance> LocalThrow;
 		/// <summary>
 		/// frame, team, player, speed, howlongago
 		/// </summary>
@@ -1544,6 +1545,33 @@ namespace IgniteBot
 				LogRow(LogType.Error, "Error with pause request parsing\n" + e.ToString());
 			}
 
+
+
+			// last throw state changed
+			try
+			{
+				if (frame.last_throw != null && frame.last_throw.total_speed != 0 && frame.last_throw.total_speed != lastFrame.last_throw.total_speed)
+				{
+					LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Total speed: {frame.last_throw.total_speed}  Arm: {frame.last_throw.speed_from_arm}  Wrist: {frame.last_throw.speed_from_wrist}  Movement: {frame.last_throw.speed_from_movement}");
+					//matchData.Events.Add(
+					//	new EventData(
+					//		matchData,
+					//		EventData.EventType.@throw,
+					//		frame.game_clock,
+					//		frame.teams[frame.pause.paused_requested_team == "blue" ? (int)TeamColor.blue : (int)TeamColor.orange],
+					//		null,
+					//		null,
+					//		Vector3.Zero,
+					//		Vector3.Zero)
+					//	);
+
+					LocalThrow?.Invoke(frame);
+				}
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, "Error with last throw parsing\n" + e.ToString());
+			}
 
 
 			// while playing and frames aren't identical

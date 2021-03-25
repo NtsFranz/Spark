@@ -263,7 +263,7 @@
                                            Text="{x:Static p:Resources.Maximum_speed_achieved_for_times_when_you_are_faster_than_20_m_s}"
                                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<CheckBox Content="{x:Static p:Resources.Throw_Speed}" Margin="4,10,4,0"
-                                          Visibility="Collapsed" IsChecked="{Binding ThrowSpeed}" />
+                                          Visibility="Visible" IsChecked="{Binding ThrowSpeed}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
                                            Text="{x:Static p:Resources.Speed_in_m_s_of_your_throws}" HorizontalAlignment="Stretch"
                                            VerticalAlignment="Stretch" Margin="4,4,4,4" Visibility="Collapsed" />
