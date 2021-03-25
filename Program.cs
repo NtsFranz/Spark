@@ -318,6 +318,7 @@ namespace IgniteBot
 
 			RegisterUriScheme("ignitebot", "IgniteBot Protocol");
 			RegisterUriScheme("atlas", "ATLAS Protocol"); // TODO see how this would overwrite ATLAS URL opening
+			RegisterUriScheme("spark", "Spark Protocol");
 
 			// if logged in with discord
 			if (!string.IsNullOrEmpty(Settings.Default.discordOAuthRefreshToken))
@@ -3212,15 +3213,15 @@ namespace IgniteBot
 
 		private static bool CheckIfLaunchedWithCustomURLHandlerParam(string[] args)
 		{
-			if (args.Length <= 0 || (!args[0].Contains("ignitebot://") && !args[0].Contains("atlas://"))) return false;
+			if (args.Length <= 0 || (!args[0].Contains("ignitebot://") && !args[0].Contains("atlas://") && !args[0].Contains("spark://"))) return false;
 
 			// join a match directly	
 			string[] parts = args[0].Split('/');
 			if (parts.Length != 4)
 			{
-				LogRow(LogType.Error, "ERROR 3452. Incorrectly formatted IgniteBot or Atlas link");
+				LogRow(LogType.Error, "ERROR 3452. Incorrectly formatted Spark or Atlas link");
 				new MessageBox(
-					$"Incorrectly formatted IgniteBot or Atlas link: wrong number of '/' characters for link:\n{args[0]}\n{parts.Length}",
+					$"Incorrectly formatted Spark or Atlas link: wrong number of '/' characters for link:\n{args[0]}\n{parts.Length}",
 					"Error", Quit).Show();
 			}
 
@@ -3244,8 +3245,8 @@ namespace IgniteBot
 					new ChooseJoinTypeDialog(parts[3]).Show();
 					return true;
 				default:
-					LogRow(LogType.Error, "ERROR 8675. Incorrectly formatted IgniteBot or Atlas link");
-					new MessageBox("Incorrectly formatted IgniteBot or Atlas link: Incorrect join type.", "Error", Quit)
+					LogRow(LogType.Error, "ERROR 8675. Incorrectly formatted Spark or Atlas link");
+					new MessageBox("Incorrectly formatted Spark or Atlas link: Incorrect join type.", "Error", Quit)
 						.Show();
 					return true;
 			}
@@ -3261,7 +3262,7 @@ namespace IgniteBot
 			else
 			{
 				new MessageBox(
-					"EchoVR exe path not set. Run the IgniteBot while in a lobby or game with the API enabled at least once first.",
+					"EchoVR exe path not set. Run Spark while in a lobby or game with the API enabled at least once first.",
 					"Error", Quit).Show();
 			}
 

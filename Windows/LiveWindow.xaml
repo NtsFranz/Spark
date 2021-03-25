@@ -7,7 +7,7 @@
         xmlns:l="clr-namespace:IgniteBot"
         xmlns:p="clr-namespace:IgniteBot.Properties"
         mc:Ignorable="d"
-        Title="{x:Static p:Resources.AppName}" 
+        Title="Spark" 
         Height="650" Width="1060" 
         FontSize="14" 
         Background="{DynamicResource BackgroundColour}" 

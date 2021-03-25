@@ -8,7 +8,7 @@
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <Version>2.1.8</Version>
-    <PackageProjectUrl>https://www.ignitevr.gg/ignitebot</PackageProjectUrl>
+    <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports, Graic</Authors>
     <Platforms>AnyCPU;x64</Platforms>

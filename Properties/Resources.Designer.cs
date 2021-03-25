@@ -19,7 +19,7 @@ namespace IgniteBot.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -106,7 +106,7 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IgniteBot.
+        ///   Looks up a localized string similar to Spark.
         /// </summary>
         public static string AppName {
             get {
@@ -197,7 +197,7 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close the IgniteBot.
+        ///   Looks up a localized string similar to Close Spark.
         /// </summary>
         public static string close_tooltip {
             get {
@@ -224,7 +224,7 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Contributions to the IgniteBot are welcome. Check it out on.
+        ///   Looks up a localized string similar to Contributions to Spark are welcome. Check it out on.
         /// </summary>
         public static string contributions_welcome {
             get {
@@ -251,7 +251,7 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copies the IgniteBot join link to the clipboard.
+        ///   Looks up a localized string similar to Copies the Spark join link to the clipboard.
         /// </summary>
         public static string copy_link_tooltip {
             get {
@@ -631,7 +631,7 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IgniteBot | Settings.
+        ///   Looks up a localized string similar to Spark | Settings.
         /// </summary>
         public static string IgniteBot___Settings {
             get {
@@ -640,7 +640,7 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IgniteBot was made from contributions by these community members:.
+        ///   Looks up a localized string similar to Spark was made from contributions by these community members:.
         /// </summary>
         public static string IgniteBot_was_made_from_contributions_by_these_community_members_ {
             get {
@@ -667,7 +667,7 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instance already running. Running two instances of the IgniteBot at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke..
+        ///   Looks up a localized string similar to Instance already running. Running two instances of Spark at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke..
         /// </summary>
         public static string instance_already_running_message {
             get {
@@ -893,7 +893,7 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only on IgniteBot Restart.
+        ///   Looks up a localized string similar to Only on Spark Restart.
         /// </summary>
         public static string Only_on_IgniteBot_Restart {
             get {
@@ -1254,7 +1254,7 @@ namespace IgniteBot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Opens IgniteBot settings window.
+        ///   Looks up a localized string similar to Opens Spark settings window.
         /// </summary>
         public static string settings_button_tooltip {
             get {
@@ -1513,6 +1513,15 @@ namespace IgniteBot.Properties {
         public static string Tools {
             get {
                 return ResourceManager.GetString("Tools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total throw speed from the F10 menu.
+        /// </summary>
+        public static string Total_throw_speed_from_the_F10_menu {
+            get {
+                return ResourceManager.GetString("Total throw speed from the F10 menu", resourceCulture);
             }
         }
         

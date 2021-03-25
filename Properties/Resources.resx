@@ -129,7 +129,7 @@
     <comment>tab in Settings</comment>
   </data>
   <data name="AppName" xml:space="preserve">
-    <value>IgniteBot</value>
+    <value>Spark</value>
     <comment>Title of the app</comment>
   </data>
   <data name="Atlas" xml:space="preserve">
@@ -159,13 +159,13 @@
     <value>Close</value>
   </data>
   <data name="close_tooltip" xml:space="preserve">
-    <value>Close the IgniteBot</value>
+    <value>Close Spark</value>
   </data>
   <data name="Copy" xml:space="preserve">
     <value>Copy</value>
   </data>
   <data name="copy_link_tooltip" xml:space="preserve">
-    <value>Copies the IgniteBot join link to the clipboard</value>
+    <value>Copies the Spark join link to the clipboard</value>
   </data>
   <data name="Dashboard" xml:space="preserve">
     <value>Dashboard</value>
@@ -245,7 +245,7 @@
     <comment>product name for NVIDIA Highlights</comment>
   </data>
   <data name="IgniteBot | Settings" xml:space="preserve">
-    <value>IgniteBot | Settings</value>
+    <value>Spark | Settings</value>
   </data>
   <data name="ignite_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\img\ignite_logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -302,7 +302,7 @@
     <comment>an option in the dropdown that refers to when to split replay files (when switching to a different server ingame) https://cdn.discordapp.com/attachments/706393776918364211/823409603802169354/unknown.png</comment>
   </data>
   <data name="Only on IgniteBot Restart" xml:space="preserve">
-    <value>Only on IgniteBot Restart</value>
+    <value>Only on Spark Restart</value>
     <comment>an option in the dropdown that refers to when to split replay files https://cdn.discordapp.com/attachments/706393776918364211/823409603802169354/unknown.png</comment>
   </data>
   <data name="Only Record Private Matches" xml:space="preserve">
@@ -404,7 +404,7 @@
     <comment>button on bottom of main window</comment>
   </data>
   <data name="settings_button_tooltip" xml:space="preserve">
-    <value>Opens IgniteBot settings window</value>
+    <value>Opens Spark settings window</value>
   </data>
   <data name="Show" xml:space="preserve">
     <value>Show</value>
@@ -523,10 +523,10 @@
     <value>Help</value>
   </data>
   <data name="IgniteBot was made from contributions by these community members:" xml:space="preserve">
-    <value>IgniteBot was made from contributions by these community members:</value>
+    <value>Spark was made from contributions by these community members:</value>
   </data>
   <data name="instance_already_running_message" xml:space="preserve">
-    <value>Instance already running. Running two instances of the IgniteBot at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke.</value>
+    <value>Instance already running. Running two instances of Spark at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke.</value>
   </data>
   <data name="Japanese Translation:" xml:space="preserve">
     <value>Japanese Translation:</value>
@@ -596,7 +596,7 @@
     <value>and ask questions in the #ignitebot-support channel.</value>
   </data>
   <data name="contributions_welcome" xml:space="preserve">
-    <value>Contributions to the IgniteBot are welcome. Check it out on</value>
+    <value>Contributions to Spark are welcome. Check it out on</value>
   </data>
   <data name="Echopedia page" xml:space="preserve">
     <value>Echopedia page</value>
@@ -717,5 +717,8 @@
   </data>
   <data name="Highlights_isn_t_supported_by_your_PC" xml:space="preserve">
     <value>NVIDIA Highlights isn't supported by your PC</value>
+  </data>
+  <data name="Total throw speed from the F10 menu" xml:space="preserve">
+    <value>Total throw speed from the F10 menu</value>
   </data>
 </root>

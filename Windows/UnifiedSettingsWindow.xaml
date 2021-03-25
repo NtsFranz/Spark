@@ -264,6 +264,8 @@
                                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<CheckBox Content="{x:Static p:Resources.Throw_Speed}" Margin="4,10,4,0"
                                           Visibility="Visible" IsChecked="{Binding ThrowSpeed}" />
+							<TextBlock TextWrapping="WrapWithOverflow" Text="{x:Static p:Resources.Total_throw_speed_from_the_F10_menu}"
+                                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<TextBlock TextWrapping="WrapWithOverflow"
                                            Text="{x:Static p:Resources.Speed_in_m_s_of_your_throws}" HorizontalAlignment="Stretch"
                                            VerticalAlignment="Stretch" Margin="4,4,4,4" Visibility="Collapsed" />

@@ -92,7 +92,7 @@ namespace IgniteBot
 			{
 				if (Settings.Default.throwSpeedTTS)
 				{
-					Program.synth.SpeakAsync($"{frame.last_throw.total_speed}");
+					Program.synth.SpeakAsync($"{frame.last_throw.total_speed:N1}");
 				}
 			};
 			Program.BigBoost += (frame, team, player, speed, howLongAgo) =>

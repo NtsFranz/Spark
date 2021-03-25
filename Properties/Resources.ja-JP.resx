@@ -122,7 +122,7 @@
     <comment>tab in Settings</comment>
   </data>
   <data name="AppName" xml:space="preserve">
-    <value>IgniteBot</value>
+    <value>Spark</value>
   </data>
   <data name="Atlas" xml:space="preserve">
     <value>アトラス</value>
@@ -305,10 +305,10 @@
     <value>ブラウズ</value>
   </data>
   <data name="close_tooltip" xml:space="preserve">
-    <value>IginiteBotを閉じる</value>
+    <value>Sparkを閉じる</value>
   </data>
   <data name="copy_link_tooltip" xml:space="preserve">
-    <value>IgniteBotの参加リンクをクリップボードにコピー</value>
+    <value>Sparkの参加リンクをクリップボードにコピー</value>
   </data>
   <data name="Discord Login" xml:space="preserve">
     <value>ディスコードにログイン</value>
@@ -338,7 +338,7 @@
     <value>このプログラムを非表示（バックグラウンドで実行され続けます）</value>
   </data>
   <data name="IgniteBot | Settings" xml:space="preserve">
-    <value>IgniteBot | 設定</value>
+    <value>Spark | 設定</value>
   </data>
   <data name="Install Echo Speaker System" xml:space="preserve">
     <value>Echoスピーカーシステムをインストール</value>
@@ -347,7 +347,7 @@
     <value>Echoスピーカーシステムをインストール中</value>
   </data>
   <data name="join_link_tooltip" xml:space="preserve">
-    <value>このリンクを他のIgniteBotユーザーに共有すると招待なしですぐに試合に参加できます。</value>
+    <value>このリンクを他のSparkユーザーに共有すると招待なしですぐに試合に参加できます。</value>
   </data>
   <data name="Language" xml:space="preserve">
     <value>言語</value>
@@ -407,7 +407,7 @@
     <value>サーバーの場所は、ip-api.comを使用して推定しています</value>
   </data>
   <data name="settings_button_tooltip" xml:space="preserve">
-    <value>IgniteBotの設定画面を表示</value>
+    <value>Sparkの設定画面を表示</value>
   </data>
   <data name="Spectate Me" xml:space="preserve">
     <value>自分をスペクテート</value>
@@ -491,7 +491,7 @@
     <value>女性の声</value>
   </data>
   <data name="for_help_check_out" xml:space="preserve">
-    <value>IgniteBotの使用についてはこちらを見てください</value>
+    <value>Sparkの使用についてはこちらを見てください</value>
   </data>
   <data name="Game Paused" xml:space="preserve">
     <value>ゲームの一時停止</value>
@@ -509,7 +509,7 @@
     <value>Ignite ディスコードサーバー</value>
   </data>
   <data name="IgniteBot was made from contributions by these community members:" xml:space="preserve">
-    <value>IgniteBotは、以下のコミュニティメンバーによって作成されました。</value>
+    <value>Sparkは、以下のコミュニティメンバーによって作成されました。</value>
   </data>
   <data name="instance_already_running_message" xml:space="preserve">
     <value>インスタンスがすでに実行されています。IgniteBotの2つのインスタンスを同時に実行すると問題が発生することがあります。右下のタスクトレイ、またはタスクマネージャを確認して、何かが壊れた場合は古いインスタンスを強制終了してください。</value>
@@ -551,7 +551,7 @@
     <value>サーバー変更時</value>
   </data>
   <data name="Only on IgniteBot Restart" xml:space="preserve">
-    <value>IgniteBotの再起動時のみ</value>
+    <value>Sparkの再起動時のみ</value>
   </data>
   <data name="Open Event Log Folder" xml:space="preserve">
     <value>イベントログフォルダを開く</value>
