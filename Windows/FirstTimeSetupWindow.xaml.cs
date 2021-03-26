@@ -1,10 +1,10 @@
-﻿using IgniteBot.Properties;
+﻿using Spark.Properties;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for FirstTimeSetupWindow.xaml

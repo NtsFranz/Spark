@@ -1,4 +1,4 @@
-﻿using IgniteBot.Properties;
+﻿using Spark.Properties;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for Playspace.xaml

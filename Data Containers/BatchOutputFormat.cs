@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IgniteBot
+namespace Spark
 {
 	class BatchOutputFormat
 	{

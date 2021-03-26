@@ -1,4 +1,4 @@
-﻿using IgniteBot.Properties;
+﻿using Spark.Properties;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
@@ -12,7 +12,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Navigation;
 using System.Windows.Data;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for UnifiedSettingsWindow.xaml
@@ -60,7 +60,7 @@ namespace IgniteBot
 
 				if (value)
 				{
-					string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "IgniteBot.exe");
+					string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
 					rk?.SetValue(Properties.Resources.AppName, path);
 				}
 				else
@@ -198,8 +198,7 @@ namespace IgniteBot
 		private void ResetReplayFolder(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			Settings.Default.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-				"IgniteBot\\replays");
+			Settings.Default.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Spark", "replays");
 			Directory.CreateDirectory(Settings.Default.saveFolder);
 			storageLocationTextBox.Text = Settings.Default.saveFolder;
 			Settings.Default.Save();
@@ -465,9 +464,7 @@ namespace IgniteBot
 			HighlightsHelper.ClearUnsavedNVHighlights(true);
 			clearHighlightsButton.IsEnabled = false;
 			clearHighlightsButton.Content = "Clear 0 Unsaved Highlights";
-			new MessageBox(
-					Properties.Resources.highlights_cleared)
-				.Show();
+			new MessageBox(Properties.Resources.highlights_cleared).Show();
 		}
 
 		private void SecondsBeforeChanged(object sender, TextChangedEventArgs e)

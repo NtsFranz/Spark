@@ -1,10 +1,10 @@
-﻿using IgniteBot.Properties;
+﻿using Spark.Properties;
 using NVIDIA;
 using System;
 using System.Linq;
-using static IgniteBot.g_Team;
+using static Spark.g_Team;
 
-namespace IgniteBot
+namespace Spark
 {
 	internal static class HighlightsHelper
 	{

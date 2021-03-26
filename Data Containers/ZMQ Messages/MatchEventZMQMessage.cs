@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace IgniteBot.Data_Containers.ZMQ_Messages
+namespace Spark.Data_Containers.ZMQ_Messages
 {
 	[Serializable]
 	public class MatchEventZMQMessage : ZMQMessage

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for MessageBox.xaml

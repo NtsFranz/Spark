@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using IgniteBot;
+using Spark;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Object containing data describing certain events like stuns, throws, quits, joins, etc.

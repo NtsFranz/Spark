@@ -18,13 +18,13 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using IgniteBot.Properties;
+using Spark.Properties;
 using NetMQ;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static Logger;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for LiveWindow.xaml
@@ -159,25 +159,25 @@ namespace IgniteBot
 
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
 		}
-		public void FocusIgniteBot()
+		public void FocusSpark()
 		{
-			//WPF focus the Ignite Bot Window 
-			this.Dispatcher.Invoke(() =>
+			//WPF focus the Spark Window 
+			Dispatcher.Invoke(() =>
 			{
-				if (!this.IsVisible)
+				if (!IsVisible)
 				{
-					this.Show();
+					Show();
 				}
 
-				if (this.WindowState == WindowState.Minimized)
+				if (WindowState == WindowState.Minimized)
 				{
-					this.WindowState = WindowState.Normal;
+					WindowState = WindowState.Normal;
 				}
 
-				this.Activate();
-				this.Topmost = true;
-				this.Topmost = false;
-				this.Focus();
+				Activate();
+				Topmost = true;
+				Topmost = false;
+				Focus();
 			});
 		}
 
@@ -938,7 +938,7 @@ namespace IgniteBot
 
 		private void showEventLogFileButton_Click(object sender, RoutedEventArgs e)
 		{
-			string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteBot\\" + logFolder);
+			string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spark\\" + logFolder);
 			if (Directory.Exists(folder))
 			{
 				Process.Start(new ProcessStartInfo
@@ -946,6 +946,9 @@ namespace IgniteBot
 					FileName = folder,
 					UseShellExecute = true
 				});
+			} else
+			{
+				Directory.CreateDirectory(folder);
 			}
 		}
 
@@ -982,11 +985,6 @@ namespace IgniteBot
 			{
 				LogRow(LogType.Error, "Can't write to EchoVR settings file.");
 			}
-		}
-
-		private void showAtlasLinks_Click(object sender, RoutedEventArgs e)
-		{
-			Program.ToggleWindow(typeof(AtlasLinks));
 		}
 
 		private void playspaceButton_Click(object sender, RoutedEventArgs e)
@@ -1430,7 +1428,7 @@ namespace IgniteBot
 			/// </summary>
 			public string[] orange_team;
 			/// <summary>
-			/// If this is true, users with the caster login in the IgniteBot can see this match
+			/// If this is true, users with the caster login in Spark can see this match
 			/// </summary>
 			public bool visible_to_casters;
 			/// <summary>

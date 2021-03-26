@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using IgniteBot.Properties;
+using Spark.Properties;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,7 +10,7 @@ using Button = System.Windows.Controls.Button;
 using Label = System.Windows.Controls.Label;
 using Orientation = System.Windows.Controls.Orientation;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for AtlasWhitelistWindow.xaml
@@ -57,7 +57,7 @@ namespace IgniteBot
 			// if the team name was already added
 			if (Program.atlasWhitelist.TeamNames.Contains(teamName)) return;
 
-			AtlasLinks.AtlasWhitelist.AtlasTeam team = new(teamName);
+			LiveWindow.AtlasWhitelist.AtlasTeam team = new(teamName);
 			Program.atlasWhitelist.teams.Add(team);
 
 			Task.Run(() => Program.GetAsync(
@@ -138,7 +138,7 @@ namespace IgniteBot
 
 			// team list
 			teamList.Children.Clear();
-			foreach (AtlasLinks.AtlasWhitelist.AtlasTeam team in Program.atlasWhitelist.teams)
+			foreach (LiveWindow.AtlasWhitelist.AtlasTeam team in Program.atlasWhitelist.teams)
 			{
 				StackPanel row = new()
 				{

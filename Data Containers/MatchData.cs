@@ -1,11 +1,11 @@
-﻿using IgniteBot.Properties;
+﻿using Spark.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using static IgniteBot.g_Team;
+using static Spark.g_Team;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Object containing all match data.

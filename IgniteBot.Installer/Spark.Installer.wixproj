@@ -6,8 +6,9 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>0c43dbb5-030a-433a-8730-cc575062a9c5</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>IgniteBot.Installer</OutputName>
+    <OutputName>Spark.Installer</OutputName>
     <OutputType>Package</OutputType>
+    <Name>Spark.Installer</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
@@ -38,8 +39,8 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IgniteBot.csproj">
-      <Name>IgniteBot</Name>
+    <ProjectReference Include="..\..\Spark\Spark.csproj">
+      <Name>Spark</Name>
       <Project>{f2ea4914-2372-49d5-83cc-a11302747291}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
@@ -54,7 +55,7 @@
   </Target>
   <Target Name="BeforeBuild">
     <!-- Get assembly version -->
-    <GetAssemblyIdentity AssemblyFiles="..\bin\publish_files\IgniteBot.dll">
+    <GetAssemblyIdentity AssemblyFiles="..\bin\publish_files\Spark.dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
     <!-- Define some variables we need -->
@@ -69,12 +70,12 @@
   </Target>
   <Target Name="AfterBuild">
     <!-- Get assembly version -->
-    <GetAssemblyIdentity AssemblyFiles="..\bin\publish_files\IgniteBot.dll">
+    <GetAssemblyIdentity AssemblyFiles="..\bin\publish_files\Spark.dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
     <!-- Rename and move final MSI -->
     <Exec Command="if not exist Installs mkdir Installs" />
-    <Exec Command="move bin\$(Configuration)\en-us\$(OutputName).msi Installs\IgniteBotInstaller_v%(AssemblyVersion.Version).msi" />
+    <Exec Command="move bin\$(Configuration)\en-us\$(OutputName).msi Installs\SparkInstaller_v%(AssemblyVersion.Version).msi" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent />

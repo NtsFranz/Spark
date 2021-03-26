@@ -1,4 +1,4 @@
-﻿using IgniteBot.Properties;
+﻿using Spark.Properties;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for LoneEchoSubtitles.xaml

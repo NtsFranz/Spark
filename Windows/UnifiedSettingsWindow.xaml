@@ -1,10 +1,10 @@
-﻿<Window x:Class="IgniteBot.UnifiedSettingsWindow"
+﻿<Window x:Class="Spark.UnifiedSettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:l="clr-namespace:IgniteBot"
-        xmlns:p="clr-namespace:IgniteBot.Properties"
+        xmlns:l="clr-namespace:Spark"
+        xmlns:p="clr-namespace:Spark.Properties"
         mc:Ignorable="d"
         Title="{x:Static p:Resources.IgniteBot___Settings}"
         Height="680" Width="600"
@@ -16,9 +16,10 @@
         Padding="10,10,10,10"
         ResizeMode="CanResize"
         SizeToContent="Manual"
-        Icon="/img/ignite_logo_128.png"
+        Icon="/img/ignite_logo.ico"
         WindowStartupLocation="Manual"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        >
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="50" />
@@ -34,7 +35,7 @@
 					<StackPanel Margin="10,0,10,10">
 						<StackPanel Orientation="Horizontal">
 							<Label Content="{x:Static p:Resources.Language}" Margin="10,10,4,4" />
-							<ComboBox Margin="4,10,10,4" HorizontalAlignment="Left" Width="148" SelectedIndex="{l:SettingBinding language}" >
+							<ComboBox Margin="4,10,10,4" HorizontalAlignment="Left" Width="148" SelectedIndex="{l:SettingBinding languageIndex}" >
 								<ComboBoxItem>English</ComboBoxItem>
 								<ComboBoxItem>日本語</ComboBoxItem>
 							</ComboBox>
@@ -398,14 +399,14 @@
 					<TextBlock Margin="20,10,0,-5" Foreground="{DynamicResource ControlDisabledGlythColour}" Text="{x:Static p:Resources.Contribute}"/>
 					<TextBlock TextWrapping="Wrap" Margin="10,10,10,10">
 						<Run Text="{x:Static p:Resources.contributions_welcome}"/>
-                            <Hyperlink NavigateUri="https://github.com/NtsFranz/IgniteBot2" RequestNavigate="Hyperlink_RequestNavigate">
+                            <Hyperlink NavigateUri="https://github.com/NtsFranz/Spark" RequestNavigate="Hyperlink_RequestNavigate">
                                 GitHub
                             </Hyperlink>
 					</TextBlock>
 					<TextBlock Margin="20,10,0,-5" Foreground="{DynamicResource ControlDisabledGlythColour}" Text="{x:Static p:Resources.Help}"/>
 					<TextBlock TextWrapping="Wrap" Margin="10,10,10,10">
                             <Run Text="{x:Static p:Resources.for_help_check_out}"/>
-                            <Hyperlink NavigateUri="https://echopedia.gg/wiki/IgniteBot_Personal"
+                            <Hyperlink NavigateUri="https://echopedia.gg/wiki/Spark"
                                        RequestNavigate="Hyperlink_RequestNavigate">
                                 <Run Text="{x:Static p:Resources.Echopedia_page}"/>
                             </Hyperlink>

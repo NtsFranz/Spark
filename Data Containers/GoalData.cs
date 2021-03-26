@@ -2,7 +2,7 @@
 using System.Numerics;
 using Newtonsoft.Json;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Object containing data of a goal.

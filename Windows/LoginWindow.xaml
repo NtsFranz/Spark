@@ -1,26 +1,28 @@
-﻿<Window x:Class="IgniteBot.LoginWindow"
+﻿<Window x:Class="Spark.LoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IgniteBot"
+		xmlns:p="clr-namespace:Spark.Properties"
+        xmlns:local="clr-namespace:Spark"
         mc:Ignorable="d"
-        Title="IgniteBot | Login" 
+        Title="{x:Static p:Resources.Spark___Login}" 
         Height="231" Width="452" 
         Background="{DynamicResource BackgroundColour}" 
         FontSize="14" 
         SizeToContent="WidthAndHeight" 
         WindowStartupLocation="CenterOwner" 
-        ResizeMode="NoResize" 
-        Icon="/img/ignite_logo_128.png">
+        ResizeMode="NoResize"
+        Icon="/img/ignite_logo.ico"
+        >
 	<Grid>
-		<Button x:Name="discordLoginButton" Content="Discord Login" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" Height="54" Click="DiscordLoginButtonClicked"/>
-		<Label x:Name="label" Content="Access Code" HorizontalAlignment="Left" Margin="10,74,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.309,0.579"/>
+		<Button x:Name="discordLoginButton" Content="{x:Static p:Resources.Discord_Login}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" Height="54" Click="DiscordLoginButtonClicked"/>
+		<Label x:Name="label" Content="{x:Static p:Resources.Access_Code}" HorizontalAlignment="Left" Margin="10,74,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.309,0.579"/>
 		<ComboBox x:Name="accessCodeComboBox" HorizontalAlignment="Left" Margin="10,103,10,10" VerticalAlignment="Top" Width="200" SelectedIndex="0">
-			<ComboBoxItem Content="Personal"/>
+			<ComboBoxItem Content="{x:Static p:Resources.Personal}"/>
 		</ComboBox>
-		<Button x:Name="startButton" Content="Apply" HorizontalAlignment="Left" Margin="226,82,10,10" VerticalAlignment="Top" Width="169" Height="46" Background="#FF4D3131" Click="StartButtonClicked"/>
-		<Label x:Name="currentUsernameLabel" Content="Not Logged in" HorizontalAlignment="Left" Margin="226,10,0,0" VerticalAlignment="Top" Height="54" Width="169" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+		<Button x:Name="startButton" Content="{x:Static p:Resources.Apply}" HorizontalAlignment="Left" Margin="226,82,10,10" VerticalAlignment="Top" Width="169" Height="46" Background="#FF4D3131" Click="StartButtonClicked"/>
+		<Label x:Name="currentUsernameLabel" Content="{x:Static p:Resources.Not_Logged_in}" HorizontalAlignment="Left" Margin="226,10,0,0" VerticalAlignment="Top" Height="54" Width="169" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 
 	</Grid>
 </Window>

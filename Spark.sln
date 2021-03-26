@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IgniteBot", "IgniteBot.csproj", "{F2EA4914-2372-49D5-83CC-A11302747291}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spark", "Spark.csproj", "{F2EA4914-2372-49D5-83CC-A11302747291}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "IgniteBot.Installer", "IgniteBot.Installer\IgniteBot.Installer.wixproj", "{0C43DBB5-030A-433A-8730-CC575062A9C5}"
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Spark.Installer", "IgniteBot.Installer\Spark.Installer.wixproj", "{0C43DBB5-030A-433A-8730-CC575062A9C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

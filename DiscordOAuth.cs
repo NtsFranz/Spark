@@ -7,11 +7,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Windows;
-using IgniteBot.Properties;
+using Spark.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// 🔑
@@ -143,25 +143,32 @@ namespace IgniteBot
 				{ "scope", "identify" }
 			};
 
-			HttpResponseMessage response = await client.PostAsync("https://discord.com/api/v6/oauth2/token", new FormUrlEncodedContent(postDataDict));
+			try
+			{
+				HttpResponseMessage response = await client.PostAsync("https://discord.com/api/v6/oauth2/token", new FormUrlEncodedContent(postDataDict));
 
-			if (!response.IsSuccessStatusCode)
+				if (!response.IsSuccessStatusCode)
+				{
+					RevertToPersonal();
+				}
+				else
+				{
+					if (webServer == null)
+					{
+						webServer = new WebServer2(OAuthResponse, "http://localhost:6722/");
+						webServer.Run();
+					}
+
+					string responseString = await response.Content.ReadAsStringAsync();
+					Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseString);
+					ProcessResponse(data);
+				}
+			}
+			catch (HttpRequestException e)
 			{
 				RevertToPersonal();
+				new MessageBox(Resources.cant_connect_to_internet_for_discord, Resources.Error).Show();
 			}
-			else
-			{
-				if (webServer == null)
-				{
-					webServer = new WebServer2(OAuthResponse, "http://localhost:6722/");
-					webServer.Run();
-				}
-
-				string responseString = await response.Content.ReadAsStringAsync();
-				Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseString);
-				ProcessResponse(data);
-			}
-
 		}
 
 		public static async void OAuthLoginResponse(string code)

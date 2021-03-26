@@ -121,9 +121,6 @@
     <value>About</value>
     <comment>tab in Settings</comment>
   </data>
-  <data name="AppName" xml:space="preserve">
-    <value>IgniteBot</value>
-  </data>
   <data name="Atlas" xml:space="preserve">
     <value>Atlas</value>
     <comment>button on right side of main window</comment>

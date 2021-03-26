@@ -19,20 +19,20 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using IgniteBot.Properties;
+using Spark.Properties;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using static IgniteBot.g_Team;
+using static Spark.g_Team;
 using static Logger;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using NetMQ.Sockets;
 using NetMQ;
-using IgniteBot.Data_Containers.ZMQ_Messages;
+using Spark.Data_Containers.ZMQ_Messages;
 using System.Windows.Interop;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Main
@@ -176,7 +176,7 @@ namespace IgniteBot
 		private static string lastSpectatedSessionId;
 
 		public static string hostedAtlasSessionId;
-		public static AtlasLinks.AtlasWhitelist atlasWhitelist = new();
+		public static LiveWindow.AtlasWhitelist atlasWhitelist = new();
 
 		public static SpeechSynthesizer synth;
 
@@ -275,7 +275,7 @@ namespace IgniteBot
 			}
 
 			// allow multiple instances if the port is overriden
-			if (IsIgniteBotOpen() && !overrideEchoVRPort)
+			if (IsSparkOpen() && !overrideEchoVRPort)
 			{
 				MessageBox box = new MessageBox(Resources.instance_already_running_message, Resources.Error);
 				box.Show();
@@ -308,14 +308,6 @@ namespace IgniteBot
 				IsSpeakerSystemUpdateAvailable = latestSpeakerSystemVer[1] != InstalledSpeakerSystemVersion;
 			}
 
-			// Reload old settings file
-			if (Settings.Default.UpdateSettings)
-			{
-				Settings.Default.Upgrade();
-				Settings.Default.UpdateSettings = false;
-				Settings.Default.Save();
-			}
-
 			RegisterUriScheme("ignitebot", "IgniteBot Protocol");
 			RegisterUriScheme("atlas", "ATLAS Protocol"); // TODO see how this would overwrite ATLAS URL opening
 			RegisterUriScheme("spark", "Spark Protocol");
@@ -338,6 +330,14 @@ namespace IgniteBot
 			{
 				ToggleWindow(typeof(FirstTimeSetupWindow));
 				Settings.Default.firstTimeSetupShown = true;
+				Settings.Default.Save();
+			} else if (!Settings.Default.ignitebot_spark_upgrade_message_shown)
+			{
+				var box = new MessageBox("IgniteBot is now called Spark!\n\nReplays and logs are now saved in 'C:\\Users\\[USER]\\Documents\\Spark\\' by default.\n\nThe old replays will be moved to the new folder automatically, but old event logs will remain in the old folder (C:\\Users\\[USER]\\AppData\\Roaming\\IgniteBot\\Log\\).");
+				box.Show();
+				box.Owner = liveWindow;
+				box.Height = 250;
+				Settings.Default.ignitebot_spark_upgrade_message_shown = true;
 				Settings.Default.Save();
 			}
 
@@ -372,7 +372,7 @@ namespace IgniteBot
 			ReadSettings();
 
 			client.DefaultRequestHeaders.Add("version", AppVersion());
-			client.DefaultRequestHeaders.Add("User-Agent", "IgniteBot/" + AppVersion());
+			client.DefaultRequestHeaders.Add("User-Agent", "Spark/" + AppVersion());
 
 			client.BaseAddress = new Uri(APIURL);
 
@@ -470,13 +470,13 @@ namespace IgniteBot
 
 			while (atlasHostingThread != null && atlasHostingThread.IsAlive)
 			{
-				closingWindow.label.Content = "Shutting down Atlas...";
+				closingWindow.label.Content = Resources.Shutting_down_Atlas___;
 				await Task.Delay(10);
 			}
 
 			while (fullLogThread != null && fullLogThread.IsAlive)
 			{
-				closingWindow.label.Content = "Compressing Replay File...";
+				closingWindow.label.Content = Resources.Compressing_Replay_File___;
 				await Task.Delay(10);
 			}
 			while (statsThread != null && statsThread.IsAlive)
@@ -484,10 +484,10 @@ namespace IgniteBot
 				closingWindow.label.Content = Resources.Closing___;
 				await Task.Delay(10);
 			}
-			closingWindow.label.Content = "Closing NVIDIA Highlights...";
+			closingWindow.label.Content = Resources.Closing_NVIDIA_Highlights___;
 			HighlightsHelper.CloseNVHighlights();
 
-			closingWindow.label.Content = "Closing Speaker System...";
+			closingWindow.label.Content = Resources.Closing_Speaker_System___;
 			liveWindow?.KillSpeakerSystem();
 
 			closingWindow.label.Content = "Closing PubSub System...";
@@ -502,33 +502,40 @@ namespace IgniteBot
 			_ = KillAll();
 		}
 
-		public static bool IsIgniteBotOpen()
+		public static bool IsSparkOpen()
 		{
 			try
 			{
 				Process[] process = Process.GetProcessesByName("IgniteBot");
-				return process?.Length > 1;
+				Process[] processesSpark = Process.GetProcessesByName("Spark");
+				return process?.Length > 1 || processesSpark?.Length > 1;
 			}
 			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Error getting other ignitebot windows\n" + e.ToString());
+				LogRow(LogType.Error, "Error getting other Spark windows\n" + e.ToString());
 			}
 			return false;
 		}
 
-		public static void KillAllOtherIgniteBotInstances()
+		public static void KillAllOtherSparkInstances()
 		{
 			try
 			{
 				Process[] processes = Process.GetProcessesByName("IgniteBot");
+				Process[] processesSpark = Process.GetProcessesByName("Spark");
 				foreach (Process process in processes)
+				{
+					process.Kill();
+
+				}
+				foreach (Process process in processesSpark)
 				{
 					process.Kill();
 				}
 			}
 			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Error killing other ignitebot windows\n" + e.ToString());
+				LogRow(LogType.Error, "Error killing other Spark windows\n" + e.ToString());
 			}
 		}
 
@@ -1076,7 +1083,7 @@ namespace IgniteBot
 			{
 				Process.Start(new ProcessStartInfo
 				{
-					FileName = "ignitebot://" + joinType + "/" + lastFrame.sessionid,
+					FileName = "spark://" + joinType + "/" + lastFrame.sessionid,
 					UseShellExecute = true
 				});
 			}
@@ -1261,7 +1268,7 @@ namespace IgniteBot
 			if (Settings.Default.saveFolder == "none" || !Directory.Exists(Settings.Default.saveFolder))
 			{
 				Settings.Default.saveFolder = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-					"IgniteBot"), "replays");
+					"Spark"), "replays");
 				Directory.CreateDirectory(Settings.Default.saveFolder);
 				Settings.Default.Save();
 			}
@@ -3194,7 +3201,7 @@ namespace IgniteBot
 			try
 			{
 				using RegistryKey key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\" + UriScheme);
-				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "IgniteBot.exe");
+				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
 		
 				key.SetValue("", "URL:" + FriendlyName);
 				key.SetValue("URL Protocol", "");
@@ -3221,8 +3228,8 @@ namespace IgniteBot
 			{
 				LogRow(LogType.Error, "ERROR 3452. Incorrectly formatted Spark or Atlas link");
 				new MessageBox(
-					$"Incorrectly formatted Spark or Atlas link: wrong number of '/' characters for link:\n{args[0]}\n{parts.Length}",
-					"Error", Quit).Show();
+					$"{Resources.Incorrectly_formatted_Spark_or_Atlas_link_}\n{Resources.wrong_number_of_____characters_for_link_}\n{args[0]}\n{parts.Length}",
+					Resources.Error, Quit).Show();
 			}
 
 			bool spectating = false;
@@ -3246,7 +3253,7 @@ namespace IgniteBot
 					return true;
 				default:
 					LogRow(LogType.Error, "ERROR 8675. Incorrectly formatted Spark or Atlas link");
-					new MessageBox("Incorrectly formatted Spark or Atlas link: Incorrect join type.", "Error", Quit)
+					new MessageBox($"{Resources.Incorrectly_formatted_Spark_or_Atlas_link_}\n{Resources.Incorrect_join_type_}", Resources.Error, Quit)
 						.Show();
 					return true;
 			}
@@ -3261,9 +3268,7 @@ namespace IgniteBot
 			}
 			else
 			{
-				new MessageBox(
-					"EchoVR exe path not set. Run Spark while in a lobby or game with the API enabled at least once first.",
-					"Error", Quit).Show();
+				new MessageBox(Resources.echovr_path_not_set, Resources.Error, Quit).Show();
 			}
 
 			return true;

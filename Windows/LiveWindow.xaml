@@ -1,25 +1,25 @@
-﻿<Window x:Class="IgniteBot.LiveWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:tb="http://www.hardcodet.net/taskbar"
-        xmlns:l="clr-namespace:IgniteBot"
-        xmlns:p="clr-namespace:IgniteBot.Properties"
-        mc:Ignorable="d"
-        Title="Spark" 
-        Height="650" Width="1060" 
-        FontSize="14" 
-        Background="{DynamicResource BackgroundColour}" 
-        ResizeMode="CanResize" 
+﻿<Window x:Class="Spark.LiveWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:tb="http://www.hardcodet.net/taskbar"
+		xmlns:l="clr-namespace:Spark"
+		xmlns:p="clr-namespace:Spark.Properties"
+		mc:Ignorable="d"
+		Title="Spark" 
+		Height="650" Width="1060" 
+		FontSize="14" 
+		Background="{DynamicResource BackgroundColour}" 
+		ResizeMode="CanResize" 
 		Name="liveWindow"
-        Closed="liveWindow_FormClosed"
+		Closed="liveWindow_FormClosed"
 		MinHeight="400" MinWidth="900"
-        Icon="/img/ignite_logo_128.png" 
-        Initialized="LiveWindow_Load"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+		Initialized="LiveWindow_Load"
+		DataContext="{Binding RelativeSource={RelativeSource Self}}"
 		Top="{l:SettingBinding liveWindowTop}"
 		Left="{l:SettingBinding liveWindowLeft}"
+		Icon="/img/ignite_logo.ico"
 		>
 	<Grid>
 		<Grid.ColumnDefinitions>
@@ -157,30 +157,30 @@
 											<Button x:Name="findQuest" Content="{x:Static p:Resources.Find_Quest_IP}" Margin="5,5,5,5" Padding="5,3,5,3" Click="FindQuestIP" ToolTip="Tries to find a Quest on your network. Make sure your Quest is turned on (not sleeping) and connected to WiFi."/>
 										</StackPanel>
 										<ComboBox x:Name="ipSourceDropdown" Width="175" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,15,10,0" SelectionChanged="IPSourceDropdownChanged" Visibility="Collapsed">
-											<ComboBoxItem Content="Local PC"/>
-											<ComboBoxItem Content="Quest"/>
+											<ComboBoxItem Content="{x:Static p:Resources.Local_PC}"/>
+											<ComboBoxItem Content="{x:Static p:Resources.Quest}"/>
 										</ComboBox>
 										<TextBox x:Name="alternateIPTextBox" Text="{l:SettingLoad echoVRIP}" TextChanged="EchoVRIPChanged" TextWrapping="Wrap" Width="175" Margin="10,10,10,10" FontFamily="Consolas"/>
-										<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="Searching for Quest" Margin="30,-10,0,-20" FontSize="12" FontStyle="Italic"/>
+										<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="{x:Static p:Resources.Searching_for_Quest}" Margin="30,-10,0,-20" FontSize="12" FontStyle="Italic"/>
 									</StackPanel>
 									<Button x:Name="getButton" Margin="10,15,20,20" Padding="4,4,4,4" Width="130" Click="GetLinks" Height="40" Visibility="Collapsed">
 										<StackPanel Orientation="Horizontal">
-											<Label Content="Refresh"/>
+											<Label Content="{x:Static p:Resources.Refresh}"/>
 											<Image Source="/img/baseline_replay_white_48dp.png" Width="20"/>
 										</StackPanel>
 									</Button>
 
 									<StackPanel>
-										<Label Content="Link Type:" Margin="10,-5,10,0"/>
+										<Label Content="{x:Static p:Resources.Link_Type_}" Margin="10,-5,10,0"/>
 										<ComboBox x:Name="linkTypeComboBox" Width="120" HorizontalAlignment="Left" Margin="10,0,10,10" SelectedIndex="{Binding LinkType}">
-											<ComboBoxItem Content="Choose" ToolTip="The Choose type shows a popup when you click the link to either join as a player or spectator."/>
-											<ComboBoxItem Content="Player" ToolTip="Join directly as a player."/>
-											<ComboBoxItem Content="Spectator" ToolTip="Join directly as a spectator."/>
+											<ComboBoxItem Content="{x:Static p:Resources.Choose}" ToolTip="{x:Static p:Resources.The_Choose_type_shows_a_popup_when_you_click_the_link_to_either_join_as_a_player_or_spectator_}"/>
+											<ComboBoxItem Content="{x:Static p:Resources.Player}" ToolTip="{x:Static p:Resources.Join_directly_as_a_player_}"/>
+											<ComboBoxItem Content="{x:Static p:Resources.join_as_spectator}" ToolTip="{x:Static p:Resources.Join_directly_as_a_spectator_}"/>
 										</ComboBox>
 									</StackPanel>
 									<StackPanel>
-										<CheckBox x:Name="surroundWithAngleBracketsCheckbox" Content=" Surround with &lt;&gt;" Margin="10,0,0,10" IsChecked="{l:SettingBinding atlasLinkUseAngleBrackets}" ToolTip="Angle brackes allow you to click on the link when it's pasted in Discord."/>
-										<CheckBox Content=" Append team names" Margin="10,0,0,10" IsChecked="{l:SettingBinding atlasLinkAppendTeamNames}" ToolTip="Appends the team names of the participating teams if enough players from the same VRML team are in the match."/>
+										<CheckBox x:Name="surroundWithAngleBracketsCheckbox" Content="{x:Static p:Resources.Surround_with__lt__gt_}" Margin="10,0,0,10" IsChecked="{l:SettingBinding atlasLinkUseAngleBrackets}" ToolTip="{x:Static p:Resources.Angle_brackes_allow_you_to_click_on_the_link_when_it_s_pasted_in_Discord_}"/>
+										<CheckBox Content="{x:Static p:Resources.Append_team_names}" Margin="10,0,0,10" IsChecked="{l:SettingBinding atlasLinkAppendTeamNames}" ToolTip="{x:Static p:Resources.Appends_the_team_names_of_the_participating_teams_if_enough_players_from_the_same_VRML_team_are_in_the_match_}"/>
 									</StackPanel>
 								</StackPanel>
 
@@ -189,13 +189,13 @@
 							<StackPanel Orientation="Horizontal" Grid.Row="1">
 								<Button Margin="10,0,10,0" Click="CopyMainLinkToClipboard">
 									<StackPanel Orientation="Horizontal" >
-										<Label Content="Copy to Clipboard"/>
+										<Label Content="{x:Static p:Resources.Copy_to_Clipboard}"/>
 										<Image Source="/img/clipboard-outline.png" Height="18"/>
 									</StackPanel>
 								</Button>
 								<Button Margin="10,0,10,0" Click="FollowMainLink">
 									<StackPanel Orientation="Horizontal">
-										<Label Content="Follow Link"/>
+										<Label Content="{x:Static p:Resources.Follow_Link}"/>
 										<Image Source="/img/open-in-new.png" Height="18"/>
 									</StackPanel>
 								</Button>
@@ -207,7 +207,7 @@
 						<GroupBox x:Name="groupBox" Margin="10,10,10,10" Grid.Row="1">
 							<GroupBox.Header>
 								<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
-									<Label Content="Hosted Matches"/>
+									<Label Content="{x:Static p:Resources.Hosted_Matches}"/>
 									<Button x:Name="refreshMatchesButton" Margin="0,0,0,0" Click="RefreshMatchesClicked" HorizontalAlignment="Right" Padding="5,5,5,5">
 										<StackPanel Orientation="Horizontal">
 											<Image Source="/img/baseline_replay_white_48dp.png" Width="20"/>
@@ -222,8 +222,8 @@
 										<GroupBox.Header>
 											<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
 												<TextBlock Text="Public" Margin="0,0,10,0" Foreground="{DynamicResource ControlDisabledGlythColour}"></TextBlock>
-												<Button Content="Copy Atlas Link" Margin="200,0,10,0" Background="{DynamicResource ControlDisabledBackground}"/>
-												<Button Content="Join" Margin="10,0,10,0"/>
+												<Button Content="{x:Static p:Resources.Copy_Atlas_Link}" Margin="200,0,10,0" Background="{DynamicResource ControlDisabledBackground}"/>
+												<Button Content="{x:Static p:Resources.Join}" Margin="10,0,10,0"/>
 											</StackPanel>
 										</GroupBox.Header>
 
@@ -256,17 +256,17 @@
 							<Button x:Name="hostMatchButton" Margin="10,10,10,10" Click="HostMatchClicked" Height="54" IsEnabled="False">
 								<StackPanel Orientation="Horizontal">
 									<CheckBox x:Name="hostingMatchCheckbox" Margin="10,0,10,0"/>
-									<Label x:Name="hostingMatchLabel" Content="Host Match"/>
+									<Label x:Name="hostingMatchLabel" Content="{x:Static p:Resources.Host_Match}"/>
 								</StackPanel>
 							</Button>
 							<StackPanel Orientation="Horizontal">
-								<Label Content="Visibility: "/>
+								<Label Content="{x:Static p:Resources.Visibility_}"/>
 								<ComboBox Width="150" SelectedIndex="{l:SettingBinding atlasHostingVisibility}">
-									<ComboBoxItem Content="Public"/>
-									<ComboBoxItem Content="Casters Only"/>
-									<ComboBoxItem Content="Private"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Public}"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Casters_Only}"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Private}"/>
 								</ComboBox>
-								<Button Content="Whitelist" Click="WhitelistButtonClicked" Margin="10,0,10,0" Padding="10,0,10,0"/>
+								<Button Content="{x:Static p:Resources.Whitelist}" Click="WhitelistButtonClicked" Margin="10,0,10,0" Padding="10,0,10,0"/>
 							</StackPanel>
 						</StackPanel>
 					</Grid>
@@ -280,7 +280,7 @@
 					</TabItem.Header>
 					<Grid>
 						<TextBox x:Name="mainOutputTextBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsReadOnly="True"/>
-						<Button x:Name="showEventLogFileButton" Content="Open Event Log Folder" Width="183" Margin="0,10,30,0" HorizontalAlignment="Right" Click="showEventLogFileButton_Click" VerticalAlignment="Top" Height="30" ToolTip="{x:Static p:Resources.Opens_the_folder_where_the_event_logs_are_stored_on_your_computer__Only_works_once_you_have_logged_at_least_one_event_}"/>
+						<Button x:Name="showEventLogFileButton" Content="{x:Static p:Resources.Open_Event_Log_Folder}" Width="183" Margin="0,10,30,0" HorizontalAlignment="Right" Click="showEventLogFileButton_Click" VerticalAlignment="Top" Height="30" ToolTip="{x:Static p:Resources.Opens_the_folder_where_the_event_logs_are_stored_on_your_computer__Only_works_once_you_have_logged_at_least_one_event_}"/>
 					</Grid>
 				</TabItem>
 				<TabItem x:Name="speakerSystemTab" FontSize="14" Padding="10,0,10,0">
@@ -324,12 +324,6 @@
 					<Button x:Name="updateButton" Content="{x:Static p:Resources.Download_Update}" Height="40" Margin="4,4,4,4" Background="#FF8B3434" Click="updateButton_Click" ToolTip="{x:Static p:Resources.Downloads_and_installs_the_most_recent_update__recommended_}" Visibility="Collapsed"/>
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton"  Visibility="Collapsed" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
-					<Button x:Name="showAtlasLinks" Visibility="Collapsed" Height="40" Margin="4,4,4,4" Click="showAtlasLinks_Click" ToolTip="{x:Static p:Resources.atlas_button_tooltip}">
-						<StackPanel Orientation="Horizontal">
-							<Label Content="{x:Static p:Resources.Atlas}"/>
-							<Image Source="/img/link.png" Height="20" Margin="8,0,0,0"/>
-						</StackPanel>
-					</Button>
 					<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="{x:Static p:Resources.Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing}"/>
 					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
 					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
@@ -348,7 +342,7 @@
 
 		<tb:TaskbarIcon x:Name="trayIcon"
 			IconSource="/img/ignite_logo.ico"
-			ToolTipText="IgniteBot2" PopupActivation="DoubleClick" Grid.Column="12" Grid.Row="1">
+			ToolTipText="{x:Static p:Resources.AppName}" PopupActivation="DoubleClick" Grid.Column="12" Grid.Row="1">
 
 			<!-- Set a simple context menu  -->
 			<tb:TaskbarIcon.ContextMenu>

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows;
-using IgniteBot.Properties;
+using Spark.Properties;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for App.xaml
@@ -12,7 +12,15 @@ namespace IgniteBot
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
-			System.Threading.Thread.CurrentThread.CurrentUICulture = Settings.Default.language switch
+			// Reload old settings file
+			if (Settings.Default.UpdateSettings)
+			{
+				Settings.Default.Upgrade();
+				Settings.Default.UpdateSettings = false;
+				Settings.Default.Save();
+			}
+
+			System.Threading.Thread.CurrentThread.CurrentUICulture = Settings.Default.languageIndex switch
 			{
 				0 => new System.Globalization.CultureInfo("en"),
 				1 => new System.Globalization.CultureInfo("ja-JP"),

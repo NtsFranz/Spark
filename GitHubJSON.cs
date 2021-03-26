@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IgniteBot
+namespace Spark
 {
     [System.Serializable]
     public class VersionJson

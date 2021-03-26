@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for Speedometer.xaml

@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using IgniteBot.Properties;
+using Spark.Properties;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for ChooseJoinTypeDialog.xaml

@@ -38,7 +38,7 @@
 		<!-- Use the icon.ico icon for this installer (shows up in Add/Remove programs) -->
 		<Property Id="ARPPRODUCTICON">icon.ico</Property>
 		<!-- Help/Support website (shows in the Add/Remove programs) -->
-		<Property Id="ARPURLINFOABOUT">https://www.ignitevr.gg/ignitebot</Property>
+		<Property Id="ARPURLINFOABOUT">https://www.ignitevr.gg/spark</Property>
 
 		<!-- Create a basic UI for the installer -->
 		<UI>
@@ -61,7 +61,7 @@
 							 Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
 			
 		</UI>
-		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch IgniteBot"  />
+		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Spark"  />
 		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1"  />
 
 		<!-- Change the installer UI background images -->
@@ -73,7 +73,7 @@
 		<!-- Change the installer UI background images -->
 
 		<!-- Define components, shortcuts, files etc... for installer -->
-		<Feature Id="ProductFeature" Title="IgniteBot" Level="1">
+		<Feature Id="ProductFeature" Title="Spark" Level="1">
 
 			<ComponentGroupRef Id="ProductComponents" />
 			<ComponentGroupRef Id="PublishedComponents" />
@@ -87,7 +87,7 @@
               Execute="immediate"
               Impersonate="no"
               Return="asyncNoWait"
-              FileKey="fil95845DE29198D84B5F96DB6DBEA81404" 
+              FileKey="fil03038851281DF07988C8E92E111B4310" 
               ExeCommand="" />
 		
 		<!--<InstallExecuteSequence>

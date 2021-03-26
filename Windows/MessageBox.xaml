@@ -1,12 +1,18 @@
-﻿<Window x:Class="IgniteBot.MessageBox"
+﻿<Window x:Class="Spark.MessageBox"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:p="clr-namespace:IgniteBot.Properties"
-        xmlns:local="clr-namespace:IgniteBot"
+		xmlns:p="clr-namespace:Spark.Properties"
+        xmlns:local="clr-namespace:Spark"
         mc:Ignorable="d"
-        Title="IgniteBot Message" Height="174" Width="548" FontSize="14" ResizeMode="NoResize" Background="{DynamicResource BackgroundColour}">
+        Title="{x:Static p:Resources.Spark_Message}" 
+        Height="174" Width="548" 
+        FontSize="14" 
+        ResizeMode="NoResize" 
+        Background="{DynamicResource BackgroundColour}"
+        Icon="/img/ignite_logo.ico"
+        >
 	<Grid>
 		<TextBlock x:Name="textBlock" TextWrapping="Wrap" Margin="10,30,10,30" TextAlignment="Center" LineStackingStrategy="MaxHeight"/>
 		<Button x:Name="button" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="{x:Static p:Resources.Close}" Margin="0,0,10,10" Width="64" Height="32" Click="ButtonClicked"/>

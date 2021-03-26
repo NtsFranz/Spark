@@ -1,11 +1,11 @@
-﻿<Application x:Class="IgniteBot.App"
+﻿<Application x:Class="Spark.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:IgniteBot">
+             xmlns:local="clr-namespace:Spark">
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Themes/ColourfulDarkTheme.xaml"/>
+				<ResourceDictionary Source="/Themes/ColourfulDarkTheme_Yellow.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

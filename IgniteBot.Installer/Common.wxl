@@ -6,12 +6,12 @@
 	<String Id="Comments">Very cool</String>
 	<String Id="Keywords">echovr,api,ignite,vr</String>
 
-	<String Id="DowngradeErrorMessage">A newer version of IgniteBot is already installed.</String>
+	<String Id="DowngradeErrorMessage">A newer version of Spark is already installed.</String>
 
-	<String Id="ProductName">IgniteBot</String>
-	<String Id="ProductNameFolder">IgniteBot</String>
+	<String Id="ProductName">Spark</String>
+	<String Id="ProductNameFolder">Spark</String>
 
 	<String Id="Language">1033</String>
 
-	<String Id="WelcomeDlgDescription">This Setup Wizard will install IgniteBot on your computer.</String>
+	<String Id="WelcomeDlgDescription">This Setup Wizard will install Spark on your computer.</String>
 </WixLocalization>

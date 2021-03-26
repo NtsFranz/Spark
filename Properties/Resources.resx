@@ -581,7 +581,7 @@
     <value>Speed in m/s of your throws</value>
   </data>
   <data name="Throw Speed" xml:space="preserve">
-    <value>Throw Speed</value>
+    <value>Throw Speed (pending update)</value>
   </data>
   <data name="Time in seconds to reach the midline on neutral jousts for the fastest player on each team" xml:space="preserve">
     <value>Time in seconds to reach the midline on neutral jousts for the fastest player on each team</value>
@@ -593,7 +593,7 @@
     <value>, or join the</value>
   </data>
   <data name="and ask questions in the #ignitebot-support channel." xml:space="preserve">
-    <value>and ask questions in the #ignitebot-support channel.</value>
+    <value>and ask questions in the #spark-support channel.</value>
   </data>
   <data name="contributions_welcome" xml:space="preserve">
     <value>Contributions to Spark are welcome. Check it out on</value>
@@ -664,42 +664,54 @@
   </data>
   <data name="tts_join_1" xml:space="preserve">
     <value>joined</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_join_2" xml:space="preserve">
     <value>.</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_leave_1" xml:space="preserve">
     <value>left</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_leave_2" xml:space="preserve">
     <value>.</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_switch_1" xml:space="preserve">
     <value>switched from</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_switch_2" xml:space="preserve">
     <value>to</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_switch_3" xml:space="preserve">
     <value>.</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_pause_req" xml:space="preserve">
     <value>team requested a pause</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_paused" xml:space="preserve">
     <value>team paused the game</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_unpause" xml:space="preserve">
     <value>team unpaused the game</value>
   </data>
   <data name="tts_meters_per_second" xml:space="preserve">
     <value>meters per second</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_abused" xml:space="preserve">
     <value>abused their playspace</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="tts_meters" xml:space="preserve">
     <value>meters</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="This is the new speed" xml:space="preserve">
     <value>This is the new speed</value>
@@ -720,5 +732,200 @@
   </data>
   <data name="Total throw speed from the F10 menu" xml:space="preserve">
     <value>Total throw speed from the F10 menu</value>
+  </data>
+  <data name="tts_switch_alt_1" xml:space="preserve">
+    <value>switched to</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_switch_alt_2" xml:space="preserve">
+    <value> </value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="Access Code" xml:space="preserve">
+    <value>Access Code</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Add Player" xml:space="preserve">
+    <value>Add Player</value>
+  </data>
+  <data name="Add Team" xml:space="preserve">
+    <value>Add Team</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Atlas Whitelist" xml:space="preserve">
+    <value>Atlas Whitelist</value>
+  </data>
+  <data name="atlas_whitelist_title" xml:space="preserve">
+    <value>Spark | Atlas Whitelist</value>
+  </data>
+  <data name="cant_connect_to_internet_for_discord" xml:space="preserve">
+    <value>Can't connect to the internet to log into Discord.</value>
+  </data>
+  <data name="Do you play EchoVR on PC or Quest?" xml:space="preserve">
+    <value>Do you play EchoVR on PC or Quest?</value>
+  </data>
+  <data name="echovr_path_not_set" xml:space="preserve">
+    <value>EchoVR exe path not set. Make sure you have the game installed on this computer to use this feature, or set the path of echovr.exe manually in the Settings.</value>
+  </data>
+  <data name="Incorrect join type." xml:space="preserve">
+    <value>Incorrect join type.</value>
+  </data>
+  <data name="Incorrectly formatted Spark or Atlas link:" xml:space="preserve">
+    <value>Incorrectly formatted Spark or Atlas link:</value>
+  </data>
+  <data name="Not Logged in" xml:space="preserve">
+    <value>Not Logged in</value>
+  </data>
+  <data name="Quest" xml:space="preserve">
+    <value>Quest</value>
+  </data>
+  <data name="Set your match visibility to something other than Public, then add teams and players here to give them access." xml:space="preserve">
+    <value>Set your match visibility to something other than Public, then add teams and players here to give them access.</value>
+  </data>
+  <data name="Spark | First-time Setup" xml:space="preserve">
+    <value>Spark | First-time Setup</value>
+  </data>
+  <data name="Spark | Login" xml:space="preserve">
+    <value>Spark | Login</value>
+  </data>
+  <data name="This changes where IgniteBot looks for API data. You can change your preference in Settings later. Quest+Link counts as PC." xml:space="preserve">
+    <value>This changes where Spark looks for API data. You can change your preference in Settings later. Quest+Link counts as PC.</value>
+  </data>
+  <data name="This PC" xml:space="preserve">
+    <value>This PC</value>
+  </data>
+  <data name="wrong number of '/' characters for link:" xml:space="preserve">
+    <value>wrong number of '/' characters for link:</value>
+    <comment>error message</comment>
+  </data>
+  <data name="Closing NVIDIA Highlights..." xml:space="preserve">
+    <value>Closing NVIDIA Highlights...</value>
+    <comment>message when closing the program</comment>
+  </data>
+  <data name="Closing Speaker System..." xml:space="preserve">
+    <value>Closing Speaker System...</value>
+    <comment>message when closing the program</comment>
+  </data>
+  <data name="Compressing Replay File..." xml:space="preserve">
+    <value>Compressing Replay File...</value>
+    <comment>message when closing the program</comment>
+  </data>
+  <data name="EchoVR Settings" xml:space="preserve">
+    <value>EchoVR Settings</value>
+  </data>
+  <data name="ignite_logo_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\img\ignite_logo_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ignite_logo_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\img\ignite_logo_64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Join as a Player or as a Spectator?" xml:space="preserve">
+    <value>Join as a Player or as a Spectator?</value>
+    <comment>dialog when opening ignitebot://choose or spark://choose links</comment>
+  </data>
+  <data name="Join EchoVR Match" xml:space="preserve">
+    <value>Join EchoVR Match</value>
+  </data>
+  <data name="join_as_spectator" xml:space="preserve">
+    <value>Spectator</value>
+  </data>
+  <data name="Player" xml:space="preserve">
+    <value>Player</value>
+    <comment>choose to join as a player rather than a spectator</comment>
+  </data>
+  <data name="Playspace information for players other than yourself can be inaccurate and sensitive to rapid acceleration or high ping." xml:space="preserve">
+    <value>Playspace information for players other than yourself can be inaccurate and sensitive to rapid acceleration or high ping.</value>
+  </data>
+  <data name="Refresh List" xml:space="preserve">
+    <value>Refresh List</value>
+  </data>
+  <data name="Shutting down Atlas..." xml:space="preserve">
+    <value>Shutting down Atlas...</value>
+    <comment>message when closing the program</comment>
+  </data>
+  <data name="Spark Message" xml:space="preserve">
+    <value>Spark Message</value>
+    <comment>title of a some message popup boxes</comment>
+  </data>
+  <data name="Spark | Playspace" xml:space="preserve">
+    <value>Spark | Playspace</value>
+  </data>
+  <data name="Streamer Mode" xml:space="preserve">
+    <value>Streamer Mode</value>
+    <comment>makes the background color green for streaming with OBS</comment>
+  </data>
+  <data name="String" xml:space="preserve">
+    <value>ignore and refer to tts spreadsheet</value>
+  </data>
+  <data name="Angle brackes allow you to click on the link when it's pasted in Discord." xml:space="preserve">
+    <value>Angle brackes allow you to click on the link when it's pasted in Discord.</value>
+  </data>
+  <data name="Append team names" xml:space="preserve">
+    <value>Append team names</value>
+  </data>
+  <data name="Appends the team names of the participating teams if enough players from the same VRML team are in the match." xml:space="preserve">
+    <value>Appends the team names of the participating teams if enough players from the same VRML team are in the match.</value>
+  </data>
+  <data name="Casters Only" xml:space="preserve">
+    <value>Casters Only</value>
+    <comment>setting for visibility of a hosted match</comment>
+  </data>
+  <data name="Choose" xml:space="preserve">
+    <value>Choose</value>
+  </data>
+  <data name="Copy Atlas Link" xml:space="preserve">
+    <value>Copy Atlas Link</value>
+  </data>
+  <data name="Copy to Clipboard" xml:space="preserve">
+    <value>Copy to Clipboard</value>
+  </data>
+  <data name="Follow Link" xml:space="preserve">
+    <value>Follow Link</value>
+  </data>
+  <data name="Host Match" xml:space="preserve">
+    <value>Host Match</value>
+  </data>
+  <data name="Hosted Matches" xml:space="preserve">
+    <value>Hosted Matches</value>
+  </data>
+  <data name="Join" xml:space="preserve">
+    <value>Join</value>
+  </data>
+  <data name="Join directly as a player." xml:space="preserve">
+    <value>Join directly as a player.</value>
+  </data>
+  <data name="Join directly as a spectator." xml:space="preserve">
+    <value>Join directly as a spectator.</value>
+  </data>
+  <data name="Link Type:" xml:space="preserve">
+    <value>Link Type:</value>
+  </data>
+  <data name="Private" xml:space="preserve">
+    <value>Private</value>
+    <comment>setting for visibility of a hosted match</comment>
+  </data>
+  <data name="Public" xml:space="preserve">
+    <value>Public</value>
+    <comment>setting for visibility of a hosted match</comment>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Surround with &amp;lt;&amp;gt;" xml:space="preserve">
+    <value>Surround with &lt;&gt;</value>
+  </data>
+  <data name="The Choose type shows a popup when you click the link to either join as a player or spectator." xml:space="preserve">
+    <value>The Choose type shows a popup when you click the link to either join as a player or spectator.</value>
+  </data>
+  <data name="Whitelist" xml:space="preserve">
+    <value>Whitelist</value>
+    <comment>a list of approved players to allow access</comment>
+  </data>
+  <data name="Visibility:" xml:space="preserve">
+    <value>Visibility:</value>
   </data>
 </root>

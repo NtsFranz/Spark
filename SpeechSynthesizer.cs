@@ -6,9 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Google.Cloud.TextToSpeech.V1;
-using IgniteBot.Properties;
+using Spark.Properties;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// 📖➡🔊 An abstraction layer for whatever TTS engine is being used
@@ -64,7 +64,14 @@ namespace IgniteBot
 			{
 				if (Settings.Default.playerSwitchTeamTTS)
 				{
-					Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_1} {fromTeam.color} {Resources.tts_switch_2} {toTeam.color} {Resources.tts_switch_3}");
+					if (fromTeam != null)
+					{
+						Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_1} {fromTeam.color} {Resources.tts_switch_2} {toTeam.color} {Resources.tts_switch_3}");
+					}
+					else
+					{
+						Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_alt_1} {toTeam.color} {Resources.tts_switch_alt_2}");
+					}
 				}
 			};
 			Program.PauseRequest += (frame) =>
@@ -234,8 +241,8 @@ namespace IgniteBot
 				Input = input,
 				Voice = new VoiceSelectionParams
 				{
-					LanguageCode = languages[Settings.Default.language],
-					Name = voiceTypes[Settings.Default.language, Settings.Default.ttsVoice]
+					LanguageCode = languages[Settings.Default.languageIndex],
+					Name = voiceTypes[Settings.Default.languageIndex, Settings.Default.ttsVoice]
 				},
 				AudioConfig = config
 			});

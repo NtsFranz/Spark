@@ -1,6 +1,6 @@
-﻿using static IgniteBot.g_Team;
+﻿using static Spark.g_Team;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// Object containing a teams basic data and MatchPlayer for the corresponding team.

@@ -2,7 +2,7 @@
 
 namespace TheRThemes
 {
-    public partial class ColourfulDarkTheme
+    public partial class ColourfulDarkTheme_Yellow
     {
         private void CloseWindow_Event(object sender, RoutedEventArgs e)
         {

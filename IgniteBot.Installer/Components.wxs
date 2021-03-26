@@ -19,7 +19,7 @@
 
 				<Shortcut Id="MainAppShortcut"
                   Name="!(loc.ProductName)"
-                  Target="[INSTALLFOLDER]IgniteBot.exe"
+                  Target="[INSTALLFOLDER]Spark.exe"
                   Directory="InstallProgramMenuFolder"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="icon.ico"

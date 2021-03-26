@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using IgniteBot.Properties;
-using static IgniteBot.g_Team;
+using Spark.Properties;
+using static Spark.g_Team;
 
-namespace IgniteBot
+namespace Spark
 {
 	/// <summary>
 	/// A recreation of the JSON object given by EchoVR

@@ -449,7 +449,7 @@
     <value>、もしくは参加する</value>
   </data>
   <data name="and ask questions in the #ignitebot-support channel." xml:space="preserve">
-    <value>＃ignitebot-supportのチャンネルで質問してください</value>
+    <value>＃spark-supportのチャンネルで質問してください</value>
   </data>
   <data name="Closing..." xml:space="preserve">
     <value>閉じています…</value>
@@ -458,7 +458,7 @@
     <value>貢献</value>
   </data>
   <data name="contributions_welcome" xml:space="preserve">
-    <value>IgniteBotへの貢献を歓迎します。こちらをチェックしてみてください。</value>
+    <value>Sparkへの貢献を歓迎します。こちらをチェックしてみてください。</value>
   </data>
   <data name="Copied!" xml:space="preserve">
     <value>コピー完了！</value>
@@ -512,7 +512,7 @@
     <value>Sparkは、以下のコミュニティメンバーによって作成されました。</value>
   </data>
   <data name="instance_already_running_message" xml:space="preserve">
-    <value>インスタンスがすでに実行されています。IgniteBotの2つのインスタンスを同時に実行すると問題が発生することがあります。右下のタスクトレイ、またはタスクマネージャを確認して、何かが壊れた場合は古いインスタンスを強制終了してください。</value>
+    <value>インスタンスがすでに実行されています。Sparkの2つのインスタンスを同時に実行すると問題が発生することがあります。右下のタスクトレイ、またはタスクマネージャを確認して、何かが壊れた場合は古いインスタンスを強制終了してください。</value>
   </data>
   <data name="Japanese Translation:" xml:space="preserve">
     <value>日本語翻訳</value>

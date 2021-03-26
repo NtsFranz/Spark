@@ -5,10 +5,10 @@ using System.Threading;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using DiscordRPC.Message;
-using IgniteBot.Properties;
+using Spark.Properties;
 using static Logger;
 
-namespace IgniteBot
+namespace Spark
 {
 	class DiscordRichPresence
 	{
@@ -188,14 +188,14 @@ namespace IgniteBot
 				}
 				else // if (frame.map_name == "whatever combat is")
 				{
-					details.Append("Playing Combat or something");
+					details.Append("Playing Combat");
 				}
 
 				rp.Details = details.ToString();
 				rp.Assets = new Assets
 				{
 					LargeImageKey = "echo_arena_store_icon",
-					LargeImageText = "Rich presence from IgniteBot"
+					LargeImageText = "Rich presence from Spark"
 				};
 
 

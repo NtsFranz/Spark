@@ -1,21 +1,23 @@
-﻿<Window x:Class="IgniteBot.Playspace"
+﻿<Window x:Class="Spark.Playspace"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IgniteBot"
+		xmlns:p="clr-namespace:Spark.Properties"
+        xmlns:local="clr-namespace:Spark"
         mc:Ignorable="d"
-        Title="Playspace" 
+        Title="{x:Static p:Resources.Spark___Playspace}" 
         Height="600" Width="500" 
         Background="{DynamicResource BackgroundColour}" 
         VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
         FontSize="14"
-        Icon="/img/ignite_logo_128.png">
+        Icon="/img/ignite_logo.ico"
+        >
 	<Grid>
-		<CheckBox x:Name="streamerModeCheckbox" Content="Streamer Mode" Margin="10,12,0,0" Checked="StreamerModeChecked" Unchecked="StreamerModeChecked" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+		<CheckBox x:Name="streamerModeCheckbox" Content="{x:Static p:Resources.Streamer_Mode}" Margin="10,12,0,0" Checked="StreamerModeChecked" Unchecked="StreamerModeChecked" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 		<ComboBox x:Name="choosePlayerDropdown" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Top" Width="185"/>
-		<Button x:Name="refreshButton" Content="Refresh List" Width="100" Height="25" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="300,10,0,0" Click="RefreshPlayerList"/>
-		<TextBlock x:Name="textBlock" Margin="10,0,0,10" Text="Playspace information for players other than yourself is highly inaccurate and sensitive to rapid acceleration or high ping." VerticalAlignment="Bottom" TextWrapping="Wrap" HorizontalAlignment="Left" Width="412"/>
+		<Button x:Name="refreshButton" Content="{x:Static p:Resources.Refresh_List}" Width="100" Height="25" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="300,10,0,0" Click="RefreshPlayerList"/>
+		<TextBlock x:Name="textBlock" Margin="10,0,0,10" Text="Playspace information for players other than yourself can be inaccurate and sensitive to rapid acceleration or high ping." VerticalAlignment="Bottom" TextWrapping="Wrap" HorizontalAlignment="Left" Width="412"/>
 
 		<Label x:Name="rawLabel" Content="" HorizontalAlignment="Stretch" Margin="10,40,10,10" VerticalAlignment="Top"/>
 		<Grid x:Name="playspaceBackground" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" Height="400" Background="{DynamicResource ContainerBackground}">
@@ -25,7 +27,7 @@
 		<!-- <Canvas x:Name="canvas" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" Height="400" Background="{DynamicResource ContainerBackground}"> -->
 		<!-- 	<Ellipse x:Name="playerCircle" Height="32" Canvas.Left="10" Stroke="{DynamicResource ControlPrimaryMouseOverBorderBrush}" Canvas.Top="10" Width="32" Fill="{DynamicResource ControlPrimaryMouseOverBackground}"/> -->
 		<!-- </Canvas> -->
-		<Button x:Name="button" Content="Close" HorizontalAlignment="Right" Margin="0,0,10,10" Padding="3,3,3,3" VerticalAlignment="Bottom" Width="56" Click="CloseButtonClicked"/>
+		<Button x:Name="button" Content="{x:Static p:Resources.Close}" HorizontalAlignment="Right" Margin="0,0,10,10" Padding="3,3,3,3" VerticalAlignment="Bottom" Width="56" Click="CloseButtonClicked"/>
 		
 
 	</Grid>

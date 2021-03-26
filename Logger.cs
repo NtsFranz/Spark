@@ -6,8 +6,8 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
-using IgniteBot;
-using IgniteBot.Properties;
+using Spark;
+using Spark.Properties;
 
 /// <summary>
 /// ✍ Logs any data to a file or remotely
@@ -249,7 +249,7 @@ public class Logger
 						string filePath, directoryPath;
 
 						// combine with some other data path, such as AppData
-						directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteBot\\" + logFolder);
+						directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spark\\" + logFolder);
 
 						if (!Directory.Exists(directoryPath))
 						{
