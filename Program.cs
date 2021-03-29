@@ -333,15 +333,13 @@ namespace Spark
 				Settings.Default.Save();
 			} else if (!Settings.Default.ignitebot_spark_upgrade_message_shown)
 			{
-				var box = new MessageBox("IgniteBot is now called Spark!\n\nReplays and logs are now saved in 'C:\\Users\\[USER]\\Documents\\Spark\\' by default.\n\nThe old replays will be moved to the new folder automatically, but old event logs will remain in the old folder (C:\\Users\\[USER]\\AppData\\Roaming\\IgniteBot\\Log\\).");
+				MessageBox box = new MessageBox(Resources.spark_upgrade_message);
 				box.Show();
 				box.Owner = liveWindow;
-				box.Height = 250;
+				box.Height = 350;
 				Settings.Default.ignitebot_spark_upgrade_message_shown = true;
 				Settings.Default.Save();
 			}
-
-			var argsList = new List<string>(args);
 
 			// Check for command-line flags
 			if (args.Contains("-slowmode"))
@@ -1267,8 +1265,7 @@ namespace Spark
 
 			if (Settings.Default.saveFolder == "none" || !Directory.Exists(Settings.Default.saveFolder))
 			{
-				Settings.Default.saveFolder = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-					"Spark"), "replays");
+				Settings.Default.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),"Spark", "replays");
 				Directory.CreateDirectory(Settings.Default.saveFolder);
 				Settings.Default.Save();
 			}
@@ -1411,9 +1408,15 @@ namespace Spark
 
 						UpdateStatsIngame(frame);
 
-						PlayerJoined?.Invoke(frame, team, player);
+						try
+						{
+							PlayerJoined?.Invoke(frame, team, player);
+						}
+						catch (Exception exp)
+						{
+							LogRow(LogType.Error, "Error processing action", exp.ToString());
+						}
 
-						
 					}
 					catch (Exception ex)
 					{
@@ -1446,7 +1449,14 @@ namespace Spark
 
 					UpdateStatsIngame(frame);
 
-					PlayerLeft?.Invoke(frame, team, player);
+					try
+					{
+						PlayerLeft?.Invoke(frame, team, player);
+					}
+					catch (Exception exp)
+					{
+						LogRow(LogType.Error, "Error processing action", exp.ToString());
+					}
 				}
 			}
 
@@ -1476,7 +1486,13 @@ namespace Spark
 					UpdateStatsIngame(frame);
 
 					g_Team lastTeam = lastFrame.GetTeam(player.userid);
-					PlayerSwitchedTeams?.Invoke(frame, lastTeam, team, player);
+					try{
+						PlayerSwitchedTeams?.Invoke(frame, lastTeam, team, player);
+					}
+					catch (Exception exp)
+					{
+						LogRow(LogType.Error, "Error processing action", exp.ToString());
+					}
 				}
 			}
 
@@ -1528,21 +1544,42 @@ namespace Spark
 								Vector3.Zero)
 							);
 
-						GamePaused?.Invoke(frame);
+						try
+						{
+							GamePaused?.Invoke(frame);
+						}
+						catch (Exception exp)
+						{
+							LogRow(LogType.Error, "Error processing action", exp.ToString());
+						}
 					}
 
 					if (lastFrame.pause.paused_state == "unpaused" &&
-						frame.pause.paused_state == "paused_requested")
+					    frame.pause.paused_state == "paused_requested")
 					{
-						PauseRequest?.Invoke(frame);
+						try
+						{
+							PauseRequest?.Invoke(frame);
+						}
+						catch (Exception exp)
+						{
+							LogRow(LogType.Error, "Error processing action", exp.ToString());
+						}
 
 						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team requested a pause");
 					}
 
 					if (lastFrame.pause.paused_state == "paused" &&
-						frame.pause.paused_state == "unpausing")
+					    frame.pause.paused_state == "unpausing")
 					{
-						GameUnpaused?.Invoke(frame);
+						try
+						{
+							GameUnpaused?.Invoke(frame);
+						}
+						catch (Exception exp)
+						{
+							LogRow(LogType.Error, "Error processing action", exp.ToString());
+						}
 
 						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team unpaused the game");
 					}
@@ -1573,7 +1610,14 @@ namespace Spark
 					//		Vector3.Zero)
 					//	);
 
-					LocalThrow?.Invoke(frame);
+					try
+					{
+						LocalThrow?.Invoke(frame);
+					}
+					catch (Exception exp)
+					{
+						LogRow(LogType.Error, "Error processing action", exp.ToString());
+					}
 				}
 			}
 			catch (Exception e)
@@ -1637,7 +1681,14 @@ namespace Spark
 								float boostSpeed = boost.Item1;
 								float howLongAgoBoost = boost.Item2;
 
-								BigBoost?.Invoke(frame, team, player, boostSpeed, howLongAgoBoost);
+								try
+								{
+									BigBoost?.Invoke(frame, team, player, boostSpeed, howLongAgoBoost);
+								}
+								catch (Exception exp)
+								{
+									LogRow(LogType.Error, "Error processing action", exp.ToString());
+								}
 
 								matchData.Events.Add(
 									new EventData(
@@ -1701,7 +1752,14 @@ namespace Spark
 								Vector3.Distance(player.head.Position, playerData.playspaceLocation) > 1.7f)
 							{
 								// playspace abuse happened
-								PlayspaceAbuse?.Invoke(frame, team, player, playerData.playspaceLocation);
+								try
+								{
+									PlayspaceAbuse?.Invoke(frame, team, player, playerData.playspaceLocation);
+								}
+								catch (Exception exp)
+								{
+									LogRow(LogType.Error, "Error processing action", exp.ToString());
+								}
 
 								matchData.Events.Add(
 									new EventData(
@@ -1748,7 +1806,14 @@ namespace Spark
 						// check saves 
 						if (lastPlayer.stats.saves != player.stats.saves)
 						{
-							Save?.Invoke(frame, team, player);
+							try
+							{
+								Save?.Invoke(frame, team, player);
+							}
+							catch (Exception exp)
+							{
+								LogRow(LogType.Error, "Error processing action", exp.ToString());
+							}
 
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.save, frame.game_clock,
 								team, player, null, player.head.Position, Vector3.Zero));
@@ -1760,7 +1825,14 @@ namespace Spark
 						// check steals 🕵️‍
 						if (lastPlayer.stats.steals != player.stats.steals)
 						{
-							Steal?.Invoke(frame, team, player);
+							try
+							{
+								Steal?.Invoke(frame, team, player);
+							}
+							catch (Exception exp)
+							{
+								LogRow(LogType.Error, "Error processing action", exp.ToString());
+							}
 
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.steal, frame.game_clock,
 								team, player, null, player.head.Position, Vector3.Zero));
@@ -1814,7 +1886,14 @@ namespace Spark
 											stunnee.name);
 										added = true;
 
-										Stun?.Invoke(frame, team, player, stunnee);
+										try
+										{
+											Stun?.Invoke(frame, team, player, stunnee);
+										}
+										catch (Exception exp)
+										{
+											LogRow(LogType.Error, "Error processing action", exp.ToString());
+										}
 
 
 										break;
@@ -1864,7 +1943,14 @@ namespace Spark
 											stunnee.name);
 										added = true;
 
-										Stun?.Invoke(frame, team, player, stunnee);
+										try
+										{
+											Stun?.Invoke(frame, team, player, stunnee);
+										}
+										catch (Exception exp)
+										{
+											LogRow(LogType.Error, "Error processing action", exp.ToString());
+										}
 
 										break;
 									}
@@ -1925,7 +2011,15 @@ namespace Spark
 								}
 								else
 								{
-									Pass?.Invoke(frame, team, throwPlayer, player);
+									try
+									{
+										Pass?.Invoke(frame, team, throwPlayer, player);
+									}
+									catch (Exception exp)
+									{
+										LogRow(LogType.Error, "Error processing action", exp.ToString());
+									}
+
 									LogRow(LogType.File, frame.sessionid,
 										frame.game_clock_display + " - " + player.name + " received a pass from " +
 										throwPlayer.name);
@@ -1937,7 +2031,15 @@ namespace Spark
 							}
 							else
 							{
-								Catch?.Invoke(frame, team, player);
+								try
+								{
+									Catch?.Invoke(frame, team, player);
+								}
+								catch (Exception exp)
+								{
+									LogRow(LogType.Error, "Error processing action", exp.ToString());
+								}
+
 								LogRow(LogType.File, frame.sessionid,
 									frame.game_clock_display + " - " + player.name + " made a catch");
 							}
@@ -1946,7 +2048,15 @@ namespace Spark
 						// check shots taken 🧺
 						if (lastPlayer.stats.shots_taken != player.stats.shots_taken)
 						{
-							ShotTaken?.Invoke(frame, team, player);
+							try
+							{
+								ShotTaken?.Invoke(frame, team, player);
+							}
+							catch (Exception exp)
+							{
+								LogRow(LogType.Error, "Error processing action", exp.ToString());
+							}
+
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.shot_taken,
 								frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
 							LogRow(LogType.File, frame.sessionid,
@@ -2011,9 +2121,17 @@ namespace Spark
 					// check blue restart request ↩
 					if (!lastFrame.blue_team_restart_request && frame.blue_team_restart_request)
 					{
-						RestartRequest?.Invoke(frame, TeamColor.blue);
+						try
+						{
+							RestartRequest?.Invoke(frame, TeamColor.blue);
+						}
+						catch (Exception exp)
+						{
+							LogRow(LogType.Error, "Error processing action", exp.ToString());
+						}
+
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
-							lastFrame.game_clock, frame.teams[(int)TeamColor.blue], null, null, Vector3.Zero,
+							lastFrame.game_clock, frame.teams[(int) TeamColor.blue], null, null, Vector3.Zero,
 							Vector3.Zero));
 						LogRow(LogType.File, frame.sessionid,
 							frame.game_clock_display + " - " + "blue team restart request");
@@ -2022,9 +2140,17 @@ namespace Spark
 					// check orange restart request ↩
 					if (!lastFrame.orange_team_restart_request && frame.orange_team_restart_request)
 					{
-						RestartRequest?.Invoke(frame, TeamColor.orange);
+						try
+						{
+							RestartRequest?.Invoke(frame, TeamColor.orange);
+						}
+						catch (Exception exp)
+						{
+							LogRow(LogType.Error, "Error processing action", exp.ToString());
+						}
+
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
-							lastFrame.game_clock, frame.teams[(int)TeamColor.orange], null, null, Vector3.Zero,
+							lastFrame.game_clock, frame.teams[(int) TeamColor.orange], null, null, Vector3.Zero,
 							Vector3.Zero));
 						LogRow(LogType.File, frame.sessionid,
 							frame.game_clock_display + " - " + "orange team restart request");
@@ -2143,8 +2269,14 @@ namespace Spark
 															  " m/s, Tube Exit Speed: " +
 															  maxTubeExitSpeed.ToString("N2") + " m/s");
 
-						
-						Joust?.Invoke(frame, team, player, eventType == EventData.EventType.joust_speed, startGameClock - frame.game_clock, maxSpeed, maxTubeExitSpeed);
+						try
+						{
+							Joust?.Invoke(frame, team, player, eventType == EventData.EventType.joust_speed, startGameClock - frame.game_clock, maxSpeed, maxTubeExitSpeed);
+						}
+						catch (Exception exp)
+						{
+							LogRow(LogType.Error, "Error processing action", exp.ToString());
+						}
 
 						// Upload to Firebase 🔥
 						_ = DoUploadEventFirebase(matchData, joustEvent);
@@ -2178,7 +2310,14 @@ namespace Spark
 					if (player.playerid != originalPlayer.playerid) continue;
 					if (player.stats.saves != originalPlayer.stats.saves) continue;
 
-					Interception?.Invoke(originalFrame, originalTeam, throwPlayer, originalPlayer);
+					try
+					{
+						Interception?.Invoke(originalFrame, originalTeam, throwPlayer, originalPlayer);
+					}
+					catch (Exception exp)
+					{
+						LogRow(LogType.Error, "Error processing action", exp.ToString());
+					}
 
 					LogRow(LogType.File, frame.sessionid,
 						frame.game_clock_display + " - " + player.name + " intercepted a throw from " +
@@ -2209,7 +2348,14 @@ namespace Spark
 					{
 						if (player.possession && !frame.disc.velocity.ToVector3().Equals(Vector3.Zero))
 						{
-							Throw?.Invoke(frame, team, player,leftHanded, underhandedness);
+							try
+							{
+								Throw?.Invoke(frame, team, player, leftHanded, underhandedness);
+							}
+							catch (Exception exp)
+							{
+								LogRow(LogType.Error, "Error processing action", exp.ToString());
+							}
 
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.@throw, frame.game_clock,
 								team, player, null, player.head.Position, frame.disc.velocity.ToVector3()));
@@ -2299,8 +2445,16 @@ namespace Spark
 
 						EventMatchFinished(frameToUse, MatchData.FinishReason.reset, lastFrame.game_clock);
 
-						MatchReset?.Invoke(frameToUse);
+						try
+						{
+							MatchReset?.Invoke(frameToUse);
+						}
+						catch (Exception exp)
+						{
+							LogRow(LogType.Error, "Error processing action", exp.ToString());
+						}
 					}
+
 					// Autofocus
 					if (Settings.Default.isAutofocusEnabled)
 					{
@@ -2628,12 +2782,17 @@ namespace Spark
 			lastGoals.Enqueue(goalEvent);
 			if (lastGoals.Count > 30)
 			{
-				lastGoals.TryDequeue(out var goal);
+				lastGoals.TryDequeue(out GoalData goal);
 			}
-
-
-
-			Goal?.Invoke(frame, goalEvent);
+			
+			try
+			{
+				Goal?.Invoke(frame, goalEvent);
+			}
+			catch (Exception exp)
+			{
+				LogRow(LogType.Error, "Error processing action", exp.ToString());
+			}
 
 			// Upload to Firebase 🔥
 			_ = DoUploadEventFirebase(matchData, goalEvent);

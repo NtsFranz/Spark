@@ -1763,6 +1763,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IgniteBot is now called Spark!
+        ///      
+        ///Unfortunately, all of your settings are reset. Make sure to go back into settings to re-enable things like TTS or replay recording.
+        ///      
+        ///Both replays and logs are now saved in &apos;C:\Users\[USER]\Documents\Spark\&apos; by default.
+        ///
+        ///If you want to have your replays in the same folder, copy them over yourself.
+        ///Old Event Log folder: &apos;C:\Users\[USER]\AppData\Roaming\IgniteBot\Log\&apos;
+        ///Old Replay folder: &apos;C:\Users\[USER]\Documents\IgniteBot\&apos;
+        ///.
+        /// </summary>
+        public static string spark_upgrade_message {
+            get {
+                return ResourceManager.GetString("spark_upgrade_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Speaker System.
         /// </summary>
         public static string Speaker_System {

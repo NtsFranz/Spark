@@ -938,7 +938,7 @@ namespace Spark
 
 		private void showEventLogFileButton_Click(object sender, RoutedEventArgs e)
 		{
-			string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spark\\" + logFolder);
+			string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Spark", logFolder);
 			if (Directory.Exists(folder))
 			{
 				Process.Start(new ProcessStartInfo

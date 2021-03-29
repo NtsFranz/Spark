@@ -928,4 +928,17 @@
   <data name="Visibility:" xml:space="preserve">
     <value>Visibility:</value>
   </data>
+  <data name="spark_upgrade_message" xml:space="preserve">
+    <value>IgniteBot is now called Spark!
+      
+Unfortunately, all of your settings are reset. Make sure to go back into settings to re-enable things like TTS or replay recording.
+      
+Both replays and logs are now saved in 'C:\Users\[USER]\Documents\Spark\' by default.
+
+If you want to have your replays in the same folder, copy them over yourself.
+Old Event Log folder: 'C:\Users\[USER]\AppData\Roaming\IgniteBot\Log\'
+Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
+</value>
+    <comment>this is shown the first time people install Spark from IgniteBot</comment>
+  </data>
 </root>

@@ -62,16 +62,15 @@ namespace Spark
 			};
 			Program.PlayerSwitchedTeams += (frame, fromTeam, toTeam, player) =>
 			{
-				if (Settings.Default.playerSwitchTeamTTS)
+				if (!Settings.Default.playerSwitchTeamTTS) return;
+				
+				if (fromTeam != null)
 				{
-					if (fromTeam != null)
-					{
-						Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_1} {fromTeam.color} {Resources.tts_switch_2} {toTeam.color} {Resources.tts_switch_3}");
-					}
-					else
-					{
-						Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_alt_1} {toTeam.color} {Resources.tts_switch_alt_2}");
-					}
+					Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_1} {fromTeam.color} {Resources.tts_switch_2} {toTeam.color} {Resources.tts_switch_3}");
+				}
+				else
+				{
+					Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_alt_1} {toTeam.color} {Resources.tts_switch_alt_2}");
 				}
 			};
 			Program.PauseRequest += (frame) =>

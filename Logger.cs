@@ -249,7 +249,7 @@ public class Logger
 						string filePath, directoryPath;
 
 						// combine with some other data path, such as AppData
-						directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spark\\" + logFolder);
+						directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Spark", logFolder);
 
 						if (!Directory.Exists(directoryPath))
 						{
