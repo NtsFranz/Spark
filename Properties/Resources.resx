@@ -120,10 +120,6 @@
   <data name="(Requires Restart)" xml:space="preserve">
     <value>(Requires Restart)</value>
   </data>
-  <data name="(top left of main window)" xml:space="preserve">
-    <value>(top left of main window)</value>
-    <comment>referring to where to log into Discord to enable this feature</comment>
-  </data>
   <data name="About" xml:space="preserve">
     <value>About</value>
     <comment>tab in Settings</comment>
@@ -294,7 +290,7 @@
     <comment>an option in the dropdown refers to the speed of the TTS</comment>
   </data>
   <data name="NVIDIAHighlights" xml:space="preserve">
-    <value>NIVIDIA Highlights</value>
+    <value>NVIDIA Highlights</value>
     <comment>tab in Settings</comment>
   </data>
   <data name="On Server Change" xml:space="preserve">
@@ -464,16 +460,12 @@
     <value>Tools</value>
   </data>
   <data name="TTS only works when logged in with Discord!" xml:space="preserve">
-    <value>TTS only works when logged in with Discord!</value>
+    <value>TTS only works when logged in with Discord!
+
+(top left of main window)</value>
   </data>
-  <data name="tts_description_1" xml:space="preserve">
-    <value>TTS allows you to hear events while in game. Make sure to set up your speakers appropriately to be able to hear the output.</value>
-  </data>
-  <data name="tts_description_2" xml:space="preserve">
-    <value>On Rift, set your default Windows sound output to the Rift headphones.</value>
-  </data>
-  <data name="tts_description_3" xml:space="preserve">
-    <value>On Quest, use headphones attached to your PC or turn up the speakers.</value>
+  <data name="tts_description" xml:space="preserve">
+    <value />
   </data>
   <data name="Update Echo Speaker System" xml:space="preserve">
     <value>Update Echo Speaker System</value>

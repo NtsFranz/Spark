@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Text.RegularExpressions;
 using System.Windows.Navigation;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace Spark
 {
@@ -491,6 +492,11 @@ namespace Spark
 
 		public bool HighlightsSupported => HighlightsHelper.isNVHighlightsSupported;
 		public bool DoNVClipsExist => HighlightsHelper.DoNVClipsExist();
+
+		#endregion
+
+		#region EchoVR Settings
+
 
 		#endregion
 

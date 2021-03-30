@@ -119,7 +119,7 @@ namespace Spark
 			outputUpdateTimer.Elapsed += Update;
 			outputUpdateTimer.Enabled = true;
 
-			JToken gameSettings = Program.ReadEchoVRSettings();
+			JToken gameSettings = EchoVRSettingsManager.ReadEchoVRSettings();
 			if (gameSettings != null)
 			{
 				try
@@ -966,13 +966,13 @@ namespace Spark
 		{
 			try
 			{
-				JToken settings = Program.ReadEchoVRSettings();
+				JToken settings = EchoVRSettingsManager.ReadEchoVRSettings();
 				if (settings != null)
 				{
 					new MessageBox(Properties.Resources.Enabled_API_access_in_the_game_settings__nCLOSE_ECHOVR_BEFORE_PRESSING_OK_).Show();
 
 					settings["game"]["EnableAPIAccess"] = true;
-					Program.WriteEchoVRSettings(settings);
+					EchoVRSettingsManager.WriteEchoVRSettings(settings);
 					enableAPIButton.Visibility = Visibility.Collapsed;
 
 				}

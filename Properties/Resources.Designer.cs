@@ -19,7 +19,7 @@ namespace Spark.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -75,15 +75,6 @@ namespace Spark.Properties {
         public static string _Requires_Restart_ {
             get {
                 return ResourceManager.GetString("(Requires Restart)", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (top left of main window).
-        /// </summary>
-        public static string _top_left_of_main_window_ {
-            get {
-                return ResourceManager.GetString("(top left of main window)", resourceCulture);
             }
         }
         
@@ -1202,7 +1193,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NIVIDIA Highlights.
+        ///   Looks up a localized string similar to NVIDIA Highlights.
         /// </summary>
         public static string NVIDIAHighlights {
             get {
@@ -2055,29 +2046,11 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TTS allows you to hear events while in game. Make sure to set up your speakers appropriately to be able to hear the output..
+        ///   Looks up a localized string similar to .
         /// </summary>
-        public static string tts_description_1 {
+        public static string tts_description {
             get {
-                return ResourceManager.GetString("tts_description_1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to On Rift, set your default Windows sound output to the Rift headphones..
-        /// </summary>
-        public static string tts_description_2 {
-            get {
-                return ResourceManager.GetString("tts_description_2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to On Quest, use headphones attached to your PC or turn up the speakers..
-        /// </summary>
-        public static string tts_description_3 {
-            get {
-                return ResourceManager.GetString("tts_description_3", resourceCulture);
+                return ResourceManager.GetString("tts_description", resourceCulture);
             }
         }
         
@@ -2136,7 +2109,9 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TTS only works when logged in with Discord!.
+        ///   Looks up a localized string similar to TTS only works when logged in with Discord!
+        ///
+        ///(top left of main window).
         /// </summary>
         public static string TTS_only_works_when_logged_in_with_Discord_ {
             get {

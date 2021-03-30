@@ -183,7 +183,7 @@
     <comment>bottom left of main window</comment>
   </data>
   <data name="NVIDIAHighlights" xml:space="preserve">
-    <value>NIVIDIA Highlights</value>
+    <value>NVIDIA Highlights</value>
     <comment>tab in Settings</comment>
   </data>
   <data name="Open Spectatorstream" xml:space="preserve">

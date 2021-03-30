@@ -186,7 +186,7 @@
     <comment>bottom left of main window</comment>
   </data>
   <data name="NVIDIAHighlights" xml:space="preserve">
-    <value>NIVIDIA ハイライト</value>
+    <value>NVIDIA ハイライト</value>
     <comment>tab in Settings</comment>
   </data>
   <data name="Open Spectatorstream" xml:space="preserve">
@@ -428,22 +428,12 @@
     <value>ツール</value>
   </data>
   <data name="TTS only works when logged in with Discord!" xml:space="preserve">
-    <value>テキスト読み上げは、Discordでログインした場合にのみ利用可能</value>
-  </data>
-  <data name="tts_description_1" xml:space="preserve">
-    <value>テキスト読み上げを使用すると、ゲーム中に聞くことができます。その際、出力が聞こえるようにスピーカーを適切に設置してください。</value>
-  </data>
-  <data name="tts_description_2" xml:space="preserve">
-    <value>Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッドフォンに設定します。</value>
-  </data>
-  <data name="tts_description_3" xml:space="preserve">
-    <value>クエストでは、PCに接続したヘッドホンを使うか、スピーカーの音量をあげて下さい。</value>
+    <value>テキスト読み上げは、Discordでログインした場合にのみ利用可能
+
+メインウィンドウの左上です</value>
   </data>
   <data name="Update Echo Speaker System" xml:space="preserve">
     <value>Echoスピーカーシステムをアップデート</value>
-  </data>
-  <data name="(top left of main window)" xml:space="preserve">
-    <value>メインウィンドウの左上です</value>
   </data>
   <data name=", or join the" xml:space="preserve">
     <value>、もしくは参加する</value>
@@ -681,5 +671,12 @@
   </data>
   <data name="tts_meters" xml:space="preserve">
     <value>メートル</value>
+  </data>
+  <data name="tts_description" xml:space="preserve">
+    <value>テキスト読み上げを使用すると、ゲーム中に聞くことができます。その際、出力が聞こえるようにスピーカーを適切に設置してください。
+
+Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッドフォンに設定します。
+
+クエストでは、PCに接続したヘッドホンを使うか、スピーカーの音量をあげて下さい。</value>
   </data>
 </root>

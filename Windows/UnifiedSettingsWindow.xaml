@@ -7,7 +7,7 @@
         xmlns:p="clr-namespace:Spark.Properties"
         mc:Ignorable="d"
         Title="{x:Static p:Resources.IgniteBot___Settings}"
-        Height="680" Width="600"
+        Height="700" Width="600"
 		Top="{l:SettingBinding settingsWindowTop}"
 		Left="{l:SettingBinding settingsWindowLeft}"
         Background="{DynamicResource BackgroundColour}"
@@ -20,6 +20,9 @@
         WindowStartupLocation="Manual"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         >
+	<Window.Resources>
+		<l:EchoVRSettingsManager x:Key="es"/>
+	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="50" />
@@ -192,17 +195,13 @@
 						<TextBlock x:Name="discordLoginWarning" Margin="16,16,16,16" Padding="10,10,10,10"
                                        Background="#FF492727" TextWrapping="Wrap"
                                        Visibility="{Binding DiscordLoginWarningVisible}">
-                                <Run Text="{x:Static p:Resources.TTS_only_works_when_logged_in_with_Discord_}" /><LineBreak />
-                                <Run Text="{x:Static p:Resources._top_left_of_main_window_}" />
+                                <Run Text="{x:Static p:Resources.TTS_only_works_when_logged_in_with_Discord_}" />
 						</TextBlock>
 						<StackPanel>
 							<TextBlock x:Name="instructions" TextWrapping="Wrap"
                                            Background="{DynamicResource ControlBrightDefaultBackground}"
-                                           Padding="10,10,10,10">
-								<Run Text="{x:Static p:Resources.tts_description_1}"/><LineBreak/><LineBreak/>
-								<Run Text="{x:Static p:Resources.tts_description_2}"/><LineBreak/><LineBreak/>
-								<Run Text="{x:Static p:Resources.tts_description_3}"/>
-							</TextBlock>
+                                           Padding="10,10,10,10" 
+                                           Text="{x:Static p:Resources.tts_description}" />
 							<Grid Margin="5,5,5,5">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
@@ -348,10 +347,127 @@
 			</TabItem>
 
 
-			<TabItem Header="EchoVR Settings" Visibility="Collapsed">
+			<TabItem Header="EchoVR Settings" Visibility="Visible">
 
-				<ScrollViewer  VerticalScrollBarVisibility="Auto">
-					<Grid />
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Margin="10,0,10,10">
+						<Label Content="EchoVR Settings" FontSize="16"
+						       Margin="5,5,5,5" />
+						<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
+						           Background="#FF492727" TextWrapping="Wrap"
+						           Visibility="{Binding EchoVRSettingsProgramOpenWarning}"
+								   Text="EchoVR is open. EchoVR saves its settings when it closes, so any settings you set here will be overwritten when EchoVR closes. Make sure to close EchoVR before changing anything here." />
+						<StackPanel>
+							<!--DataContext="{Binding Source={x:Static l:EchoVRSettingsManager}">-->
+							<TextBlock TextWrapping="Wrap"
+							           Background="{DynamicResource ControlBrightDefaultBackground}"
+							           Padding="10,10,10,10" Margin="0,0,0,10" 
+									   Text="These settings control game settings found in 'C:\Users\[USERNAME]\AppData\Local\rad\loneecho\settings_mp_v2.json'. This is useful for spectator computers without a headset attached.">
+							</TextBlock>
+
+							<CheckBox Content="Enable API Access" IsChecked="{Binding Source={StaticResource es}, Path=EnableAPIAccess}"/>
+							<Expander Header="Display" Margin="0,4,0,4" >
+								<StackPanel>
+									<CheckBox Content="Fullscreen" IsChecked="{Binding Source={StaticResource es}, Path=Fullscreen}"/>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Monitor"/>
+										<TextBox Text="{Binding Source={StaticResource es}, Path=Monitor}"/>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Resolution"/>
+										<TextBox Text="{Binding Source={StaticResource es}, Path=Resolution}"/>
+									</StackPanel>
+									<CheckBox Content="Multi-Resolution Shading" IsChecked="{Binding Source={StaticResource es}, Path=MultiResShading}"/>
+									<CheckBox Content="Auto Resolution" IsChecked="{Binding Source={StaticResource es}, Path=AutoRes}"/>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Field of View"/>
+										<TextBox Text="{Binding Source={StaticResource es}, Path=FoV}" />
+									</StackPanel>
+								</StackPanel>
+							</Expander>
+							<Expander Header="Graphics" Margin="0,4,0,4" >
+								<StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Anti-aliasing"/>
+										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=AA}">
+											<ComboBoxItem Content="None"/>
+											<ComboBoxItem Content="2x"/>
+											<ComboBoxItem Content="4x"/>
+										</ComboBox>
+									</StackPanel>
+									<CheckBox Content="Temporal AA" IsChecked="{Binding Source={StaticResource es}, Path=TemporalAA}"/>
+									<CheckBox Content="Volumetrics" IsChecked="{Binding Source={StaticResource es}, Path=Volumetrics}"/>
+									<CheckBox Content="Bloom" IsChecked="{Binding Source={StaticResource es}, Path=Bloom}"/>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Shadow Quality"/>
+										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=ShadowQuality}">
+											<ComboBoxItem Content="Low"/>
+											<ComboBoxItem Content="Medium"/>
+											<ComboBoxItem Content="High"/>
+										</ComboBox>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Mesh Quality"/>
+										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=MeshQuality}">
+											<ComboBoxItem Content="Low"/>
+											<ComboBoxItem Content="Medium"/>
+											<ComboBoxItem Content="High"/>
+										</ComboBox>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="FX Quality" />
+										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=FXQuality}">
+											<ComboBoxItem Content="Low"/>
+											<ComboBoxItem Content="Medium"/>
+											<ComboBoxItem Content="High"/>
+										</ComboBox>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Texture Quality"/>
+										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=TextureQuality}">
+											<ComboBoxItem Content="Low"/>
+											<ComboBoxItem Content="Medium"/>
+											<ComboBoxItem Content="High"/>
+										</ComboBox>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Lighting Quality"/>
+										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=LightingQuality}">
+											<ComboBoxItem Content="Low"/>
+											<ComboBoxItem Content="Medium"/>
+											<ComboBoxItem Content="High"/>
+										</ComboBox>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Sharpening"/>
+										<TextBox Text="{Binding Source={StaticResource es}, Path=Sharpening}" />
+									</StackPanel>
+								</StackPanel>
+							</Expander>
+							<Expander Header="Spectator Camera Settings" Margin="0,4,0,4" >
+								<StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="POV Field of View"/>
+										<TextBox Text="{Binding Source={StaticResource es}, Path=POVFov}" Width="40"/>
+										<Label Content="deg"/>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Follow Cam Field of View"/>
+										<TextBox Text="{Binding Source={StaticResource es}, Path=FollowFov}" Width="40"/>
+										<Label Content="deg"/>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Follow Cam Offset"/>
+										<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetX}" Width="40"/>
+										<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetY}" Width="40"/>
+										<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetZ}" Width="40"/>
+										<Label Content="x,y,z"/>
+									</StackPanel>
+									
+								</StackPanel>
+							</Expander>
+						</StackPanel>
+					</StackPanel>
 				</ScrollViewer>
 			</TabItem>
 

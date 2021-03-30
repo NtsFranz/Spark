@@ -3313,48 +3313,6 @@ namespace Spark
 		}
 
 
-		public static JToken ReadEchoVRSettings()
-		{
-			try
-			{
-				string file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "rad",
-				"loneecho", "settings_mp_v2.json");
-				if (!File.Exists(file))
-				{
-					LogRow(LogType.Error, "Can't find the EchoVR settings file");
-					return null;
-				}
-
-				return JsonConvert.DeserializeObject<JToken>(File.ReadAllText(file));
-			}
-			catch (Exception e)
-			{
-				LogRow(LogType.Error, "Error when reading Arena settings.\n" + e.ToString());
-			}
-			return null;
-		}
-
-		public static void WriteEchoVRSettings(JToken settings)
-		{
-			try
-			{
-				string file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "rad",
-					"loneecho", "settings_mp_v2.json");
-				if (!File.Exists(file))
-				{
-					throw new NullReferenceException("Can't find the EchoVR settings file");
-				}
-
-				var settingsString = JsonConvert.SerializeObject(settings, Formatting.Indented);
-				File.WriteAllText(file, settingsString);
-			}
-			catch (Exception e)
-			{
-				LogRow(LogType.Error, "Error when writing Arena settings.\n" + e.ToString());
-			}
-		}
-
-
 		private static void RegisterUriScheme(string UriScheme, string FriendlyName)
 		{
 			try
