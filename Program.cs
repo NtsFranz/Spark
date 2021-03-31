@@ -125,6 +125,8 @@ namespace Spark
 		public static ConcurrentQueue<string> lastJSONQueue = new ConcurrentQueue<string>();
 		public static ConcurrentQueue<string> lastDateTimeStringQueue = new ConcurrentQueue<string>();
 		public static ConcurrentStack<g_Instance> milkFramesToSave = new ConcurrentStack<g_Instance>();
+		public static ConcurrentQueue<string> replayBufferJSON = new ConcurrentQueue<string>();
+		public static ConcurrentQueue<DateTime> replayBufferTimestamps = new ConcurrentQueue<DateTime>();
 		public static Milk milkData;
 
 		private static bool lastJSONUsed;
@@ -179,6 +181,7 @@ namespace Spark
 		public static LiveWindow.AtlasWhitelist atlasWhitelist = new();
 
 		public static SpeechSynthesizer synth;
+		public static ReplayClips replayClips;
 
 		private static Thread statsThread;
 		private static Thread fullLogThread;
@@ -393,6 +396,9 @@ namespace Spark
 				synth.SetRate(Settings.Default.TTSSpeed);
 			};
 
+			// this sets up the event listeners for replay clips
+			replayClips = new ReplayClips();
+
 
 			// Server Score Tests - this works
 			//float out1 = CalculateServerScore(new List<int> { 34, 78, 50, 53 }, new List<int> { 63, 562, 65, 81 });   // fail too high
@@ -409,7 +415,7 @@ namespace Spark
 			statsThread.IsBackground = true;
 			statsThread.Start();
 
-			fullLogThread = new Thread(FullLogThread);
+			fullLogThread = new Thread(ReplayThread);
 			fullLogThread.IsBackground = true;
 			fullLogThread.Start();
 
@@ -870,7 +876,7 @@ namespace Spark
 		/// <summary>
 		/// Thread for logging all JSON data
 		/// </summary>
-		private static void FullLogThread()
+		private static void ReplayThread()
 		{
 			Thread.Sleep(2000);
 			lastDataTime = DateTime.Now;
@@ -880,21 +886,22 @@ namespace Spark
 			// Session pull loop.
 			while (running)
 			{
-				if (Settings.Default.enableFullLogging && inGame)
+				try
 				{
-					try
+					string json;
+					lock (lastJSONLock)
 					{
-						string json;
-						lock (lastJSONLock)
-						{
-							if (lastJSON == null) continue;
+						if (lastJSON == null) continue;
 
-							lastJSONUsed = true;
-							json = lastJSON;
-						}
+						lastJSONUsed = true;
+						json = lastJSON;
+					}
 
-						// if this is not a lobby api frame
-						if (json.Length > 800)
+					// if this is not a lobby api frame
+					if (json.Length > 800 && inGame)
+					{
+
+						if (Settings.Default.enableFullLogging)
 						{
 							bool log = false;
 							if (Settings.Default.onlyRecordPrivateMatches)
@@ -915,18 +922,29 @@ namespace Spark
 								WriteToFile(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff") + "\t" + json);
 							}
 						}
-					}
-					catch (Exception ex)
-					{
-						Console.WriteLine("Big oopsie. Please catch inside. " + ex);
-					}
 
-					Thread.Sleep(fullDeltaTimes[Settings.Default.targetDeltaTimeIndexFull]);
+
+						if (Settings.Default.enableReplayBuffer)
+						{
+							// add to replay buffer
+							replayBufferTimestamps.Enqueue(DateTime.Now);
+							replayBufferJSON.Enqueue(json);
+
+							// shorten the buffer to match the desired length
+							while (DateTime.Now - replayBufferTimestamps.First() > TimeSpan.FromSeconds(Settings.Default.replayBufferLength))
+							{
+								replayBufferTimestamps.TryDequeue(out _);
+								replayBufferJSON.TryDequeue(out _);
+							}
+						}
+					}
 				}
-				else
+				catch (Exception ex)
 				{
-					Thread.Sleep(100);
+					Console.WriteLine("Big oopsie. Please catch inside. " + ex);
 				}
+
+				Thread.Sleep(fullDeltaTimes[Settings.Default.targetDeltaTimeIndexFull]);
 			}
 
 			// causes a final zip if that's needed
@@ -1030,6 +1048,44 @@ namespace Spark
 			}
 		}
 
+		public static void SaveReplayClip(string filename)
+		{
+			string[] frames = replayBufferJSON.ToArray();
+			DateTime[] timestamps = replayBufferTimestamps.ToArray();
+
+			if (frames.Length != timestamps.Length)
+			{
+				LogRow(LogType.Error, "Something went wrong in the replay buffer saving.");
+				return;
+			}
+
+			string fullFileName = $"{DateTime.Now:clip_yyyy-MM-dd_HH-mm-ss}_{filename}";
+			string filePath = Path.Combine(Settings.Default.saveFolder, $"{fullFileName}.echoreplay");
+
+			lock (fileWritingLock)
+			{
+				StreamWriter streamWriter = new StreamWriter(filePath, false);
+
+				for (int i = 0; i < frames.Length; i++)
+				{
+					streamWriter.WriteLine(timestamps[i] + "\t" + frames[i]);
+				}
+
+				streamWriter.Close();
+
+				// compress the file
+				if (Settings.Default.useCompression)
+				{
+					string tempDir = Path.Combine(Settings.Default.saveFolder, "temp_zip");
+					Directory.CreateDirectory(tempDir);
+					File.Move(filePath,
+						Path.Combine(tempDir, $"{fullFileName}.echoreplay"));
+					ZipFile.CreateFromDirectory(tempDir, filePath);
+					Directory.Delete(tempDir, true);
+				}
+			}
+		}
+		
 		/// <summary>
 		/// Saves the current process path
 		/// </summary>
@@ -1361,7 +1417,7 @@ namespace Spark
 					}
 					catch (Exception e)
 					{
-						LogRow(LogType.Error, "Broke something in the spectator follow system.\n" + e.ToString());
+						LogRow(LogType.Error, $"Broke something in the spectator follow system.\n{e}");
 					}
 				}
 			}
@@ -1587,7 +1643,7 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Error with pause request parsing\n" + e.ToString());
+				LogRow(LogType.Error, $"Error with pause request parsing\n{e}");
 			}
 
 
@@ -1595,7 +1651,7 @@ namespace Spark
 			// last throw state changed
 			try
 			{
-				if (frame.last_throw != null && frame.last_throw.total_speed != 0 && frame.last_throw.total_speed != lastFrame.last_throw.total_speed)
+				if (frame.last_throw != null && frame.last_throw.total_speed != 0 && Math.Abs(frame.last_throw.total_speed - lastFrame.last_throw.total_speed) > .001f)
 				{
 					LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Total speed: {frame.last_throw.total_speed}  Arm: {frame.last_throw.speed_from_arm}  Wrist: {frame.last_throw.speed_from_wrist}  Movement: {frame.last_throw.speed_from_movement}");
 					//matchData.Events.Add(
@@ -1622,7 +1678,7 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Error with last throw parsing\n" + e.ToString());
+				LogRow(LogType.Error, $"Error with last throw parsing\n{e}");
 			}
 
 
@@ -1747,9 +1803,11 @@ namespace Spark
 							}
 							playerData.playspaceLocation += offset;
 
-							if (team.team != "SPECTATORS" && Math.Abs(smoothDeltaTime) < .1f &&
+							if (team.color != TeamColor.spectator && Math.Abs(smoothDeltaTime) < .1f &&
 								Math.Abs(deltaTime) < .1f &&
-								Vector3.Distance(player.head.Position, playerData.playspaceLocation) > 1.7f)
+								Vector3.Distance(player.head.Position, playerData.playspaceLocation) > 1.7f &&
+								DateTime.Now - playerData.lastAbuse > TimeSpan.FromSeconds(3)	// create a 3 second buffer between detections
+								)
 							{
 								// playspace abuse happened
 								try
@@ -1892,7 +1950,7 @@ namespace Spark
 										}
 										catch (Exception exp)
 										{
-											LogRow(LogType.Error, "Error processing action", exp.ToString());
+											LogRow(LogType.Error, $"Error processing action\n{exp}");
 										}
 
 
@@ -2389,40 +2447,6 @@ namespace Spark
 		}
 
 		/// <summary>
-		/// Gets the server IP from the logs
-		/// </summary>
-		/// <returns></returns>
-		private static string GetServerIP()
-		{
-			if (Settings.Default.echoVRPath != "")
-			{
-				try
-				{
-					string logPath = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Settings.Default.echoVRPath),
-						"..", "..", "_local", "r14logs"));
-					List<string> logs = Directory.GetFiles(logPath)
-						.Where(f => !f.Contains("_json") && f.Contains(".log")).ToList();
-					logs.Sort();
-					string file = logs.Last();
-					Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-					StreamReader streamReader = new StreamReader(stream);
-					string logData = streamReader.ReadToEnd();
-					string searchStr = "[NSLOBBY] connected to host peer [";
-					int loc = logData.LastIndexOf(searchStr);
-					int endLoc = logData.IndexOf(":", loc);
-					return logData.Substring(loc + searchStr.Length, endLoc - (loc + searchStr.Length));
-				}
-				catch (Exception e)
-				{
-					LogRow(LogType.Error, "Failed to read log file for server ip.\n" + e);
-					return "";
-				}
-			}
-
-			return "";
-		}
-
-		/// <summary>
 		/// Function used to excute certain behavior based on frame given and previous frame(s).
 		/// </summary>
 		/// <param name="frame"></param>
@@ -2807,8 +2831,10 @@ namespace Spark
 		/// Can be called often to update the ingame player stats
 		/// </summary>
 		/// <param name="frame">The current frame</param>
-		public static void UpdateStatsIngame(g_Instance frame, bool endOfMatch = false, bool allowUpload = true,
-			bool manual = false)
+		/// <param name="endOfMatch"></param>
+		/// <param name="allowUpload"></param>
+		/// <param name="manual"></param>
+		public static void UpdateStatsIngame(g_Instance frame, bool endOfMatch = false, bool allowUpload = true, bool manual = false)
 		{
 			if (inPostMatch)
 			{
@@ -3187,6 +3213,10 @@ namespace Spark
 					}
 				}
 			}
+			
+			// reset the replay buffer
+			replayBufferTimestamps.Clear();
+			replayBufferJSON.Clear();
 		}
 
 		private static async Task DelayedNewFilename()

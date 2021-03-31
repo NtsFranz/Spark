@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
@@ -166,6 +167,7 @@ namespace Spark
 		/// The location of the playspace within the arena. This is not the position of the player within the playspace
 		/// </summary>
 		public Vector3 playspaceLocation;
+		public DateTime lastAbuse = DateTime.Now;
 		public int PlayspaceAbuses { get; set; }
 
 		// head, lhand, rhand

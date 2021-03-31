@@ -922,5 +922,29 @@ namespace Spark.Properties {
                 this["theme"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public double replayBufferLength {
+            get {
+                return ((double)(this["replayBufferLength"]));
+            }
+            set {
+                this["replayBufferLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool enableReplayBuffer {
+            get {
+                return ((bool)(this["enableReplayBuffer"]));
+            }
+            set {
+                this["enableReplayBuffer"] = value;
+            }
+        }
     }
 }

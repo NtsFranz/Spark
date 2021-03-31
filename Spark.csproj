@@ -17,7 +17,6 @@
     <PackageId>Spark</PackageId>
     <AssemblyName>Spark</AssemblyName>
     <RootNamespace>Spark</RootNamespace>
-    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>IgniteBotKey.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <PackageVersion>2.0.9</PackageVersion>
