@@ -26,6 +26,11 @@ namespace Spark
 				1 => new System.Globalization.CultureInfo("ja-JP"),
 				_ => System.Threading.Thread.CurrentThread.CurrentUICulture
 			};
+
+			ThemesController.SetTheme((ThemesController.ThemeTypes)Settings.Default.theme);
+
+
+
 			base.OnStartup(e);
 
 			Program.Main(e.Args, this);

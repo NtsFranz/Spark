@@ -2046,7 +2046,11 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to TTS allows you to hear events while in game. Make sure to set up your speakers appropriately to be able to hear the output.
+        ///
+        ///On Rift, set your default Windows sound output to the Rift headphones.
+        ///
+        ///On Quest, use headphones attached to your PC or turn up the speakers..
         /// </summary>
         public static string tts_description {
             get {

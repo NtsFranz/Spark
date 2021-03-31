@@ -66,6 +66,20 @@
 						<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite"
                                       IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
                                       VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
+						<StackPanel Orientation="Horizontal" Margin="10,4,10,4">
+							<Label Content="Color"/>
+							<ComboBox SelectedIndex="{Binding SetTheme}" Width="50">
+								<ComboBoxItem>
+									<Rectangle Width="20" Height="20" Fill="Yellow"/>
+								</ComboBoxItem>
+								<ComboBoxItem>
+									<Rectangle Width="20" Height="20" Fill="Orange"/>
+								</ComboBoxItem>
+								<ComboBoxItem>
+									<Rectangle Width="20" Height="20" Fill="Red"/>
+								</ComboBoxItem>
+							</ComboBox>
+						</StackPanel>
 						<Label x:Name="exeLocationLabel" Content="{x:Static p:Resources.EchoVR_Executable_Location_}" Margin="10,4,10,0" />
 						<TextBox x:Name="exeLocationTextBox"
                                      Text="{l:SettingLoad echoVRPath}" TextWrapping="NoWrap"
@@ -230,8 +244,8 @@
 								</ComboBox>
 								<!-- <Label Content="{x:Static p:Resources.Language}" Grid.Column="2" /> -->
 								<!-- <ComboBox Width="146" HorizontalAlignment="Left" -->
-        <!--                                   SelectedIndex="{l:SettingBinding ttsLanguage}" -->
-        <!--                                   Margin="0,0,0,8" Grid.Column="2" Grid.Row="1"> -->
+								<!--                                   SelectedIndex="{l:SettingBinding ttsLanguage}" -->
+								<!--                                   Margin="0,0,0,8" Grid.Column="2" Grid.Row="1"> -->
 								<!-- 	<ComboBoxItem Content="English" /> -->
 								<!-- 	<ComboBoxItem Content="日本語" /> -->
 								<!-- </ComboBox> -->
@@ -351,122 +365,161 @@
 
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Margin="10,0,10,10">
-						<Label Content="EchoVR Settings" FontSize="16"
-						       Margin="5,5,5,5" />
-						<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
+						<Label Content="EchoVR Settings" FontSize="16" Margin="5,5,5,5" />
+
+						<StackPanel Visibility="{Binding EchoVRInstalled}">
+							<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
 						           Background="#FF492727" TextWrapping="Wrap"
-						           Visibility="{Binding EchoVRSettingsProgramOpenWarning}"
+						           Visibility="{Binding EchoVRSettingsProgramOpenWarning, Mode=OneWay}"
 								   Text="EchoVR is open. EchoVR saves its settings when it closes, so any settings you set here will be overwritten when EchoVR closes. Make sure to close EchoVR before changing anything here." />
-						<StackPanel>
-							<!--DataContext="{Binding Source={x:Static l:EchoVRSettingsManager}">-->
-							<TextBlock TextWrapping="Wrap"
+							<StackPanel>
+								<!--DataContext="{Binding Source={x:Static l:EchoVRSettingsManager}">-->
+								<TextBlock TextWrapping="Wrap"
 							           Background="{DynamicResource ControlBrightDefaultBackground}"
 							           Padding="10,10,10,10" Margin="0,0,0,10" 
+									   Visibility="Collapsed"
 									   Text="These settings control game settings found in 'C:\Users\[USERNAME]\AppData\Local\rad\loneecho\settings_mp_v2.json'. This is useful for spectator computers without a headset attached.">
-							</TextBlock>
+								</TextBlock>
 
-							<CheckBox Content="Enable API Access" IsChecked="{Binding Source={StaticResource es}, Path=EnableAPIAccess}"/>
-							<Expander Header="Display" Margin="0,4,0,4" >
-								<StackPanel>
-									<CheckBox Content="Fullscreen" IsChecked="{Binding Source={StaticResource es}, Path=Fullscreen}"/>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Monitor"/>
-										<TextBox Text="{Binding Source={StaticResource es}, Path=Monitor}"/>
+								<CheckBox Content="Enable API Access" IsChecked="{Binding Source={StaticResource es}, Path=EnableAPIAccess}"/>
+
+								<GroupBox Margin="4,8,4,4" ToolTip="These settings control game settings found in 'C:\Users\[USERNAME]\AppData\Local\rad\loneecho\settings_mp_v2.json'. This is useful for spectator computers without a headset attached.">
+									<GroupBox.Header>
+										<StackPanel Orientation="Horizontal">
+											<Label Content="Apply these settings to "/>
+											<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=CaptureVP2}"  Height="24" Width="165" SelectionChanged="RefreshAllSettings">
+												<ComboBoxItem Content="Default Configuration"/>
+												<ComboBoxItem Content="capturevp2"/>
+											</ComboBox>
+										</StackPanel>
+									</GroupBox.Header>
+									<StackPanel>
+										<Expander Header="Display" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
+											<StackPanel Margin="10,10,10,10">
+												<CheckBox x:Name="fullscreenCheckbox" Content="Fullscreen" IsChecked="{Binding Fullscreen}" Height="28"/>
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Monitor"/>
+													<TextBox x:Name="monitorField" Text="{Binding Monitor}" Height="22" Width="20"/>
+												</StackPanel>
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Resolution" Width="160"/>
+													<Slider x:Name="resolutionSlider" Value="{Binding Resolution}" Minimum="0.1" Maximum="2" Width="200" Margin="4,0,4,0" Height="20" SmallChange="0.1" TickFrequency="0.1" LargeChange="0.5" TickPlacement="None"/>
+													<TextBox Text="{Binding ElementName=resolutionSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+												</StackPanel>
+												<CheckBox Content="Multi-Resolution Shading" IsChecked="{Binding MultiResShading}" Height="28"/>
+												<CheckBox Content="Auto Resolution" IsChecked="{Binding Source={StaticResource es}, Path=AutoRes}" Height="28"/>
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Field of View" Width="160"/>
+													<Slider x:Name="mainFovSlider" Value="{Binding FoV}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
+													<TextBox Text="{Binding ElementName=mainFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+												</StackPanel>
+												<TextBlock Text="Field of View only works in -capturevp2 mode" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+											</StackPanel>
+										</Expander>
+										<Expander Header="Graphics" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
+											<StackPanel Margin="10,10,10,10">
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Anti-aliasing"/>
+													<ComboBox SelectedIndex="{Binding AA}" Height="24">
+														<ComboBoxItem Content="None"/>
+														<ComboBoxItem Content="2x"/>
+														<ComboBoxItem Content="4x"/>
+													</ComboBox>
+												</StackPanel>
+												<CheckBox Content="Temporal AA" IsChecked="{Binding TemporalAA}" Height="28"/>
+												<CheckBox Content="Volumetrics" IsChecked="{Binding Volumetrics}" Height="28"/>
+												<CheckBox Content="Bloom" IsChecked="{Binding Bloom}" Height="28"/>
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Shadow Quality"/>
+													<ComboBox SelectedIndex="{Binding ShadowQuality}" Height="24">
+														<ComboBoxItem Content="Low"/>
+														<ComboBoxItem Content="Medium"/>
+														<ComboBoxItem Content="High"/>
+													</ComboBox>
+												</StackPanel>
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Mesh Quality"/>
+													<ComboBox SelectedIndex="{Binding MeshQuality}" Height="24">
+														<ComboBoxItem Content="Low"/>
+														<ComboBoxItem Content="Medium"/>
+														<ComboBoxItem Content="High"/>
+													</ComboBox>
+												</StackPanel>
+												<StackPanel Orientation="Horizontal">
+													<Label Content="FX Quality" />
+													<ComboBox SelectedIndex="{Binding FXQuality}" Height="24">
+														<ComboBoxItem Content="Low"/>
+														<ComboBoxItem Content="Medium"/>
+														<ComboBoxItem Content="High"/>
+													</ComboBox>
+												</StackPanel>
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Texture Quality"/>
+													<ComboBox SelectedIndex="{Binding TextureQuality}" Height="24">
+														<ComboBoxItem Content="Low"/>
+														<ComboBoxItem Content="Medium"/>
+														<ComboBoxItem Content="High"/>
+													</ComboBox>
+												</StackPanel>
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Lighting Quality"/>
+													<ComboBox SelectedIndex="{Binding LightingQuality}" Height="24">
+														<ComboBoxItem Content="Low"/>
+														<ComboBoxItem Content="Medium"/>
+														<ComboBoxItem Content="High"/>
+													</ComboBox>
+												</StackPanel>
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Sharpening"/>
+													<Slider x:Name="sharpeningSlider" Value="{Binding Sharpening}" Minimum="0" Maximum="2" Width="200" Margin="4,0,4,0" Height="20" LargeChange="0.5" SmallChange="0.1" TickFrequency="0.1" TickPlacement="None"/>
+													<TextBox Text="{Binding ElementName=sharpeningSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+												</StackPanel>
+											</StackPanel>
+										</Expander>
 									</StackPanel>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Resolution"/>
-										<TextBox Text="{Binding Source={StaticResource es}, Path=Resolution}"/>
-									</StackPanel>
-									<CheckBox Content="Multi-Resolution Shading" IsChecked="{Binding Source={StaticResource es}, Path=MultiResShading}"/>
-									<CheckBox Content="Auto Resolution" IsChecked="{Binding Source={StaticResource es}, Path=AutoRes}"/>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Field of View"/>
-										<TextBox Text="{Binding Source={StaticResource es}, Path=FoV}" />
-									</StackPanel>
-								</StackPanel>
-							</Expander>
-							<Expander Header="Graphics" Margin="0,4,0,4" >
-								<StackPanel>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Anti-aliasing"/>
-										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=AA}">
-											<ComboBoxItem Content="None"/>
-											<ComboBoxItem Content="2x"/>
-											<ComboBoxItem Content="4x"/>
-										</ComboBox>
-									</StackPanel>
-									<CheckBox Content="Temporal AA" IsChecked="{Binding Source={StaticResource es}, Path=TemporalAA}"/>
-									<CheckBox Content="Volumetrics" IsChecked="{Binding Source={StaticResource es}, Path=Volumetrics}"/>
-									<CheckBox Content="Bloom" IsChecked="{Binding Source={StaticResource es}, Path=Bloom}"/>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Shadow Quality"/>
-										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=ShadowQuality}">
-											<ComboBoxItem Content="Low"/>
-											<ComboBoxItem Content="Medium"/>
-											<ComboBoxItem Content="High"/>
-										</ComboBox>
-									</StackPanel>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Mesh Quality"/>
-										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=MeshQuality}">
-											<ComboBoxItem Content="Low"/>
-											<ComboBoxItem Content="Medium"/>
-											<ComboBoxItem Content="High"/>
-										</ComboBox>
-									</StackPanel>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="FX Quality" />
-										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=FXQuality}">
-											<ComboBoxItem Content="Low"/>
-											<ComboBoxItem Content="Medium"/>
-											<ComboBoxItem Content="High"/>
-										</ComboBox>
-									</StackPanel>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Texture Quality"/>
-										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=TextureQuality}">
-											<ComboBoxItem Content="Low"/>
-											<ComboBoxItem Content="Medium"/>
-											<ComboBoxItem Content="High"/>
-										</ComboBox>
-									</StackPanel>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Lighting Quality"/>
-										<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=LightingQuality}">
-											<ComboBoxItem Content="Low"/>
-											<ComboBoxItem Content="Medium"/>
-											<ComboBoxItem Content="High"/>
-										</ComboBox>
-									</StackPanel>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Sharpening"/>
-										<TextBox Text="{Binding Source={StaticResource es}, Path=Sharpening}" />
-									</StackPanel>
-								</StackPanel>
-							</Expander>
-							<Expander Header="Spectator Camera Settings" Margin="0,4,0,4" >
-								<StackPanel>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="POV Field of View"/>
-										<TextBox Text="{Binding Source={StaticResource es}, Path=POVFov}" Width="40"/>
-										<Label Content="deg"/>
-									</StackPanel>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Follow Cam Field of View"/>
-										<TextBox Text="{Binding Source={StaticResource es}, Path=FollowFov}" Width="40"/>
-										<Label Content="deg"/>
-									</StackPanel>
-									<StackPanel Orientation="Horizontal">
-										<Label Content="Follow Cam Offset"/>
-										<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetX}" Width="40"/>
-										<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetY}" Width="40"/>
-										<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetZ}" Width="40"/>
-										<Label Content="x,y,z"/>
-									</StackPanel>
-									
-								</StackPanel>
-							</Expander>
+								</GroupBox>
+								<Expander Header="Spectator Camera Settings" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
+									<GroupBox Margin="4,8,4,4" Header="For the 2D spectator" ToolTip="These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached.">
+										<StackPanel Margin="10,10,10,10">
+											<StackPanel Orientation="Horizontal">
+												<Label Content="Spectator Field of View" Width="160"/>
+												<Slider x:Name="specFovSlider" Value="{Binding Source={StaticResource es}, Path=SpecFovSlider}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
+												<TextBox Text="{Binding ElementName=specFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+												<Label Content="deg"/>
+											</StackPanel>
+											<TextBlock Text="FOV for auto cam" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+											<StackPanel Orientation="Horizontal">
+												<Label Content="POV Field of View" Width="160"/>
+												<Slider x:Name="povFovSlider" Value="{Binding Source={StaticResource es}, Path=POVFov}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
+												<TextBox Text="{Binding ElementName=povFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+												<Label Content="deg"/>
+											</StackPanel>
+											<TextBlock Text="FOV for POV cam. (P on the keyboard when following a player)" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+											<StackPanel Orientation="Horizontal">
+												<Label Content="Free Cam Field of View" Width="160"/>
+												<Slider x:Name="freeCamFovSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamFov}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
+												<TextBox Text="{Binding ElementName=freeCamFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+												<Label Content="deg"/>
+											</StackPanel>
+											<TextBlock Text="FOV for free camera. (C on the keyboard)" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+											<StackPanel Orientation="Horizontal">
+												<Label Content="Follow Cam Offset" Width="160"/>
+												<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetX}" Width="50" Height="22" />
+												<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetY}" Width="50" Height="22" />
+												<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetZ}" Width="50" Height="22" />
+												<Label Content="x,y,z"/>
+											</StackPanel>
+
+										</StackPanel>
+									</GroupBox>
+								</Expander>
+							</StackPanel>
 						</StackPanel>
+
+						<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
+						           Background="#FF492727" TextWrapping="Wrap"
+						           Visibility="{Binding EchoVRNotInstalled, Mode=OneWay}"
+								   Text="EchoVR is not found on this PC. Make sure you have EchoVR installed if you want to be able to change these settings, or set the path to the EchoVR executable manually in the General tab." />
 					</StackPanel>
 				</ScrollViewer>
 			</TabItem>

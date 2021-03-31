@@ -48,11 +48,9 @@ namespace Spark
 
 		#region General
 
-		public static bool StartWithWindows
-		{
+		public static bool StartWithWindows {
 			get => Settings.Default.startOnBoot;
-			set
-			{
+			set {
 				Settings.Default.startOnBoot = value;
 				Settings.Default.Save();
 
@@ -78,7 +76,7 @@ namespace Spark
 		private void EchoVRIPChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.echoVRIP = ((TextBox) sender).Text;
+			Program.echoVRIP = ((TextBox)sender).Text;
 			Settings.Default.echoVRIP = Program.echoVRIP;
 			Settings.Default.Save();
 		}
@@ -92,7 +90,7 @@ namespace Spark
 			}
 			else
 			{
-				if (int.TryParse(((TextBox) sender).Text, out Program.echoVRPort))
+				if (int.TryParse(((TextBox)sender).Text, out Program.echoVRPort))
 				{
 					Settings.Default.echoVRPort = Program.echoVRPort;
 					Settings.Default.Save();
@@ -115,7 +113,7 @@ namespace Spark
 		private void ExecutableLocationChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			string path = ((TextBox) sender).Text;
+			string path = ((TextBox)sender).Text;
 			if (File.Exists(path))
 			{
 				exeLocationLabel.Content = "EchoVR Executable Location:";
@@ -159,13 +157,11 @@ namespace Spark
 			Program.ToggleWindow(typeof(FirstTimeSetupWindow));
 		}
 
-		public static Visibility FirestoreVisible
-		{
+		public static Visibility FirestoreVisible {
 			get => !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 		}
 
-		public static string ReplayFilename
-		{
+		public static string ReplayFilename {
 			get => string.IsNullOrEmpty(Program.fileName) ? "---" : Program.fileName;
 		}
 
@@ -173,12 +169,22 @@ namespace Spark
 		{
 			try
 			{
-				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) {UseShellExecute = true});
+				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
 				e.Handled = true;
 			}
 			catch (Exception ex)
 			{
 				Logger.LogRow(Logger.LogType.Error, ex.ToString());
+			}
+		}
+
+		public int SetTheme {
+			get => Settings.Default.theme;
+			set {
+				Settings.Default.theme = value;
+				Settings.Default.Save();
+
+				ThemesController.SetTheme((ThemesController.ThemeTypes)value);
 			}
 		}
 
@@ -246,11 +252,9 @@ namespace Spark
 		public static Visibility DiscordLoginWarningVisible =>
 			DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
 
-		public static bool JoustTime
-		{
+		public static bool JoustTime {
 			get => Settings.Default.joustTimeTTS;
-			set
-			{
+			set {
 				Settings.Default.joustTimeTTS = value;
 				Settings.Default.Save();
 
@@ -259,11 +263,9 @@ namespace Spark
 			}
 		}
 
-		public static bool JoustSpeed
-		{
+		public static bool JoustSpeed {
 			get => Settings.Default.joustSpeedTTS;
-			set
-			{
+			set {
 				Settings.Default.joustSpeedTTS = value;
 				Settings.Default.Save();
 
@@ -271,11 +273,9 @@ namespace Spark
 			}
 		}
 
-		public static bool ServerLocation
-		{
+		public static bool ServerLocation {
 			get => Settings.Default.serverLocationTTS;
-			set
-			{
+			set {
 				Settings.Default.serverLocationTTS = value;
 				Settings.Default.Save();
 
@@ -283,11 +283,9 @@ namespace Spark
 			}
 		}
 
-		public static bool MaxBoostSpeed
-		{
+		public static bool MaxBoostSpeed {
 			get => Settings.Default.maxBoostSpeedTTS;
-			set
-			{
+			set {
 				Settings.Default.maxBoostSpeedTTS = value;
 				Settings.Default.Save();
 
@@ -295,11 +293,9 @@ namespace Spark
 			}
 		}
 
-		public static bool TubeExitSpeed
-		{
+		public static bool TubeExitSpeed {
 			get => Settings.Default.tubeExitSpeedTTS;
-			set
-			{
+			set {
 				Settings.Default.tubeExitSpeedTTS = value;
 				Settings.Default.Save();
 
@@ -307,11 +303,9 @@ namespace Spark
 			}
 		}
 
-		public static int SpeechSpeed
-		{
+		public static int SpeechSpeed {
 			get => Settings.Default.TTSSpeed;
-			set
-			{
+			set {
 				Program.synth.SetRate(value);
 
 				if (value != Settings.Default.TTSSpeed)
@@ -322,11 +316,9 @@ namespace Spark
 			}
 		}
 
-		public static bool GamePaused
-		{
+		public static bool GamePaused {
 			get => Settings.Default.pausedTTS;
-			set
-			{
+			set {
 				Settings.Default.pausedTTS = value;
 				Settings.Default.Save();
 
@@ -336,11 +328,9 @@ namespace Spark
 			}
 		}
 
-		public static bool PlayerJoin
-		{
+		public static bool PlayerJoin {
 			get => Settings.Default.playerJoinTTS;
-			set
-			{
+			set {
 				Settings.Default.playerJoinTTS = value;
 				Settings.Default.Save();
 
@@ -350,11 +340,9 @@ namespace Spark
 			}
 		}
 
-		public static bool PlayerLeave
-		{
+		public static bool PlayerLeave {
 			get => Settings.Default.playerLeaveTTS;
-			set
-			{
+			set {
 				Settings.Default.playerLeaveTTS = value;
 				Settings.Default.Save();
 
@@ -363,11 +351,9 @@ namespace Spark
 			}
 		}
 
-		public static bool PlayerSwitch
-		{
+		public static bool PlayerSwitch {
 			get => Settings.Default.playerSwitchTeamTTS;
-			set
-			{
+			set {
 				Settings.Default.playerSwitchTeamTTS = value;
 				Settings.Default.Save();
 
@@ -376,11 +362,9 @@ namespace Spark
 			}
 		}
 
-		public static bool ThrowSpeed
-		{
+		public static bool ThrowSpeed {
 			get => Settings.Default.throwSpeedTTS;
-			set
-			{
+			set {
 				Settings.Default.throwSpeedTTS = value;
 				Settings.Default.Save();
 
@@ -388,11 +372,9 @@ namespace Spark
 			}
 		}
 
-		public static bool GoalSpeed
-		{
+		public static bool GoalSpeed {
 			get => Settings.Default.goalSpeedTTS;
-			set
-			{
+			set {
 				Settings.Default.goalSpeedTTS = value;
 				Settings.Default.Save();
 
@@ -400,11 +382,9 @@ namespace Spark
 			}
 		}
 
-		public static bool GoalDistance
-		{
+		public static bool GoalDistance {
 			get => Settings.Default.goalDistanceTTS;
-			set
-			{
+			set {
 				Settings.Default.goalDistanceTTS = value;
 				Settings.Default.Save();
 
@@ -416,32 +396,30 @@ namespace Spark
 
 		#region NVIDIA Highlights
 
-		public bool NVHighlightsEnabled
-		{
+		public bool NVHighlightsEnabled {
 			get => Settings.Default.isNVHighlightsEnabled;
-			set
-			{
+			set {
 				switch (HighlightsHelper.isNVHighlightsEnabled)
 				{
 					case true when !value:
 						HighlightsHelper.CloseNVHighlights(true);
 						break;
 					case false when value:
-					{
-						if (HighlightsHelper.SetupNVHighlights() < 0)
 						{
-							HighlightsHelper.isNVHighlightsEnabled = false;
-							Settings.Default.isNVHighlightsEnabled = false;
-							Settings.Default.Save();
-							enableNVHighlightsCheckbox.IsChecked = false;
-							enableNVHighlightsCheckbox.IsEnabled = false;
-							enableNVHighlightsCheckbox.Content = Properties.Resources.NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC;
-							return;
-						}
+							if (HighlightsHelper.SetupNVHighlights() < 0)
+							{
+								HighlightsHelper.isNVHighlightsEnabled = false;
+								Settings.Default.isNVHighlightsEnabled = false;
+								Settings.Default.Save();
+								enableNVHighlightsCheckbox.IsChecked = false;
+								enableNVHighlightsCheckbox.IsEnabled = false;
+								enableNVHighlightsCheckbox.Content = Properties.Resources.NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC;
+								return;
+							}
 
-						enableNVHighlightsCheckbox.Content = Properties.Resources.Enable_NVIDIA_Highlights ;
-						break;
-					}
+							enableNVHighlightsCheckbox.Content = Properties.Resources.Enable_NVIDIA_Highlights;
+							break;
+						}
 				}
 
 				HighlightsHelper.isNVHighlightsEnabled = value;
@@ -471,7 +449,7 @@ namespace Spark
 		private void SecondsBeforeChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			if (!float.TryParse(((TextBox) sender).Text, out float value)) return;
+			if (!float.TryParse(((TextBox)sender).Text, out float value)) return;
 			Settings.Default.nvHighlightsSecondsBefore = value;
 			Settings.Default.Save();
 		}
@@ -479,7 +457,7 @@ namespace Spark
 		private void SecondsAfterChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			if (!float.TryParse(((TextBox) sender).Text, out float value)) return;
+			if (!float.TryParse(((TextBox)sender).Text, out float value)) return;
 			Settings.Default.nvHighlightsSecondsAfter = value;
 			Settings.Default.Save();
 		}
@@ -497,10 +475,42 @@ namespace Spark
 
 		#region EchoVR Settings
 
+		public Visibility EchoVRSettingsProgramOpenWarning => Program.GetEchoVRProcess()?.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility EchoVRInstalled => File.Exists(Settings.Default.echoVRPath) ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility EchoVRNotInstalled => !File.Exists(Settings.Default.echoVRPath) ? Visibility.Visible : Visibility.Collapsed;
+
+		public bool Fullscreen { get => EchoVRSettingsManager.Fullscreen; set { EchoVRSettingsManager.Fullscreen = value; } }
+		public bool MultiResShading { get => EchoVRSettingsManager.MultiResShading; set { EchoVRSettingsManager.MultiResShading = value; } }
+		public bool AutoRes { get => EchoVRSettingsManager.AutoRes; set { EchoVRSettingsManager.AutoRes = value; } }
+		public bool TemporalAA { get => EchoVRSettingsManager.TemporalAA; set { EchoVRSettingsManager.TemporalAA = value; } }
+		public bool Volumetrics { get => EchoVRSettingsManager.Volumetrics; set { EchoVRSettingsManager.Volumetrics = value; } }
+		public bool Bloom { get => EchoVRSettingsManager.Bloom; set { EchoVRSettingsManager.Bloom = value; } }
+		public string Monitor { get => EchoVRSettingsManager.Monitor.ToString(); set { EchoVRSettingsManager.Monitor = int.Parse(value); } }
+		public string Resolution { get => EchoVRSettingsManager.Resolution.ToString(); set { EchoVRSettingsManager.Resolution = float.Parse(value); } }
+		public string FoV { get => EchoVRSettingsManager.FoV.ToString(); set { EchoVRSettingsManager.FoV = float.Parse(value); } }
+		public string Sharpening { get => EchoVRSettingsManager.Sharpening.ToString(); set { EchoVRSettingsManager.Sharpening = float.Parse(value); } }
+		public int AA { get => EchoVRSettingsManager.AA; set { EchoVRSettingsManager.AA = value; } }
+		public int ShadowQuality { get => EchoVRSettingsManager.ShadowQuality; set { EchoVRSettingsManager.ShadowQuality = value; } }
+		public int MeshQuality { get => EchoVRSettingsManager.MeshQuality; set { EchoVRSettingsManager.MeshQuality = value; } }
+		public int FXQuality { get => EchoVRSettingsManager.FXQuality; set { EchoVRSettingsManager.FXQuality = value; } }
+		public int TextureQuality { get => EchoVRSettingsManager.TextureQuality; set { EchoVRSettingsManager.TextureQuality = value; } }
+		public int LightingQuality { get => EchoVRSettingsManager.LightingQuality; set { EchoVRSettingsManager.LightingQuality = value; } }
+
+
+		private void RefreshAllSettings(object sender, SelectionChangedEventArgs e)
+		{
+			if (initialized)
+			{
+				DataContext = null;
+				DataContext = this;
+			}
+		}
 
 		#endregion
 
 		public static string AppVersionLabelText => $"v{Program.AppVersion()}";
+
+
 	}
 
 	public class SettingBindingExtension : Binding

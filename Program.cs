@@ -2737,19 +2737,22 @@ namespace Spark
 				frame.game_clock_display + " - ORANGE: " + frame.orange_points + "  BLUE: " + frame.blue_points);
 
 			g_Player scorer = frame.GetPlayer(frame.last_score.person_scored);
-			var scorerPlayerData = matchData.GetPlayerData(scorer);
-			if (scorerPlayerData != null)
+			if (scorer != null)
 			{
-				if (frame.last_score.point_amount == 2)
+				MatchPlayer scorerPlayerData = matchData.GetPlayerData(scorer);
+				if (scorerPlayerData != null)
 				{
-					scorerPlayerData.TwoPointers++;
-				}
-				else
-				{
-					scorerPlayerData.ThreePointers++;
-				}
+					if (frame.last_score.point_amount == 2)
+					{
+						scorerPlayerData.TwoPointers++;
+					}
+					else
+					{
+						scorerPlayerData.ThreePointers++;
+					}
 
-				scorerPlayerData.GoalsNum++;
+					scorerPlayerData.GoalsNum++;
+				}
 			}
 
 			// these are nullable types
