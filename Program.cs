@@ -2283,7 +2283,7 @@ namespace Spark
 			{
 				g_Instance frame = lastFrame;
 
-				if (frame.game_status != "playing") return;
+				if (i > 0 && frame.game_status != "playing") return;
 				
 				g_Team team = frame.teams[(int)side];
 				foreach (g_Player player in team.players)
@@ -2845,7 +2845,7 @@ namespace Spark
 		/// <param name="manual"></param>
 		public static void UpdateStatsIngame(g_Instance frame, bool endOfMatch = false, bool allowUpload = true, bool manual = false)
 		{
-			if (inPostMatch)
+			if (inPostMatch || matchData == null)
 			{
 				return;
 			}
