@@ -707,18 +707,18 @@ namespace Spark
 		{
 			try
 			{
-				string respString = await Program.GetRequestAsync("https://api.github.com/repos/NtsFranz/Spark/releases",null);
-				
+				string respString = await Program.GetRequestAsync("https://api.github.com/repos/NtsFranz/Spark/releases", null);
+
 				List<VersionJson> versions = JsonConvert.DeserializeObject<List<VersionJson>>(respString);
 
 				// find the appropriate version
-				VersionJson chosenVersion = versions.First(v => v.prerelease == Settings.Default.betaUpdates);
-				
+				VersionJson chosenVersion = versions.First(v => !v.prerelease || v.prerelease == Settings.Default.betaUpdates);
+
 				// get the details from the version
 				string downloadUrl = chosenVersion.assets.First(url => url.browser_download_url.EndsWith(".msi")).browser_download_url;
 				string version = chosenVersion.tag_name.TrimStart('v');
 				string changelog = chosenVersion.body;
-				
+
 				// if we need a new version
 				if (version != Program.AppVersion())
 				{
@@ -959,7 +959,8 @@ namespace Spark
 					FileName = folder,
 					UseShellExecute = true
 				});
-			} else
+			}
+			else
 			{
 				Directory.CreateDirectory(folder);
 			}
@@ -1767,7 +1768,7 @@ namespace Spark
 					// post new data, then fetch the updated list
 					Program.PostRequestCallback(
 						hostURL,
-						new Dictionary<string, string> {{"x-api-key", DiscordOAuth.igniteUploadKey}},
+						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						data,
 						(responseJSON) => { GetAtlasMatches(); });
 				}
@@ -1779,7 +1780,7 @@ namespace Spark
 			string matchInfo = JsonConvert.SerializeObject(match.ToDict());
 			Program.PostRequestCallback(
 				unhostURL,
-				new Dictionary<string, string> {{"x-api-key", DiscordOAuth.igniteUploadKey}},
+				new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 				matchInfo,
 				(responseJSON) =>
 				{
@@ -1803,9 +1804,9 @@ namespace Spark
 			bool igniteAtlasDone = false;
 
 			Program.PostRequestCallback(
-				"https://echovrconnect.appspot.com/api/v1/player/" + Settings.Default.client_name, 
-				new Dictionary<string, string> { { "User-Agent", "Atlas/0.5.8" } }, 
-				string.Empty, 
+				"https://echovrconnect.appspot.com/api/v1/player/" + Settings.Default.client_name,
+				new Dictionary<string, string> { { "User-Agent", "Atlas/0.5.8" } },
+				string.Empty,
 				(responseJSON) =>
 			{
 				try
