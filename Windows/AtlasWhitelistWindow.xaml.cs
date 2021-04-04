@@ -60,7 +60,7 @@ namespace Spark
 			LiveWindow.AtlasWhitelist.AtlasTeam team = new(teamName);
 			Program.atlasWhitelist.teams.Add(team);
 
-			Task.Run(() => Program.GetAsync(
+			Program.GetRequestCallback(
 				"https://ignitevr.gg/cgi-bin/EchoStats.cgi/get_players_on_vrml_team?team_name=" + teamName,
 				new Dictionary<string, string>(),
 				(response) =>
@@ -82,7 +82,7 @@ namespace Spark
 					{
 						Logger.LogRow(Logger.LogType.Error, $"Error getting player list from team\n{ex}");
 					}
-				}));
+				});
 
 			RefreshWhitelistUI();
 		}

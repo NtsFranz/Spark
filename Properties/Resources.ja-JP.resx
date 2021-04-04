@@ -679,4 +679,160 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
 
 クエストでは、PCに接続したヘッドホンを使うか、スピーカーの音量をあげて下さい。</value>
   </data>
+  <data name="Access Code" xml:space="preserve">
+    <value>アクセスコード</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="Add Player" xml:space="preserve">
+    <value>プレイヤーを追加</value>
+  </data>
+  <data name="Add Team" xml:space="preserve">
+    <value>チームを追加</value>
+  </data>
+  <data name="Append team names" xml:space="preserve">
+    <value>チーム名を付け加える</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>適用</value>
+  </data>
+  <data name="Atlas Whitelist" xml:space="preserve">
+    <value>アトラスのホワイトリスト</value>
+  </data>
+  <data name="atlas_whitelist_title" xml:space="preserve">
+    <value>Spark/Atlasのホワイトリスト</value>
+  </data>
+  <data name="cant_connect_to_internet_for_discord" xml:space="preserve">
+    <value>Discordにログインするために必要なインターネットに接続できませんでした。</value>
+  </data>
+  <data name="Casters Only" xml:space="preserve">
+    <value>キャスターのみ</value>
+  </data>
+  <data name="Choose" xml:space="preserve">
+    <value>選択してください</value>
+  </data>
+  <data name="Closing NVIDIA Highlights..." xml:space="preserve">
+    <value>NVIDIAハイライツを閉じる</value>
+  </data>
+  <data name="Closing Speaker System..." xml:space="preserve">
+    <value>スピーカーシステムを閉じる</value>
+  </data>
+  <data name="Compressing Replay File..." xml:space="preserve">
+    <value>リプレイファイルを圧縮しています…</value>
+  </data>
+  <data name="Copy Atlas Link" xml:space="preserve">
+    <value>Atlasのリンクをコピーする</value>
+  </data>
+  <data name="Copy to Clipboard" xml:space="preserve">
+    <value>クリップボードにコピー</value>
+  </data>
+  <data name="Do you play EchoVR on PC or Quest?" xml:space="preserve">
+    <value>あなたはEchoVRをPCとQuestのどちらでプレイしていますか？</value>
+  </data>
+  <data name="EchoVR Settings" xml:space="preserve">
+    <value>EchoVRの設定</value>
+  </data>
+  <data name="Enable_NVIDIA_Highlights" xml:space="preserve">
+    <value>NVIDIA ハイライトを有効にする</value>
+  </data>
+  <data name="highlights_cleared" xml:space="preserve">
+    <value>ハイライトはクリアされました：保存されていなかったハイライトのすべてが一時的なハイライトディレクトリからクリアされました。</value>
+  </data>
+  <data name="Highlights_isn_t_supported_by_your_PC" xml:space="preserve">
+    <value>あなたのPCはNVIDIAハイライトに対応していません</value>
+  </data>
+  <data name="Host Match" xml:space="preserve">
+    <value>試合をホストする</value>
+  </data>
+  <data name="Hosted Matches" xml:space="preserve">
+    <value>ホストしている試合</value>
+  </data>
+  <data name="Incorrect join type." xml:space="preserve">
+    <value>不正確な参加タイプ</value>
+  </data>
+  <data name="Incorrectly formatted Spark or Atlas link:" xml:space="preserve">
+    <value>不正確にフォーマットされたSpark/Atlasリンク</value>
+  </data>
+  <data name="Join" xml:space="preserve">
+    <value>参加</value>
+  </data>
+  <data name="Join as a Player or as a Spectator?" xml:space="preserve">
+    <value>プレイヤーかスペクテイターのどちらとして参加しますか？</value>
+  </data>
+  <data name="Join directly as a player." xml:space="preserve">
+    <value>プレイヤーとして直接参加する</value>
+  </data>
+  <data name="Join directly as a spectator." xml:space="preserve">
+    <value>スペクテイターとして直接参加する</value>
+  </data>
+  <data name="Join EchoVR Match" xml:space="preserve">
+    <value>EchoVRの試合に参加する</value>
+  </data>
+  <data name="join_as_spectator" xml:space="preserve">
+    <value>スペクテイター</value>
+  </data>
+  <data name="Link Type:" xml:space="preserve">
+    <value>リンクタイプ:</value>
+  </data>
+  <data name="Not Logged in" xml:space="preserve">
+    <value>ログインされていません</value>
+  </data>
+  <data name="NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC" xml:space="preserve">
+    <value>NVIDIAハイライトが起動に失敗、またはあなたのPCに対応していません</value>
+  </data>
+  <data name="Player" xml:space="preserve">
+    <value>プレイヤー</value>
+  </data>
+  <data name="Private" xml:space="preserve">
+    <value>プライベート</value>
+  </data>
+  <data name="Public" xml:space="preserve">
+    <value>パブリック</value>
+  </data>
+  <data name="Quest" xml:space="preserve">
+    <value>クエスト</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>再更新</value>
+  </data>
+  <data name="Refresh List" xml:space="preserve">
+    <value>再更新のリスト</value>
+  </data>
+  <data name="Shutting down Atlas..." xml:space="preserve">
+    <value>Atlasをシャットダウンしています</value>
+  </data>
+  <data name="Spark Message" xml:space="preserve">
+    <value>Sparkのメッセージ</value>
+  </data>
+  <data name="Spark | First-time Setup" xml:space="preserve">
+    <value>Spark|初期セットアップ</value>
+  </data>
+  <data name="Spark | Login" xml:space="preserve">
+    <value>Spark|ログイン</value>
+  </data>
+  <data name="Spark | Playspace" xml:space="preserve">
+    <value>Spark|プレイスペース</value>
+  </data>
+  <data name="Streamer Mode" xml:space="preserve">
+    <value>配信者モード</value>
+  </data>
+  <data name="Surround with &amp;lt;&amp;gt;" xml:space="preserve">
+    <value>&lt;&gt;で囲んでください</value>
+  </data>
+  <data name="This is the new speed" xml:space="preserve">
+    <value>これが新しいスピードです</value>
+  </data>
+  <data name="This PC" xml:space="preserve">
+    <value>このPC</value>
+  </data>
+  <data name="Total throw speed from the F10 menu" xml:space="preserve">
+    <value>F10のメニューから得た合計の投球速度</value>
+  </data>
+  <data name="Visibility:" xml:space="preserve">
+    <value>可視性</value>
+  </data>
+  <data name="Whitelist" xml:space="preserve">
+    <value>ホワイトリスト</value>
+  </data>
 </root>

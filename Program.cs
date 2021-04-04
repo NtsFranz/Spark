@@ -76,8 +76,6 @@ namespace Spark
 		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
 		//public const string APIURL = "http://127.0.0.1:5005/";
 
-		public const string UpdateURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
-
 
 		public static readonly HttpClient client = new HttpClient();
 
@@ -312,7 +310,7 @@ namespace Spark
 			}
 
 			RegisterUriScheme("ignitebot", "IgniteBot Protocol");
-			RegisterUriScheme("atlas", "ATLAS Protocol"); // TODO see how this would overwrite ATLAS URL opening
+			RegisterUriScheme("atlas", "ATLAS Protocol");
 			RegisterUriScheme("spark", "Spark Protocol");
 
 			// if logged in with discord
@@ -334,15 +332,16 @@ namespace Spark
 				ToggleWindow(typeof(FirstTimeSetupWindow));
 				Settings.Default.firstTimeSetupShown = true;
 				Settings.Default.Save();
-			} else if (!Settings.Default.ignitebot_spark_upgrade_message_shown)
-			{
-				MessageBox box = new MessageBox(Resources.spark_upgrade_message);
-				box.Show();
-				box.Owner = liveWindow;
-				box.Height = 350;
-				Settings.Default.ignitebot_spark_upgrade_message_shown = true;
-				Settings.Default.Save();
 			}
+			// else if (!Settings.Default.ignitebot_spark_upgrade_message_shown)
+			// {
+			// 	MessageBox box = new MessageBox(Resources.spark_upgrade_message);
+			// 	box.Show();
+			// 	box.Owner = liveWindow;
+			// 	box.Height = 350;
+			// 	Settings.Default.ignitebot_spark_upgrade_message_shown = true;
+			// 	Settings.Default.Save();
+			// }
 
 			// Check for command-line flags
 			if (args.Contains("-slowmode"))
@@ -1068,7 +1067,7 @@ namespace Spark
 
 				for (int i = 0; i < frames.Length; i++)
 				{
-					streamWriter.WriteLine(timestamps[i] + "\t" + frames[i]);
+					streamWriter.WriteLine(timestamps[i].ToString("yyyy/MM/dd HH:mm:ss.fff") + "\t" + frames[i]);
 				}
 
 				streamWriter.Close();
@@ -1806,7 +1805,8 @@ namespace Spark
 							if (team.color != TeamColor.spectator && Math.Abs(smoothDeltaTime) < .1f &&
 								Math.Abs(deltaTime) < .1f &&
 								Vector3.Distance(player.head.Position, playerData.playspaceLocation) > 1.7f &&
-								DateTime.Now - playerData.lastAbuse > TimeSpan.FromSeconds(3)	// create a 3 second buffer between detections
+								DateTime.Now - playerData.lastAbuse > TimeSpan.FromSeconds(3) &&    // create a 3 second buffer between detections
+								playerData.playspaceInvincibility <= TimeSpan.Zero
 								)
 							{
 								// playspace abuse happened
@@ -1843,6 +1843,7 @@ namespace Spark
 									//Console.WriteLine("Update rate too slow to calculate playspace abuses.");
 								}
 							}
+							playerData.playspaceInvincibility -= TimeSpan.FromSeconds(deltaTime);
 
 							#endregion
 
@@ -2231,7 +2232,7 @@ namespace Spark
 			{
 				if (team.players.Count > 0 && matchDataLocal != null)
 				{
-					Task.Run(() => GetAsync(
+					GetRequestCallback(
 						$"{APIURL}get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
 						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						returnJSON =>
@@ -2243,11 +2244,16 @@ namespace Spark
 									Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(returnJSON);
 									if (data != null)
 									{
-										// if there are at least 3 players from that team
-										if (data.ContainsKey("count") && int.Parse(data["count"]) > 3)
+										// if there are at least 2 players from that team
+										if (data.ContainsKey("count") && int.Parse(data["count"]) >= 2)
 										{
 											matchDataLocal.teams[team.color].vrmlTeamName = data["team_name"];
 											matchDataLocal.teams[team.color].vrmlTeamLogo = data["team_logo"];
+										}
+										else // reset the names if people leave
+										{
+											matchDataLocal.teams[team.color].vrmlTeamName = string.Empty;
+											matchDataLocal.teams[team.color].vrmlTeamLogo = string.Empty;
 										}
 									}
 								}
@@ -2256,7 +2262,7 @@ namespace Spark
 							{
 								LogRow(LogType.Error, $"Can't parse get_team_name_from_list response: {ex}");
 							}
-						})
+						}
 					);
 				}
 			}
@@ -2276,7 +2282,10 @@ namespace Spark
 			for (int i = 0; i < maxJoustTimeTimeout / interval; i++)
 			{
 				g_Instance frame = lastFrame;
-				var team = frame.teams[(int)side];
+
+				if (frame.game_status != "playing") return;
+				
+				g_Team team = frame.teams[(int)side];
 				foreach (g_Player player in team.players)
 				{
 					float speed = player.velocity.ToVector3().Length();
@@ -3227,91 +3236,45 @@ namespace Spark
 			NewFilename();
 		}
 
-		public enum AuthCode
-		{
-			network_error,
-			denied,
-			approved
-		}
-
-		[Obsolete("delete soon")]
-		public static AuthCode CheckAccessCode(string accessCode)
-		{
-			if (accessCode == "") return AuthCode.denied;
-
-			try
-			{
-				WebRequest request = WebRequest.Create(APIURL + "ignitebot_auth?key=" + accessCode);
-
-				// Get the response.
-				WebResponse response = request.GetResponse();
-
-				// Display the status.
-				Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-
-				string responseFromServer;
-
-				// Get the stream containing content returned by the server.
-				// The using block ensures the stream is automatically closed.
-				using (Stream dataStream = response.GetResponseStream())
-				{
-					// Open the stream using a StreamReader for easy access.
-					StreamReader reader = new StreamReader(dataStream);
-					// Read the content.
-					responseFromServer = reader.ReadToEnd();
-				}
-
-				// Close the response.
-				response.Close();
-
-				// Display the content.
-				Dictionary<string, string> respObj =
-					JsonConvert.DeserializeObject<Dictionary<string, string>>(responseFromServer);
-
-				if (respObj["auth"] != "true") return AuthCode.denied;
-
-				currentAccessCodeUsername = respObj["username"];
-				//currentSeasonName = respObj["season_name"];
-
-				client.DefaultRequestHeaders.Remove("access-code");
-				client.DefaultRequestHeaders.Add("access-code", respObj["season_name"]);
-
-				return AuthCode.approved;
-			}
-			catch
-			{
-				LogRow(LogType.Error, "Can't connect to the DB server");
-				return AuthCode.network_error;
-			}
-		}
-
-
 		/// <summary>
 		/// Generic method for getting data from a web url
 		/// </summary>
 		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
-		public static async Task GetAsync(string uri, Dictionary<string, string> headers, Action<string> callback)
+		public static void GetRequestCallback(string uri, Dictionary<string, string> headers, Action<string> callback)
+		{
+			Task.Run(async () =>
+			{
+				string resp = await GetRequestAsync(uri, headers); 
+				callback(resp);
+			});
+		}
+		
+		/// <summary>
+		/// Generic method for getting data from a web url
+		/// </summary>
+		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
+		public static async Task<string> GetRequestAsync(string uri, Dictionary<string, string> headers)
 		{
 			try
 			{
 				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
 				if (headers != null)
 				{
-					foreach (var header in headers)
+					foreach ((string key, string value) in headers)
 					{
-						request.Headers[header.Key] = header.Value;
+						request.Headers[key] = value;
 					}
 				}
-				using HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
-				using Stream stream = response.GetResponseStream();
+				request.UserAgent = $"Spark/{AppVersion()}";
+				using WebResponse response = await request.GetResponseAsync();
+				await using Stream stream = response.GetResponseStream();
 				using StreamReader reader = new StreamReader(stream);
-
-				callback(await reader.ReadToEndAsync());
+				return await reader.ReadToEndAsync();
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine($"Can't get data\n{e}");
-				callback("");
+				return string.Empty;
 			}
 		}
 
@@ -3319,11 +3282,23 @@ namespace Spark
 		/// Generic method for posting data to a web url
 		/// </summary>
 		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
-		public static async Task PostAsync(string uri, Dictionary<string, string> headers, string body, Action<string> callback)
+		public static void PostRequestCallback(string uri, Dictionary<string, string> headers, string body, Action<string> callback)
+		{
+			Task.Run(async () =>
+			{
+				string resp = await PostRequestAsync(uri, headers, body); 
+				callback(resp);
+			});
+		}
+		
+		/// <summary>
+		/// Generic method for posting data to a web url
+		/// </summary>
+		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
+		public static async Task<string> PostRequestAsync(string uri, Dictionary<string, string> headers, string body)
 		{
 			try
 			{
-				//FormUrlEncodedContent content = new FormUrlEncodedContent(values);
 				if (headers != null)
 				{
 					foreach (KeyValuePair<string, string> header in headers)
@@ -3332,16 +3307,14 @@ namespace Spark
 						client.DefaultRequestHeaders.Add(header.Key, header.Value);
 					}
 				}
-				var content = new StringContent(body, Encoding.UTF8, "application/json");
+				StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
 				HttpResponseMessage response = await client.PostAsync(uri, content);
-				string responseString = await response.Content.ReadAsStringAsync();
-
-				callback(responseString);
+				return await response.Content.ReadAsStringAsync();
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine($"Can't post data\n{e}");
-				callback("");
+				Console.WriteLine($"Can't get data\n{e}");
+				return string.Empty;
 			}
 		}
 
@@ -3618,24 +3591,24 @@ namespace Spark
 			}
 		}
 
-		public static string[] GetLatestSpeakerSystemURLVer()
+		private static string[] GetLatestSpeakerSystemURLVer()
 		{
 			string[] ret = new string[2];
 			try
 			{
 				HttpWebRequest req = (HttpWebRequest)WebRequest.Create(@"https://api.github.com/repos/iblowatsports/Echo-VR-Speaker-System/releases/latest");
 				req.Accept = "application/json";
-				req.UserAgent = "foo";
+				req.UserAgent = "Spark";
 
-				var resp = req.GetResponse();
+				WebResponse resp = req.GetResponse();
 				Stream ds = resp.GetResponseStream();
 				StreamReader sr = new StreamReader(ds);
 
 				// Session Contents
 				string textResp = sr.ReadToEnd();
-				VersionJson verionJson = JsonConvert.DeserializeObject<VersionJson>(textResp);
-				ret[0] = verionJson.assets.First(url => url.browser_download_url.EndsWith("exe")).browser_download_url;
-				ret[1] = verionJson.tag_name;
+				VersionJson versionJson = JsonConvert.DeserializeObject<VersionJson>(textResp);
+				ret[0] = versionJson.assets.First(url => url.browser_download_url.EndsWith("exe")).browser_download_url;
+				ret[1] = versionJson.tag_name;
 			}
 			catch (Exception e)
 			{
@@ -3918,6 +3891,8 @@ namespace Spark
 				// already trying to close
 				return;
 			}
+
+			liveWindow.trayIcon.Visibility = Visibility.Collapsed;
 
 			closingWindow = new ClosingDialog();
 			closingWindow.Show();

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Spark.Properties;
 
 namespace Spark
 {
@@ -10,20 +11,26 @@ namespace Spark
 		{
 			Program.PlayspaceAbuse += (frame, team, player, offset) =>
 			{
-				Task.Run(() =>
+				if (Settings.Default.replayClipPlayspace)
 				{
-					Task.Delay(DelayAfter * 1000);
-					Program.SaveReplayClip($"{player.name}_abuse");
-				});
+					Task.Delay(DelayAfter * 1000).ContinueWith(t => Program.SaveReplayClip($"{player.name}_abuse"));
+				}
 			};
 
 			Program.Goal += (frame, goalData) =>
 			{
-				Task.Run(() =>
+				if (Settings.Default.replayClipGoal)
 				{
-					Task.Delay(DelayAfter * 1000);
-					Program.SaveReplayClip($"{frame.last_score.person_scored}_goal");
-				});
+					Task.Delay(DelayAfter * 1000).ContinueWith(t => Program.SaveReplayClip($"{frame.last_score.person_scored}_goal"));
+				}
+			};
+
+			Program.Save += (frame, team, player) =>
+			{
+				if (Settings.Default.replayClipSave)
+				{
+					Task.Delay(DelayAfter * 1000).ContinueWith(t => Program.SaveReplayClip($"{player.name}_save"));
+				}
 			};
 		}
 	}

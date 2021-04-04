@@ -66,8 +66,11 @@
 						<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite"
                                       IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
                                       VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
+						<CheckBox x:Name="enableAutoFocusCheckbox" Content="{x:Static p:Resources.Autofocus_EchoVR}" Margin="10,4,10,4" IsChecked="{l:SettingBinding isAutofocusEnabled}" ToolTip="{x:Static p:Resources.enableAutoFocusCheckbox_ToolTip}"/>
+						<CheckBox Content="{x:Static p:Resources.Get_Beta_Updates_to_Spark}" Margin="10,4,10,4" IsChecked="{l:SettingBinding betaUpdates}" ToolTip="{x:Static p:Resources.betaUpdates_ToolTip}"/>
+						
 						<StackPanel Orientation="Horizontal" Margin="10,4,10,4">
-							<Label Content="Color"/>
+							<Label Content="Interface Theme"/>
 							<ComboBox SelectedIndex="{Binding SetTheme}" Width="50">
 								<ComboBoxItem>
 									<Rectangle Width="20" Height="20" Fill="Yellow"/>
@@ -105,7 +108,7 @@
 						<CheckBox x:Name="enableStatsLoggingCheckBox" Content="Enable API Processing"
                                       IsChecked="{l:SettingBinding enableStatsLogging}" Margin="10,20,4,4"
                                       Visibility="Collapsed" />
-						<GroupBox x:Name="statsLoggingBox" Header="{x:Static p:Resources.Stats_Logging}" Margin="10,4,10,4">
+						<GroupBox x:Name="statsLoggingBox" Header="{x:Static p:Resources.Stats_Logging}" Margin="10,4,10,4" IsEnabled="{Binding DiscordLoggedIn}">
 							<StackPanel>
 								<TextBlock
                                         Text="{x:Static p:Resources.upload_description}"
@@ -113,6 +116,7 @@
 								<CheckBox x:Name="uploadToIgniteDBCheckBox" Content="{x:Static p:Resources.Upload_to_IgniteVR_Database}"
                                               IsChecked="{l:SettingBinding uploadToIgniteDB}"
                                               Margin="4,4,4,4" Visibility="Visible" />
+								<CheckBox x:Name="optInCheckbox" Content="{x:Static p:Resources.optInCheckbox_Content}" Margin="4,4,4,4" Unchecked="OptIn" Checked="OptIn" ToolTip="{x:Static p:Resources.optInCheckbox_ToolTip}"/>
 								<CheckBox x:Name="uploadToFirestoreCheckBox" Content="{x:Static p:Resources.Upload_to_Firestore}"
                                               IsChecked="{l:SettingBinding uploadToFirestore}"
 											  Visibility="{Binding FirestoreVisible}"
@@ -208,7 +212,7 @@
                                    Margin="5,5,5,5" />
 						<TextBlock x:Name="discordLoginWarning" Margin="16,16,16,16" Padding="10,10,10,10"
                                        Background="#FF492727" TextWrapping="Wrap"
-                                       Visibility="{Binding DiscordLoginWarningVisible}">
+                                       Visibility="{Binding DiscordNotLoggedInVisible}">
                                 <Run Text="{x:Static p:Resources.TTS_only_works_when_logged_in_with_Discord_}" />
 						</TextBlock>
 						<StackPanel>
@@ -307,6 +311,26 @@
 			</TabItem>
 
 
+
+			<TabItem Header="{x:Static p:Resources.Clips}" Padding="8,6,8,6">
+				<ScrollViewer VerticalScrollBarVisibility="Auto">
+					<StackPanel Margin="10,0,10,10">
+						<Label Content="{x:Static p:Resources.ClipsTitle_Content}" FontSize="16" Margin="5,5,5,5" />
+
+						<CheckBox x:Name="enableReplayCheckbox" Content="{x:Static p:Resources.enableReplayCheckbox_Content}" Margin="5,5,5,5" IsChecked="{l:SettingBinding enableReplayBuffer}" />
+						<Button Content="{x:Static p:Resources.Save_Clip_Now}" Click="ClipNow" IsEnabled="{Binding ElementName=enableReplayCheckbox, Path=IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,5,5,5" Padding="5,5,5,5" Width="200"/>
+
+						<GroupBox Header="Events" IsEnabled="{Binding ElementName=enableReplayCheckbox, Path=IsChecked}">
+							<StackPanel>
+								<CheckBox Content="{x:Static p:Resources.Playspace_Abuse}" Margin="5,5,5,5" IsChecked="{l:SettingBinding replayClipPlayspace}" />
+								<CheckBox Content="{x:Static p:Resources.Goal}" Margin="5,5,5,5" IsChecked="{l:SettingBinding replayClipGoal}" />
+								<CheckBox Content="{x:Static p:Resources.Save}" Margin="5,5,5,5" IsChecked="{l:SettingBinding replayClipSave}" />
+							</StackPanel>
+						</GroupBox>
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+
 			<TabItem Header="{x:Static p:Resources.NVIDIAHighlights}" Padding="8,6,8,6">
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Margin="10,0,10,10">
@@ -315,7 +339,6 @@
 						<TextBlock x:Name="instructionsLabel" Text="{x:Static p:Resources.nvhighlights_description_1}" TextWrapping="Wrap" Margin="5,5,5,5" />
 						<TextBlock x:Name="instructionsLabel_Copy" Text="{x:Static p:Resources.nvhighlights_description_2}" TextWrapping="Wrap" Margin="5,5,5,5" />
 
-						<CheckBox x:Name="enableAutoFocusCheckbox" Content="Autofocus EchoVR" Margin="5,5,5,5" IsChecked="{l:SettingBinding isAutofocusEnabled}" />
 						<CheckBox x:Name="enableNVHighlightsCheckbox" Content="{Binding EnableHighlightsContent}"
                                       Margin="5,5,5,5" IsChecked="{Binding NVHighlightsEnabled}" IsEnabled="{Binding HighlightsSupported}" />
 						<GroupBox x:Name="nvHighlightsBox" Header="NVIDIA Highlights" Margin="5,5,5,5">
@@ -361,40 +384,40 @@
 			</TabItem>
 
 
-			<TabItem Header="EchoVR Settings" Visibility="Visible">
+			<TabItem Header="{x:Static p:Resources.EchoVR_Settings}" Visibility="Visible">
 
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<StackPanel Margin="10,0,10,10">
-						<Label Content="EchoVR Settings" FontSize="16" Margin="5,5,5,5" />
+						<Label Content="{x:Static p:Resources.EchoVR_Settings}" FontSize="16" Margin="5,5,5,5" />
 
 						<StackPanel Visibility="{Binding EchoVRInstalled}">
 							<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
 						           Background="#FF492727" TextWrapping="Wrap"
 						           Visibility="{Binding EchoVRSettingsProgramOpenWarning, Mode=OneWay}"
-								   Text="EchoVR is open. EchoVR saves its settings when it closes, so any settings you set here will be overwritten when EchoVR closes. Make sure to close EchoVR before changing anything here." />
+								   Text="{x:Static p:Resources.EchoVROpen_settings_warning}" />
 							<StackPanel>
 								<!--DataContext="{Binding Source={x:Static l:EchoVRSettingsManager}">-->
 								<TextBlock TextWrapping="Wrap"
 							           Background="{DynamicResource ControlBrightDefaultBackground}"
 							           Padding="10,10,10,10" Margin="0,0,0,10" 
 									   Visibility="Collapsed"
-									   Text="These settings control game settings found in 'C:\Users\[USERNAME]\AppData\Local\rad\loneecho\settings_mp_v2.json'. This is useful for spectator computers without a headset attached.">
+									   Text="{x:Static p:Resources.EchoVR_Settings_info}">
 								</TextBlock>
 
 								<CheckBox Content="Enable API Access" IsChecked="{Binding Source={StaticResource es}, Path=EnableAPIAccess}"/>
 
-								<GroupBox Margin="4,8,4,4" ToolTip="These settings control game settings found in 'C:\Users\[USERNAME]\AppData\Local\rad\loneecho\settings_mp_v2.json'. This is useful for spectator computers without a headset attached.">
+								<GroupBox Margin="4,8,4,4" ToolTip="{x:Static p:Resources.EchoVR_Settings_info}">
 									<GroupBox.Header>
 										<StackPanel Orientation="Horizontal">
 											<Label Content="Apply these settings to "/>
 											<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=CaptureVP2}"  Height="24" Width="165" SelectionChanged="RefreshAllSettings">
-												<ComboBoxItem Content="Default Configuration"/>
+												<ComboBoxItem Content="{x:Static p:Resources.Default_Configuration}"/>
 												<ComboBoxItem Content="capturevp2"/>
 											</ComboBox>
 										</StackPanel>
 									</GroupBox.Header>
 									<StackPanel>
-										<Expander Header="Display" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
+										<Expander Header="{x:Static p:Resources.Display}" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
 											<StackPanel Margin="10,10,10,10">
 												<CheckBox x:Name="fullscreenCheckbox" Content="Fullscreen" IsChecked="{Binding Fullscreen}" Height="28"/>
 												<StackPanel Orientation="Horizontal">
@@ -416,7 +439,7 @@
 												<TextBlock Text="Field of View only works in -capturevp2 mode" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 											</StackPanel>
 										</Expander>
-										<Expander Header="Graphics" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
+										<Expander Header="{x:Static p:Resources.Graphics}" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
 											<StackPanel Margin="10,10,10,10">
 												<StackPanel Orientation="Horizontal">
 													<Label Content="Anti-aliasing"/>
@@ -478,7 +501,7 @@
 										</Expander>
 									</StackPanel>
 								</GroupBox>
-								<Expander Header="Spectator Camera Settings" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
+								<Expander Header="{x:Static p:Resources.Spectator_Camera_Settings}" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
 									<GroupBox Margin="4,8,4,4" Header="For the 2D spectator" ToolTip="These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached.">
 										<StackPanel Margin="10,10,10,10">
 											<StackPanel Orientation="Horizontal">
@@ -519,7 +542,7 @@
 						<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
 						           Background="#FF492727" TextWrapping="Wrap"
 						           Visibility="{Binding EchoVRNotInstalled, Mode=OneWay}"
-								   Text="EchoVR is not found on this PC. Make sure you have EchoVR installed if you want to be able to change these settings, or set the path to the EchoVR executable manually in the General tab." />
+								   Text="{x:Static p:Resources.EchoVR_not_installed_game_settings}" />
 					</StackPanel>
 				</ScrollViewer>
 			</TabItem>

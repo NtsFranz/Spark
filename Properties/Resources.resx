@@ -582,7 +582,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Speed in m/s of your throws</value>
   </data>
   <data name="Throw Speed" xml:space="preserve">
-    <value>Throw Speed (pending update)</value>
+    <value>Throw Speed</value>
   </data>
   <data name="Time in seconds to reach the midline on neutral jousts for the fastest player on each team" xml:space="preserve">
     <value>Time in seconds to reach the midline on neutral jousts for the fastest player on each team</value>
@@ -732,7 +732,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>NVIDIA Highlights isn't supported by your PC</value>
   </data>
   <data name="Total throw speed from the F10 menu" xml:space="preserve">
-    <value>Total throw speed from the F10 menu</value>
+    <value>Total throw speed from the F10 menu (above 10 m/s)</value>
   </data>
   <data name="tts_switch_alt_1" xml:space="preserve">
     <value>switched to</value>
@@ -859,11 +859,8 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Streamer Mode</value>
     <comment>makes the background color green for streaming with OBS</comment>
   </data>
-  <data name="String" xml:space="preserve">
-    <value>ignore and refer to tts spreadsheet</value>
-  </data>
   <data name="Angle brackes allow you to click on the link when it's pasted in Discord." xml:space="preserve">
-    <value>Angle brackes allow you to click on the link when it's pasted in Discord.</value>
+    <value>Angle brackets allow you to click on the link when it's pasted in Discord.</value>
   </data>
   <data name="Append team names" xml:space="preserve">
     <value>Append team names</value>
@@ -886,6 +883,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
   </data>
   <data name="Follow Link" xml:space="preserve">
     <value>Follow Link</value>
+    <comment>actually goes to the link location as if you clicked on it in a browser</comment>
   </data>
   <data name="Host Match" xml:space="preserve">
     <value>Host Match</value>
@@ -941,5 +939,69 @@ Old Event Log folder: 'C:\Users\[USER]\AppData\Roaming\IgniteBot\Log\'
 Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
 </value>
     <comment>this is shown the first time people install Spark from IgniteBot</comment>
+  </data>
+  <data name="Update Available" xml:space="preserve">
+    <value>Update Available</value>
+  </data>
+  <data name="Clips" xml:space="preserve">
+    <value>Clips</value>
+  </data>
+  <data name="optInCheckbox.Content" xml:space="preserve">
+    <value>Opt-in to detailed website stats.</value>
+  </data>
+  <data name="optInCheckbox.ToolTip" xml:space="preserve">
+    <value>Shows more detailed stats on ignitevr.gg/stats, including estimated height, play times, and hand dominance.</value>
+  </data>
+  <data name="ClipsTitle.Content" xml:space="preserve">
+    <value>Echoreplay Clips Settings (Beta)</value>
+  </data>
+  <data name="enableReplayCheckbox.Content" xml:space="preserve">
+    <value>Enable .echoreplay Buffer</value>
+  </data>
+  <data name="Save Clip Now" xml:space="preserve">
+    <value>Save Clip Now</value>
+  </data>
+  <data name="Playspace Abuse" xml:space="preserve">
+    <value>Playspace Abuse</value>
+  </data>
+  <data name="Goal" xml:space="preserve">
+    <value>Goal</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="EchoVROpen settings warning" xml:space="preserve">
+    <value>EchoVR is open. EchoVR saves its settings when it closes, so any settings you set here will be overwritten when EchoVR closes. Make sure to close EchoVR before changing anything here.</value>
+  </data>
+  <data name="EchoVR Settings info" xml:space="preserve">
+    <value>These settings control game settings found in 'C:\Users\[USERNAME]\AppData\Local\rad\loneecho\settings_mp_v2.json'. This is useful for spectator computers without a headset attached.</value>
+  </data>
+  <data name="Default Configuration" xml:space="preserve">
+    <value>Default Configuration</value>
+  </data>
+  <data name="Display" xml:space="preserve">
+    <value>Display</value>
+    <comment>refers to Display settings for the game</comment>
+  </data>
+  <data name="Graphics" xml:space="preserve">
+    <value>Graphics</value><comment>refers to Graphics settings for the game</comment>
+  </data>
+  <data name="Spectator Camera Settings" xml:space="preserve">
+    <value>Spectator Camera Settings</value>
+  </data>
+  <data name="EchoVR not installed game settings" xml:space="preserve">
+    <value>EchoVR is not found on this PC. Make sure you have EchoVR installed if you want to be able to change these settings, or set the path to the EchoVR executable manually in the General tab.</value>
+  </data>
+  <data name="Autofocus EchoVR" xml:space="preserve">
+    <value>Autofocus EchoVR</value>
+  </data>
+  <data name="Get Beta Updates to Spark" xml:space="preserve">
+    <value>Get Beta Updates to Spark</value>
+  </data>
+  <data name="enableAutoFocusCheckbox.ToolTip" xml:space="preserve">
+    <value>Makes sure EchoVR is the topmost window every few seconds.</value>
+  </data>
+  <data name="betaUpdates.ToolTip" xml:space="preserve">
+    <value>Gets updates to the beta channel of Spark if they are available. (restart Spark to check for updates)</value>
   </data>
 </root>

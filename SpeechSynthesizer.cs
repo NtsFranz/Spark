@@ -15,17 +15,18 @@ namespace Spark
 	/// </summary>
 	class SpeechSynthesizer
 	{
-		private string[,] voiceTypes = { { "en-US-Wavenet-D", "en-US-Wavenet-C" }, { "ja-JP-Wavenet-D", "ja-JP-Wavenet-B" } };
-		public string[] languages = { "en-US", "ja-JP" };
+		// private string[,] voiceTypes = { { "en-US-Wavenet-D", "en-US-Wavenet-C" }, { "ja-JP-Wavenet-D", "ja-JP-Wavenet-B" } };
+		private readonly string[,] voiceTypes = {{"en-US-Standard-D", "en-US-Standard-C"}, {"ja-JP-Standard-D", "ja-JP-Standard-B"}};
+		private readonly string[] languages = {"en-US", "ja-JP"}; // 🌎
 
 		private readonly TextToSpeechClient client;
-		bool playing = true;
-		Thread ttsThread;
+		private bool playing = true;
+		private readonly Thread ttsThread;
 
 		/// <summary>
 		/// Queue of filenames to read
 		/// </summary>
-		ConcurrentQueue<string> ttsQueue = new ConcurrentQueue<string>();
+		private readonly ConcurrentQueue<string> ttsQueue = new ConcurrentQueue<string>();
 
 		public SpeechSynthesizer()
 		{
@@ -63,7 +64,7 @@ namespace Spark
 			Program.PlayerSwitchedTeams += (frame, fromTeam, toTeam, player) =>
 			{
 				if (!Settings.Default.playerSwitchTeamTTS) return;
-				
+
 				if (fromTeam != null)
 				{
 					Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_1} {fromTeam.color} {Resources.tts_switch_2} {toTeam.color} {Resources.tts_switch_3}");
@@ -96,19 +97,16 @@ namespace Spark
 			};
 			Program.LocalThrow += (frame) =>
 			{
-				if (Settings.Default.throwSpeedTTS)
+				if (Settings.Default.throwSpeedTTS && frame.last_throw.total_speed > 10)
 				{
 					Program.synth.SpeakAsync($"{frame.last_throw.total_speed:N1}");
 				}
 			};
 			Program.BigBoost += (frame, team, player, speed, howLongAgo) =>
 			{
-				if (player.name == frame.client_name)
+				if (Settings.Default.maxBoostSpeedTTS && player.name == frame.client_name)
 				{
-					if (Settings.Default.maxBoostSpeedTTS)
-					{
-						Program.synth.SpeakAsync($"{speed:N0} {Resources.tts_meters_per_second}");
-					}
+					Program.synth.SpeakAsync($"{speed:N0} {Resources.tts_meters_per_second}");
 				}
 			};
 			Program.PlayspaceAbuse += (frame, team, player, playspacePos) =>
@@ -148,11 +146,11 @@ namespace Spark
 					Program.synth.SpeakAsync($"{frame.last_score.disc_speed:N1} {Resources.tts_meters_per_second}");
 				}
 			};
-			#endregion
 
+			#endregion
 		}
 
-		~SpeechSynthesizer()  // finalizer
+		~SpeechSynthesizer() // finalizer
 		{
 			ttsThread?.Abort();
 		}
@@ -194,19 +192,18 @@ namespace Spark
 				{
 					Thread.Sleep(50);
 				}
-
 			}
 		}
 
 		public float Rate { get; private set; }
+
 		public void SetRate(int selectedIndex)
 		{
-			Rate = 1 + ((selectedIndex - 1 /*index of Normal*/ ) * .4f /*Slope of the speed change*/);
+			Rate = 1 + ((selectedIndex - 1 /*index of Normal*/) * .4f /*Slope of the speed change*/);
 		}
 
 		public void SetOutputToDefaultAudioDevice()
 		{
-
 		}
 
 		public void SpeakAsync(string text)
@@ -229,7 +226,7 @@ namespace Spark
 			AudioConfig config = new AudioConfig
 			{
 				AudioEncoding = AudioEncoding.Mp3,
-				Pitch = -5,
+				// Pitch = -5,
 				SpeakingRate = Rate
 			};
 

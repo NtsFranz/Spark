@@ -19,7 +19,7 @@ namespace Spark.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -133,7 +133,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Angle brackes allow you to click on the link when it&apos;s pasted in Discord..
+        ///   Looks up a localized string similar to Angle brackets allow you to click on the link when it&apos;s pasted in Discord..
         /// </summary>
         public static string Angle_brackes_allow_you_to_click_on_the_link_when_it_s_pasted_in_Discord_ {
             get {
@@ -215,6 +215,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autofocus EchoVR.
+        /// </summary>
+        public static string Autofocus_EchoVR {
+            get {
+                return ResourceManager.GetString("Autofocus EchoVR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autorestart EchoVR into autospectator.
         /// </summary>
         public static string Autorestart_EchoVR_into_autospectator {
@@ -239,6 +248,15 @@ namespace Spark.Properties {
         public static string Batch_Writes {
             get {
                 return ResourceManager.GetString("Batch Writes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gets updates to the beta channel of Spark if they are available. (restart Spark to check for updates).
+        /// </summary>
+        public static string betaUpdates_ToolTip {
+            get {
+                return ResourceManager.GetString("betaUpdates.ToolTip", resourceCulture);
             }
         }
         
@@ -293,6 +311,24 @@ namespace Spark.Properties {
         public static string Choose {
             get {
                 return ResourceManager.GetString("Choose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clips.
+        /// </summary>
+        public static string Clips {
+            get {
+                return ResourceManager.GetString("Clips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Echoreplay Clips Settings (Beta).
+        /// </summary>
+        public static string ClipsTitle_Content {
+            get {
+                return ResourceManager.GetString("ClipsTitle.Content", resourceCulture);
             }
         }
         
@@ -423,6 +459,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default Configuration.
+        /// </summary>
+        public static string Default_Configuration {
+            get {
+                return ResourceManager.GetString("Default Configuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disc Speed (m/s).
         /// </summary>
         public static string Disc_Speed {
@@ -446,6 +491,15 @@ namespace Spark.Properties {
         public static string Discord_Rich_Presence {
             get {
                 return ResourceManager.GetString("Discord Rich Presence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display.
+        /// </summary>
+        public static string Display {
+            get {
+                return ResourceManager.GetString("Display", resourceCulture);
             }
         }
         
@@ -522,6 +576,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to EchoVR is not found on this PC. Make sure you have EchoVR installed if you want to be able to change these settings, or set the path to the EchoVR executable manually in the General tab..
+        /// </summary>
+        public static string EchoVR_not_installed_game_settings {
+            get {
+                return ResourceManager.GetString("EchoVR not installed game settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EchoVR exe path not set. Make sure you have the game installed on this computer to use this feature, or set the path of echovr.exe manually in the Settings..
         /// </summary>
         public static string echovr_path_not_set {
@@ -536,6 +599,24 @@ namespace Spark.Properties {
         public static string EchoVR_Settings {
             get {
                 return ResourceManager.GetString("EchoVR Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These settings control game settings found in &apos;C:\Users\[USERNAME]\AppData\Local\rad\loneecho\settings_mp_v2.json&apos;. This is useful for spectator computers without a headset attached..
+        /// </summary>
+        public static string EchoVR_Settings_info {
+            get {
+                return ResourceManager.GetString("EchoVR Settings info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EchoVR is open. EchoVR saves its settings when it closes, so any settings you set here will be overwritten when EchoVR closes. Make sure to close EchoVR before changing anything here..
+        /// </summary>
+        public static string EchoVROpen_settings_warning {
+            get {
+                return ResourceManager.GetString("EchoVROpen settings warning", resourceCulture);
             }
         }
         
@@ -567,11 +648,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Makes sure EchoVR is the topmost window every few seconds..
+        /// </summary>
+        public static string enableAutoFocusCheckbox_ToolTip {
+            get {
+                return ResourceManager.GetString("enableAutoFocusCheckbox.ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!.
         /// </summary>
         public static string Enabled_API_access_in_the_game_settings__nCLOSE_ECHOVR_BEFORE_PRESSING_OK_ {
             get {
                 return ResourceManager.GetString("Enabled API access in the game settings.\\nCLOSE ECHOVR BEFORE PRESSING OK!", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable .echoreplay Buffer.
+        /// </summary>
+        public static string enableReplayCheckbox_Content {
+            get {
+                return ResourceManager.GetString("enableReplayCheckbox.Content", resourceCulture);
             }
         }
         
@@ -711,6 +810,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get Beta Updates to Spark.
+        /// </summary>
+        public static string Get_Beta_Updates_to_Spark {
+            get {
+                return ResourceManager.GetString("Get Beta Updates to Spark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Goal.
+        /// </summary>
+        public static string Goal {
+            get {
+                return ResourceManager.GetString("Goal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Goal Distance.
         /// </summary>
         public static string Goal_Distance {
@@ -725,6 +842,15 @@ namespace Spark.Properties {
         public static string Goal_Speed {
             get {
                 return ResourceManager.GetString("Goal Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graphics.
+        /// </summary>
+        public static string Graphics {
+            get {
+                return ResourceManager.GetString("Graphics", resourceCulture);
             }
         }
         
@@ -1266,6 +1392,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Opt-in to detailed website stats..
+        /// </summary>
+        public static string optInCheckbox_Content {
+            get {
+                return ResourceManager.GetString("optInCheckbox.Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shows more detailed stats on ignitevr.gg/stats, including estimated height, play times, and hand dominance..
+        /// </summary>
+        public static string optInCheckbox_ToolTip {
+            get {
+                return ResourceManager.GetString("optInCheckbox.ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to orange.
         /// </summary>
         public static string orange {
@@ -1343,6 +1487,15 @@ namespace Spark.Properties {
         public static string Player_Switch_Teams {
             get {
                 return ResourceManager.GetString("Player Switch Teams", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playspace Abuse.
+        /// </summary>
+        public static string Playspace_Abuse {
+            get {
+                return ResourceManager.GetString("Playspace Abuse", resourceCulture);
             }
         }
         
@@ -1533,6 +1686,24 @@ namespace Spark.Properties {
         public static string Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing {
             get {
                 return ResourceManager.GetString("Runs EchoVR with the -spectatorstream option enabled. This is useful for testing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Clip Now.
+        /// </summary>
+        public static string Save_Clip_Now {
+            get {
+                return ResourceManager.GetString("Save Clip Now", resourceCulture);
             }
         }
         
@@ -1799,6 +1970,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spectator Camera Settings.
+        /// </summary>
+        public static string Spectator_Camera_Settings {
+            get {
+                return ResourceManager.GetString("Spectator Camera Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spectators.
         /// </summary>
         public static string Spectators {
@@ -1926,15 +2106,6 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ignore and refer to tts spreadsheet.
-        /// </summary>
-        public static string String {
-            get {
-                return ResourceManager.GetString("String", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Surround with &lt;&gt;.
         /// </summary>
         public static string Surround_with__lt__gt_ {
@@ -2000,7 +2171,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Throw Speed (pending update).
+        ///   Looks up a localized string similar to Throw Speed.
         /// </summary>
         public static string Throw_Speed {
             get {
@@ -2028,7 +2199,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total throw speed from the F10 menu.
+        ///   Looks up a localized string similar to Total throw speed from the F10 menu (above 10 m/s).
         /// </summary>
         public static string Total_throw_speed_from_the_F10_menu {
             get {
@@ -2201,6 +2372,15 @@ namespace Spark.Properties {
         public static string Tube_Exit_Speed__self_ {
             get {
                 return ResourceManager.GetString("Tube Exit Speed (self)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Available.
+        /// </summary>
+        public static string Update_Available {
+            get {
+                return ResourceManager.GetString("Update Available", resourceCulture);
             }
         }
         

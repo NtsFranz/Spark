@@ -168,6 +168,8 @@ namespace Spark
 		/// </summary>
 		public Vector3 playspaceLocation;
 		public DateTime lastAbuse = DateTime.Now;
+		public TimeSpan playspaceInvincibility = TimeSpan.Zero;
+		public readonly TimeSpan joinPlayspaceInvincibility = TimeSpan.FromSeconds(5);
 		public int PlayspaceAbuses { get; set; }
 
 		// head, lhand, rhand

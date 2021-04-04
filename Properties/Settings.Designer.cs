@@ -946,5 +946,53 @@ namespace Spark.Properties {
                 this["enableReplayBuffer"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool replayClipPlayspace {
+            get {
+                return ((bool)(this["replayClipPlayspace"]));
+            }
+            set {
+                this["replayClipPlayspace"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool replayClipGoal {
+            get {
+                return ((bool)(this["replayClipGoal"]));
+            }
+            set {
+                this["replayClipGoal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool replayClipSave {
+            get {
+                return ((bool)(this["replayClipSave"]));
+            }
+            set {
+                this["replayClipSave"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool betaUpdates {
+            get {
+                return ((bool)(this["betaUpdates"]));
+            }
+            set {
+                this["betaUpdates"] = value;
+            }
+        }
     }
 }

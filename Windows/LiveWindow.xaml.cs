@@ -158,7 +158,20 @@ namespace Spark
 
 
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
+
+			_ = CheckForAppUpdate();
 		}
+
+		private void LiveWindow_Load(object sender, EventArgs e)
+		{
+			lock (Program.logOutputWriteLock)
+			{
+				mainOutputTextBox.Text = string.Join('\n', fullFileCache);
+			}
+
+			//_ = CheckForAppUpdate();
+		}
+
 		public void FocusSpark()
 		{
 			//WPF focus the Spark Window 
@@ -690,43 +703,40 @@ namespace Spark
 
 		}
 
-
-		private void LiveWindow_Load(object sender, EventArgs e)
-		{
-			lock (Program.logOutputWriteLock)
-			{
-				mainOutputTextBox.Text = string.Join('\n', fullFileCache);
-			}
-
-			_ = CheckForAppUpdate();
-		}
-
 		private async Task CheckForAppUpdate()
 		{
 			try
 			{
-				HttpClient updateClient = new HttpClient
-				{
-					BaseAddress = new Uri(Program.UpdateURL)
-				};
-				HttpResponseMessage response = await updateClient.GetAsync("get_ignitebot_update");
-				JObject respObj = JObject.Parse(response.Content.ReadAsStringAsync().Result);
-				string version = (string)respObj["version"];
+				string respString = await Program.GetRequestAsync("https://api.github.com/repos/NtsFranz/Spark/releases",null);
+				
+				List<VersionJson> versions = JsonConvert.DeserializeObject<List<VersionJson>>(respString);
 
+				// find the appropriate version
+				VersionJson chosenVersion = versions.First(v => v.prerelease == Settings.Default.betaUpdates);
+				
+				// get the details from the version
+				string downloadUrl = chosenVersion.assets.First(url => url.browser_download_url.EndsWith(".msi")).browser_download_url;
+				string version = chosenVersion.tag_name.TrimStart('v');
+				string changelog = chosenVersion.body;
+				
 				// if we need a new version
 				if (version != Program.AppVersion())
 				{
-					updateFilename = (string)respObj["filename"];
+					updateFilename = downloadUrl;
 					updateButton.Visibility = Visibility.Visible;
 				}
 				else
 				{
 					updateButton.Visibility = Visibility.Collapsed;
 				}
+
+				MessageBox box = new MessageBox(changelog, "Update Available");
+				box.Topmost = true;
+				box.Show();
 			}
-			catch (HttpRequestException)
+			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Couldn't check for update.");
+				LogRow(LogType.Error, $"Couldn't check for update.\n{e}");
 			}
 		}
 
@@ -882,10 +892,17 @@ namespace Spark
 
 		private void updateButton_Click(object sender, RoutedEventArgs e)
 		{
-			WebClient webClient = new WebClient();
-			webClient.DownloadFileCompleted += Completed;
-			webClient.DownloadProgressChanged += ProgressChanged;
-			webClient.DownloadFileAsync(new Uri("https://ignitevr.gg/ignitebot_installers/" + updateFilename), Path.GetTempPath() + updateFilename);
+			try
+			{
+				WebClient webClient = new WebClient();
+				webClient.DownloadFileCompleted += Completed;
+				webClient.DownloadProgressChanged += ProgressChanged;
+				webClient.DownloadFileAsync(new Uri(updateFilename), Path.GetTempPath() + Path.GetFileName(updateFilename));
+			}
+			catch (Exception exp)
+			{
+				new MessageBox("Something broke while trying to download update", Properties.Resources.Error).Show();
+			}
 		}
 
 		private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -898,25 +915,21 @@ namespace Spark
 		{
 			updateProgressBar.Visibility = Visibility.Collapsed;
 
-			// TODO add a confirmation? 
-			//DialogResult result = MessageBox.Show("Download Finished. Install?", "", MessageBoxButtons.OKCancel);
-
-			//if (result == DialogResult.OK)
-			//{
-
-			// Install the update
-			Process.Start(new ProcessStartInfo
+			try
 			{
-				FileName = Path.Combine(Path.GetTempPath(), updateFilename),
-				UseShellExecute = true
-			});
+				// Install the update
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = Path.Combine(Path.GetTempPath(), Path.GetFileName(updateFilename)),
+					UseShellExecute = true
+				});
 
-			Program.Quit();
-			//}
-			//else
-			//{
-			//	// just do nothing
-			//}
+				Program.Quit();
+			}
+			catch (Exception exp)
+			{
+				new MessageBox("Something broke while trying to launch update installer", Properties.Resources.Error).Show();
+			}
 		}
 
 		private void UploadStatsManual(object sender, RoutedEventArgs e)
@@ -1335,7 +1348,7 @@ namespace Spark
 		private void GetLinks(object sender, RoutedEventArgs e)
 		{
 			string ip = alternateIPTextBox.Text;
-			Task.Run(() => Program.GetAsync($"http://{ip}:6721/session", null, (responseJSON) =>
+			Program.GetRequestCallback($"http://{ip}:6721/session", null, (responseJSON) =>
 			{
 				try
 				{
@@ -1357,7 +1370,7 @@ namespace Spark
 				{
 					Logger.LogRow(Logger.LogType.Error, $"Can't parse response\n{ex}");
 				}
-			}));
+			});
 		}
 
 		//public int HostingVisibilityDropdown {
@@ -1752,10 +1765,11 @@ namespace Spark
 					firstHost = false;
 
 					// post new data, then fetch the updated list
-					Task.Run(() => Program.PostAsync(hostURL, new Dictionary<string, string>() { { "x-api-key", DiscordOAuth.igniteUploadKey } }, data, (responseJSON) =>
-					{
-						GetAtlasMatches();
-					}));
+					Program.PostRequestCallback(
+						hostURL,
+						new Dictionary<string, string> {{"x-api-key", DiscordOAuth.igniteUploadKey}},
+						data,
+						(responseJSON) => { GetAtlasMatches(); });
 				}
 
 				Thread.Sleep(100);
@@ -1763,17 +1777,21 @@ namespace Spark
 
 			// post new data, then fetch the updated list
 			string matchInfo = JsonConvert.SerializeObject(match.ToDict());
-			Task.Run(() => Program.PostAsync(unhostURL, new Dictionary<string, string>() { { "x-api-key", DiscordOAuth.igniteUploadKey } }, matchInfo, (responseJSON) =>
-			{
-				Program.hostedAtlasSessionId = string.Empty;
-				Dispatcher.Invoke(() =>
+			Program.PostRequestCallback(
+				unhostURL,
+				new Dictionary<string, string> {{"x-api-key", DiscordOAuth.igniteUploadKey}},
+				matchInfo,
+				(responseJSON) =>
 				{
-					hostingMatchCheckbox.IsChecked = false;
-					hostingMatchLabel.Content = "Host Match";
+					Program.hostedAtlasSessionId = string.Empty;
+					Dispatcher.Invoke(() =>
+					{
+						hostingMatchCheckbox.IsChecked = false;
+						hostingMatchLabel.Content = "Host Match";
+					});
+					Thread.Sleep(10);
+					GetAtlasMatches();
 				});
-				Thread.Sleep(10);
-				GetAtlasMatches();
-			}));
 		}
 
 		private void GetAtlasMatches()
@@ -1784,7 +1802,11 @@ namespace Spark
 			bool oldAtlasDone = false;
 			bool igniteAtlasDone = false;
 
-			Task.Run(() => Program.PostAsync("https://echovrconnect.appspot.com/api/v1/player/" + Settings.Default.client_name, new Dictionary<string, string> { { "User-Agent", "Atlas/0.5.8" } }, "", (responseJSON) =>
+			Program.PostRequestCallback(
+				"https://echovrconnect.appspot.com/api/v1/player/" + Settings.Default.client_name, 
+				new Dictionary<string, string> { { "User-Agent", "Atlas/0.5.8" } }, 
+				string.Empty, 
+				(responseJSON) =>
 			{
 				try
 				{
@@ -1796,11 +1818,11 @@ namespace Spark
 					oldAtlasDone = true;
 					Logger.LogRow(Logger.LogType.Error, $"Can't parse Atlas matches response\n{e}");
 				}
-			}));
+			});
 
 
-			string matchesAPIURL = Program.APIURL + "atlas_matches_v2/" + Settings.Default.client_name;
-			Task.Run(() => Program.GetAsync(
+			string matchesAPIURL = $"{Program.APIURL}atlas_matches_v2/{(Settings.Default.client_name == string.Empty ? "_" : Settings.Default.client_name)}";
+			Program.GetRequestCallback(
 				matchesAPIURL,
 				new Dictionary<string, string>() {
 					{ "x-api-key", DiscordOAuth.igniteUploadKey },
@@ -1820,7 +1842,7 @@ namespace Spark
 						Logger.LogRow(Logger.LogType.Error, $"Can't parse Atlas matches response\n{e}");
 					}
 				}
-			 ));
+			 );
 
 			// once both requests are done....
 			Task.Run(() =>

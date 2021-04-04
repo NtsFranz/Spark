@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Windows;
+using Google.Api;
 using Spark.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -44,8 +45,7 @@ namespace Spark
 		private static readonly Dictionary<string, string> personalAccessCode = new Dictionary<string, string>()
 		{
 			{ "username","Personal" },
-			{ "pw","personal" },
-			{ "season_name","personal" }
+			{ "series_name","personal" }
 		};
 		public static Dictionary<string, string> CurrentKeys {
 			get {
@@ -60,8 +60,8 @@ namespace Spark
 			}
 		}
 
-		public static string AccessCode => CurrentKeys?["pw"];
-		public static string SeasonName => CurrentKeys?["season_name"];
+		public static string AccessCode => CurrentKeys?["series_name"];
+		public static string SeasonName => CurrentKeys?["series_name"];
 
 		public static bool IsLoggedIn { get => oauthToken != string.Empty; }
 
@@ -69,7 +69,7 @@ namespace Spark
 		{
 			for (int i = 0; i < availableAccessCodes.Count; i++)
 			{
-				if (SecretKeys.Hash(availableAccessCodes[i]["pw"]) == hash)
+				if (SecretKeys.Hash(availableAccessCodes[i]["series_name"]) == hash)
 				{
 					return i;
 				}
@@ -80,7 +80,7 @@ namespace Spark
 		{
 			foreach (var key in availableAccessCodes)
 			{
-				if (SecretKeys.Hash(key["pw"]) == hash)
+				if (SecretKeys.Hash(key["series_name"]) == hash)
 				{
 					return key["username"];
 				}
@@ -221,38 +221,46 @@ namespace Spark
 			}
 
 			// get the access codes for this user
-			HttpResponseMessage accessCodesResponse = await client.GetAsync(SecretKeys.accessCodesURL + oauthToken);
-			string accessCodesResponseString = await accessCodesResponse.Content.ReadAsStringAsync();
-
-			Dictionary<string, JToken> accessCodesResponseData = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(accessCodesResponseString);
-			availableAccessCodes = accessCodesResponseData["keys"].ToObject<List<Dictionary<string, string>>>();
-			if (accessCodesResponseData.ContainsKey("write"))
+			try
 			{
-				igniteUploadKey = accessCodesResponseData["write"].ToObject<string>();
+				HttpResponseMessage accessCodesResponse = await client.GetAsync(SecretKeys.accessCodesURL + oauthToken + $"?v={Settings.Default.client_name}_{Program.AppVersion()}");
+				string accessCodesResponseString = await accessCodesResponse.Content.ReadAsStringAsync();
+
+				Dictionary<string, JToken> accessCodesResponseData = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(accessCodesResponseString);
+				availableAccessCodes = accessCodesResponseData["keys"].ToObject<List<Dictionary<string, string>>>();
+				if (accessCodesResponseData.ContainsKey("write"))
+				{
+					igniteUploadKey = accessCodesResponseData["write"].ToObject<string>();
+				}
+
+				if (accessCodesResponseData.ContainsKey("firebase_cred"))
+				{
+					firebaseCred = accessCodesResponseData["firebase_cred"].ToObject<string>();
+				}
+
+				availableAccessCodes.Insert(0, new Dictionary<string, string>
+				{
+					{"series_name", "personal"},
+					{"username", "Personal"}
+				});
+
+				Program.currentAccessCodeUsername = GetAccessCodeUsername(Settings.Default.accessCode);
+
+
+				authenticated?.Invoke();
 			}
-			if (accessCodesResponseData.ContainsKey("firebase_cred"))
+			catch (Exception e)
 			{
-				firebaseCred = accessCodesResponseData["firebase_cred"].ToObject<string>();
+				new MessageBox("Error connecting to login server. Check your internet connect or check if ignitevr.gg is down.", Resources.Error).Show();
+				Logger.LogRow(Logger.LogType.Error, $"Error connecting to login server. {e}");
 			}
-
-			availableAccessCodes.Insert(0, new Dictionary<string, string>
-			{
-				{ "pw", "personal" },
-				{ "season_name", "personal" },
-				{ "username", "Personal" }
-			});
-
-			Program.currentAccessCodeUsername = GetAccessCodeUsername(Settings.Default.accessCode);
-
-
-			authenticated?.Invoke();
 		}
 
 		public static void RevertToPersonal()
 		{
 			// revert to personal
 			Program.currentAccessCodeUsername = personalAccessCode["username"];
-			Settings.Default.accessCode = SecretKeys.Hash(personalAccessCode["pw"]);
+			Settings.Default.accessCode = SecretKeys.Hash(personalAccessCode["series_name"]);
 			Settings.Default.Save();
 		}
 	}

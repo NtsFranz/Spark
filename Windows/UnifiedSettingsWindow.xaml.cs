@@ -1,6 +1,7 @@
 ﻿using Spark.Properties;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -12,6 +13,9 @@ using System.Text.RegularExpressions;
 using System.Windows.Navigation;
 using System.Windows.Data;
 using System.Windows.Markup;
+using System.Net;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Spark
 {
@@ -22,6 +26,10 @@ namespace Spark
 	{
 		// set to false initially so that loading the settings from disk doesn't activate the events
 		private bool initialized;
+		/// <summary>
+		/// Set to true once the opt in status fetched.
+		/// </summary>
+		private bool optInFound;
 
 
 		public UnifiedSettingsWindow()
@@ -32,6 +40,9 @@ namespace Spark
 		private void WindowLoad(object sender, RoutedEventArgs e)
 		{
 			//Initialize();
+
+			optInCheckbox.IsEnabled = false;
+			_ = GetOptInStatus();
 
 			initialized = true;
 		}
@@ -188,6 +199,61 @@ namespace Spark
 			}
 		}
 
+		private async Task GetOptInStatus()
+		{
+			if (Settings.Default.client_name == string.Empty ||
+			    DiscordOAuth.oauthToken == string.Empty)
+			{
+				optInFound = true;
+				optInCheckbox.IsEnabled = false;
+				return;
+			}
+
+			try
+			{
+				string resp = await Program.GetRequestAsync(
+					$"{Program.APIURL}/optin/get/{Settings.Default.client_name}",
+					new Dictionary<string, string> {{"x-api-key", DiscordOAuth.igniteUploadKey}});
+
+				JToken objResp = JsonConvert.DeserializeObject<JToken>(resp);
+				if (objResp["opted_in"] != null)
+				{
+					optInCheckbox.IsChecked = (bool) objResp["opted_in"];
+				}
+			}
+			catch (Exception e)
+			{
+				Logger.LogRow(Logger.LogType.Error, $"Couldn't check for update.\n{e}");
+			}
+			
+			optInFound = true;
+			optInCheckbox.IsEnabled = true;
+		}
+
+		private void OptIn(object sender, RoutedEventArgs e)
+		{
+			if (!optInFound) return;
+
+			Program.PostRequestCallback(
+				$"{Program.APIURL}/optin/set/{Settings.Default.client_name}/{((CheckBox) sender).IsChecked}",
+				new Dictionary<string, string>
+				{
+					{"x-api-key", DiscordOAuth.igniteUploadKey}, {"token", DiscordOAuth.oauthToken}
+				},
+				string.Empty,
+				(resp) =>
+				{
+					if (resp.Contains("opted in"))
+					{
+						optInCheckbox.IsChecked = true;
+					}
+					else if (resp.Contains("opted normal"))
+					{
+						optInCheckbox.IsChecked = false;
+					}
+				});
+		}
+
 		#endregion
 
 		#region Replays
@@ -249,8 +315,8 @@ namespace Spark
 
 		#region TTS
 
-		public static Visibility DiscordLoginWarningVisible =>
-			DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
+		public static bool DiscordLoggedIn => DiscordOAuth.IsLoggedIn;
+		public static Visibility DiscordNotLoggedInVisible => DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
 
 		public static bool JoustTime {
 			get => Settings.Default.joustTimeTTS;
@@ -510,7 +576,10 @@ namespace Spark
 
 		public static string AppVersionLabelText => $"v{Program.AppVersion()}";
 
-
+		private void ClipNow(object sender, RoutedEventArgs e)
+		{
+			Program.SaveReplayClip("manual");
+		}
 	}
 
 	public class SettingBindingExtension : Binding
