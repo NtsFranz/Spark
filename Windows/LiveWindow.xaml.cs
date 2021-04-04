@@ -724,15 +724,15 @@ namespace Spark
 				{
 					updateFilename = downloadUrl;
 					updateButton.Visibility = Visibility.Visible;
+
+					MessageBox box = new MessageBox(changelog, "Update Available");
+					box.Topmost = true;
+					box.Show();
 				}
 				else
 				{
 					updateButton.Visibility = Visibility.Collapsed;
 				}
-
-				MessageBox box = new MessageBox(changelog, "Update Available");
-				box.Topmost = true;
-				box.Show();
 			}
 			catch (Exception e)
 			{
