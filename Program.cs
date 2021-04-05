@@ -1381,12 +1381,12 @@ namespace Spark
 		/// <summary>
 		/// Goes through a "frame" (single JSON object) and generates the relevant events
 		/// </summary>
-		static void ProcessFrame(g_Instance frame)
+		private static void ProcessFrame(g_Instance frame)
 		{
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null || string.IsNullOrWhiteSpace(frame.game_status)) return;
 			if (frame.inLobby) return;
-			pubSocket.SendMoreFrame("TimeAndScore").SendFrame(string.Format("{0:0.00}", frame.game_clock) + " Orange: " + frame.orange_points.ToString() + " Blue: " + frame.blue_points.ToString());
+			pubSocket.SendMoreFrame("TimeAndScore").SendFrame($"{frame.game_clock:0.00} Orange: {frame.orange_points} Blue: {frame.blue_points}");
 			// if we entered a different match
 			if (frame.sessionid != lastFrame.sessionid || lastFrame == null)
 			{
@@ -1744,6 +1744,8 @@ namespace Spark
 								{
 									LogRow(LogType.Error, "Error processing action", exp.ToString());
 								}
+								
+								HighlightsHelper.SaveHighlightMaybe(player, frame, "BIG_BOOST");
 
 								matchData.Events.Add(
 									new EventData(
@@ -1991,8 +1993,8 @@ namespace Spark
 									{
 										stunningMatchedPairs.Remove(stunEvent);
 
-										var stunner = stunEvent[0].player;
-										var stunnee = player;
+										g_Player stunner = stunEvent[0].player;
+										g_Player stunnee = player;
 
 										matchData.Events.Add(new EventData(matchData, EventData.EventType.stun,
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,

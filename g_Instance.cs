@@ -121,6 +121,19 @@ namespace Spark
 
 			return null;
 		}
+		
+		public g_Team GetTeam(string player_name)
+		{
+			foreach (g_Team team in teams)
+			{
+				foreach (g_Player player in team.players)
+				{
+					if (player.name == player_name) return team;
+				}
+			}
+
+			return null;
+		}
 
 		public g_Team GetTeam(long userid)
 		{

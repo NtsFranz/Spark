@@ -940,6 +940,13 @@ namespace Spark
 		private void RejoinClicked(object sender, RoutedEventArgs e)
 		{
 			Program.KillEchoVR();
+
+			// join in spectator if we were in spectator before
+			g_Team team = Program.lastFrame.GetTeam(Program.lastFrame.client_name);
+			if (team != null && team.color == g_Team.TeamColor.spectator)
+			{
+				Program.StartEchoVR("s");	
+			}
 			Program.StartEchoVR("j");
 		}
 

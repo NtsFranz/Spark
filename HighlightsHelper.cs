@@ -21,7 +21,7 @@ namespace Spark
 		public static int nvHighlightClipCount;
 
 
-		public enum HighlightLevel : int
+		private enum HighlightLevel : int
 		{
 			CLIENT_ONLY,
 			CLIENT_TEAM,
@@ -151,7 +151,7 @@ namespace Spark
 					Id = "INTERCEPTION",
 					HighlightTags = Highlights.HighlightType.Achievement,
 					Significance = Highlights.HighlightSignificance.Good,
-					UserDefaultInterest = true,
+					UserDefaultInterest = false,
 					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Interception!"),}
 				},
 				new()
@@ -169,6 +169,14 @@ namespace Spark
 					Significance = Highlights.HighlightSignificance.Good,
 					UserDefaultInterest = true,
 					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Scoring Assist!"),}
+				},
+				new()
+				{
+					Id = "BIG_BOOST",
+					HighlightTags = Highlights.HighlightType.Achievement,
+					Significance = Highlights.HighlightSignificance.Good,
+					UserDefaultInterest = false,
+					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Big boost!"),}
 				},
 			};
 
@@ -275,7 +283,8 @@ namespace Spark
 				Console.WriteLine($"CloseGroupCallback {id} returns unsuccess");
 			}
 		}
-		public static void NVConfigCallback(Highlights.ReturnCode ret, int id)
+
+		private static void NVConfigCallback(Highlights.ReturnCode ret, int id)
 		{
 			if (ret == Highlights.ReturnCode.SUCCESS)
 			{
@@ -287,7 +296,8 @@ namespace Spark
 				Console.WriteLine($"ConfigStep {id} returns unsuccess");
 			}
 		}
-		public static void NVGetNumberOfHighlightsCallback(Highlights.ReturnCode ret, int number, int id)
+
+		private static void NVGetNumberOfHighlightsCallback(Highlights.ReturnCode ret, int number, int id)
 		{
 			if (ret == Highlights.ReturnCode.SUCCESS)
 			{
@@ -305,10 +315,9 @@ namespace Spark
 		{
 			try
 			{
-				if (player == null || !didHighlightsInit || !isNVHighlightsEnabled) return "";
+				if (player == null || frame.teams == null || !didHighlightsInit || !isNVHighlightsEnabled) return "";
 
-				TeamColor clientTeam = frame.teams
-					.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
+				TeamColor clientTeam = frame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
 				if (player.name == frame.client_name)
 				{
 					return "PERSONAL_HIGHLIGHT_GROUP";
@@ -351,19 +360,19 @@ namespace Spark
 			Highlights.CloseGroup(cgp, closeGroupCallback);
 			cgp = new Highlights.CloseGroupParams { id = "OPPOSING_TEAM_HIGHLIGHT_GROUP", destroyHighlights = true };
 			Highlights.CloseGroup(cgp, closeGroupCallback);
-			if (reopenGroup)
-			{
-				Highlights.OpenGroupParams ogp1 = new();
-				ogp1.Id = "PERSONAL_HIGHLIGHT_GROUP";
-				ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Personal Highlight Group"), };
-				Highlights.OpenGroup(ogp1, configStepCallback);
-				ogp1.Id = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
-				ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Personal Team Highlight Group"), };
-				Highlights.OpenGroup(ogp1, configStepCallback);
-				ogp1.Id = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
-				ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Opposing Team Highlight Group"), };
-				Highlights.OpenGroup(ogp1, configStepCallback);
-			}
+			
+			if (!reopenGroup) return;
+			
+			Highlights.OpenGroupParams ogp1 = new();
+			ogp1.Id = "PERSONAL_HIGHLIGHT_GROUP";
+			ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Personal Highlight Group"), };
+			Highlights.OpenGroup(ogp1, configStepCallback);
+			ogp1.Id = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
+			ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Personal Team Highlight Group"), };
+			Highlights.OpenGroup(ogp1, configStepCallback);
+			ogp1.Id = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
+			ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Opposing Team Highlight Group"), };
+			Highlights.OpenGroup(ogp1, configStepCallback);
 		}
 	}
 }
