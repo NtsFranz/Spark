@@ -19,7 +19,7 @@ namespace Spark.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -324,7 +324,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Echoreplay Clips Settings (Beta).
+        ///   Looks up a localized string similar to Clips Settings.
         /// </summary>
         public static string ClipsTitle_Content {
             get {
@@ -1048,6 +1048,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Interception.
+        /// </summary>
+        public static string Interception {
+            get {
+                return ResourceManager.GetString("Interception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Japanese Translation:.
         /// </summary>
         public static string Japanese_Translation_ {
@@ -1731,6 +1740,15 @@ namespace Spark.Properties {
         public static string Score_ {
             get {
                 return ResourceManager.GetString("Score:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Score Assist.
+        /// </summary>
+        public static string Score_Assist {
+            get {
+                return ResourceManager.GetString("Score Assist", resourceCulture);
             }
         }
         

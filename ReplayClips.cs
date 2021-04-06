@@ -5,7 +5,6 @@ namespace Spark
 {
 	public class ReplayClips
 	{
-		private const int DelayAfter = 5;
 
 		public ReplayClips()
 		{
@@ -13,7 +12,7 @@ namespace Spark
 			{
 				if (Settings.Default.replayClipPlayspace)
 				{
-					Task.Delay(DelayAfter * 1000).ContinueWith(t => Program.SaveReplayClip($"{player.name}_abuse"));
+					Task.Delay((int)(Settings.Default.replayClipSecondsAfter * 1000)).ContinueWith(t => Program.SaveReplayClip($"{player.name}_abuse"));
 				}
 			};
 
@@ -21,7 +20,7 @@ namespace Spark
 			{
 				if (Settings.Default.replayClipGoal)
 				{
-					Task.Delay(DelayAfter * 1000).ContinueWith(t => Program.SaveReplayClip($"{frame.last_score.person_scored}_goal"));
+					Task.Delay((int)(Settings.Default.replayClipSecondsAfter * 1000)).ContinueWith(t => Program.SaveReplayClip($"{frame.last_score.person_scored}_goal"));
 				}
 			};
 
@@ -29,7 +28,23 @@ namespace Spark
 			{
 				if (Settings.Default.replayClipSave)
 				{
-					Task.Delay(DelayAfter * 1000).ContinueWith(t => Program.SaveReplayClip($"{player.name}_save"));
+					Task.Delay((int)(Settings.Default.replayClipSecondsAfter * 1000)).ContinueWith(t => Program.SaveReplayClip($"{player.name}_save"));
+				}
+			};
+
+			Program.Assist += (frame, goalData) =>
+			{
+				if (Settings.Default.replayClipAssist)
+				{
+					Task.Delay((int)(Settings.Default.replayClipSecondsAfter * 1000)).ContinueWith(t => Program.SaveReplayClip($"{frame.last_score.assist_scored}_assist"));
+				}
+			};
+
+			Program.Interception += (frame, team, throwPlayer, catchPlayer) =>
+			{
+				if (Settings.Default.replayClipInterception)
+				{
+					Task.Delay((int)(Settings.Default.replayClipSecondsAfter * 1000)).ContinueWith(t => Program.SaveReplayClip($"{catchPlayer.name}_interception"));
 				}
 			};
 		}

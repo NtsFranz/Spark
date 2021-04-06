@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="(Requires Restart)" xml:space="preserve">
     <value>(Requires Restart)</value>
@@ -138,7 +138,7 @@
   <data name="Autorestart EchoVR into autospectator" xml:space="preserve">
     <value>Autorestart EchoVR into autospectator</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="baseline_replay_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\img\baseline_replay_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -953,7 +953,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
     <value>Shows more detailed stats on ignitevr.gg/stats, including estimated height, play times, and hand dominance.</value>
   </data>
   <data name="ClipsTitle.Content" xml:space="preserve">
-    <value>Echoreplay Clips Settings (Beta)</value>
+    <value>Clips Settings</value>
   </data>
   <data name="enableReplayCheckbox.Content" xml:space="preserve">
     <value>Enable .echoreplay Buffer</value>
@@ -984,7 +984,8 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
     <comment>refers to Display settings for the game</comment>
   </data>
   <data name="Graphics" xml:space="preserve">
-    <value>Graphics</value><comment>refers to Graphics settings for the game</comment>
+    <value>Graphics</value>
+    <comment>refers to Graphics settings for the game</comment>
   </data>
   <data name="Spectator Camera Settings" xml:space="preserve">
     <value>Spectator Camera Settings</value>
@@ -1003,5 +1004,11 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   </data>
   <data name="betaUpdates.ToolTip" xml:space="preserve">
     <value>Gets updates to the beta channel of Spark if they are available. (restart Spark to check for updates)</value>
+  </data>
+  <data name="Interception" xml:space="preserve">
+    <value>Interception</value>
+  </data>
+  <data name="Score Assist" xml:space="preserve">
+    <value>Score Assist</value>
   </data>
 </root>

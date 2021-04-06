@@ -16,6 +16,7 @@ using System.Windows.Markup;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OBSWebsocketDotNet;
 
 namespace Spark
 {
@@ -44,7 +45,32 @@ namespace Spark
 			optInCheckbox.IsEnabled = false;
 			_ = GetOptInStatus();
 
+			Program.obs.instance.Connected += OBSConnected;
+			Program.obs.instance.Disconnected += OBSDisconnected;
+
+			obsConnectButton.Content = Program.obs.instance.IsConnected ? "Disconnect" : "Connect";
+
+			// passwordbox can't use binding
+			obsPasswordBox.Password = Settings.Default.obsPassword;
+			DoClipLengthSum();
+
 			initialized = true;
+		}
+
+		private void OBSConnected(object sender, EventArgs e)
+		{
+			Dispatcher.Invoke(() =>
+			{
+				obsConnectButton.Content = "Disconnect";
+			});
+		}
+
+		private void OBSDisconnected(object sender, EventArgs e)
+		{
+			Dispatcher.Invoke(() =>
+			{
+				obsConnectButton.Content = "Connect";
+			});
 		}
 
 		private void Initialize()
@@ -202,7 +228,7 @@ namespace Spark
 		private async Task GetOptInStatus()
 		{
 			if (Settings.Default.client_name == string.Empty ||
-			    DiscordOAuth.oauthToken == string.Empty)
+				DiscordOAuth.oauthToken == string.Empty)
 			{
 				optInFound = true;
 				optInCheckbox.IsEnabled = false;
@@ -213,19 +239,19 @@ namespace Spark
 			{
 				string resp = await Program.GetRequestAsync(
 					$"{Program.APIURL}/optin/get/{Settings.Default.client_name}",
-					new Dictionary<string, string> {{"x-api-key", DiscordOAuth.igniteUploadKey}});
+					new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } });
 
 				JToken objResp = JsonConvert.DeserializeObject<JToken>(resp);
 				if (objResp["opted_in"] != null)
 				{
-					optInCheckbox.IsChecked = (bool) objResp["opted_in"];
+					optInCheckbox.IsChecked = (bool)objResp["opted_in"];
 				}
 			}
 			catch (Exception e)
 			{
 				Logger.LogRow(Logger.LogType.Error, $"Couldn't check for update.\n{e}");
 			}
-			
+
 			optInFound = true;
 			optInCheckbox.IsEnabled = true;
 		}
@@ -235,7 +261,7 @@ namespace Spark
 			if (!optInFound) return;
 
 			Program.PostRequestCallback(
-				$"{Program.APIURL}/optin/set/{Settings.Default.client_name}/{((CheckBox) sender).IsChecked}",
+				$"{Program.APIURL}/optin/set/{Settings.Default.client_name}/{((CheckBox)sender).IsChecked}",
 				new Dictionary<string, string>
 				{
 					{"x-api-key", DiscordOAuth.igniteUploadKey}, {"token", DiscordOAuth.oauthToken}
@@ -512,22 +538,6 @@ namespace Spark
 			new MessageBox(Properties.Resources.highlights_cleared).Show();
 		}
 
-		private void SecondsBeforeChanged(object sender, TextChangedEventArgs e)
-		{
-			if (!initialized) return;
-			if (!float.TryParse(((TextBox)sender).Text, out float value)) return;
-			Settings.Default.nvHighlightsSecondsBefore = value;
-			Settings.Default.Save();
-		}
-
-		private void SecondsAfterChanged(object sender, TextChangedEventArgs e)
-		{
-			if (!initialized) return;
-			if (!float.TryParse(((TextBox)sender).Text, out float value)) return;
-			Settings.Default.nvHighlightsSecondsAfter = value;
-			Settings.Default.Save();
-		}
-
 		public string ClearHighlightsButtonContent => $"Clear {HighlightsHelper.nvHighlightClipCount} Unsaved Highlights";
 
 		public string EnableHighlightsContent => HighlightsHelper.isNVHighlightsSupported
@@ -536,6 +546,273 @@ namespace Spark
 
 		public bool HighlightsSupported => HighlightsHelper.isNVHighlightsSupported;
 		public bool DoNVClipsExist => HighlightsHelper.DoNVClipsExist();
+
+
+		private void ClipNow(object sender, RoutedEventArgs e)
+		{
+			Program.SaveReplayClip("manual");
+		}
+
+		private void OBSConnect(object sender, RoutedEventArgs e)
+		{
+			if (!Program.obs.instance.IsConnected)
+			{
+				Task.Run(() =>
+				{
+					try
+					{
+						Program.obs.instance.Connect(Settings.Default.obsIP, Settings.Default.obsPassword);
+					}
+					catch (AuthFailureException)
+					{
+						Logger.LogRow(Logger.LogType.Error, "Failed to connect to OBS. AuthFailure");
+						new MessageBox("Authentication failed.", Properties.Resources.Error).Show();
+						return;
+					}
+					catch (ErrorResponseException ex)
+					{
+						Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS.\n{ex}");
+						new MessageBox("Connect failed.", Properties.Resources.Error).Show();
+						return;
+					}
+					catch (Exception ex)
+					{
+						Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS for another reason.\n{ex}");
+						new MessageBox("Connect failed.", Properties.Resources.Error).Show();
+						return;
+					}
+					if (!Program.obs.instance.IsConnected)
+					{
+						new MessageBox("Connect failed.\nMake sure OBS is open and you have installed the OBS Websocket plugin.", Properties.Resources.Error).Show();
+					}
+				});
+			}
+			else
+			{
+				Program.obs.instance.Disconnect();
+			}
+		}
+
+		private enum ClipsTab { NVHighlights, echoreplay, OBS }
+		private ClipsTab clipsTab;
+
+		private void ClipTypeTabChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (!initialized) return;
+			TabControl control = (TabControl)sender;
+			clipsEventsBox.Header = $"Clip Settings ({((TabItem)control.SelectedValue).Header})";
+			clipsTab = (ClipsTab)control.SelectedIndex;
+
+			// if NV Highlights
+			if (clipsTab == ClipsTab.NVHighlights)
+			{
+				nvHighlightsChooseEventsInOverlayLabel.Visibility = Visibility.Visible;
+				eventsToChoose.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				nvHighlightsChooseEventsInOverlayLabel.Visibility = Visibility.Collapsed;
+				eventsToChoose.Visibility = Visibility.Visible;
+			}
+
+			// if obs
+			if (clipsTab == ClipsTab.OBS)
+			{
+				secondsBefore.IsEnabled = false;
+			}
+			else
+			{
+				secondsBefore.IsEnabled = true;
+			}
+
+			RefreshAllSettings(null, null);
+			DoClipLengthSum();
+		}
+
+		private void OBSPasswordChanged(object sender, RoutedEventArgs e)
+		{
+			Settings.Default.obsPassword = ((PasswordBox)sender).Password;
+		}
+
+		private void OBSStartReplayBuffer(object sender, RoutedEventArgs e)
+		{
+			if (Program.obs.instance.IsConnected)
+			{
+				try
+				{
+					Program.obs.instance.StartReplayBuffer();
+				}
+				catch (Exception exp)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"Couldn't start replay buffer\n{exp}");
+				}
+			}
+		}
+		private void OBSStopReplayBuffer(object sender, RoutedEventArgs e)
+		{
+			if (Program.obs.instance.IsConnected)
+			{
+				try
+				{
+					Program.obs.instance.StopReplayBuffer();
+				}
+				catch (Exception exp)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"Couldn't stop replay buffer\n{exp}");
+				}
+			}
+		}
+
+		private void DoClipLengthSum()
+		{
+			totalSeconds.Text = (float.Parse(secondsBefore.Text) + float.Parse(secondsAfter.Text)).ToString();
+		}
+
+		public string SecondsBefore {
+			get {
+				return clipsTab switch
+				{
+					ClipsTab.NVHighlights => Settings.Default.nvHighlightsSecondsBefore.ToString(),
+					ClipsTab.echoreplay => Settings.Default.replayClipSecondsBefore.ToString(),
+					ClipsTab.OBS => Settings.Default.obsClipSecondsBefore.ToString(),
+					_ => "0",
+				};
+			}
+			set {
+				if (!float.TryParse(value, out float sec)) return;
+				switch (clipsTab)
+				{
+					case ClipsTab.NVHighlights:
+						Settings.Default.nvHighlightsSecondsBefore = sec;
+						break;
+					case ClipsTab.echoreplay:
+						Settings.Default.replayClipSecondsBefore = sec;
+						break;
+					case ClipsTab.OBS:
+						Settings.Default.obsClipSecondsBefore = sec;
+						break;
+				}
+				DoClipLengthSum();
+			}
+		}
+
+		public string SecondsAfter {
+			get {
+				return clipsTab switch
+				{
+					ClipsTab.NVHighlights => Settings.Default.nvHighlightsSecondsAfter.ToString(),
+					ClipsTab.echoreplay => Settings.Default.replayClipSecondsAfter.ToString(),
+					ClipsTab.OBS => Settings.Default.obsClipSecondsAfter.ToString(),
+					_ => "0",
+				};
+			}
+			set {
+				if (!float.TryParse(value, out float sec)) return;
+				switch (clipsTab)
+				{
+					case ClipsTab.NVHighlights:
+						Settings.Default.nvHighlightsSecondsAfter = sec;
+						break;
+					case ClipsTab.echoreplay:
+						Settings.Default.replayClipSecondsAfter = sec;
+						break;
+					case ClipsTab.OBS:
+						Settings.Default.obsClipSecondsAfter = sec;
+						break;
+				}
+				DoClipLengthSum();
+			}
+		}
+
+		#region Event type settings
+		public bool ClipPlayspaceSetting {
+			get {
+				return clipsTab switch
+				{
+					ClipsTab.echoreplay => Settings.Default.replayClipPlayspace,
+					ClipsTab.OBS => Settings.Default.obsClipPlayspace,
+					_ => false,
+				};
+			}
+			set {
+				switch (clipsTab)
+				{
+					case ClipsTab.echoreplay:
+						Settings.Default.replayClipPlayspace = value;
+						break;
+					case ClipsTab.OBS:
+						Settings.Default.obsClipPlayspace = value;
+						break;
+				}
+			}
+		}
+
+		public bool ClipGoalSetting {
+			get {
+				return clipsTab switch
+				{
+					ClipsTab.echoreplay => Settings.Default.replayClipGoal,
+					ClipsTab.OBS => Settings.Default.obsClipGoal,
+					_ => false,
+				};
+			}
+			set {
+				switch (clipsTab)
+				{
+					case ClipsTab.echoreplay:
+						Settings.Default.replayClipGoal = value;
+						break;
+					case ClipsTab.OBS:
+						Settings.Default.obsClipGoal = value;
+						break;
+				}
+			}
+		}
+
+		public bool ClipSaveSetting {
+			get {
+				return clipsTab switch
+				{
+					ClipsTab.echoreplay => Settings.Default.replayClipSave,
+					ClipsTab.OBS => Settings.Default.obsClipSave,
+					_ => false,
+				};
+			}
+			set {
+				switch (clipsTab)
+				{
+					case ClipsTab.echoreplay:
+						Settings.Default.replayClipSave = value;
+						break;
+					case ClipsTab.OBS:
+						Settings.Default.obsClipSave = value;
+						break;
+				}
+			}
+		}
+
+		public bool ClipAssistSetting {
+			get {
+				return clipsTab switch
+				{
+					ClipsTab.echoreplay => Settings.Default.replayClipAssist,
+					ClipsTab.OBS => Settings.Default.obsClipAssist,
+					_ => false,
+				};
+			}
+			set {
+				switch (clipsTab)
+				{
+					case ClipsTab.echoreplay:
+						Settings.Default.replayClipAssist = value;
+						break;
+					case ClipsTab.OBS:
+						Settings.Default.obsClipAssist = value;
+						break;
+				}
+			}
+		}
+		#endregion
 
 		#endregion
 
@@ -574,12 +851,9 @@ namespace Spark
 
 		#endregion
 
+
 		public static string AppVersionLabelText => $"v{Program.AppVersion()}";
 
-		private void ClipNow(object sender, RoutedEventArgs e)
-		{
-			Program.SaveReplayClip("manual");
-		}
 	}
 
 	public class SettingBindingExtension : Binding

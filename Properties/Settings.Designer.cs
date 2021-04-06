@@ -169,7 +169,7 @@ namespace Spark.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool uploadToIgniteDB {
             get {
                 return ((bool)(this["uploadToIgniteDB"]));
@@ -937,7 +937,7 @@ namespace Spark.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool enableReplayBuffer {
             get {
                 return ((bool)(this["enableReplayBuffer"]));
@@ -992,6 +992,186 @@ namespace Spark.Properties {
             }
             set {
                 this["betaUpdates"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ws://127.0.0.1:4444")]
+        public string obsIP {
+            get {
+                return ((string)(this["obsIP"]));
+            }
+            set {
+                this["obsIP"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string obsPassword {
+            get {
+                return ((string)(this["obsPassword"]));
+            }
+            set {
+                this["obsPassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool obsAutoconnect {
+            get {
+                return ((bool)(this["obsAutoconnect"]));
+            }
+            set {
+                this["obsAutoconnect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool obsClipPlayspace {
+            get {
+                return ((bool)(this["obsClipPlayspace"]));
+            }
+            set {
+                this["obsClipPlayspace"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool obsClipGoal {
+            get {
+                return ((bool)(this["obsClipGoal"]));
+            }
+            set {
+                this["obsClipGoal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool obsClipAssist {
+            get {
+                return ((bool)(this["obsClipAssist"]));
+            }
+            set {
+                this["obsClipAssist"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool obsClipSave {
+            get {
+                return ((bool)(this["obsClipSave"]));
+            }
+            set {
+                this["obsClipSave"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool replayClipAssist {
+            get {
+                return ((bool)(this["replayClipAssist"]));
+            }
+            set {
+                this["replayClipAssist"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public float replayClipSecondsAfter {
+            get {
+                return ((float)(this["replayClipSecondsAfter"]));
+            }
+            set {
+                this["replayClipSecondsAfter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public float obsClipSecondsAfter {
+            get {
+                return ((float)(this["obsClipSecondsAfter"]));
+            }
+            set {
+                this["obsClipSecondsAfter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public float replayClipSecondsBefore {
+            get {
+                return ((float)(this["replayClipSecondsBefore"]));
+            }
+            set {
+                this["replayClipSecondsBefore"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public float obsClipSecondsBefore {
+            get {
+                return ((float)(this["obsClipSecondsBefore"]));
+            }
+            set {
+                this["obsClipSecondsBefore"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool obsAutostartReplayBuffer {
+            get {
+                return ((bool)(this["obsAutostartReplayBuffer"]));
+            }
+            set {
+                this["obsAutostartReplayBuffer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool obsClipInterception {
+            get {
+                return ((bool)(this["obsClipInterception"]));
+            }
+            set {
+                this["obsClipInterception"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool replayClipInterception {
+            get {
+                return ((bool)(this["replayClipInterception"]));
+            }
+            set {
+                this["replayClipInterception"] = value;
             }
         }
     }

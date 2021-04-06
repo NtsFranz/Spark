@@ -31,6 +31,7 @@ using NetMQ.Sockets;
 using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
 using System.Windows.Interop;
+using OBSWebsocketDotNet;
 
 namespace Spark
 {
@@ -191,6 +192,7 @@ namespace Spark
 		private static Thread IPSearchthread1;
 		private static Thread IPSearchthread2;
 		public static PublisherSocket pubSocket;
+		public static OBS obs;
 
 
 		#region Event Callbacks
@@ -245,6 +247,7 @@ namespace Spark
 		/// </summary>
 		public static Action<g_Instance, g_Team, g_Player, bool, float, float, float> Joust;
 		public static Action<g_Instance, GoalData> Goal;
+		public static Action<g_Instance, GoalData> Assist;
 
 		#endregion
 
@@ -288,6 +291,10 @@ namespace Spark
 				
 				//return; // wait for the dialog to quit the program
 			}
+
+			obs = new OBS();
+			
+
 
 			try
 			{
@@ -2826,6 +2833,19 @@ namespace Spark
 			try
 			{
 				Goal?.Invoke(frame, goalEvent);
+			}
+			catch (Exception exp)
+			{
+				LogRow(LogType.Error, "Error processing action", exp.ToString());
+			}
+
+
+			try
+			{
+				if (frame.GetPlayer(frame.last_score.assist_scored) != null)
+				{
+					Assist?.Invoke(frame, goalEvent);
+				}
 			}
 			catch (Exception exp)
 			{
