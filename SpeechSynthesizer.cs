@@ -15,8 +15,12 @@ namespace Spark
 	/// </summary>
 	class SpeechSynthesizer
 	{
-		// private string[,] voiceTypes = { { "en-US-Wavenet-D", "en-US-Wavenet-C" }, { "ja-JP-Wavenet-D", "ja-JP-Wavenet-B" } };
-		private readonly string[,] voiceTypes = {{"en-US-Standard-D", "en-US-Standard-C"}, {"ja-JP-Standard-D", "ja-JP-Standard-B"}};
+		private readonly string[,,] voiceTypes =
+		{
+			{{"en-US-Wavenet-D", "en-US-Wavenet-C"}, {"ja-JP-Wavenet-D", "ja-JP-Wavenet-B"}},
+			{{"en-US-Standard-D", "en-US-Standard-C"}, {"ja-JP-Standard-D", "ja-JP-Standard-B"}}
+		};
+
 		private readonly string[] languages = {"en-US", "ja-JP"}; // 🌎
 
 		private readonly TextToSpeechClient client;
@@ -232,13 +236,13 @@ namespace Spark
 
 			// Perform the Text-to-Speech request, passing the text input
 			// with the selected voice parameters and audio file type
-			var response = client.SynthesizeSpeech(new SynthesizeSpeechRequest
+			SynthesizeSpeechResponse response = client.SynthesizeSpeech(new SynthesizeSpeechRequest
 			{
 				Input = input,
 				Voice = new VoiceSelectionParams
 				{
 					LanguageCode = languages[Settings.Default.languageIndex],
-					Name = voiceTypes[Settings.Default.languageIndex, Settings.Default.ttsVoice]
+					Name = voiceTypes[Settings.Default.useWavenetVoices ? 0 : 1, Settings.Default.languageIndex, Settings.Default.ttsVoice]
 				},
 				AudioConfig = config
 			});

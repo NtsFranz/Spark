@@ -1246,5 +1246,17 @@ namespace Spark.Properties {
                 this["dashboardItem1"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool useWavenetVoices {
+            get {
+                return ((bool)(this["useWavenetVoices"]));
+            }
+            set {
+                this["useWavenetVoices"] = value;
+            }
+        }
     }
 }

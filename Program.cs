@@ -806,7 +806,19 @@ namespace Spark
 						// milkFramesToSave.Clear();
 						// milkFramesToSave.Push(game_Instance);
 
-						ProcessFrame(game_Instance);
+						try
+						{
+							ProcessFrame(game_Instance);
+						}
+						catch (Exception ex)
+						{
+							LogRow(LogType.Error, $"Error in ProcessFrame. Please catch inside.\n{ex}");
+						}
+						
+						lastLastLastFrame = lastLastFrame;
+						lastLastFrame = lastFrame;
+						lastFrame = game_Instance;
+
 
 
 						//if (DateTime.Now - DiscordRichPresence.lastDiscordPresenceTime > TimeSpan.FromSeconds(1))
@@ -1386,7 +1398,7 @@ namespace Spark
 		private static void ProcessFrame(g_Instance frame)
 		{
 			// 'mpl_lobby_b2' may change in the future
-			if (frame == null || string.IsNullOrWhiteSpace(frame.game_status)) return;
+			if (frame == null) return;
 			
 			// lobby stuff
 
@@ -1422,10 +1434,10 @@ namespace Spark
 			{
 				LogRow(LogType.Error, $"Error with last throw parsing\n{e}");
 			}
-			
-			
-			
-			
+
+
+
+			if (string.IsNullOrWhiteSpace(frame.game_status)) return;
 			if (frame.inLobby) return;
 			pubSocket.SendMoreFrame("TimeAndScore").SendFrame($"{frame.game_clock:0.00} Orange: {frame.orange_points} Blue: {frame.blue_points}");
 			// if we entered a different match
@@ -2228,10 +2240,6 @@ namespace Spark
 					LogRow(LogType.Error, "Error with restart request parsing");
 				}
 			}
-
-			lastLastLastFrame = lastLastFrame;
-			lastLastFrame = lastFrame;
-			lastFrame = frame;
 		}
 
 		public static void FindTeamNamesFromPlayerList(MatchData matchDataLocal, g_Team team)

@@ -246,6 +246,7 @@
 									<ComboBoxItem Content="{x:Static p:Resources.Male}" />
 									<ComboBoxItem Content="{x:Static p:Resources.Female}" />
 								</ComboBox>
+								<CheckBox Grid.Row="1" Grid.Column="2"  Content="Use Wavenet Voices" Margin="4,-15,4,0" IsChecked="{l:SettingBinding useWavenetVoices}" />
 								<!-- <Label Content="{x:Static p:Resources.Language}" Grid.Column="2" /> -->
 								<!-- <ComboBox Width="146" HorizontalAlignment="Left" -->
 								<!--                                   SelectedIndex="{l:SettingBinding ttsLanguage}" -->
