@@ -121,7 +121,7 @@ namespace Spark
 					LogRow(LogType.Error, "Discord RP client disposed while in normal thread.");
 				}
 
-				var rp = new RichPresence();
+				RichPresence rp = new RichPresence();
 
 				if (frame == null)
 				{

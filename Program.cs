@@ -657,7 +657,7 @@ namespace Spark
 					try
 					{
 						// Create Session.
-						WebRequest request = WebRequest.Create("http://" + echoVRIP + ":" + echoVRPort + "/session");
+						WebRequest request = WebRequest.Create($"http://{echoVRIP}:{echoVRPort}/session");
 						response = request.GetResponse();
 					}
 					catch (Exception)
@@ -697,10 +697,8 @@ namespace Spark
 					// Session Contents
 					string rawJSON = sReader.ReadToEnd();
 					// pls close (;-;)
-					if (sReader != null)
-						sReader.Close();
-					if (response != null)
-						response.Close();
+					sReader.Close();
+					response.Close();
 
 					lock (lastJSONLock)
 					{
@@ -719,8 +717,8 @@ namespace Spark
 		{
 			// TODO these times aren't used, but we could do a difference on before and after times to 
 			// calculate an accurate deltaTime. Right now the execution time isn't taken into account.
-			var time = DateTime.Now;
-			var deltaTimeSpan = new TimeSpan(0, 0, 0, 0, statsDeltaTimes[Settings.Default.targetDeltaTimeIndexStats]);
+			DateTime time = DateTime.Now;
+			TimeSpan deltaTimeSpan = new TimeSpan(0, 0, 0, 0, statsDeltaTimes[Settings.Default.targetDeltaTimeIndexStats]);
 
 			Thread.Sleep(10);
 
@@ -788,12 +786,9 @@ namespace Spark
 						game_Instance.teams[1].color = TeamColor.orange;
 						game_Instance.teams[2].color = TeamColor.spectator;
 
-						if (game_Instance.teams[0].players == null)
-							game_Instance.teams[0].players = new List<g_Player>();
-						if (game_Instance.teams[1].players == null)
-							game_Instance.teams[1].players = new List<g_Player>();
-						if (game_Instance.teams[2].players == null)
-							game_Instance.teams[2].players = new List<g_Player>();
+						game_Instance.teams[0].players ??= new List<g_Player>();
+						game_Instance.teams[1].players ??= new List<g_Player>();
+						game_Instance.teams[2].players ??= new List<g_Player>();
 
 						// for the very first frame, duplicate it to the "previous" frame
 						if (lastFrame == null)
@@ -808,8 +803,8 @@ namespace Spark
 							UpdateStatsIngame(game_Instance);
 						}
 
-						milkFramesToSave.Clear();
-						milkFramesToSave.Push(game_Instance);
+						// milkFramesToSave.Clear();
+						// milkFramesToSave.Push(game_Instance);
 
 						ProcessFrame(game_Instance);
 
@@ -863,7 +858,7 @@ namespace Spark
 					{
 						milkData.AddFrame(frame);
 					}
-
+				
 					frameCount++;
 				}
 
@@ -1392,6 +1387,45 @@ namespace Spark
 		{
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null || string.IsNullOrWhiteSpace(frame.game_status)) return;
+			
+			// lobby stuff
+
+			// last throw state changed
+			try
+			{
+				if (frame.last_throw != null && frame.last_throw.total_speed != 0 && Math.Abs(frame.last_throw.total_speed - lastFrame.last_throw.total_speed) > .001f)
+				{
+					LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Total speed: {frame.last_throw.total_speed}  Arm: {frame.last_throw.speed_from_arm}  Wrist: {frame.last_throw.speed_from_wrist}  Movement: {frame.last_throw.speed_from_movement}");
+					//matchData.Events.Add(
+					//	new EventData(
+					//		matchData,
+					//		EventData.EventType.@throw,
+					//		frame.game_clock,
+					//		frame.teams[frame.pause.paused_requested_team == "blue" ? (int)TeamColor.blue : (int)TeamColor.orange],
+					//		null,
+					//		null,
+					//		Vector3.Zero,
+					//		Vector3.Zero)
+					//	);
+
+					try
+					{
+						LocalThrow?.Invoke(frame);
+					}
+					catch (Exception exp)
+					{
+						LogRow(LogType.Error, "Error processing action", exp.ToString());
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, $"Error with last throw parsing\n{e}");
+			}
+			
+			
+			
+			
 			if (frame.inLobby) return;
 			pubSocket.SendMoreFrame("TimeAndScore").SendFrame($"{frame.game_clock:0.00} Orange: {frame.orange_points} Blue: {frame.blue_points}");
 			// if we entered a different match
@@ -1650,41 +1684,6 @@ namespace Spark
 			catch (Exception e)
 			{
 				LogRow(LogType.Error, $"Error with pause request parsing\n{e}");
-			}
-
-
-
-			// last throw state changed
-			try
-			{
-				if (frame.last_throw != null && frame.last_throw.total_speed != 0 && Math.Abs(frame.last_throw.total_speed - lastFrame.last_throw.total_speed) > .001f)
-				{
-					LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Total speed: {frame.last_throw.total_speed}  Arm: {frame.last_throw.speed_from_arm}  Wrist: {frame.last_throw.speed_from_wrist}  Movement: {frame.last_throw.speed_from_movement}");
-					//matchData.Events.Add(
-					//	new EventData(
-					//		matchData,
-					//		EventData.EventType.@throw,
-					//		frame.game_clock,
-					//		frame.teams[frame.pause.paused_requested_team == "blue" ? (int)TeamColor.blue : (int)TeamColor.orange],
-					//		null,
-					//		null,
-					//		Vector3.Zero,
-					//		Vector3.Zero)
-					//	);
-
-					try
-					{
-						LocalThrow?.Invoke(frame);
-					}
-					catch (Exception exp)
-					{
-						LogRow(LogType.Error, "Error processing action", exp.ToString());
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				LogRow(LogType.Error, $"Error with last throw parsing\n{e}");
 			}
 
 

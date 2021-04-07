@@ -1174,5 +1174,77 @@ namespace Spark.Properties {
                 this["replayClipInterception"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int nvHighlightsPlayerScope {
+            get {
+                return ((int)(this["nvHighlightsPlayerScope"]));
+            }
+            set {
+                this["nvHighlightsPlayerScope"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int replayClipPlayerScope {
+            get {
+                return ((int)(this["replayClipPlayerScope"]));
+            }
+            set {
+                this["replayClipPlayerScope"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int obsPlayerScope {
+            get {
+                return ((int)(this["obsPlayerScope"]));
+            }
+            set {
+                this["obsPlayerScope"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool replayClipSpectatorRecord {
+            get {
+                return ((bool)(this["replayClipSpectatorRecord"]));
+            }
+            set {
+                this["replayClipSpectatorRecord"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool obsSpectatorRecord {
+            get {
+                return ((bool)(this["obsSpectatorRecord"]));
+            }
+            set {
+                this["obsSpectatorRecord"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int dashboardItem1 {
+            get {
+                return ((int)(this["dashboardItem1"]));
+            }
+            set {
+                this["dashboardItem1"] = value;
+            }
+        }
     }
 }

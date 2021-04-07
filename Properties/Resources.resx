@@ -1011,4 +1011,63 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   <data name="Score Assist" xml:space="preserve">
     <value>Score Assist</value>
   </data>
+  <data name="Highlight Scope" xml:space="preserve">
+    <value>Player Scope</value>
+    <comment>when to record clips</comment>
+  </data>
+  <data name="Me Only" xml:space="preserve">
+    <value>Me Only</value>
+    <comment>when to record clips</comment>
+  </data>
+  <data name="My Team Only" xml:space="preserve">
+    <value>My Team Only</value>
+    <comment>when to record clips</comment>
+  </data>
+  <data name="All Players (both teams)" xml:space="preserve">
+    <value>All Players (both teams)</value>
+    <comment>when to record clips</comment>
+  </data>
+  <data name="Record all events in Spectator" xml:space="preserve">
+    <value>Record all events in Spectator</value>
+    <comment>when to record clips</comment>
+  </data>
+  <data name="Clip Settings" xml:space="preserve">
+    <value>Clip Settings</value>
+  </data>
+  <data name="Seconds After:" xml:space="preserve">
+    <value>Seconds After:</value>
+    <comment>time after an event to record in a clip</comment>
+  </data>
+  <data name="Seconds Before:" xml:space="preserve">
+    <value>Seconds Before:</value>
+    <comment>time before an event to record in a clip</comment>
+  </data>
+  <data name="Length:" xml:space="preserve">
+    <value>Length:</value>
+    <comment>total length in seconds of a clip </comment>
+  </data>
+  <data name="Clip Duration:" xml:space="preserve">
+    <value>Clip Duration:</value>
+  </data>
+  <data name="Choose the events you want to clip in the NVIDIA overlay (ALT+Z)" xml:space="preserve">
+    <value>Choose the events you want to clip in the NVIDIA overlay (ALT+Z)</value>
+  </data>
+  <data name="Auto-start Replay Buffer" xml:space="preserve">
+    <value>Auto-start Replay Buffer</value>
+  </data>
+  <data name="Auto-connect" xml:space="preserve">
+    <value>Auto-connect</value>
+  </data>
+  <data name="OBS integration requires the OBS Websocket plugin." xml:space="preserve">
+    <value>OBS integration requires the OBS Websocket plugin.</value>
+  </data>
+  <data name=".echoreplay Clips" xml:space="preserve">
+    <value>.echoreplay Clips</value>
+  </data>
+  <data name="NVIDIA Highlights" xml:space="preserve">
+    <value>NVIDIA Highlights</value>
+  </data>
+  <data name="Enable API Access" xml:space="preserve">
+    <value>Enable API Access</value>
+  </data>
 </root>

@@ -663,6 +663,64 @@ namespace Spark
 			}
 		}
 
+		public int ClipsPlayerScope
+		{
+			get
+			{
+				return clipsTab switch
+				{
+					ClipsTab.NVHighlights => Settings.Default.nvHighlightsPlayerScope,
+					ClipsTab.echoreplay => Settings.Default.replayClipPlayerScope,
+					ClipsTab.OBS => Settings.Default.obsPlayerScope,
+					_ => 0,
+				};
+			}
+			set
+			{
+				switch (clipsTab)
+				{
+					case ClipsTab.NVHighlights:
+						Settings.Default.nvHighlightsPlayerScope = value;
+						break;
+					case ClipsTab.echoreplay:
+						Settings.Default.replayClipPlayerScope = value;
+						break;
+					case ClipsTab.OBS:
+						Settings.Default.obsPlayerScope = value;
+						break;
+				}
+			}
+		}
+
+		public bool ClipsSpectatorRecord
+		{
+			get
+			{
+				return clipsTab switch
+				{
+					ClipsTab.NVHighlights => Settings.Default.nvHighlightsSpectatorRecord,
+					ClipsTab.echoreplay => Settings.Default.replayClipSpectatorRecord,
+					ClipsTab.OBS => Settings.Default.obsSpectatorRecord,
+					_ => false,
+				};
+			}
+			set
+			{
+				switch (clipsTab)
+				{
+					case ClipsTab.NVHighlights:
+						Settings.Default.nvHighlightsSpectatorRecord = value;
+						break;
+					case ClipsTab.echoreplay:
+						Settings.Default.replayClipSpectatorRecord = value;
+						break;
+					case ClipsTab.OBS:
+						Settings.Default.obsSpectatorRecord = value;
+						break;
+				}
+			}
+		}
+
 		private void DoClipLengthSum()
 		{
 			totalSeconds.Text = (float.Parse(secondsBefore.Text) + float.Parse(secondsAfter.Text)).ToString();

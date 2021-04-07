@@ -159,6 +159,8 @@ namespace Spark
 
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
 
+			SetDashboardItem1Visibility(Settings.Default.dashboardItem1);
+
 			_ = CheckForAppUpdate();
 		}
 
@@ -345,6 +347,15 @@ namespace Spark
 							_ = GetServerLocation(Program.lastFrame.sessionip);
 						}
 						lastIP = Program.lastFrame.sessionip;
+
+
+						// last throw stuff
+						g_LastThrow lt = Program.lastFrame.last_throw;
+						if (lt != null)
+						{
+							string stats = $"Total Speed:\t{lt.total_speed:N2} m/s\n Arm:\t\t{lt.speed_from_arm:N2} m/s\n Wrist:\t\t{lt.speed_from_wrist:N2} m/s\n Movement:\t{lt.speed_from_movement:N2} m/s\n\nTouch Data\n Arm Speed:\t{lt.arm_speed:N2} m/s\n Rots/second:\t{lt.rot_per_sec:N2} r/s\n Pot spd from rot:\t{lt.pot_speed_from_rot:N2} m/s\n\nAlignment Analysis\n Off Axis Spin:\t{lt.off_axis_spin_deg:N1} deg\n Wrist align:\t{lt.wrist_align_to_throw_deg:N1} deg\n Movement align:\t{lt.throw_align_to_movement_deg:N1} deg";
+							lastThrowStats.Text = stats;
+						}
 					}
 					else
 					{
@@ -945,7 +956,7 @@ namespace Spark
 			g_Team team = Program.lastFrame.GetTeam(Program.lastFrame.client_name);
 			if (team != null && team.color == g_Team.TeamColor.spectator)
 			{
-				Program.StartEchoVR("s");	
+				Program.StartEchoVR("s");
 			}
 			Program.StartEchoVR("j");
 		}
@@ -1980,5 +1991,27 @@ namespace Spark
 		}
 
 		#endregion
+
+		private void DashboardItem1Changed(object sender, SelectionChangedEventArgs e)
+		{
+			if (!initialized) return;
+			int index = ((ComboBox)sender).SelectedIndex;
+			SetDashboardItem1Visibility(index);
+		}
+
+		private void SetDashboardItem1Visibility(int index)
+		{
+			switch (index)
+			{
+				case 0:
+					playerSpeedsBox.Visibility = Visibility.Collapsed;
+					lastThrowStats.Visibility = Visibility.Visible;
+					break;
+				case 1:
+					playerSpeedsBox.Visibility = Visibility.Visible;
+					lastThrowStats.Visibility = Visibility.Collapsed;
+					break;
+			}
+		}
 	}
 }

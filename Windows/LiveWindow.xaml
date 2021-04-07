@@ -69,7 +69,7 @@
 			<GroupBox x:Name="spectatorsBox" Header="{x:Static p:Resources.Spectators}" BorderBrush="#FF515151">
 				<Label x:Name="spectatorsLabel" Content=""/>
 			</GroupBox>
-			<Image x:Name="image" Height="175" Source="/alternate_white.png" Opacity="0.05"/>
+			<Image x:Name="image" Height="175" Source="/img/alternate_white.png" Opacity="0.05"/>
 		</StackPanel>
 		<GridSplitter x:Name="gridSplitter" Grid.Column="1" HorizontalAlignment="Stretch"/>
 		<Grid x:Name="Center_Panel" Grid.Column="2">
@@ -93,19 +93,28 @@
 							<ColumnDefinition Width="6*"/>
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
-							<RowDefinition Height="4*"/>
-							<RowDefinition Height="3*"/>
+							<RowDefinition Height="5*"/>
+							<RowDefinition Height="3*" />
 						</Grid.RowDefinitions>
-						<GroupBox x:Name="playerSpeedsGroupbox" Header="{x:Static p:Resources.Player_Speeds}" Grid.Row="0" Grid.Column="0" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-							<StackPanel Orientation="Vertical" Margin="0,10,10,10">
-								<StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
-									<TextBlock x:Name="bluePlayerSpeedsSpeeds" Text="" VerticalAlignment="Top" Width="35" Padding="0,0,5,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
-									<TextBlock x:Name="bluePlayersSpeedsNames" Text="" VerticalAlignment="Top" Foreground="CornflowerBlue"/>
+						<GroupBox x:Name="playerSpeedsGroupbox" Grid.Row="0" Grid.Column="0" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+							<GroupBox.Header>
+								<ComboBox SelectedIndex="{l:SettingBinding dashboardItem1}" SelectionChanged="DashboardItem1Changed">
+									<ComboBoxItem Content="Last Throw"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Player_Speeds}" />
+								</ComboBox>
+							</GroupBox.Header>
+							<StackPanel>
+								<StackPanel x:Name="playerSpeedsBox" Orientation="Vertical" Margin="0,10,10,10">
+									<StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+										<TextBlock x:Name="bluePlayerSpeedsSpeeds" Text="" VerticalAlignment="Top" Width="35" Padding="0,0,5,0" HorizontalAlignment="Right" Margin="10,0,0,0" />
+										<TextBlock x:Name="bluePlayersSpeedsNames" Text="" VerticalAlignment="Top" Foreground="CornflowerBlue" />
+									</StackPanel>
+									<StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+										<TextBlock x:Name="orangePlayerSpeedsSpeeds" Text="" VerticalAlignment="Top" Width="35" Padding="0,0,5,0" HorizontalAlignment="Right" Margin="10,0,0,0" />
+										<TextBlock x:Name="orangePlayersSpeedsNames" Text="" VerticalAlignment="Top" Foreground="#ffd4941e" />
+									</StackPanel>
 								</StackPanel>
-								<StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
-									<TextBlock x:Name="orangePlayerSpeedsSpeeds" Text="" VerticalAlignment="Top" Width="35"  Padding="0,0,5,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
-									<TextBlock x:Name="orangePlayersSpeedsNames" Text="" VerticalAlignment="Top" Foreground="#ffd4941e"/>
-								</StackPanel>
+								<TextBlock x:Name="lastThrowStats" Margin="4,4,4,4" />
 							</StackPanel>
 						</GroupBox>
 						<GroupBox x:Name="discSpeedsGroupbox" Header="{x:Static p:Resources.Disc_Speed}" Grid.Row="0" Grid.Column="1" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.ColumnSpan="2" Panel.ZIndex="-2">

@@ -8,7 +8,7 @@ namespace Spark
 {
 	public class OBS
 	{
-		public OBSWebsocket instance;
+		public readonly OBSWebsocket instance;
 
 		public OBS()
 		{
@@ -36,119 +36,91 @@ namespace Spark
 						Logger.LogRow(Logger.LogType.Error, $"Error when autoconnecting to OBS.\n{e}");
 					}
 				});
-
 			}
 		}
 
-		private void Save(g_Instance arg1, g_Team arg2, g_Player arg3)
+		private void Save(g_Instance frame, g_Team team, g_Player player)
 		{
-			if (!instance.IsConnected) return;
-
-			if (Settings.Default.obsClipSave)
-			{
-				Task.Delay((int)(Settings.Default.obsClipSecondsAfter * 1000)).ContinueWith(t => instance.SaveReplayBuffer());
-			}
+			SaveClip(Settings.Default.obsClipSave, player.name, frame);
 		}
 
-		private void Goal(g_Instance arg1, GoalData arg2)
+		private void Goal(g_Instance frame, GoalData goalData)
 		{
-			if (!instance.IsConnected) return;
-
-			if (Settings.Default.obsClipGoal)
-			{
-				Task.Delay((int)(Settings.Default.obsClipSecondsAfter * 1000)).ContinueWith(t => instance.SaveReplayBuffer());
-			}
+			SaveClip(Settings.Default.obsClipGoal, frame.last_score.person_scored, frame);
 		}
 
-		private void PlayspaceAbuse(g_Instance arg1, g_Team arg2, g_Player arg3, Vector3 arg4)
+		private void PlayspaceAbuse(g_Instance frame, g_Team team, g_Player player, Vector3 arg4)
 		{
-			if (!instance.IsConnected) return;
-
-			if (Settings.Default.obsClipPlayspace)
-			{
-				Task.Delay((int)(Settings.Default.obsClipSecondsAfter * 1000)).ContinueWith(t => instance.SaveReplayBuffer());
-			}
+			SaveClip(Settings.Default.obsClipPlayspace, player.name, frame);
 		}
 
-		private void Assist(g_Instance arg1, GoalData goal)
+		private void Assist(g_Instance frame, GoalData goal)
 		{
-			if (!instance.IsConnected) return;
-
-			if (Settings.Default.obsClipAssist)
-			{
-				Task.Delay((int)(Settings.Default.obsClipSecondsAfter * 1000)).ContinueWith(t => instance.SaveReplayBuffer());
-			}
+			SaveClip(Settings.Default.obsClipAssist, frame.last_score.assist_scored, frame);
 		}
 
 		private void Interception(g_Instance frame, g_Team team, g_Player throwPlayer, g_Player catchPlayer)
 		{
-			if (!instance.IsConnected) return;
+			SaveClip(Settings.Default.obsClipInterception, catchPlayer.name, frame);
+		}
 
-			if (Settings.Default.obsClipInterception)
+		private void SaveClip(bool setting, string player_name, g_Instance frame)
+		{
+			if (!instance.IsConnected) return;
+			if (!setting) return;
+			if (!IsPlayerScopeEnabled(player_name, frame)) return;
+			Task.Delay((int) (Settings.Default.obsClipSecondsAfter * 1000)).ContinueWith(_ => instance.SaveReplayBuffer());
+		}
+
+
+		private static bool IsPlayerScopeEnabled(string player_name, g_Instance frame)
+		{
+			try
 			{
-				Task.Delay((int)(Settings.Default.obsClipSecondsAfter * 1000)).ContinueWith(t => instance.SaveReplayBuffer());
+				if (string.IsNullOrEmpty(player_name) || frame.teams == null) return false;
+
+				// if in spectator and record-all-in-spectator is checked
+				if (Settings.Default.obsSpectatorRecord && frame.client_name == player_name)
+				{
+					return true;
+				}
+
+				switch (Settings.Default.obsPlayerScope)
+				{
+					// only me
+					case 0:
+						return player_name == frame.client_name;
+					// only my team
+					case 1:
+						return frame.GetPlayer(frame.client_name).team.color == frame.GetPlayer(player_name).team.color;
+					// anyone
+					case 2:
+						return true;
+				}
 			}
+			catch (Exception ex)
+			{
+				Logger.LogRow(Logger.LogType.Error, $"Something broke while checking if player highlights is enabled\n{ex}");
+			}
+
+			return false;
 		}
 
 		private void OnConnect(object sender, EventArgs e)
 		{
-			if (Settings.Default.obsAutostartReplayBuffer)
+			if (!Settings.Default.obsAutostartReplayBuffer) return;
+			try
 			{
-				try
-				{
-					instance.StartReplayBuffer();
-				}
-				catch (Exception exp)
-				{
-					Logger.LogRow(Logger.LogType.Error, $"Error when autostarting replay buffer in OBS.\n{exp}");
-				}
+				instance.StartReplayBuffer();
 			}
-
-			//txtServerIP.Enabled = false;
-			//txtServerPassword.Enabled = false;
-			//btnConnect.Text = "Disconnect";
-
-			//gbControls.Enabled = true;
-
-			//var versionInfo = _obs.GetVersion();
-			//tbPluginVersion.Text = versionInfo.PluginVersion;
-			//tbOBSVersion.Text = versionInfo.OBSStudioVersion;
-
-			//btnListScenes.PerformClick();
-			//btnGetCurrentScene.PerformClick();
-
-			//btnListSceneCol.PerformClick();
-			//btnGetCurrentSceneCol.PerformClick();
-
-			//btnListProfiles.PerformClick();
-			//btnGetCurrentProfile.PerformClick();
-
-			//btnListTransitions.PerformClick();
-			//btnGetCurrentTransition.PerformClick();
-
-			//btnGetTransitionDuration.PerformClick();
-
-			//var streamStatus = _obs.GetStreamingStatus();
-			//if (streamStatus.IsStreaming)
-			//	onStreamingStateChange(_obs, OutputState.Started);
-			//else
-			//	onStreamingStateChange(_obs, OutputState.Stopped);
-
-			//if (streamStatus.IsRecording)
-			//	onRecordingStateChange(_obs, OutputState.Started);
-			//else
-			//	onRecordingStateChange(_obs, OutputState.Stopped);
+			catch (Exception exp)
+			{
+				Logger.LogRow(Logger.LogType.Error, $"Error when autostarting replay buffer in OBS.\n{exp}");
+			}
 		}
 
 		private void OnDisconnect(object sender, EventArgs e)
 		{
-			//BeginInvoke((MethodInvoker)(() => {
-			//	gbControls.Enabled = false;
-
-			//	txtServerIP.Enabled = true;
-			//	txtServerPassword.Enabled = true;
-			//	btnConnect.Text = "Connect";
-			//}));
 		}
 	}
 }

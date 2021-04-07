@@ -318,7 +318,7 @@
 						<Label Content="{x:Static p:Resources.ClipsTitle_Content}" FontSize="16" Margin="5,5,5,5" />
 
 						<TabControl SelectionChanged="ClipTypeTabChanged" >
-							<TabItem Header="NVIDIA Highlights" Padding="8,6,8,6" Foreground="{DynamicResource ControlPrimaryDefaultBackground}">
+							<TabItem Header="{x:Static p:Resources.NVIDIA_Highlights}" Padding="8,6,8,6" Foreground="{DynamicResource ControlPrimaryDefaultBackground}">
 								<StackPanel Margin="10,0,10,10">
 									<Label Content="{x:Static p:Resources.NVIDIA_Highlights_Settings}" FontSize="16" Margin="5,5,5,5" Visibility="Collapsed"/>
 
@@ -327,24 +327,11 @@
 
 									<CheckBox x:Name="enableNVHighlightsCheckbox" Content="{Binding EnableHighlightsContent}"
                                       Margin="5,5,5,5" IsChecked="{Binding NVHighlightsEnabled}" IsEnabled="{Binding HighlightsSupported}" />
-									<GroupBox x:Name="nvHighlightsBox" Header="NVIDIA Highlights" Margin="5,5,5,5">
+									<GroupBox x:Name="nvHighlightsBox" Header="{x:Static p:Resources.NVIDIA_Highlights}" Margin="5,5,5,5">
 										<StackPanel>
-											<Label Content="Highlight Scope" Margin="5,5,5,0" />
-											<ComboBox x:Name="highlightScope" Width="197" HorizontalAlignment="Left"
-                                              Margin="5,5,5,5" SelectedIndex="{l:SettingBinding clientHighlightScope}"
-                                              ToolTip="Which events are clipped. All events are clipped when in Spectator mode.">
-												<ComboBoxItem Content="Me Only" />
-												<ComboBoxItem Content="My Team Only" />
-												<ComboBoxItem Content="All Players (both teams)" />
-											</ComboBox>
-											<CheckBox x:Name="recordAllInSpectator" Content="Record all events in Spectator"
-                                              Margin="10,10,10,10"
-                                              IsChecked="{l:SettingBinding nvHighlightsSpectatorRecord}" />
-
-
 											<TextBlock x:Name="textBlock"
-													Text="Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder"
-													TextWrapping="Wrap" Margin="5,10,5,0" />
+											           Text="Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder"
+											           TextWrapping="Wrap" Margin="5,10,5,0" />
 											<CheckBox x:Name="clearHighlightsOnExitCheckbox" Content="Clear Highlights On Exit"
 													Margin="5,5,5,5" IsChecked="{l:SettingBinding clearHighlightsOnExit}" />
 											<Button x:Name="clearHighlightsButton" Content="{Binding ClearHighlightsButtonContent}"
@@ -356,7 +343,7 @@
 									</GroupBox>
 								</StackPanel>
 							</TabItem>
-							<TabItem Header=".echoreplay Clips" Padding="8,6,8,6">
+							<TabItem Header="{x:Static p:Resources._echoreplay_Clips}" Padding="8,6,8,6">
 								<StackPanel>
 									<CheckBox x:Name="enableReplayCheckbox" Content="{x:Static p:Resources.enableReplayCheckbox_Content}" Margin="5,5,5,5" IsChecked="{l:SettingBinding enableReplayBuffer}" />
 									<Button Content="{x:Static p:Resources.Save_Clip_Now}" Click="ClipNow" IsEnabled="{Binding ElementName=enableReplayCheckbox, Path=IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,5,5,5" Padding="5,5,5,5" Width="200"/>
@@ -367,7 +354,7 @@
 
 								<StackPanel>
 									<TextBlock Margin="8,8,8,8">
-										<Run Text="OBS integration requires the OBS Websocket plugin."/><LineBreak/>
+										<Run Text="{x:Static p:Resources.OBS_integration_requires_the_OBS_Websocket_plugin_}"/><LineBreak/>
 										<Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases/download/4.9.0/obs-websocket-4.9.0-Windows-Installer.exe" RequestNavigate="Hyperlink_RequestNavigate">Download Installer from GitHub.</Hyperlink>
 									</TextBlock>
 									<StackPanel Orientation="Horizontal">
@@ -377,9 +364,9 @@
 										<PasswordBox x:Name="obsPasswordBox" Password="" Width="140" Margin="4,4,4,4" Padding="4,4,4,4" PasswordChanged="OBSPasswordChanged" />
 										<Button x:Name="obsConnectButton" Content="Connect" Click="OBSConnect" Margin="4,4,4,4" Padding="4,4,4,4"/>
 									</StackPanel>
-									<CheckBox Content="Auto-connect" IsChecked="{l:SettingBinding obsAutoconnect}" Margin="5,5,5,5"/>
+									<CheckBox Content="{x:Static p:Resources.Auto_connect}" IsChecked="{l:SettingBinding obsAutoconnect}" Margin="5,5,5,5"/>
 									<StackPanel Orientation="Horizontal">
-										<CheckBox Content="Auto-start Replay Buffer" IsChecked="{l:SettingBinding obsAutostartReplayBuffer}" Margin="5,5,5,5"/>
+										<CheckBox Content="{x:Static p:Resources.Auto_start_Replay_Buffer}" IsChecked="{l:SettingBinding obsAutostartReplayBuffer}" Margin="5,5,5,5"/>
 										<Button x:Name="obsStartReplayBufferButton" Content="Start Replay Buffer" Click="OBSStartReplayBuffer" Margin="4,4,4,4" Padding="4,4,4,4"/>
 										<Button x:Name="obsStopReplayBufferButton" Content="Stop Replay Buffer" Click="OBSStopReplayBuffer" Margin="4,4,4,4" Padding="4,4,4,4"/>
 									</StackPanel>
@@ -388,23 +375,32 @@
 						</TabControl>
 
 
-						<GroupBox x:Name="clipsEventsBox" Header="Clip Settings">
+						<GroupBox x:Name="clipsEventsBox" Header="{x:Static p:Resources.Clip_Settings}">
 							<StackPanel>
+								
+								<Label Content="{x:Static p:Resources.Highlight_Scope}" Margin="5,5,5,0" />
+								<ComboBox x:Name="highlightScope" Width="197" HorizontalAlignment="Left" Margin="5,5,5,5" SelectedIndex="{Binding ClipsPlayerScope}">
+									<ComboBoxItem Content="{x:Static p:Resources.Me_Only}" />
+									<ComboBoxItem Content="{x:Static p:Resources.My_Team_Only}" />
+									<ComboBoxItem Content="{x:Static p:Resources.All_Players__both_teams_}" />
+								</ComboBox>
+								<CheckBox x:Name="recordAllInSpectator" Content="{x:Static p:Resources.Record_all_events_in_Spectator}" Margin="10,5,10,10" IsChecked="{Binding ClipsSpectatorRecord}" />
+								
 
-								<Label x:Name="timeLabel" Content="Clip Duration:" Margin="0,10,0,0" />
+								<Label x:Name="timeLabel" Content="{x:Static p:Resources.Clip_Duration_}" Margin="0,10,0,0" />
 								<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-									<Label x:Name="labelBefore" Content="Seconds Before:" />
+									<Label x:Name="labelBefore" Content="{x:Static p:Resources.Seconds_Before_}" />
 									<TextBox x:Name="secondsBefore" Text="{Binding SecondsBefore}" TextWrapping="Wrap" Width="64"
                                                  FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox"/>
-									<Label x:Name="labelAfter" Content="Seconds After:" />
+									<Label x:Name="labelAfter" Content="{x:Static p:Resources.Seconds_After_}" />
 									<TextBox x:Name="secondsAfter" Text="{Binding SecondsAfter}" TextWrapping="Wrap" Width="64"
                                                  FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox"/>
-									<Label x:Name="labelTotal" Content="Length:" Margin="8,0,0,0" />
+									<Label x:Name="labelTotal" Content="{x:Static p:Resources.Length_}" Margin="8,0,0,0" />
 									<TextBox x:Name="totalSeconds" Text="0" TextWrapping="Wrap" Width="40"
                                                  FontSize="16" Height="25" IsReadOnly="True" IsEnabled="False"/>
 								</StackPanel>
 
-								<TextBlock x:Name="nvHighlightsChooseEventsInOverlayLabel" Text="Choose the events you want to clip in the NVIDIA overlay (ALT+Z)" Margin="5,5,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}" />
+								<TextBlock x:Name="nvHighlightsChooseEventsInOverlayLabel" Text="{x:Static p:Resources.Choose_the_events_you_want_to_clip_in_the_NVIDIA_overlay__ALT_Z_}" Margin="5,5,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}" />
 								<StackPanel x:Name="eventsToChoose">
 									<CheckBox Content="{x:Static p:Resources.Playspace_Abuse}" Margin="5,5,5,5" IsChecked="{Binding ClipPlayspaceSetting}" />
 									<CheckBox Content="{x:Static p:Resources.Goal}" Margin="5,5,5,5" IsChecked="{Binding ClipGoalSetting}" />
@@ -445,7 +441,7 @@
 									   Text="{x:Static p:Resources.EchoVR_Settings_info}">
 								</TextBlock>
 
-								<CheckBox Content="Enable API Access" IsChecked="{Binding Source={StaticResource es}, Path=EnableAPIAccess}"/>
+								<CheckBox Content="{x:Static p:Resources.Enable_API_Access}" IsChecked="{Binding Source={StaticResource es}, Path=EnableAPIAccess}"/>
 
 								<GroupBox Margin="4,8,4,4" ToolTip="{x:Static p:Resources.EchoVR_Settings_info}">
 									<GroupBox.Header>
