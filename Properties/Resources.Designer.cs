@@ -450,6 +450,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connect.
+        /// </summary>
+        public static string Connect {
+            get {
+                return ResourceManager.GetString("Connect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contribute.
         /// </summary>
         public static string Contribute {
@@ -527,6 +536,15 @@ namespace Spark.Properties {
         public static string Default_Configuration {
             get {
                 return ResourceManager.GetString("Default Configuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable Replay Buffer.
+        /// </summary>
+        public static string Disable_Replay_Buffer {
+            get {
+                return ResourceManager.GetString("Disable Replay Buffer", resourceCulture);
             }
         }
         
@@ -716,6 +734,15 @@ namespace Spark.Properties {
         public static string Enable_NVIDIA_Highlights {
             get {
                 return ResourceManager.GetString("Enable_NVIDIA_Highlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Replay Buffer.
+        /// </summary>
+        public static string Enable_Replay_Buffer {
+            get {
+                return ResourceManager.GetString("Enable Replay Buffer", resourceCulture);
             }
         }
         
@@ -1138,6 +1165,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IP Address:.
+        /// </summary>
+        public static string IP_Address_ {
+            get {
+                return ResourceManager.GetString("IP Address:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Japanese Translation:.
         /// </summary>
         public static string Japanese_Translation_ {
@@ -1242,6 +1278,15 @@ namespace Spark.Properties {
         public static string Language {
             get {
                 return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Throw.
+        /// </summary>
+        public static string Last_Throw {
+            get {
+                return ResourceManager.GetString("Last Throw", resourceCulture);
             }
         }
         
@@ -1454,7 +1499,16 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OBS integration requires the OBS Websocket plugin..
+        ///   Looks up a localized string similar to OBS.
+        /// </summary>
+        public static string OBS {
+            get {
+                return ResourceManager.GetString("OBS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OBS integration requires the OBS Websocket plugin. The replay buffer must be set up in OBS settings before this feature can work..
         /// </summary>
         public static string OBS_integration_requires_the_OBS_Websocket_plugin_ {
             get {
@@ -1559,6 +1613,15 @@ namespace Spark.Properties {
         public static string Orange_Team {
             get {
                 return ResourceManager.GetString("Orange Team", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password:.
+        /// </summary>
+        public static string Password_ {
+            get {
+                return ResourceManager.GetString("Password:", resourceCulture);
             }
         }
         
@@ -2232,6 +2295,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start Replay Buffer.
+        /// </summary>
+        public static string Start_Replay_Buffer {
+            get {
+                return ResourceManager.GetString("Start Replay Buffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start with Windows.
         /// </summary>
         public static string Start_with_Windows {
@@ -2255,6 +2327,24 @@ namespace Spark.Properties {
         public static string Stop_Echo_Speaker_System {
             get {
                 return ResourceManager.GetString("Stop Echo Speaker System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Hosting.
+        /// </summary>
+        public static string Stop_Hosting {
+            get {
+                return ResourceManager.GetString("Stop Hosting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Replay Buffer.
+        /// </summary>
+        public static string Stop_Replay_Buffer {
+            get {
+                return ResourceManager.GetString("Stop Replay Buffer", resourceCulture);
             }
         }
         

@@ -92,7 +92,7 @@
 
 						<StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,-8">
 							<Label x:Name="echoVRIPLabel" Content="{x:Static p:Resources.EchoVR_IP__for_Quest_}" Margin="4,4,4,4" />
-							<TextBox x:Name="echoVRIPTextBox" Text="{l:SettingLoad echoVRIP}" TextWrapping="Wrap" Width="140"
+							<TextBox x:Name="echoVRIPTextBox" Text="{l:SettingLoad echoVRIP}" TextWrapping="Wrap" Width="130"
                                          Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
                                          Padding="4,4,4,4" TextChanged="EchoVRIPChanged" />
 							<TextBox x:Name="echoVRPortTextBox" Text="{l:SettingLoad echoVRPort}" TextWrapping="Wrap" Width="60"
@@ -351,25 +351,25 @@
 
 								</StackPanel>
 							</TabItem>
-							<TabItem Header="OBS" Padding="8,6,8,6">
+							<TabItem Header="{x:Static p:Resources.OBS}" Padding="8,6,8,6">
 
 								<StackPanel>
-									<TextBlock Margin="8,8,8,8">
+									<TextBlock Margin="8,8,8,8" TextWrapping="Wrap">
 										<Run Text="{x:Static p:Resources.OBS_integration_requires_the_OBS_Websocket_plugin_}"/><LineBreak/>
 										<Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases/download/4.9.0/obs-websocket-4.9.0-Windows-Installer.exe" RequestNavigate="Hyperlink_RequestNavigate">Download Installer from GitHub.</Hyperlink>
 									</TextBlock>
 									<StackPanel Orientation="Horizontal">
-										<Label Content="IP Address:" Margin="4,4,0,4" Padding="4,4,4,4"/>
+										<Label Content="{x:Static p:Resources.IP_Address_}" Margin="4,4,0,4" Padding="4,4,4,4"/>
 										<TextBox Text="{l:SettingBinding obsIP}" Width="160" Margin="4,4,4,4" Padding="4,4,4,4"/>
-										<Label Content="Password:" Margin="4,4,0,4" Padding="4,4,4,4"/>
+										<Label Content="{x:Static p:Resources.Password_}" Margin="4,4,0,4" Padding="4,4,4,4"/>
 										<PasswordBox x:Name="obsPasswordBox" Password="" Width="140" Margin="4,4,4,4" Padding="4,4,4,4" PasswordChanged="OBSPasswordChanged" />
-										<Button x:Name="obsConnectButton" Content="Connect" Click="OBSConnect" Margin="4,4,4,4" Padding="4,4,4,4"/>
+										<Button x:Name="obsConnectButton" Content="{x:Static p:Resources.Connect}" Click="OBSConnect" Margin="4,4,4,4" Padding="4,4,4,4"/>
 									</StackPanel>
 									<CheckBox Content="{x:Static p:Resources.Auto_connect}" IsChecked="{l:SettingBinding obsAutoconnect}" Margin="5,5,5,5"/>
 									<StackPanel Orientation="Horizontal">
 										<CheckBox Content="{x:Static p:Resources.Auto_start_Replay_Buffer}" IsChecked="{l:SettingBinding obsAutostartReplayBuffer}" Margin="5,5,5,5"/>
-										<Button x:Name="obsStartReplayBufferButton" Content="Start Replay Buffer" Click="OBSStartReplayBuffer" Margin="4,4,4,4" Padding="4,4,4,4"/>
-										<Button x:Name="obsStopReplayBufferButton" Content="Stop Replay Buffer" Click="OBSStopReplayBuffer" Margin="4,4,4,4" Padding="4,4,4,4"/>
+										<Button x:Name="obsStartReplayBufferButton" Content="{x:Static p:Resources.Start_Replay_Buffer}" Click="OBSStartReplayBuffer" Margin="4,4,4,4" Padding="4,4,4,4"/>
+										<Button x:Name="obsStopReplayBufferButton" Content="{x:Static p:Resources.Stop_Replay_Buffer}" Click="OBSStopReplayBuffer" Margin="4,4,4,4" Padding="4,4,4,4"/>
 									</StackPanel>
 								</StackPanel>
 							</TabItem>

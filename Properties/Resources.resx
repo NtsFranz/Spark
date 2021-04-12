@@ -1059,7 +1059,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
     <value>Auto-connect</value>
   </data>
   <data name="OBS integration requires the OBS Websocket plugin." xml:space="preserve">
-    <value>OBS integration requires the OBS Websocket plugin.</value>
+    <value>OBS integration requires the OBS Websocket plugin. The replay buffer must be set up in OBS settings before this feature can work.</value>
   </data>
   <data name=".echoreplay Clips" xml:space="preserve">
     <value>.echoreplay Clips</value>
@@ -1069,5 +1069,35 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   </data>
   <data name="Enable API Access" xml:space="preserve">
     <value>Enable API Access</value>
+  </data>
+  <data name="Stop Hosting" xml:space="preserve">
+    <value>Stop Hosting</value>
+  </data>
+  <data name="Last Throw" xml:space="preserve">
+    <value>Last Throw</value>
+  </data>
+  <data name="Enable Replay Buffer" xml:space="preserve">
+    <value>Enable Replay Buffer</value>
+  </data>
+  <data name="Disable Replay Buffer" xml:space="preserve">
+    <value>Disable Replay Buffer</value>
+  </data>
+  <data name="Start Replay Buffer" xml:space="preserve">
+    <value>Start Replay Buffer</value>
+  </data>
+  <data name="Stop Replay Buffer" xml:space="preserve">
+    <value>Stop Replay Buffer</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="Password:" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="IP Address:" xml:space="preserve">
+    <value>IP Address:</value>
+  </data>
+  <data name="OBS" xml:space="preserve">
+    <value>OBS</value>
   </data>
 </root>

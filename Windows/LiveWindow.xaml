@@ -8,7 +8,7 @@
 		xmlns:p="clr-namespace:Spark.Properties"
 		mc:Ignorable="d"
 		Title="Spark" 
-		Height="650" Width="1060" 
+		Height="660" Width="1080" 
 		FontSize="14" 
 		Background="{DynamicResource BackgroundColour}" 
 		ResizeMode="CanResize" 
@@ -99,7 +99,7 @@
 						<GroupBox x:Name="playerSpeedsGroupbox" Grid.Row="0" Grid.Column="0" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 							<GroupBox.Header>
 								<ComboBox SelectedIndex="{l:SettingBinding dashboardItem1}" SelectionChanged="DashboardItem1Changed">
-									<ComboBoxItem Content="Last Throw"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Last_Throw}"/>
 									<ComboBoxItem Content="{x:Static p:Resources.Player_Speeds}" />
 								</ComboBox>
 							</GroupBox.Header>

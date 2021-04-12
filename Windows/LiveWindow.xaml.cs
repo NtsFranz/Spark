@@ -338,7 +338,7 @@ namespace Spark
 					if (Program.lastFrame != null)  // 'mpl_lobby_b2' may change in the future
 					{
 						// session ID
-						sessionIdTextBox.Text = "<ignitebot://choose/" + Program.lastFrame.sessionid + ">";
+						sessionIdTextBox.Text = CurrentLink(Program.lastFrame.sessionid);
 
 						// ip stuff
 						if (Program.lastFrame.sessionip != lastIP)
@@ -623,7 +623,7 @@ namespace Spark
 					}
 
 
-					hostMatchButton.IsEnabled = Program.lastFrame != null && Program.lastFrame.private_match == true;
+					hostMatchButton.IsEnabled = Program.lastFrame != null && Program.lastFrame.private_match;
 
 					if (Program.lastFrame != null)
 					{
@@ -1323,7 +1323,7 @@ namespace Spark
 				switch (Settings.Default.atlasLinkStyle)
 				{
 					case 0:
-						link = "<ignitebot://choose/" + sessionid + ">";
+						link = "<spark://c/" + sessionid + ">";
 						break;
 					case 1:
 						link = "<atlas://j/" + sessionid + ">";
@@ -1338,7 +1338,7 @@ namespace Spark
 				switch (Settings.Default.atlasLinkStyle)
 				{
 					case 0:
-						link = "ignitebot://choose/" + sessionid;
+						link = "spark://c/" + sessionid;
 						break;
 					case 1:
 						link = "atlas://j/" + sessionid;
@@ -1413,13 +1413,13 @@ namespace Spark
 				Program.atlasHostingThread.IsBackground = true;
 				Program.atlasHostingThread.Start();
 				hostingMatchCheckbox.IsChecked = true;
-				hostingMatchLabel.Content = "Stop Hosting";
+				hostingMatchLabel.Content = Properties.Resources.Stop_Hosting;
 			}
 			else
 			{
 				Program.hostedAtlasSessionId = "";
 				hostingMatchCheckbox.IsChecked = false;
-				hostingMatchLabel.Content = "Host Match";
+				hostingMatchLabel.Content = Properties.Resources.Host_Match;
 			}
 		}
 
@@ -1613,7 +1613,7 @@ namespace Spark
 						{
 							Process.Start(new ProcessStartInfo
 							{
-								FileName = "ignitebot://choose/" + match.matchid,
+								FileName = "spark://c/" + match.matchid,
 								UseShellExecute = true
 							});
 						};
@@ -1806,7 +1806,7 @@ namespace Spark
 					Dispatcher.Invoke(() =>
 					{
 						hostingMatchCheckbox.IsChecked = false;
-						hostingMatchLabel.Content = "Host Match";
+						hostingMatchLabel.Content = Properties.Resources.Host_Match;
 					});
 					Thread.Sleep(10);
 					GetAtlasMatches();

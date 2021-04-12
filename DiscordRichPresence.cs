@@ -149,8 +149,8 @@ namespace Spark
 
 						rp.WithSecrets(new Secrets
 						{
-							JoinSecret = "ignitebot://choose/" + frame.sessionid,
-							SpectateSecret = "ignitebot://spectate/" + frame.sessionid,
+							JoinSecret = "spark://c/" + frame.sessionid,
+							SpectateSecret = "spark://s/" + frame.sessionid,
 						});
 					}
 					else
