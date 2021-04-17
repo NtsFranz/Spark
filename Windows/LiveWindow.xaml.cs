@@ -23,6 +23,7 @@ using NetMQ;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static Logger;
+using System.Numerics;
 
 namespace Spark
 {
@@ -41,7 +42,7 @@ namespace Spark
 		private string lastIP;
 
 		private string lastDiscordUsername = string.Empty;
-		private bool hidden;
+		public bool hidden;
 
 		private bool isExplicitClose = false;
 
@@ -648,9 +649,7 @@ namespace Spark
 			if (isExplicitClose == false)
 			{
 				e.Cancel = true;
-				Hide();
-				showHideMenuItem.Header = Properties.Resources.Show_Main_Window;
-				hidden = true;
+				Program.ToggleWindow(typeof(YouSureAboutClosing), null, this);
 			}
 
 		}

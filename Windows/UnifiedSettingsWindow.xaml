@@ -123,6 +123,24 @@
                                               Margin="4,4,4,4" />
 							</StackPanel>
 						</GroupBox>
+
+						<GroupBox Header="Spectator Camera Settings" Margin="10,4,10,4" >
+							<StackPanel>
+								<CheckBox Content="Hide EchoVR UI" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left"
+                                      VerticalAlignment="Stretch" Margin="10,4,10,4" />
+								<Label Content="Camera Mode:"/>
+								<ComboBox SelectedIndex="{l:SettingBinding spectatorCamera}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
+									<ComboBoxItem Content="Auto (leave default)"/>
+									<ComboBoxItem Content="Sideline"/>
+									<ComboBoxItem Content="Follow client player ('Spectate Me' only)"/>
+								</ComboBox>
+								<Label Content="Follow client player camera mode:"/>
+								<ComboBox SelectedIndex="{l:SettingBinding followClientSpectatorCameraMode}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
+									<ComboBoxItem Content="Follow"/>
+									<ComboBoxItem Content="POV"/>
+								</ComboBox>
+							</StackPanel>
+						</GroupBox>
 					</StackPanel>
 				</ScrollViewer>
 			</TabItem>
@@ -378,7 +396,7 @@
 
 						<GroupBox x:Name="clipsEventsBox" Header="{x:Static p:Resources.Clip_Settings}">
 							<StackPanel>
-								
+
 								<Label Content="{x:Static p:Resources.Highlight_Scope}" Margin="5,5,5,0" />
 								<ComboBox x:Name="highlightScope" Width="197" HorizontalAlignment="Left" Margin="5,5,5,5" SelectedIndex="{Binding ClipsPlayerScope}">
 									<ComboBoxItem Content="{x:Static p:Resources.Me_Only}" />
@@ -386,7 +404,7 @@
 									<ComboBoxItem Content="{x:Static p:Resources.All_Players__both_teams_}" />
 								</ComboBox>
 								<CheckBox x:Name="recordAllInSpectator" Content="{x:Static p:Resources.Record_all_events_in_Spectator}" Margin="10,5,10,10" IsChecked="{Binding ClipsSpectatorRecord}" />
-								
+
 
 								<Label x:Name="timeLabel" Content="{x:Static p:Resources.Clip_Duration_}" Margin="0,10,0,0" />
 								<StackPanel Orientation="Horizontal" Margin="0,0,0,10">

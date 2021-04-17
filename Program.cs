@@ -32,6 +32,7 @@ using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
 using System.Windows.Interop;
 using OBSWebsocketDotNet;
+//using System.Windows.Forms;
 
 namespace Spark
 {
@@ -193,6 +194,7 @@ namespace Spark
 		private static Thread IPSearchthread2;
 		public static PublisherSocket pubSocket;
 		public static OBS obs;
+
 
 
 		#region Event Callbacks
@@ -448,7 +450,7 @@ namespace Spark
 
 		public static string AppVersion()
 		{
-			var version = Application.Current.GetType().Assembly.GetName().Version;
+			var version = System.Windows.Application.Current.GetType().Assembly.GetName().Version;
 			return $"{version.Major}.{version.Minor}.{version.Build}";
 		}
 
@@ -725,7 +727,7 @@ namespace Spark
 			// Session pull loop.
 			while (running)
 			{
-				if (Settings.Default.enableStatsLogging && inGame)
+				if (inGame)
 				{
 					try
 					{
@@ -793,7 +795,6 @@ namespace Spark
 						// for the very first frame, duplicate it to the "previous" frame
 						if (lastFrame == null)
 						{
-							lastFrame = game_Instance;
 							DiscordRichPresence.lastDiscordPresenceTime = DateTime.Now;
 						}
 
@@ -814,7 +815,12 @@ namespace Spark
 						{
 							LogRow(LogType.Error, $"Error in ProcessFrame. Please catch inside.\n{ex}");
 						}
-						
+
+						// for the very first frame, duplicate it to the "previous" frame
+						if (lastFrame == null)
+						{
+							lastFrame = game_Instance;
+						}
 						lastLastLastFrame = lastLastFrame;
 						lastLastFrame = lastFrame;
 						lastFrame = game_Instance;
@@ -899,62 +905,66 @@ namespace Spark
 			// Session pull loop.
 			while (running)
 			{
-				try
+				if ((Settings.Default.enableFullLogging || Settings.Default.enableReplayBuffer) &&
+					inGame)
 				{
-					string json;
-					lock (lastJSONLock)
+					try
 					{
-						if (lastJSON == null) continue;
-
-						lastJSONUsed = true;
-						json = lastJSON;
-					}
-
-					// if this is not a lobby api frame
-					if (json.Length > 800 && inGame)
-					{
-
-						if (Settings.Default.enableFullLogging)
+						string json;
+						lock (lastJSONLock)
 						{
-							bool log = false;
-							if (Settings.Default.onlyRecordPrivateMatches)
+							if (lastJSON == null) continue;
+
+							lastJSONUsed = true;
+							json = lastJSON;
+						}
+
+						// if this is not a lobby api frame
+						if (json.Length > 800 && inGame)
+						{
+
+							if (Settings.Default.enableFullLogging)
 							{
-								g_InstanceSimple obj = JsonConvert.DeserializeObject<g_InstanceSimple>(json);
-								if (obj.private_match)
+								bool log = false;
+								if (Settings.Default.onlyRecordPrivateMatches)
+								{
+									g_InstanceSimple obj = JsonConvert.DeserializeObject<g_InstanceSimple>(json);
+									if (obj.private_match)
+									{
+										log = true;
+									}
+								}
+								else
 								{
 									log = true;
 								}
+
+								if (log)
+								{
+									WriteToFile(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff") + "\t" + json);
+								}
 							}
-							else
+
+
+							if (Settings.Default.enableReplayBuffer)
 							{
-								log = true;
-							}
+								// add to replay buffer
+								replayBufferTimestamps.Enqueue(DateTime.Now);
+								replayBufferJSON.Enqueue(json);
 
-							if (log)
-							{
-								WriteToFile(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff") + "\t" + json);
-							}
-						}
-
-
-						if (Settings.Default.enableReplayBuffer)
-						{
-							// add to replay buffer
-							replayBufferTimestamps.Enqueue(DateTime.Now);
-							replayBufferJSON.Enqueue(json);
-
-							// shorten the buffer to match the desired length
-							while (DateTime.Now - replayBufferTimestamps.First() > TimeSpan.FromSeconds(Settings.Default.replayBufferLength))
-							{
-								replayBufferTimestamps.TryDequeue(out _);
-								replayBufferJSON.TryDequeue(out _);
+								// shorten the buffer to match the desired length
+								while (DateTime.Now - replayBufferTimestamps.First() > TimeSpan.FromSeconds(Settings.Default.replayBufferLength))
+								{
+									replayBufferTimestamps.TryDequeue(out _);
+									replayBufferJSON.TryDequeue(out _);
+								}
 							}
 						}
 					}
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine("Big oopsie. Please catch inside. " + ex);
+					catch (Exception ex)
+					{
+						Console.WriteLine("Big oopsie. Please catch inside. " + ex);
+					}
 				}
 
 				Thread.Sleep(fullDeltaTimes[Settings.Default.targetDeltaTimeIndexFull]);
@@ -1200,7 +1210,7 @@ namespace Spark
 		{
 			IntPtr EchoHandle = FindWindow(null, "Echo VR");
 			IntPtr echoThread = new IntPtr(GetWindowThreadProcessId(EchoHandle, out _));
-			
+
 			if (EchoHandle != GetForegroundWindow())
 			{
 				IntPtr foregroundThread = new IntPtr(GetWindowThreadProcessId(GetForegroundWindow(), out _));
@@ -1208,7 +1218,7 @@ namespace Spark
 					foregroundThread,
 					echoThread, true
 				);
-				
+
 				//get the hWnd of the process
 				Windowplacement placement = new Windowplacement();
 				GetWindowPlacement(EchoHandle, ref placement);
@@ -1218,12 +1228,12 @@ namespace Spark
 				{
 					//the window is hidden so we restore it
 					ShowWindow(EchoHandle, ShowWindowEnum.Restore);
-                }
-                else
-                {
+				}
+				else
+				{
 					ShowWindow(EchoHandle, ShowWindowEnum.Hide);
 					ShowWindow(EchoHandle, ShowWindowEnum.Show);
-                }
+				}
 				SetForegroundWindow(EchoHandle);
 				AttachThreadInput(foregroundThread, echoThread, false);
 			}
@@ -1397,6 +1407,7 @@ namespace Spark
 		/// </summary>
 		private static void ProcessFrame(g_Instance frame)
 		{
+
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null) return;
 			
@@ -1405,7 +1416,7 @@ namespace Spark
 			// last throw state changed
 			try
 			{
-				if (frame.last_throw != null && frame.last_throw.total_speed != 0 && Math.Abs(frame.last_throw.total_speed - lastFrame.last_throw.total_speed) > .001f)
+				if (frame.last_throw != null && lastFrame != null && frame.last_throw.total_speed != 0 && Math.Abs(frame.last_throw.total_speed - lastFrame.last_throw.total_speed) > .001f)
 				{
 					LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Total speed: {frame.last_throw.total_speed}  Arm: {frame.last_throw.speed_from_arm}  Wrist: {frame.last_throw.speed_from_wrist}  Movement: {frame.last_throw.speed_from_movement}");
 					//matchData.Events.Add(
@@ -1441,7 +1452,7 @@ namespace Spark
 			if (frame.inLobby) return;
 			pubSocket.SendMoreFrame("TimeAndScore").SendFrame($"{frame.game_clock:0.00} Orange: {frame.orange_points} Blue: {frame.blue_points}");
 			// if we entered a different match
-			if (frame.sessionid != lastFrame.sessionid || lastFrame == null)
+			if (lastFrame == null || frame.sessionid != lastFrame.sessionid)
 			{
 				MatchEventZMQMessage msg = new MatchEventZMQMessage("NewMatch", "sessionid", frame.sessionid);
 				pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
@@ -1471,6 +1482,33 @@ namespace Spark
 					{
 						LogRow(LogType.Error, $"Broke something in the spectator follow system.\n{e}");
 					}
+				}
+
+				if (Settings.Default.hideEchoVRUI)
+				{
+					FocusEchoVR();
+					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
+					Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, true, Keyboard.InputType.Keyboard); });
+				}
+
+				switch (Settings.Default.spectatorCamera)
+				{
+					// auto
+					case 0:
+						FocusEchoVR();
+						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, false, Keyboard.InputType.Keyboard);
+						Task.Delay(10).ContinueWith((_) => { FocusEchoVR(); Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, true, Keyboard.InputType.Keyboard); });
+						break;
+					// sideline
+					case 1:
+						FocusEchoVR();
+						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_S, false, Keyboard.InputType.Keyboard);
+						Task.Delay(10).ContinueWith((_) => { FocusEchoVR(); Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_S, true, Keyboard.InputType.Keyboard); });
+						break;
+					// follow client
+					case 2:
+						SpectatorCamFindPlayer();
+						break;
 				}
 			}
 
@@ -2239,6 +2277,101 @@ namespace Spark
 				{
 					LogRow(LogType.Error, "Error with restart request parsing");
 				}
+			}
+		}
+
+		private static void SpectatorCamFindPlayer()
+		{
+			try
+			{
+				if (lastFrame == null) return;
+				g_Player clientPlayer = lastFrame.GetPlayer(lastFrame.client_name);
+				if (clientPlayer == null) return;
+				if (clientPlayer.team.color == TeamColor.spectator) return;
+
+				Task.Run(async () =>
+				{
+					FocusEchoVR();
+					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
+					await Task.Delay(50);
+					FocusEchoVR();
+					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
+
+					List<Keyboard.DirectXKeyStrokes> numbers = new List<Keyboard.DirectXKeyStrokes> {
+					Keyboard.DirectXKeyStrokes.DIK_0,
+					Keyboard.DirectXKeyStrokes.DIK_1,
+					Keyboard.DirectXKeyStrokes.DIK_2,
+					Keyboard.DirectXKeyStrokes.DIK_3,
+					Keyboard.DirectXKeyStrokes.DIK_4,
+					Keyboard.DirectXKeyStrokes.DIK_5,
+					Keyboard.DirectXKeyStrokes.DIK_6,
+					Keyboard.DirectXKeyStrokes.DIK_7,
+					Keyboard.DirectXKeyStrokes.DIK_8,
+					Keyboard.DirectXKeyStrokes.DIK_9,
+					};
+
+				// loop through all the players twice if we don't find the right one the first time
+				int foundTries = 2;
+					while (foundTries > 0)
+					{
+						for (int i = 0; i < numbers.Count; i++)
+						{
+							FocusEchoVR();
+						// press the keys to visit a player
+						Keyboard.SendKey(numbers[i], false, Keyboard.InputType.Keyboard);
+							await Task.Delay(10);
+							FocusEchoVR();
+							Keyboard.SendKey(numbers[i], true, Keyboard.InputType.Keyboard);
+
+						// check if this is the right player
+						await Task.Delay(100);
+							List<g_Player> players = lastFrame.GetAllPlayers(false);
+							var clientPlayer = lastFrame.GetPlayer(lastFrame.client_name);
+							float dist = 0;
+							if (clientPlayer != null)
+							{
+								dist = Vector3.Distance(clientPlayer.head.Position, lastFrame.player.vr_position.ToVector3());
+							}
+							else
+							{
+								dist = Vector3.Distance(Vector3.Zero, lastFrame.player.vr_position.ToVector3());
+							}
+							g_Player minPlayer = players.OrderBy(p => Vector3.Distance(p.head.Position, lastFrame.player.vr_position.ToVector3())).First();
+							dist = Vector3.Distance(minPlayer.head.Position, lastFrame.player.vr_position.ToVector3());
+							LogRow(LogType.Info, $"Player {i} camera distance:\t{dist:N3} m.\tName:\t{minPlayer.name}");
+
+						// if we found the correct player
+						if (minPlayer.name == lastFrame.client_name)
+							{
+								foundTries = 0;
+								break;
+							}
+
+						}
+					}
+
+
+					switch (Settings.Default.followClientSpectatorCameraMode)
+					{
+						case 0:
+							FocusEchoVR();
+							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F, false, Keyboard.InputType.Keyboard);
+							await Task.Delay(50);
+							FocusEchoVR();
+							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F, true, Keyboard.InputType.Keyboard);
+							break;
+						case 1:
+							FocusEchoVR();
+							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
+							await Task.Delay(50);
+							FocusEchoVR();
+							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
+							break;
+					}
+				});
+			} catch (Exception ex)
+			{
+				LogRow(LogType.Error, $"Error with finding player camera to follow.\n{ex}");
 			}
 		}
 

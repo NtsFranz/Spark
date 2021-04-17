@@ -1258,5 +1258,41 @@ namespace Spark.Properties {
                 this["useWavenetVoices"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int spectatorCamera {
+            get {
+                return ((int)(this["spectatorCamera"]));
+            }
+            set {
+                this["spectatorCamera"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool hideEchoVRUI {
+            get {
+                return ((bool)(this["hideEchoVRUI"]));
+            }
+            set {
+                this["hideEchoVRUI"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int followClientSpectatorCameraMode {
+            get {
+                return ((int)(this["followClientSpectatorCameraMode"]));
+            }
+            set {
+                this["followClientSpectatorCameraMode"] = value;
+            }
+        }
     }
 }

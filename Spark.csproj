@@ -4,10 +4,11 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <StartupObject>Spark.App</StartupObject>
+		<UseWindowsForms>true</UseWindowsForms>
+		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.2.11</Version>
+    <Version>2.2.12</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports, Graic</Authors>
@@ -106,6 +107,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Windows\YouSureAboutClosing.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Windows\FirstTimeSetupWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -146,6 +150,10 @@
   <ItemGroup>
     <Page Update="Themes\ColourfulDarkTheme_Orange.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Windows\YouSureAboutClosing.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\FirstTimeSetupWindow.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
