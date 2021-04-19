@@ -12,9 +12,9 @@ namespace Spark
 	/// </summary>
 	public class MatchData : DataContainer
 	{
-		public Dictionary<TeamColor, TeamData> teams = new Dictionary<TeamColor, TeamData>();
+		public readonly Dictionary<TeamColor, TeamData> teams;
 
-		public Dictionary<long, MatchPlayer> players = new Dictionary<long, MatchPlayer>();
+		public readonly Dictionary<long, MatchPlayer> players = new Dictionary<long, MatchPlayer>();
 
 		public List<GoalData> Goals { get; set; } = new List<GoalData>();
 		public List<EventData> Events { get; set; } = new List<EventData>();
@@ -22,9 +22,7 @@ namespace Spark
 
 		public List<Vector3> currentDiskTrajectory = new List<Vector3>();
 
-		public g_Instance firstFrame;
-		public string SessionId { get => firstFrame.sessionid; }
-		public string ServerIP { get; set; }
+		public readonly g_Instance firstFrame;
 		public string ServerLocation { get; set; }
 		public float ServerScore { get; set; }
 
@@ -49,11 +47,7 @@ namespace Spark
 		/// <summary>
 		/// Get match time in UTC format for SQL usage.
 		/// </summary>
-		public string MatchTimeSQL {
-			get {
-				return matchTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss");
-			}
-		}
+		public string MatchTimeSQL => matchTime.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss");
 
 		/// <summary>
 		/// Constructor used to initialize match data. 
@@ -73,7 +67,6 @@ namespace Spark
 				{ TeamColor.orange, new TeamData(TeamColor.orange, firstFrame.teams[1].team) },
 				{ TeamColor.spectator, new TeamData(TeamColor.spectator, firstFrame.teams[2].team) },
 			};
-			ServerIP = firstFrame.sessionip;
 
 			Settings.Default.client_name = firstFrame.client_name;
 
@@ -107,7 +100,7 @@ namespace Spark
 		/// <returns></returns>
 		public Dictionary<string, object> ToDict()
 		{
-			var values = new Dictionary<string, object>
+			Dictionary<string, object> values = new Dictionary<string, object>
 			{
 				{ "session_id", firstFrame.sessionid },
 				{ "match_time", MatchTimeSQL },

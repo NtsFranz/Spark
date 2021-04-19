@@ -817,15 +817,13 @@ namespace Spark
 						}
 
 						// for the very first frame, duplicate it to the "previous" frame
-						if (lastFrame == null)
+						if (!string.IsNullOrEmpty(game_Instance?.game_status))
 						{
+							lastFrame ??= game_Instance;
+							lastLastLastFrame = lastLastFrame;
+							lastLastFrame = lastFrame;
 							lastFrame = game_Instance;
 						}
-						lastLastLastFrame = lastLastFrame;
-						lastLastFrame = lastFrame;
-						lastFrame = game_Instance;
-
-
 
 						//if (DateTime.Now - DiscordRichPresence.lastDiscordPresenceTime > TimeSpan.FromSeconds(1))
 						//{
@@ -1117,12 +1115,12 @@ namespace Spark
 		{
 			try
 			{
-				var process = Process.GetProcessesByName("echovr");
+				Process[] process = Process.GetProcessesByName("echovr");
 				if (process.Length > 0)
 				{
 					// Get process path
 					var newEchoPath = process[0].MainModule.FileName;
-					if (newEchoPath != null && newEchoPath != "")
+					if (!string.IsNullOrEmpty(newEchoPath))
 					{
 						Settings.Default.echoVRPath = newEchoPath;
 						Settings.Default.Save();
@@ -1273,14 +1271,14 @@ namespace Spark
 						return;
 					}
 
-					var paths = new List<string>();
+					List<string> paths = new List<string>();
 					foreach (string subkey in oculusReg.GetSubKeyNames())
 					{
 						paths.Add((string)oculusReg.OpenSubKey(subkey).GetValue("OriginalPath"));
 					}
 
 					const string echoDir = "Software\\ready-at-dawn-echo-arena\\bin\\win10\\echovr.exe";
-					foreach (var path in paths)
+					foreach (string path in paths)
 					{
 						string file = Path.Combine(path, echoDir);
 						if (File.Exists(file))
@@ -1320,17 +1318,15 @@ namespace Spark
 
 			Directory.CreateDirectory(tempDir);
 
-			using (ZipArchive archive = ZipFile.OpenRead(fileName))
+			using ZipArchive archive = ZipFile.OpenRead(fileName);
+			foreach (ZipArchiveEntry entry in archive.Entries)
 			{
-				foreach (ZipArchiveEntry entry in archive.Entries)
-				{
-					// Gets the full path to ensure that relative segments are removed.
-					string destinationPath = Path.GetFullPath(Path.Combine(tempDir, entry.FullName));
+				// Gets the full path to ensure that relative segments are removed.
+				string destinationPath = Path.GetFullPath(Path.Combine(tempDir, entry.FullName));
 
-					entry.ExtractToFile(destinationPath);
+				entry.ExtractToFile(destinationPath);
 
-					fileReader = new StreamReader(destinationPath);
-				}
+				fileReader = new StreamReader(destinationPath);
 			}
 
 			return fileReader;
@@ -1354,7 +1350,7 @@ namespace Spark
 		/// Writes the data to the file
 		/// </summary>
 		/// <param name="data">The data to write</param>
-		static void WriteToFile(string data)
+		private static void WriteToFile(string data)
 		{
 			if (Settings.Default.batchWrites)
 			{
@@ -1445,7 +1441,6 @@ namespace Spark
 			{
 				LogRow(LogType.Error, $"Error with last throw parsing\n{e}");
 			}
-
 
 
 			if (string.IsNullOrWhiteSpace(frame.game_status)) return;
@@ -2284,69 +2279,102 @@ namespace Spark
 		{
 			try
 			{
-				if (lastFrame == null) return;
-				g_Player clientPlayer = lastFrame.GetPlayer(lastFrame.client_name);
-				if (clientPlayer == null) return;
-				if (clientPlayer.team.color == TeamColor.spectator) return;
+				g_Team clientPlayerTeam = lastFrame?.GetTeam(lastFrame.client_name);
+				if (clientPlayerTeam == null) return;
+				if (clientPlayerTeam.color == TeamColor.spectator) return;
+				if (echoVRIP == "127.0.0.1") return;
 
 				Task.Run(async () =>
 				{
+					// check if we're actually on quest and running pc spectator
+					TimeSpan pcSpectatorStartupTime = TimeSpan.FromSeconds(10f);
+					bool inPCSpectator = false;
+					string result = string.Empty;
+					while (!inPCSpectator && pcSpectatorStartupTime > TimeSpan.Zero)
+					{
+						result = await GetRequestAsync($"http://{echoVRIP}:{echoVRPort}/session", null);
+						if (string.IsNullOrEmpty(result))
+						{
+							continue;
+						}
+
+						inPCSpectator = true;
+					}
+
+					if (!inPCSpectator)
+					{
+						new MessageBox("You have chosen to automatically set the camera to follow the player, but you don't have EchoVR running in spectator mode on this pc.").Show();
+						return;
+					}
+
+					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(result);
+					if (frame == null)
+					{
+						new MessageBox("Failed to process frame from the local PC").Show();
+						return;
+					}
+
+					if (frame.sessionid != lastFrame.sessionid || lastFrame.GetPlayer(frame.client_name) == null)
+					{
+						new MessageBox("Local PC is not in the same match as your Quest. Can't follow player.").Show();
+						return;
+					}
+					
+					// try to find player
 					FocusEchoVR();
 					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
-					await Task.Delay(50);
+					await Task.Delay(20);
 					FocusEchoVR();
 					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
 
-					List<Keyboard.DirectXKeyStrokes> numbers = new List<Keyboard.DirectXKeyStrokes> {
-					Keyboard.DirectXKeyStrokes.DIK_0,
-					Keyboard.DirectXKeyStrokes.DIK_1,
-					Keyboard.DirectXKeyStrokes.DIK_2,
-					Keyboard.DirectXKeyStrokes.DIK_3,
-					Keyboard.DirectXKeyStrokes.DIK_4,
-					Keyboard.DirectXKeyStrokes.DIK_5,
-					Keyboard.DirectXKeyStrokes.DIK_6,
-					Keyboard.DirectXKeyStrokes.DIK_7,
-					Keyboard.DirectXKeyStrokes.DIK_8,
-					Keyboard.DirectXKeyStrokes.DIK_9,
+					List<Keyboard.DirectXKeyStrokes> numbers = new List<Keyboard.DirectXKeyStrokes>
+					{
+						Keyboard.DirectXKeyStrokes.DIK_0,
+						Keyboard.DirectXKeyStrokes.DIK_1,
+						Keyboard.DirectXKeyStrokes.DIK_2,
+						Keyboard.DirectXKeyStrokes.DIK_3,
+						Keyboard.DirectXKeyStrokes.DIK_4,
+						Keyboard.DirectXKeyStrokes.DIK_5,
+						Keyboard.DirectXKeyStrokes.DIK_6,
+						Keyboard.DirectXKeyStrokes.DIK_7,
+						Keyboard.DirectXKeyStrokes.DIK_8,
+						Keyboard.DirectXKeyStrokes.DIK_9,
 					};
 
-				// loop through all the players twice if we don't find the right one the first time
-				int foundTries = 2;
+					// loop through all the players twice if we don't find the right one the first time
+					int foundTries = 2;
 					while (foundTries > 0)
 					{
 						for (int i = 0; i < numbers.Count; i++)
 						{
 							FocusEchoVR();
-						// press the keys to visit a player
-						Keyboard.SendKey(numbers[i], false, Keyboard.InputType.Keyboard);
-							await Task.Delay(10);
+							// press the keys to visit a player
+							Keyboard.SendKey(numbers[i], false, Keyboard.InputType.Keyboard);
+							await Task.Delay(20);
 							FocusEchoVR();
 							Keyboard.SendKey(numbers[i], true, Keyboard.InputType.Keyboard);
 
-						// check if this is the right player
-						await Task.Delay(100);
-							List<g_Player> players = lastFrame.GetAllPlayers(false);
-							var clientPlayer = lastFrame.GetPlayer(lastFrame.client_name);
+							// check if this is the right player
+							await Task.Delay(50);
+							result = await GetRequestAsync($"http://{echoVRIP}:{echoVRPort}/session", null);
+							if (string.IsNullOrEmpty(result)) return;
+							frame = JsonConvert.DeserializeObject<g_Instance>(result);
+							if (frame == null) return;
+							List<g_Player> players = frame.GetAllPlayers(false);
+							g_Player clientPlayer = frame.GetPlayer(lastFrame.client_name);
 							float dist = 0;
-							if (clientPlayer != null)
-							{
-								dist = Vector3.Distance(clientPlayer.head.Position, lastFrame.player.vr_position.ToVector3());
-							}
-							else
-							{
-								dist = Vector3.Distance(Vector3.Zero, lastFrame.player.vr_position.ToVector3());
-							}
-							g_Player minPlayer = players.OrderBy(p => Vector3.Distance(p.head.Position, lastFrame.player.vr_position.ToVector3())).First();
-							dist = Vector3.Distance(minPlayer.head.Position, lastFrame.player.vr_position.ToVector3());
+							dist = Vector3.Distance(clientPlayer?.head.Position ?? Vector3.Zero, frame.player.vr_position.ToVector3());
+
+							g_Player minPlayer = players.OrderBy(p => Vector3.Distance(p.head.Position, frame.player.vr_position.ToVector3())).First();
+							dist = Vector3.Distance(minPlayer.head.Position, frame.player.vr_position.ToVector3());
 							LogRow(LogType.Info, $"Player {i} camera distance:\t{dist:N3} m.\tName:\t{minPlayer.name}");
 
-						// if we found the correct player
-						if (minPlayer.name == lastFrame.client_name)
+							// if we found the correct player
+							if (minPlayer.name == lastFrame.client_name)
 							{
 								foundTries = 0;
 								break;
 							}
-
 						}
 					}
 
@@ -2356,20 +2384,21 @@ namespace Spark
 						case 0:
 							FocusEchoVR();
 							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F, false, Keyboard.InputType.Keyboard);
-							await Task.Delay(50);
+							await Task.Delay(20);
 							FocusEchoVR();
 							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F, true, Keyboard.InputType.Keyboard);
 							break;
 						case 1:
 							FocusEchoVR();
 							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
-							await Task.Delay(50);
+							await Task.Delay(20);
 							FocusEchoVR();
 							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
 							break;
 					}
 				});
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				LogRow(LogType.Error, $"Error with finding player camera to follow.\n{ex}");
 			}
@@ -2919,9 +2948,9 @@ namespace Spark
 				frame.game_clock_display + " - ORANGE: " + frame.orange_points + "  BLUE: " + frame.blue_points);
 
 			g_Player scorer = frame.GetPlayer(frame.last_score.person_scored);
+			MatchPlayer scorerPlayerData = matchData.GetPlayerData(scorer);
 			if (scorer != null)
 			{
-				MatchPlayer scorerPlayerData = matchData.GetPlayerData(scorer);
 				if (scorerPlayerData != null)
 				{
 					if (frame.last_score.point_amount == 2)

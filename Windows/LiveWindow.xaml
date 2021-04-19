@@ -152,7 +152,7 @@
 					</TabItem.Header>
 					<Grid>
 						<Grid.RowDefinitions>
-							<RowDefinition Height="210"/>
+							<RowDefinition Height="200"/>
 							<RowDefinition Height="1*"/>
 							<RowDefinition Height="106"/>
 						</Grid.RowDefinitions>
@@ -161,7 +161,7 @@
 							<GroupBox Header="{x:Static p:Resources.Settings}" Margin="10,10,10,10">
 								<StackPanel Orientation="Horizontal" Margin="10,5,0,0">
 									<StackPanel>
-										<StackPanel Orientation="Horizontal" Margin="5,10,0,-10">
+										<StackPanel Orientation="Horizontal" Margin="5,0,0,-10">
 											<Button x:Name="resetIP" Content="{x:Static p:Resources.Local_PC}" Margin="5,5,5,5" Padding="7,3,7,3" Click="SetToLocalIP" ToolTip="Resets the IP to 127.0.0.1"/>
 											<Button x:Name="findQuest" Content="{x:Static p:Resources.Find_Quest_IP}" Margin="5,5,5,5" Padding="5,3,5,3" Click="FindQuestIP" ToolTip="Tries to find a Quest on your network. Make sure your Quest is turned on (not sleeping) and connected to WiFi."/>
 										</StackPanel>

@@ -31,7 +31,7 @@ namespace Spark
 		{
 			Dictionary<string, object> values = new Dictionary<string, object>
 			{
-				{"session_id", matchData.SessionId},
+				{"session_id", matchData.firstFrame.sessionid},
 				{"match_time", matchData.MatchTimeSQL },
 				{"player_id", Id },
 				{"player_name", Name },
@@ -68,12 +68,8 @@ namespace Spark
 
 		#region Get/Set Methods
 		public long Id { get; set; }
-		/// <summary>
-		/// Link to a image to be used as a profile picture on their page.
-		/// This should probably be removed unless we choose to add a feature in which users can define their own image link (not safe).
-		/// </summary>
-		public string ProfileLink { get; set; }
-		public string Name { get; set; }
+
+		private string Name { get; set; }
 		public int Level { get; set; }
 		public int Number { get; set; }
 
@@ -108,15 +104,9 @@ namespace Spark
 		public int TwoPointers { get; set; }
 		public int ThreePointers { get; set; }
 
-		public int Passes {
-			get => cachedStats.passes + currentStats.passes - lastRoundStats.passes;
-			set => currentStats.passes = value;
-		}
+		public int Passes { get; set; }
 
-		public int Catches {
-			get => cachedStats.catches + currentStats.catches - lastRoundStats.catches;
-			set => currentStats.catches = value;
-		}
+		public int Catches { get; set; }
 
 		public int Steals {
 			get => cachedStats.steals + currentStats.steals - lastRoundStats.steals;
@@ -233,7 +223,7 @@ namespace Spark
 			{
 				recentVelocities.Clear();
 			}
-			return (maxVel, (recentVelocities.Count - maxVelIndex) / Program.StatsHz);
+			return (maxVel, (float)(recentVelocities.Count - maxVelIndex) / Program.StatsHz);
 		}
 		public float GetSmoothedVelocity(float smoothTime = 1)
 		{
@@ -275,7 +265,6 @@ namespace Spark
 			lastRoundStats.shots_taken += lastPlayer.ShotsTaken;
 			lastRoundStats.saves += lastPlayer.Saves;
 			lastRoundStats.passes += lastPlayer.Passes;
-			lastRoundStats.catches += lastPlayer.Catches;
 			lastRoundStats.steals += lastPlayer.Steals;
 			lastRoundStats.stuns += lastPlayer.Stuns;
 			lastRoundStats.blocks += lastPlayer.Blocks;

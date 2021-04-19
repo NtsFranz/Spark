@@ -84,7 +84,7 @@ namespace Spark
 			{
 				var values = new Dictionary<string, object>
 				{
-					{"session_id", matchData.SessionId },
+					{"session_id", matchData.firstFrame.sessionid },
 					{"match_time", matchData.MatchTimeSQL },
 					{"event_time", DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss") },
 					{"game_clock", gameClock },

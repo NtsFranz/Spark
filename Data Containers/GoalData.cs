@@ -80,7 +80,7 @@ namespace Spark
 		{
 			var values = new Dictionary<string, object>
 			{
-				{"session_id", matchData.SessionId },
+				{"session_id", matchData.firstFrame.sessionid },
 				{"match_time", matchData.MatchTimeSQL },
 				{"game_clock", GameClock },
 				{"player_id", Player.userid },
