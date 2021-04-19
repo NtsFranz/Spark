@@ -126,8 +126,8 @@
 
 						<GroupBox Header="Spectator Camera Settings" Margin="10,4,10,4" >
 							<StackPanel>
-								<CheckBox Content="Hide EchoVR UI" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left"
-                                      VerticalAlignment="Stretch" Margin="10,4,10,4" />
+								<CheckBox Content="Hide EchoVR UI" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
+								<CheckBox Content="Toggle Minimap after Goals" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
 								<Label Content="Camera Mode:"/>
 								<ComboBox SelectedIndex="{l:SettingBinding spectatorCamera}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
 									<ComboBoxItem Content="Auto (leave default)"/>

@@ -1294,5 +1294,17 @@ namespace Spark.Properties {
                 this["followClientSpectatorCameraMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool toggleMinimapAfterGoals {
+            get {
+                return ((bool)(this["toggleMinimapAfterGoals"]));
+            }
+            set {
+                this["toggleMinimapAfterGoals"] = value;
+            }
+        }
     }
 }
