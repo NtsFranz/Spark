@@ -1,7 +1,5 @@
-﻿#if INCLUDE_FIRESTORE
-using Google.Cloud.Firestore;
+﻿using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
-#endif
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -164,9 +162,7 @@ namespace Spark
 
 		public static bool hostingLiveReplay = false;
 
-#if INCLUDE_FIRESTORE
 		public static FirestoreDb db;
-#endif
 
 		public static string echoVRIP = "";
 		public static int echoVRPort = 6721;
@@ -3065,7 +3061,6 @@ namespace Spark
 
 		static async Task DoUploadEventFirebase(MatchData matchData, GoalData goalData)
 		{
-#if INCLUDE_FIRESTORE
 			if (Settings.Default.uploadToFirestore && !Personal)
 			{
 				if (!TryCreateFirebaseDB()) return;
@@ -3094,12 +3089,10 @@ namespace Spark
 					throw;
 				}
 			}
-#endif
 		}
 
 		static async Task DoUploadEventFirebase(MatchData matchData, EventData eventData)
 		{
-#if INCLUDE_FIRESTORE
 			if (Settings.Default.uploadToFirestore && !Personal)
 			{
 				if (!TryCreateFirebaseDB()) return;
@@ -3125,13 +3118,11 @@ namespace Spark
 					throw;
 				}
 			}
-#endif
 		}
 
 
 		static async Task DoUploadMatchBatchFirebase(BatchOutputFormat data)
 		{
-#if INCLUDE_FIRESTORE
 			if (Settings.Default.uploadToFirestore && !Personal)
 			{
 				if (!TryCreateFirebaseDB()) return;
@@ -3175,7 +3166,6 @@ namespace Spark
 					throw;
 				}
 			}
-#endif
 		}
 
 		static bool TryCreateFirebaseDB()
