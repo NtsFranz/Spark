@@ -53,6 +53,9 @@ namespace Spark
 		string blueLogo = "";
 		string orangeLogo = "";
 
+		List<Label> blueScoreboardItems = new List<Label>();
+		List<Label> orangeScoreboardItems = new List<Label>();
+
 		[DllImport("User32.dll")]
 		static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
 
@@ -569,6 +572,91 @@ namespace Spark
 							// TODO convert to WPF
 							//playerSpeedBars[i].Background = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
 						}
+
+
+						// scoreboard
+						orangeScoreboardItems.ForEach((i) => orangeScoreboardGrid.Children.Remove(i));
+						blueScoreboardItems.ForEach((i) => blueScoreboardGrid.Children.Remove(i));
+						int orangeRow = 0;
+						int blueRow = 0;
+						foreach (KeyValuePair<long, MatchPlayer> player in Program.matchData.players)
+						{
+							Grid board = null;
+							int currentRow = 0;
+							List<Label> currentItems = null;
+							if (player.Value.teamData.teamColor == g_Team.TeamColor.orange)
+							{
+								board = orangeScoreboardGrid;
+								orangeRow++;
+								currentRow = orangeRow;
+								currentItems = orangeScoreboardItems;
+							}
+							else if (player.Value.teamData.teamColor == g_Team.TeamColor.blue)
+							{
+								board = blueScoreboardGrid;
+								blueRow++;
+								currentRow = blueRow;
+								currentItems = blueScoreboardItems;
+							}
+							if (board == null) continue;
+
+							Label label = new Label();
+							label.Content = player.Value.Name;
+							board.Children.Add(label);
+							Grid.SetRow(label, currentRow);
+							Grid.SetColumn(label, 0);
+							currentItems.Add(label);
+
+							label = new Label();
+							label.Content = player.Value.Points;
+							board.Children.Add(label);
+							Grid.SetRow(label, currentRow);
+							Grid.SetColumn(label, 1);
+							currentItems.Add(label);
+
+							label = new Label();
+							label.Content = player.Value.Assists;
+							board.Children.Add(label);
+							Grid.SetRow(label, currentRow);
+							Grid.SetColumn(label, 2);
+							currentItems.Add(label);
+
+							label = new Label();
+							label.Content = player.Value.Saves;
+							board.Children.Add(label);
+							Grid.SetRow(label, currentRow);
+							Grid.SetColumn(label, 3);
+							currentItems.Add(label);
+
+							label = new Label();
+							label.Content = player.Value.Steals;
+							board.Children.Add(label);
+							Grid.SetRow(label, currentRow);
+							Grid.SetColumn(label, 4);
+							currentItems.Add(label);
+
+							label = new Label();
+							label.Content = player.Value.Stuns;
+							board.Children.Add(label);
+							Grid.SetRow(label, currentRow);
+							Grid.SetColumn(label, 5);
+							currentItems.Add(label);
+
+							label = new Label();
+							label.Content = player.Value.PossessionTime.ToString("N1");
+							board.Children.Add(label);
+							Grid.SetRow(label, currentRow);
+							Grid.SetColumn(label, 6);
+							currentItems.Add(label);
+
+							label = new Label();
+							label.Content = player.Value.averageSpeed[0].ToString("N1");
+							board.Children.Add(label);
+							Grid.SetRow(label, currentRow);
+							Grid.SetColumn(label, 7);
+							currentItems.Add(label);
+						}
+
 					}
 					else
 					{

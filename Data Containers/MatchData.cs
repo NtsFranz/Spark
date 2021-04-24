@@ -42,7 +42,7 @@ namespace Spark
 		public float startTime = 0;
 		public float endTime = 0;
 		public int overtimeCount = 0;
-		public int round = 0;
+		public int round = 1;
 		public FinishReason finishReason = FinishReason.not_finished;
 		/// <summary>
 		/// Get match time in UTC format for SQL usage.

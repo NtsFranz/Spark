@@ -69,16 +69,16 @@ namespace Spark
 		#region Get/Set Methods
 		public long Id { get; set; }
 
-		private string Name { get; set; }
+		public string Name { get; set; }
 		public int Level { get; set; }
 		public int Number { get; set; }
 
 		private g_PlayerStats currentStats = new g_PlayerStats();
 		private g_PlayerStats cachedStats = new g_PlayerStats();
-		private g_PlayerStats lastRoundStats = new g_PlayerStats();
+		private g_PlayerStats oldRoundStats = new g_PlayerStats();
 
 		public float PossessionTime {
-			get => cachedStats.possession_time + currentStats.possession_time - lastRoundStats.possession_time;
+			get => cachedStats.possession_time + currentStats.possession_time - oldRoundStats.possession_time;
 			set => currentStats.possession_time = value;
 		}
 
@@ -86,17 +86,17 @@ namespace Spark
 		public float InvertedTime { get; set; }
 
 		public int Points {
-			get => cachedStats.points + currentStats.points - lastRoundStats.points;
+			get => cachedStats.points + currentStats.points - oldRoundStats.points;
 			set => currentStats.points = value;
 		}
 
 		public int ShotsTaken {
-			get => cachedStats.shots_taken + currentStats.shots_taken - lastRoundStats.shots_taken;
+			get => cachedStats.shots_taken + currentStats.shots_taken - oldRoundStats.shots_taken;
 			set => currentStats.shots_taken = value;
 		}
 
 		public int Saves {
-			get => cachedStats.saves + currentStats.saves - lastRoundStats.saves;
+			get => cachedStats.saves + currentStats.saves - oldRoundStats.saves;
 			set => currentStats.saves = value;
 		}
 
@@ -109,27 +109,27 @@ namespace Spark
 		public int Catches { get; set; }
 
 		public int Steals {
-			get => cachedStats.steals + currentStats.steals - lastRoundStats.steals;
+			get => cachedStats.steals + currentStats.steals - oldRoundStats.steals;
 			set => currentStats.steals = value;
 		}
 
 		public int Stuns {
-			get => cachedStats.stuns + currentStats.stuns - lastRoundStats.stuns;
+			get => cachedStats.stuns + currentStats.stuns - oldRoundStats.stuns;
 			set => currentStats.stuns = value;
 		}
 
 		public int Blocks {
-			get => cachedStats.blocks + currentStats.blocks - lastRoundStats.blocks;
+			get => cachedStats.blocks + currentStats.blocks - oldRoundStats.blocks;
 			set => currentStats.blocks = value;
 		}
 
 		public int Interceptions {
-			get => cachedStats.interceptions + currentStats.interceptions - lastRoundStats.interceptions;
+			get => cachedStats.interceptions + currentStats.interceptions - oldRoundStats.interceptions;
 			set => currentStats.interceptions = value;
 		}
 
 		public int Assists {
-			get => cachedStats.assists + currentStats.assists - lastRoundStats.assists;
+			get => cachedStats.assists + currentStats.assists - oldRoundStats.assists;
 			set => currentStats.assists = value;
 		}
 
@@ -245,11 +245,21 @@ namespace Spark
 		public void CacheStats(g_PlayerStats newPlayerStats)
 		{
 			// if player joined back from spectator
-			if ((newPlayerStats.possession_time + newPlayerStats.points + newPlayerStats.shots_taken + newPlayerStats.saves + newPlayerStats.passes + newPlayerStats.catches + newPlayerStats.steals + newPlayerStats.stuns + newPlayerStats.blocks + newPlayerStats.interceptions + newPlayerStats.assists) != 0)
+			if ((newPlayerStats.possession_time + 
+				newPlayerStats.points + 
+				newPlayerStats.shots_taken + 
+				newPlayerStats.saves + 
+				newPlayerStats.passes + 
+				newPlayerStats.catches + 
+				newPlayerStats.steals + 
+				newPlayerStats.stuns + 
+				newPlayerStats.blocks + 
+				newPlayerStats.interceptions + 
+				newPlayerStats.assists) != 0)
 			{
 				return;
 			}
-			cachedStats += cachedStats + currentStats- lastRoundStats;
+			cachedStats += currentStats;
 		}
 
 		/// <summary>
@@ -258,19 +268,19 @@ namespace Spark
 		/// <param name="lastPlayer"></param>
 		public void StoreLastRoundStats(MatchPlayer lastPlayer)
 		{
-			lastRoundStats = lastPlayer.lastRoundStats;
+			oldRoundStats = lastPlayer.oldRoundStats;
 
-			lastRoundStats.possession_time += lastPlayer.PossessionTime;
-			lastRoundStats.points += lastPlayer.Points;
-			lastRoundStats.shots_taken += lastPlayer.ShotsTaken;
-			lastRoundStats.saves += lastPlayer.Saves;
-			lastRoundStats.passes += lastPlayer.Passes;
-			lastRoundStats.steals += lastPlayer.Steals;
-			lastRoundStats.stuns += lastPlayer.Stuns;
-			lastRoundStats.blocks += lastPlayer.Blocks;
-			lastRoundStats.interceptions += lastPlayer.Interceptions;	// TODO do we save this if it's being set by us anyway?
-			lastRoundStats.assists += lastPlayer.Assists;
-			lastRoundStats.goals += lastPlayer.GoalsNum;
+			oldRoundStats.possession_time += lastPlayer.PossessionTime;
+			oldRoundStats.points += lastPlayer.Points;
+			oldRoundStats.shots_taken += lastPlayer.ShotsTaken;
+			oldRoundStats.saves += lastPlayer.Saves;
+			oldRoundStats.passes += lastPlayer.Passes;
+			oldRoundStats.steals += lastPlayer.Steals;
+			oldRoundStats.stuns += lastPlayer.Stuns;
+			oldRoundStats.blocks += lastPlayer.Blocks;
+			oldRoundStats.interceptions += lastPlayer.Interceptions;	// TODO do we save this if it's being set by us anyway?
+			oldRoundStats.assists += lastPlayer.Assists;
+			oldRoundStats.goals += lastPlayer.GoalsNum;
 		}
 	}
 }

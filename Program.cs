@@ -2577,6 +2577,7 @@ namespace Spark
 								LogRow(LogType.Error, "Player exists in this round but not in last. Y");
 							}
 						}
+						matchData.round++;
 					}
 					// Autofocus
 					if (Settings.Default.isAutofocusEnabled)
