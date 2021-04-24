@@ -870,6 +870,28 @@ namespace Spark
 				}
 			}
 		}
+
+		public bool ClipInterceptionSetting {
+			get {
+				return clipsTab switch
+				{
+					ClipsTab.echoreplay => Settings.Default.replayClipInterception,
+					ClipsTab.OBS => Settings.Default.obsClipInterception,
+					_ => false,
+				};
+			}
+			set {
+				switch (clipsTab)
+				{
+					case ClipsTab.echoreplay:
+						Settings.Default.replayClipInterception = value;
+						break;
+					case ClipsTab.OBS:
+						Settings.Default.obsClipInterception = value;
+						break;
+				}
+			}
+		}
 		#endregion
 
 		#endregion

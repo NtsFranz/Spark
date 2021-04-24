@@ -270,17 +270,7 @@ namespace Spark
 		{
 			oldRoundStats = lastPlayer.oldRoundStats;
 
-			oldRoundStats.possession_time += lastPlayer.PossessionTime;
-			oldRoundStats.points += lastPlayer.Points;
-			oldRoundStats.shots_taken += lastPlayer.ShotsTaken;
-			oldRoundStats.saves += lastPlayer.Saves;
-			oldRoundStats.passes += lastPlayer.Passes;
-			oldRoundStats.steals += lastPlayer.Steals;
-			oldRoundStats.stuns += lastPlayer.Stuns;
-			oldRoundStats.blocks += lastPlayer.Blocks;
-			oldRoundStats.interceptions += lastPlayer.Interceptions;	// TODO do we save this if it's being set by us anyway?
-			oldRoundStats.assists += lastPlayer.Assists;
-			oldRoundStats.goals += lastPlayer.GoalsNum;
+			oldRoundStats += lastPlayer.currentStats;
 		}
 	}
 }

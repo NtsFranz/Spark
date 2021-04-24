@@ -575,87 +575,89 @@ namespace Spark
 
 
 						// scoreboard
-						orangeScoreboardItems.ForEach((i) => orangeScoreboardGrid.Children.Remove(i));
-						blueScoreboardItems.ForEach((i) => blueScoreboardGrid.Children.Remove(i));
-						int orangeRow = 0;
-						int blueRow = 0;
-						foreach (KeyValuePair<long, MatchPlayer> player in Program.matchData.players)
-						{
-							Grid board = null;
-							int currentRow = 0;
-							List<Label> currentItems = null;
-							if (player.Value.teamData.teamColor == g_Team.TeamColor.orange)
-							{
-								board = orangeScoreboardGrid;
-								orangeRow++;
-								currentRow = orangeRow;
-								currentItems = orangeScoreboardItems;
-							}
-							else if (player.Value.teamData.teamColor == g_Team.TeamColor.blue)
-							{
-								board = blueScoreboardGrid;
-								blueRow++;
-								currentRow = blueRow;
-								currentItems = blueScoreboardItems;
-							}
-							if (board == null) continue;
+						//orangeScoreboardItems.ForEach((i) => orangeScoreboardGrid.Children.Remove(i));
+						//blueScoreboardItems.ForEach((i) => blueScoreboardGrid.Children.Remove(i));
+						//orangeScoreboardItems.Clear();
+						//blueScoreboardItems.Clear();
+						//int orangeRow = 0;
+						//int blueRow = 0;
+						//foreach (KeyValuePair<long, MatchPlayer> player in Program.matchData.players)
+						//{
+						//	Grid board = null;
+						//	int currentRow = 0;
+						//	List<Label> currentItems = null;
+						//	if (player.Value.teamData.teamColor == g_Team.TeamColor.orange)
+						//	{
+						//		board = orangeScoreboardGrid;
+						//		orangeRow++;
+						//		currentRow = orangeRow;
+						//		currentItems = orangeScoreboardItems;
+						//	}
+						//	else if (player.Value.teamData.teamColor == g_Team.TeamColor.blue)
+						//	{
+						//		board = blueScoreboardGrid;
+						//		blueRow++;
+						//		currentRow = blueRow;
+						//		currentItems = blueScoreboardItems;
+						//	}
+						//	if (board == null) continue;
 
-							Label label = new Label();
-							label.Content = player.Value.Name;
-							board.Children.Add(label);
-							Grid.SetRow(label, currentRow);
-							Grid.SetColumn(label, 0);
-							currentItems.Add(label);
+						//	Label label = new Label();
+						//	label.Content = player.Value.Name;
+						//	board.Children.Add(label);
+						//	Grid.SetRow(label, currentRow);
+						//	Grid.SetColumn(label, 0);
+						//	currentItems.Add(label);
 
-							label = new Label();
-							label.Content = player.Value.Points;
-							board.Children.Add(label);
-							Grid.SetRow(label, currentRow);
-							Grid.SetColumn(label, 1);
-							currentItems.Add(label);
+						//	label = new Label();
+						//	label.Content = player.Value.Points;
+						//	board.Children.Add(label);
+						//	Grid.SetRow(label, currentRow);
+						//	Grid.SetColumn(label, 1);
+						//	currentItems.Add(label);
 
-							label = new Label();
-							label.Content = player.Value.Assists;
-							board.Children.Add(label);
-							Grid.SetRow(label, currentRow);
-							Grid.SetColumn(label, 2);
-							currentItems.Add(label);
+						//	label = new Label();
+						//	label.Content = player.Value.Assists;
+						//	board.Children.Add(label);
+						//	Grid.SetRow(label, currentRow);
+						//	Grid.SetColumn(label, 2);
+						//	currentItems.Add(label);
 
-							label = new Label();
-							label.Content = player.Value.Saves;
-							board.Children.Add(label);
-							Grid.SetRow(label, currentRow);
-							Grid.SetColumn(label, 3);
-							currentItems.Add(label);
+						//	label = new Label();
+						//	label.Content = player.Value.Saves;
+						//	board.Children.Add(label);
+						//	Grid.SetRow(label, currentRow);
+						//	Grid.SetColumn(label, 3);
+						//	currentItems.Add(label);
 
-							label = new Label();
-							label.Content = player.Value.Steals;
-							board.Children.Add(label);
-							Grid.SetRow(label, currentRow);
-							Grid.SetColumn(label, 4);
-							currentItems.Add(label);
+						//	label = new Label();
+						//	label.Content = player.Value.Steals;
+						//	board.Children.Add(label);
+						//	Grid.SetRow(label, currentRow);
+						//	Grid.SetColumn(label, 4);
+						//	currentItems.Add(label);
 
-							label = new Label();
-							label.Content = player.Value.Stuns;
-							board.Children.Add(label);
-							Grid.SetRow(label, currentRow);
-							Grid.SetColumn(label, 5);
-							currentItems.Add(label);
+						//	label = new Label();
+						//	label.Content = player.Value.Stuns;
+						//	board.Children.Add(label);
+						//	Grid.SetRow(label, currentRow);
+						//	Grid.SetColumn(label, 5);
+						//	currentItems.Add(label);
 
-							label = new Label();
-							label.Content = player.Value.PossessionTime.ToString("N1");
-							board.Children.Add(label);
-							Grid.SetRow(label, currentRow);
-							Grid.SetColumn(label, 6);
-							currentItems.Add(label);
+						//	label = new Label();
+						//	label.Content = player.Value.PossessionTime.ToString("N1");
+						//	board.Children.Add(label);
+						//	Grid.SetRow(label, currentRow);
+						//	Grid.SetColumn(label, 6);
+						//	currentItems.Add(label);
 
-							label = new Label();
-							label.Content = player.Value.averageSpeed[0].ToString("N1");
-							board.Children.Add(label);
-							Grid.SetRow(label, currentRow);
-							Grid.SetColumn(label, 7);
-							currentItems.Add(label);
-						}
+						//	label = new Label();
+						//	label.Content = player.Value.averageSpeed[0].ToString("N1");
+						//	board.Children.Add(label);
+						//	Grid.SetRow(label, currentRow);
+						//	Grid.SetColumn(label, 7);
+						//	currentItems.Add(label);
+						//}
 
 					}
 					else
@@ -803,6 +805,9 @@ namespace Spark
 
 		private async Task CheckForAppUpdate()
 		{
+#if WINDOWS_STORE_RELEASE
+			return;
+#endif
 			try
 			{
 				string respString = await Program.GetRequestAsync("https://api.github.com/repos/NtsFranz/Spark/releases", null);
@@ -853,6 +858,7 @@ namespace Spark
 					string loc = (string)respObj["city"] + ", " + (string)respObj["regionName"];
 					Program.matchData.ServerLocation = loc;
 					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
+					serverLocationLabel.ToolTip = $"{respObj["query"]}\n{respObj["org"]}\n{respObj["as"]}";
 
 					if (Settings.Default.serverLocationTTS)
 					{
@@ -1400,7 +1406,7 @@ namespace Spark
 			}
 		}
 
-		#region Atlas Links Tab
+#region Atlas Links Tab
 
 		private static string CurrentLink(string sessionid)
 		{
@@ -2077,7 +2083,7 @@ namespace Spark
 			Settings.Default.Save();
 		}
 
-		#endregion
+#endregion
 
 		private void DashboardItem1Changed(object sender, SelectionChangedEventArgs e)
 		{

@@ -292,7 +292,7 @@
 						<Button x:Name="showEventLogFileButton" Content="{x:Static p:Resources.Open_Event_Log_Folder}" Width="183" Margin="0,10,30,0" HorizontalAlignment="Right" Click="showEventLogFileButton_Click" VerticalAlignment="Top" Height="30" ToolTip="{x:Static p:Resources.Opens_the_folder_where_the_event_logs_are_stored_on_your_computer__Only_works_once_you_have_logged_at_least_one_event_}"/>
 					</Grid>
 				</TabItem>
-				<TabItem x:Name="scoreboardTab" FontSize="14" Padding="10,0,10,0">
+				<TabItem x:Name="scoreboardTab" FontSize="14" Padding="10,0,10,0" Visibility="Collapsed">
 					<TabItem.Header>
 						<StackPanel Orientation="Horizontal">
 							<Label Content="Scoreboard"/>
@@ -326,16 +326,6 @@
 
 							<Label Content="Player" Width="100" HorizontalContentAlignment="Center"/>
 							<Label Content="Points" HorizontalContentAlignment="Center" Grid.Column="1"/>
-							<Label Content="Assists" HorizontalContentAlignment="Center" Grid.Column="2"/>
-							<Label Content="Saves" HorizontalContentAlignment="Center" Grid.Column="3"/>
-							<Label Content="Steals" HorizontalContentAlignment="Center" Grid.Column="4"/>
-							<Label Content="Stuns" HorizontalContentAlignment="Center" Grid.Column="5"/>
-							<Label Content="Poss. Time" HorizontalContentAlignment="Center" Grid.Column="6"/>
-							<Label Content="Avg. Spd." HorizontalContentAlignment="Center" Grid.Column="7"/>
-
-
-							<Label Content="Player" Width="100" HorizontalContentAlignment="Center"/>
-							<Label Content="Points" HorizontalContentAlignment="Center" Grid.Column="1" Grid.Row="1"/>
 							<Label Content="Assists" HorizontalContentAlignment="Center" Grid.Column="2"/>
 							<Label Content="Saves" HorizontalContentAlignment="Center" Grid.Column="3"/>
 							<Label Content="Steals" HorizontalContentAlignment="Center" Grid.Column="4"/>

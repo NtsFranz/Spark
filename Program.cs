@@ -247,6 +247,7 @@ namespace Spark
 		public static Action<g_Instance, g_Team, g_Player, bool, float, float, float> Joust;
 		public static Action<g_Instance, GoalData> Goal;
 		public static Action<g_Instance, GoalData> Assist;
+		public static Action<g_Instance, g_Team, g_Player> LargePing;
 
 		#endregion
 
@@ -1337,11 +1338,19 @@ namespace Spark
 			HighlightsHelper.isNVHighlightsEnabled = Settings.Default.isNVHighlightsEnabled;
 			if (!overrideEchoVRPort) echoVRPort = Settings.Default.echoVRPort;
 
-			if (Settings.Default.saveFolder == "none" || !Directory.Exists(Settings.Default.saveFolder))
+			try
 			{
-				Settings.Default.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),"Spark", "replays");
-				Directory.CreateDirectory(Settings.Default.saveFolder);
-				Settings.Default.Save();
+				if (Settings.Default.saveFolder == "none" || !Directory.Exists(Settings.Default.saveFolder))
+				{
+					Settings.Default.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Spark", "replays");
+					Directory.CreateDirectory(Settings.Default.saveFolder);
+					Settings.Default.Save();
+				}
+			}
+			catch (Exception e)
+			{
+				new MessageBox($"Error accessing replay folder path:\n{Settings.Default.saveFolder}").Show();
+				LogRow(LogType.Error, $"Error accessing replay folder path:\n{Settings.Default.saveFolder}");
 			}
 		}
 
@@ -2180,6 +2189,24 @@ namespace Spark
 							}
 						}
 
+
+
+						// check ping went over 150 📶
+						if (lastPlayer.ping <= 150 && player.ping > 150)
+						{
+							try
+							{
+								LargePing?.Invoke(frame, team, player);
+							}
+							catch (Exception exp)
+							{
+								LogRow(LogType.Error, "Error processing action", exp.ToString());
+							}
+
+							LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + player.name + " ping went above 150");
+						}
+
+
 						// check disk was thrown ⚾
 						if (!wasThrown && player.possession &&
 							!lastFrame.disc.velocity.ToVector3().Equals(Vector3.Zero) &&
@@ -2454,7 +2481,7 @@ namespace Spark
 		private static async Task DelayedThrowEvent(g_Player originalPlayer, bool leftHanded, float underhandedness, float origSpeed)
 		{
 			// wait some time before re-checking the throw velocity
-			await Task.Delay(100);
+			await Task.Delay(150);
 
 			g_Instance frame = lastFrame;
 
