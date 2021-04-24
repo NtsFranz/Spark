@@ -1526,6 +1526,8 @@ namespace Spark
 				foreach (g_Player player in team.players)
 				{
 					player.team = team;
+
+					// make sure the player wasn't in the last frame
 					if (lastFrame.GetAllPlayers(true).Any(p => p.userid == player.userid)) continue;
 
 					// TODO find why this is crashing

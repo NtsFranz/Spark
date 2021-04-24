@@ -315,19 +315,41 @@ namespace Spark
 
 		public static g_PlayerStats operator +(g_PlayerStats a, g_PlayerStats b)
 		{
-			g_PlayerStats pStats = new g_PlayerStats();
-			pStats.possession_time = a.possession_time + b.possession_time;
-			pStats.points = a.points + b.points;
-			pStats.passes = a.passes + b.passes;
-			pStats.catches = a.catches + b.catches;
-			pStats.steals = a.steals + b.steals;
-			pStats.stuns = a.stuns + b.stuns;
-			pStats.blocks = a.blocks + b.blocks;
-			pStats.interceptions = a.blocks + b.interceptions;
-			pStats.assists = a.assists + b.assists;
-			pStats.saves = a.saves + b.assists;
-			pStats.goals = a.goals + b.goals;
-			pStats.shots_taken = a.shots_taken + b.shots_taken;
+			g_PlayerStats pStats = new g_PlayerStats
+			{
+				possession_time = a.possession_time + b.possession_time,
+				points = a.points + b.points,
+				passes = a.passes + b.passes,
+				catches = a.catches + b.catches,
+				steals = a.steals + b.steals,
+				stuns = a.stuns + b.stuns,
+				blocks = a.blocks + b.blocks,
+				interceptions = a.blocks + b.interceptions,
+				assists = a.assists + b.assists,
+				saves = a.saves + b.assists,
+				goals = a.goals + b.goals,
+				shots_taken = a.shots_taken + b.shots_taken
+			};
+			return pStats;
+		}
+
+		public static g_PlayerStats operator -(g_PlayerStats a, g_PlayerStats b)
+		{
+			g_PlayerStats pStats = new g_PlayerStats
+			{
+				possession_time = a.possession_time - b.possession_time,
+				points = a.points - b.points,
+				passes = a.passes - b.passes,
+				catches = a.catches - b.catches,
+				steals = a.steals - b.steals,
+				stuns = a.stuns - b.stuns,
+				blocks = a.blocks - b.blocks,
+				interceptions = a.blocks - b.interceptions,
+				assists = a.assists - b.assists,
+				saves = a.saves - b.assists,
+				goals = a.goals - b.goals,
+				shots_taken = a.shots_taken - b.shots_taken
+			};
 			return pStats;
 		}
 	}

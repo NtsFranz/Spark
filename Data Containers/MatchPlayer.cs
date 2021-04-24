@@ -249,7 +249,7 @@ namespace Spark
 			{
 				return;
 			}
-			cachedStats += newPlayerStats;
+			cachedStats += cachedStats + currentStats- lastRoundStats;
 		}
 
 		/// <summary>
