@@ -2925,7 +2925,7 @@ namespace Spark
 			// Upload to Firebase 🔥
 			_ = DoUploadEventFirebase(matchData, goalEvent);
 
-			UpdateStatsIngame(frame);
+			UpdateStatsIngame(frame, allowUpload:false);
 		}
 
 		/// <summary>
@@ -3193,7 +3193,6 @@ namespace Spark
 				catch (Exception e)
 				{
 					LogRow(LogType.Error, "Error uploading to firebase.\n" + e.Message + "\n" + e.StackTrace);
-					throw;
 				}
 			}
 		}

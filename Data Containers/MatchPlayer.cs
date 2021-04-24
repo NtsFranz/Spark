@@ -66,6 +66,8 @@ namespace Spark
 			return values;
 		}
 
+		private const int MINCLAMP = 0;
+
 		#region Get/Set Methods
 		public long Id { get; set; }
 
@@ -78,7 +80,7 @@ namespace Spark
 		private g_PlayerStats oldRoundStats = new g_PlayerStats();
 
 		public float PossessionTime {
-			get => cachedStats.possession_time + currentStats.possession_time - oldRoundStats.possession_time;
+			get => Math.Clamp(cachedStats.possession_time + currentStats.possession_time - oldRoundStats.possession_time, MINCLAMP, int.MaxValue);
 			set => currentStats.possession_time = value;
 		}
 
@@ -86,17 +88,17 @@ namespace Spark
 		public float InvertedTime { get; set; }
 
 		public int Points {
-			get => cachedStats.points + currentStats.points - oldRoundStats.points;
+			get => Math.Clamp(cachedStats.points + currentStats.points - oldRoundStats.points, MINCLAMP, int.MaxValue);
 			set => currentStats.points = value;
 		}
 
 		public int ShotsTaken {
-			get => cachedStats.shots_taken + currentStats.shots_taken - oldRoundStats.shots_taken;
+			get => Math.Clamp(cachedStats.shots_taken + currentStats.shots_taken - oldRoundStats.shots_taken, MINCLAMP, int.MaxValue);
 			set => currentStats.shots_taken = value;
 		}
 
 		public int Saves {
-			get => cachedStats.saves + currentStats.saves - oldRoundStats.saves;
+			get => Math.Clamp(cachedStats.saves + currentStats.saves - oldRoundStats.saves, MINCLAMP, int.MaxValue);
 			set => currentStats.saves = value;
 		}
 
@@ -109,27 +111,27 @@ namespace Spark
 		public int Catches { get; set; }
 
 		public int Steals {
-			get => cachedStats.steals + currentStats.steals - oldRoundStats.steals;
+			get => Math.Clamp(cachedStats.steals + currentStats.steals - oldRoundStats.steals, MINCLAMP, int.MaxValue);
 			set => currentStats.steals = value;
 		}
 
 		public int Stuns {
-			get => cachedStats.stuns + currentStats.stuns - oldRoundStats.stuns;
+			get => Math.Clamp(cachedStats.stuns + currentStats.stuns - oldRoundStats.stuns, MINCLAMP, int.MaxValue);
 			set => currentStats.stuns = value;
 		}
 
 		public int Blocks {
-			get => cachedStats.blocks + currentStats.blocks - oldRoundStats.blocks;
+			get => Math.Clamp(cachedStats.blocks + currentStats.blocks - oldRoundStats.blocks, MINCLAMP, int.MaxValue);
 			set => currentStats.blocks = value;
 		}
 
 		public int Interceptions {
-			get => cachedStats.interceptions + currentStats.interceptions - oldRoundStats.interceptions;
+			get => Math.Clamp(cachedStats.interceptions + currentStats.interceptions - oldRoundStats.interceptions, MINCLAMP, int.MaxValue);
 			set => currentStats.interceptions = value;
 		}
 
 		public int Assists {
-			get => cachedStats.assists + currentStats.assists - oldRoundStats.assists;
+			get => Math.Clamp(cachedStats.assists + currentStats.assists - oldRoundStats.assists, MINCLAMP, int.MaxValue);
 			set => currentStats.assists = value;
 		}
 
@@ -270,7 +272,7 @@ namespace Spark
 		{
 			oldRoundStats = lastPlayer.oldRoundStats;
 
-			oldRoundStats += lastPlayer.currentStats;
+			oldRoundStats += cachedStats + currentStats - oldRoundStats;
 		}
 	}
 }
