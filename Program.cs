@@ -817,7 +817,7 @@ namespace Spark
 						}
 
 						// for the very first frame, duplicate it to the "previous" frame
-						if (!string.IsNullOrEmpty(game_Instance?.game_status))
+						if (game_Instance!=null && game_Instance.game_status != "")
 						{
 							lastFrame ??= game_Instance;
 							lastLastLastFrame = lastLastFrame;
@@ -2429,7 +2429,7 @@ namespace Spark
 						lastJousts.Enqueue(joustEvent);
 						if (lastJousts.Count > 30)
 						{
-							lastJousts.TryDequeue(out var joust);
+							lastJousts.TryDequeue(out EventData joust);
 						}
 
 						return;

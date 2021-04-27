@@ -324,9 +324,9 @@ namespace Spark
 				steals = a.steals + b.steals,
 				stuns = a.stuns + b.stuns,
 				blocks = a.blocks + b.blocks,
-				interceptions = a.blocks + b.interceptions,
+				interceptions = a.interceptions + b.interceptions,
 				assists = a.assists + b.assists,
-				saves = a.saves + b.assists,
+				saves = a.saves + b.saves,
 				goals = a.goals + b.goals,
 				shots_taken = a.shots_taken + b.shots_taken
 			};
@@ -344,9 +344,9 @@ namespace Spark
 				steals = a.steals - b.steals,
 				stuns = a.stuns - b.stuns,
 				blocks = a.blocks - b.blocks,
-				interceptions = a.blocks - b.interceptions,
+				interceptions = a.interceptions - b.interceptions,
 				assists = a.assists - b.assists,
-				saves = a.saves - b.assists,
+				saves = a.saves - b.saves,
 				goals = a.goals - b.goals,
 				shots_taken = a.shots_taken - b.shots_taken
 			};
