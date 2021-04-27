@@ -272,7 +272,7 @@ namespace Spark
 		{
 			oldRoundStats = lastPlayer.oldRoundStats;
 
-			oldRoundStats += cachedStats + currentStats - oldRoundStats;
+			oldRoundStats = cachedStats + currentStats;
 		}
 	}
 }
