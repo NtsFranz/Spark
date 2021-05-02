@@ -36,10 +36,14 @@
 					<Label x:Name="discordUsernameLabel" Content="{x:Static p:Resources.Discord_Login}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="200" HorizontalAlignment="Center"/>
 				</StackPanel>
 			</Button>
-			<GroupBox x:Name="statusBox" Header="{x:Static p:Resources.Server_Info}">
+			<GroupBox x:Name="statusBox">
+				<GroupBox.Header>
+					<StackPanel Orientation="Horizontal">
+						<Ellipse x:Name="statusCircle" Width="10" Height="10" Fill="Red" Stroke="Black" StrokeThickness="1" Margin="10,10,10,10"/>
+						<Label x:Name="statusLabel" Content="Not Connected"/>
+					</StackPanel>
+				</GroupBox.Header>
 				<StackPanel>
-
-					<Label x:Name="connectedLabel" Width="188" Content="Not Connected" Visibility="Collapsed"/>
 					<StackPanel Orientation="Horizontal">
 						<Label x:Name="sessionIdLabel" Content="{x:Static p:Resources.Join_Link_}"/>
 						<Button x:Name="copySessionIdButton" Content="{x:Static p:Resources.Copy}" Margin="40,0,0,0" VerticalAlignment="Center" Padding="1,1,1,1" HorizontalAlignment="Stretch" Click="CopyIgniteJoinLink" Width="75" ToolTip="{x:Static p:Resources.copy_link_tooltip}"></Button>
@@ -411,6 +415,7 @@
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton"  Visibility="Collapsed" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
 					<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="{x:Static p:Resources.Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing}"/>
+					<Button x:Name="chooseServerRegion" Content="Choose Server Region" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="This creates a private match in a region of your choice."/>
 					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
 					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
 					<Button x:Name="showPlayerSpeedsButton" Content="{x:Static p:Resources.Player_Speeds}" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>

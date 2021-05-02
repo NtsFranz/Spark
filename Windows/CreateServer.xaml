@@ -1,0 +1,55 @@
+﻿<Window x:Class="Spark.CreateServer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:p="clr-namespace:Spark.Properties"
+        xmlns:l="clr-namespace:Spark"
+        mc:Ignorable="d"
+        Title="Create Server in Region" 
+		Height="250" 
+		Width="440" 
+		WindowStartupLocation="CenterOwner" 
+		ResizeMode="NoResize" 
+		Background="#FF232323" 
+		FontSize="16"
+        Icon="/img/ignite_logo.ico"
+        >
+	<Grid>
+		<Label Content="Create Server in Region" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
+		<TextBlock Text="This creates a private match in a region of your choice." TextWrapping="Wrap" Margin="0,60,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="25" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+		<ComboBox SelectedIndex="{l:SettingBinding chooseRegionIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="54" Margin="10,10,10,40">
+			<StackPanel>
+				<TextBlock Text="US Central North"/>
+				<TextBlock Text="e.g. Chicago, Iowa" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+			</StackPanel>
+			<StackPanel>
+				<TextBlock Text="US Central South"/>
+				<TextBlock Text="e.g. Texas" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+			</StackPanel>
+			<StackPanel>
+				<TextBlock Text="US East"/>
+				<TextBlock Text="e.g. New York, Miami, Charleston" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+			</StackPanel>
+			<StackPanel>
+				<TextBlock Text="US West"/>
+				<TextBlock Text="e.g. California" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+			</StackPanel>
+			<StackPanel>
+				<TextBlock Text="Europe"/>
+				<TextBlock Text="e.g. London, Amsterdam, Brussels" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+			</StackPanel>
+			<StackPanel>
+				<TextBlock Text="Japan"/>
+				<TextBlock Text="e.g. Tokyo" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+			</StackPanel>
+			<StackPanel>
+				<TextBlock Text="Australia"/>
+				<TextBlock Text="e.g. Sydney, Perth" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+			</StackPanel>
+		</ComboBox>
+		<CheckBox Content="Spectator Mode" ToolTip="Starts EchoVR in spectator mode. The only way to add players to this match is by sharing the Atlas link." IsChecked="{l:SettingBinding chooseRegionSpectator}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" />
+		<Button Width="150" Height="84" Margin="10,10,10,10" Content="Create" Click="Create" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+
+	</Grid>
+</Window>

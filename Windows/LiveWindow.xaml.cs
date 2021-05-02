@@ -119,7 +119,7 @@ namespace Spark
 				}
 			};
 
-			outputUpdateTimer.Interval = 100;
+			outputUpdateTimer.Interval = 150;
 			outputUpdateTimer.Elapsed += Update;
 			outputUpdateTimer.Enabled = true;
 
@@ -336,6 +336,18 @@ namespace Spark
 					showHighlights.IsEnabled = HighlightsHelper.DoNVClipsExist();
 					showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
 					showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? "Show " + HighlightsHelper.nvHighlightClipCount + " Highlights" : "No clips available";
+
+
+					if (Program.inGame)
+					{
+						statusLabel.Content = "Connected";
+						statusCircle.Fill = new SolidColorBrush(Colors.Green);
+					}
+					else
+					{
+						statusLabel.Content = "Not Connected";
+						statusCircle.Fill = new SolidColorBrush(Colors.Red);
+					}
 
 
 					// update the other labels in the stats box
@@ -674,8 +686,6 @@ namespace Spark
 							//bar.BackColor = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
 						}
 					}
-
-					connectedLabel.Content = Program.inGame ? "Connected" : "Not Connected";
 
 					// TODO convert to WPF
 					//speedsLayout.BackColor = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
@@ -2105,6 +2115,11 @@ namespace Spark
 					lastThrowStats.Visibility = Visibility.Collapsed;
 					break;
 			}
+		}
+
+		private void chooseServerRegion_Click(object sender, RoutedEventArgs e)
+		{
+			Program.ToggleWindow(typeof(CreateServer), ownedBy: this);
 		}
 	}
 }

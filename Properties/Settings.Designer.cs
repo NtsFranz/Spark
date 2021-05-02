@@ -1306,5 +1306,29 @@ namespace Spark.Properties {
                 this["toggleMinimapAfterGoals"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int chooseRegionIndex {
+            get {
+                return ((int)(this["chooseRegionIndex"]));
+            }
+            set {
+                this["chooseRegionIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool chooseRegionSpectator {
+            get {
+                return ((bool)(this["chooseRegionSpectator"]));
+            }
+            set {
+                this["chooseRegionSpectator"] = value;
+            }
+        }
     }
 }

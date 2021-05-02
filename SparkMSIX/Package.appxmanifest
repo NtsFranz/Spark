@@ -7,13 +7,13 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="1162VirtualExperiencesLab.SparkTest"
-    Publisher="CN=F4A33840-4AE9-409D-B8BD-326F14088009"
-    Version="2.2.13.0" />
+    Name="25937NtsFranz.Spark-EchoVRCompanionApp"
+    Publisher="CN=4740C6DF-BA63-45AD-9255-0937307FCCA1"
+    Version="2.2.16.0" />
 
   <Properties>
-    <DisplayName>Spark Test</DisplayName>
-    <PublisherDisplayName>Virtual Experiences Laboratory</PublisherDisplayName>
+    <DisplayName>Spark - EchoVR Companion App</DisplayName>
+    <PublisherDisplayName>NtsFranz</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
 
@@ -31,7 +31,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Spark Test"
+        DisplayName="Spark - EchoVR Companion App"
         Description="Spark is a Windows desktop program that can record, process, and upload EchoVR data from either a local EchoVR client or an Oculus Quest on the same network."
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"

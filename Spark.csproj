@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.2.16</Version>
+    <Version>2.2.17</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports, Graic</Authors>
@@ -107,6 +107,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Windows\CreateServer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Windows\YouSureAboutClosing.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -150,6 +153,10 @@
   <ItemGroup>
     <Page Update="Themes\ColourfulDarkTheme_Orange.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Windows\CreateServer.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\YouSureAboutClosing.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
