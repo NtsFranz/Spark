@@ -835,4 +835,184 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
   <data name="Whitelist" xml:space="preserve">
     <value>ホワイトリスト</value>
   </data>
+  <data name=".echoreplay Clips" xml:space="preserve">
+    <value>.echoreplay　のクリップス</value>
+  </data>
+  <data name="All Players (both teams)" xml:space="preserve">
+    <value>全てのプレイヤー (両チームの)</value>
+  </data>
+  <data name="Angle brackes allow you to click on the link when it's pasted in Discord." xml:space="preserve">
+    <value>大なり小なりを使うことによりDiscordに張り付けられた際にリンクをクリックすることが可能</value>
+  </data>
+  <data name="Appends the team names of the participating teams if enough players from the same VRML team are in the match." xml:space="preserve">
+    <value>同じVRMLチームに所属しているプレイヤーが多い場合、チームの表示にチーム名を追加</value>
+  </data>
+  <data name="Auto-connect" xml:space="preserve">
+    <value>自動接続</value>
+  </data>
+  <data name="Auto-start Replay Buffer" xml:space="preserve">
+    <value>自動でリプレイバッファーを開始</value>
+  </data>
+  <data name="Autofocus EchoVR" xml:space="preserve">
+    <value>自動でEchoVRをフォーカス</value>
+  </data>
+  <data name="betaUpdates.ToolTip" xml:space="preserve">
+    <value>公開されているSparkのベータチャンネルアップデートへのアクセスを得る（アップデートの確認を行うためにはSparkの再起動をお願いします）</value>
+  </data>
+  <data name="Choose the events you want to clip in the NVIDIA overlay (ALT+Z)" xml:space="preserve">
+    <value>NVIDIAオーバーレイでクリップしたいイベントを選択(ALT+Z)</value>
+  </data>
+  <data name="Clip Duration:" xml:space="preserve">
+    <value>クリップの長さ</value>
+  </data>
+  <data name="Clip Settings" xml:space="preserve">
+    <value>クリップの設定</value>
+  </data>
+  <data name="Clips" xml:space="preserve">
+    <value>クリップ</value>
+  </data>
+  <data name="ClipsTitle.Content" xml:space="preserve">
+    <value>クリップスの設定</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>接続</value>
+  </data>
+  <data name="Default Configuration" xml:space="preserve">
+    <value>デフォルトの設定</value>
+  </data>
+  <data name="Disable Replay Buffer" xml:space="preserve">
+    <value>リプレイバッファーを無効にする</value>
+  </data>
+  <data name="Display" xml:space="preserve">
+    <value>ディスプレイ</value>
+  </data>
+  <data name="EchoVR not installed game settings" xml:space="preserve">
+    <value>このPC上にEchoVRが発見できませんでした。この設定を変えるためにはEchoVRがインストールされていることを確認、及び直接ダイレクトリ―を設定してください</value>
+  </data>
+  <data name="EchoVR Settings info" xml:space="preserve">
+    <value>これらの設定は、 'C:\Users\[USERNAME]\AppData\Local\rad\loneecho\settings_mp_v2.json'にあるゲーム設定を操作します。ヘッドセットを接続していないスペクテイト用コンピューターに有効です。</value>
+  </data>
+  <data name="EchoVROpen settings warning" xml:space="preserve">
+    <value>EchoVRが開いています。EchoVRは終了時に設定を保存しますので、ここで設定した内容はEchoVRが終了すると上書きされます。ここでの設定を変更する前に、必ずEchoVRを終了してください。</value>
+  </data>
+  <data name="echovr_path_not_set" xml:space="preserve">
+    <value>EchoVR.exeのフォルダパスが設定されていません。この機能を使用するには、このコンピュータにゲームがインストールされていることを確認するか、または「設定」でechovr.exeのフォルダパスを手動で設定してください。</value>
+  </data>
+  <data name="Enable API Access" xml:space="preserve">
+    <value>APIへのアクセスを許可する</value>
+  </data>
+  <data name="Enable Replay Buffer" xml:space="preserve">
+    <value>リプレイバッファーを有効にする</value>
+  </data>
+  <data name="enableAutoFocusCheckbox.ToolTip" xml:space="preserve">
+    <value>EchoVRの表示が最前面にあることを数秒毎にチェック</value>
+  </data>
+  <data name="enableReplayCheckbox.Content" xml:space="preserve">
+    <value>.echoreplayバッファーを有効化</value>
+  </data>
+  <data name="Follow Link" xml:space="preserve">
+    <value>リンクをフォローする</value>
+  </data>
+  <data name="Get Beta Updates to Spark" xml:space="preserve">
+    <value>Sparkのベータアップデートを入手</value>
+  </data>
+  <data name="Goal" xml:space="preserve">
+    <value>ゴール</value>
+  </data>
+  <data name="Graphics" xml:space="preserve">
+    <value>グラフィックス</value>
+  </data>
+  <data name="Highlight Scope" xml:space="preserve">
+    <value>プレイヤースコープ</value>
+  </data>
+  <data name="Interception" xml:space="preserve">
+    <value>インターセプション</value>
+  </data>
+  <data name="IP Address:" xml:space="preserve">
+    <value>IPアドレス</value>
+  </data>
+  <data name="Last Throw" xml:space="preserve">
+    <value>ラストスロー</value>
+  </data>
+  <data name="Length:" xml:space="preserve">
+    <value>距離:</value>
+  </data>
+  <data name="Me Only" xml:space="preserve">
+    <value>自分のみ</value>
+  </data>
+  <data name="My Team Only" xml:space="preserve">
+    <value>自分のチームのみ</value>
+  </data>
+  <data name="NVIDIA Highlights" xml:space="preserve">
+    <value>NVIDIAハイライト</value>
+  </data>
+  <data name="OBS" xml:space="preserve">
+    <value>OBS</value>
+  </data>
+  <data name="OBS integration requires the OBS Websocket plugin." xml:space="preserve">
+    <value>OBSの活用には、OBS Websocketプラグインが必要です。この機能が動作するには、OBSの設定でリプレイ・バッファが設定されている必要があります。</value>
+  </data>
+  <data name="optInCheckbox.Content" xml:space="preserve">
+    <value>許可すると、詳細なウェブサイトの統計情報が得られます。</value>
+  </data>
+  <data name="optInCheckbox.ToolTip" xml:space="preserve">
+    <value>ignitevr.gg/statsでは、推定身長、プレイ時間、手の利き手など、より詳細な統計情報が表示されます。</value>
+  </data>
+  <data name="Password:" xml:space="preserve">
+    <value>パスワード</value>
+  </data>
+  <data name="Playspace Abuse" xml:space="preserve">
+    <value>プレイスペース乱用</value>
+  </data>
+  <data name="Playspace information for players other than yourself can be inaccurate and sensitive to rapid acceleration or high ping." xml:space="preserve">
+    <value>自分以外のプレイヤーのプレイスペース情報は不正確で、急加速や高Pingに敏感に反応することがあります。</value>
+  </data>
+  <data name="Record all events in Spectator" xml:space="preserve">
+    <value>全てのイベントをスペクテイターで録画</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="Save Clip Now" xml:space="preserve">
+    <value>クリップを今保存</value>
+  </data>
+  <data name="Score Assist" xml:space="preserve">
+    <value>スコアアシスト</value>
+  </data>
+  <data name="Seconds After:" xml:space="preserve">
+    <value>秒後</value>
+  </data>
+  <data name="Seconds Before:" xml:space="preserve">
+    <value>秒前</value>
+  </data>
+  <data name="Set your match visibility to something other than Public, then add teams and players here to give them access." xml:space="preserve">
+    <value>試合を「公開」以外に設定し、ここにチームや選手を追加してアクセスできるようにします</value>
+  </data>
+  <data name="Spectator Camera Settings" xml:space="preserve">
+    <value>スペクテイターカメラの設定</value>
+  </data>
+  <data name="Start Replay Buffer" xml:space="preserve">
+    <value>リプレイバッファーを開始</value>
+  </data>
+  <data name="Stop Hosting" xml:space="preserve">
+    <value>ホスティングを終了</value>
+  </data>
+  <data name="Stop Replay Buffer" xml:space="preserve">
+    <value>リプレイバッファーを終了</value>
+  </data>
+  <data name="The Choose type shows a popup when you click the link to either join as a player or spectator." xml:space="preserve">
+    <value>プレイヤーかスペクテイターのどちらで参加するか選択可能なポップアップを表示</value>
+  </data>
+  <data name="This changes where IgniteBot looks for API data. You can change your preference in Settings later. Quest+Link counts as PC." xml:space="preserve">
+    <value>SparkがAPIデータを探す場所を変更します。設定の変更は後からでも可能です。Quest+LinkはPCとしてカウントされます。</value>
+  </data>
+  <data name="tts_switch_alt_1" xml:space="preserve">
+    <value>に変更</value>
+  </data>
+  <data name="Update Available" xml:space="preserve">
+    <value>更新可能</value>
+  </data>
+  <data name="wrong number of '/' characters for link:" xml:space="preserve">
+    <value>リンクの「/」の文字数が間違っています</value>
+  </data>
 </root>

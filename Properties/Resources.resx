@@ -1100,4 +1100,64 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   <data name="OBS" xml:space="preserve">
     <value>OBS</value>
   </data>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>Are you sure?</value>
+  </data>
+  <data name="ClosingBoxMessage" xml:space="preserve">
+    <value>Click Exit to completely close, and Hide to run Spark in the background. You can access it from the tray icon (bottom right).</value>
+  </data>
+  <data name="Spark is Closing" xml:space="preserve">
+    <value>Spark is Closing</value>
+  </data>
+  <data name="Create Server in Region" xml:space="preserve">
+    <value>Create Server in Region</value>
+  </data>
+  <data name="This creates a private match in a region of your choice." xml:space="preserve">
+    <value>This creates a private match in a region of your choice.</value>
+  </data>
+  <data name="Spectator Mode" xml:space="preserve">
+    <value>Spectator Mode</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+    <comment>refers to the creation of a server in a specific region</comment>
+  </data>
+  <data name="chooseRegionSpectator.ToolTip" xml:space="preserve">
+    <value>Starts EchoVR in spectator mode. The only way to add players to this match is by sharing the Atlas link.</value>
+  </data>
+  <data name="Not Connected" xml:space="preserve">
+    <value>Not Connected</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="Hide EchoVR UI" xml:space="preserve">
+    <value>Hide EchoVR UI</value>
+  </data>
+  <data name="Toggle Minimap after Goals" xml:space="preserve">
+    <value>Toggle Minimap after Goals</value>
+  </data>
+  <data name="Camera Mode:" xml:space="preserve">
+    <value>Camera Mode:</value>
+  </data>
+  <data name="Auto (leave default)" xml:space="preserve">
+    <value>Auto (leave default)</value>
+  </data>
+  <data name="Sideline" xml:space="preserve">
+    <value>Sideline</value>
+  </data>
+  <data name="Follow client player ('Spectate Me' only)" xml:space="preserve">
+    <value>Follow client player ('Spectate Me' only)</value>
+  </data>
+  <data name="Follow client player camera mode:" xml:space="preserve">
+    <value>Follow client player camera mode:</value>
+  </data>
+  <data name="Follow" xml:space="preserve">
+    <value>Follow</value>
+    <comment>refers to the follow camera in spectator view</comment>
+  </data>
+  <data name="POV" xml:space="preserve">
+    <value>POV</value>
+    <comment>refers to the spectator camera mode</comment>
+  </data>
 </root>

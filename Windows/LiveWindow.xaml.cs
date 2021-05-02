@@ -340,12 +340,12 @@ namespace Spark
 
 					if (Program.inGame)
 					{
-						statusLabel.Content = "Connected";
+						statusLabel.Content = Properties.Resources.Connected;
 						statusCircle.Fill = new SolidColorBrush(Colors.Green);
 					}
 					else
 					{
-						statusLabel.Content = "Not Connected";
+						statusLabel.Content = Properties.Resources.Not_Connected;
 						statusCircle.Fill = new SolidColorBrush(Colors.Red);
 					}
 

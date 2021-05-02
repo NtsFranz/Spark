@@ -40,7 +40,7 @@
 				<GroupBox.Header>
 					<StackPanel Orientation="Horizontal">
 						<Ellipse x:Name="statusCircle" Width="10" Height="10" Fill="Red" Stroke="Black" StrokeThickness="1" Margin="10,10,10,10"/>
-						<Label x:Name="statusLabel" Content="Not Connected"/>
+						<Label x:Name="statusLabel" Content="{x:Static p:Resources.Not_Connected}"/>
 					</StackPanel>
 				</GroupBox.Header>
 				<StackPanel>

@@ -6,7 +6,7 @@
 		xmlns:p="clr-namespace:Spark.Properties"
         xmlns:local="clr-namespace:Spark"
         mc:Ignorable="d"
-        Title="Spark is Closing" 
+        Title="{x:Static p:Resources.Spark_is_Closing}" 
         Height="75" Width="200" 
         WindowStartupLocation="CenterScreen" 
         ResizeMode="NoResize" 

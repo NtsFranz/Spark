@@ -25,11 +25,11 @@
 	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="50" />
+			<RowDefinition Height="52" />
 			<RowDefinition />
 			<RowDefinition Height="50" />
 		</Grid.RowDefinitions>
-		<Label x:Name="label" Content="{x:Static p:Resources.Settings}" FontSize="20" Margin="10,10,10,4" />
+		<Label x:Name="label" Content="{x:Static p:Resources.Settings}" FontSize="20" Margin="10,10,10,0" />
 
 		<TabControl x:Name="tabControl" SelectedIndex="0" Grid.Row="1">
 
@@ -124,20 +124,20 @@
 							</StackPanel>
 						</GroupBox>
 
-						<GroupBox Header="Spectator Camera Settings" Margin="10,4,10,4" >
+						<GroupBox Header="{x:Static p:Resources.Spectator_Camera_Settings}" Margin="10,4,10,4" >
 							<StackPanel>
-								<CheckBox Content="Hide EchoVR UI" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
-								<CheckBox Content="Toggle Minimap after Goals" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
-								<Label Content="Camera Mode:"/>
+								<CheckBox Content="{x:Static p:Resources.Hide_EchoVR_UI}" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
+								<CheckBox Content="{x:Static p:Resources.Toggle_Minimap_after_Goals}" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
+								<Label Content="{x:Static p:Resources.Camera_Mode_}"/>
 								<ComboBox SelectedIndex="{l:SettingBinding spectatorCamera}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
-									<ComboBoxItem Content="Auto (leave default)"/>
-									<ComboBoxItem Content="Sideline"/>
-									<ComboBoxItem Content="Follow client player ('Spectate Me' only)"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Auto__leave_default_}"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Sideline}"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Follow_client_player___Spectate_Me__only_}"/>
 								</ComboBox>
-								<Label Content="Follow client player camera mode:"/>
+								<Label Content="{x:Static p:Resources.Follow_client_player_camera_mode_}"/>
 								<ComboBox SelectedIndex="{l:SettingBinding followClientSpectatorCameraMode}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
-									<ComboBoxItem Content="Follow"/>
-									<ComboBoxItem Content="POV"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Follow}"/>
+									<ComboBoxItem Content="{x:Static p:Resources.POV}"/>
 								</ComboBox>
 							</StackPanel>
 						</GroupBox>

@@ -6,7 +6,7 @@
 		xmlns:p="clr-namespace:Spark.Properties"
         xmlns:local="clr-namespace:Spark"
         mc:Ignorable="d"
-        Title="Are you sure?" 
+        Title="{x:Static p:Resources.Are_you_sure_}" 
 		Height="240" 
 		Width="350" 
 		WindowStartupLocation="CenterOwner" 
@@ -16,8 +16,8 @@
         Icon="/img/ignite_logo.ico"
         >
 	<Grid>
-		<Label Content="Are you sure?" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
-		<TextBlock Text="Click Exit to completely close, and Hide to run Spark in the background. You can access it from the tray icon (bottom right)." TextWrapping="Wrap" Margin="15,60,15,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="65" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+		<Label Content="{x:Static p:Resources.Are_you_sure_}" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
+		<TextBlock Text="{x:Static p:Resources.ClosingBoxMessage}" TextWrapping="Wrap" Margin="15,60,15,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="65" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 		<Button Width="150" Height="50" Margin="10,0,0,10" Content="{x:Static p:Resources.Hide}" Click="HideClicked" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 		<Button Margin="0,0,10,10" Width="150" Height="50" Content="{x:Static p:Resources.Exit}" Click="ExitClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.RowSpan="1"/>
 
