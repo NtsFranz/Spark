@@ -30,6 +30,7 @@ using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
 using System.Windows.Interop;
 using OBSWebsocketDotNet;
+using Grapevine;
 //using System.Windows.Forms;
 
 namespace Spark
@@ -191,6 +192,7 @@ namespace Spark
 		private static Thread IPSearchthread2;
 		public static PublisherSocket pubSocket;
 		public static OBS obs;
+		public static IRestServer webserver;
 
 
 
@@ -407,6 +409,9 @@ namespace Spark
 
 			keyboardCamera = new KeyboardCamera();
 
+			//overlayServer = new WebServer2(OverlayServer.HandleRequest, "http://*:6723/");
+			IRestServer server = RestServerBuilder.UseDefaults().Build();
+			server.Start();
 
 			// Server Score Tests - this works
 			//float out1 = CalculateServerScore(new List<int> { 34, 78, 50, 53 }, new List<int> { 63, 562, 65, 81 });   // fail too high
@@ -457,17 +462,14 @@ namespace Spark
 		/// <summary>
 		/// This is just a failsafe so that the program doesn't leave a dangling thread.
 		/// </summary>
-		static async Task KillAll(HTTPServer httpServer = null)
+		static async Task KillAll()
 		{
 			if (liveWindow != null)
 			{
 				liveWindow.Close();
 				liveWindow = null;
 			}
-
-
-			if (httpServer != null)
-				httpServer.Stop();
+			webserver?.Stop();
 		}
 
 		static async Task GentleClose()
@@ -479,6 +481,8 @@ namespace Spark
 			}
 
 			running = false;
+
+			webserver?.Stop();
 
 			while (atlasHostingThread != null && atlasHostingThread.IsAlive)
 			{

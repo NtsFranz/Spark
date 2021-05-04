@@ -72,12 +72,13 @@
 
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
-    <PackageReference Include="Google.Cloud.Firestore" Version="2.3.0" />
+    <PackageReference Include="Google.Cloud.Firestore" Version="2.3.1" />
     <PackageReference Include="Google.Cloud.TextToSpeech.V1" Version="2.1.0" />
+    <PackageReference Include="Grapevine" Version="5.0.0-rc.6" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
     <PackageReference Include="NetMQ" Version="4.0.1.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="obs-websocket-dotnet" Version="4.8.1" />
+    <PackageReference Include="obs-websocket-dotnet" Version="4.9.0" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
 
@@ -94,6 +95,8 @@
     <Resource Include="img\speaker.png" />
     <Resource Include="img\text-box-outline.png" />
     <Resource Include="img\view-dashboard.png" />
+    <None Remove="html\js\heatmap.min.js" />
+    <Resource Include="html\js\heatmap.min.js" />
   </ItemGroup>
 
   <ItemGroup>

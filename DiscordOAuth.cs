@@ -25,11 +25,11 @@ namespace Spark
 		public static Action authenticated;
 
 
-		const string REDIRECT_URI = "http://localhost:6722/oauth_login";
+		private const string REDIRECT_URI = "http://localhost:6722/oauth_login";
 
-		static WebServer2 webServer;
+		private static WebServer2 webServer;
 
-		static HttpClient client = new HttpClient();
+		static readonly HttpClient client = new HttpClient();
 
 		public static string oauthToken = "";
 
@@ -123,7 +123,7 @@ namespace Spark
 			if (queryStrings["code"] != null)
 			{
 				OAuthLoginResponse(queryStrings["code"]);
-				return "<html><body onload=\"javascript: close(); \">You can close this window</body></html>";
+				return "<html><head></head><body onload=\"javascript: close(); \" style=\"background-color: #333;\"><div style=\"margin: 8em auto;width: max-content;font-family: arial, sans-serif;color: #ddd;\">You can close this window and return to Spark</div></body></html>";
 			}
 			else
 			{
