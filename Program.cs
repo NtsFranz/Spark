@@ -411,7 +411,7 @@ namespace Spark
 
 			//overlayServer = new WebServer2(OverlayServer.HandleRequest, "http://*:6723/");
 			IRestServer server = RestServerBuilder.UseDefaults().Build();
-			server.Start();
+			//server.Start();
 
 			// Server Score Tests - this works
 			//float out1 = CalculateServerScore(new List<int> { 34, 78, 50, 53 }, new List<int> { 63, 562, 65, 81 });   // fail too high

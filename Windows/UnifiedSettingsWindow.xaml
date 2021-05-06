@@ -124,7 +124,7 @@
 							</StackPanel>
 						</GroupBox>
 
-						<GroupBox Header="{x:Static p:Resources.Spectator_Camera_Settings}" Margin="10,4,10,4" >
+						<GroupBox Header="{x:Static p:Resources.Spectator_Camera_Settings}" Visibility="Hidden" Margin="10,4,10,4" >
 							<StackPanel>
 								<CheckBox Content="{x:Static p:Resources.Hide_EchoVR_UI}" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
 								<CheckBox Content="{x:Static p:Resources.Toggle_Minimap_after_Goals}" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
