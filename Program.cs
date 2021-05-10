@@ -20,7 +20,6 @@ using System.Windows;
 using Spark.Properties;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using static Spark.g_Team;
 using static Logger;
 using System.Net.NetworkInformation;
@@ -28,8 +27,6 @@ using System.Net.Sockets;
 using NetMQ.Sockets;
 using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
-using System.Windows.Interop;
-using OBSWebsocketDotNet;
 using Grapevine;
 //using System.Windows.Forms;
 
@@ -46,6 +43,7 @@ namespace Spark
 		public static bool running = true;
 
 		public static bool inGame;
+		private static bool wasInGame;
 
 		/// <summary>
 		/// Whether to continue reading input right now (for reading files)
@@ -197,6 +195,12 @@ namespace Spark
 
 
 		#region Event Callbacks
+		public static Action<g_Instance> JoinedGame;
+		public static Action<g_Instance> LeftGame;
+
+		public static Action<g_Instance> JoinedLobby;
+		public static Action<g_Instance> LeftLobby;
+
 		public static Action<g_Instance, g_Team, g_Player> PlayerJoined;
 		public static Action<g_Instance, g_Team, g_Player> PlayerLeft;
 		/// <summary>
@@ -731,6 +735,41 @@ namespace Spark
 			// Session pull loop.
 			while (running)
 			{
+				bool joinedGame = inGame && !wasInGame;
+				if (!inGame && wasInGame)
+				{
+					// left game
+					try
+					{
+						if (lastFrame.inLobby)
+						{
+							LeftLobby?.Invoke(lastFrame);
+						}
+						else
+						{
+							if (spectateMe)
+							{
+								try
+								{
+									KillEchoVR();
+									lastSpectatedSessionId = string.Empty;
+								}
+								catch (Exception e)
+								{
+									LogRow(LogType.Error, $"Broke something in the spectator follow system.\n{e}");
+								}
+							}
+
+							LeftGame?.Invoke(lastFrame);
+						}
+					}
+					catch (Exception exp)
+					{
+						LogRow(LogType.Error, "Error processing action", exp.ToString());
+					}
+				}
+				wasInGame = inGame;
+
 				if (inGame)
 				{
 					try
@@ -820,8 +859,27 @@ namespace Spark
 							LogRow(LogType.Error, $"Error in ProcessFrame. Please catch inside.\n{ex}");
 						}
 
+						if (joinedGame)
+						{
+							try
+							{
+								if (game_Instance.inLobby)
+								{
+									JoinedLobby?.Invoke(game_Instance);
+								}
+								else
+								{
+									JoinedGame?.Invoke(game_Instance);
+								}
+							}
+							catch (Exception exp)
+							{
+								LogRow(LogType.Error, "Error processing action", exp.ToString());
+							}
+						}
+
 						// for the very first frame, duplicate it to the "previous" frame
-						if (game_Instance!=null && game_Instance.game_status != "")
+						if (game_Instance != null && game_Instance.game_status != "")
 						{
 							lastFrame ??= game_Instance;
 							lastLastLastFrame = lastLastFrame;

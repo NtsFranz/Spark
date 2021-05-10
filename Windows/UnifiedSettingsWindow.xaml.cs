@@ -17,6 +17,8 @@ using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OBSWebsocketDotNet;
+using OBSWebsocketDotNet.Types;
+using System.Linq;
 
 namespace Spark
 {
@@ -48,20 +50,108 @@ namespace Spark
 			Program.obs.instance.Connected += OBSConnected;
 			Program.obs.instance.Disconnected += OBSDisconnected;
 
-			obsConnectButton.Content = Program.obs.instance.IsConnected ? "Disconnect" : "Connect";
+			obsConnectButton.Content = Program.obs.instance.IsConnected ? Properties.Resources.Disconnect : Properties.Resources.Connect;
+
+			try
+			{
+				if (Program.obs.instance.IsConnected)
+				{
+					ReplayBufferChanged(Program.obs.instance, Program.obs.instance.GetReplayBufferStatus() ? OutputState.Started : OutputState.Stopped);
+
+					List<string> sceneNames = Program.obs.instance.GetSceneList().Scenes.Select((scene) => scene.Name).ToList();
+					for (int i = 0; i < sceneNames.Count; i++)
+					{
+						inGameScene.Items.Add(new ComboBoxItem
+						{
+							Content = sceneNames[i]
+						});
+						if (Settings.Default.obsInGameScene == sceneNames[i])
+						{
+							inGameScene.SelectedIndex = i + 1;
+						}
+						betweenGameScene.Items.Add(new ComboBoxItem
+						{
+							Content = sceneNames[i]
+						});
+						if (Settings.Default.obsBetweenGameScene == sceneNames[i])
+						{
+							betweenGameScene.SelectedIndex = i + 1;
+						}
+					};
+				}
+				else
+				{
+					ReplayBufferChanged(Program.obs.instance, OutputState.Stopped);
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.LogRow(Logger.LogType.Error, $"Failed getting replay buffer status in startup\n{ex}");
+			}
+			Program.obs.instance.ReplayBufferStateChanged += ReplayBufferChanged;
+
+			inGameScene.SelectionChanged += InGameSceneChanged;
+			betweenGameScene.SelectionChanged += BetweenGameSceneChanged;
 
 			// passwordbox can't use binding
 			obsPasswordBox.Password = Settings.Default.obsPassword;
 			DoClipLengthSum();
 
+#if WINDOWS_STORE_RELEASE
+			enableBetasCheckbox.Visibility = Visibility.Collapsed;
+#endif
+
 			initialized = true;
+		}
+
+		private void ReplayBufferChanged(OBSWebsocket sender, OutputState type)
+		{
+			Dispatcher.Invoke(() =>
+			{
+				if (!sender.IsConnected)
+				{
+					obsStartReplayBufferButton.Visibility = Visibility.Visible;
+					obsStartReplayBufferButton.IsEnabled = false;
+					obsStopReplayBufferButton.Visibility = Visibility.Collapsed;
+					obsStopReplayBufferButton.IsEnabled = true;
+
+					return;
+				}
+				switch (type)
+				{
+					case OutputState.Starting:
+						obsStartReplayBufferButton.Visibility = Visibility.Visible;
+						obsStartReplayBufferButton.IsEnabled = false;
+						obsStopReplayBufferButton.Visibility = Visibility.Collapsed;
+						obsStopReplayBufferButton.IsEnabled = true;
+						break;
+					case OutputState.Started:
+						obsStartReplayBufferButton.Visibility = Visibility.Collapsed;
+						obsStartReplayBufferButton.IsEnabled = true;
+						obsStopReplayBufferButton.Visibility = Visibility.Visible;
+						obsStopReplayBufferButton.IsEnabled = true;
+						break;
+					case OutputState.Stopping:
+						obsStartReplayBufferButton.Visibility = Visibility.Collapsed;
+						obsStartReplayBufferButton.IsEnabled = false;
+						obsStopReplayBufferButton.Visibility = Visibility.Visible;
+						obsStopReplayBufferButton.IsEnabled = false;
+						break;
+					case OutputState.Stopped:
+						obsStartReplayBufferButton.Visibility = Visibility.Visible;
+						obsStartReplayBufferButton.IsEnabled = true;
+						obsStopReplayBufferButton.Visibility = Visibility.Collapsed;
+						obsStopReplayBufferButton.IsEnabled = true;
+						break;
+				}
+			});
 		}
 
 		private void OBSConnected(object sender, EventArgs e)
 		{
 			Dispatcher.Invoke(() =>
 			{
-				obsConnectButton.Content = "Disconnect";
+				obsConnectButton.Content = Properties.Resources.Disconnect;
 			});
 		}
 
@@ -69,7 +159,7 @@ namespace Spark
 		{
 			Dispatcher.Invoke(() =>
 			{
-				obsConnectButton.Content = "Connect";
+				obsConnectButton.Content = Properties.Resources.Connect;
 			});
 		}
 
@@ -83,7 +173,7 @@ namespace Spark
 			nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
 		}
 
-		#region General
+#region General
 
 		public static bool StartWithWindows {
 			get => Settings.Default.startOnBoot;
@@ -280,9 +370,9 @@ namespace Spark
 				});
 		}
 
-		#endregion
+#endregion
 
-		#region Replays
+#region Replays
 
 		private void OpenReplayFolder(object sender, RoutedEventArgs e)
 		{
@@ -337,9 +427,9 @@ namespace Spark
 			Program.NewFilename();
 		}
 
-		#endregion
+#endregion
 
-		#region TTS
+#region TTS
 
 		public static bool DiscordLoggedIn => DiscordOAuth.IsLoggedIn;
 		public static Visibility DiscordNotLoggedInVisible => DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
@@ -484,9 +574,9 @@ namespace Spark
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region NVIDIA Highlights
+#region NVIDIA Highlights
 
 		public bool NVHighlightsEnabled {
 			get => Settings.Default.isNVHighlightsEnabled;
@@ -557,35 +647,36 @@ namespace Spark
 		{
 			if (!Program.obs.instance.IsConnected)
 			{
-				Task.Run(() =>
+				try
 				{
-					try
-					{
-						Program.obs.instance.Connect(Settings.Default.obsIP, Settings.Default.obsPassword);
-					}
-					catch (AuthFailureException)
-					{
-						Logger.LogRow(Logger.LogType.Error, "Failed to connect to OBS. AuthFailure");
-						new MessageBox("Authentication failed.", Properties.Resources.Error).Show();
-						return;
-					}
-					catch (ErrorResponseException ex)
-					{
-						Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS.\n{ex}");
-						new MessageBox("Connect failed.", Properties.Resources.Error).Show();
-						return;
-					}
-					catch (Exception ex)
-					{
-						Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS for another reason.\n{ex}");
-						new MessageBox("Connect failed.", Properties.Resources.Error).Show();
-						return;
-					}
-					if (!Program.obs.instance.IsConnected)
-					{
-						new MessageBox("Connect failed.\nMake sure OBS is open and you have installed the OBS Websocket plugin.", Properties.Resources.Error).Show();
-					}
-				});
+					Program.obs.instance.Connect(Settings.Default.obsIP, Settings.Default.obsPassword);
+					Program.obs.instance.GetReplayBufferStatus();
+				}
+				catch (AuthFailureException)
+				{
+					Logger.LogRow(Logger.LogType.Error, "Failed to connect to OBS. AuthFailure");
+					new MessageBox("Authentication failed.", Properties.Resources.Error).Show();
+					Program.obs.instance.Disconnect();
+					return;
+				}
+				catch (ErrorResponseException ex)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS.\n{ex}");
+					new MessageBox("Connect failed.", Properties.Resources.Error).Show();
+					Program.obs.instance.Disconnect();
+					return;
+				}
+				catch (Exception ex)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS for another reason.\n{ex}");
+					new MessageBox("Connect failed.", Properties.Resources.Error).Show();
+					Program.obs.instance.Disconnect();
+					return;
+				}
+				if (!Program.obs.instance.IsConnected)
+				{
+					new MessageBox("Connect failed.\nMake sure OBS is open and you have installed the OBS Websocket plugin.", Properties.Resources.Error).Show();
+				}
 			}
 			else
 			{
@@ -663,10 +754,8 @@ namespace Spark
 			}
 		}
 
-		public int ClipsPlayerScope
-		{
-			get
-			{
+		public int ClipsPlayerScope {
+			get {
 				return clipsTab switch
 				{
 					ClipsTab.NVHighlights => Settings.Default.nvHighlightsPlayerScope,
@@ -675,8 +764,7 @@ namespace Spark
 					_ => 0,
 				};
 			}
-			set
-			{
+			set {
 				switch (clipsTab)
 				{
 					case ClipsTab.NVHighlights:
@@ -692,10 +780,8 @@ namespace Spark
 			}
 		}
 
-		public bool ClipsSpectatorRecord
-		{
-			get
-			{
+		public bool ClipsSpectatorRecord {
+			get {
 				return clipsTab switch
 				{
 					ClipsTab.NVHighlights => Settings.Default.nvHighlightsSpectatorRecord,
@@ -704,8 +790,7 @@ namespace Spark
 					_ => false,
 				};
 			}
-			set
-			{
+			set {
 				switch (clipsTab)
 				{
 					case ClipsTab.NVHighlights:
@@ -782,7 +867,7 @@ namespace Spark
 			}
 		}
 
-		#region Event type settings
+#region Event type settings
 		public bool ClipPlayspaceSetting {
 			get {
 				return clipsTab switch
@@ -892,11 +977,11 @@ namespace Spark
 				}
 			}
 		}
-		#endregion
+#endregion
 
-		#endregion
+#endregion
 
-		#region EchoVR Settings
+#region EchoVR Settings
 
 		public Visibility EchoVRSettingsProgramOpenWarning => Program.GetEchoVRProcess()?.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
 		public Visibility EchoVRInstalled => File.Exists(Settings.Default.echoVRPath) ? Visibility.Visible : Visibility.Collapsed;
@@ -929,11 +1014,22 @@ namespace Spark
 			}
 		}
 
-		#endregion
+#endregion
 
 
 		public static string AppVersionLabelText => $"v{Program.AppVersion()}";
 
+		private void InGameSceneChanged(object sender, SelectionChangedEventArgs e)
+		{
+			Settings.Default.obsInGameScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
+			Settings.Default.Save();
+		}
+
+		private void BetweenGameSceneChanged(object sender, SelectionChangedEventArgs e)
+		{
+			Settings.Default.obsBetweenGameScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
+			Settings.Default.Save();
+		}
 	}
 
 	public class SettingBindingExtension : Binding

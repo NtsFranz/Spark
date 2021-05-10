@@ -138,6 +138,13 @@ namespace Spark
 								break;
 							}
 						}
+
+						Program.FocusEchoVR();
+						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
+						await Task.Delay(20);
+						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
+
+						foundTries--;
 					}
 
 

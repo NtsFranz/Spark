@@ -1330,5 +1330,29 @@ namespace Spark.Properties {
                 this["chooseRegionSpectator"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string obsInGameScene {
+            get {
+                return ((string)(this["obsInGameScene"]));
+            }
+            set {
+                this["obsInGameScene"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string obsBetweenGameScene {
+            get {
+                return ((string)(this["obsBetweenGameScene"]));
+            }
+            set {
+                this["obsBetweenGameScene"] = value;
+            }
+        }
     }
 }

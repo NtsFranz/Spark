@@ -67,7 +67,7 @@
                                       IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
                                       VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
 						<CheckBox x:Name="enableAutoFocusCheckbox" Content="{x:Static p:Resources.Autofocus_EchoVR}" Margin="10,4,10,4" IsChecked="{l:SettingBinding isAutofocusEnabled}" ToolTip="{x:Static p:Resources.enableAutoFocusCheckbox_ToolTip}"/>
-						<CheckBox Content="{x:Static p:Resources.Get_Beta_Updates_to_Spark}" Margin="10,4,10,4" IsChecked="{l:SettingBinding betaUpdates}" ToolTip="{x:Static p:Resources.betaUpdates_ToolTip}"/>
+						<CheckBox x:Name="enableBetasCheckbox" Content="{x:Static p:Resources.Get_Beta_Updates_to_Spark}" Margin="10,4,10,4" IsChecked="{l:SettingBinding betaUpdates}" ToolTip="{x:Static p:Resources.betaUpdates_ToolTip}"/>
 
 						<StackPanel Orientation="Horizontal" Margin="10,4,10,4">
 							<Label Content="Interface Theme"/>
@@ -124,7 +124,7 @@
 							</StackPanel>
 						</GroupBox>
 
-						<GroupBox Header="{x:Static p:Resources.Spectator_Camera_Settings}" Visibility="Hidden" Margin="10,4,10,4" >
+						<GroupBox Header="{x:Static p:Resources.Spectator_Camera_Settings}" Margin="10,4,10,4" >
 							<StackPanel>
 								<CheckBox Content="{x:Static p:Resources.Hide_EchoVR_UI}" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
 								<CheckBox Content="{x:Static p:Resources.Toggle_Minimap_after_Goals}" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
@@ -374,7 +374,8 @@
 								<StackPanel>
 									<TextBlock Margin="8,8,8,8" TextWrapping="Wrap">
 										<Run Text="{x:Static p:Resources.OBS_integration_requires_the_OBS_Websocket_plugin_}"/><LineBreak/>
-										<Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases/download/4.9.0/obs-websocket-4.9.0-Windows-Installer.exe" RequestNavigate="Hyperlink_RequestNavigate">Download Installer from GitHub.</Hyperlink>
+										<Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases/download/4.9.0/obs-websocket-4.9.0-Windows-Installer.exe" RequestNavigate="Hyperlink_RequestNavigate">Download Installer</Hyperlink>
+										<Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases" RequestNavigate="Hyperlink_RequestNavigate">(GitHub)</Hyperlink>
 									</TextBlock>
 									<StackPanel Orientation="Horizontal">
 										<Label Content="{x:Static p:Resources.IP_Address_}" Margin="4,4,0,4" Padding="4,4,4,4"/>
@@ -389,6 +390,18 @@
 										<Button x:Name="obsStartReplayBufferButton" Content="{x:Static p:Resources.Start_Replay_Buffer}" Click="OBSStartReplayBuffer" Margin="4,4,4,4" Padding="4,4,4,4"/>
 										<Button x:Name="obsStopReplayBufferButton" Content="{x:Static p:Resources.Stop_Replay_Buffer}" Click="OBSStopReplayBuffer" Margin="4,4,4,4" Padding="4,4,4,4"/>
 									</StackPanel>
+									<GroupBox Header="Automatic Scene Switching" Margin="0,0,0,5">
+										<StackPanel Margin="5,5,5,5">
+											<Label Content="In-game Scene:"/>
+											<ComboBox x:Name="inGameScene" Width="300" HorizontalAlignment="Left" SelectedIndex="0" >
+												<ComboBoxItem Content="Do Not Switch"/>
+											</ComboBox>
+											<Label Content="Between-game Scene:"/>
+											<ComboBox x:Name="betweenGameScene" Width="300"  HorizontalAlignment="Left" SelectedIndex="0">
+												<ComboBoxItem Content="Do Not Switch"/>
+											</ComboBox>
+										</StackPanel>
+									</GroupBox>
 								</StackPanel>
 							</TabItem>
 						</TabControl>

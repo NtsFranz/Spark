@@ -23,6 +23,9 @@ namespace Spark
 			Program.Assist += Assist;
 			Program.Interception += Interception;
 
+			Program.JoinedGame += JoinedGame;
+			Program.LeftGame += LeftGame;
+
 			if (Settings.Default.obsAutoconnect)
 			{
 				Task.Run(() =>
@@ -34,9 +37,24 @@ namespace Spark
 					catch (Exception e)
 					{
 						Logger.LogRow(Logger.LogType.Error, $"Error when autoconnecting to OBS.\n{e}");
+						instance.Disconnect();
 					}
 				});
 			}
+		}
+
+		private void LeftGame(g_Instance obj)
+		{
+			string scene = Settings.Default.obsBetweenGameScene;
+			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
+			instance.SetCurrentScene(scene);
+		}
+
+		private void JoinedGame(g_Instance obj)
+		{
+			string scene = Settings.Default.obsInGameScene;
+			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
+			instance.SetCurrentScene(scene);
 		}
 
 		private void Save(g_Instance frame, g_Team team, g_Player player)
@@ -69,7 +87,7 @@ namespace Spark
 			if (!instance.IsConnected) return;
 			if (!setting) return;
 			if (!IsPlayerScopeEnabled(player_name, frame)) return;
-			Task.Delay((int) (Settings.Default.obsClipSecondsAfter * 1000)).ContinueWith(_ => instance.SaveReplayBuffer());
+			Task.Delay((int)(Settings.Default.obsClipSecondsAfter * 1000)).ContinueWith(_ => instance.SaveReplayBuffer());
 		}
 
 
