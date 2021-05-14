@@ -142,7 +142,7 @@ namespace Spark
 
 
 		public static int StatsHz {
-			get => statsDeltaTimes[Settings.Default.targetDeltaTimeIndexStats];
+			get => statsDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexStats];
 		}
 
 		private static readonly List<int> statsDeltaTimes = new() { 16, 100 };
@@ -328,9 +328,9 @@ namespace Spark
 			RegisterUriScheme("spark", "Spark Protocol");
 
 			// if logged in with discord
-			if (!string.IsNullOrEmpty(Settings.Default.discordOAuthRefreshToken))
+			if (!string.IsNullOrEmpty(SparkSettings.instance.discordOAuthRefreshToken))
 			{
-				DiscordOAuth.OAuthLoginRefresh(Settings.Default.discordOAuthRefreshToken);
+				DiscordOAuth.OAuthLoginRefresh(SparkSettings.instance.discordOAuthRefreshToken);
 			}
 			else
 			{
@@ -341,36 +341,34 @@ namespace Spark
 			liveWindow.Closed += (_, _) => liveWindow = null;
 			liveWindow.Show();
 
-			if (!Settings.Default.firstTimeSetupShown)
+			if (!SparkSettings.instance.firstTimeSetupShown)
 			{
 				ToggleWindow(typeof(FirstTimeSetupWindow));
-				Settings.Default.firstTimeSetupShown = true;
-				Settings.Default.Save();
+				SparkSettings.instance.firstTimeSetupShown = true;
 			}
-			// else if (!Settings.Default.ignitebot_spark_upgrade_message_shown)
+			// else if (!SparkSettings.instance.ignitebot_spark_upgrade_message_shown)
 			// {
 			// 	MessageBox box = new MessageBox(Resources.spark_upgrade_message);
 			// 	box.Show();
 			// 	box.Owner = liveWindow;
 			// 	box.Height = 350;
-			// 	Settings.Default.ignitebot_spark_upgrade_message_shown = true;
-			// 	Settings.Default.Save();
+			// 	SparkSettings.instance.ignitebot_spark_upgrade_message_shown = true;
 			// }
 
 			// Check for command-line flags
 			if (args.Contains("-slowmode"))
 			{
-				Settings.Default.targetDeltaTimeIndexStats = 1;
+				SparkSettings.instance.targetDeltaTimeIndexStats = 1;
 			}
 
 			if (args.Contains("-autorestart"))
 			{
-				Settings.Default.autoRestart = true;
+				SparkSettings.instance.autoRestart = true;
 			}
 
 			if (args.Contains("-showdatabaselog"))
 			{
-				Settings.Default.showDatabaseLog = true;
+				SparkSettings.instance.showDatabaseLog = true;
 			}
 
 
@@ -380,8 +378,6 @@ namespace Spark
 			{
 				ENABLE_LOGGER = false;
 			}
-
-			Settings.Default.Save();
 
 			ReadSettings();
 
@@ -406,7 +402,7 @@ namespace Spark
 				synth = new SpeechSynthesizer();
 				// Configure the audio output.
 				synth.SetOutputToDefaultAudioDevice();
-				synth.SetRate(Settings.Default.TTSSpeed);
+				synth.SetRate(SparkSettings.instance.TTSSpeed);
 			};
 
 			// this sets up the event listeners for replay clips
@@ -682,7 +678,7 @@ namespace Spark
 						Thread.Sleep(2000);
 
 						// split file between matches
-						if (Settings.Default.whenToSplitReplays < 3)
+						if (SparkSettings.instance.whenToSplitReplays < 3)
 						{
 							NewFilename();
 						}
@@ -729,7 +725,7 @@ namespace Spark
 			// TODO these times aren't used, but we could do a difference on before and after times to 
 			// calculate an accurate deltaTime. Right now the execution time isn't taken into account.
 			DateTime time = DateTime.Now;
-			TimeSpan deltaTimeSpan = new TimeSpan(0, 0, 0, 0, statsDeltaTimes[Settings.Default.targetDeltaTimeIndexStats]);
+			TimeSpan deltaTimeSpan = new TimeSpan(0, 0, 0, 0, statsDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexStats]);
 
 			Thread.Sleep(10);
 
@@ -806,7 +802,7 @@ namespace Spark
 						}
 
 						// make sure there is a valid echovr path saved
-						if (Settings.Default.echoVRPath == "" || Settings.Default.echoVRPath.Contains("win7"))
+						if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
 						{
 							UpdateEchoExeLocation();
 						}
@@ -911,7 +907,7 @@ namespace Spark
 						}
 					}
 
-					Thread.Sleep(statsDeltaTimes[Settings.Default.targetDeltaTimeIndexStats]);
+					Thread.Sleep(statsDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexStats]);
 				}
 				else
 				{
@@ -945,11 +941,11 @@ namespace Spark
 				if (frameCount > 200)
 				{
 					frameCount = 0;
-					string filePath = Path.Combine(Settings.Default.saveFolder, fileName + ".milk");
+					string filePath = Path.Combine(SparkSettings.instance.saveFolder, fileName + ".milk");
 					File.WriteAllBytes(filePath, milkData.GetBytes());
 				}
 
-				Thread.Sleep(fullDeltaTimes[Settings.Default.targetDeltaTimeIndexFull]);
+				Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
 			}
 		}
 
@@ -966,7 +962,7 @@ namespace Spark
 			// Session pull loop.
 			while (running)
 			{
-				if ((Settings.Default.enableFullLogging || Settings.Default.enableReplayBuffer) &&
+				if ((SparkSettings.instance.enableFullLogging || SparkSettings.instance.enableReplayBuffer) &&
 					inGame)
 				{
 					try
@@ -984,10 +980,10 @@ namespace Spark
 						if (json.Length > 800 && inGame)
 						{
 
-							if (Settings.Default.enableFullLogging)
+							if (SparkSettings.instance.enableFullLogging)
 							{
 								bool log = false;
-								if (Settings.Default.onlyRecordPrivateMatches)
+								if (SparkSettings.instance.onlyRecordPrivateMatches)
 								{
 									g_InstanceSimple obj = JsonConvert.DeserializeObject<g_InstanceSimple>(json);
 									if (obj.private_match)
@@ -1007,14 +1003,14 @@ namespace Spark
 							}
 
 
-							if (Settings.Default.enableReplayBuffer)
+							if (SparkSettings.instance.enableReplayBuffer)
 							{
 								// add to replay buffer
 								replayBufferTimestamps.Enqueue(DateTime.Now);
 								replayBufferJSON.Enqueue(json);
 
 								// shorten the buffer to match the desired length
-								while (DateTime.Now - replayBufferTimestamps.First() > TimeSpan.FromSeconds(Settings.Default.replayBufferLength))
+								while (DateTime.Now - replayBufferTimestamps.First() > TimeSpan.FromSeconds(SparkSettings.instance.replayBufferLength))
 								{
 									replayBufferTimestamps.TryDequeue(out _);
 									replayBufferJSON.TryDequeue(out _);
@@ -1028,7 +1024,7 @@ namespace Spark
 					}
 				}
 
-				Thread.Sleep(fullDeltaTimes[Settings.Default.targetDeltaTimeIndexFull]);
+				Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
 			}
 
 			// causes a final zip if that's needed
@@ -1042,12 +1038,12 @@ namespace Spark
 		{
 			lastDataTime = DateTime.Now;
 
-			if (READ_FROM_FILE) Settings.Default.autoRestart = false;
+			if (READ_FROM_FILE) SparkSettings.instance.autoRestart = false;
 
 			// Session pull loop.
 			while (running)
 			{
-				if (Settings.Default.autoRestart)
+				if (SparkSettings.instance.autoRestart)
 				{
 					// only start worrying once 15 seconds have passed
 					if (DateTime.Compare(lastDataTime.AddMinutes(.25f), DateTime.Now) < 0)
@@ -1063,7 +1059,7 @@ namespace Spark
 						{
 							// Get process name
 							Process[] process = GetEchoVRProcess();
-							var echoPath = Settings.Default.echoVRPath;
+							var echoPath = SparkSettings.instance.echoVRPath;
 
 							if (process.Length > 0)
 							{
@@ -1072,7 +1068,7 @@ namespace Spark
 								// close client
 								echo_.Kill();
 								// restart client
-								Process.Start(echoPath, "-spectatorstream" + (Settings.Default.capturevp2 ? " -capturevp2" : ""));
+								Process.Start(echoPath, "-spectatorstream" + (SparkSettings.instance.capturevp2 ? " -capturevp2" : ""));
 							}
 							else if (echoPath != null && echoPath != "")
 							{
@@ -1144,7 +1140,7 @@ namespace Spark
 			}
 
 			string fullFileName = $"{DateTime.Now:clip_yyyy-MM-dd_HH-mm-ss}_{filename}";
-			string filePath = Path.Combine(Settings.Default.saveFolder, $"{fullFileName}.echoreplay");
+			string filePath = Path.Combine(SparkSettings.instance.saveFolder, $"{fullFileName}.echoreplay");
 
 			lock (fileWritingLock)
 			{
@@ -1158,9 +1154,9 @@ namespace Spark
 				streamWriter.Close();
 
 				// compress the file
-				if (Settings.Default.useCompression)
+				if (SparkSettings.instance.useCompression)
 				{
-					string tempDir = Path.Combine(Settings.Default.saveFolder, "temp_zip");
+					string tempDir = Path.Combine(SparkSettings.instance.saveFolder, "temp_zip");
 					Directory.CreateDirectory(tempDir);
 					File.Move(filePath,
 						Path.Combine(tempDir, $"{fullFileName}.echoreplay"));
@@ -1185,8 +1181,7 @@ namespace Spark
 					var newEchoPath = process[0].MainModule.FileName;
 					if (!string.IsNullOrEmpty(newEchoPath))
 					{
-						Settings.Default.echoVRPath = newEchoPath;
-						Settings.Default.Save();
+						SparkSettings.instance.echoVRPath = newEchoPath;
 					}
 				}
 
@@ -1320,7 +1315,7 @@ namespace Spark
 		private static void UpdateEchoExeLocation()
 		{
 			// skip if we already have a valid path
-			if (File.Exists(Settings.Default.echoVRPath)) return;
+			if (File.Exists(SparkSettings.instance.echoVRPath)) return;
 
 			try
 			{
@@ -1346,8 +1341,7 @@ namespace Spark
 						string file = Path.Combine(path, echoDir);
 						if (File.Exists(file))
 						{
-							Settings.Default.echoVRPath = file;
-							Settings.Default.Save();
+							SparkSettings.instance.echoVRPath = file;
 							return;
 						}
 					}
@@ -1361,7 +1355,7 @@ namespace Spark
 
 		private static StreamReader ExtractFile(StreamReader fileReader, string fileName)
 		{
-			string tempDir = Path.Combine(Settings.Default.saveFolder, "temp_zip_read\\");
+			string tempDir = Path.Combine(SparkSettings.instance.saveFolder, "temp_zip_read\\");
 
 			if (Directory.Exists(tempDir))
 			{
@@ -1397,23 +1391,23 @@ namespace Spark
 
 		private static void ReadSettings()
 		{
-			echoVRIP = Settings.Default.echoVRIP;
-			HighlightsHelper.isNVHighlightsEnabled = Settings.Default.isNVHighlightsEnabled;
-			if (!overrideEchoVRPort) echoVRPort = Settings.Default.echoVRPort;
+			echoVRIP = SparkSettings.instance.echoVRIP;
+			HighlightsHelper.isNVHighlightsEnabled = SparkSettings.instance.isNVHighlightsEnabled;
+			if (!overrideEchoVRPort) echoVRPort = SparkSettings.instance.echoVRPort;
 
 			try
 			{
-				if (Settings.Default.saveFolder == "none" || !Directory.Exists(Settings.Default.saveFolder))
+				if (SparkSettings.instance.saveFolder == "none" || !Directory.Exists(SparkSettings.instance.saveFolder))
 				{
-					Settings.Default.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Spark", "replays");
-					Directory.CreateDirectory(Settings.Default.saveFolder);
-					Settings.Default.Save();
+					SparkSettings.instance.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Spark", "replays");
+					Directory.CreateDirectory(SparkSettings.instance.saveFolder);
+					SparkSettings.instance.Save();
 				}
 			}
 			catch (Exception e)
 			{
-				new MessageBox($"Error accessing replay folder path:\n{Settings.Default.saveFolder}").Show();
-				LogRow(LogType.Error, $"Error accessing replay folder path:\n{Settings.Default.saveFolder}");
+				new MessageBox($"Error accessing replay folder path:\n{SparkSettings.instance.saveFolder}").Show();
+				LogRow(LogType.Error, $"Error accessing replay folder path:\n{SparkSettings.instance.saveFolder}");
 			}
 		}
 
@@ -1423,19 +1417,19 @@ namespace Spark
 		/// <param name="data">The data to write</param>
 		private static void WriteToFile(string data)
 		{
-			if (Settings.Default.batchWrites)
+			if (SparkSettings.instance.batchWrites)
 			{
 				dataCache.Add(data);
 
 				// if the time elapsed since last write is less than cutoff
-				if (dataCache.Count * fullDeltaTimes[Settings.Default.targetDeltaTimeIndexFull] < 5000)
+				if (dataCache.Count * fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull] < 5000)
 				{
 					return;
 				}
 			}
 
 			// Fail if the folder doesn't even exist
-			if (!Directory.Exists(Settings.Default.saveFolder))
+			if (!Directory.Exists(SparkSettings.instance.saveFolder))
 			{
 				return;
 			}
@@ -1443,7 +1437,7 @@ namespace Spark
 			string filePath, directoryPath;
 
 			// could combine with some other data path, such as AppData
-			directoryPath = Settings.Default.saveFolder;
+			directoryPath = SparkSettings.instance.saveFolder;
 
 			filePath = Path.Combine(directoryPath, fileName + ".echoreplay");
 
@@ -1451,7 +1445,7 @@ namespace Spark
 			{
 				StreamWriter streamWriter = new StreamWriter(filePath, true);
 
-				if (Settings.Default.batchWrites)
+				if (SparkSettings.instance.batchWrites)
 				{
 					foreach (string row in dataCache)
 					{
@@ -1531,7 +1525,7 @@ namespace Spark
 				matchData = new MatchData(frame);
 				UpdateStatsIngame(frame);
 
-				if (string.IsNullOrEmpty(Settings.Default.echoVRPath))
+				if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath))
 				{
 					GetEchoVRProcess();
 				}
@@ -1550,14 +1544,14 @@ namespace Spark
 					}
 				}
 
-				if (Settings.Default.hideEchoVRUI)
+				if (SparkSettings.instance.hideEchoVRUI)
 				{
 					FocusEchoVR();
 					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
 					Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, true, Keyboard.InputType.Keyboard); });
 				}
 
-				switch (Settings.Default.spectatorCamera)
+				switch (SparkSettings.instance.spectatorCamera)
 				{
 					// auto
 					case 0:
@@ -1809,7 +1803,7 @@ namespace Spark
 			if (frame.game_status == "playing" && deltaTime != 0)
 			{
 				inPostMatch = false;
-				if(Settings.Default.isAutofocusEnabled && (Math.Round(frame.game_clock, 2, MidpointRounding.AwayFromZero) % 10 == 0))
+				if(SparkSettings.instance.isAutofocusEnabled && (Math.Round(frame.game_clock, 2, MidpointRounding.AwayFromZero) % 10 == 0))
                 {
 					FocusEchoVR();
 				}
@@ -2579,7 +2573,7 @@ namespace Spark
 								frame.disc.position.ToVector3(), frame.disc.velocity.ToVector3(), leftHanded,
 								underhandedness));
 
-							//if (Settings.Default.throwSpeedTTS)
+							//if (SparkSettings.instance.throwSpeedTTS)
 							//{
 							//	if (player.name == frame.client_name)
 							//	{
@@ -2630,7 +2624,7 @@ namespace Spark
 					}
 
 					// Autofocus
-					if (Settings.Default.isAutofocusEnabled)
+					if (SparkSettings.instance.isAutofocusEnabled)
 					{
 						FocusEchoVR();
 					}
@@ -2670,7 +2664,7 @@ namespace Spark
 						matchData.round++;
 					}
 					// Autofocus
-					if (Settings.Default.isAutofocusEnabled)
+					if (SparkSettings.instance.isAutofocusEnabled)
 					{
 						FocusEchoVR();
 					}
@@ -2693,7 +2687,7 @@ namespace Spark
 					}
 
 					// Autofocus
-					if (Settings.Default.isAutofocusEnabled)
+					if (SparkSettings.instance.isAutofocusEnabled)
 					{
 						FocusEchoVR();
 					}
@@ -2788,7 +2782,7 @@ namespace Spark
 
 				// Game finished and showing scoreboard
 				case "post_match":
-					if (frame.private_match && Settings.Default.whenToSplitReplays == 1)
+					if (frame.private_match && SparkSettings.instance.whenToSplitReplays == 1)
 					{
 						NewFilename();
 					}
@@ -2798,7 +2792,7 @@ namespace Spark
 
 				case "pre_sudden_death":
 					// Autofocus
-					if (Settings.Default.isAutofocusEnabled)
+					if (SparkSettings.instance.isAutofocusEnabled)
 					{
 						FocusEchoVR();
 					}
@@ -2806,7 +2800,7 @@ namespace Spark
 					break;
 				case "sudden_death":
 					// Autofocus
-					if (Settings.Default.isAutofocusEnabled)
+					if (SparkSettings.instance.isAutofocusEnabled)
 					{
 						FocusEchoVR();
 					}
@@ -3056,7 +3050,7 @@ namespace Spark
 			UpdateStatsIngame(frame, true);
 
 			// if we here reset for public matches as well, then there would be super small files at the end of matches
-			if (matchData.firstFrame.private_match && Settings.Default.whenToSplitReplays < 1)
+			if (matchData.firstFrame.private_match && SparkSettings.instance.whenToSplitReplays < 1)
 			{
 				// wait a little bit to actually split, so that the end of the match isn't cut off
 				_ = DelayedNewFilename();
@@ -3080,7 +3074,7 @@ namespace Spark
 
 		public static void UploadMatchBatch(bool final = false)
 		{
-			if (!Settings.Default.uploadToIgniteDB && !Settings.Default.uploadToFirestore)
+			if (!SparkSettings.instance.uploadToIgniteDB && !SparkSettings.instance.uploadToFirestore)
 			{
 				Console.WriteLine("Won't upload right now.");
 			}
@@ -3122,7 +3116,7 @@ namespace Spark
 				hash = sb.ToString().ToLower();
 			}
 
-			if (Settings.Default.uploadToIgniteDB)
+			if (SparkSettings.instance.uploadToIgniteDB)
 			{
 				_ = DoUploadMatchBatchIgniteDB(dataString, hash, matchData.firstFrame.client_name);
 			}
@@ -3154,7 +3148,7 @@ namespace Spark
 
 		static async Task DoUploadEventFirebase(MatchData matchData, GoalData goalData)
 		{
-			if (Settings.Default.uploadToFirestore && !Personal)
+			if (SparkSettings.instance.uploadToFirestore && !Personal)
 			{
 				if (!TryCreateFirebaseDB()) return;
 
@@ -3186,7 +3180,7 @@ namespace Spark
 
 		static async Task DoUploadEventFirebase(MatchData matchData, EventData eventData)
 		{
-			if (Settings.Default.uploadToFirestore && !Personal)
+			if (SparkSettings.instance.uploadToFirestore && !Personal)
 			{
 				if (!TryCreateFirebaseDB()) return;
 
@@ -3216,7 +3210,7 @@ namespace Spark
 
 		static async Task DoUploadMatchBatchFirebase(BatchOutputFormat data)
 		{
-			if (Settings.Default.uploadToFirestore && !Personal)
+			if (SparkSettings.instance.uploadToFirestore && !Personal)
 			{
 				if (!TryCreateFirebaseDB()) return;
 
@@ -3356,16 +3350,16 @@ namespace Spark
 				fileName = DateTime.Now.ToString("rec_yyyy-MM-dd_HH-mm-ss");
 
 				// compress the file
-				if (Settings.Default.useCompression)
+				if (SparkSettings.instance.useCompression)
 				{
-					if (File.Exists(Path.Combine(Settings.Default.saveFolder, lastFilename + ".echoreplay")))
+					if (File.Exists(Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay")))
 					{
-						string tempDir = Path.Combine(Settings.Default.saveFolder, "temp_zip");
+						string tempDir = Path.Combine(SparkSettings.instance.saveFolder, "temp_zip");
 						Directory.CreateDirectory(tempDir);
-						File.Move(Path.Combine(Settings.Default.saveFolder, lastFilename + ".echoreplay"),
-							Path.Combine(Settings.Default.saveFolder, "temp_zip",
+						File.Move(Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay"),
+							Path.Combine(SparkSettings.instance.saveFolder, "temp_zip",
 								lastFilename + ".echoreplay")); // TODO can fail because in use
-						ZipFile.CreateFromDirectory(tempDir, Path.Combine(Settings.Default.saveFolder, lastFilename + ".echoreplay"));
+						ZipFile.CreateFromDirectory(tempDir, Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay"));
 						Directory.Delete(tempDir, true);
 					}
 				}
@@ -3531,10 +3525,10 @@ namespace Spark
 
 
 			// start client
-			string echoPath = Settings.Default.echoVRPath;
+			string echoPath = SparkSettings.instance.echoVRPath;
 			if (!string.IsNullOrEmpty(echoPath))
 			{
-				Process.Start(echoPath, (Settings.Default.capturevp2 ? "-capturevp2 " : " ") + (spectating ? "-spectatorstream " : " ") + "-lobbyid " + parts[3]);
+				Process.Start(echoPath, (SparkSettings.instance.capturevp2 ? "-capturevp2 " : " ") + (spectating ? "-spectatorstream " : " ") + "-lobbyid " + parts[3]);
 				Quit();
 			}
 			else
@@ -4033,7 +4027,7 @@ namespace Spark
 		internal static void Quit()
 		{
 			running = false;
-			Settings.Default.Save();
+			SparkSettings.instance.Save();
 			if (closingWindow != null)
 			{
 				// already trying to close

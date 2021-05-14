@@ -27,7 +27,7 @@ namespace Spark
 		{
 			InitializeComponent();
 
-			grid.Background = Settings.Default.loneEchoSubtitlesStreamerMode ? Brushes.Green : Brushes.Black;
+			grid.Background = SparkSettings.instance.loneEchoSubtitlesStreamerMode ? Brushes.Green : Brushes.Black;
 
 			outputUpdateTimer.Interval = 100;
 			outputUpdateTimer.Elapsed += Update;
@@ -68,7 +68,7 @@ namespace Spark
 		{
 			try
 			{
-				if (string.IsNullOrEmpty(Settings.Default.loneEchoPath))
+				if (string.IsNullOrEmpty(SparkSettings.instance.loneEchoPath))
 				{
 					statusLabel.Text = "Lone Echo installation not found";
 					statusLabel.Foreground = Brushes.Red;
@@ -77,8 +77,8 @@ namespace Spark
 				}
 
 				logPathBase =
-					Settings.Default.loneEchoPath[
-						..Settings.Default.loneEchoPath.LastIndexOf("\\bin", StringComparison.Ordinal)] +
+					SparkSettings.instance.loneEchoPath[
+						..SparkSettings.instance.loneEchoPath.LastIndexOf("\\bin", StringComparison.Ordinal)] +
 					"\\_local\\r14logs\\";
 
 				directory = new DirectoryInfo(logPathBase);
@@ -110,7 +110,7 @@ namespace Spark
 		private static void FindLoneEchoInstallationLocation()
 		{
 			// skip if we already have a valid path
-			if (File.Exists(Settings.Default.loneEchoPath)) return;
+			if (File.Exists(SparkSettings.instance.loneEchoPath)) return;
 
 			try
 			{
@@ -129,8 +129,7 @@ namespace Spark
 				const string echoDir = "Software\\ready-at-dawn-lone-echo\\bin\\win7\\loneecho.exe";
 				foreach (string file in paths.Select(path => Path.Combine(path, echoDir)).Where(File.Exists))
 				{
-					Settings.Default.loneEchoPath = file;
-					Settings.Default.Save();
+					SparkSettings.instance.loneEchoPath = file;
 					return;
 				}
 			}
@@ -142,19 +141,18 @@ namespace Spark
 
 		public bool StreamerModeChecked
 		{
-			get => Settings.Default.loneEchoSubtitlesStreamerMode;
+			get => SparkSettings.instance.loneEchoSubtitlesStreamerMode;
 			set
 			{
 				grid.Background = value ? Brushes.Green : Brushes.Black; //(Brush) FindResource("ContainerBackground");
-				Settings.Default.loneEchoSubtitlesStreamerMode = value;
-				Settings.Default.Save();
+				SparkSettings.instance.loneEchoSubtitlesStreamerMode = value;
 			}
 		}
 
 
 		private void CloseClick(object sender, RoutedEventArgs e)
 		{
-			Settings.Default.Save();
+			SparkSettings.instance.Save();
 			Close();
 		}
 	}

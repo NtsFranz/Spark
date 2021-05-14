@@ -122,7 +122,7 @@ public class Logger
 			case LogType.Info:
 				if (elements.Length == 1)
 				{
-					if (Settings.Default.showDatabaseLog || !elements[0].Contains("[DB]"))
+					if (SparkSettings.instance.showDatabaseLog || !elements[0].Contains("[DB]"))
 					{
 						Console.WriteLine(elements[0]);
 					}
@@ -281,7 +281,7 @@ public class Logger
 							{
 								fileWriter.WriteLine(row);
 							}
-							if (Settings.Default.logToServer)
+							if (SparkSettings.instance.logToServer)
 							{
 								allOutputData.Append(row);
 								allOutputData.Append(newLineChar);
@@ -289,7 +289,7 @@ public class Logger
 						}
 						dataToLog[fileName].Clear();
 
-						if (Settings.Default.logToServer)
+						if (SparkSettings.instance.logToServer)
 						{
 							Upload(fileName + fileExtension, allOutputData.ToString(), folder);
 						}

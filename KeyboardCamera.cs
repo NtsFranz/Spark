@@ -17,7 +17,7 @@ namespace Spark
 		{
 			Program.Goal += (_, _) =>
 			{
-				if (Settings.Default.toggleMinimapAfterGoals)
+				if (SparkSettings.instance.toggleMinimapAfterGoals)
 				{
 					Task.Run(async () =>
 					{
@@ -148,7 +148,7 @@ namespace Spark
 					}
 
 
-					switch (Settings.Default.followClientSpectatorCameraMode)
+					switch (SparkSettings.instance.followClientSpectatorCameraMode)
 					{
 						case 0:
 							Program.FocusEchoVR();

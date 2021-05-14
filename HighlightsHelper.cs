@@ -11,7 +11,7 @@ namespace Spark
 		public static bool isNVHighlightsEnabled = false;
 		public static bool didHighlightsInit;
 		public static bool isNVHighlightsSupported = true;
-		private static HighlightLevel ClientHighlightScope => (HighlightLevel) Settings.Default.clientHighlightScope;
+		private static HighlightLevel ClientHighlightScope => (HighlightLevel) SparkSettings.instance.clientHighlightScope;
 		private static readonly Highlights.EmptyCallbackDelegate videoCallback = NVSetVideoCallback;
 		private static readonly Highlights.EmptyCallbackDelegate openSummaryCallback = Highlights.DefaultOpenSummaryCallback;
 		private static readonly Highlights.EmptyCallbackDelegate closeGroupCallback = NVCloseGroupCallback;
@@ -37,8 +37,8 @@ namespace Spark
 				{
 					groupId = highlightGroupName,
 					highlightId = id,
-					startDelta = -(int)(Settings.Default.nvHighlightsSecondsBefore * 1000),
-					endDelta = (int)(Settings.Default.nvHighlightsSecondsAfter * 1000)
+					startDelta = -(int)(SparkSettings.instance.nvHighlightsSecondsBefore * 1000),
+					endDelta = (int)(SparkSettings.instance.nvHighlightsSecondsAfter * 1000)
 				};
 				Highlights.SetVideoHighlight(vhp, videoCallback);
 				return true;
@@ -55,8 +55,8 @@ namespace Spark
 			{
 				groupId = highlightGroupName,
 				highlightId = id,
-				startDelta = -(int)(Settings.Default.nvHighlightsSecondsBefore * 1000),
-				endDelta = (int)(Settings.Default.nvHighlightsSecondsAfter * 1000)
+				startDelta = -(int)(SparkSettings.instance.nvHighlightsSecondsBefore * 1000),
+				endDelta = (int)(SparkSettings.instance.nvHighlightsSecondsAfter * 1000)
 			};
 			Highlights.SetVideoHighlight(vhp, videoCallback);
 			return true;
@@ -69,7 +69,7 @@ namespace Spark
 			{
 				if (!didHighlightsInit) return;
 				
-				if (Settings.Default.clearHighlightsOnExit && !wasDisableNVHCall)
+				if (SparkSettings.instance.clearHighlightsOnExit && !wasDisableNVHCall)
 				{
 					ClearUnsavedNVHighlights(false);
 
@@ -327,7 +327,7 @@ namespace Spark
 					return "PERSONAL_TEAM_HIGHLIGHT_GROUP";
 				}
 				else if (ClientHighlightScope == HighlightLevel.ALL || (clientTeam == TeamColor.spectator &&
-				                                                        Settings.Default.nvHighlightsSpectatorRecord))
+				                                                        SparkSettings.instance.nvHighlightsSpectatorRecord))
 				{
 					return "OPPOSING_TEAM_HIGHLIGHT_GROUP";
 				}

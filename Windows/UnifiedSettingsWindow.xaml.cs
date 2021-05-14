@@ -65,7 +65,7 @@ namespace Spark
 						{
 							Content = sceneNames[i]
 						});
-						if (Settings.Default.obsInGameScene == sceneNames[i])
+						if (SparkSettings.instance.obsInGameScene == sceneNames[i])
 						{
 							inGameScene.SelectedIndex = i + 1;
 						}
@@ -73,7 +73,7 @@ namespace Spark
 						{
 							Content = sceneNames[i]
 						});
-						if (Settings.Default.obsBetweenGameScene == sceneNames[i])
+						if (SparkSettings.instance.obsBetweenGameScene == sceneNames[i])
 						{
 							betweenGameScene.SelectedIndex = i + 1;
 						}
@@ -94,7 +94,7 @@ namespace Spark
 			betweenGameScene.SelectionChanged += BetweenGameSceneChanged;
 
 			// passwordbox can't use binding
-			obsPasswordBox.Password = Settings.Default.obsPassword;
+			obsPasswordBox.Password = SparkSettings.instance.obsPassword;
 			DoClipLengthSum();
 
 #if WINDOWS_STORE_RELEASE
@@ -166,9 +166,9 @@ namespace Spark
 		private void Initialize()
 		{
 			// TODO add this in binding form
-			statsLoggingBox.Opacity = Settings.Default.enableStatsLogging ? 1 : .5;
+			statsLoggingBox.Opacity = SparkSettings.instance.enableStatsLogging ? 1 : .5;
 			// TODO add this in binding form
-			fullLoggingBox.Opacity = Settings.Default.enableFullLogging ? 1 : .5;
+			fullLoggingBox.Opacity = SparkSettings.instance.enableFullLogging ? 1 : .5;
 			// TODO add this in binding form
 			nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
 		}
@@ -176,10 +176,9 @@ namespace Spark
 #region General
 
 		public static bool StartWithWindows {
-			get => Settings.Default.startOnBoot;
+			get => SparkSettings.instance.startOnBoot;
 			set {
-				Settings.Default.startOnBoot = value;
-				Settings.Default.Save();
+				SparkSettings.instance.startOnBoot = value;
 
 				RegistryKey rk =
 					Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
@@ -196,7 +195,7 @@ namespace Spark
 
 		private void CloseButtonEvent(object sender, RoutedEventArgs e)
 		{
-			Settings.Default.Save();
+			SparkSettings.instance.Save();
 			Close();
 		}
 
@@ -204,8 +203,7 @@ namespace Spark
 		{
 			if (!initialized) return;
 			Program.echoVRIP = ((TextBox)sender).Text;
-			Settings.Default.echoVRIP = Program.echoVRIP;
-			Settings.Default.Save();
+			SparkSettings.instance.echoVRIP = Program.echoVRIP;
 		}
 
 		private void EchoVRPortChanged(object sender, TextChangedEventArgs e)
@@ -213,14 +211,13 @@ namespace Spark
 			if (!initialized) return;
 			if (Program.overrideEchoVRPort)
 			{
-				echoVRPortTextBox.Text = Settings.Default.echoVRPort.ToString();
+				echoVRPortTextBox.Text = SparkSettings.instance.echoVRPort.ToString();
 			}
 			else
 			{
 				if (int.TryParse(((TextBox)sender).Text, out Program.echoVRPort))
 				{
-					Settings.Default.echoVRPort = Program.echoVRPort;
-					Settings.Default.Save();
+					SparkSettings.instance.echoVRPort = Program.echoVRPort;
 				}
 			}
 		}
@@ -232,9 +229,8 @@ namespace Spark
 			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
 			echoVRIPTextBox.Text = Program.echoVRIP;
 			echoVRPortTextBox.Text = Program.echoVRPort.ToString();
-			Settings.Default.echoVRIP = Program.echoVRIP;
-			if (!Program.overrideEchoVRPort) Settings.Default.echoVRPort = Program.echoVRPort;
-			Settings.Default.Save();
+			SparkSettings.instance.echoVRIP = Program.echoVRIP;
+			if (!Program.overrideEchoVRPort) SparkSettings.instance.echoVRPort = Program.echoVRPort;
 		}
 
 		private void ExecutableLocationChanged(object sender, TextChangedEventArgs e)
@@ -244,8 +240,7 @@ namespace Spark
 			if (File.Exists(path))
 			{
 				exeLocationLabel.Content = "EchoVR Executable Location:";
-				Settings.Default.echoVRPath = path;
-				Settings.Default.Save();
+				SparkSettings.instance.echoVRPath = path;
 			}
 			else
 			{
@@ -272,9 +267,8 @@ namespace Spark
 			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
 			echoVRIPTextBox.Text = Program.echoVRIP;
 			echoVRPortTextBox.Text = Program.echoVRPort.ToString();
-			Settings.Default.echoVRIP = Program.echoVRIP;
-			if (!Program.overrideEchoVRPort) Settings.Default.echoVRPort = Program.echoVRPort;
-			Settings.Default.Save();
+			SparkSettings.instance.echoVRIP = Program.echoVRIP;
+			if (!Program.overrideEchoVRPort) SparkSettings.instance.echoVRPort = Program.echoVRPort;
 		}
 
 		private void ShowFirstTimeSetupWindowClicked(object sender, RoutedEventArgs e)
@@ -306,10 +300,9 @@ namespace Spark
 		}
 
 		public int SetTheme {
-			get => Settings.Default.theme;
+			get => SparkSettings.instance.theme;
 			set {
-				Settings.Default.theme = value;
-				Settings.Default.Save();
+				SparkSettings.instance.theme = value;
 
 				ThemesController.SetTheme((ThemesController.ThemeTypes)value);
 			}
@@ -317,7 +310,7 @@ namespace Spark
 
 		private async Task GetOptInStatus()
 		{
-			if (Settings.Default.client_name == string.Empty ||
+			if (SparkSettings.instance.client_name == string.Empty ||
 				DiscordOAuth.oauthToken == string.Empty)
 			{
 				optInFound = true;
@@ -328,7 +321,7 @@ namespace Spark
 			try
 			{
 				string resp = await Program.GetRequestAsync(
-					$"{Program.APIURL}/optin/get/{Settings.Default.client_name}",
+					$"{Program.APIURL}/optin/get/{SparkSettings.instance.client_name}",
 					new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } });
 
 				JToken objResp = JsonConvert.DeserializeObject<JToken>(resp);
@@ -351,7 +344,7 @@ namespace Spark
 			if (!optInFound) return;
 
 			Program.PostRequestCallback(
-				$"{Program.APIURL}/optin/set/{Settings.Default.client_name}/{((CheckBox)sender).IsChecked}",
+				$"{Program.APIURL}/optin/set/{SparkSettings.instance.client_name}/{((CheckBox)sender).IsChecked}",
 				new Dictionary<string, string>
 				{
 					{"x-api-key", DiscordOAuth.igniteUploadKey}, {"token", DiscordOAuth.oauthToken}
@@ -379,7 +372,7 @@ namespace Spark
 			if (!initialized) return;
 			Process.Start(new ProcessStartInfo
 			{
-				FileName = Settings.Default.saveFolder,
+				FileName = SparkSettings.instance.saveFolder,
 				UseShellExecute = true
 			});
 		}
@@ -387,10 +380,9 @@ namespace Spark
 		private void ResetReplayFolder(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			Settings.Default.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Spark", "replays");
-			Directory.CreateDirectory(Settings.Default.saveFolder);
-			storageLocationTextBox.Text = Settings.Default.saveFolder;
-			Settings.Default.Save();
+			SparkSettings.instance.saveFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "Spark", "replays");
+			Directory.CreateDirectory(SparkSettings.instance.saveFolder);
+			storageLocationTextBox.Text = SparkSettings.instance.saveFolder;
 		}
 
 		private void SetStorageLocation(object sender, RoutedEventArgs e)
@@ -399,7 +391,7 @@ namespace Spark
 			string selectedPath = "";
 			CommonOpenFileDialog folderBrowserDialog = new CommonOpenFileDialog
 			{
-				InitialDirectory = Settings.Default.saveFolder,
+				InitialDirectory = SparkSettings.instance.saveFolder,
 				IsFolderPicker = true
 			};
 			if (folderBrowserDialog.ShowDialog() == CommonFileDialogResult.Ok)
@@ -416,9 +408,8 @@ namespace Spark
 
 		private void SetStorageLocation(string path)
 		{
-			Settings.Default.saveFolder = path;
-			Settings.Default.Save();
-			storageLocationTextBox.Text = Settings.Default.saveFolder;
+			SparkSettings.instance.saveFolder = path;
+			storageLocationTextBox.Text = SparkSettings.instance.saveFolder;
 		}
 
 		private void SplitFileEvent(object sender, RoutedEventArgs e)
@@ -435,10 +426,9 @@ namespace Spark
 		public static Visibility DiscordNotLoggedInVisible => DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
 
 		public static bool JoustTime {
-			get => Settings.Default.joustTimeTTS;
+			get => SparkSettings.instance.joustTimeTTS;
 			set {
-				Settings.Default.joustTimeTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.joustTimeTTS = value;
 
 				if (value) Program.synth.SpeakAsync($"{g_Team.TeamColor.orange.ToLocalizedString()} 1.8");
 				Console.WriteLine($"{g_Team.TeamColor.orange.ToLocalizedString()} 1.8");
@@ -446,63 +436,57 @@ namespace Spark
 		}
 
 		public static bool JoustSpeed {
-			get => Settings.Default.joustSpeedTTS;
+			get => SparkSettings.instance.joustSpeedTTS;
 			set {
-				Settings.Default.joustSpeedTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.joustSpeedTTS = value;
 
 				if (value) Program.synth.SpeakAsync($"{g_Team.TeamColor.orange.ToLocalizedString()} 32 {Properties.Resources.tts_meters_per_second}");
 			}
 		}
 
 		public static bool ServerLocation {
-			get => Settings.Default.serverLocationTTS;
+			get => SparkSettings.instance.serverLocationTTS;
 			set {
-				Settings.Default.serverLocationTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.serverLocationTTS = value;
 
 				if (value) Program.synth.SpeakAsync("Chicago, Illinois");
 			}
 		}
 
 		public static bool MaxBoostSpeed {
-			get => Settings.Default.maxBoostSpeedTTS;
+			get => SparkSettings.instance.maxBoostSpeedTTS;
 			set {
-				Settings.Default.maxBoostSpeedTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.maxBoostSpeedTTS = value;
 
 				if (value) Program.synth.SpeakAsync($"32 {Properties.Resources.tts_meters_per_second}");
 			}
 		}
 
 		public static bool TubeExitSpeed {
-			get => Settings.Default.tubeExitSpeedTTS;
+			get => SparkSettings.instance.tubeExitSpeedTTS;
 			set {
-				Settings.Default.tubeExitSpeedTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.tubeExitSpeedTTS = value;
 
 				if (value) Program.synth.SpeakAsync($"32 {Properties.Resources.tts_meters_per_second}");
 			}
 		}
 
 		public static int SpeechSpeed {
-			get => Settings.Default.TTSSpeed;
+			get => SparkSettings.instance.TTSSpeed;
 			set {
 				Program.synth.SetRate(value);
 
-				if (value != Settings.Default.TTSSpeed)
+				if (value != SparkSettings.instance.TTSSpeed)
 					Program.synth.SpeakAsync(Properties.Resources.This_is_the_new_speed);
 
-				Settings.Default.TTSSpeed = value;
-				Settings.Default.Save();
+				SparkSettings.instance.TTSSpeed = value;
 			}
 		}
 
 		public static bool GamePaused {
-			get => Settings.Default.pausedTTS;
+			get => SparkSettings.instance.pausedTTS;
 			set {
-				Settings.Default.pausedTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.pausedTTS = value;
 
 				if (value)
 					Program.synth.SpeakAsync(
@@ -511,10 +495,9 @@ namespace Spark
 		}
 
 		public static bool PlayerJoin {
-			get => Settings.Default.playerJoinTTS;
+			get => SparkSettings.instance.playerJoinTTS;
 			set {
-				Settings.Default.playerJoinTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.playerJoinTTS = value;
 
 				if (value)
 					Program.synth.SpeakAsync(
@@ -523,10 +506,9 @@ namespace Spark
 		}
 
 		public static bool PlayerLeave {
-			get => Settings.Default.playerLeaveTTS;
+			get => SparkSettings.instance.playerLeaveTTS;
 			set {
-				Settings.Default.playerLeaveTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.playerLeaveTTS = value;
 
 				if (value)
 					Program.synth.SpeakAsync($"NtsFranz {Properties.Resources.tts_leave_1} {g_Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_leave_2}");
@@ -534,10 +516,9 @@ namespace Spark
 		}
 
 		public static bool PlayerSwitch {
-			get => Settings.Default.playerSwitchTeamTTS;
+			get => SparkSettings.instance.playerSwitchTeamTTS;
 			set {
-				Settings.Default.playerSwitchTeamTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.playerSwitchTeamTTS = value;
 
 				if (value)
 					Program.synth.SpeakAsync($"NtsFranz {Properties.Resources.tts_switch_1} {g_Team.TeamColor.blue.ToLocalizedString()} {Properties.Resources.tts_switch_2} {g_Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_switch_3}");
@@ -545,30 +526,27 @@ namespace Spark
 		}
 
 		public static bool ThrowSpeed {
-			get => Settings.Default.throwSpeedTTS;
+			get => SparkSettings.instance.throwSpeedTTS;
 			set {
-				Settings.Default.throwSpeedTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.throwSpeedTTS = value;
 
 				if (value) Program.synth.SpeakAsync("19");
 			}
 		}
 
 		public static bool GoalSpeed {
-			get => Settings.Default.goalSpeedTTS;
+			get => SparkSettings.instance.goalSpeedTTS;
 			set {
-				Settings.Default.goalSpeedTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.goalSpeedTTS = value;
 
 				if (value) Program.synth.SpeakAsync($"19 {Properties.Resources.tts_meters_per_second}");
 			}
 		}
 
 		public static bool GoalDistance {
-			get => Settings.Default.goalDistanceTTS;
+			get => SparkSettings.instance.goalDistanceTTS;
 			set {
-				Settings.Default.goalDistanceTTS = value;
-				Settings.Default.Save();
+				SparkSettings.instance.goalDistanceTTS = value;
 
 				if (value) Program.synth.SpeakAsync($"23 {Properties.Resources.tts_meters}");
 			}
@@ -579,7 +557,7 @@ namespace Spark
 #region NVIDIA Highlights
 
 		public bool NVHighlightsEnabled {
-			get => Settings.Default.isNVHighlightsEnabled;
+			get => SparkSettings.instance.isNVHighlightsEnabled;
 			set {
 				switch (HighlightsHelper.isNVHighlightsEnabled)
 				{
@@ -591,8 +569,7 @@ namespace Spark
 							if (HighlightsHelper.SetupNVHighlights() < 0)
 							{
 								HighlightsHelper.isNVHighlightsEnabled = false;
-								Settings.Default.isNVHighlightsEnabled = false;
-								Settings.Default.Save();
+								SparkSettings.instance.isNVHighlightsEnabled = false;
 								enableNVHighlightsCheckbox.IsChecked = false;
 								enableNVHighlightsCheckbox.IsEnabled = false;
 								enableNVHighlightsCheckbox.Content = Properties.Resources.NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC;
@@ -605,8 +582,7 @@ namespace Spark
 				}
 
 				HighlightsHelper.isNVHighlightsEnabled = value;
-				Settings.Default.isNVHighlightsEnabled = HighlightsHelper.isNVHighlightsEnabled;
-				Settings.Default.Save();
+				SparkSettings.instance.isNVHighlightsEnabled = HighlightsHelper.isNVHighlightsEnabled;
 
 				nvHighlightsBox.IsEnabled = HighlightsHelper.isNVHighlightsEnabled;
 				nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
@@ -649,7 +625,7 @@ namespace Spark
 			{
 				try
 				{
-					Program.obs.instance.Connect(Settings.Default.obsIP, Settings.Default.obsPassword);
+					Program.obs.instance.Connect(SparkSettings.instance.obsIP, SparkSettings.instance.obsPassword);
 					Program.obs.instance.GetReplayBufferStatus();
 				}
 				catch (AuthFailureException)
@@ -722,7 +698,7 @@ namespace Spark
 
 		private void OBSPasswordChanged(object sender, RoutedEventArgs e)
 		{
-			Settings.Default.obsPassword = ((PasswordBox)sender).Password;
+			SparkSettings.instance.obsPassword = ((PasswordBox)sender).Password;
 		}
 
 		private void OBSStartReplayBuffer(object sender, RoutedEventArgs e)
@@ -758,9 +734,9 @@ namespace Spark
 			get {
 				return clipsTab switch
 				{
-					ClipsTab.NVHighlights => Settings.Default.nvHighlightsPlayerScope,
-					ClipsTab.echoreplay => Settings.Default.replayClipPlayerScope,
-					ClipsTab.OBS => Settings.Default.obsPlayerScope,
+					ClipsTab.NVHighlights => SparkSettings.instance.nvHighlightsPlayerScope,
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipPlayerScope,
+					ClipsTab.OBS => SparkSettings.instance.obsPlayerScope,
 					_ => 0,
 				};
 			}
@@ -768,13 +744,13 @@ namespace Spark
 				switch (clipsTab)
 				{
 					case ClipsTab.NVHighlights:
-						Settings.Default.nvHighlightsPlayerScope = value;
+						SparkSettings.instance.nvHighlightsPlayerScope = value;
 						break;
 					case ClipsTab.echoreplay:
-						Settings.Default.replayClipPlayerScope = value;
+						SparkSettings.instance.replayClipPlayerScope = value;
 						break;
 					case ClipsTab.OBS:
-						Settings.Default.obsPlayerScope = value;
+						SparkSettings.instance.obsPlayerScope = value;
 						break;
 				}
 			}
@@ -784,9 +760,9 @@ namespace Spark
 			get {
 				return clipsTab switch
 				{
-					ClipsTab.NVHighlights => Settings.Default.nvHighlightsSpectatorRecord,
-					ClipsTab.echoreplay => Settings.Default.replayClipSpectatorRecord,
-					ClipsTab.OBS => Settings.Default.obsSpectatorRecord,
+					ClipsTab.NVHighlights => SparkSettings.instance.nvHighlightsSpectatorRecord,
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipSpectatorRecord,
+					ClipsTab.OBS => SparkSettings.instance.obsSpectatorRecord,
 					_ => false,
 				};
 			}
@@ -794,13 +770,13 @@ namespace Spark
 				switch (clipsTab)
 				{
 					case ClipsTab.NVHighlights:
-						Settings.Default.nvHighlightsSpectatorRecord = value;
+						SparkSettings.instance.nvHighlightsSpectatorRecord = value;
 						break;
 					case ClipsTab.echoreplay:
-						Settings.Default.replayClipSpectatorRecord = value;
+						SparkSettings.instance.replayClipSpectatorRecord = value;
 						break;
 					case ClipsTab.OBS:
-						Settings.Default.obsSpectatorRecord = value;
+						SparkSettings.instance.obsSpectatorRecord = value;
 						break;
 				}
 			}
@@ -815,9 +791,9 @@ namespace Spark
 			get {
 				return clipsTab switch
 				{
-					ClipsTab.NVHighlights => Settings.Default.nvHighlightsSecondsBefore.ToString(),
-					ClipsTab.echoreplay => Settings.Default.replayClipSecondsBefore.ToString(),
-					ClipsTab.OBS => Settings.Default.obsClipSecondsBefore.ToString(),
+					ClipsTab.NVHighlights => SparkSettings.instance.nvHighlightsSecondsBefore.ToString(),
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipSecondsBefore.ToString(),
+					ClipsTab.OBS => SparkSettings.instance.obsClipSecondsBefore.ToString(),
 					_ => "0",
 				};
 			}
@@ -826,13 +802,13 @@ namespace Spark
 				switch (clipsTab)
 				{
 					case ClipsTab.NVHighlights:
-						Settings.Default.nvHighlightsSecondsBefore = sec;
+						SparkSettings.instance.nvHighlightsSecondsBefore = sec;
 						break;
 					case ClipsTab.echoreplay:
-						Settings.Default.replayClipSecondsBefore = sec;
+						SparkSettings.instance.replayClipSecondsBefore = sec;
 						break;
 					case ClipsTab.OBS:
-						Settings.Default.obsClipSecondsBefore = sec;
+						SparkSettings.instance.obsClipSecondsBefore = sec;
 						break;
 				}
 				DoClipLengthSum();
@@ -843,9 +819,9 @@ namespace Spark
 			get {
 				return clipsTab switch
 				{
-					ClipsTab.NVHighlights => Settings.Default.nvHighlightsSecondsAfter.ToString(),
-					ClipsTab.echoreplay => Settings.Default.replayClipSecondsAfter.ToString(),
-					ClipsTab.OBS => Settings.Default.obsClipSecondsAfter.ToString(),
+					ClipsTab.NVHighlights => SparkSettings.instance.nvHighlightsSecondsAfter.ToString(),
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipSecondsAfter.ToString(),
+					ClipsTab.OBS => SparkSettings.instance.obsClipSecondsAfter.ToString(),
 					_ => "0",
 				};
 			}
@@ -854,13 +830,13 @@ namespace Spark
 				switch (clipsTab)
 				{
 					case ClipsTab.NVHighlights:
-						Settings.Default.nvHighlightsSecondsAfter = sec;
+						SparkSettings.instance.nvHighlightsSecondsAfter = sec;
 						break;
 					case ClipsTab.echoreplay:
-						Settings.Default.replayClipSecondsAfter = sec;
+						SparkSettings.instance.replayClipSecondsAfter = sec;
 						break;
 					case ClipsTab.OBS:
-						Settings.Default.obsClipSecondsAfter = sec;
+						SparkSettings.instance.obsClipSecondsAfter = sec;
 						break;
 				}
 				DoClipLengthSum();
@@ -872,8 +848,8 @@ namespace Spark
 			get {
 				return clipsTab switch
 				{
-					ClipsTab.echoreplay => Settings.Default.replayClipPlayspace,
-					ClipsTab.OBS => Settings.Default.obsClipPlayspace,
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipPlayspace,
+					ClipsTab.OBS => SparkSettings.instance.obsClipPlayspace,
 					_ => false,
 				};
 			}
@@ -881,10 +857,10 @@ namespace Spark
 				switch (clipsTab)
 				{
 					case ClipsTab.echoreplay:
-						Settings.Default.replayClipPlayspace = value;
+						SparkSettings.instance.replayClipPlayspace = value;
 						break;
 					case ClipsTab.OBS:
-						Settings.Default.obsClipPlayspace = value;
+						SparkSettings.instance.obsClipPlayspace = value;
 						break;
 				}
 			}
@@ -894,8 +870,8 @@ namespace Spark
 			get {
 				return clipsTab switch
 				{
-					ClipsTab.echoreplay => Settings.Default.replayClipGoal,
-					ClipsTab.OBS => Settings.Default.obsClipGoal,
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipGoal,
+					ClipsTab.OBS => SparkSettings.instance.obsClipGoal,
 					_ => false,
 				};
 			}
@@ -903,10 +879,10 @@ namespace Spark
 				switch (clipsTab)
 				{
 					case ClipsTab.echoreplay:
-						Settings.Default.replayClipGoal = value;
+						SparkSettings.instance.replayClipGoal = value;
 						break;
 					case ClipsTab.OBS:
-						Settings.Default.obsClipGoal = value;
+						SparkSettings.instance.obsClipGoal = value;
 						break;
 				}
 			}
@@ -916,8 +892,8 @@ namespace Spark
 			get {
 				return clipsTab switch
 				{
-					ClipsTab.echoreplay => Settings.Default.replayClipSave,
-					ClipsTab.OBS => Settings.Default.obsClipSave,
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipSave,
+					ClipsTab.OBS => SparkSettings.instance.obsClipSave,
 					_ => false,
 				};
 			}
@@ -925,10 +901,10 @@ namespace Spark
 				switch (clipsTab)
 				{
 					case ClipsTab.echoreplay:
-						Settings.Default.replayClipSave = value;
+						SparkSettings.instance.replayClipSave = value;
 						break;
 					case ClipsTab.OBS:
-						Settings.Default.obsClipSave = value;
+						SparkSettings.instance.obsClipSave = value;
 						break;
 				}
 			}
@@ -938,8 +914,8 @@ namespace Spark
 			get {
 				return clipsTab switch
 				{
-					ClipsTab.echoreplay => Settings.Default.replayClipAssist,
-					ClipsTab.OBS => Settings.Default.obsClipAssist,
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipAssist,
+					ClipsTab.OBS => SparkSettings.instance.obsClipAssist,
 					_ => false,
 				};
 			}
@@ -947,10 +923,10 @@ namespace Spark
 				switch (clipsTab)
 				{
 					case ClipsTab.echoreplay:
-						Settings.Default.replayClipAssist = value;
+						SparkSettings.instance.replayClipAssist = value;
 						break;
 					case ClipsTab.OBS:
-						Settings.Default.obsClipAssist = value;
+						SparkSettings.instance.obsClipAssist = value;
 						break;
 				}
 			}
@@ -960,8 +936,8 @@ namespace Spark
 			get {
 				return clipsTab switch
 				{
-					ClipsTab.echoreplay => Settings.Default.replayClipInterception,
-					ClipsTab.OBS => Settings.Default.obsClipInterception,
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipInterception,
+					ClipsTab.OBS => SparkSettings.instance.obsClipInterception,
 					_ => false,
 				};
 			}
@@ -969,10 +945,10 @@ namespace Spark
 				switch (clipsTab)
 				{
 					case ClipsTab.echoreplay:
-						Settings.Default.replayClipInterception = value;
+						SparkSettings.instance.replayClipInterception = value;
 						break;
 					case ClipsTab.OBS:
-						Settings.Default.obsClipInterception = value;
+						SparkSettings.instance.obsClipInterception = value;
 						break;
 				}
 			}
@@ -984,8 +960,8 @@ namespace Spark
 #region EchoVR Settings
 
 		public Visibility EchoVRSettingsProgramOpenWarning => Program.GetEchoVRProcess()?.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
-		public Visibility EchoVRInstalled => File.Exists(Settings.Default.echoVRPath) ? Visibility.Visible : Visibility.Collapsed;
-		public Visibility EchoVRNotInstalled => !File.Exists(Settings.Default.echoVRPath) ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility EchoVRInstalled => File.Exists(SparkSettings.instance.echoVRPath) ? Visibility.Visible : Visibility.Collapsed;
+		public Visibility EchoVRNotInstalled => !File.Exists(SparkSettings.instance.echoVRPath) ? Visibility.Visible : Visibility.Collapsed;
 
 		public bool Fullscreen { get => EchoVRSettingsManager.Fullscreen; set { EchoVRSettingsManager.Fullscreen = value; } }
 		public bool MultiResShading { get => EchoVRSettingsManager.MultiResShading; set { EchoVRSettingsManager.MultiResShading = value; } }
@@ -1021,14 +997,12 @@ namespace Spark
 
 		private void InGameSceneChanged(object sender, SelectionChangedEventArgs e)
 		{
-			Settings.Default.obsInGameScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
-			Settings.Default.Save();
+			SparkSettings.instance.obsInGameScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
 		}
 
 		private void BetweenGameSceneChanged(object sender, SelectionChangedEventArgs e)
 		{
-			Settings.Default.obsBetweenGameScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
-			Settings.Default.Save();
+			SparkSettings.instance.obsBetweenGameScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
 		}
 	}
 
@@ -1046,7 +1020,7 @@ namespace Spark
 
 		private void Initialize()
 		{
-			Source = Settings.Default;
+			Source = SparkSettings.instance;
 			Mode = BindingMode.TwoWay;
 		}
 	}
@@ -1065,7 +1039,7 @@ namespace Spark
 
 		private void Initialize()
 		{
-			Source = Settings.Default;
+			Source = SparkSettings.instance;
 			Mode = BindingMode.OneWay;
 		}
 	}

@@ -53,21 +53,21 @@ namespace Spark
 
 			Program.PlayerJoined += (frame, team, player) =>
 			{
-				if (Settings.Default.playerJoinTTS)
+				if (SparkSettings.instance.playerJoinTTS)
 				{
 					Program.synth.SpeakAsync($"{player.name} {Resources.tts_join_1} {team.color} {Resources.tts_join_2}");
 				}
 			};
 			Program.PlayerLeft += (frame, team, player) =>
 			{
-				if (Settings.Default.playerLeaveTTS)
+				if (SparkSettings.instance.playerLeaveTTS)
 				{
 					Program.synth.SpeakAsync($"{player.name} {Resources.tts_leave_1} {team.color} {Resources.tts_leave_2}");
 				}
 			};
 			Program.PlayerSwitchedTeams += (frame, fromTeam, toTeam, player) =>
 			{
-				if (!Settings.Default.playerSwitchTeamTTS) return;
+				if (!SparkSettings.instance.playerSwitchTeamTTS) return;
 
 				if (fromTeam != null)
 				{
@@ -80,42 +80,42 @@ namespace Spark
 			};
 			Program.PauseRequest += (frame) =>
 			{
-				if (Settings.Default.pausedTTS)
+				if (SparkSettings.instance.pausedTTS)
 				{
 					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_pause_req}");
 				}
 			};
 			Program.GamePaused += (frame) =>
 			{
-				if (Settings.Default.pausedTTS)
+				if (SparkSettings.instance.pausedTTS)
 				{
 					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_paused}");
 				}
 			};
 			Program.GameUnpaused += (frame) =>
 			{
-				if (Settings.Default.pausedTTS)
+				if (SparkSettings.instance.pausedTTS)
 				{
 					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_unpause}");
 				}
 			};
 			Program.LocalThrow += (frame) =>
 			{
-				if (Settings.Default.throwSpeedTTS && frame.last_throw.total_speed > 10)
+				if (SparkSettings.instance.throwSpeedTTS && frame.last_throw.total_speed > 10)
 				{
 					Program.synth.SpeakAsync($"{frame.last_throw.total_speed:N1}");
 				}
 			};
 			Program.BigBoost += (frame, team, player, speed, howLongAgo) =>
 			{
-				if (Settings.Default.maxBoostSpeedTTS && player.name == frame.client_name)
+				if (SparkSettings.instance.maxBoostSpeedTTS && player.name == frame.client_name)
 				{
 					Program.synth.SpeakAsync($"{speed:N0} {Resources.tts_meters_per_second}");
 				}
 			};
 			Program.PlayspaceAbuse += (frame, team, player, playspacePos) =>
 			{
-				if (Settings.Default.playspaceTTS)
+				if (SparkSettings.instance.playspaceTTS)
 				{
 					Program.synth.SpeakAsync($"{player.name} {Resources.tts_abused}");
 				}
@@ -123,29 +123,29 @@ namespace Spark
 			Program.Joust += (frame, team, player, isNeutral, joustTime, maxSpeed, maxTubeExitSpeed) =>
 			{
 				// only joust time
-				if (Settings.Default.joustTimeTTS && !Settings.Default.joustSpeedTTS)
+				if (SparkSettings.instance.joustTimeTTS && !SparkSettings.instance.joustSpeedTTS)
 				{
 					Program.synth.SpeakAsync($"{team.color} {joustTime:N1}");
 				}
 				// only joust speed
-				else if (!Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
+				else if (!SparkSettings.instance.joustTimeTTS && SparkSettings.instance.joustSpeedTTS)
 				{
 					Program.synth.SpeakAsync($"{team.color} {maxSpeed:N0} {Resources.tts_meters_per_second}");
 				}
 				// both
-				else if (Settings.Default.joustTimeTTS && Settings.Default.joustSpeedTTS)
+				else if (SparkSettings.instance.joustTimeTTS && SparkSettings.instance.joustSpeedTTS)
 				{
 					Program.synth.SpeakAsync($"{team.color} {joustTime:N1} {maxSpeed:N0} {Resources.tts_meters_per_second}");
 				}
 			};
 			Program.Goal += (frame, goalEvent) =>
 			{
-				if (Settings.Default.goalDistanceTTS)
+				if (SparkSettings.instance.goalDistanceTTS)
 				{
 					Program.synth.SpeakAsync($"{frame.last_score.distance_thrown:N1} {Resources.tts_meters}");
 				}
 
-				if (Settings.Default.goalSpeedTTS)
+				if (SparkSettings.instance.goalSpeedTTS)
 				{
 					Program.synth.SpeakAsync($"{frame.last_score.disc_speed:N1} {Resources.tts_meters_per_second}");
 				}
@@ -241,8 +241,8 @@ namespace Spark
 				Input = input,
 				Voice = new VoiceSelectionParams
 				{
-					LanguageCode = languages[Settings.Default.languageIndex],
-					Name = voiceTypes[Settings.Default.useWavenetVoices ? 0 : 1, Settings.Default.languageIndex, Settings.Default.ttsVoice]
+					LanguageCode = languages[SparkSettings.instance.languageIndex],
+					Name = voiceTypes[SparkSettings.instance.useWavenetVoices ? 0 : 1, SparkSettings.instance.languageIndex, SparkSettings.instance.ttsVoice]
 				},
 				AudioConfig = config
 			});

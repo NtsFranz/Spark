@@ -113,7 +113,7 @@ namespace Spark
 		{
 			lastDiscordPresenceTime = DateTime.Now;
 
-			if (Settings.Default.discordRichPresence)
+			if (SparkSettings.instance.discordRichPresence)
 			{
 				if (discordClient == null || discordClient.IsDisposed)
 				{

@@ -28,8 +28,8 @@ namespace Spark
 										TaskCreationOptions.None);
 			spectatorButton.IsEnabled = true;
 			playerButton.IsEnabled = true;
-			Settings.Default.echoVRIP = Program.echoVRIP;
-			Settings.Default.Save();
+			SparkSettings.instance.echoVRIP = Program.echoVRIP;
+			SparkSettings.instance.Save();
 			Thread.Sleep(2000);
 
 			Close();
@@ -38,8 +38,8 @@ namespace Spark
 		private void PCClicked(object sender, RoutedEventArgs e)
 		{
 			Program.echoVRIP = "127.0.0.1";
-			Settings.Default.echoVRIP = Program.echoVRIP;
-			Settings.Default.Save();
+			SparkSettings.instance.echoVRIP = Program.echoVRIP;
+			SparkSettings.instance.Save();
 
 			Close();
 		}

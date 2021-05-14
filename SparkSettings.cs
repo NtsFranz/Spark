@@ -8,6 +8,8 @@ namespace Spark
 	class SparkSettings
 	{
 		#region Settings
+
+		public bool jsonSettingsCreated { get; set; } = false;
 		public bool startOnBoot { get; set; } = false;
 		public bool startMinimized { get; set; } = false;
 		public bool autoRestart { get; set; } = false;
@@ -70,10 +72,10 @@ namespace Spark
 		public bool isAutofocusEnabled { get; set; } = false;
 		public bool loneEchoSubtitlesStreamerMode { get; set; } = false;
 		public string loneEchoPath { get; set; } = "";
-		public int liveWindowTop { get; set; } = 10;
-		public int liveWindowLeft { get; set; } = 10;
-		public int settingsWindowTop { get; set; } = 20;
-		public int settingsWindowLeft { get; set; } = 20;
+		public float liveWindowTop { get; set; } = 10;
+		public float liveWindowLeft { get; set; } = 10;
+		public float settingsWindowTop { get; set; } = 20;
+		public float settingsWindowLeft { get; set; } = 20;
 		public string client_name { get; set; } = "";
 		public bool atlasLinkAppendTeamNames { get; set; } = false;
 		public int atlasHostingVisibility { get; set; } = 0;
@@ -117,9 +119,8 @@ namespace Spark
 		public bool chooseRegionSpectator { get; set; } = false;
 		public string obsInGameScene { get; set; } = "";
 		public string obsBetweenGameScene { get; set; } = "";
+
 		#endregion
-
-
 
 
 		public static SparkSettings instance;
@@ -129,8 +130,7 @@ namespace Spark
 		{
 			try
 			{
-				string json = JsonConvert.SerializeObject(this);
-				string filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "settings.json");
+				string filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "settings.json");
 
 				Task.Run(() =>
 				{
@@ -155,7 +155,7 @@ namespace Spark
 		{
 			try
 			{
-				string filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "settings.json");
+				string filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "settings.json");
 				if (File.Exists(filename))
 				{
 					string json = File.ReadAllText(filename);

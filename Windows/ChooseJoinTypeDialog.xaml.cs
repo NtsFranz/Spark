@@ -20,16 +20,16 @@ namespace Spark
 
 		private void JoinAsPlayerClicked(object sender, RoutedEventArgs e)
 		{
-			if (string.IsNullOrEmpty(Settings.Default.echoVRPath)) return;
-			Process.Start(Settings.Default.echoVRPath, (Settings.Default.capturevp2 ? "-capturevp2 " : "") + "-lobbyid " + sessionid);
+			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
+			Process.Start(SparkSettings.instance.echoVRPath, (SparkSettings.instance.capturevp2 ? "-capturevp2 " : "") + "-lobbyid " + sessionid);
 			Close();
 			Program.Quit();
 		}
 
 		private void JoinAsSpectatorClicked(object sender, RoutedEventArgs e)
 		{
-			if (string.IsNullOrEmpty(Settings.Default.echoVRPath)) return;
-			Process.Start(Settings.Default.echoVRPath, (Settings.Default.capturevp2 ? "-capturevp2 " : "") + "-spectatorstream -lobbyid " + sessionid);
+			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
+			Process.Start(SparkSettings.instance.echoVRPath, (SparkSettings.instance.capturevp2 ? "-capturevp2 " : "") + "-spectatorstream -lobbyid " + sessionid);
 			Close();
 			Program.Quit();
 		}

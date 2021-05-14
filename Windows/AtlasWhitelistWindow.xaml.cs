@@ -26,7 +26,7 @@ namespace Spark
 
 		private void CloseButtonEvent(object sender, RoutedEventArgs e)
 		{
-			Settings.Default.Save();
+			SparkSettings.instance.Save();
 			Close();
 		}
 

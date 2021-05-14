@@ -34,7 +34,7 @@ namespace Spark
 				// if not logged in with discord
 				if (!accessCodeComboBox.Items.Contains("Personal")) accessCodeComboBox.Items.Add("Personal");
 
-				accessCodeComboBox.SelectedIndex = DiscordOAuth.GetAccessCodeIndex(Settings.Default.accessCode);
+				accessCodeComboBox.SelectedIndex = DiscordOAuth.GetAccessCodeIndex(SparkSettings.instance.accessCode);
 
 				if (string.IsNullOrEmpty(DiscordOAuth.DiscordUsername))
 				{
@@ -53,8 +53,8 @@ namespace Spark
 		{
 			string username = accessCodeComboBox.SelectedValue.ToString();
 			Program.currentAccessCodeUsername = username;
-			Settings.Default.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
-			Settings.Default.Save();
+			SparkSettings.instance.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
+			SparkSettings.instance.Save();
 
 			if (Program.liveWindow == null)
 			{
@@ -81,8 +81,7 @@ namespace Spark
 
 			string username = accessCodeComboBox.SelectedValue.ToString();
 			Program.currentAccessCodeUsername = username;
-			Settings.Default.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
-			Settings.Default.Save();
+			SparkSettings.instance.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
 		}
 	}
 }

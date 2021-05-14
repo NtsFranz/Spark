@@ -227,7 +227,7 @@ namespace Spark
 		{
 			try
 			{
-				string file = Path.Combine(Path.GetDirectoryName(Settings.Default.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "config", "mp_spectator_settings.json");
+				string file = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "config", "mp_spectator_settings.json");
 				if (!File.Exists(file))
 				{
 					LogRow(LogType.Error, "Can't find the EchoVR settings file");
@@ -246,7 +246,7 @@ namespace Spark
 		{
 			try
 			{
-				string file = Path.Combine(Path.GetDirectoryName(Settings.Default.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "config", "mp_spectator_settings.json");
+				string file = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "config", "mp_spectator_settings.json");
 				if (!File.Exists(file))
 				{
 					throw new NullReferenceException("Can't find the EchoVR settings file");

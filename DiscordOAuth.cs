@@ -90,7 +90,7 @@ namespace Spark
 
 		public static void OAuthLogin(bool force = false)
 		{
-			string token = Settings.Default.discordOAuthRefreshToken;
+			string token = SparkSettings.instance.discordOAuthRefreshToken;
 			if (string.IsNullOrEmpty(token) || force)
 			{
 				Process.Start(new ProcessStartInfo
@@ -113,8 +113,8 @@ namespace Spark
 			oauthToken = string.Empty;
 			discordUserData = null;
 			availableAccessCodes.Clear();
-			Settings.Default.discordOAuthRefreshToken = string.Empty;
-			Settings.Default.Save();
+			SparkSettings.instance.discordOAuthRefreshToken = string.Empty;
+			SparkSettings.instance.Save();
 		}
 
 		private static string OAuthResponse(HttpListenerRequest request)
@@ -195,12 +195,12 @@ namespace Spark
 			if (response.ContainsKey("error"))
 			{
 				RevertToPersonal();
-				Settings.Default.discordOAuthRefreshToken = string.Empty;
+				SparkSettings.instance.discordOAuthRefreshToken = string.Empty;
 				oauthToken = string.Empty;
 			}
 
-			Settings.Default.discordOAuthRefreshToken = response["refresh_token"];
-			Settings.Default.Save();
+			SparkSettings.instance.discordOAuthRefreshToken = response["refresh_token"];
+			SparkSettings.instance.Save();
 			oauthToken = response["access_token"];
 
 			webServer.Stop();
@@ -223,7 +223,7 @@ namespace Spark
 			// get the access codes for this user
 			try
 			{
-				HttpResponseMessage accessCodesResponse = await client.GetAsync(SecretKeys.accessCodesURL + oauthToken + $"?v={Settings.Default.client_name}_{Program.AppVersion()}");
+				HttpResponseMessage accessCodesResponse = await client.GetAsync(SecretKeys.accessCodesURL + oauthToken + $"?v={SparkSettings.instance.client_name}_{Program.AppVersion()}");
 				string accessCodesResponseString = await accessCodesResponse.Content.ReadAsStringAsync();
 
 				Dictionary<string, JToken> accessCodesResponseData = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(accessCodesResponseString);
@@ -244,7 +244,7 @@ namespace Spark
 					{"username", "Personal"}
 				});
 
-				Program.currentAccessCodeUsername = GetAccessCodeUsername(Settings.Default.accessCode);
+				Program.currentAccessCodeUsername = GetAccessCodeUsername(SparkSettings.instance.accessCode);
 
 
 				authenticated?.Invoke();
@@ -260,8 +260,8 @@ namespace Spark
 		{
 			// revert to personal
 			Program.currentAccessCodeUsername = personalAccessCode["username"];
-			Settings.Default.accessCode = SecretKeys.Hash(personalAccessCode["series_name"]);
-			Settings.Default.Save();
+			SparkSettings.instance.accessCode = SecretKeys.Hash(personalAccessCode["series_name"]);
+			SparkSettings.instance.Save();
 		}
 	}
 }

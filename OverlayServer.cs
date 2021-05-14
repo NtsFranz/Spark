@@ -32,7 +32,7 @@ namespace Spark
 		public async Task PositionMap(IHttpContext context)
 		{
 			// get the most recent file in the replay folder
-			DirectoryInfo directory = new DirectoryInfo(Settings.Default.saveFolder);
+			DirectoryInfo directory = new DirectoryInfo(SparkSettings.instance.saveFolder);
 			FileInfo[] files = directory.GetFiles().OrderByDescending(f => f.LastWriteTime).Where(f => f.Name.StartsWith("rec")).ToArray();
 			FileInfo firstFile = files.First();
 			FileInfo[] selectedFiles = files.Where(f => firstFile.LastWriteTime - f.LastWriteTime < TimeSpan.FromMinutes(20)).ToArray();

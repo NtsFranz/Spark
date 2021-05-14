@@ -30,12 +30,12 @@ namespace Spark
 		private void Create(object sender, RoutedEventArgs e)
 		{
 			// start client
-			string echoPath = Settings.Default.echoVRPath;
+			string echoPath = SparkSettings.instance.echoVRPath;
 			if (!string.IsNullOrEmpty(echoPath))
 			{
 				// only include capturevp2 when launching in spectator
-				string args = (Settings.Default.chooseRegionSpectator ? (Settings.Default.capturevp2 ? "-capturevp2 " : " ") + "-spectatorstream " : " ") + 
-					"-region " + IndexToRegion(Settings.Default.chooseRegionIndex);
+				string args = (SparkSettings.instance.chooseRegionSpectator ? (SparkSettings.instance.capturevp2 ? "-capturevp2 " : " ") + "-spectatorstream " : " ") + 
+					"-region " + IndexToRegion(SparkSettings.instance.chooseRegionIndex);
 
 				try
 				{

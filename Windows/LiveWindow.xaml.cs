@@ -111,7 +111,7 @@ namespace Spark
 
 			Loaded += (_, _) =>
 			{
-				if (Settings.Default.startMinimized)
+				if (SparkSettings.instance.startMinimized)
 				{
 					Hide();
 					showHideMenuItem.Header = Properties.Resources.Show_Main_Window;
@@ -163,7 +163,7 @@ namespace Spark
 
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
 
-			SetDashboardItem1Visibility(Settings.Default.dashboardItem1);
+			SetDashboardItem1Visibility(SparkSettings.instance.dashboardItem1);
 
 			_ = CheckForAppUpdate();
 		}
@@ -699,7 +699,7 @@ namespace Spark
 					if (Program.lastFrame != null &&
 						Program.lastFrame.private_match &&
 						DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.Now) < 0 &&
-						Settings.Default.echoVRIP == "127.0.0.1")
+						SparkSettings.instance.echoVRIP == "127.0.0.1")
 					{
 						rejoinButton.Visibility = Visibility.Visible;
 					}
@@ -714,7 +714,7 @@ namespace Spark
 
 					RefreshAccessCode();
 
-					if (Settings.Default.echoVRIP != "127.0.0.1")
+					if (SparkSettings.instance.echoVRIP != "127.0.0.1")
 					{
 						spectateMeButton.Visibility = Visibility.Visible;
 					}
@@ -825,7 +825,7 @@ namespace Spark
 				List<VersionJson> versions = JsonConvert.DeserializeObject<List<VersionJson>>(respString);
 
 				// find the appropriate version
-				VersionJson chosenVersion = versions.First(v => !v.prerelease || v.prerelease == Settings.Default.betaUpdates);
+				VersionJson chosenVersion = versions.First(v => !v.prerelease || v.prerelease == SparkSettings.instance.betaUpdates);
 
 				// get the details from the version
 				string downloadUrl = chosenVersion.assets.First(url => url.browser_download_url.EndsWith(".msi")).browser_download_url;
@@ -870,7 +870,7 @@ namespace Spark
 					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
 					serverLocationLabel.ToolTip = $"{respObj["query"]}\n{respObj["org"]}\n{respObj["as"]}";
 
-					if (Settings.Default.serverLocationTTS)
+					if (SparkSettings.instance.serverLocationTTS)
 					{
 						Program.synth.SpeakAsync(loc);
 					}
@@ -912,13 +912,13 @@ namespace Spark
 				//{
 				//	if (
 				//	(!showHideLinesBox.Visible && l.Length > 0) || (
-				//	(Settings.Default.outputGameStateEvents && l.Contains("Entered state:")) ||
-				//	(Settings.Default.outputScoreEvents && l.Contains("scored")) ||
-				//	(Settings.Default.outputStunEvents && l.Contains("just stunned")) ||
-				//	(Settings.Default.outputDiscThrownEvents && l.Contains("threw the disk")) ||
-				//	(Settings.Default.outputDiscCaughtEvents && l.Contains("caught the disk")) ||
-				//	(Settings.Default.outputDiscStolenEvents && l.Contains("stole the disk")) ||
-				//	(Settings.Default.outputSaveEvents && l.Contains("save"))
+				//	(SparkSettings.instance.outputGameStateEvents && l.Contains("Entered state:")) ||
+				//	(SparkSettings.instance.outputScoreEvents && l.Contains("scored")) ||
+				//	(SparkSettings.instance.outputStunEvents && l.Contains("just stunned")) ||
+				//	(SparkSettings.instance.outputDiscThrownEvents && l.Contains("threw the disk")) ||
+				//	(SparkSettings.instance.outputDiscCaughtEvents && l.Contains("caught the disk")) ||
+				//	(SparkSettings.instance.outputDiscStolenEvents && l.Contains("stole the disk")) ||
+				//	(SparkSettings.instance.outputSaveEvents && l.Contains("save"))
 				//	))
 				//	{
 				//		return true;
@@ -944,13 +944,13 @@ namespace Spark
 				//{
 				//	if (
 				//	(!showHideLinesBox.Visible && l.Length > 0) || (
-				//	(Settings.Default.outputGameStateEvents && l.Contains("Entered state:")) ||
-				//	(Settings.Default.outputScoreEvents && l.Contains("scored")) ||
-				//	(Settings.Default.outputStunEvents && l.Contains("just stunned")) ||
-				//	(Settings.Default.outputDiscThrownEvents && l.Contains("threw the disk")) ||
-				//	(Settings.Default.outputDiscCaughtEvents && l.Contains("caught the disk")) ||
-				//	(Settings.Default.outputDiscStolenEvents && l.Contains("stole the disk")) ||
-				//	(Settings.Default.outputSaveEvents && l.Contains("save"))
+				//	(SparkSettings.instance.outputGameStateEvents && l.Contains("Entered state:")) ||
+				//	(SparkSettings.instance.outputScoreEvents && l.Contains("scored")) ||
+				//	(SparkSettings.instance.outputStunEvents && l.Contains("just stunned")) ||
+				//	(SparkSettings.instance.outputDiscThrownEvents && l.Contains("threw the disk")) ||
+				//	(SparkSettings.instance.outputDiscCaughtEvents && l.Contains("caught the disk")) ||
+				//	(SparkSettings.instance.outputDiscStolenEvents && l.Contains("stole the disk")) ||
+				//	(SparkSettings.instance.outputSaveEvents && l.Contains("save"))
 				//	))
 				//	{
 				//		// Show this line
@@ -1141,9 +1141,9 @@ namespace Spark
 		{
 			try
 			{
-				if (!string.IsNullOrEmpty(Settings.Default.echoVRPath))
+				if (!string.IsNullOrEmpty(SparkSettings.instance.echoVRPath))
 				{
-					Process.Start(Settings.Default.echoVRPath, "-spectatorstream" + (Settings.Default.capturevp2 ? " -capturevp2" : ""));
+					Process.Start(SparkSettings.instance.echoVRPath, "-spectatorstream" + (SparkSettings.instance.capturevp2 ? " -capturevp2" : ""));
 				}
 			}
 			catch (Exception ex)
@@ -1421,9 +1421,9 @@ namespace Spark
 		private static string CurrentLink(string sessionid)
 		{
 			string link = "";
-			if (Settings.Default.atlasLinkUseAngleBrackets)
+			if (SparkSettings.instance.atlasLinkUseAngleBrackets)
 			{
-				switch (Settings.Default.atlasLinkStyle)
+				switch (SparkSettings.instance.atlasLinkStyle)
 				{
 					case 0:
 						link = "<spark://c/" + sessionid + ">";
@@ -1438,7 +1438,7 @@ namespace Spark
 			}
 			else
 			{
-				switch (Settings.Default.atlasLinkStyle)
+				switch (SparkSettings.instance.atlasLinkStyle)
 				{
 					case 0:
 						link = "spark://c/" + sessionid;
@@ -1452,7 +1452,7 @@ namespace Spark
 				}
 			}
 
-			if (Settings.Default.atlasLinkAppendTeamNames)
+			if (SparkSettings.instance.atlasLinkAppendTeamNames)
 			{
 				if (Program.matchData != null &&
 					Program.matchData.teams[g_Team.TeamColor.blue] != null &&
@@ -1482,8 +1482,8 @@ namespace Spark
 						{
 							joinLink.Text = CurrentLink(obj.sessionid);
 
-							Settings.Default.alternateEchoVRIP = alternateIPTextBox.Text;
-							Settings.Default.Save();
+							SparkSettings.instance.alternateEchoVRIP = alternateIPTextBox.Text;
+							SparkSettings.instance.Save();
 						});
 					}
 
@@ -1496,10 +1496,10 @@ namespace Spark
 		}
 
 		//public int HostingVisibilityDropdown {
-		//	get => Settings.Default.atlasHostingVisibility;
+		//	get => SparkSettings.instance.atlasHostingVisibility;
 		//	set {
-		//		Settings.Default.atlasHostingVisibility = value;
-		//		Settings.Default.Save();
+		//		SparkSettings.instance.atlasHostingVisibility = value;
+		//		SparkSettings.instance.Save();
 		//	}
 		//}
 
@@ -1843,8 +1843,8 @@ namespace Spark
 				matchid = Program.lastFrame.sessionid,
 				blue_team = Program.lastFrame.teams[0].player_names.ToArray(),
 				orange_team = Program.lastFrame.teams[1].player_names.ToArray(),
-				is_protected = (Settings.Default.atlasHostingVisibility > 0),
-				visible_to_casters = (Settings.Default.atlasHostingVisibility == 1),
+				is_protected = (SparkSettings.instance.atlasHostingVisibility > 0),
+				visible_to_casters = (SparkSettings.instance.atlasHostingVisibility == 1),
 				server_location = Program.matchData.ServerLocation,
 				server_score = Program.matchData.ServerScore,
 				private_match = Program.lastFrame.private_match,
@@ -1865,8 +1865,8 @@ namespace Spark
 					match.orange_team.Length != Program.lastFrame.teams[1].players.Count ||
 					(Program.lastFrame.teams[0].stats != null && match.blue_points != Program.lastFrame.teams[0].stats.points) ||
 					(Program.lastFrame.teams[1].stats != null && match.orange_points != Program.lastFrame.teams[1].stats.points) ||
-					match.is_protected != (Settings.Default.atlasHostingVisibility > 0) ||
-					match.visible_to_casters != (Settings.Default.atlasHostingVisibility == 1) ||
+					match.is_protected != (SparkSettings.instance.atlasHostingVisibility > 0) ||
+					match.visible_to_casters != (SparkSettings.instance.atlasHostingVisibility == 1) ||
 					match.whitelist.Length != Program.atlasWhitelist.AllPlayers.Count;
 
 				if (diff)
@@ -1876,8 +1876,8 @@ namespace Spark
 					match.orange_team = Program.lastFrame.teams[1].player_names.ToArray();
 					match.blue_points = Program.lastFrame.teams[0].stats != null ? Program.lastFrame.teams[0].stats.points : 0;
 					match.orange_points = Program.lastFrame.teams[1].stats != null ? Program.lastFrame.teams[1].stats.points : 0;
-					match.is_protected = (Settings.Default.atlasHostingVisibility > 0);
-					match.visible_to_casters = (Settings.Default.atlasHostingVisibility == 1);
+					match.is_protected = (SparkSettings.instance.atlasHostingVisibility > 0);
+					match.visible_to_casters = (SparkSettings.instance.atlasHostingVisibility == 1);
 					match.server_score = Program.matchData.ServerScore;
 					match.username = Program.lastFrame.client_name;
 					match.whitelist = Program.atlasWhitelist.AllPlayers.ToArray();
@@ -1925,7 +1925,7 @@ namespace Spark
 			bool igniteAtlasDone = false;
 
 			Program.PostRequestCallback(
-				"https://echovrconnect.appspot.com/api/v1/player/" + Settings.Default.client_name,
+				"https://echovrconnect.appspot.com/api/v1/player/" + SparkSettings.instance.client_name,
 				new Dictionary<string, string> { { "User-Agent", "Atlas/0.5.8" } },
 				string.Empty,
 				(responseJSON) =>
@@ -1943,7 +1943,7 @@ namespace Spark
 			});
 
 
-			string matchesAPIURL = $"{Program.APIURL}atlas_matches_v2/{(Settings.Default.client_name == string.Empty ? "_" : Settings.Default.client_name)}";
+			string matchesAPIURL = $"{Program.APIURL}atlas_matches_v2/{(SparkSettings.instance.client_name == string.Empty ? "_" : SparkSettings.instance.client_name)}";
 			Program.GetRequestCallback(
 				matchesAPIURL,
 				new Dictionary<string, string>() {
@@ -2049,10 +2049,9 @@ namespace Spark
 		}
 
 		public int LinkType {
-			get => Settings.Default.atlasLinkStyle;
+			get => SparkSettings.instance.atlasLinkStyle;
 			set {
-				Settings.Default.atlasLinkStyle = value;
-				Settings.Default.Save();
+				SparkSettings.instance.atlasLinkStyle = value;
 				RefreshCurrentLink();
 			}
 		}
@@ -2072,25 +2071,22 @@ namespace Spark
 			resetIP.IsEnabled = true;
 			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
 			alternateIPTextBox.Text = Program.echoVRIP;
-			Settings.Default.echoVRIP = Program.echoVRIP;
-			if (!Program.overrideEchoVRPort) Settings.Default.echoVRPort = Program.echoVRPort;
-			Settings.Default.Save();
+			SparkSettings.instance.echoVRIP = Program.echoVRIP;
+			if (!Program.overrideEchoVRPort) SparkSettings.instance.echoVRPort = Program.echoVRPort;
 		}
 
 		private void SetToLocalIP(object sender, RoutedEventArgs e)
 		{
 			Program.echoVRIP = "127.0.0.1";
 			alternateIPTextBox.Text = Program.echoVRIP;
-			Settings.Default.echoVRIP = Program.echoVRIP;
-			Settings.Default.Save();
+			SparkSettings.instance.echoVRIP = Program.echoVRIP;
 		}
 
 		private void EchoVRIPChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
 			Program.echoVRIP = ((TextBox)sender).Text;
-			Settings.Default.echoVRIP = Program.echoVRIP;
-			Settings.Default.Save();
+			SparkSettings.instance.echoVRIP = Program.echoVRIP;
 		}
 
 #endregion
