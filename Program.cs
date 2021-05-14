@@ -284,6 +284,7 @@ namespace Spark
 				return; // wait for the dialog to quit the program
 			}
 
+
 			// allow multiple instances if the port is overriden
 			if (IsSparkOpen() && !overrideEchoVRPort)
 			{

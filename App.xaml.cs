@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using Spark.Properties;
 
 namespace Spark
 {
@@ -12,22 +11,17 @@ namespace Spark
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
-			// Reload old settings file
-			if (Settings.Default.UpdateSettings)
-			{
-				Settings.Default.Upgrade();
-				Settings.Default.UpdateSettings = false;
-				Settings.Default.Save();
-			}
+			// load settings file
+			SparkSettings.Load();
 
-			System.Threading.Thread.CurrentThread.CurrentUICulture = Settings.Default.languageIndex switch
+			System.Threading.Thread.CurrentThread.CurrentUICulture = SparkSettings.instance.languageIndex switch
 			{
 				0 => new System.Globalization.CultureInfo("en"),
 				1 => new System.Globalization.CultureInfo("ja-JP"),
 				_ => System.Threading.Thread.CurrentThread.CurrentUICulture
 			};
 
-			ThemesController.SetTheme((ThemesController.ThemeTypes)Settings.Default.theme);
+			ThemesController.SetTheme((ThemesController.ThemeTypes)SparkSettings.instance.theme);
 
 
 
