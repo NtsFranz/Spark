@@ -1188,7 +1188,7 @@ namespace Spark
 			{
 				mainOutputTextBox.ScrollToEnd();
 			}
-			if (((TabControl)sender).SelectedIndex != 3 && SpeakerSystemProcess != null)
+			if (((TabControl)sender).SelectedIndex != 4 && SpeakerSystemProcess != null)
 			{
 
 				ShowWindow(unityHWND, 0);

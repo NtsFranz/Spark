@@ -136,6 +136,11 @@ namespace Spark
 				{
 					try
 					{
+						if (!File.Exists(Path.GetDirectoryName(filename)))
+						{
+							Directory.CreateDirectory(Path.GetDirectoryName(filename));
+						}
+
 						string json = JsonConvert.SerializeObject(this);
 						File.WriteAllText(filename, json);
 					}
