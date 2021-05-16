@@ -178,6 +178,14 @@ namespace Spark
 			//_ = CheckForAppUpdate();
 		}
 
+		public void SetSpectateMeSubtitle(string text)
+		{
+			Dispatcher.Invoke(() =>
+			{
+				spectateMeSubtitle.Text = text;
+			});
+		}
+
 		public void FocusSpark()
 		{
 			//WPF focus the Spark Window 
@@ -1198,20 +1206,24 @@ namespace Spark
 			{
 				if (Program.spectateMe)
 				{
-					if (Program.inGame)
+					if (Program.inGame && Program.lastFrame != null && !Program.lastFrame.inLobby)
 					{
-						if (Program.lastFrame != null && !Program.lastFrame.inLobby)
-						{
-							Program.KillEchoVR();
-							Program.StartEchoVR("spectate");
-						}
+						Program.KillEchoVR();
+						Program.StartEchoVR("spectate");
+						Program.WaitUntilLocalGameLaunched(Program.UseCameraControlKeys);
+						spectateMeSubtitle.Text = "Waiting for EchoVR to start";
 					}
-					spectateMeButton.Content = Properties.Resources.Stop_Spectating_Me;
+					else
+					{
+						spectateMeSubtitle.Text = "Waiting until you join a game";
+					}
+					spectateMeLabel.Content = Properties.Resources.Stop_Spectating_Me;
 				}
 				else
 				{
 					Program.KillEchoVR();
-					spectateMeButton.Content = Properties.Resources.Spectate_Me;
+					spectateMeLabel.Content = Properties.Resources.Spectate_Me;
+					spectateMeSubtitle.Text = "Not active";
 				}
 			}
 			catch (Exception ex)

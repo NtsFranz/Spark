@@ -28,6 +28,7 @@ using NetMQ.Sockets;
 using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
 using Grapevine;
+using System.Windows.Threading;
 //using System.Windows.Forms;
 
 namespace Spark
@@ -1537,6 +1538,8 @@ namespace Spark
 						KillEchoVR();
 						StartEchoVR("spectate");
 						lastSpectatedSessionId = lastFrame.sessionid;
+
+						liveWindow.SetSpectateMeSubtitle("Waiting for EchoVR to start");
 					}
 					catch (Exception e)
 					{
@@ -1544,32 +1547,7 @@ namespace Spark
 					}
 				}
 
-				if (SparkSettings.instance.hideEchoVRUI)
-				{
-					FocusEchoVR();
-					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
-					Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, true, Keyboard.InputType.Keyboard); });
-				}
-
-				switch (SparkSettings.instance.spectatorCamera)
-				{
-					// auto
-					case 0:
-						FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, false, Keyboard.InputType.Keyboard);
-						Task.Delay(10).ContinueWith((_) => { FocusEchoVR(); Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, true, Keyboard.InputType.Keyboard); });
-						break;
-					// sideline
-					case 1:
-						FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_S, false, Keyboard.InputType.Keyboard);
-						Task.Delay(10).ContinueWith((_) => { FocusEchoVR(); Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_S, true, Keyboard.InputType.Keyboard); });
-						break;
-					// follow client
-					case 2:
-						KeyboardCamera.SpectatorCamFindPlayer();
-						break;
-				}
+				WaitUntilLocalGameLaunched(UseCameraControlKeys);
 			}
 
 			// The time between the current frame and last frame in seconds based on the game clock
@@ -3905,6 +3883,127 @@ namespace Spark
 			Thread.Sleep(500);
 			echoVRIP = QuestIP == null ? "127.0.0.1" : QuestIP.ToString();
 			return echoVRIP;
+		}
+
+
+		public static void WaitUntilLocalGameLaunched(Action callback)
+		{
+			try
+			{
+				// if we're local anyway
+				if (echoVRIP == "127.0.0.1")
+				{
+					callback?.Invoke();
+				}
+				else if (spectateMe)
+				{
+					// g_Team clientPlayerTeam = lastFrame?.GetTeam(lastFrame.client_name);
+					// if (clientPlayerTeam == null) return;
+					// if (clientPlayerTeam.color == TeamColor.spectator) return;
+
+					Task.Run(async () =>
+					{
+						// check if we're actually on quest and running pc spectator
+						TimeSpan pcSpectatorStartupTime = TimeSpan.FromSeconds(60f);
+						bool inPCSpectator = false;
+						string result = string.Empty;
+
+						while (!inPCSpectator && pcSpectatorStartupTime > TimeSpan.Zero)
+						{
+							// if we stopped trying to spectate, cancel
+							if (!spectateMe) return;
+
+							result = await GetRequestAsync("http://127.0.0.1:6721/session", null);
+							if (string.IsNullOrEmpty(result))
+							{
+								await Task.Delay(200);
+								continue;
+							}
+
+
+							inPCSpectator = true;
+						}
+
+						if (!inPCSpectator)
+						{
+							new MessageBox("You have chosen to automatically set the camera to follow the player, but you don't have EchoVR running in spectator mode on this pc.").Show();
+							return;
+						}
+
+						g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(result);
+						if (frame == null)
+						{
+							new MessageBox("Failed to process frame from the local PC").Show();
+							return;
+						}
+
+						if (frame.sessionid != lastFrame.sessionid || lastFrame.GetPlayer(frame.client_name) == null)
+						{
+							new MessageBox("Local PC is not in the same match as your Quest. Can't follow player.").Show();
+							return;
+						}
+
+						callback?.Invoke();
+					});
+				}
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, $"Error with waiting for spectate-me to launch.\n{ex}");
+			}
+
+
+
+		}
+
+		public static void UseCameraControlKeys()
+		{
+			try
+			{
+				if (spectateMe) liveWindow.SetSpectateMeSubtitle("In Game!");
+
+				if (SparkSettings.instance.hideEchoVRUI)
+				{
+					FocusEchoVR();
+					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
+					Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, true, Keyboard.InputType.Keyboard); });
+					LogRow(LogType.File, lastFrame.sessionid, "Tried to Hide EchoVR UI");
+				}
+
+				switch (SparkSettings.instance.spectatorCamera)
+				{
+					// auto
+					case 0:
+						// FocusEchoVR();
+						// Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, false, Keyboard.InputType.Keyboard);
+						// Task.Delay(10).ContinueWith((_) =>
+						// {
+						// 	FocusEchoVR();
+						// 	Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, true, Keyboard.InputType.Keyboard);
+						// });
+						// LogRow(LogType.File, lastFrame.sessionid, "Tried to switch to auto cam.");
+						break;
+					// sideline
+					case 1:
+						FocusEchoVR();
+						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_S, false, Keyboard.InputType.Keyboard);
+						Task.Delay(10).ContinueWith((_) =>
+						{
+							FocusEchoVR();
+							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_S, true, Keyboard.InputType.Keyboard);
+						});
+						LogRow(LogType.File, lastFrame.sessionid, "Tried to switch to sideline cam.");
+						break;
+					// follow client
+					case 2:
+						if (spectateMe) KeyboardCamera.SpectatorCamFindPlayer();
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, $"Error with in setting cameras after started spectating\n{ex}");
+			}
 		}
 
 		/// <summary>

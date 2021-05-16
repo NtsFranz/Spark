@@ -41,47 +41,8 @@ namespace Spark
 		{
 			try
 			{
-				g_Team clientPlayerTeam = Program.lastFrame?.GetTeam(Program.lastFrame.client_name);
-				if (clientPlayerTeam == null) return;
-				if (clientPlayerTeam.color == TeamColor.spectator) return;
-				if (Program.echoVRIP == "127.0.0.1") return;
-
 				Task.Run(async () =>
 				{
-					// check if we're actually on quest and running pc spectator
-					TimeSpan pcSpectatorStartupTime = TimeSpan.FromSeconds(10f);
-					bool inPCSpectator = false;
-					string result = string.Empty;
-					while (!inPCSpectator && pcSpectatorStartupTime > TimeSpan.Zero)
-					{
-						result = await Program.GetRequestAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/session", null);
-						if (string.IsNullOrEmpty(result))
-						{
-							continue;
-						}
-
-						inPCSpectator = true;
-					}
-
-					if (!inPCSpectator)
-					{
-						new MessageBox("You have chosen to automatically set the camera to follow the player, but you don't have EchoVR running in spectator mode on this pc.").Show();
-						return;
-					}
-
-					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(result);
-					if (frame == null)
-					{
-						new MessageBox("Failed to process frame from the local PC").Show();
-						return;
-					}
-
-					if (frame.sessionid != Program.lastFrame.sessionid || Program.lastFrame.GetPlayer(frame.client_name) == null)
-					{
-						new MessageBox("Local PC is not in the same match as your Quest. Can't follow player.").Show();
-						return;
-					}
-
 					// try to find player
 					Program.FocusEchoVR();
 					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
@@ -118,9 +79,9 @@ namespace Spark
 
 							// check if this is the right player
 							await Task.Delay(50);
-							result = await Program.GetRequestAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/session", null);
+							string result = await Program.GetRequestAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/session", null);
 							if (string.IsNullOrEmpty(result)) return;
-							frame = JsonConvert.DeserializeObject<g_Instance>(result);
+							g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(result);
 							if (frame == null) return;
 							List<g_Player> players = frame.GetAllPlayers(false);
 							g_Player clientPlayer = frame.GetPlayer(Program.lastFrame.client_name);

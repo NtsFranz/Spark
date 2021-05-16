@@ -2357,7 +2357,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Spectator Camera Settings.
+        ///   Looks up a localized string similar to Spectator Camera Settings (Beta).
         /// </summary>
         public static string Spectator_Camera_Settings {
             get {

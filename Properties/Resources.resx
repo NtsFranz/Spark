@@ -988,7 +988,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
     <comment>refers to Graphics settings for the game</comment>
   </data>
   <data name="Spectator Camera Settings" xml:space="preserve">
-    <value>Spectator Camera Settings</value>
+    <value>Spectator Camera Settings (Beta)</value>
   </data>
   <data name="EchoVR not installed game settings" xml:space="preserve">
     <value>EchoVR is not found on this PC. Make sure you have EchoVR installed if you want to be able to change these settings, or set the path to the EchoVR executable manually in the General tab.</value>
