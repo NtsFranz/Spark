@@ -296,12 +296,12 @@ namespace Spark
 					Thread.Sleep(10);
 				}
 
-				
+
 				//return; // wait for the dialog to quit the program
 			}
 
 			obs = new OBS();
-			
+
 
 
 			try
@@ -419,6 +419,9 @@ namespace Spark
 			//float out1 = CalculateServerScore(new List<int> { 34, 78, 50, 53 }, new List<int> { 63, 562, 65, 81 });   // fail too high
 			//float out2 = CalculateServerScore(new List<int> { 29, 60, 59, 30 }, new List<int> { 30, 70, 15, 26 });    // 90.54
 			//float out3 = CalculateServerScore(new List<int> { 61, 59, 69, 67 }, new List<int> { 73, 57, 50, 51 });    // 92.33
+
+			PlayerJoined += (_, _, _) => { UseCameraControlKeys(false); };
+			PlayerLeft += (_, _, _) => { UseCameraControlKeys(false); };
 
 
 			UpdateEchoExeLocation();
@@ -934,7 +937,7 @@ namespace Spark
 					{
 						milkData.AddFrame(frame);
 					}
-				
+
 					frameCount++;
 				}
 
@@ -1166,7 +1169,7 @@ namespace Spark
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// Saves the current process path
 		/// </summary>
@@ -1472,7 +1475,7 @@ namespace Spark
 
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null) return;
-			
+
 			// lobby stuff
 
 			// last throw state changed
@@ -1672,7 +1675,8 @@ namespace Spark
 					UpdateStatsIngame(frame);
 
 					g_Team lastTeam = lastFrame.GetTeam(player.userid);
-					try{
+					try
+					{
 						PlayerSwitchedTeams?.Invoke(frame, lastTeam, team, player);
 					}
 					catch (Exception exp)
@@ -1741,7 +1745,7 @@ namespace Spark
 					}
 
 					if (lastFrame.pause.paused_state == "unpaused" &&
-					    frame.pause.paused_state == "paused_requested")
+						frame.pause.paused_state == "paused_requested")
 					{
 						try
 						{
@@ -1756,7 +1760,7 @@ namespace Spark
 					}
 
 					if (lastFrame.pause.paused_state == "paused" &&
-					    frame.pause.paused_state == "unpausing")
+						frame.pause.paused_state == "unpausing")
 					{
 						try
 						{
@@ -1781,8 +1785,8 @@ namespace Spark
 			if (frame.game_status == "playing" && deltaTime != 0)
 			{
 				inPostMatch = false;
-				if(SparkSettings.instance.isAutofocusEnabled && (Math.Round(frame.game_clock, 2, MidpointRounding.AwayFromZero) % 10 == 0))
-                {
+				if (SparkSettings.instance.isAutofocusEnabled && (Math.Round(frame.game_clock, 2, MidpointRounding.AwayFromZero) % 10 == 0))
+				{
 					FocusEchoVR();
 				}
 
@@ -1840,7 +1844,7 @@ namespace Spark
 								{
 									LogRow(LogType.Error, "Error processing action", exp.ToString());
 								}
-								
+
 								HighlightsHelper.SaveHighlightMaybe(player, frame, "BIG_BOOST");
 
 								matchData.Events.Add(
@@ -2306,7 +2310,7 @@ namespace Spark
 						}
 
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
-							lastFrame.game_clock, frame.teams[(int) TeamColor.blue], null, null, Vector3.Zero,
+							lastFrame.game_clock, frame.teams[(int)TeamColor.blue], null, null, Vector3.Zero,
 							Vector3.Zero));
 						LogRow(LogType.File, frame.sessionid,
 							frame.game_clock_display + " - " + "blue team restart request");
@@ -2325,7 +2329,7 @@ namespace Spark
 						}
 
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
-							lastFrame.game_clock, frame.teams[(int) TeamColor.orange], null, null, Vector3.Zero,
+							lastFrame.game_clock, frame.teams[(int)TeamColor.orange], null, null, Vector3.Zero,
 							Vector3.Zero));
 						LogRow(LogType.File, frame.sessionid,
 							frame.game_clock_display + " - " + "orange team restart request");
@@ -2338,7 +2342,7 @@ namespace Spark
 			}
 		}
 
-		
+
 		public static void FindTeamNamesFromPlayerList(MatchData matchDataLocal, g_Team team)
 		{
 			//if (frame.private_match)
@@ -2380,7 +2384,7 @@ namespace Spark
 				}
 			}
 		}
-		
+
 
 		// 💨
 		private static async Task JoustDetection(g_Instance firstFrame, EventData.EventType eventType, TeamColor side)
@@ -2397,7 +2401,7 @@ namespace Spark
 				g_Instance frame = lastFrame;
 
 				if (i > 0 && frame.game_status != "playing") return;
-				
+
 				g_Team team = frame.teams[(int)side];
 				foreach (g_Player player in team.players)
 				{
@@ -2435,7 +2439,7 @@ namespace Spark
 								startGameClock - frame.game_clock)
 						);
 
-						
+
 						matchData.Events.Add(joustEvent);
 						LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " +
 															  team.color.ToString() +
@@ -2934,7 +2938,7 @@ namespace Spark
 			{
 				lastGoals.TryDequeue(out GoalData goal);
 			}
-			
+
 			try
 			{
 				Goal?.Invoke(frame, goalEvent);
@@ -2960,7 +2964,7 @@ namespace Spark
 			// Upload to Firebase 🔥
 			_ = DoUploadEventFirebase(matchData, goalEvent);
 
-			UpdateStatsIngame(frame, allowUpload:false);
+			UpdateStatsIngame(frame, allowUpload: false);
 		}
 
 		/// <summary>
@@ -3342,7 +3346,7 @@ namespace Spark
 					}
 				}
 			}
-			
+
 			// reset the replay buffer
 			replayBufferTimestamps.Clear();
 			replayBufferJSON.Clear();
@@ -3364,11 +3368,11 @@ namespace Spark
 		{
 			Task.Run(async () =>
 			{
-				string resp = await GetRequestAsync(uri, headers); 
+				string resp = await GetRequestAsync(uri, headers);
 				callback(resp);
 			});
 		}
-		
+
 		/// <summary>
 		/// Generic method for getting data from a web url
 		/// </summary>
@@ -3406,11 +3410,11 @@ namespace Spark
 		{
 			Task.Run(async () =>
 			{
-				string resp = await PostRequestAsync(uri, headers, body); 
+				string resp = await PostRequestAsync(uri, headers, body);
 				callback(resp);
 			});
 		}
-		
+
 		/// <summary>
 		/// Generic method for posting data to a web url
 		/// </summary>
@@ -3441,11 +3445,32 @@ namespace Spark
 
 		private static void RegisterUriScheme(string UriScheme, string FriendlyName)
 		{
+#if WINDOWS_STORE_RELEASE
+			try
+			{
+				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
+
+				using RegistryKey key = Registry.ClassesRoot.CreateSubKey(UriScheme);
+
+				key.SetValue("", "URL:" + FriendlyName);
+				key.SetValue("URL Protocol", "");
+
+				using RegistryKey defaultIcon = key.CreateSubKey("DefaultIcon");
+				defaultIcon.SetValue("", applicationLocation + ",1");
+
+				using RegistryKey commandKey = key.CreateSubKey(@"shell\open\command");
+				commandKey.SetValue("", "\"" + applicationLocation + "\" \"%1\"");
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, $"Failed to set URI scheme\n{e}");
+			}
+#else
 			try
 			{
 				using RegistryKey key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\" + UriScheme);
 				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
-		
+
 				key.SetValue("", "URL:" + FriendlyName);
 				key.SetValue("URL Protocol", "");
 
@@ -3459,6 +3484,7 @@ namespace Spark
 			{
 				LogRow(LogType.Error, "Failed to set URI scheme");
 			}
+#endif
 		}
 
 		private static bool CheckIfLaunchedWithCustomURLHandlerParam(string[] args)
@@ -3953,16 +3979,20 @@ namespace Spark
 			}
 
 
-
 		}
 
 		public static void UseCameraControlKeys()
+		{
+			UseCameraControlKeys(true);
+		}
+
+		public static void UseCameraControlKeys(bool firstLoad)
 		{
 			try
 			{
 				if (spectateMe) liveWindow.SetSpectateMeSubtitle("In Game!");
 
-				if (SparkSettings.instance.hideEchoVRUI)
+				if (SparkSettings.instance.hideEchoVRUI && firstLoad)
 				{
 					FocusEchoVR();
 					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
@@ -4016,7 +4046,7 @@ namespace Spark
 		public static bool ToggleWindow(Type type, string windowName = null, Window ownedBy = null)
 		{
 			windowName ??= type.ToString();
-			
+
 			if (!popupWindows.ContainsKey(windowName) || popupWindows[windowName] == null)
 			{
 				popupWindows[windowName] = (Window)Activator.CreateInstance(type);

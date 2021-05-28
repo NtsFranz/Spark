@@ -126,6 +126,7 @@
 
 						<GroupBox Header="{x:Static p:Resources.Spectator_Camera_Settings}" Margin="10,4,10,4" >
 							<StackPanel>
+								<TextBlock Text="These settings are only used if the game is launched in spectator mode. This includes the Spectate Me function as well as spectating other matches. These settings are highly experimental and probably don't even work." TextWrapping="Wrap" Margin="10,10,10,10"></TextBlock>
 								<CheckBox Content="{x:Static p:Resources.Hide_EchoVR_UI}" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
 								<CheckBox Content="{x:Static p:Resources.Toggle_Minimap_after_Goals}" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
 								<Label Content="{x:Static p:Resources.Camera_Mode_}"/>
@@ -278,6 +279,10 @@
 							<TextBlock TextWrapping="WrapWithOverflow"
                                            Text="{x:Static p:Resources.Estimated_location_of_the_server_as_you_join}"
                                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
+							<CheckBox Content="{x:Static p:Resources.Throw_Speed}" Margin="4,10,4,0"
+                                          Visibility="Visible" IsChecked="{Binding ThrowSpeed}" />
+							<TextBlock TextWrapping="WrapWithOverflow" Text="{x:Static p:Resources.Total_throw_speed_from_the_F10_menu}"
+                                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<CheckBox x:Name="joustTimeCheckbox" Content="{x:Static p:Resources.Joust_Time}" Margin="4,10,4,0"
                                           IsChecked="{Binding JoustTime}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
@@ -298,10 +303,6 @@
                                           IsChecked="{Binding MaxBoostSpeed}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
                                            Text="{x:Static p:Resources.Maximum_speed_achieved_for_times_when_you_are_faster_than_20_m_s}"
-                                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
-							<CheckBox Content="{x:Static p:Resources.Throw_Speed}" Margin="4,10,4,0"
-                                          Visibility="Visible" IsChecked="{Binding ThrowSpeed}" />
-							<TextBlock TextWrapping="WrapWithOverflow" Text="{x:Static p:Resources.Total_throw_speed_from_the_F10_menu}"
                                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<TextBlock TextWrapping="WrapWithOverflow"
                                            Text="{x:Static p:Resources.Speed_in_m_s_of_your_throws}" HorizontalAlignment="Stretch"

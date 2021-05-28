@@ -1080,7 +1080,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide EchoVR UI.
+        ///   Looks up a localized string similar to Hide EchoVR UI (U).
         /// </summary>
         public static string Hide_EchoVR_UI {
             get {

@@ -685,11 +685,17 @@ namespace Spark
 			// if obs
 			if (clipsTab == ClipsTab.OBS)
 			{
-				secondsBefore.IsEnabled = false;
+				labelBefore.Visibility = Visibility.Collapsed;
+				secondsBefore.Visibility = Visibility.Collapsed;
+				labelTotal.Visibility = Visibility.Collapsed;
+				totalSeconds.Visibility = Visibility.Collapsed;
 			}
 			else
 			{
-				secondsBefore.IsEnabled = true;
+				labelBefore.Visibility = Visibility.Visible;
+				secondsBefore.Visibility = Visibility.Visible;
+				labelTotal.Visibility = Visibility.Visible;
+				totalSeconds.Visibility = Visibility.Visible;
 			}
 
 			RefreshAllSettings(null, null);
