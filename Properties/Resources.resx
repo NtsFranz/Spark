@@ -1149,9 +1149,6 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   <data name="Follow client player ('Spectate Me' only)" xml:space="preserve">
     <value>Follow client player ('Spectate Me' only)</value>
   </data>
-  <data name="Follow client player camera mode:" xml:space="preserve">
-    <value>Follow client player camera mode:</value>
-  </data>
   <data name="Follow" xml:space="preserve">
     <value>Follow</value>
     <comment>refers to the follow camera in spectator view</comment>
@@ -1162,5 +1159,8 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   </data>
   <data name="Disconnect" xml:space="preserve">
     <value>Disconnect</value>
+  </data>
+  <data name="Follow client player camera mode:" xml:space="preserve">
+    <value>Follow player camera mode:</value>
   </data>
 </root>

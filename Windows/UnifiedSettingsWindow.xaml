@@ -1,25 +1,25 @@
 ﻿<Window x:Class="Spark.UnifiedSettingsWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:l="clr-namespace:Spark"
-        xmlns:p="clr-namespace:Spark.Properties"
-        mc:Ignorable="d"
-        Title="{x:Static p:Resources.IgniteBot___Settings}"
-        Height="700" Width="600"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:l="clr-namespace:Spark"
+		xmlns:p="clr-namespace:Spark.Properties"
+		mc:Ignorable="d"
+		Title="{x:Static p:Resources.IgniteBot___Settings}"
+		Height="700" Width="600"
 		Top="{l:SettingBinding settingsWindowTop}"
 		Left="{l:SettingBinding settingsWindowLeft}"
-        Background="{DynamicResource BackgroundColour}"
-        Loaded="WindowLoad"
-        FontSize="14"
-        Padding="10,10,10,10"
-        ResizeMode="CanResize"
-        SizeToContent="Manual"
-        Icon="/img/ignite_logo.ico"
-        WindowStartupLocation="Manual"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        >
+		Background="{DynamicResource BackgroundColour}"
+		Loaded="WindowLoad"
+		FontSize="14"
+		Padding="10,10,10,10"
+		ResizeMode="CanResize"
+		SizeToContent="Manual"
+		Icon="/img/ignite_logo.ico"
+		WindowStartupLocation="Manual"
+		DataContext="{Binding RelativeSource={RelativeSource Self}}"
+		>
 	<Window.Resources>
 		<l:EchoVRSettingsManager x:Key="es"/>
 	</Window.Resources>
@@ -45,27 +45,27 @@
 							<Label Content="{x:Static p:Resources._Requires_Restart_}" Margin="10,10,4,4"/>
 						</StackPanel>
 						<Button x:Name="firstTimeSetupButton" Content="{x:Static p:Resources.Show_first_time_setup_window}"
-                                    Margin="10,4,10,4" HorizontalAlignment="Left" Width="207" Padding="4,4,4,4"
-                                    Click="ShowFirstTimeSetupWindowClicked" />
+									Margin="10,4,10,4" HorizontalAlignment="Left" Width="207" Padding="4,4,4,4"
+									Click="ShowFirstTimeSetupWindowClicked" />
 						<CheckBox x:Name="startWithWindowsCheckbox" Content="{x:Static p:Resources.Start_with_Windows}"
-                                      IsChecked="{Binding StartWithWindows}" HorizontalAlignment="Left"
-                                      VerticalAlignment="Stretch" Margin="10,4,10,4" />
+									  IsChecked="{Binding StartWithWindows}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						<CheckBox x:Name="startMinimizedCheckbox" Content="{x:Static p:Resources.Start_Minimized}"
-                                      IsChecked="{l:SettingBinding startMinimized}" HorizontalAlignment="Left"
-                                      VerticalAlignment="Stretch" Margin="10,4,10,4" />
+									  IsChecked="{l:SettingBinding startMinimized}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						<CheckBox x:Name="autorestartCheckbox" Content="{x:Static p:Resources.Autorestart_EchoVR_into_autospectator}"
-                                      IsChecked="{l:SettingBinding autoRestart}" HorizontalAlignment="Left"
-                                      VerticalAlignment="Stretch" Margin="10,4,10,4"
-                                      ToolTip="Automatically restarts spectatorstream when it crashes" />
+									  IsChecked="{l:SettingBinding autoRestart}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4"
+									  ToolTip="Automatically restarts spectatorstream when it crashes" />
 						<CheckBox x:Name="capturevp2Checkbox" Content="{x:Static p:Resources.Enable__capturevp2_when_launching_spectator}"
-                                      IsChecked="{l:SettingBinding capturevp2}" HorizontalAlignment="Left"
-                                      VerticalAlignment="Stretch" Margin="10,4,10,4" />
+									  IsChecked="{l:SettingBinding capturevp2}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						<CheckBox x:Name="discordRichPresenceCheckbox" Content="{x:Static p:Resources.Discord_Rich_Presence}"
-                                      IsChecked="{l:SettingBinding discordRichPresence}" HorizontalAlignment="Left"
-                                      VerticalAlignment="Stretch" Margin="10,4,10,4" />
+									  IsChecked="{l:SettingBinding discordRichPresence}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite"
-                                      IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
-                                      VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
+									  IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
 						<CheckBox x:Name="enableAutoFocusCheckbox" Content="{x:Static p:Resources.Autofocus_EchoVR}" Margin="10,4,10,4" IsChecked="{l:SettingBinding isAutofocusEnabled}" ToolTip="{x:Static p:Resources.enableAutoFocusCheckbox_ToolTip}"/>
 						<CheckBox x:Name="enableBetasCheckbox" Content="{x:Static p:Resources.Get_Beta_Updates_to_Spark}" Margin="10,4,10,4" IsChecked="{l:SettingBinding betaUpdates}" ToolTip="{x:Static p:Resources.betaUpdates_ToolTip}"/>
 
@@ -85,42 +85,43 @@
 						</StackPanel>
 						<Label x:Name="exeLocationLabel" Content="{x:Static p:Resources.EchoVR_Executable_Location_}" Margin="10,4,10,0" />
 						<TextBox x:Name="exeLocationTextBox"
-                                     Text="{l:SettingLoad echoVRPath}" TextWrapping="NoWrap"
-                                     HorizontalAlignment="Stretch"
-                                     Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged"
-                                     MaxLines="1" />
+									 Text="{l:SettingLoad echoVRPath}" TextWrapping="NoWrap"
+									 HorizontalAlignment="Stretch"
+									 Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged"
+									 MaxLines="1" />
 
 						<StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,-8">
 							<Label x:Name="echoVRIPLabel" Content="{x:Static p:Resources.EchoVR_IP__for_Quest_}" Margin="4,4,4,4" />
 							<TextBox x:Name="echoVRIPTextBox" Text="{l:SettingLoad echoVRIP}" TextWrapping="Wrap" Width="130"
-                                         Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
-                                         Padding="4,4,4,4" TextChanged="EchoVRIPChanged" />
+										 Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
+										 Padding="4,4,4,4" TextChanged="EchoVRIPChanged" />
 							<TextBox x:Name="echoVRPortTextBox" Text="{l:SettingLoad echoVRPort}" TextWrapping="Wrap" Width="60"
-                                         Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
-                                         Padding="4,4,4,4" TextChanged="EchoVRPortChanged" />
+										 Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
+										 Padding="4,4,4,4" TextChanged="EchoVRPortChanged" />
 							<Button x:Name="resetIP" Content="{x:Static p:Resources.Local_PC}" Margin="4,4,4,4" Padding="4,4,4,4"
-                                        Click="resetIP_Click" />
+										Click="resetIP_Click" />
 							<Button x:Name="findQuest" Content="{x:Static p:Resources.Find_Quest_IP}" Margin="4,4,4,4" Padding="4,4,4,4"
-                                        Click="FindQuestClick" />
+										Click="FindQuestClick" />
 						</StackPanel>
 						<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="{x:Static p:Resources.Searching_for_Quest}"
-                                   Margin="30,0,0,0" FontSize="10" FontStyle="Italic" />
+								   Margin="30,0,0,0" FontSize="10" FontStyle="Italic" />
 						<CheckBox x:Name="enableStatsLoggingCheckBox" Content="Enable API Processing"
-                                      IsChecked="{l:SettingBinding enableStatsLogging}" Margin="10,20,4,4"
-                                      Visibility="Collapsed" />
+									  IsChecked="{l:SettingBinding enableStatsLogging}" Margin="10,20,4,4"
+									  Visibility="Collapsed" />
 						<GroupBox x:Name="statsLoggingBox" Header="{x:Static p:Resources.Stats_Logging}" Margin="10,4,10,4" IsEnabled="{Binding DiscordLoggedIn}">
-							<StackPanel>
+							<StackPanel Margin="-1,0,0,0">
 								<TextBlock
-                                        Text="{x:Static p:Resources.upload_description}"
-                                        Margin="4,4,4,4" TextWrapping="Wrap" />
+										Text="{x:Static p:Resources.upload_description}"
+										Margin="4,4,4,4" TextWrapping="Wrap" />
 								<CheckBox x:Name="uploadToIgniteDBCheckBox" Content="{x:Static p:Resources.Upload_to_IgniteVR_Database}"
-                                              IsChecked="{l:SettingBinding uploadToIgniteDB}"
-                                              Margin="4,4,4,4" Visibility="Visible" />
+											  IsChecked="{l:SettingBinding uploadToIgniteDB}"
+											  Margin="4,4,4,4" Visibility="Visible" />
 								<CheckBox x:Name="optInCheckbox" Content="{x:Static p:Resources.optInCheckbox_Content}" Margin="4,4,4,4" Unchecked="OptIn" Checked="OptIn" ToolTip="{x:Static p:Resources.optInCheckbox_ToolTip}"/>
+								<Label x:Name="optInStatusLabel" Content="Fetching opt-in status..." Margin="30,-6,0,0" FontSize="10"/>
 								<CheckBox x:Name="uploadToFirestoreCheckBox" Content="{x:Static p:Resources.Upload_to_Firestore}"
-                                              IsChecked="{l:SettingBinding uploadToFirestore}"
+											  IsChecked="{l:SettingBinding uploadToFirestore}"
 											  Visibility="{Binding FirestoreVisible}"
-                                              Margin="4,4,4,4" />
+											  Margin="4,4,4,4" />
 							</StackPanel>
 						</GroupBox>
 
@@ -129,14 +130,23 @@
 								<TextBlock Text="These settings are only used if the game is launched in spectator mode. This includes the Spectate Me function as well as spectating other matches. These settings are highly experimental and probably don't even work." TextWrapping="Wrap" Margin="10,10,10,10"></TextBlock>
 								<CheckBox Content="{x:Static p:Resources.Hide_EchoVR_UI}" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
 								<CheckBox Content="{x:Static p:Resources.Toggle_Minimap_after_Goals}" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
+								<CheckBox Content="Mute Player Comms (F5)" IsChecked="{l:SettingBinding mutePlayerComms}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
 								<Label Content="{x:Static p:Resources.Camera_Mode_}"/>
-								<ComboBox SelectedIndex="{l:SettingBinding spectatorCamera}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
-									<ComboBoxItem Content="{x:Static p:Resources.Auto__leave_default_}"/>
-									<ComboBoxItem Content="{x:Static p:Resources.Sideline}"/>
-									<ComboBoxItem Content="{x:Static p:Resources.Follow_client_player___Spectate_Me__only_}"/>
-								</ComboBox>
-								<Label Content="{x:Static p:Resources.Follow_client_player_camera_mode_}"/>
-								<ComboBox SelectedIndex="{l:SettingBinding followClientSpectatorCameraMode}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
+								<StackPanel Orientation="Horizontal">
+									<ComboBox SelectedIndex="{l:SettingBinding spectatorCamera}" SelectionChanged="CameraModeDropdownChanged" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
+										<ComboBoxItem Content="{x:Static p:Resources.Auto__leave_default_}"/>
+										<ComboBoxItem Content="{x:Static p:Resources.Sideline}"/>
+										<ComboBoxItem Content="{x:Static p:Resources.Follow_client_player___Spectate_Me__only_}"/>
+										<ComboBoxItem Content="Follow specific player"/>
+									</ComboBox>
+									<Button x:Name="findCameraNowButton" Content="Find Now" Click="SpectatorCameraFindNow" Padding="10,1,10,1"/>
+								</StackPanel>
+								<StackPanel x:Name="followSpecificPlayerPanel" Orientation="Horizontal" Margin="0,8,0,0">
+									<Label Content="Follow specific player name:"/>
+									<TextBox Text="{l:SettingBinding followPlayerName}" Width="200" Margin="10,0,0,0" VerticalContentAlignment="Center"/>
+								</StackPanel>
+								<Label x:Name="followCameraModeLabel" Content="{x:Static p:Resources.Follow_client_player_camera_mode_}"/>
+								<ComboBox x:Name="followCameraModeDropdown" SelectedIndex="{l:SettingBinding followPlayerCameraMode}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
 									<ComboBoxItem Content="{x:Static p:Resources.Follow}"/>
 									<ComboBoxItem Content="{x:Static p:Resources.POV}"/>
 								</ComboBox>
@@ -152,39 +162,39 @@
 					<StackPanel Margin="10,0,10,10">
 						<Label Content="{x:Static p:Resources.Replay_Recording_Settings}" FontSize="16" Margin="5,5,5,5" />
 						<TextBlock TextWrapping="Wrap"
-                                       Background="{DynamicResource ControlBrightDefaultBackground}"
-                                       Padding="10,10,10,10">
+									   Background="{DynamicResource ControlBrightDefaultBackground}"
+									   Padding="10,10,10,10">
 							<Run Text="{x:Static p:Resources.replays_description_part_1}"/>
-                                <LineBreak /><LineBreak />
+								<LineBreak /><LineBreak />
 							<Run Text="{x:Static p:Resources.replays_description_part_2}"/>
-                                <Hyperlink NavigateUri="https://echopedia.gg/wiki/Replay_Viewer"
-                                           RequestNavigate="Hyperlink_RequestNavigate">
+								<Hyperlink NavigateUri="https://echopedia.gg/wiki/Replay_Viewer"
+										   RequestNavigate="Hyperlink_RequestNavigate">
 									<Run Text="{x:Static p:Resources.Echo_Arena_Replay_Viewer}"/>
-                                </Hyperlink>
-                                <LineBreak /><LineBreak />
+								</Hyperlink>
+								<LineBreak /><LineBreak />
 							<Run Text="{x:Static p:Resources.replays_description_part_3}"/>
-                                <Hyperlink NavigateUri="https://echopedia.gg/wiki/.echoreplay_File_Format"
-                                           RequestNavigate="Hyperlink_RequestNavigate">
-                                    <Run Text="{x:Static p:Resources.replays_description_part_4}"/>
-                                </Hyperlink>
+								<Hyperlink NavigateUri="https://echopedia.gg/wiki/.echoreplay_File_Format"
+										   RequestNavigate="Hyperlink_RequestNavigate">
+									<Run Text="{x:Static p:Resources.replays_description_part_4}"/>
+								</Hyperlink>
 						</TextBlock>
 						<CheckBox x:Name="enableFullLoggingCheckbox" Content="{x:Static p:Resources.Save_Replays}" Margin="10,10,4,4"
-                                      IsChecked="{l:SettingBinding enableFullLogging}" />
+									  IsChecked="{l:SettingBinding enableFullLogging}" />
 						<GroupBox x:Name="fullLoggingBox" Header="{x:Static p:Resources.Replay_Logging}" Margin="4,4,4,4"
-                                      IsEnabled="{Binding ElementName=enableFullLoggingCheckbox, Path=IsChecked}">
+									  IsEnabled="{Binding ElementName=enableFullLoggingCheckbox, Path=IsChecked}">
 							<StackPanel>
 								<CheckBox x:Name="onlyRecordPrivateMatchesCheckBox" Width="588"
-                                              Content="{x:Static p:Resources.Only_Record_Private_Matches}" Margin="4,4,4,4"
-                                              IsChecked="{l:SettingBinding onlyRecordPrivateMatches}" />
+											  Content="{x:Static p:Resources.Only_Record_Private_Matches}" Margin="4,4,4,4"
+											  IsChecked="{l:SettingBinding onlyRecordPrivateMatches}" />
 								<CheckBox x:Name="batchWritesButton" Width="588" Content="{x:Static p:Resources.Batch_Writes}"
-                                              IsChecked="{l:SettingBinding batchWrites}"
-                                              Margin="4,4,4,4" />
+											  IsChecked="{l:SettingBinding batchWrites}"
+											  Margin="4,4,4,4" />
 								<CheckBox x:Name="useCompressionButton" Width="588" Content="{x:Static p:Resources.Use_Compression}"
-                                              IsChecked="{l:SettingBinding useCompression}"
-                                              Margin="4,4,4,4" />
+											  IsChecked="{l:SettingBinding useCompression}"
+											  Margin="4,4,4,4" />
 								<ComboBox x:Name="speedSelector"
-                                              SelectedIndex="{l:SettingBinding targetDeltaTimeIndexFull}"
-                                              Width="211" Margin="4,4,4,4" HorizontalAlignment="Left">
+											  SelectedIndex="{l:SettingBinding targetDeltaTimeIndexFull}"
+											  Width="211" Margin="4,4,4,4" HorizontalAlignment="Left">
 									<ComboBoxItem Content="{x:Static p:Resources.Fast__60_Hz_}" />
 									<ComboBoxItem Content="{x:Static p:Resources.Med__30_Hz_}" />
 									<ComboBoxItem Content="{x:Static p:Resources.Slow__10_Hz_}" />
@@ -192,30 +202,30 @@
 								<Label x:Name="saveLocLabel" Content="{x:Static p:Resources.Save_Folder_}" Margin="4,4,4,4" />
 								<StackPanel Height="32" Margin="4,4,4,4" Orientation="Horizontal">
 									<TextBox x:Name="storageLocationTextBox" TextWrapping="NoWrap" Width="300"
-                                                 Margin="4,0,4,0" VerticalContentAlignment="Center" MaxLines="1"
-                                                 IsReadOnly="True"
-                                                 Text="{l:SettingLoad saveFolder}" />
+												 Margin="4,0,4,0" VerticalContentAlignment="Center" MaxLines="1"
+												 IsReadOnly="True"
+												 Text="{l:SettingLoad saveFolder}" />
 									<Button x:Name="saveLocButton" Content="{x:Static p:Resources.Browse}" Margin="4,0,4,0"
-                                                Padding="4,4,4,4" Click="SetStorageLocation" />
+												Padding="4,4,4,4" Click="SetStorageLocation" />
 									<Button x:Name="resetReplayFolder" Content="{x:Static p:Resources.Reset}" Margin="4,0,4,0"
-                                                Padding="4,4,4,4" Click="ResetReplayFolder" />
+												Padding="4,4,4,4" Click="ResetReplayFolder" />
 									<Button x:Name="openReplayFolderButton" Content="{x:Static p:Resources.Open_Folder}" Margin="4,0,4,0"
-                                                Padding="4,4,4,4" Click="OpenReplayFolder" />
+												Padding="4,4,4,4" Click="OpenReplayFolder" />
 								</StackPanel>
 								<Label x:Name="splitLabel" Content="{x:Static p:Resources.Replay_File_Splitting_}" Margin="4,4,4,4" />
 								<StackPanel Height="30" Margin="4,4,4,4" Orientation="Horizontal">
 									<ComboBox x:Name="whenToSplitReplaysDropdown" Width="210"
-                                                  SelectedIndex="{l:SettingBinding whenToSplitReplays}"
-                                                  Margin="4,0,4,0" Height="24.62">
+												  SelectedIndex="{l:SettingBinding whenToSplitReplays}"
+												  Margin="4,0,4,0" Height="24.62">
 										<ComboBoxItem Content="{x:Static p:Resources.Every_Round}" />
 										<ComboBoxItem Content="{x:Static p:Resources.Every_Match__Scoreboard_}" />
 										<ComboBoxItem Content="{x:Static p:Resources.On_Server_Change}" />
 										<ComboBoxItem Content="{x:Static p:Resources.Only_on_IgniteBot_Restart}" />
 									</ComboBox>
 									<Button x:Name="splitFileButton" Content="{x:Static p:Resources.Split_File}" Margin="4,0,4,0"
-                                                Padding="4,4,4,4" Click="SplitFileEvent" />
+												Padding="4,4,4,4" Click="SplitFileEvent" />
 									<Label x:Name="currentFilenameLabel" Content="{Binding ReplayFilename, Mode=OneWay}" Margin="4,0,4,0" Width="240"
-                                               ScrollViewer.VerticalScrollBarVisibility="Disabled" />
+											   ScrollViewer.VerticalScrollBarVisibility="Disabled" />
 								</StackPanel>
 							</StackPanel>
 						</GroupBox>
@@ -228,17 +238,17 @@
 				<ScrollViewer VerticalScrollBarVisibility="Auto" >
 					<StackPanel Margin="10,0,10,10">
 						<Label x:Name="Title" Content="{x:Static p:Resources.Text_to_Speech__TTS__Settings}" FontSize="16"
-                                   Margin="5,5,5,5" />
+								   Margin="5,5,5,5" />
 						<TextBlock x:Name="discordLoginWarning" Margin="16,16,16,16" Padding="10,10,10,10"
-                                       Background="#FF492727" TextWrapping="Wrap"
-                                       Visibility="{Binding DiscordNotLoggedInVisible}">
-                                <Run Text="{x:Static p:Resources.TTS_only_works_when_logged_in_with_Discord_}" />
+									   Background="#FF492727" TextWrapping="Wrap"
+									   Visibility="{Binding DiscordNotLoggedInVisible}">
+								<Run Text="{x:Static p:Resources.TTS_only_works_when_logged_in_with_Discord_}" />
 						</TextBlock>
 						<StackPanel>
 							<TextBlock x:Name="instructions" TextWrapping="Wrap"
-                                           Background="{DynamicResource ControlBrightDefaultBackground}"
-                                           Padding="10,10,10,10" 
-                                           Text="{x:Static p:Resources.tts_description}" />
+										   Background="{DynamicResource ControlBrightDefaultBackground}"
+										   Padding="10,10,10,10" 
+										   Text="{x:Static p:Resources.tts_description}" />
 							<Grid Margin="5,5,5,5">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
@@ -251,8 +261,8 @@
 								</Grid.RowDefinitions>
 								<Label x:Name="label1" Content="{x:Static p:Resources.Speech_Speed}" />
 								<ComboBox Width="146" HorizontalAlignment="Left"
-                                          SelectedIndex="{Binding SpeechSpeed}"
-                                          Margin="0,0,0,8" Grid.Row="1">
+										  SelectedIndex="{Binding SpeechSpeed}"
+										  Margin="0,0,0,8" Grid.Row="1">
 									<ComboBoxItem Content="{x:Static p:Resources.Slow}" />
 									<ComboBoxItem Content="{x:Static p:Resources.Normal}" />
 									<ComboBoxItem Content="{x:Static p:Resources.Fast}" />
@@ -260,8 +270,8 @@
 								</ComboBox>
 								<Label Content="{x:Static p:Resources.Voice}" Grid.Column="1" />
 								<ComboBox Width="146" HorizontalAlignment="Left"
-                                          SelectedIndex="{l:SettingBinding ttsVoice}"
-                                          Margin="0,0,0,8" Grid.Column="1" Grid.Row="1">
+										  SelectedIndex="{l:SettingBinding ttsVoice}"
+										  Margin="0,0,0,8" Grid.Column="1" Grid.Row="1">
 									<ComboBoxItem Content="{x:Static p:Resources.Male}" />
 									<ComboBoxItem Content="{x:Static p:Resources.Female}" />
 								</ComboBox>
@@ -275,56 +285,56 @@
 								<!-- </ComboBox> -->
 							</Grid>
 							<CheckBox x:Name="serverLocationCheckbox" Content="{x:Static p:Resources.Server_Location}" Margin="4,10,4,0"
-                                          IsChecked="{Binding ServerLocation}" />
+										  IsChecked="{Binding ServerLocation}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
-                                           Text="{x:Static p:Resources.Estimated_location_of_the_server_as_you_join}"
-                                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
+										   Text="{x:Static p:Resources.Estimated_location_of_the_server_as_you_join}"
+										   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<CheckBox Content="{x:Static p:Resources.Throw_Speed}" Margin="4,10,4,0"
-                                          Visibility="Visible" IsChecked="{Binding ThrowSpeed}" />
+										  Visibility="Visible" IsChecked="{Binding ThrowSpeed}" />
 							<TextBlock TextWrapping="WrapWithOverflow" Text="{x:Static p:Resources.Total_throw_speed_from_the_F10_menu}"
-                                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
+										   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<CheckBox x:Name="joustTimeCheckbox" Content="{x:Static p:Resources.Joust_Time}" Margin="4,10,4,0"
-                                          IsChecked="{Binding JoustTime}" />
+										  IsChecked="{Binding JoustTime}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
-                                           Text="{x:Static p:Resources.Time_in_seconds_to_reach_the_midline_on_neutral_jousts_for_the_fastest_player_on_each_team}"
-                                           HorizontalAlignment="Stretch" Margin="4,4,4,4" />
+										   Text="{x:Static p:Resources.Time_in_seconds_to_reach_the_midline_on_neutral_jousts_for_the_fastest_player_on_each_team}"
+										   HorizontalAlignment="Stretch" Margin="4,4,4,4" />
 							<CheckBox x:Name="joustSpeedCheckbox" Content="{x:Static p:Resources.Joust_Speed}" Margin="4,10,4,0"
-                                          IsChecked="{Binding JoustSpeed}" />
+										  IsChecked="{Binding JoustSpeed}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
-                                           Text="{x:Static p:Resources.Speed_in_m_s_of_the_first_player_on_each_team_to_cross_the_midline_on_neutral_joust}"
-                                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
+										   Text="{x:Static p:Resources.Speed_in_m_s_of_the_first_player_on_each_team_to_cross_the_midline_on_neutral_joust}"
+										   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<CheckBox x:Name="tubeExitSpeedCheckbox" Content="{x:Static p:Resources.Tube_Exit_Speed__self_}"
-                                          Margin="4,10,4,0"
-                                          IsChecked="{Binding TubeExitSpeed}" />
+										  Margin="4,10,4,0"
+										  IsChecked="{Binding TubeExitSpeed}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
-                                           Text="{x:Static p:Resources.Speed_in_m_s_as_you_exit_the_launch_tube}"
-                                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
+										   Text="{x:Static p:Resources.Speed_in_m_s_as_you_exit_the_launch_tube}"
+										   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<CheckBox x:Name="maxBoostSpeedCheckbox" Content="{x:Static p:Resources.Max_Boost_Speed}" Margin="4,10,4,0"
-                                          IsChecked="{Binding MaxBoostSpeed}" />
+										  IsChecked="{Binding MaxBoostSpeed}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
-                                           Text="{x:Static p:Resources.Maximum_speed_achieved_for_times_when_you_are_faster_than_20_m_s}"
-                                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
+										   Text="{x:Static p:Resources.Maximum_speed_achieved_for_times_when_you_are_faster_than_20_m_s}"
+										   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<TextBlock TextWrapping="WrapWithOverflow"
-                                           Text="{x:Static p:Resources.Speed_in_m_s_of_your_throws}" HorizontalAlignment="Stretch"
-                                           VerticalAlignment="Stretch" Margin="4,4,4,4" Visibility="Collapsed" />
+										   Text="{x:Static p:Resources.Speed_in_m_s_of_your_throws}" HorizontalAlignment="Stretch"
+										   VerticalAlignment="Stretch" Margin="4,4,4,4" Visibility="Collapsed" />
 							<CheckBox x:Name="goalSpeed" Content="{x:Static p:Resources.Goal_Speed}" Margin="4,10,4,0"
-                                          IsChecked="{Binding GoalSpeed}" />
+										  IsChecked="{Binding GoalSpeed}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
-                                           Text="{x:Static p:Resources.Speed_in_m_s_of_every_goal}" HorizontalAlignment="Stretch"
-                                           VerticalAlignment="Stretch" Margin="4,4,4,4" />
+										   Text="{x:Static p:Resources.Speed_in_m_s_of_every_goal}" HorizontalAlignment="Stretch"
+										   VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<CheckBox x:Name="goalDistance" Content="{x:Static p:Resources.Goal_Distance}" Margin="4,10,4,0"
-                                          IsChecked="{Binding GoalDistance}" />
+										  IsChecked="{Binding GoalDistance}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
-                                           Text="{x:Static p:Resources.Distance_in_m_of_every_goal}" HorizontalAlignment="Stretch"
-                                           VerticalAlignment="Stretch" Margin="4,4,4,4" />
+										   Text="{x:Static p:Resources.Distance_in_m_of_every_goal}" HorizontalAlignment="Stretch"
+										   VerticalAlignment="Stretch" Margin="4,4,4,4" />
 							<CheckBox x:Name="gamePausedCheckbox" Content="{x:Static p:Resources.Game_Paused}" Margin="4,10,4,0"
-                                          IsChecked="{Binding GamePaused}" />
+										  IsChecked="{Binding GamePaused}" />
 							<CheckBox x:Name="playerJoinCheckbox" Content="{x:Static p:Resources.Player_Join}" Margin="4,10,4,0"
-                                          IsChecked="{Binding PlayerJoin}" />
+										  IsChecked="{Binding PlayerJoin}" />
 							<CheckBox x:Name="playerLeaveCheckbox" Content="{x:Static p:Resources.Player_Leave}" Margin="4,10,4,0"
-                                          IsChecked="{Binding PlayerLeave}" />
+										  IsChecked="{Binding PlayerLeave}" />
 							<CheckBox x:Name="playerSwitchCheckbox" Content="{x:Static p:Resources.Player_Switch_Teams}" Margin="4,10,4,0"
-                                          IsChecked="{Binding PlayerSwitch}" />
+										  IsChecked="{Binding PlayerSwitch}" />
 						</StackPanel>
 					</StackPanel>
 				</ScrollViewer>
@@ -346,12 +356,12 @@
 									<TextBlock x:Name="instructionsLabel_Copy" Text="{x:Static p:Resources.nvhighlights_description_2}" TextWrapping="Wrap" Margin="5,5,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 									<CheckBox x:Name="enableNVHighlightsCheckbox" Content="{Binding EnableHighlightsContent}"
-                                      Margin="5,5,5,5" IsChecked="{Binding NVHighlightsEnabled}" IsEnabled="{Binding HighlightsSupported}" />
+									  Margin="5,5,5,5" IsChecked="{Binding NVHighlightsEnabled}" IsEnabled="{Binding HighlightsSupported}" />
 									<GroupBox x:Name="nvHighlightsBox" Header="{x:Static p:Resources.NVIDIA_Highlights}" Margin="5,5,5,5">
 										<StackPanel>
 											<TextBlock x:Name="textBlock"
-											           Text="Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder"
-											           TextWrapping="Wrap" Margin="5,10,5,0" />
+													   Text="Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder"
+													   TextWrapping="Wrap" Margin="5,10,5,0" />
 											<CheckBox x:Name="clearHighlightsOnExitCheckbox" Content="Clear Highlights On Exit"
 													Margin="5,5,5,5" IsChecked="{l:SettingBinding clearHighlightsOnExit}" />
 											<Button x:Name="clearHighlightsButton" Content="{Binding ClearHighlightsButtonContent}"
@@ -424,13 +434,13 @@
 								<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
 									<Label x:Name="labelBefore" Content="{x:Static p:Resources.Seconds_Before_}" />
 									<TextBox x:Name="secondsBefore" Text="{Binding SecondsBefore}" TextWrapping="Wrap" Width="64"
-                                                 FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox"/>
+												 FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox"/>
 									<Label x:Name="labelAfter" Content="{x:Static p:Resources.Seconds_After_}" />
 									<TextBox x:Name="secondsAfter" Text="{Binding SecondsAfter}" TextWrapping="Wrap" Width="64"
-                                                 FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox"/>
+												 FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox"/>
 									<Label x:Name="labelTotal" Content="{x:Static p:Resources.Length_}" Margin="8,0,0,0" />
 									<TextBox x:Name="totalSeconds" Text="0" TextWrapping="Wrap" Width="40"
-                                                 FontSize="16" Height="25" IsReadOnly="True" IsEnabled="False"/>
+												 FontSize="16" Height="25" IsReadOnly="True" IsEnabled="False"/>
 								</StackPanel>
 
 								<TextBlock x:Name="nvHighlightsChooseEventsInOverlayLabel" Text="{x:Static p:Resources.Choose_the_events_you_want_to_clip_in_the_NVIDIA_overlay__ALT_Z_}" Margin="5,5,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}" />
@@ -462,14 +472,14 @@
 
 						<StackPanel Visibility="{Binding EchoVRInstalled}">
 							<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
-						           Background="#FF492727" TextWrapping="Wrap"
-						           Visibility="{Binding EchoVRSettingsProgramOpenWarning, Mode=OneWay}"
+								   Background="#FF492727" TextWrapping="Wrap"
+								   Visibility="{Binding EchoVRSettingsProgramOpenWarning, Mode=OneWay}"
 								   Text="{x:Static p:Resources.EchoVROpen_settings_warning}" />
 							<StackPanel>
 								<!--DataContext="{Binding Source={x:Static l:EchoVRSettingsManager}">-->
 								<TextBlock TextWrapping="Wrap"
-							           Background="{DynamicResource ControlBrightDefaultBackground}"
-							           Padding="10,10,10,10" Margin="0,0,0,10" 
+									   Background="{DynamicResource ControlBrightDefaultBackground}"
+									   Padding="10,10,10,10" Margin="0,0,0,10" 
 									   Visibility="Collapsed"
 									   Text="{x:Static p:Resources.EchoVR_Settings_info}">
 								</TextBlock>
@@ -610,8 +620,8 @@
 						</StackPanel>
 
 						<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
-						           Background="#FF492727" TextWrapping="Wrap"
-						           Visibility="{Binding EchoVRNotInstalled, Mode=OneWay}"
+								   Background="#FF492727" TextWrapping="Wrap"
+								   Visibility="{Binding EchoVRNotInstalled, Mode=OneWay}"
 								   Text="{x:Static p:Resources.EchoVR_not_installed_game_settings}" />
 					</StackPanel>
 				</ScrollViewer>
@@ -627,11 +637,11 @@
 						</Grid.ColumnDefinitions>
 						<StackPanel>
 							<Image x:Name="logo" Margin="10,10,10,10" Source="/img/ignite_logo_128.png" Width="128"
-                               Height="128" HorizontalAlignment="Center" VerticalAlignment="Top" />
+							   Height="128" HorizontalAlignment="Center" VerticalAlignment="Top" />
 							<Label x:Name="versionNum" Content="{Binding AppVersionLabelText}" Width="128" Margin="10,4,10,4"
-                               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                               ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0,0,0,0" Height="30"
-                               HorizontalAlignment="Center" VerticalAlignment="Top" />
+							   HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+							   ScrollViewer.VerticalScrollBarVisibility="Disabled" Padding="0,0,0,0" Height="30"
+							   HorizontalAlignment="Center" VerticalAlignment="Top" />
 						</StackPanel>
 						<StackPanel Grid.Column="1">
 							<TextBlock TextWrapping="Wrap" TextAlignment="Center" Margin="10,4,10,10">
@@ -661,23 +671,23 @@
 					<TextBlock Margin="20,10,0,-5" Foreground="{DynamicResource ControlDisabledGlythColour}" Text="{x:Static p:Resources.Contribute}"/>
 					<TextBlock TextWrapping="Wrap" Margin="10,10,10,10">
 						<Run Text="{x:Static p:Resources.contributions_welcome}"/>
-                            <Hyperlink NavigateUri="https://github.com/NtsFranz/Spark" RequestNavigate="Hyperlink_RequestNavigate">
-                                GitHub
-                            </Hyperlink>
+							<Hyperlink NavigateUri="https://github.com/NtsFranz/Spark" RequestNavigate="Hyperlink_RequestNavigate">
+								GitHub
+							</Hyperlink>
 					</TextBlock>
 					<TextBlock Margin="20,10,0,-5" Foreground="{DynamicResource ControlDisabledGlythColour}" Text="{x:Static p:Resources.Help}"/>
 					<TextBlock TextWrapping="Wrap" Margin="10,10,10,10">
-                            <Run Text="{x:Static p:Resources.for_help_check_out}"/>
-                            <Hyperlink NavigateUri="https://echopedia.gg/wiki/Spark"
-                                       RequestNavigate="Hyperlink_RequestNavigate">
-                                <Run Text="{x:Static p:Resources.Echopedia_page}"/>
-                            </Hyperlink>
+							<Run Text="{x:Static p:Resources.for_help_check_out}"/>
+							<Hyperlink NavigateUri="https://echopedia.gg/wiki/Spark"
+									   RequestNavigate="Hyperlink_RequestNavigate">
+								<Run Text="{x:Static p:Resources.Echopedia_page}"/>
+							</Hyperlink>
 						<Run Text="{x:Static p:Resources.__or_join_the}"/>
-                            <Hyperlink NavigateUri="https://discord.gg/CGXR86C"
-                                       RequestNavigate="Hyperlink_RequestNavigate">
-                                <Run Text="{x:Static p:Resources.Ignite_Discord_Server}"/>
-                            </Hyperlink>
-                            <Run Text="{x:Static p:Resources.and_ask_questions_in_the__ignitebot_support_channel_}"/>
+							<Hyperlink NavigateUri="https://discord.gg/CGXR86C"
+									   RequestNavigate="Hyperlink_RequestNavigate">
+								<Run Text="{x:Static p:Resources.Ignite_Discord_Server}"/>
+							</Hyperlink>
+							<Run Text="{x:Static p:Resources.and_ask_questions_in_the__ignitebot_support_channel_}"/>
 					</TextBlock>
 				</StackPanel>
 			</TabItem>
@@ -685,6 +695,6 @@
 		</TabControl>
 
 		<Button Content="{x:Static p:Resources.Close}" Width="100" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-                Margin="10,10,10,10" Click="CloseButtonEvent" Grid.Row="2" />
+				Margin="10,10,10,10" Click="CloseButtonEvent" Grid.Row="2" />
 	</Grid>
 </Window>

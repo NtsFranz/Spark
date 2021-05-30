@@ -44,26 +44,8 @@ namespace Spark
 		public bool atlasShowing { get; set; } = false;
 		public bool speedometerStreamerMode { get; set; } = false;
 		public bool playspaceStreamerMode { get; set; } = false;
-		public bool joustTimeTTS { get; set; } = false;
-		public bool joustSpeedTTS { get; set; } = false;
-		public bool serverLocationTTS { get; set; } = false;
-		public bool maxBoostSpeedTTS { get; set; } = false;
-		public int TTSSpeed { get; set; } = 1;
-		public bool playerJoinTTS { get; set; } = false;
-		public bool playerLeaveTTS { get; set; } = false;
-		public bool playerSwitchTeamTTS { get; set; } = false;
-		public bool tubeExitSpeedTTS { get; set; } = false;
 		public string discordOAuthRefreshToken { get; set; } = "";
-		public bool throwSpeedTTS { get; set; } = false;
-		public bool goalSpeedTTS { get; set; } = false;
-		public bool goalDistanceTTS { get; set; } = false;
 		public string accessMode { get; set; } = "";
-		public int clientHighlightScope { get; set; } = 0;
-		public bool clearHighlightsOnExit { get; set; } = false;
-		public bool isNVHighlightsEnabled { get; set; } = false;
-		public float nvHighlightsSecondsBefore { get; set; } = 7;
-		public float nvHighlightsSecondsAfter { get; set; } = 3;
-		public bool pausedTTS { get; set; } = false;
 		public string alternateEchoVRIP { get; set; } = "127.0.0.1";
 		public bool nvHighlightsSpectatorRecord { get; set; } = false;
 		public int atlasLinkStyle { get; set; } = 0;
@@ -79,16 +61,52 @@ namespace Spark
 		public string client_name { get; set; } = "";
 		public bool atlasLinkAppendTeamNames { get; set; } = false;
 		public int atlasHostingVisibility { get; set; } = 0;
-		public bool playspaceTTS { get; set; } = false;
-		public int ttsVoice { get; set; } = 0;
 		public int languageIndex { get; set; } = 0;
 		public int theme { get; set; } = 0;
+		public bool betaUpdates { get; set; } = false;
+		public int dashboardItem1 { get; set; } = 0;
+		public int spectatorCamera { get; set; } = 0;
+		public bool hideEchoVRUI { get; set; } = false;
+		public int followPlayerCameraMode { get; set; } = 0;
+		public string followPlayerName { get; set; } = "";
+		public bool toggleMinimapAfterGoals { get; set; } = false;
+		public bool mutePlayerComms { get; set; } = false;
+		public int chooseRegionIndex { get; set; } = 0;
+		public bool chooseRegionSpectator { get; set; } = false;
+
+		#region TTS 
+
+		public bool throwSpeedTTS { get; set; } = false;
+		public bool goalSpeedTTS { get; set; } = false;
+		public bool goalDistanceTTS { get; set; } = false;
+		public bool joustTimeTTS { get; set; } = false;
+		public bool joustSpeedTTS { get; set; } = false;
+		public bool serverLocationTTS { get; set; } = false;
+		public bool maxBoostSpeedTTS { get; set; } = false;
+		public int TTSSpeed { get; set; } = 1;
+		public bool playerJoinTTS { get; set; } = false;
+		public bool playerLeaveTTS { get; set; } = false;
+		public bool playerSwitchTeamTTS { get; set; } = false;
+		public bool tubeExitSpeedTTS { get; set; } = false;
+		public bool pausedTTS { get; set; } = false;
+		public bool useWavenetVoices { get; set; } = false;
+		public bool playspaceTTS { get; set; } = false;
+		public int ttsVoice { get; set; } = 0;
+
+		#endregion
+
+		#region Clips
+
+		public int clientHighlightScope { get; set; } = 0;
+		public bool clearHighlightsOnExit { get; set; } = false;
+		public bool isNVHighlightsEnabled { get; set; } = false;
+		public float nvHighlightsSecondsBefore { get; set; } = 7;
+		public float nvHighlightsSecondsAfter { get; set; } = 3;
 		public float replayBufferLength { get; set; } = 15;
 		public bool enableReplayBuffer { get; set; } = false;
 		public bool replayClipPlayspace { get; set; } = false;
 		public bool replayClipGoal { get; set; } = false;
 		public bool replayClipSave { get; set; } = false;
-		public bool betaUpdates { get; set; } = false;
 		public string obsIP { get; set; } = "ws://127.0.0.1:4444";
 		public string obsPassword { get; set; } = "";
 		public bool obsAutoconnect { get; set; } = false;
@@ -109,16 +127,11 @@ namespace Spark
 		public int obsPlayerScope { get; set; } = 0;
 		public bool replayClipSpectatorRecord { get; set; } = false;
 		public bool obsSpectatorRecord { get; set; } = false;
-		public int dashboardItem1 { get; set; } = 0;
-		public bool useWavenetVoices { get; set; } = false;
-		public int spectatorCamera { get; set; } = 0;
-		public bool hideEchoVRUI { get; set; } = false;
-		public int followClientSpectatorCameraMode { get; set; } = 0;
-		public bool toggleMinimapAfterGoals { get; set; } = false;
-		public int chooseRegionIndex { get; set; } = 0;
-		public bool chooseRegionSpectator { get; set; } = false;
 		public string obsInGameScene { get; set; } = "";
 		public string obsBetweenGameScene { get; set; } = "";
+
+
+		#endregion
 
 		#endregion
 

@@ -963,7 +963,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Follow client player camera mode:.
+        ///   Looks up a localized string similar to Follow player camera mode:.
         /// </summary>
         public static string Follow_client_player_camera_mode_ {
             get {

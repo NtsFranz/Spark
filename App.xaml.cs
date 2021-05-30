@@ -154,7 +154,7 @@ namespace Spark
 			SparkSettings.instance.useWavenetVoices = Settings.Default.useWavenetVoices;
 			SparkSettings.instance.spectatorCamera = Settings.Default.spectatorCamera;
 			SparkSettings.instance.hideEchoVRUI = Settings.Default.hideEchoVRUI;
-			SparkSettings.instance.followClientSpectatorCameraMode = Settings.Default.followClientSpectatorCameraMode;
+			SparkSettings.instance.followPlayerCameraMode = Settings.Default.followClientSpectatorCameraMode;
 			SparkSettings.instance.toggleMinimapAfterGoals = Settings.Default.toggleMinimapAfterGoals;
 			SparkSettings.instance.chooseRegionIndex = Settings.Default.chooseRegionIndex;
 			SparkSettings.instance.chooseRegionSpectator = Settings.Default.chooseRegionSpectator;

@@ -420,8 +420,8 @@ namespace Spark
 			//float out2 = CalculateServerScore(new List<int> { 29, 60, 59, 30 }, new List<int> { 30, 70, 15, 26 });    // 90.54
 			//float out3 = CalculateServerScore(new List<int> { 61, 59, 69, 67 }, new List<int> { 73, 57, 50, 51 });    // 92.33
 
-			PlayerJoined += (_, _, _) => { UseCameraControlKeys(false); };
-			PlayerLeft += (_, _, _) => { UseCameraControlKeys(false); };
+			PlayerJoined += (_, _, player) => { UseCameraControlKeys(false); };
+			PlayerLeft += (_, _, player) => { UseCameraControlKeys(false); };
 
 
 			UpdateEchoExeLocation();
@@ -1476,6 +1476,8 @@ namespace Spark
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null) return;
 
+			SparkSettings.instance.client_name = frame.client_name;
+
 			// lobby stuff
 
 			// last throw state changed
@@ -1893,7 +1895,7 @@ namespace Spark
 							{
 								// reset playspace
 								playerData.playspaceLocation = player.head.Position;
-								LogRow(LogType.Error, "Reset playspace due to framerate");
+								LogRow(LogType.Info, "Reset playspace due to framerate");
 							}
 							// move the playspace towards the current player position
 							Vector3 offset = (player.head.Position - playerData.playspaceLocation).Normalized() * .05f * deltaTime;
@@ -3445,12 +3447,11 @@ namespace Spark
 
 		private static void RegisterUriScheme(string UriScheme, string FriendlyName)
 		{
-#if WINDOWS_STORE_RELEASE
 			try
 			{
 				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
 
-				using RegistryKey key = Registry.ClassesRoot.CreateSubKey(UriScheme);
+				using RegistryKey key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\" + UriScheme);
 
 				key.SetValue("", "URL:" + FriendlyName);
 				key.SetValue("URL Protocol", "");
@@ -3465,26 +3466,6 @@ namespace Spark
 			{
 				LogRow(LogType.Error, $"Failed to set URI scheme\n{e}");
 			}
-#else
-			try
-			{
-				using RegistryKey key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\" + UriScheme);
-				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
-
-				key.SetValue("", "URL:" + FriendlyName);
-				key.SetValue("URL Protocol", "");
-
-				using RegistryKey defaultIcon = key.CreateSubKey("DefaultIcon");
-				defaultIcon.SetValue("", applicationLocation + ",1");
-
-				using RegistryKey commandKey = key.CreateSubKey(@"shell\open\command");
-				commandKey.SetValue("", "\"" + applicationLocation + "\" \"%1\"");
-			}
-			catch (Exception e)
-			{
-				LogRow(LogType.Error, "Failed to set URI scheme");
-			}
-#endif
 		}
 
 		private static bool CheckIfLaunchedWithCustomURLHandlerParam(string[] args)
@@ -3992,12 +3973,22 @@ namespace Spark
 			{
 				if (spectateMe) liveWindow.SetSpectateMeSubtitle("In Game!");
 
-				if (SparkSettings.instance.hideEchoVRUI && firstLoad)
+				if (firstLoad)
 				{
-					FocusEchoVR();
-					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
-					Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, true, Keyboard.InputType.Keyboard); });
-					LogRow(LogType.File, lastFrame.sessionid, "Tried to Hide EchoVR UI");
+					if (SparkSettings.instance.hideEchoVRUI)
+					{
+						FocusEchoVR();
+						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
+						Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, true, Keyboard.InputType.Keyboard); });
+						LogRow(LogType.File, lastFrame.sessionid, "Tried to Hide EchoVR UI");
+					}
+					if (SparkSettings.instance.mutePlayerComms)
+					{
+						FocusEchoVR();
+						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F5, false, Keyboard.InputType.Keyboard);
+						Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F5, true, Keyboard.InputType.Keyboard); });
+						LogRow(LogType.File, lastFrame.sessionid, "Tried to mute player comms");
+					}
 				}
 
 				switch (SparkSettings.instance.spectatorCamera)
@@ -4028,6 +4019,10 @@ namespace Spark
 					case 2:
 						if (spectateMe) KeyboardCamera.SpectatorCamFindPlayer();
 						break;
+					// follow specific player
+					case 3:
+						KeyboardCamera.SpectatorCamFindPlayer(SparkSettings.instance.followPlayerName);
+						break;
 				}
 			}
 			catch (Exception ex)
@@ -4045,19 +4040,26 @@ namespace Spark
 		/// <returns>True if the window was opened, false if the window was closed</returns>
 		public static bool ToggleWindow(Type type, string windowName = null, Window ownedBy = null)
 		{
-			windowName ??= type.ToString();
+			try
+			{
+				windowName ??= type.ToString();
 
-			if (!popupWindows.ContainsKey(windowName) || popupWindows[windowName] == null)
+				if (!popupWindows.ContainsKey(windowName) || popupWindows[windowName] == null)
+				{
+					popupWindows[windowName] = (Window)Activator.CreateInstance(type);
+					popupWindows[windowName].Owner = ownedBy;
+					popupWindows[windowName].Closed += (_, _) => popupWindows[windowName] = null;
+					popupWindows[windowName].Show();
+					return true;
+				}
+				else
+				{
+					popupWindows[windowName].Close();
+					return false;
+				}
+			}catch (Exception ex)
 			{
-				popupWindows[windowName] = (Window)Activator.CreateInstance(type);
-				popupWindows[windowName].Owner = ownedBy;
-				popupWindows[windowName].Closed += (_, _) => popupWindows[windowName] = null;
-				popupWindows[windowName].Show();
-				return true;
-			}
-			else
-			{
-				popupWindows[windowName].Close();
+				new MessageBox($"Failed to open window: {type}.\nPlease report this to NtsFranz.").Show();
 				return false;
 			}
 		}

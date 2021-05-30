@@ -73,7 +73,6 @@
 			<GroupBox x:Name="spectatorsBox" Header="{x:Static p:Resources.Spectators}" BorderBrush="#FF515151">
 				<Label x:Name="spectatorsLabel" Content=""/>
 			</GroupBox>
-			<Image x:Name="image" Height="175" Source="/img/alternate_white.png" Opacity="0.05"/>
 		</StackPanel>
 		<GridSplitter x:Name="gridSplitter" Grid.Column="1" HorizontalAlignment="Stretch"/>
 		<Grid x:Name="Center_Panel" Grid.Column="2">
@@ -430,6 +429,8 @@
 			</GroupBox>
 			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://discord.gg/CGXR86C" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static p:Resources.For_help__join_the_Discord}"/>
 			</Hyperlink></TextBlock>
+
+			<Image x:Name="image" Height="175" Source="/img/alternate_white.png" Opacity="0.05"/>
 		</StackPanel>
 		<TextBlock x:Name="accessCodeLabel" Text="{x:Static p:Resources.Mode}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 		<TextBlock x:Name="versionLabel" Text="{Binding AppVersionLabelText}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}"/>

@@ -37,12 +37,22 @@ namespace Spark
 			};
 		}
 
-		public static void SpectatorCamFindPlayer()
+		public static void SpectatorCamFindPlayer(string playerName = null)
 		{
+			if (playerName == null) playerName = Program.lastFrame.client_name;
+
+			if (Program.lastFrame.GetPlayer(playerName) == null)
+			{
+				LogRow(LogType.File, Program.lastFrame.sessionid, "Requested follow player not in the game.");
+				return;
+			}
+
 			try
 			{
 				Task.Run(async () =>
 				{
+					await Task.Delay(500);
+
 					// try to find player
 					Program.FocusEchoVR();
 					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
@@ -52,7 +62,7 @@ namespace Spark
 
 					await Task.Delay(50);
 					bool found = false;
-					found = await CheckPOVCamIsCorrect();
+					found = await CheckPOVCamIsCorrect(playerName);
 
 					List<Keyboard.DirectXKeyStrokes> numbers = new List<Keyboard.DirectXKeyStrokes>
 					{
@@ -69,9 +79,15 @@ namespace Spark
 					};
 
 					// loop through all the players twice if we don't find the right one the first time
-					int foundTries = 2;
+					int foundTries = 1;
 					while (foundTries > 0 && !found)
 					{
+						Program.FocusEchoVR();
+						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
+						await Task.Delay(20);
+						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
+						await Task.Delay(20);
+
 						for (int i = 0; i < numbers.Count; i++)
 						{
 							Program.FocusEchoVR();
@@ -83,23 +99,19 @@ namespace Spark
 
 							// check if this is the right player
 							await Task.Delay(50);
-							found = await CheckPOVCamIsCorrect(i);
+							found = await CheckPOVCamIsCorrect(playerName, i);
 
 							// if we found the correct player
 							if (found) break;
 						}
-
-						Program.FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
-						await Task.Delay(20);
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
 
 						foundTries--;
 					}
 
 					if (found)
 					{
-						switch (SparkSettings.instance.followClientSpectatorCameraMode)
+						LogRow(LogType.File, Program.lastFrame.sessionid, "Correct player found.");
+						switch (SparkSettings.instance.followPlayerCameraMode)
 						{
 							// Follow
 							case 0:
@@ -111,17 +123,20 @@ namespace Spark
 								break;
 							// POV
 							case 1:
-								Program.FocusEchoVR();
-								Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
-								await Task.Delay(20);
-								Program.FocusEchoVR();
-								Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
+								// don't press P again, since this will switch to a different player
+								// we are already in POV mode.
+
+								//Program.FocusEchoVR();
+								//Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
+								//await Task.Delay(20);
+								//Program.FocusEchoVR();
+								//Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
 								break;
 						}
 					}
 					else
 					{
-						LogRow(LogType.Error, $"Failed to find player, switching to auto instead.");
+						LogRow(LogType.File, Program.lastFrame.sessionid, "Failed to find player, switching to auto instead.");
 						Program.FocusEchoVR();
 						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, false, Keyboard.InputType.Keyboard);
 						await Task.Delay(20);
@@ -136,22 +151,26 @@ namespace Spark
 			}
 		}
 
-		private static async Task<bool> CheckPOVCamIsCorrect(int i = -1)
+		private static async Task<bool> CheckPOVCamIsCorrect(string playerName, int i = -1)
 		{
 			string result = await Program.GetRequestAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/session", null);
 			if (string.IsNullOrEmpty(result)) return false;
 			g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(result);
 			if (frame == null) return false;
 			List<g_Player> players = frame.GetAllPlayers(false);
-			g_Player clientPlayer = frame.GetPlayer(Program.lastFrame.client_name);
-			float dist = 0;
-			dist = Vector3.Distance(clientPlayer?.head.Position ?? Vector3.Zero, frame.player.vr_position.ToVector3());
+			g_Player targetPlayer = frame.GetPlayer(playerName);
 
-			g_Player minPlayer = players.OrderBy(p => Vector3.Distance(p.head.Position, frame.player.vr_position.ToVector3())).First();
-			dist = Vector3.Distance(minPlayer.head.Position, frame.player.vr_position.ToVector3());
-			LogRow(LogType.Info, $"Player {i} camera distance:\t{dist:N3} m.\tName:\t{minPlayer.name}");
+			var sortedList = players.OrderBy(p => Vector3.Distance(p.head.Position, frame.player.vr_position.ToVector3())).ToList();
 
-			return minPlayer.name == Program.lastFrame.client_name;
+			// debug all player distances
+			//sortedList.ForEach(p => LogRow(LogType.File, frame.sessionid, $"{Vector3.Distance(p.head.Position, frame.player.vr_position.ToVector3())}\t{p.name}"));
+			
+			g_Player minPlayer = sortedList.First();
+			float dist = Vector3.Distance(minPlayer.head.Position, frame.player.vr_position.ToVector3());
+
+			LogRow(LogType.File, frame.sessionid, $"Player {i} camera distance:\t{dist:N3} m.\tName:\t{minPlayer.name}");
+
+			return minPlayer.name == playerName;
 		}
 	}
 }

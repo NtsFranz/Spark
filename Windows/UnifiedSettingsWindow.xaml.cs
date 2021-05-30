@@ -45,6 +45,7 @@ namespace Spark
 			//Initialize();
 
 			optInCheckbox.IsEnabled = false;
+			optInStatusLabel.Content = "Fetching opt-in status...";
 			_ = GetOptInStatus();
 
 			Program.obs.instance.Connected += OBSConnected;
@@ -100,6 +101,8 @@ namespace Spark
 #if WINDOWS_STORE_RELEASE
 			enableBetasCheckbox.Visibility = Visibility.Collapsed;
 #endif
+
+			CameraModeDropdownChanged(SparkSettings.instance.spectatorCamera);
 
 			initialized = true;
 		}
@@ -173,7 +176,7 @@ namespace Spark
 			nvHighlightsBox.Opacity = HighlightsHelper.isNVHighlightsEnabled ? 1 : .5;
 		}
 
-#region General
+		#region General
 
 		public static bool StartWithWindows {
 			get => SparkSettings.instance.startOnBoot;
@@ -310,11 +313,19 @@ namespace Spark
 
 		private async Task GetOptInStatus()
 		{
-			if (SparkSettings.instance.client_name == string.Empty ||
-				DiscordOAuth.oauthToken == string.Empty)
+			if (string.IsNullOrEmpty(SparkSettings.instance.client_name))
 			{
 				optInFound = true;
 				optInCheckbox.IsEnabled = false;
+				optInStatusLabel.Content = "Run the game once to find your Oculus name.";
+				return;
+			}
+
+			if (DiscordOAuth.oauthToken == string.Empty)
+			{
+				optInFound = true;
+				optInCheckbox.IsEnabled = false;
+				optInStatusLabel.Content = "Log into Discord to be able to opt in.";
 				return;
 			}
 
@@ -328,15 +339,21 @@ namespace Spark
 				if (objResp["opted_in"] != null)
 				{
 					optInCheckbox.IsChecked = (bool)objResp["opted_in"];
+				} else
+				{
+					Logger.LogRow(Logger.LogType.Error, $"Couldn't get opt-in status.");
+					optInStatusLabel.Content = "Failed to get opt-in status. Response invalid.";
 				}
 			}
 			catch (Exception e)
 			{
-				Logger.LogRow(Logger.LogType.Error, $"Couldn't check for update.\n{e}");
+				Logger.LogRow(Logger.LogType.Error, $"Couldn't get opt-in status.\n{e}");
+				optInStatusLabel.Content = "Failed to get opt-in status.";
 			}
 
 			optInFound = true;
 			optInCheckbox.IsEnabled = true;
+			optInStatusLabel.Visibility = Visibility.Collapsed;
 		}
 
 		private void OptIn(object sender, RoutedEventArgs e)
@@ -363,9 +380,9 @@ namespace Spark
 				});
 		}
 
-#endregion
+		#endregion
 
-#region Replays
+		#region Replays
 
 		private void OpenReplayFolder(object sender, RoutedEventArgs e)
 		{
@@ -418,9 +435,9 @@ namespace Spark
 			Program.NewFilename();
 		}
 
-#endregion
+		#endregion
 
-#region TTS
+		#region TTS
 
 		public static bool DiscordLoggedIn => DiscordOAuth.IsLoggedIn;
 		public static Visibility DiscordNotLoggedInVisible => DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
@@ -552,9 +569,9 @@ namespace Spark
 			}
 		}
 
-#endregion
+		#endregion
 
-#region NVIDIA Highlights
+		#region NVIDIA Highlights
 
 		public bool NVHighlightsEnabled {
 			get => SparkSettings.instance.isNVHighlightsEnabled;
@@ -849,7 +866,7 @@ namespace Spark
 			}
 		}
 
-#region Event type settings
+		#region Event type settings
 		public bool ClipPlayspaceSetting {
 			get {
 				return clipsTab switch
@@ -959,11 +976,11 @@ namespace Spark
 				}
 			}
 		}
-#endregion
+		#endregion
 
-#endregion
+		#endregion
 
-#region EchoVR Settings
+		#region EchoVR Settings
 
 		public Visibility EchoVRSettingsProgramOpenWarning => Program.GetEchoVRProcess()?.Length > 0 ? Visibility.Visible : Visibility.Collapsed;
 		public Visibility EchoVRInstalled => File.Exists(SparkSettings.instance.echoVRPath) ? Visibility.Visible : Visibility.Collapsed;
@@ -996,7 +1013,7 @@ namespace Spark
 			}
 		}
 
-#endregion
+		#endregion
 
 
 		public static string AppVersionLabelText => $"v{Program.AppVersion()}";
@@ -1009,6 +1026,43 @@ namespace Spark
 		private void BetweenGameSceneChanged(object sender, SelectionChangedEventArgs e)
 		{
 			SparkSettings.instance.obsBetweenGameScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
+		}
+
+		private void CameraModeDropdownChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (!initialized) return;
+
+			// setting already handled in binding
+			ComboBox box = (ComboBox)sender;
+			CameraModeDropdownChanged(box.SelectedIndex);
+		}
+
+		private void CameraModeDropdownChanged(int index)
+		{
+			switch (index)
+			{
+				case 0:
+				case 1:
+					followSpecificPlayerPanel.Visibility = Visibility.Collapsed;
+					followCameraModeLabel.Visibility = Visibility.Collapsed;
+					followCameraModeDropdown.Visibility = Visibility.Collapsed;
+					break;
+				case 2:
+					followSpecificPlayerPanel.Visibility = Visibility.Collapsed;
+					followCameraModeLabel.Visibility = Visibility.Visible;
+					followCameraModeDropdown.Visibility = Visibility.Visible;
+					break;
+				case 3:
+					followSpecificPlayerPanel.Visibility = Visibility.Visible;
+					followCameraModeLabel.Visibility = Visibility.Visible;
+					followCameraModeDropdown.Visibility = Visibility.Visible;
+					break;
+			}
+		}
+
+		private void SpectatorCameraFindNow(object sender, RoutedEventArgs e)
+		{
+			Program.UseCameraControlKeys(false);
 		}
 	}
 
