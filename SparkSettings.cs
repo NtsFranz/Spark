@@ -65,6 +65,7 @@ namespace Spark
 		public int theme { get; set; } = 0;
 		public bool betaUpdates { get; set; } = false;
 		public int dashboardItem1 { get; set; } = 0;
+		public int dashboardJoustTimeOrder { get; set; } = 0;
 		public int spectatorCamera { get; set; } = 0;
 		public bool hideEchoVRUI { get; set; } = false;
 		public int followPlayerCameraMode { get; set; } = 0;

@@ -327,8 +327,8 @@
   <data name="Previous Goals" xml:space="preserve">
     <value>Previous Goals</value>
   </data>
-  <data name="Previous Joust Times" xml:space="preserve">
-    <value>Previous Joust Times</value>
+  <data name="Joust Times" xml:space="preserve">
+    <value>Joust Times</value>
   </data>
   <data name="Previous Rounds" xml:space="preserve">
     <value>Previous Rounds</value>

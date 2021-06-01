@@ -567,10 +567,17 @@ namespace Spark
 						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
 
 						StringBuilder lastJoustsString = new StringBuilder();
-						var lastJousts = Program.lastJousts.ToArray();
-						if (lastJousts.Length > 0)
+						var lastJousts = Program.lastJousts.ToList();
+						if (lastJousts.Count > 0)
 						{
-							for (int j = lastJousts.Length - 1; j >= 0; j--)
+							if (SparkSettings.instance.dashboardJoustTimeOrder == 1)
+							{
+								lastJousts.Sort((j1, j2) =>
+								{
+									return j2.joustTimeMillis.CompareTo(j1.joustTimeMillis);
+								});
+							}
+							for (int j = lastJousts.Count - 1; j >= 0; j--)
 							{
 								var joust = lastJousts[j];
 								lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventData.EventType.joust_speed ? " N" : ""));

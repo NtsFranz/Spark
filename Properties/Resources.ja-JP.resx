@@ -209,7 +209,7 @@
   <data name="Previous Goals" xml:space="preserve">
     <value>ゴール情報</value>
   </data>
-  <data name="Previous Joust Times" xml:space="preserve">
+  <data name="Joust Times" xml:space="preserve">
     <value>ジャウストタイム情報</value>
   </data>
   <data name="Previous Rounds" xml:space="preserve">

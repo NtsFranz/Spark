@@ -1390,6 +1390,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Joust Times.
+        /// </summary>
+        public static string Joust_Times {
+            get {
+                return ResourceManager.GetString("Joust Times", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string Language {
@@ -1848,15 +1857,6 @@ namespace Spark.Properties {
         public static string Previous_Goals {
             get {
                 return ResourceManager.GetString("Previous Goals", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Previous Joust Times.
-        /// </summary>
-        public static string Previous_Joust_Times {
-            get {
-                return ResourceManager.GetString("Previous Joust Times", resourceCulture);
             }
         }
         

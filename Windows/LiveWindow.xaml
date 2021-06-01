@@ -6,6 +6,7 @@
 		xmlns:tb="http://www.hardcodet.net/taskbar"
 		xmlns:l="clr-namespace:Spark"
 		xmlns:p="clr-namespace:Spark.Properties"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
 		mc:Ignorable="d"
 		Title="Spark" 
 		Height="660" Width="1080" 
@@ -141,7 +142,16 @@
 						<GroupBox x:Name="lastGoalsBox" Header="{x:Static p:Resources.Previous_Goals}" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1">
 							<TextBlock x:Name="lastGoalsTextBlock"/>
 						</GroupBox>
-						<GroupBox x:Name="lastJoustsBox" Header="{x:Static p:Resources.Previous_Joust_Times}" Grid.Row="0" Margin="10,90,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2">
+						<GroupBox x:Name="lastJoustsBox" Grid.Row="0" Margin="10,90,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2">
+							<GroupBox.Header>
+								<StackPanel Orientation="Horizontal">
+									<Label Content="{x:Static p:Resources.Joust_Times}"/>
+									<ComboBox SelectedIndex="{l:SettingBinding dashboardJoustTimeOrder}">
+										<ComboBoxItem Content="Recent"/>
+										<ComboBoxItem Content="Fastest"/>
+									</ComboBox>
+								</StackPanel>
+							</GroupBox.Header>
 							<TextBlock x:Name="lastJoustsTextBlock" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
 						</GroupBox>
 					</Grid>
@@ -386,6 +396,18 @@
 						<Label x:Name="speakerSystemInstallLabel" Visibility="Hidden" Content="{x:Static p:Resources.Installing_Echo_Speaker_System}" Width="200" Margin="10,10,00,0" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="10" FontStyle="Italic"/>
 						<ContentPresenter x:Name="speakerSystemPanel" Visibility="Visible" Margin="0,50,0,0" SizeChanged="speakerSystemPanel_Resize" IsVisibleChanged="speakerSystemPanel_IsVisibleChanged"/>
 					</Grid>
+				</TabItem>
+				<TabItem x:Name="statsTab" FontSize="14" Padding="10,0,10,0">
+					<TabItem.Header>
+						<StackPanel Orientation="Horizontal">
+							<Label Content="Playercards"/>
+							<Image Source="/img/cards-outline.png" Height="16"/>
+						</StackPanel>
+					</TabItem.Header>
+					<DockPanel>
+						<!--<wv2:WebView2 Name="webView" Source="https://www.ignitevr.gg/playercard_embed"/>-->
+						<wv2:WebView2 Name="webView" Source="http://www.localhost:5005/playercard_embed" OpacityMask="{DynamicResource BackgroundColour}"/>
+					</DockPanel>
 				</TabItem>
 			</TabControl>
 			<StackPanel Height="48" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,0,4" Grid.Row="1">

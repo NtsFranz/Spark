@@ -21,8 +21,8 @@
 
 		<Label x:Name="rawLabel" Content="" HorizontalAlignment="Stretch" Margin="10,40,10,10" VerticalAlignment="Top"/>
 		<Grid x:Name="playspaceBackground" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" Height="400" Background="{DynamicResource ContainerBackground}">
-			<Ellipse x:Name="playspaceCircle" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,10,10" Width="300" Height="300" Stroke="{DynamicResource ControlPrimaryMouseOverBorderBrush}" ></Ellipse>
-			<Ellipse x:Name="playerCircle" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,10,10" Width="32" Height="32" Stroke="{DynamicResource ControlPrimaryMouseOverBorderBrush}" Fill="{DynamicResource ControlPrimaryMouseOverBackground}"></Ellipse>
+			<Ellipse x:Name="playspaceCircle" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,50,10,10" Width="300" Height="300" Stroke="{DynamicResource ControlPrimaryMouseOverBorderBrush}" StrokeThickness="3" ></Ellipse>
+			<Ellipse x:Name="playerCircle" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,10,10" Width="32" Height="32" Stroke="{DynamicResource ControlPrimaryMouseOverBorderBrush}" Fill="{DynamicResource ControlPrimaryMouseOverBackground}" StrokeThickness="3"></Ellipse>
 		</Grid>
 		<!-- <Canvas x:Name="canvas" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400" Height="400" Background="{DynamicResource ContainerBackground}"> -->
 		<!-- 	<Ellipse x:Name="playerCircle" Height="32" Canvas.Left="10" Stroke="{DynamicResource ControlPrimaryMouseOverBorderBrush}" Canvas.Top="10" Width="32" Fill="{DynamicResource ControlPrimaryMouseOverBackground}"/> -->
