@@ -1135,7 +1135,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
     <value>Hide EchoVR UI (U)</value>
   </data>
   <data name="Toggle Minimap after Goals" xml:space="preserve">
-    <value>Toggle Minimap after Goals</value>
+    <value>Toggle Minimap after Goals (M)</value>
   </data>
   <data name="Camera Mode:" xml:space="preserve">
     <value>Camera Mode:</value>

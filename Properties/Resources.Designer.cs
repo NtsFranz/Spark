@@ -2622,7 +2622,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Toggle Minimap after Goals.
+        ///   Looks up a localized string similar to Toggle Minimap after Goals (M).
         /// </summary>
         public static string Toggle_Minimap_after_Goals {
             get {

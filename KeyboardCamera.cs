@@ -39,6 +39,8 @@ namespace Spark
 
 		public static void SpectatorCamFindPlayer(string playerName = null)
 		{
+			if (Program.lastFrame == null) return;
+
 			if (playerName == null) playerName = Program.lastFrame.client_name;
 
 			if (Program.lastFrame.GetPlayer(playerName) == null)

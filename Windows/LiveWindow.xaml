@@ -146,7 +146,7 @@
 							<GroupBox.Header>
 								<StackPanel Orientation="Horizontal">
 									<Label Content="{x:Static p:Resources.Joust_Times}"/>
-									<ComboBox SelectedIndex="{l:SettingBinding dashboardJoustTimeOrder}">
+									<ComboBox SelectedIndex="{l:SettingBinding dashboardJoustTimeOrder}" ToolTip="Only stores up to the 50 most recent joust times.">
 										<ComboBoxItem Content="Recent"/>
 										<ComboBoxItem Content="Fastest"/>
 									</ComboBox>
@@ -406,7 +406,7 @@
 					</TabItem.Header>
 					<DockPanel>
 						<!--<wv2:WebView2 Name="webView" Source="https://www.ignitevr.gg/playercard_embed"/>-->
-						<wv2:WebView2 Name="webView" Source="http://www.localhost:5005/playercard_embed" OpacityMask="{DynamicResource BackgroundColour}"/>
+						<wv2:WebView2 Name="webView" Source="https://ignitevr.gg/cgi-bin/EchoStats.cgi/playercard_embed" OpacityMask="{DynamicResource BackgroundColour}"/>
 					</DockPanel>
 				</TabItem>
 			</TabControl>

@@ -63,6 +63,9 @@
 						<CheckBox x:Name="discordRichPresenceCheckbox" Content="{x:Static p:Resources.Discord_Rich_Presence}"
 									  IsChecked="{l:SettingBinding discordRichPresence}" HorizontalAlignment="Left"
 									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
+						<CheckBox x:Name="discordRichPresenceServerLocationCheckbox" Content="Show Server Location in Discord RP status"
+									  IsChecked="{l:SettingBinding discordRichPresenceServerLocation}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite"
 									  IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
 									  VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
@@ -128,9 +131,9 @@
 						<GroupBox Header="{x:Static p:Resources.Spectator_Camera_Settings}" Margin="10,4,10,4" >
 							<StackPanel>
 								<TextBlock Text="These settings are only used if the game is launched in spectator mode. This includes the Spectate Me function as well as spectating other matches. These settings are highly experimental and probably don't even work." TextWrapping="Wrap" Margin="10,10,10,10"></TextBlock>
-								<CheckBox Content="{x:Static p:Resources.Hide_EchoVR_UI}" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
+								<CheckBox Content="{x:Static p:Resources.Hide_EchoVR_UI}" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Click="HideEchoVRUINow"/>
 								<CheckBox Content="{x:Static p:Resources.Toggle_Minimap_after_Goals}" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
-								<CheckBox Content="Mute Player Comms (F5)" IsChecked="{l:SettingBinding mutePlayerComms}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
+								<CheckBox Content="Mute Player Comms (F5)" IsChecked="{l:SettingBinding mutePlayerComms}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4"  Click="ToggleTeamMuteNow"/>
 								<Label Content="{x:Static p:Resources.Camera_Mode_}"/>
 								<StackPanel Orientation="Horizontal">
 									<ComboBox SelectedIndex="{l:SettingBinding spectatorCamera}" SelectionChanged="CameraModeDropdownChanged" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">

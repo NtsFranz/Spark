@@ -16,6 +16,7 @@ namespace Spark
 		public bool capturevp2 { get; set; } = false;
 		public bool showDatabaseLog { get; set; } = false;
 		public bool discordRichPresence { get; set; } = true;
+		public bool discordRichPresenceServerLocation { get; set; } = false;
 		public bool logToServer { get; set; } = false;
 		public string echoVRPath { get; set; } = "";
 		public string echoVRIP { get; set; } = "127.0.0.1";

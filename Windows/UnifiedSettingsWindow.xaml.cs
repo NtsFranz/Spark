@@ -1064,6 +1064,28 @@ namespace Spark
 		{
 			Program.UseCameraControlKeys(false);
 		}
+
+		private void HideEchoVRUINow(object sender, RoutedEventArgs e)
+		{
+			if (Program.inGame)
+			{
+				Program.FocusEchoVR();
+				Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
+				Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, true, Keyboard.InputType.Keyboard); });
+				Logger.LogRow(Logger.LogType.File, Program.lastFrame?.sessionid, "Tried to Hide EchoVR UI");
+			}
+		}
+
+		private void ToggleTeamMuteNow(object sender, RoutedEventArgs e)
+		{
+			if (Program.inGame)
+			{
+				Program.FocusEchoVR();
+				Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F5, false, Keyboard.InputType.Keyboard);
+				Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F5, true, Keyboard.InputType.Keyboard); });
+				Logger.LogRow(Logger.LogType.File, Program.lastFrame?.sessionid, "Tried to mute team comms (manual)");
+			}
+		}
 	}
 
 	public class SettingBindingExtension : Binding
