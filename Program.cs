@@ -2250,9 +2250,24 @@ namespace Spark
 
 						// check disk was thrown ⚾
 						if (!wasThrown && player.possession &&
-							!lastFrame.disc.velocity.ToVector3().Equals(Vector3.Zero) &&
-							!frame.disc.velocity.ToVector3().Equals(Vector3.Zero) &&
-							(frame.disc.velocity.ToVector3() - player.velocity.ToVector3()).Length() > 3)
+						    (
+							    // local throw
+							    (
+								    frame.client_name == player.name && 
+								    frame.last_throw != null && 
+								    frame.last_throw.total_speed != 0 && 
+								    Math.Abs(frame.last_throw.total_speed - lastFrame.last_throw.total_speed) > .001f
+							    )
+							    ||
+							    // any other player throw
+							    (
+								    // last and current frame disc vel is nonzero
+								    !lastFrame.disc.velocity.ToVector3().Equals(Vector3.Zero) &&
+								    !frame.disc.velocity.ToVector3().Equals(Vector3.Zero) &&
+								    // disc relative velocity is > 3
+								    (frame.disc.velocity.ToVector3() - player.velocity.ToVector3()).Length() > 3
+							    )
+						    ))
 						{
 							wasThrown = true;
 							lastThrowPlayerId = player.playerid;
@@ -2468,7 +2483,7 @@ namespace Spark
 						_ = DoUploadEventFirebase(matchData, joustEvent);
 
 						lastJousts.Enqueue(joustEvent);
-						if (lastJousts.Count > 30)
+						if (lastJousts.Count > 50)
 						{
 							lastJousts.TryDequeue(out EventData joust);
 						}
@@ -3450,6 +3465,7 @@ namespace Spark
 			try
 			{
 				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
+				LogRow(LogType.Error, $"[URI ASSOC] Spark path: {applicationLocation}");
 
 				using RegistryKey key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\" + UriScheme);
 
@@ -3461,6 +3477,8 @@ namespace Spark
 
 				using RegistryKey commandKey = key.CreateSubKey(@"shell\open\command");
 				commandKey.SetValue("", "\"" + applicationLocation + "\" \"%1\"");
+
+				LogRow(LogType.Error, $"[URI ASSOC] Finished setting association. {UriScheme}");
 			}
 			catch (Exception e)
 			{

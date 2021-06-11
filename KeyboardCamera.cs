@@ -170,7 +170,7 @@ namespace Spark
 			g_Player minPlayer = sortedList.First();
 			float dist = Vector3.Distance(minPlayer.head.Position, frame.player.vr_position.ToVector3());
 
-			LogRow(LogType.File, frame.sessionid, $"Player {i} camera distance:\t{dist:N3} m.\tName:\t{minPlayer.name}");
+			LogRow(LogType.File, frame.sessionid, $"Player {i} camera distance: {dist:N3} m.  Name: {minPlayer.name}");
 
 			return minPlayer.name == playerName;
 		}
