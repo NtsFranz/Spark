@@ -3485,7 +3485,7 @@ namespace Spark
 
 				LogRow(LogType.Error, $"[URI ASSOC] {UriScheme} path: {actualValue}");
 
-				if (actualValue != applicationLocation)
+				if (!actualValue.Contains(applicationLocation))
 				{
 					Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SparkLinkLauncher.exe"));
 				}

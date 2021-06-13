@@ -239,38 +239,42 @@
 							</GroupBox.Header>
 							<ScrollViewer MaxHeight="480">
 								<StackPanel x:Name="MatchesBox">
-									<GroupBox x:Name="button" Margin="10,10,10,10" Visibility="Collapsed">
+									<StackPanel x:Name="IgniteMatchesBox">
+										<GroupBox x:Name="button" Margin="10,10,10,10" Visibility="Collapsed">
 
-										<GroupBox.Header>
-											<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
-												<TextBlock Text="Public" Margin="0,0,10,0" Foreground="{DynamicResource ControlDisabledGlythColour}"></TextBlock>
-												<Button Content="{x:Static p:Resources.Copy_Atlas_Link}" Margin="200,0,10,0" Background="{DynamicResource ControlDisabledBackground}"/>
-												<Button Content="{x:Static p:Resources.Join}" Margin="10,0,10,0"/>
-											</StackPanel>
-										</GroupBox.Header>
+											<GroupBox.Header>
+												<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
+													<TextBlock Text="Public" Margin="0,0,10,0" Foreground="{DynamicResource ControlDisabledGlythColour}"></TextBlock>
+													<Button Content="{x:Static p:Resources.Copy_Atlas_Link}" Margin="200,0,10,0" Background="{DynamicResource ControlDisabledBackground}"/>
+													<Button Content="{x:Static p:Resources.Join}" Margin="10,0,10,0"/>
+												</StackPanel>
+											</GroupBox.Header>
 
-										<Grid HorizontalAlignment="Stretch" ShowGridLines="True">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="100"/>
-												<ColumnDefinition Width="5*"/>
-												<ColumnDefinition Width="5*"/>
-												<ColumnDefinition Width="100"/>
-											</Grid.ColumnDefinitions>
+											<Grid HorizontalAlignment="Stretch" ShowGridLines="True">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="100"/>
+													<ColumnDefinition Width="5*"/>
+													<ColumnDefinition Width="5*"/>
+													<ColumnDefinition Width="100"/>
+												</Grid.ColumnDefinitions>
 
 
-											<StackPanel>
-												<Image Source="https://vrmasterleague.com/images/logos/teams/09093858-5626-404d-97a3-10b8353fcc47.png" Width="100" Height="100"></Image>
-												<Label Content="Ignite" HorizontalAlignment="Center"></Label>
-											</StackPanel>
-											<TextBlock x:Name="textBlock" FlowDirection="RightToLeft" Margin="10,10,10,10" Grid.Column="1"><Run Text="Player 1"/><LineBreak/><Run Text="Player 2 Long"/><LineBreak/><Run Text="Player 3"/><LineBreak/><Run Text="Player 4"/><LineBreak/><Run Text="Player 5"/></TextBlock>
-											<TextBlock x:Name="textBlock2" Margin="10,10,10,10" Grid.Column="2"><Run Text="Player 1"/><LineBreak/><Run Text="Player 2"/><LineBreak/><Run Text="Player 3 Long"/><LineBreak/><Run Text="Player 4"/></TextBlock>
+												<StackPanel>
+													<Image Source="https://vrmasterleague.com/images/logos/teams/09093858-5626-404d-97a3-10b8353fcc47.png" Width="100" Height="100"></Image>
+													<Label Content="Ignite" HorizontalAlignment="Center"></Label>
+												</StackPanel>
+												<TextBlock x:Name="textBlock" FlowDirection="RightToLeft" Margin="10,10,10,10" Grid.Column="1"><Run Text="Player 1"/><LineBreak/><Run Text="Player 2 Long"/><LineBreak/><Run Text="Player 3"/><LineBreak/><Run Text="Player 4"/><LineBreak/><Run Text="Player 5"/></TextBlock>
+												<TextBlock x:Name="textBlock2" Margin="10,10,10,10" Grid.Column="2"><Run Text="Player 1"/><LineBreak/><Run Text="Player 2"/><LineBreak/><Run Text="Player 3 Long"/><LineBreak/><Run Text="Player 4"/></TextBlock>
 
-											<StackPanel Grid.Column="3">
-												<Image Source="https://vrmasterleague.com/images/logos/teams/f5850b3b-0f78-42d1-8b57-119af08195be.png" Width="100" Height="100"></Image>
-												<Label Content="Kangorillaz" HorizontalAlignment="Center"></Label>
-											</StackPanel>
-										</Grid>
-									</GroupBox>
+												<StackPanel Grid.Column="3">
+													<Image Source="https://vrmasterleague.com/images/logos/teams/f5850b3b-0f78-42d1-8b57-119af08195be.png" Width="100" Height="100"></Image>
+													<Label Content="Kangorillaz" HorizontalAlignment="Center"></Label>
+												</StackPanel>
+											</Grid>
+										</GroupBox>
+									</StackPanel>
+									<StackPanel x:Name="AtlasMatchesBox"></StackPanel>
+									
 								</StackPanel>
 							</ScrollViewer>
 						</GroupBox>

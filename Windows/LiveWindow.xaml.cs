@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static Logger;
 using System.Numerics;
+using System.Windows.Markup;
 
 namespace Spark
 {
@@ -1687,14 +1688,16 @@ namespace Spark
 			}
 		}
 
-		private void UpdateUIWithAtlasMatches(IEnumerable<AtlasMatch> matches)
+		private void UpdateUIWithAtlasMatches(IEnumerable<AtlasMatch> matches, Panel parent = null)
 		{
 			try
 			{
 				Dispatcher.Invoke(() =>
 				{
+					if (parent == null) parent = IgniteMatchesBox;
+
 					// remove all the old children
-					MatchesBox.Children.RemoveRange(0, MatchesBox.Children.Count);
+					parent.Children.RemoveRange(0, parent.Children.Count);
 
 					foreach (AtlasMatch match in matches)
 					{
@@ -1831,7 +1834,7 @@ namespace Spark
 						content.Children.Add(orangeLogoBox);
 						content.Children.Add(bluePlayers);
 						content.Children.Add(orangePlayers);
-						MatchesBox.Children.Add(new GroupBox
+						parent.Children.Add(new GroupBox
 						{
 							Content = content,
 							Margin = new Thickness(10, 10, 10, 10),
@@ -1937,12 +1940,6 @@ namespace Spark
 
 		private void GetAtlasMatches()
 		{
-			AtlasMatchResponse oldAtlasResponse = null;
-			AtlasMatchResponse igniteAtlasResponse = null;
-
-			bool oldAtlasDone = false;
-			bool igniteAtlasDone = false;
-
 			Program.PostRequestCallback(
 				"https://echovrconnect.appspot.com/api/v1/player/" + SparkSettings.instance.client_name,
 				new Dictionary<string, string> { { "User-Agent", "Atlas/0.5.8" } },
@@ -1951,13 +1948,13 @@ namespace Spark
 			{
 				try
 				{
-					oldAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
-					oldAtlasDone = true;
+					AtlasMatchResponse oldAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
+					UpdateUIWithAtlasMatches(oldAtlasResponse.matches, AtlasMatchesBox);
 				}
 				catch (Exception e)
 				{
-					oldAtlasDone = true;
-					Logger.LogRow(Logger.LogType.Error, $"Can't parse Atlas matches response\n{e}");
+					LogRow(LogType.Error, $"Can't parse Atlas matches response\n{e}");
+					UpdateUIWithAtlasMatches(Array.Empty<AtlasMatch>(), AtlasMatchesBox);
 				}
 			});
 
@@ -1973,45 +1970,16 @@ namespace Spark
 				{
 					try
 					{
-						igniteAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
-						igniteAtlasDone = true;
-
+						var igniteAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
+						UpdateUIWithAtlasMatches(igniteAtlasResponse.matches, IgniteMatchesBox);
 					}
 					catch (Exception e)
 					{
-						igniteAtlasDone = true;
-						Logger.LogRow(Logger.LogType.Error, $"Can't parse Atlas matches response\n{e}");
+						LogRow(LogType.Error, $"Can't parse Atlas matches response\n{e}");
+						UpdateUIWithAtlasMatches(Array.Empty<AtlasMatch>(), IgniteMatchesBox);
 					}
 				}
 			 );
-
-			// once both requests are done....
-			Task.Run(() =>
-			{
-				// wait until both requests are done
-				while (!oldAtlasDone || !igniteAtlasDone) Task.Delay(100);
-
-				// if the old atlas request worked
-				if (oldAtlasResponse != null && oldAtlasResponse.matches != null)
-				{
-					// if both worked, add the ignite matches to the old list
-					if (igniteAtlasResponse != null && igniteAtlasResponse.matches != null)
-					{
-						oldAtlasResponse.matches.AddRange(igniteAtlasResponse.matches);
-					}
-					UpdateUIWithAtlasMatches(oldAtlasResponse.matches);
-				}
-				// if only the ignite atlas request worked
-				else if (igniteAtlasResponse != null && igniteAtlasResponse.matches != null)
-				{
-					UpdateUIWithAtlasMatches(igniteAtlasResponse.matches);
-				}
-				// if none worked
-				else
-				{
-					UpdateUIWithAtlasMatches(Array.Empty<AtlasMatch>());
-				}
-			});
 		}
 
 		private void RefreshMatchesClicked(object sender, RoutedEventArgs e)
