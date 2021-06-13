@@ -166,6 +166,10 @@ namespace Spark
 
 			SetDashboardItem1Visibility(SparkSettings.instance.dashboardItem1);
 
+#if !WINDOWS_STORE_RELEASE
+			statsTab.Visibility = Visibility.Collapsed;
+#endif
+
 			_ = CheckForAppUpdate();
 		}
 
@@ -708,7 +712,7 @@ namespace Spark
 
 
 
-					#region Rejoiner
+#region Rejoiner
 
 					// show the button once the player hasn't been getting data for some time
 					float secondsUntilRejoiner = 1f;
@@ -724,7 +728,7 @@ namespace Spark
 						rejoinButton.Visibility = Visibility.Collapsed;
 					}
 
-					#endregion
+#endregion
 
 					RefreshDiscordLogin();
 
