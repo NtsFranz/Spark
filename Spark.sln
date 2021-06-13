@@ -9,6 +9,8 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Spark.Installer", "IgniteBo
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "SparkMSIX", "SparkMSIX\SparkMSIX.wapproj", "{BD942588-D1E6-494E-BFCE-F588BC1C153D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SparkLinkLauncher", "SparkLinkLauncher\SparkLinkLauncher.csproj", "{5C633987-E25B-4691-B4C3-12F8BA9A6C07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,26 @@ Global
 		{BD942588-D1E6-494E-BFCE-F588BC1C153D}.Release|x86.ActiveCfg = Release|x86
 		{BD942588-D1E6-494E-BFCE-F588BC1C153D}.Release|x86.Build.0 = Release|x86
 		{BD942588-D1E6-494E-BFCE-F588BC1C153D}.Release|x86.Deploy.0 = Release|x86
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Debug|ARM.Build.0 = Debug|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Debug|x64.Build.0 = Debug|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Debug|x86.Build.0 = Debug|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Release|ARM.ActiveCfg = Release|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Release|ARM.Build.0 = Release|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Release|ARM64.Build.0 = Release|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Release|x64.ActiveCfg = Release|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Release|x64.Build.0 = Release|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Release|x86.ActiveCfg = Release|Any CPU
+		{5C633987-E25B-4691-B4C3-12F8BA9A6C07}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,6 +13,17 @@ namespace Spark
 			Program.Save += (frame, _, player) => { SaveClip(SparkSettings.instance.replayClipSave, player.name, frame, $"{player.name}_save"); };
 			Program.Assist += (frame, _) => { SaveClip(SparkSettings.instance.replayClipAssist, frame.last_score.assist_scored, frame, $"{frame.last_score.assist_scored}_assist"); };
 			Program.Interception += (frame, _, _, catchPlayer) => { SaveClip(SparkSettings.instance.replayClipInterception, catchPlayer.name, frame, $"{catchPlayer.name}_interception"); };
+			Program.Joust += (frame, _, player, neutral, _, _, _) =>
+			{
+				if (neutral)
+				{
+					SaveClip(SparkSettings.instance.replayClipNeutralJoust, player.name, frame, $"{player.name}_neutral_joust");
+				}
+				else
+				{
+					SaveClip(SparkSettings.instance.replayClipDefensiveJoust, player.name, frame, $"{player.name}_defensive_joust");
+				}
+			};
 		}
 
 		private static void SaveClip(bool setting, string player_name, g_Instance frame, string clip_name)

@@ -346,6 +346,7 @@ App.config
 
 echo*.db
 SecretKeys.cs
+SecretKeys.cs.bak
 EchoVRSessionGrabberInstaller-cache/
 EchoVRSessionGrabberInstaller-SetupFiles/
 IgniteBotInstaller/IgniteBotInstaller-cache/
@@ -356,3 +357,4 @@ IgniteBot.Installer/Installs/
 IgniteBot.Installer/ComponentsGenerated.wxs
 ConfuserEx_bin/
 IgniteBot.crproj
+

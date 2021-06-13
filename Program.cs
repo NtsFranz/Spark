@@ -249,7 +249,7 @@ namespace Spark
 		public static Action<g_Instance, g_Team, g_Player> ShotTaken;
 		public static Action<g_Instance, TeamColor> RestartRequest;
 		/// <summary>
-		/// frame, team, player
+		/// frame, team, player, neutral joust?, time, maxSpeed, tubeExitSpeed
 		/// </summary>
 		public static Action<g_Instance, g_Team, g_Player, bool, float, float, float> Joust;
 		public static Action<g_Instance, GoalData> Goal;
@@ -323,6 +323,9 @@ namespace Spark
 				string[] latestSpeakerSystemVer = GetLatestSpeakerSystemURLVer();
 				IsSpeakerSystemUpdateAvailable = latestSpeakerSystemVer[1] != InstalledSpeakerSystemVersion;
 			}
+			
+			SparkSettings.instance.sparkExeLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
+			SparkSettings.instance.Save();
 
 			RegisterUriScheme("ignitebot", "IgniteBot Protocol");
 			RegisterUriScheme("atlas", "ATLAS Protocol");
@@ -3478,7 +3481,15 @@ namespace Spark
 				using RegistryKey commandKey = key.CreateSubKey(@"shell\open\command");
 				commandKey.SetValue("", "\"" + applicationLocation + "\" \"%1\"");
 
-				LogRow(LogType.Error, $"[URI ASSOC] Finished setting association. {UriScheme}");
+				string actualValue = (string)commandKey.GetValue("");
+
+				LogRow(LogType.Error, $"[URI ASSOC] {UriScheme} path: {actualValue}");
+
+				if (actualValue != applicationLocation)
+				{
+					Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SparkLinkLauncher.exe"));
+				}
+
 			}
 			catch (Exception e)
 			{

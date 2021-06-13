@@ -453,6 +453,8 @@
 									<CheckBox Content="{x:Static p:Resources.Score_Assist}" Margin="5,5,5,5" IsChecked="{Binding ClipAssistSetting}" />
 									<CheckBox Content="{x:Static p:Resources.Save}" Margin="5,5,5,5" IsChecked="{Binding ClipSaveSetting}" />
 									<CheckBox Content="{x:Static p:Resources.Interception}" Margin="5,5,5,5" IsChecked="{Binding ClipInterceptionSetting}" />
+									<CheckBox Content="Neutral Joust" Margin="5,5,5,5" IsChecked="{Binding ClipNeutralJoustSetting}" />
+									<CheckBox Content="Defensive Joust" Margin="5,5,5,5" IsChecked="{Binding ClipDefensiveJoustSetting}" />
 								</StackPanel>
 							</StackPanel>
 						</GroupBox>

@@ -353,7 +353,7 @@ namespace Spark
 
 			optInFound = true;
 			optInCheckbox.IsEnabled = true;
-			optInStatusLabel.Visibility = Visibility.Collapsed;
+			optInStatusLabel.Content = $"Oculus Username: {SparkSettings.instance.client_name}";
 		}
 
 		private void OptIn(object sender, RoutedEventArgs e)
@@ -972,6 +972,50 @@ namespace Spark
 						break;
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipInterception = value;
+						break;
+				}
+			}
+		}
+
+		public bool ClipNeutralJoustSetting {
+			get {
+				return clipsTab switch
+				{
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipNeutralJoust,
+					ClipsTab.OBS => SparkSettings.instance.obsClipNeutralJoust,
+					_ => false,
+				};
+			}
+			set {
+				switch (clipsTab)
+				{
+					case ClipsTab.echoreplay:
+						SparkSettings.instance.replayClipNeutralJoust = value;
+						break;
+					case ClipsTab.OBS:
+						SparkSettings.instance.obsClipNeutralJoust = value;
+						break;
+				}
+			}
+		}
+
+		public bool ClipDefensiveJoustSetting {
+			get {
+				return clipsTab switch
+				{
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipDefensiveJoust,
+					ClipsTab.OBS => SparkSettings.instance.obsClipDefensiveJoust,
+					_ => false,
+				};
+			}
+			set {
+				switch (clipsTab)
+				{
+					case ClipsTab.echoreplay:
+						SparkSettings.instance.replayClipDefensiveJoust = value;
+						break;
+					case ClipsTab.OBS:
+						SparkSettings.instance.obsClipDefensiveJoust = value;
 						break;
 				}
 			}

@@ -155,7 +155,7 @@ namespace Spark
 
 		private static async Task<bool> CheckPOVCamIsCorrect(string playerName, int i = -1)
 		{
-			string result = await Program.GetRequestAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/session", null);
+			string result = await Program.GetRequestAsync($"http://127.0.0.1:6721/session", null);
 			if (string.IsNullOrEmpty(result)) return false;
 			g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(result);
 			if (frame == null) return false;

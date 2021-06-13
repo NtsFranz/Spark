@@ -75,6 +75,7 @@ namespace Spark
 		public bool mutePlayerComms { get; set; } = false;
 		public int chooseRegionIndex { get; set; } = 0;
 		public bool chooseRegionSpectator { get; set; } = false;
+		public string sparkExeLocation { get; set; } = "";
 
 		#region TTS 
 
@@ -123,7 +124,11 @@ namespace Spark
 		public float obsClipSecondsBefore { get; set; } = 7;
 		public bool obsAutostartReplayBuffer { get; set; } = false;
 		public bool obsClipInterception { get; set; } = false;
+		public bool obsClipNeutralJoust { get; set; } = false;
+		public bool obsClipDefensiveJoust { get; set; } = false;
 		public bool replayClipInterception { get; set; } = false;
+		public bool replayClipNeutralJoust { get; set; } = false;
+		public bool replayClipDefensiveJoust { get; set; } = false;
 		public int nvHighlightsPlayerScope { get; set; } = 0;
 		public int replayClipPlayerScope { get; set; } = 0;
 		public int obsPlayerScope { get; set; } = 0;
