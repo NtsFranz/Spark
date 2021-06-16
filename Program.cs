@@ -745,7 +745,7 @@ namespace Spark
 					// left game
 					try
 					{
-						if (lastFrame.inLobby)
+						if (lastFrame != null && lastFrame.inLobby)
 						{
 							LeftLobby?.Invoke(lastFrame);
 						}
@@ -3470,17 +3470,15 @@ namespace Spark
 				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
 				LogRow(LogType.Error, $"[URI ASSOC] Spark path: {applicationLocation}");
 
-				using RegistryKey key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\" + UriScheme);
+				GetKey(UriScheme, out RegistryKey key, out RegistryKey defaultIcon, out RegistryKey commandKey);
 
 				key.SetValue("", "URL:" + FriendlyName);
 				key.SetValue("URL Protocol", "");
-
-				using RegistryKey defaultIcon = key.CreateSubKey("DefaultIcon");
 				defaultIcon.SetValue("", applicationLocation + ",1");
-
-				using RegistryKey commandKey = key.CreateSubKey(@"shell\open\command");
 				commandKey.SetValue("", "\"" + applicationLocation + "\" \"%1\"");
 
+				// refetch the key
+				GetKey(UriScheme, out key, out defaultIcon, out commandKey);
 				string actualValue = (string)commandKey.GetValue("");
 
 				LogRow(LogType.Error, $"[URI ASSOC] {UriScheme} path: {actualValue}");
@@ -3494,6 +3492,13 @@ namespace Spark
 			catch (Exception e)
 			{
 				LogRow(LogType.Error, $"Failed to set URI scheme\n{e}");
+			}
+
+			static void GetKey(string UriScheme, out RegistryKey key, out RegistryKey defaultIcon, out RegistryKey commandKey)
+			{
+				key = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Classes\\" + UriScheme);
+				defaultIcon = key.CreateSubKey("DefaultIcon");
+				commandKey = key.CreateSubKey(@"shell\open\command");
 			}
 		}
 

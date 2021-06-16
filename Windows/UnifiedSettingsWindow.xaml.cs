@@ -336,7 +336,7 @@ namespace Spark
 					new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } });
 
 				JToken objResp = JsonConvert.DeserializeObject<JToken>(resp);
-				if (objResp["opted_in"] != null)
+				if (objResp != null && objResp["opted_in"] != null)
 				{
 					optInCheckbox.IsChecked = (bool)objResp["opted_in"];
 				} else

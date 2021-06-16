@@ -27,6 +27,20 @@ namespace Spark
 			};
 		}
 
+		private static string IndexToMap(int index)
+		{
+			return index switch
+			{
+				0 => "mpl_arena_a",
+				1 => "mpl_lobby_b2",
+				2 => "mpl_combat_dyson",
+				3 => "mpl_combat_combustion",
+				4 => "mpl_combat_fission",
+				5 => "mpl_combat_gauss",
+				_ => "",
+			};
+		}
+
 		private void Create(object sender, RoutedEventArgs e)
 		{
 			// start client
@@ -34,8 +48,9 @@ namespace Spark
 			if (!string.IsNullOrEmpty(echoPath))
 			{
 				// only include capturevp2 when launching in spectator
-				string args = (SparkSettings.instance.chooseRegionSpectator ? (SparkSettings.instance.capturevp2 ? "-capturevp2 " : " ") + "-spectatorstream " : " ") + 
-					"-region " + IndexToRegion(SparkSettings.instance.chooseRegionIndex);
+				string args = (SparkSettings.instance.chooseRegionSpectator ? (SparkSettings.instance.capturevp2 ? "-capturevp2" : "") + " -spectatorstream" : "") + 
+					" -region " + IndexToRegion(SparkSettings.instance.chooseRegionIndex) +
+					" -level " + IndexToMap(SparkSettings.instance.chooseMapIndex);
 
 				try
 				{

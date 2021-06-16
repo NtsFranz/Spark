@@ -391,7 +391,7 @@ namespace Spark
 						serverLocationLabel.Content = $"{Properties.Resources.Server_IP_} ---";
 					}
 
-					if (Program.lastFrame != null && Program.lastFrame.map_name != "mpl_lobby_b2")  // 'mpl_lobby_b2' may change in the future
+					if (Program.lastFrame != null && Program.lastFrame.map_name == "mpl_arena_a")
 					{
 						discSpeedLabel.Text = Program.lastFrame.disc.velocity.ToVector3().Length().ToString("N2");
 						switch (Program.lastFrame.possession[0])
