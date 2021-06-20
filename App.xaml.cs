@@ -9,6 +9,18 @@ namespace Spark
 	/// </summary>
 	public partial class App : Application
 	{
+//#if WINDOWS_STORE_RELEASE
+//		protected override void OnActivated(IActivatedEventArgs args)
+//		{
+//			if (args.Kind == ActivationKind.Protocol)
+//			{
+//				ProtocolActivatedEventArgs eventArgs = args as ProtocolActivatedEventArgs;
+//				// TODO: Handle URI activation
+//				// The received URI is eventArgs.Uri.AbsoluteUri
+//			}
+//		}
+//#endif
+
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			// load settings file

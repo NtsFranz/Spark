@@ -3477,16 +3477,23 @@ namespace Spark
 				defaultIcon.SetValue("", applicationLocation + ",1");
 				commandKey.SetValue("", "\"" + applicationLocation + "\" \"%1\"");
 
-				// refetch the key
-				GetKey(UriScheme, out key, out defaultIcon, out commandKey);
-				string actualValue = (string)commandKey.GetValue("");
+//				// refetch the key
+//				GetKey(UriScheme, out key, out defaultIcon, out commandKey);
+//				string actualValue = (string)commandKey.GetValue("");
 
-				LogRow(LogType.Error, $"[URI ASSOC] {UriScheme} path: {actualValue}");
+//				LogRow(LogType.Error, $"[URI ASSOC] {UriScheme} path: {actualValue}");
 
-				if (!actualValue.Contains(applicationLocation))
-				{
-					Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SparkLinkLauncher.exe"));
-				}
+//				if (!actualValue.Contains(applicationLocation))
+//				{
+//					Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SparkLinkLauncher.exe"));
+//				} else
+//				{
+//#if WINDOWS_STORE_RELEASE
+//					Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SparkLinkLauncher.exe"));
+//#endif
+//				}
+
+
 
 			}
 			catch (Exception e)
