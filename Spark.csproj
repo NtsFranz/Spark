@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.3.0</Version>
+    <Version>2.3.2</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports, Graic</Authors>
@@ -23,20 +23,20 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -66,7 +66,6 @@
     <None Remove="img\text-box-outline.png" />
     <None Remove="img\view-dashboard.png" />
     <None Remove="InstallEchoSpeakerSystem.bat" />
-    <None Remove="SparkLinkLauncher.exe" />
   </ItemGroup>
 
   <ItemGroup>
@@ -112,9 +111,6 @@
     <Resource Include="img\view-dashboard.png" />
     <None Remove="html\js\heatmap.min.js" />
     <Resource Include="html\js\heatmap.min.js" />
-    <EmbeddedResource Include="SparkLinkLauncher.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
