@@ -8,7 +8,7 @@ namespace Spark
 {
 	/// <summary>
 	/// A recreation of the JSON object given by EchoVR
-	/// https://github.com/Graicc/echovr_api_docs
+	/// https://github.com/Ajedi32/echovr_api_docs
 	/// </summary>
 	public class g_Instance
 	{
