@@ -8,6 +8,7 @@ using System.Net.Http.Json;
 using System.Numerics;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace Spark
 {
@@ -27,15 +28,78 @@ namespace Spark
 			}
 		}
 
+		[RestRoute("Get", "/test")]
+		public async Task Test(IHttpContext context)
+		{
+			await context.Response.SendResponseAsync("Successfully hit the test route!");
+		}
+
+		[RestRoute("Get", "/session")]
+		public async Task Session(IHttpContext context)
+		{
+			context.Response.AddHeader("Access-Control-Allow-Origin", "*");
+			context.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+			context.Response.AddHeader("Content-Type", "application/json");
+
+			if (Program.inGame)
+			{
+				await context.Response.SendResponseAsync(Program.lastJSON);
+			}
+			else
+			{
+				await context.Response.SendResponseAsync(HttpStatusCode.NotFound);
+			}
+		}
+
 
 		[RestRoute("Get", "/position_map")]
 		public async Task PositionMap(IHttpContext context)
 		{
+
+			if (Program.matchData == null)
+			{
+				await context.Response.SendResponseAsync("Not in match yet").ConfigureAwait(false);
+				return;
+			}
+
+
 			// get the most recent file in the replay folder
 			DirectoryInfo directory = new DirectoryInfo(SparkSettings.instance.saveFolder);
 			FileInfo[] files = directory.GetFiles().OrderByDescending(f => f.LastWriteTime).Where(f => f.Name.StartsWith("rec")).ToArray();
-			FileInfo firstFile = files.First();
-			FileInfo[] selectedFiles = files.Where(f => firstFile.LastWriteTime - f.LastWriteTime < TimeSpan.FromMinutes(20)).ToArray();
+
+
+
+			// gets a list of all the times of previous matches in memory that are for the current set
+			List<DateTime> selectedMatchTimes = Program.lastMatches
+				.Where(m => m.customId == Program.matchData.customId &&
+					   m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+				.Select(m => m.matchTime).ToList();
+			selectedMatchTimes.Add(Program.matchData.matchTime);
+
+			string s = files[0].Name.Substring(4, 19);
+
+			// finds all the files that match one of the matches in memory
+			FileInfo[] selectedFiles = files
+				.Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
+				&& MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
+				)
+				.ToArray();
+
+			// function to check if a time matches fuzzily
+			bool MatchesOneTime(DateTime time, List<DateTime> timeList, TimeSpan diff)
+			{
+				foreach (DateTime time2 in timeList)
+				{
+					if ((time - time2).Duration() < diff)
+					{
+						return true;
+					}
+				}
+				return false;
+			}
+
+			//FileInfo firstFile = files.First();
+			//FileInfo[] selectedFiles = files.Where(f => firstFile.LastWriteTime - f.LastWriteTime < TimeSpan.FromMinutes(20)).ToArray();
 			if (selectedFiles.Length == 0)
 			{
 				await context.Response.SendResponseAsync("No recent replay file found.").ConfigureAwait(false);
@@ -56,10 +120,10 @@ namespace Spark
 				for (int i = 0; i < nframes; i += n)
 				{
 					g_Instance frame = replayFile.GetFrame(i);
-					
+
 					if (frame.game_status != "playing") continue;
 					Vector3 pos = frame.disc.position.ToVector3();
-					positions.Add(new xyPos((int) (pos.X * 5 + 100), (int) (pos.Z * 5 + 225)));
+					positions.Add(new xyPos((int)(pos.X * 5 + 100), (int)(pos.Z * 5 + 225)));
 				}
 			}
 
@@ -113,7 +177,7 @@ namespace Spark
             position: absolute;
             top: 203px;
             left: -37px;
-            transform: rotate(90deg);
+            transform: rotate(-90deg);
             width: 533px;
         }
 
@@ -181,14 +245,14 @@ namespace Spark
 					});
 
 					t = "
-			              +
-			              JsonConvert.SerializeObject(positions)
-			              + @";
+						  +
+						  JsonConvert.SerializeObject(positions)
+						  + @";
 
 					// set the generated dataset
 					heatmap.setData({
 						min: 0,
-						max: " + Math.Clamp(positions.Count/600,1,50) + @",
+						max: " + Math.Clamp(positions.Count / 600, 1, 50) + @",
 						data: t
 					});
 
@@ -197,7 +261,7 @@ namespace Spark
 
 
 			// histogram
-            var zvals = "+JsonConvert.SerializeObject(positions.Select(p => p.y))+@";
+            var zvals = " + JsonConvert.SerializeObject(positions.Select(p => p.y)) + @";
 
             var trace = {
                 y: zvals,

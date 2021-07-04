@@ -12,6 +12,7 @@ namespace Spark
 	/// </summary>
 	public class MatchData : DataContainer
 	{
+		public string customId;
 		public readonly Dictionary<TeamColor, TeamData> teams;
 
 		public readonly Dictionary<long, MatchPlayer> players = new Dictionary<long, MatchPlayer>();
@@ -53,9 +54,10 @@ namespace Spark
 		/// Constructor used to initialize match data. 
 		/// </summary>
 		/// <param name="firstFrame"></param>
-		public MatchData(g_Instance firstFrame)
+		public MatchData(g_Instance firstFrame, string customId)
 		{
 			this.firstFrame = firstFrame;
+			this.customId = customId;
 			matchTime = firstFrame.recorded_time;
 			if (matchTime == DateTime.MinValue)
 			{
@@ -119,7 +121,7 @@ namespace Spark
 				{ "game_clock_end", endTime },	// TODO change value when reset or overtime
 				{ "overtime_count", overtimeCount },
 				{ "finish_reason", finishReason.ToString() },
-				{ "custom_id", Program.customId },
+				{ "custom_id", customId },
 				{ "disabled", false },
 				{ "discord_userid", DiscordOAuth.DiscordUserID },
 			};

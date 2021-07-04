@@ -158,7 +158,14 @@ namespace Spark
 
 		private static float smoothDeltaTime = -1;
 
-		public static string customId;
+		private static string customId;
+		public static string CustomId {
+			get => customId;
+			set {
+				customId = value;
+				if (matchData != null) matchData.customId = value;
+			}
+		}
 
 		public static bool hostingLiveReplay = false;
 
@@ -191,7 +198,7 @@ namespace Spark
 		private static Thread IPSearchthread2;
 		public static PublisherSocket pubSocket;
 		public static OBS obs;
-		public static IRestServer webserver;
+		public static IRestServer overlayServer;
 
 
 
@@ -262,203 +269,215 @@ namespace Spark
 
 		public static void Main(string[] args, App app)
 		{
-			Program.app = app;
-			if (args.Contains("-port"))
+			try
 			{
-				int index = args.ToList().IndexOf("-port");
-				if (index > -1)
+				Program.app = app;
+				if (args.Contains("-port"))
 				{
-					if (int.TryParse(args[index + 1], out echoVRPort))
+					int index = args.ToList().IndexOf("-port");
+					if (index > -1)
 					{
-						overrideEchoVRPort = true;
+						if (int.TryParse(args[index + 1], out echoVRPort))
+						{
+							overrideEchoVRPort = true;
+						}
 					}
+					else
+					{
+						LogRow(LogType.Error, "ERROR 3984. This shouldn't happen");
+					}
+				}
+
+
+				if (CheckIfLaunchedWithCustomURLHandlerParam(args))
+				{
+					return; // wait for the dialog to quit the program
+				}
+
+
+				// allow multiple instances if the port is overriden
+				if (IsSparkOpen() && !overrideEchoVRPort)
+				{
+					MessageBox box = new MessageBox(Resources.instance_already_running_message, Resources.Error);
+					box.Show();
+					//while(box!= null)
+					{
+						Thread.Sleep(10);
+					}
+
+
+					//return; // wait for the dialog to quit the program
+				}
+
+				obs = new OBS();
+
+
+
+				try
+				{
+					AsyncIO.ForceDotNet.Force();
+					NetMQConfig.Cleanup();
+					pubSocket = new PublisherSocket();
+					pubSocket.Options.SendHighWatermark = 1000;
+					pubSocket.Bind("tcp://*:12345");
+				}
+				catch (Exception e)
+				{
+					LogRow(LogType.Error, $"Error setting up pub/sub system: {e}");
+				}
+
+				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
+				if (InstalledSpeakerSystemVersion.Length > 0)
+				{
+					string[] latestSpeakerSystemVer = GetLatestSpeakerSystemURLVer();
+					IsSpeakerSystemUpdateAvailable = latestSpeakerSystemVer[1] != InstalledSpeakerSystemVersion;
+				}
+
+				SparkSettings.instance.sparkExeLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
+				SparkSettings.instance.Save();
+
+				RegisterUriScheme("ignitebot", "IgniteBot Protocol");
+				RegisterUriScheme("atlas", "ATLAS Protocol");
+				RegisterUriScheme("spark", "Spark Protocol");
+
+				// if logged in with discord
+				if (!string.IsNullOrEmpty(SparkSettings.instance.discordOAuthRefreshToken))
+				{
+					DiscordOAuth.OAuthLoginRefresh(SparkSettings.instance.discordOAuthRefreshToken);
 				}
 				else
 				{
-					LogRow(LogType.Error, "ERROR 3984. This shouldn't happen");
+					DiscordOAuth.RevertToPersonal();
 				}
-			}
 
+				liveWindow = new LiveWindow();
+				liveWindow.Closed += (_, _) => liveWindow = null;
+				liveWindow.Show();
 
-			if (CheckIfLaunchedWithCustomURLHandlerParam(args))
-			{
-				return; // wait for the dialog to quit the program
-			}
-
-
-			// allow multiple instances if the port is overriden
-			if (IsSparkOpen() && !overrideEchoVRPort)
-			{
-				MessageBox box = new MessageBox(Resources.instance_already_running_message, Resources.Error);
-				box.Show();
-				//while(box!= null)
+				if (!SparkSettings.instance.firstTimeSetupShown)
 				{
-					Thread.Sleep(10);
+					ToggleWindow(typeof(FirstTimeSetupWindow));
+					SparkSettings.instance.firstTimeSetupShown = true;
+				}
+				// else if (!SparkSettings.instance.ignitebot_spark_upgrade_message_shown)
+				// {
+				// 	MessageBox box = new MessageBox(Resources.spark_upgrade_message);
+				// 	box.Show();
+				// 	box.Owner = liveWindow;
+				// 	box.Height = 350;
+				// 	SparkSettings.instance.ignitebot_spark_upgrade_message_shown = true;
+				// }
+
+				// Check for command-line flags
+				if (args.Contains("-slowmode"))
+				{
+					SparkSettings.instance.targetDeltaTimeIndexStats = 1;
+				}
+
+				if (args.Contains("-autorestart"))
+				{
+					SparkSettings.instance.autoRestart = true;
+				}
+
+				if (args.Contains("-showdatabaselog"))
+				{
+					SparkSettings.instance.showDatabaseLog = true;
 				}
 
 
-				//return; // wait for the dialog to quit the program
-			}
+				// make an exception for certain users
+				// Note that these usernames are not the access codes. Don't even try.
+				if (currentAccessCodeUsername == "ignitevr")
+				{
+					ENABLE_LOGGER = false;
+				}
 
-			obs = new OBS();
+				ReadSettings();
 
+				client.DefaultRequestHeaders.Add("version", AppVersion());
+				client.DefaultRequestHeaders.Add("User-Agent", "Spark/" + AppVersion());
 
+				client.BaseAddress = new Uri(APIURL);
 
-			try
-			{
-				AsyncIO.ForceDotNet.Force();
-				NetMQConfig.Cleanup();
-				pubSocket = new PublisherSocket();
-				pubSocket.Options.SendHighWatermark = 1000;
-				pubSocket.Bind("tcp://*:12345");
-			}
-			catch (Exception e)
-			{
-				LogRow(LogType.Error, $"Error setting up pub/sub system: {e}");
-			}
+				if (HighlightsHelper.isNVHighlightsEnabled)
+				{
+					HighlightsHelper.SetupNVHighlights();
+				}
+				else
+				{
+					HighlightsHelper.InitHighlightsSDK(true);
+				}
 
-			InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
-			if (InstalledSpeakerSystemVersion.Length > 0)
-			{
-				string[] latestSpeakerSystemVer = GetLatestSpeakerSystemURLVer();
-				IsSpeakerSystemUpdateAvailable = latestSpeakerSystemVer[1] != InstalledSpeakerSystemVersion;
-			}
-			
-			SparkSettings.instance.sparkExeLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
-			SparkSettings.instance.Save();
-
-			RegisterUriScheme("ignitebot", "IgniteBot Protocol");
-			RegisterUriScheme("atlas", "ATLAS Protocol");
-			RegisterUriScheme("spark", "Spark Protocol");
-
-			// if logged in with discord
-			if (!string.IsNullOrEmpty(SparkSettings.instance.discordOAuthRefreshToken))
-			{
-				DiscordOAuth.OAuthLoginRefresh(SparkSettings.instance.discordOAuthRefreshToken);
-			}
-			else
-			{
-				DiscordOAuth.RevertToPersonal();
-			}
-
-			liveWindow = new LiveWindow();
-			liveWindow.Closed += (_, _) => liveWindow = null;
-			liveWindow.Show();
-
-			if (!SparkSettings.instance.firstTimeSetupShown)
-			{
-				ToggleWindow(typeof(FirstTimeSetupWindow));
-				SparkSettings.instance.firstTimeSetupShown = true;
-			}
-			// else if (!SparkSettings.instance.ignitebot_spark_upgrade_message_shown)
-			// {
-			// 	MessageBox box = new MessageBox(Resources.spark_upgrade_message);
-			// 	box.Show();
-			// 	box.Owner = liveWindow;
-			// 	box.Height = 350;
-			// 	SparkSettings.instance.ignitebot_spark_upgrade_message_shown = true;
-			// }
-
-			// Check for command-line flags
-			if (args.Contains("-slowmode"))
-			{
-				SparkSettings.instance.targetDeltaTimeIndexStats = 1;
-			}
-
-			if (args.Contains("-autorestart"))
-			{
-				SparkSettings.instance.autoRestart = true;
-			}
-
-			if (args.Contains("-showdatabaselog"))
-			{
-				SparkSettings.instance.showDatabaseLog = true;
-			}
-
-
-			// make an exception for certain users
-			// Note that these usernames are not the access codes. Don't even try.
-			if (currentAccessCodeUsername == "ignitevr")
-			{
-				ENABLE_LOGGER = false;
-			}
-
-			ReadSettings();
-
-			client.DefaultRequestHeaders.Add("version", AppVersion());
-			client.DefaultRequestHeaders.Add("User-Agent", "Spark/" + AppVersion());
-
-			client.BaseAddress = new Uri(APIURL);
-
-			if (HighlightsHelper.isNVHighlightsEnabled)
-			{
-				HighlightsHelper.SetupNVHighlights();
-			}
-			else
-			{
-				HighlightsHelper.InitHighlightsSDK(true);
-			}
-
-			synth = new SpeechSynthesizer();
-			// Initialize a new instance of the SpeechSynthesizer.
-			DiscordOAuth.authenticated += () =>
-			{
 				synth = new SpeechSynthesizer();
+				// Initialize a new instance of the SpeechSynthesizer.
+				DiscordOAuth.authenticated += () =>
+				{
+					synth = new SpeechSynthesizer();
 				// Configure the audio output.
 				synth.SetOutputToDefaultAudioDevice();
-				synth.SetRate(SparkSettings.instance.TTSSpeed);
-			};
+					synth.SetRate(SparkSettings.instance.TTSSpeed);
+				};
 
-			// this sets up the event listeners for replay clips
-			replayClips = new ReplayClips();
+				// this sets up the event listeners for replay clips
+				replayClips = new ReplayClips();
 
-			keyboardCamera = new KeyboardCamera();
+				keyboardCamera = new KeyboardCamera();
 
-			//overlayServer = new WebServer2(OverlayServer.HandleRequest, "http://*:6723/");
-			IRestServer server = RestServerBuilder.UseDefaults().Build();
-			//server.Start();
+				//overlayServer = new WebServer2(OverlayServer.HandleRequest, "http://*:6723/");
+				overlayServer = RestServerBuilder.From<OverlayServerConfiguration>().Build();
+				//if (!Personal)
+				{
+					overlayServer.Start();
+				}
 
-			// Server Score Tests - this works
-			//float out1 = CalculateServerScore(new List<int> { 34, 78, 50, 53 }, new List<int> { 63, 562, 65, 81 });   // fail too high
-			//float out2 = CalculateServerScore(new List<int> { 29, 60, 59, 30 }, new List<int> { 30, 70, 15, 26 });    // 90.54
-			//float out3 = CalculateServerScore(new List<int> { 61, 59, 69, 67 }, new List<int> { 73, 57, 50, 51 });    // 92.33
+				// Server Score Tests - this works
+				//float out1 = CalculateServerScore(new List<int> { 34, 78, 50, 53 }, new List<int> { 63, 562, 65, 81 });   // fail too high
+				//float out2 = CalculateServerScore(new List<int> { 29, 60, 59, 30 }, new List<int> { 30, 70, 15, 26 });    // 90.54
+				//float out3 = CalculateServerScore(new List<int> { 61, 59, 69, 67 }, new List<int> { 73, 57, 50, 51 });    // 92.33
 
-			PlayerJoined += (_, _, player) => { UseCameraControlKeys(false); };
-			PlayerLeft += (_, _, player) => { UseCameraControlKeys(false); };
-
-
-			UpdateEchoExeLocation();
-
-			DiscordRichPresence.Start();
+				PlayerJoined += (_, _, player) => { UseCameraControlKeys(false); };
+				PlayerLeft += (_, _, player) => { UseCameraControlKeys(false); };
 
 
-			statsThread = new Thread(StatsThread);
-			statsThread.IsBackground = true;
-			statsThread.Start();
+				UpdateEchoExeLocation();
 
-			fullLogThread = new Thread(ReplayThread);
-			fullLogThread.IsBackground = true;
-			fullLogThread.Start();
+				DiscordRichPresence.Start();
 
-			autorestartThread = new Thread(AutorestartThread);
-			autorestartThread.IsBackground = true;
-			autorestartThread.Start();
 
-			fetchThread = new Thread(FetchThread);
-			fetchThread.IsBackground = true;
-			fetchThread.Start();
+				statsThread = new Thread(StatsThread);
+				statsThread.IsBackground = true;
+				statsThread.Start();
 
-			liveReplayThread = new Thread(LiveReplayHostingThread);
-			liveReplayThread.IsBackground = true;
-			liveReplayThread.Start();
+				fullLogThread = new Thread(ReplayThread);
+				fullLogThread.IsBackground = true;
+				fullLogThread.Start();
 
-			milkThread = new Thread(MilkThread);
-			milkThread.IsBackground = true;
-			//milkThread.Start();
+				autorestartThread = new Thread(AutorestartThread);
+				autorestartThread.IsBackground = true;
+				autorestartThread.Start();
 
-			Logger.Init();
+				fetchThread = new Thread(FetchThread);
+				fetchThread.IsBackground = true;
+				fetchThread.Start();
 
-			//HighlightsHelper.CloseNVHighlights();
+				liveReplayThread = new Thread(LiveReplayHostingThread);
+				liveReplayThread.IsBackground = true;
+				liveReplayThread.Start();
+
+				milkThread = new Thread(MilkThread);
+				milkThread.IsBackground = true;
+				//milkThread.Start();
+
+				Logger.Init();
+
+				//HighlightsHelper.CloseNVHighlights();
+
+			} catch (Exception e)
+			{
+				Logger.Init();
+				Logger.LogRow(LogType.Error, e.ToString());
+				Quit();
+			}
 		}
 
 		public static string AppVersion()
@@ -477,7 +496,7 @@ namespace Spark
 				liveWindow.Close();
 				liveWindow = null;
 			}
-			webserver?.Stop();
+			overlayServer?.Stop();
 		}
 
 		static async Task GentleClose()
@@ -490,7 +509,7 @@ namespace Spark
 
 			running = false;
 
-			webserver?.Stop();
+			overlayServer?.Stop();
 
 			while (atlasHostingThread != null && atlasHostingThread.IsAlive)
 			{
@@ -847,7 +866,7 @@ namespace Spark
 
 						if (matchData == null)
 						{
-							matchData = new MatchData(game_Instance);
+							matchData = new MatchData(game_Instance, CustomId);
 							UpdateStatsIngame(game_Instance);
 						}
 
@@ -1531,7 +1550,7 @@ namespace Spark
 								   // TODO discard old players
 
 				inPostMatch = false;
-				matchData = new MatchData(frame);
+				matchData = new MatchData(frame, CustomId);
 				UpdateStatsIngame(frame);
 
 				if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath))
@@ -3059,7 +3078,7 @@ namespace Spark
 			}
 
 			lastMatches.Enqueue(matchData);
-			if (lastMatches.Count > 30)
+			if (lastMatches.Count > 50)
 			{
 				lastMatches.TryDequeue(out var match);
 			}

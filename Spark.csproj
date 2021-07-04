@@ -49,6 +49,11 @@
   <ItemGroup>
     <None Remove="GfeSDK.dll" />
     <None Remove="HighlightsPlugin64.dll" />
+    <None Remove="html\css\main.css" />
+    <None Remove="html\default_minimap.html" />
+    <None Remove="html\img\minimap.png" />
+    <None Remove="html\img\minimap_disc.png" />
+    <None Remove="html\js\get_data.js" />
     <None Remove="ignite_logo.png" />
     <None Remove="ignite_logo_128.png" />
     <None Remove="img\alternate_white.png" />
@@ -73,6 +78,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="HighlightsPlugin64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="html\css\main.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="html\default_minimap.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="html\img\minimap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="html\img\minimap_disc.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="html\js\get_data.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="InstallEchoSpeakerSystem.bat">
@@ -110,7 +130,9 @@
     <Resource Include="img\text-box-outline.png" />
     <Resource Include="img\view-dashboard.png" />
     <None Remove="html\js\heatmap.min.js" />
-    <Resource Include="html\js\heatmap.min.js" />
+    <EmbeddedResource Include="html\js\heatmap.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
