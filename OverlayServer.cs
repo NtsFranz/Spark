@@ -52,6 +52,73 @@ namespace Spark
 		}
 
 
+		[RestRoute("Get", "/stats")]
+		public async Task Stats(IHttpContext context)
+		{
+			context.Response.AddHeader("Access-Control-Allow-Origin", "*");
+			context.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+			context.Response.AddHeader("Content-Type", "application/json");
+
+			if (Program.inGame)
+			{
+				// gets a list of all previous matches in memory that are for the current set
+				List<MatchData> selectedMatches = Program.lastMatches
+					.Where(m => m.customId == Program.matchData.customId &&
+						   m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+					.ToList();
+				selectedMatches.Add(Program.matchData);
+
+
+
+				BatchOutputFormat data = new BatchOutputFormat();
+				data.match_data = Program.matchData.ToDict();
+
+				selectedMatches.ForEach(m =>
+				{
+					m.players.Values.ToList().ForEach(e => data.match_players.Add(e.ToDict()));
+					m.Events.ForEach(e => data.events.Add(e.ToDict()));
+					m.Goals.ForEach(e => data.goals.Add(e.ToDict()));
+					m.Throws.ForEach(e => data.throws.Add(e.ToDict()));
+				});
+				string dataString = JsonConvert.SerializeObject(data);
+
+
+				Dictionary<string, object> response = new Dictionary<string, object>
+				{
+					{ "teams", new Dictionary<string, object>[]
+						{
+							new Dictionary<string, object>{
+								{ "vrml_team_name", selectedMatches.Last().teams[g_Team.TeamColor.blue].vrmlTeamName },
+								{ "vrml_team_logo", selectedMatches.Last().teams[g_Team.TeamColor.blue].vrmlTeamLogo },
+
+							}
+							,
+							new Dictionary<string, object>{
+								{ "vrml_team_name", selectedMatches.Last().teams[g_Team.TeamColor.orange].vrmlTeamName },
+								{ "vrml_team_logo", selectedMatches.Last().teams[g_Team.TeamColor.orange].vrmlTeamLogo },
+
+							}
+						}
+					},
+					{
+						"joust_events", selectedMatches
+							.SelectMany(m=> m.Events)
+							.Where(e=>e.eventType is EventData.EventType.joust_speed or EventData.EventType.defensive_joust)
+							.Select(e=>e.ToDict())
+					},
+					{"goals", selectedMatches.SelectMany(m=> m.Goals).Select(e=>e.ToDict()) }
+				};
+				string responseString = JsonConvert.SerializeObject(response);
+				
+				await context.Response.SendResponseAsync(responseString);
+			}
+			else
+			{
+				await context.Response.SendResponseAsync(HttpStatusCode.NotFound);
+			}
+		}
+
+
 		[RestRoute("Get", "/position_map")]
 		public async Task PositionMap(IHttpContext context)
 		{

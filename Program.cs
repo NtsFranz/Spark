@@ -29,6 +29,8 @@ using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
 using Grapevine;
 using System.Windows.Threading;
+using Newtonsoft.Json.Linq;
+
 //using System.Windows.Forms;
 
 namespace Spark
@@ -423,11 +425,19 @@ namespace Spark
 
 				keyboardCamera = new KeyboardCamera();
 
-				//overlayServer = new WebServer2(OverlayServer.HandleRequest, "http://*:6723/");
-				overlayServer = RestServerBuilder.From<OverlayServerConfiguration>().Build();
-				//if (!Personal)
+				try
 				{
-					overlayServer.Start();
+					//overlayServer = new WebServer2(OverlayServer.HandleRequest, "http://*:6723/");
+					overlayServer = RestServerBuilder.From<OverlayServerConfiguration>().Build();
+					//if (!Personal)
+					{
+						overlayServer.Start();
+					}
+				}
+				catch (Exception e)
+				{
+					Logger.Init();
+					Logger.LogRow(LogType.Error, e.ToString());
 				}
 
 				// Server Score Tests - this works
@@ -468,6 +478,59 @@ namespace Spark
 				milkThread.IsBackground = true;
 				//milkThread.Start();
 
+				Thread setLoadingTips = new Thread(() =>
+				{
+					try
+					{
+						EchoVRSettingsManager.ReloadLoadingTips();
+						JToken toolsAll = EchoVRSettingsManager.loadingTips["tools-all"];
+						JArray tips = (JArray) EchoVRSettingsManager.loadingTips["tools-all"]["tips"];
+
+						string[] newTips =
+						{
+							"Use NVIDIA Highlights in Spark to automatically record clips of all your noteworthy moments, then review the ones your want to save later.",
+							"Log into Spark with Discord to enable features like uploading stats to ignitevr.gg/stats and TTS.",
+							"Enable TTS in Spark for events like exact throw speed, joust times, player leave events, and more.",
+							"You can create a private match in any region you want using the \"Choose Server Region\" button in Spark.",
+							"Use the EchoVR Speaker System to make any audio on your PC sound like it is coming from speakers in the arena.",
+							".echoreplay files contain all the API data from a match, and can be used to play back and analyze matches in the Replay Viewer.",
+							"Spark is available in both English and Japanese!",
+							"IGNITE. Wow.",
+							"The server location provided by Spark is not 100% reliable, and is based on the ip address of the server using ip-api.com.",
+							"Spark's OBS integration allows you to automatically change scenes based on if you are in a game or not and automatically activates the replay buffer for you.",
+							"You can change many of EchoVR's ingame settings from within Spark's settings so that you don't even have to connect a headset!",
+							"Spark offers Discord Rich Presence and game invites. You can also enable showing the server location in the Discord RP info.",
+							"Send someone a spark:// link to let them join your game without an invite. This is especially useful for getting casters into your match.",
+							"You can sort the joust times in Spark's dashboard by time as well as by recent.",
+							"Use the server score provided by Spark to choose a server that is fair for both teams.",
+							"Lone Echo 2 releases tomorrow!",
+							"REGGIE WOODS",
+							"Same Disc, Different Day",
+						};
+
+						// keep only those without SPARK in the title
+						tips = new JArray(tips.Where(t => (string) t[1] != "SPARK"));
+
+						foreach (string tip in newTips)
+						{
+							if (!tips.Any(existingTip => (string) existingTip[2] == tip))
+							{
+								tips.Add(new JArray("", "SPARK", tip));
+							}
+						}
+
+						toolsAll["tips"] = tips;
+
+						EchoVRSettingsManager.WriteEchoVRLoadingTips(EchoVRSettingsManager.loadingTips);
+					}
+					catch (Exception e)
+					{
+						Logger.Init();
+						Logger.LogRow(LogType.Error, e.ToString());
+					}
+				});
+				setLoadingTips.Start();
+
 				Logger.Init();
 
 				//HighlightsHelper.CloseNVHighlights();
@@ -482,7 +545,7 @@ namespace Spark
 
 		public static string AppVersion()
 		{
-			var version = System.Windows.Application.Current.GetType().Assembly.GetName().Version;
+			var version = Application.Current.GetType().Assembly.GetName().Version;
 			return $"{version.Major}.{version.Minor}.{version.Build}";
 		}
 

@@ -1,18 +1,18 @@
-//var ip = "127.0.0.1"
-var ip = "localhost"
-var port = "6724"
+//const ip = "127.0.0.1"
+const ip = "localhost"
+const port = "6724"
 
-var body = document.getElementsByClassName("minimap_container")[0];
-var disc = document.getElementById("disc");
-var players = document.getElementsByClassName('player');
-var player_numbers = document.getElementsByClassName('player_number');
-var timeout_banner = document.getElementById('timeout_banner');
-var timeout_banner_team = document.getElementById('timeout_banner_team');
+const body = document.getElementsByClassName("minimap_container")[0];
+const disc = document.getElementById("disc");
+const players = document.getElementsByClassName('player');
+const player_numbers = document.getElementsByClassName('player_number');
+const timeout_banner = document.getElementById('timeout_banner');
+const timeout_banner_team = document.getElementById('timeout_banner_team');
 
-var was_not_in_match = false;
+let was_not_in_match = false;
 
 function get_data() {
-	var url = "http://" + ip + ":" + port + "/session";
+	const url = `http://${ip}:${port}/session`;
 	httpGetAsync(url, update_minimap, not_in_match);
 }
 
@@ -34,9 +34,9 @@ function update_minimap(data) {
 	}
 	//console.log(data);
 	set_pos(disc, data['disc']['position'][2], data['disc']['position'][0]);
-	for (var i = 0; i < 10; i++) {
+	for (let i = 0; i < 10; i++) {
 		if (data['teams'][Math.floor(i / 5)]['players'].length > i % 5) {
-			var player_data = data['teams'][Math.floor(i / 5)]['players'][Math.floor(i % 5)];
+			const player_data = data['teams'][Math.floor(i / 5)]['players'][Math.floor(i % 5)];
 			set_pos(players[i], player_data['head']['position'][2], player_data['head']['position'][0]);
 			set_number(player_numbers[i], "" + player_data['number']);
 			players[i].style.visibility = 'visible';
@@ -47,7 +47,7 @@ function update_minimap(data) {
 		}
 	}
 
-	if (data['pause']['paused_state'] == 'paused') {
+	if (data['pause']['paused_state'] === 'paused') {
 		timeout_banner.style.visibility = 'visible';
 		timeout_banner_team.innerText = data['pause']['paused_requested_team']
 	} else {
@@ -67,7 +67,7 @@ function set_pos(elem, z, x) {
 }
 
 function set_number(elem, text) {
-	if (text.length == 1) {
+	if (text.length === 1) {
 		text = "0" + text;
 	}
 	elem.innerText = text;
@@ -78,9 +78,9 @@ function set_number(elem, text) {
 function httpGetAsync(theUrl, callback, failcallback = null) {
 	var xmlHttp = new XMLHttpRequest();
 	xmlHttp.onreadystatechange = function () {
-		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+		if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
 			callback(xmlHttp.responseText);
-		else if (xmlHttp.status == 404 && failcallback != null) {
+		else if (xmlHttp.status === 404 && failcallback != null) {
 			failcallback();
 		}
 	}
@@ -88,4 +88,4 @@ function httpGetAsync(theUrl, callback, failcallback = null) {
 	xmlHttp.send(null);
 }
 
-setInterval(get_data, 100);
+setInterval(get_data, 250);
