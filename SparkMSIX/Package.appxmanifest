@@ -9,7 +9,7 @@
   <Identity
     Name="25937NtsFranz.Spark-EchoVRCompanionApp"
     Publisher="CN=4740C6DF-BA63-45AD-9255-0937307FCCA1"
-    Version="2.2.31.0" />
+    Version="2.3.1.0" />
 
   <Properties>
     <DisplayName>Spark - EchoVR Companion App</DisplayName>
@@ -45,6 +45,20 @@
         </uap:DefaultTile >
         <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
+			<Extensions>
+				<uap:Extension Category="windows.protocol">
+					<uap:Protocol Name="spark">
+						<uap:Logo>Images\Square44x44Logo.png</uap:Logo>
+						<uap:DisplayName>Spark EchoVR Link</uap:DisplayName>
+					</uap:Protocol>
+				</uap:Extension>
+				<uap:Extension Category="windows.protocol">
+					<uap:Protocol Name="atlas">
+						<uap:Logo>Images\Square44x44Logo.png</uap:Logo>
+						<uap:DisplayName>ATLAS EchoVR Link</uap:DisplayName>
+					</uap:Protocol>
+				</uap:Extension>
+			</Extensions>
     </Application>
   </Applications>
 

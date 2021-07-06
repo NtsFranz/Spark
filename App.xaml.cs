@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Windows;
 using Spark.Properties;
 
@@ -9,6 +10,18 @@ namespace Spark
 	/// </summary>
 	public partial class App : Application
 	{
+		//#if WINDOWS_STORE_RELEASE
+		//		protected override void OnActivated(IActivatedEventArgs args)
+		//		{
+		//			if (args.Kind == ActivationKind.Protocol)
+		//			{
+		//				ProtocolActivatedEventArgs eventArgs = args as ProtocolActivatedEventArgs;
+		//				// TODO: Handle URI activation
+		//				// The received URI is eventArgs.Uri.AbsoluteUri
+		//			}
+		//		}
+		//#endif
+
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			// load settings file
@@ -41,8 +54,8 @@ namespace Spark
 				_ => System.Threading.Thread.CurrentThread.CurrentUICulture
 			};
 
-			ThemesController.SetTheme((ThemesController.ThemeTypes) SparkSettings.instance.theme);
-
+			ThemesController.SetTheme((ThemesController.ThemeTypes)SparkSettings.instance.theme);
+			CheckWindowPositionsValid();
 
 			base.OnStartup(e);
 
@@ -113,10 +126,10 @@ namespace Spark
 			SparkSettings.instance.isAutofocusEnabled = Settings.Default.isAutofocusEnabled;
 			SparkSettings.instance.loneEchoSubtitlesStreamerMode = Settings.Default.loneEchoSubtitlesStreamerMode;
 			SparkSettings.instance.loneEchoPath = Settings.Default.loneEchoPath;
-			SparkSettings.instance.liveWindowTop = (float) Settings.Default.liveWindowTop;
-			SparkSettings.instance.liveWindowLeft = (float) Settings.Default.liveWindowLeft;
-			SparkSettings.instance.settingsWindowTop = (float) Settings.Default.settingsWindowTop;
-			SparkSettings.instance.settingsWindowLeft = (float) Settings.Default.settingsWindowLeft;
+			SparkSettings.instance.liveWindowTop = (float)Settings.Default.liveWindowTop;
+			SparkSettings.instance.liveWindowLeft = (float)Settings.Default.liveWindowLeft;
+			SparkSettings.instance.settingsWindowTop = (float)Settings.Default.settingsWindowTop;
+			SparkSettings.instance.settingsWindowLeft = (float)Settings.Default.settingsWindowLeft;
 			SparkSettings.instance.client_name = Settings.Default.client_name;
 			SparkSettings.instance.atlasLinkAppendTeamNames = Settings.Default.atlasLinkAppendTeamNames;
 			SparkSettings.instance.atlasHostingVisibility = Settings.Default.atlasHostingVisibility;
@@ -124,7 +137,7 @@ namespace Spark
 			SparkSettings.instance.ttsVoice = Settings.Default.ttsVoice;
 			SparkSettings.instance.languageIndex = Settings.Default.languageIndex;
 			SparkSettings.instance.theme = Settings.Default.theme;
-			SparkSettings.instance.replayBufferLength = (float) Settings.Default.replayBufferLength;
+			SparkSettings.instance.replayBufferLength = (float)Settings.Default.replayBufferLength;
 			SparkSettings.instance.enableReplayBuffer = Settings.Default.enableReplayBuffer;
 			SparkSettings.instance.replayClipPlayspace = Settings.Default.replayClipPlayspace;
 			SparkSettings.instance.replayClipGoal = Settings.Default.replayClipGoal;
@@ -160,6 +173,42 @@ namespace Spark
 			SparkSettings.instance.chooseRegionSpectator = Settings.Default.chooseRegionSpectator;
 			SparkSettings.instance.obsInGameScene = Settings.Default.obsInGameScene;
 			SparkSettings.instance.obsBetweenGameScene = Settings.Default.obsBetweenGameScene;
+		}
+
+
+		private static void CheckWindowPositionsValid()
+		{
+			if (OffScreen(
+				new Vector2(
+					SparkSettings.instance.liveWindowLeft,
+					SparkSettings.instance.liveWindowTop
+					),
+				new Vector2(500, 500)))
+			{
+				SparkSettings.instance.liveWindowLeft = 0;
+				SparkSettings.instance.liveWindowTop = 0;
+			}
+
+			if (OffScreen(
+				new Vector2(
+					SparkSettings.instance.settingsWindowLeft,
+					SparkSettings.instance.settingsWindowTop
+					),
+				new Vector2(500, 500)))
+			{
+				SparkSettings.instance.settingsWindowLeft = 0;
+				SparkSettings.instance.settingsWindowTop = 0;
+			}
+
+		}
+
+		private static bool OffScreen(Vector2 topLeft, Vector2 size)
+		{
+			return
+				(topLeft.X <= SystemParameters.VirtualScreenLeft - size.X) ||
+				(topLeft.Y <= SystemParameters.VirtualScreenTop - size.Y) ||
+				(SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth <= topLeft.X) ||
+				(SystemParameters.VirtualScreenTop + SystemParameters.VirtualScreenHeight <= topLeft.Y);
 		}
 
 		public void ExitApplication()

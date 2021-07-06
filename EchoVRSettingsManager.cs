@@ -13,6 +13,7 @@ namespace Spark
 	{
 		private static JToken settings;
 		private static JToken settingsSpec;
+		public static JToken loadingTips;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		private static EchoVRSettingsManager instance;
@@ -36,14 +37,20 @@ namespace Spark
 
 		public static void Reload()
 		{
-			if (instance == null) instance = new EchoVRSettingsManager();
+			instance ??= new EchoVRSettingsManager();
 			settings = ReadEchoVRSettings();
 		}
 
 		public static void ReloadSpec()
 		{
-			if (instance == null) instance = new EchoVRSettingsManager();
+			instance ??= new EchoVRSettingsManager();
 			settingsSpec = ReadEchoVRSettingsSpec();
+		}
+
+		public static void ReloadLoadingTips()
+		{
+			instance ??= new EchoVRSettingsManager();
+			loadingTips = ReadEchoVRLoadingTips();
 		}
 
 		#region settings_mp_v2
@@ -395,6 +402,49 @@ namespace Spark
 		}
 		#endregion
 
+		#region LoadingTips
+
+		
+		public static JToken ReadEchoVRLoadingTips()
+		{
+			try
+			{
+				string file = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "loading_tips.json");
+				if (!File.Exists(file))
+				{
+					LogRow(LogType.Error, "Can't find the EchoVR settings file");
+					return null;
+				}
+				return JsonConvert.DeserializeObject<JToken>(File.ReadAllText(file));
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, "Error when reading Arena settings.\n" + e.ToString());
+			}
+			return null;
+		}
+
+		public static void WriteEchoVRLoadingTips(JToken settings)
+		{
+			try
+			{
+				string file = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "loading_tips.json");
+				if (!File.Exists(file))
+				{
+					throw new NullReferenceException("Can't find the EchoVR settings file");
+				}
+
+				string settingsString = JsonConvert.SerializeObject(settings, Formatting.Indented);
+				File.WriteAllText(file, settingsString);
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, $"Error when writing loading tips.\n{e}");
+			}
+		}
+
+		#endregion
+		
 		#region Settings 
 
 		public static bool EnableAPIAccess {

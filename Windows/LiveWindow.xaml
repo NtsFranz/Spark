@@ -454,7 +454,7 @@
 					<Button x:Name="showOverlay" Content="Show Overlay" Height="40" Click="showOverlay_Click" Margin="4,4,4,4"/>
 				</StackPanel>
 			</GroupBox>
-			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://discord.gg/CGXR86C" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static p:Resources.For_help__join_the_Discord}"/>
+			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://discord.gg/HDC2kvwup6" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static p:Resources.For_help__join_the_Discord}"/>
 			</Hyperlink></TextBlock>
 
 			<Image x:Name="image" Height="175" Source="/img/alternate_white.png" Opacity="0.05"/>

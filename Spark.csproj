@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.2.31</Version>
+    <Version>2.3.2</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports, Graic</Authors>
@@ -49,6 +49,11 @@
   <ItemGroup>
     <None Remove="GfeSDK.dll" />
     <None Remove="HighlightsPlugin64.dll" />
+    <None Remove="html\css\main.css" />
+    <None Remove="html\default_minimap.html" />
+    <None Remove="html\img\minimap.png" />
+    <None Remove="html\img\minimap_disc.png" />
+    <None Remove="html\js\get_data.js" />
     <None Remove="ignite_logo.png" />
     <None Remove="ignite_logo_128.png" />
     <None Remove="img\alternate_white.png" />
@@ -66,7 +71,6 @@
     <None Remove="img\text-box-outline.png" />
     <None Remove="img\view-dashboard.png" />
     <None Remove="InstallEchoSpeakerSystem.bat" />
-    <None Remove="SparkLinkLauncher.exe" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,6 +78,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="HighlightsPlugin64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="html\css\main.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="html\default_minimap.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="html\img\minimap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="html\img\minimap_disc.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="html\js\get_data.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="InstallEchoSpeakerSystem.bat">
@@ -111,8 +130,7 @@
     <Resource Include="img\text-box-outline.png" />
     <Resource Include="img\view-dashboard.png" />
     <None Remove="html\js\heatmap.min.js" />
-    <Resource Include="html\js\heatmap.min.js" />
-    <EmbeddedResource Include="SparkLinkLauncher.exe">
+    <EmbeddedResource Include="html\js\heatmap.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
