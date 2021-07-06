@@ -81,7 +81,7 @@ namespace Spark
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		static extern bool GetWindowRect(HandleRef hWnd, out RECT lpRect);
+		static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RECT
@@ -2107,6 +2107,11 @@ namespace Spark
 		private void chooseServerRegion_Click(object sender, RoutedEventArgs e)
 		{
 			Program.ToggleWindow(typeof(CreateServer), ownedBy: this);
+		}
+
+		private void showOverlay_Click(object sender, RoutedEventArgs e)
+		{
+			Program.ToggleWindow(typeof(GameOverlay));
 		}
 	}
 }
