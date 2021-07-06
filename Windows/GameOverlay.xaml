@@ -6,31 +6,57 @@
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         xmlns:local="clr-namespace:Spark"
         mc:Ignorable="d"
-        Title="GameOverlay" 
-		Height="450" Width="800" 
-		AllowsTransparency="True" 
-		WindowStyle="None" 
-		ResizeMode="NoResize" 
-		ShowInTaskbar="False" 
-		Topmost="True" 
-		ShowActivated="False" 
-		Background="Transparent">
-	<Grid Background="Transparent">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="50"/>
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="3*"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="3*"/>
-		</Grid.ColumnDefinitions>
-		<TextBlock x:Name="orangeTeamName" Text="ORANGE TEAM" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="20" Background="#FFEA7807" Padding="10,5,10,5" TextAlignment="Center"/>
-		<Button Width="100" Height="50" Content="BUTTON" Grid.Column="1"/>
-		<Button Width="100" Height="50" Content="BUTTON" Grid.Column="2"/>
-		<TextBlock x:Name="blueTeamName" Text="BLUE TEAM" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="20" Grid.Column="3" Background="#FF0F6ECD" Padding="10,5,10,5" TextAlignment="Center"/>
-	</Grid>
-	<!--<DockPanel>
+        Title="GameOverlay"
+        Height="450" Width="800"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ShowActivated="False"
+        Background="Transparent">
+    <Grid Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="16*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="7*" />
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock x:Name="orangeTeamName" Text="ORANGE TEAM" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                   FontSize="20" Background="#aFEA7807" Padding="10,5,10,5" TextAlignment="Right" />
+        <TextBlock x:Name="blueTeamName" Text="BLUE TEAM" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                   FontSize="20"
+                   Grid.Row="0" Grid.Column="4" Background="#aF0F6ECD" Padding="10,5,10,5" TextAlignment="Left" />
+
+        <Button Grid.Column="2" Grid.Row="0" Click="ToggleUI" Background="#11000000" />
+
+        <Grid Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="16*" />
+                <RowDefinition Height="6*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="10*" />
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="1" Grid.Column="0" x:Name="orangePlayerList" />
+            <StackPanel Grid.Row="1" Grid.Column="4" x:Name="bluePlayerList" />
+
+
+            <Button Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="2" Click="ToggleMap" Background="#11000000" />
+        </Grid>
+    </Grid>
+    <!--<DockPanel>
 		<wv2:WebView2 Name="webView" Source="/Windows/default_minimap.html" />
 	</DockPanel>-->
 </Window>

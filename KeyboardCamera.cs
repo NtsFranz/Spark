@@ -66,20 +66,6 @@ namespace Spark
 					bool found = false;
 					found = await CheckPOVCamIsCorrect(playerName);
 
-					List<Keyboard.DirectXKeyStrokes> numbers = new List<Keyboard.DirectXKeyStrokes>
-					{
-						Keyboard.DirectXKeyStrokes.DIK_0,
-						Keyboard.DirectXKeyStrokes.DIK_1,
-						Keyboard.DirectXKeyStrokes.DIK_2,
-						Keyboard.DirectXKeyStrokes.DIK_3,
-						Keyboard.DirectXKeyStrokes.DIK_4,
-						Keyboard.DirectXKeyStrokes.DIK_5,
-						Keyboard.DirectXKeyStrokes.DIK_6,
-						Keyboard.DirectXKeyStrokes.DIK_7,
-						Keyboard.DirectXKeyStrokes.DIK_8,
-						Keyboard.DirectXKeyStrokes.DIK_9,
-					};
-
 					// loop through all the players twice if we don't find the right one the first time
 					int foundTries = 1;
 					while (foundTries > 0 && !found)
@@ -90,14 +76,14 @@ namespace Spark
 						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
 						await Task.Delay(20);
 
-						for (int i = 0; i < numbers.Count; i++)
+						for (int i = 0; i < Keyboard.numbers.Length; i++)
 						{
 							Program.FocusEchoVR();
 							// press the keys to visit a player
-							Keyboard.SendKey(numbers[i], false, Keyboard.InputType.Keyboard);
+							Keyboard.SendKey(Keyboard.numbers[i], false, Keyboard.InputType.Keyboard);
 							await Task.Delay(20);
 							Program.FocusEchoVR();
-							Keyboard.SendKey(numbers[i], true, Keyboard.InputType.Keyboard);
+							Keyboard.SendKey(Keyboard.numbers[i], true, Keyboard.InputType.Keyboard);
 
 							// check if this is the right player
 							await Task.Delay(50);

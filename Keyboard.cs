@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Spark
 {
@@ -187,6 +189,33 @@ namespace Spark
 			DIK_MOUSEWHEELDOWN = 0x109,
 		}
 
+		public static DirectXKeyStrokes[] numbers = new DirectXKeyStrokes[]
+		{
+			DirectXKeyStrokes.DIK_0,
+			DirectXKeyStrokes.DIK_1,
+			DirectXKeyStrokes.DIK_2,
+			DirectXKeyStrokes.DIK_3,
+			DirectXKeyStrokes.DIK_4,
+			DirectXKeyStrokes.DIK_5,
+			DirectXKeyStrokes.DIK_6,
+			DirectXKeyStrokes.DIK_7,
+			DirectXKeyStrokes.DIK_8,
+			DirectXKeyStrokes.DIK_9,
+		};
+
+		public static void SendEchoKey(DirectXKeyStrokes key, bool holdShift = false)
+		{
+			Program.FocusEchoVR();
+			if (holdShift) SendKey(DirectXKeyStrokes.DIK_LSHIFT, false, InputType.Keyboard);
+			SendKey(key, false, InputType.Keyboard);
+			Task.Delay(50).ContinueWith((_) =>
+			{
+				SendKey(key, true, InputType.Keyboard);
+				if (holdShift) SendKey(DirectXKeyStrokes.DIK_LSHIFT, true, InputType.Keyboard);
+			});
+
+		}
+
 		/// <summary>
 		/// Sends a directx key.
 		/// http://www.gamespp.com/directx/directInputKeyboardScanCodes.html
@@ -208,21 +237,21 @@ namespace Spark
 
 			Input[] inputs =
 			{
-			new Input
-			{
-				type = (int) inputType,
-				u = new InputUnion
+				new Input
 				{
-					ki = new KeyboardInput
+					type = (int) inputType,
+					u = new InputUnion
 					{
-						wVk = 0,
-						wScan = (ushort) key,
-						dwFlags = flagtosend,
-						dwExtraInfo = GetMessageExtraInfo()
+						ki = new KeyboardInput
+						{
+							wVk = 0,
+							wScan = (ushort) key,
+							dwFlags = flagtosend,
+							dwExtraInfo = GetMessageExtraInfo()
+						}
 					}
 				}
-			}
-		};
+			};
 
 			SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
 		}
@@ -248,21 +277,21 @@ namespace Spark
 
 			Input[] inputs =
 			{
-			new Input
-			{
-				type = (int) inputType,
-				u = new InputUnion
+				new Input
 				{
-					ki = new KeyboardInput
+					type = (int) inputType,
+					u = new InputUnion
 					{
-						wVk = 0,
-						wScan = key,
-						dwFlags = flagtosend,
-						dwExtraInfo = GetMessageExtraInfo()
+						ki = new KeyboardInput
+						{
+							wVk = 0,
+							wScan = key,
+							dwFlags = flagtosend,
+							dwExtraInfo = GetMessageExtraInfo()
+						}
 					}
 				}
-			}
-		};
+			};
 
 			SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
 		}
