@@ -1130,6 +1130,11 @@ namespace Spark
 				Logger.LogRow(Logger.LogType.File, Program.lastFrame?.sessionid, "Tried to mute team comms (manual)");
 			}
 		}
+
+		private void UploadTabletStats(object sender, RoutedEventArgs e)
+		{
+			Program.UploadTabletStats();
+		}
 	}
 
 	public class SettingBindingExtension : Binding

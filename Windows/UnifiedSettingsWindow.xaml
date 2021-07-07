@@ -125,6 +125,7 @@
 											  IsChecked="{l:SettingBinding uploadToFirestore}"
 											  Visibility="{Binding FirestoreVisible}"
 											  Margin="4,4,4,4" />
+								<Button Click="UploadTabletStats">Upload Tablet Stats</Button>
 							</StackPanel>
 						</GroupBox>
 

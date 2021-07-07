@@ -488,19 +488,19 @@ namespace Spark
 
 						string[] newTips =
 						{
-							"Use NVIDIA Highlights in Spark to automatically record clips of all your noteworthy moments, then review the ones your want to save later.",
+							"Use NVIDIA Highlights in Spark to automatically record clips of all your noteworthy moments.",
 							"Log into Spark with Discord to enable features like uploading stats to ignitevr.gg/stats and TTS.",
 							"Enable TTS in Spark for events like exact throw speed, joust times, player leave events, and more.",
 							"You can create a private match in any region you want using the \"Choose Server Region\" button in Spark.",
-							"Use the EchoVR Speaker System to make any audio on your PC sound like it is coming from speakers in the arena.",
-							".echoreplay files contain all the API data from a match, and can be used to play back and analyze matches in the Replay Viewer.",
+							"Use the EchoVR Speaker System to make any audio on your PC sound like an arena.",
+							".echoreplay files can be used to play back and analyze matches in the Replay Viewer.",
 							"Spark is available in both English and Japanese!",
 							"IGNITE. Wow.",
-							"The server location provided by Spark is not 100% reliable, and is based on the ip address of the server using ip-api.com.",
-							"Spark's OBS integration allows you to automatically change scenes based on if you are in a game or not and automatically activates the replay buffer for you.",
-							"You can change many of EchoVR's ingame settings from within Spark's settings so that you don't even have to connect a headset!",
-							"Spark offers Discord Rich Presence and game invites. You can also enable showing the server location in the Discord RP info.",
-							"Send someone a spark:// link to let them join your game without an invite. This is especially useful for getting casters into your match.",
+							"The server location provided by Spark is not 100% reliable.",
+							"Spark's OBS integration allows you to make replay buffer clips and automatically change scenes",
+							"You can change many of EchoVR's ingame settings from within Spark's settings.",
+							"Spark offers Discord Rich Presence and game invites.",
+							"Send someone a spark:// link to let them join your game without an invite.",
 							"You can sort the joust times in Spark's dashboard by time as well as by recent.",
 							"Use the server score provided by Spark to choose a server that is fair for both teams.",
 							"Lone Echo 2 releases tomorrow!",
@@ -3216,7 +3216,7 @@ namespace Spark
 			client.DefaultRequestHeaders.Remove("access-code");
 			client.DefaultRequestHeaders.Add("access-code", DiscordOAuth.SeasonName);
 
-			var content = new StringContent(data, Encoding.UTF8, "application/json");
+			StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
 
 			try
 			{
@@ -4184,6 +4184,75 @@ namespace Spark
 			{
 				new MessageBox($"Failed to open window: {type}.\nPlease report this to NtsFranz.").Show();
 				return false;
+			}
+		}
+
+		public static void UploadTabletStats()
+		{
+			try
+			{
+				string baseFolder = Path.Combine(
+					Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+					"..", "Local", "rad", "echovr", "users", "ovr-org");
+				if (!Directory.Exists(baseFolder))
+				{
+					LogRow(LogType.Error, "Can't find the EchoVR profile folder.");
+					return;
+				}
+
+				List<string> folders = Directory.GetDirectories(baseFolder).ToList();
+				List<string> files = new List<string>();
+				folders.ForEach(folder => files.AddRange(Directory.GetFiles(folder).ToList()));
+
+				List<TabletStats> profiles = new List<TabletStats>();
+				files.Where(f => f.EndsWith("serverprofile.json")).ToList().ForEach(file =>
+				{
+					JToken data = JsonConvert.DeserializeObject<JToken>(File.ReadAllText(file));
+					if (data != null && TabletStats.IsValid(data))
+					{
+						profiles.Add(new TabletStats(data));
+					}
+				});
+				profiles.Sort((p1, p2) => p1.update_time.CompareTo(p2.update_time));
+				new MessageBox($"Found tablet stat profiles:\n{string.Join("\n", profiles.Select(p => p.player_name))}").Show();
+
+
+				#region Do upload
+
+				profiles.ForEach(p =>
+				{
+					Task.Run(async () =>
+					{
+						string dataString = JsonConvert.SerializeObject(p);
+						string hash = SecretKeys.Hash(dataString + p.player_name);
+
+						client.DefaultRequestHeaders.Remove("x-api-key");
+						client.DefaultRequestHeaders.Add("x-api-key", DiscordOAuth.igniteUploadKey);
+
+						client.DefaultRequestHeaders.Remove("access-code");
+						client.DefaultRequestHeaders.Add("access-code", DiscordOAuth.SeasonName);
+
+						StringContent content = new StringContent(dataString, Encoding.UTF8, "application/json");
+
+						try
+						{
+							HttpResponseMessage response = await client.PostAsync("update_tablet_stats?hashkey=" + hash + "&player_name=" + p.player_name, content);
+							LogRow(LogType.Info, "[DB][Response] " + response.Content.ReadAsStringAsync().Result);
+						}
+						catch
+						{
+							LogRow(LogType.Error, "Can't connect to the DB server");
+						}
+					});
+				});
+
+				#endregion
+
+				return;
+			}
+			catch (Exception ex)
+			{
+				new MessageBox($"Failed to upload tablet stats.\nPlease report this to NtsFranz.").Show();
 			}
 		}
 
