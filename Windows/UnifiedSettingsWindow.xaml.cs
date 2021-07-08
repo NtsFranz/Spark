@@ -1133,7 +1133,12 @@ namespace Spark
 
 		private void UploadTabletStats(object sender, RoutedEventArgs e)
 		{
-			Program.UploadTabletStats();
+			List<TabletStats> stats = Program.FindTabletStats();
+
+			if (stats != null)
+			{
+				new UploadTabletStatsMenu(stats) { Owner = this }.Show();
+			}
 		}
 	}
 

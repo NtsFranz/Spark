@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Net;
 using Grapevine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,12 +34,12 @@ namespace Spark
 			server.ContentFolders.Add(folderPath);
 			server.UseContentFolders();
 
-			server.Prefixes.Add($"http://localhost:{_serverPort}/");
+			server.Prefixes.Add($"http://*:{_serverPort}/");
 
 			/* Configure Router Options (if supported by your router implementation) */
 			server.Router.Options.SendExceptionMessages = true;
 
-			var headers = new System.Net.WebHeaderCollection
+			WebHeaderCollection headers = new WebHeaderCollection
 			{
 				{ "Access-Control-Allow-Origin", "*" }
 			};

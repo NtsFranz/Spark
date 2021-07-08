@@ -75,8 +75,8 @@ namespace Spark
 
 		public static bool writeToOBSHTMLFile = false;
 
-		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
-		//public const string APIURL = "http://127.0.0.1:5005/";
+		//public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
+		public const string APIURL = "http://127.0.0.1:5005/";
 
 
 		public static readonly HttpClient client = new HttpClient();
@@ -504,7 +504,7 @@ namespace Spark
 							"You can sort the joust times in Spark's dashboard by time as well as by recent.",
 							"Use the server score provided by Spark to choose a server that is fair for both teams.",
 							"Lone Echo 2 releases tomorrow!",
-							"REGGIE WOODS",
+							"R E G G I E   W O O D S",
 							"Same Disc, Different Day",
 						};
 
@@ -4187,7 +4187,7 @@ namespace Spark
 			}
 		}
 
-		public static void UploadTabletStats()
+		public static List<TabletStats> FindTabletStats()
 		{
 			try
 			{
@@ -4197,7 +4197,7 @@ namespace Spark
 				if (!Directory.Exists(baseFolder))
 				{
 					LogRow(LogType.Error, "Can't find the EchoVR profile folder.");
-					return;
+					return null;
 				}
 
 				List<string> folders = Directory.GetDirectories(baseFolder).ToList();
@@ -4214,45 +4214,58 @@ namespace Spark
 					}
 				});
 				profiles.Sort((p1, p2) => p1.update_time.CompareTo(p2.update_time));
-				new MessageBox($"Found tablet stat profiles:\n{string.Join("\n", profiles.Select(p => p.player_name))}").Show();
 
-
-				#region Do upload
-
-				profiles.ForEach(p =>
-				{
-					Task.Run(async () =>
-					{
-						string dataString = JsonConvert.SerializeObject(p);
-						string hash = SecretKeys.Hash(dataString + p.player_name);
-
-						client.DefaultRequestHeaders.Remove("x-api-key");
-						client.DefaultRequestHeaders.Add("x-api-key", DiscordOAuth.igniteUploadKey);
-
-						client.DefaultRequestHeaders.Remove("access-code");
-						client.DefaultRequestHeaders.Add("access-code", DiscordOAuth.SeasonName);
-
-						StringContent content = new StringContent(dataString, Encoding.UTF8, "application/json");
-
-						try
-						{
-							HttpResponseMessage response = await client.PostAsync("update_tablet_stats?hashkey=" + hash + "&player_name=" + p.player_name, content);
-							LogRow(LogType.Info, "[DB][Response] " + response.Content.ReadAsStringAsync().Result);
-						}
-						catch
-						{
-							LogRow(LogType.Error, "Can't connect to the DB server");
-						}
-					});
-				});
-
-				#endregion
-
-				return;
+				return profiles;
 			}
 			catch (Exception ex)
 			{
+				LogRow(LogType.Error, ex.ToString());
 				new MessageBox($"Failed to upload tablet stats.\nPlease report this to NtsFranz.").Show();
+				return null;
+			}
+		}
+
+		public static void UploadTabletStats(TabletStats p, Action<bool> finishedCallback = null)
+		{
+			try
+			{
+				Task.Run(async () =>
+				{
+					string dataString = JsonConvert.SerializeObject(p);
+					string hash = SecretKeys.Hash(dataString + p.player_name);
+
+					client.DefaultRequestHeaders.Remove("x-api-key");
+					client.DefaultRequestHeaders.Add("x-api-key", DiscordOAuth.igniteUploadKey);
+
+					StringContent content = new StringContent(dataString, Encoding.UTF8, "application/json");
+
+					try
+					{
+						HttpResponseMessage response = await client.PostAsync("update_tablet_stats?hashkey=" + hash + "&player_name=" + p.player_name, content);
+						LogRow(LogType.Info, "[DB][Response] " + response.Content.ReadAsStringAsync().Result);
+						if (finishedCallback!=null)
+						{
+							finishedCallback(true);
+						}
+					}
+					catch
+					{
+						LogRow(LogType.Error, "Can't connect to the DB server");
+						if (finishedCallback != null)
+						{
+							finishedCallback(false);
+						}
+					}
+				});
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, ex.ToString());
+				new MessageBox($"Failed to upload tablet stats.\nPlease report this to NtsFranz.").Show();
+				if (finishedCallback != null)
+				{
+					finishedCallback(false);
+				}
 			}
 		}
 
