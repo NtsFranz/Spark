@@ -535,6 +535,8 @@ namespace Spark
 
 				//HighlightsHelper.CloseNVHighlights();
 
+				AutoUploadTabletStats();
+
 			} catch (Exception e)
 			{
 				Logger.Init();
@@ -3206,6 +3208,9 @@ namespace Spark
 			}
 			// checks whether to upload or not are inside
 			_ = DoUploadMatchBatchFirebase(data);
+			
+			// upload tablet stats as well
+			AutoUploadTabletStats();
 		}
 
 		static async Task DoUploadMatchBatchIgniteDB(string data, string hash, string client_name)
@@ -4187,6 +4192,22 @@ namespace Spark
 			}
 		}
 
+		public static void AutoUploadTabletStats()
+		{
+			Task.Run(() =>
+			{
+				List<TabletStats> stats = FindTabletStats();
+				stats.ForEach(s =>
+				{
+					if (SparkSettings.instance.autoUploadProfiles.ContainsKey(s.player_name) &&
+					    SparkSettings.instance.autoUploadProfiles[s.player_name])
+					{
+						UploadTabletStats(s);
+					}
+				});
+			});
+		}
+
 		public static List<TabletStats> FindTabletStats()
 		{
 			try
@@ -4243,18 +4264,12 @@ namespace Spark
 					{
 						HttpResponseMessage response = await client.PostAsync("update_tablet_stats?hashkey=" + hash + "&player_name=" + p.player_name, content);
 						LogRow(LogType.Info, "[DB][Response] " + response.Content.ReadAsStringAsync().Result);
-						if (finishedCallback!=null)
-						{
-							finishedCallback(true);
-						}
+						finishedCallback?.Invoke(response.IsSuccessStatusCode);
 					}
 					catch
 					{
 						LogRow(LogType.Error, "Can't connect to the DB server");
-						if (finishedCallback != null)
-						{
-							finishedCallback(false);
-						}
+						finishedCallback?.Invoke(false);
 					}
 				});
 			}
@@ -4262,10 +4277,7 @@ namespace Spark
 			{
 				LogRow(LogType.Error, ex.ToString());
 				new MessageBox($"Failed to upload tablet stats.\nPlease report this to NtsFranz.").Show();
-				if (finishedCallback != null)
-				{
-					finishedCallback(false);
-				}
+				finishedCallback?.Invoke(false);
 			}
 		}
 

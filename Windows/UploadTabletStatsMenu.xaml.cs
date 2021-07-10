@@ -55,16 +55,28 @@ namespace Spark
 				Grid.SetColumn(level, 1);
 				grid.Children.Add(level);
 
-				Border checkbox = new Border()
+				SparkSettings.instance.autoUploadProfiles.TryGetValue(t.player_name, out bool wasChecked);
+				CheckBox checkbox = new CheckBox()
 				{
-					Child = new CheckBox()
+					HorizontalAlignment = HorizontalAlignment.Center,
+					IsChecked = wasChecked == true
+				};
+				checkbox.Click += (sender, _) =>
+				{
+					bool isChecked = ((CheckBox) sender).IsChecked == true;
+					if (!SparkSettings.instance.autoUploadProfiles.ContainsKey(t.player_name))
 					{
-						HorizontalAlignment = HorizontalAlignment.Center,
-					},
+						SparkSettings.instance.autoUploadProfiles.Add(t.player_name, false);
+					}
+					SparkSettings.instance.autoUploadProfiles[t.player_name] = isChecked;
+				};
+				Border checkboxBorder = new Border()
+				{
+					Child = checkbox,
 					BorderThickness = new Thickness(1),
 				};
-				Grid.SetColumn(checkbox, 2);
-				grid.Children.Add(checkbox);
+				Grid.SetColumn(checkboxBorder, 2);
+				grid.Children.Add(checkboxBorder);
 
 
 

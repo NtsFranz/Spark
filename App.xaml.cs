@@ -27,6 +27,12 @@ namespace Spark
 			// load settings file
 			SparkSettings.Load();
 
+			if (SparkSettings.instance == null)
+			{
+				new MessageBox($"Error accessing settings.\nTry renaming/deleting the file in C:\\Users\\[USERNAME]\\AppData\\Roaming\\IgniteVR\\Spark\\settings.json").Show();
+				return;
+			}
+
 			if (!SparkSettings.instance.jsonSettingsCreated)
 			{
 				// Reload old settings file

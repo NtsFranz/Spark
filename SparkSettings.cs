@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -77,6 +78,8 @@ namespace Spark
 		public int chooseMapIndex { get; set; } = 0;
 		public bool chooseRegionSpectator { get; set; } = false;
 		public string sparkExeLocation { get; set; } = "";
+
+		public Dictionary<string, bool> autoUploadProfiles { get; } = new Dictionary<string, bool>();
 
 		#region TTS 
 
@@ -162,7 +165,7 @@ namespace Spark
 							Directory.CreateDirectory(Path.GetDirectoryName(filename));
 						}
 
-						string json = JsonConvert.SerializeObject(this);
+						string json = JsonConvert.SerializeObject(this, Formatting.Indented);
 						File.WriteAllText(filename, json);
 					}
 					catch (Exception e)

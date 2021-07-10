@@ -17,6 +17,8 @@ namespace Spark
 		public TabletStats(JToken serverprofile)
 		{
 			if (!IsValid(serverprofile)) return;
+
+			discord_id = DiscordOAuth.DiscordUserID;
 			
 			player_id = long.Parse(((string) serverprofile["xplatformid"])?.Split("-").Last() ?? "0");
 			player_name = (string) serverprofile["displayname"];
@@ -81,6 +83,8 @@ namespace Spark
 			}
 		}
 
+		public string discord_id;
+		
 		public long player_id;
 		public string player_name;
 		public int ghosted_count;
