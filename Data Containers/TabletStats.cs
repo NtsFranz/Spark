@@ -10,7 +10,10 @@ namespace Spark
 		public static bool IsValid(JToken serverprofile)
 		{
 			int version = serverprofile["_version"] != null ? (int) serverprofile["_version"] : -1;
-
+			if (version is > 0 and < 4)
+			{
+				Logger.LogRow(Logger.LogType.Error, $"Version of file is {version}");
+			}
 			return version > 0;			
 		}
 		
@@ -36,40 +39,40 @@ namespace Spark
 			level = (int) serverprofile["stats"]["arena"]["Level"]?["val"];
 			if (level > 1)
 			{
-				highest_stuns = (int) serverprofile["stats"]["arena"]["HighestStuns"]?["val"];
-				goal_score_percentage = (float) serverprofile["stats"]["arena"]["GoalScorePercentage"]?["val"];
-				two_point_goals = (int) serverprofile["stats"]["arena"]["TwoPointGoals"]?["val"];
-				highest_saves = (int) serverprofile["stats"]["arena"]["HighestSaves"]?["val"];
-				avg_points_per_game = (float) serverprofile["stats"]["arena"]["AveragePointsPerGame"]?["val"] / (int) serverprofile["stats"]["arena"]["AveragePointsPerGame"]?["cnt"];
-				stuns = (int) serverprofile["stats"]["arena"]["Stuns"]?["val"];
-				stun_percentage = (float) serverprofile["stats"]["arena"]["StunPercentage"]?["val"];
-				arena_wins = (int) serverprofile["stats"]["arena"]["ArenaWins"]?["val"];
-				arena_win_percentage = (float) serverprofile["stats"]["arena"]["ArenaWinPercentage"]?["val"];
-				shots_on_goal_against = (int) serverprofile["stats"]["arena"]["ShotsOnGoalAgainst"]?["val"];
-				shots_on_goal = (int) serverprofile["stats"]["arena"]["ShotsOnGoal"]?["val"];
-				hat_tricks = (int) serverprofile["stats"]["arena"]["HatTricks"]?["val"];
-				highest_points = (int) serverprofile["stats"]["arena"]["HighestPoints"]?["val"];
-				possession_time = (float) serverprofile["stats"]["arena"]["PossessionTime"]?["val"];
-				blocks = (int) serverprofile["stats"]["arena"]["Blocks"]?["val"];
-				bounce_goals = (int) serverprofile["stats"]["arena"]["BounceGoals"]?["val"];
-				stuns_per_game = (float) serverprofile["stats"]["arena"]["StunsPerGame"]?["val"] / (int) serverprofile["stats"]["arena"]["StunsPerGame"]?["cnt"];
-				highest_arena_mvp_streak = (int) serverprofile["stats"]["arena"]["HighestArenaMVPStreak"]?["val"];
-				arena_ties = (int) serverprofile["stats"]["arena"]["ArenaTies"]?["val"];
-				saves_per_game = (float) serverprofile["stats"]["arena"]["SavesPerGame"]?["val"] / (int) serverprofile["stats"]["arena"]["SavesPerGame"]?["cnt"];
-				catches = (int) serverprofile["stats"]["arena"]["Catches"]?["val"];
-				goal_save_percentage = (float) serverprofile["stats"]["arena"]["GoalSavePercentage"]?["val"];
-				goals_per_game = (float) serverprofile["stats"]["arena"]["GoalsPerGame"]?["val"] / (int) serverprofile["stats"]["arena"]["GoalsPerGame"]?["cnt"];
-				current_arena_mvp_streak = (int) serverprofile["stats"]["arena"]["CurrentArenaMVPStreak"]?["val"];
-				jousts_won = (int) serverprofile["stats"]["arena"]["JoustsWon"]?["val"];
-				passes = (int) serverprofile["stats"]["arena"]["Passes"]?["val"];
-				three_point_goals = (int) serverprofile["stats"]["arena"]["ThreePointGoals"]?["val"];
-				assists_per_game = (float) serverprofile["stats"]["arena"]["AssistsPerGame"]?["val"] / (int) serverprofile["stats"]["arena"]["AssistsPerGame"]?["cnt"];
-				current_arena_win_streak = (int) serverprofile["stats"]["arena"]["CurrentArenaWinStreak"]?["val"];
-				assists = (int) serverprofile["stats"]["arena"]["Assists"]?["val"];
-				clears = (int) serverprofile["stats"]["arena"]["Clears"]?["val"];
-				average_top_speed_per_game = (float) serverprofile["stats"]["arena"]["AverageTopSpeedPerGame"]?["val"] / (int) serverprofile["stats"]["arena"]["AverageTopSpeedPerGame"]?["cnt"];
-				average_possession_time_per_game = (float) serverprofile["stats"]["arena"]["AveragePossessionTimePerGame"]?["val"] / (int) serverprofile["stats"]["arena"]["AveragePossessionTimePerGame"]?["cnt"];
-				arena_losses = (int) serverprofile["stats"]["arena"]["ArenaLosses"]?["val"];
+				highest_stuns = (int) (serverprofile["stats"]["arena"]["HighestStuns"]?["val"] ?? 0);
+				goal_score_percentage = (float) (serverprofile["stats"]["arena"]["GoalScorePercentage"]?["val"] ?? 0);
+				two_point_goals = (int) (serverprofile["stats"]["arena"]["TwoPointGoals"]?["val"] ?? 0);
+				highest_saves = (int) (serverprofile["stats"]["arena"]["HighestSaves"]?["val"] ?? 0);
+				avg_points_per_game =  (float) (serverprofile["stats"]["arena"]["AveragePointsPerGame"]?["val"] ?? 0) / (int) (serverprofile["stats"]["arena"]["AveragePointsPerGame"]?["cnt"] ?? 0);
+				stuns = (int) (serverprofile["stats"]["arena"]["Stuns"]?["val"] ?? 0);
+				stun_percentage = (float) (serverprofile["stats"]["arena"]["StunPercentage"]?["val"] ?? 0);
+				arena_wins = (int) (serverprofile["stats"]["arena"]["ArenaWins"]?["val"] ?? 0);
+				arena_win_percentage = (float) (serverprofile["stats"]["arena"]["ArenaWinPercentage"]?["val"] ?? 0);
+				shots_on_goal_against = (int) (serverprofile["stats"]["arena"]["ShotsOnGoalAgainst"]?["val"] ?? 0);
+				shots_on_goal = (int) (serverprofile["stats"]["arena"]["ShotsOnGoal"]?["val"] ?? 0);
+				hat_tricks = (int) (serverprofile["stats"]["arena"]["HatTricks"]?["val"] ?? 0);
+				highest_points = (int) (serverprofile["stats"]["arena"]["HighestPoints"]?["val"] ?? 0);
+				possession_time = (float) (serverprofile["stats"]["arena"]["PossessionTime"]?["val"] ?? 0);
+				blocks = (int) (serverprofile["stats"]["arena"]["Blocks"]?["val"] ?? 0);
+				bounce_goals = (int) (serverprofile["stats"]["arena"]["BounceGoals"]?["val"] ?? 0);
+				stuns_per_game = (float) (serverprofile["stats"]["arena"]["StunsPerGame"]?["val"] ?? 0) / (int) (serverprofile["stats"]["arena"]["StunsPerGame"]?["cnt"] ?? 0);
+				highest_arena_mvp_streak = (int) (serverprofile["stats"]["arena"]["HighestArenaMVPStreak"]?["val"] ?? 0);
+				arena_ties = (int) (serverprofile["stats"]["arena"]["ArenaTies"]?["val"] ?? 0);
+				saves_per_game = (float) (serverprofile["stats"]["arena"]["SavesPerGame"]?["val"] ?? 0) / (int) (serverprofile["stats"]["arena"]["SavesPerGame"]?["cnt"] ?? 0);
+				catches = (int) (serverprofile["stats"]["arena"]["Catches"]?["val"] ?? 0);
+				goal_save_percentage = (float) (serverprofile["stats"]["arena"]["GoalSavePercentage"]?["val"] ?? 0);
+				goals_per_game = (float) (serverprofile["stats"]["arena"]["GoalsPerGame"]?["val"] ?? 0) / (int) (serverprofile["stats"]["arena"]["GoalsPerGame"]?["cnt"] ?? 0);
+				current_arena_mvp_streak = (int) (serverprofile["stats"]["arena"]["CurrentArenaMVPStreak"]?["val"] ?? 0);
+				jousts_won = (int) (serverprofile["stats"]["arena"]["JoustsWon"]?["val"] ?? 0);
+				passes = (int) (serverprofile["stats"]["arena"]["Passes"]?["val"] ?? 0);
+				three_point_goals = (int) (serverprofile["stats"]["arena"]["ThreePointGoals"]?["val"] ?? 0);
+				assists_per_game = (float) (serverprofile["stats"]["arena"]["AssistsPerGame"]?["val"] ?? 0) / (int) (serverprofile["stats"]["arena"]["AssistsPerGame"]?["cnt"] ?? 0);
+				current_arena_win_streak = (int) (serverprofile["stats"]["arena"]["CurrentArenaWinStreak"]?["val"] ?? 0);
+				assists = (int) (serverprofile["stats"]["arena"]["Assists"]?["val"] ?? 0);
+				clears = (int) (serverprofile["stats"]["arena"]["Clears"]?["val"] ?? 0);
+				average_top_speed_per_game = (float) (serverprofile["stats"]["arena"]["AverageTopSpeedPerGame"]?["val"] ?? 0) / (int) (serverprofile["stats"]["arena"]["AverageTopSpeedPerGame"]?["cnt"] ?? 0);
+				average_possession_time_per_game = (float) (serverprofile["stats"]["arena"]["AveragePossessionTimePerGame"]?["val"] ?? 0) / (int) (serverprofile["stats"]["arena"]["AveragePossessionTimePerGame"]?["cnt"] ?? 0);
+				arena_losses = (int) (serverprofile["stats"]["arena"]["ArenaLosses"]?["val"] ?? 0);
 				top_speeds_total = (float) (serverprofile["stats"]["arena"]["TopSpeedsTotal"]?["val"] ?? 0);
 				arena_mvps = (int) (serverprofile["stats"]["arena"]["ArenaMVPs"]?["val"] ?? 0);
 				arena_mvp_percentage = (float) (serverprofile["stats"]["arena"]["ArenaMVPPercentage"]?["val"] ?? 0);
