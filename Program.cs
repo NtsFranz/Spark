@@ -75,8 +75,8 @@ namespace Spark
 
 		public static bool writeToOBSHTMLFile = false;
 
-		//public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
-		public const string APIURL = "http://127.0.0.1:5005/";
+		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
+		// public const string APIURL = "http://127.0.0.1:5005/";
 
 
 		public static readonly HttpClient client = new HttpClient();
@@ -506,6 +506,7 @@ namespace Spark
 							"Lone Echo 2 releases tomorrow!",
 							"R E G G I E   W O O D S",
 							"Same Disc, Different Day",
+							"Respect the save!",
 						};
 
 						// keep only those without SPARK in the title

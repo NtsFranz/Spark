@@ -34,7 +34,8 @@ namespace Spark
 			server.ContentFolders.Add(folderPath);
 			server.UseContentFolders();
 
-			server.Prefixes.Add($"http://*:{_serverPort}/");
+			server.Prefixes.Add($"http://localhost:{_serverPort}/");
+			server.Prefixes.Add($"http://127.0.0.1:{_serverPort}/");
 
 			/* Configure Router Options (if supported by your router implementation) */
 			server.Router.Options.SendExceptionMessages = true;

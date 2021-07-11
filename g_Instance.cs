@@ -247,6 +247,7 @@ namespace Spark
 		/// </summary>
 		public bool stunned { get; set; }
 		public int ping { get; set; }
+		public float packetlossratio { get; set; }
 		/// <summary>
 		/// Boolean of the player's invulnerability after being stunned.
 		/// </summary>

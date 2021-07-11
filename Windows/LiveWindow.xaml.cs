@@ -464,14 +464,14 @@ namespace Spark
 									if (t == 0)
 									{
 										blueTextNames.AppendLine(player.name);
-										bluePingsTextPings.AppendLine(player.ping.ToString());
+										bluePingsTextPings.AppendLine($"{player.ping}   {player.packetlossratio}");
 										blueSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 									}
 
 									if (t == 1)
 									{
 										orangeTextNames.AppendLine(player.name);
-										orangePingsTextPings.AppendLine(player.ping.ToString());
+										orangePingsTextPings.AppendLine($"{player.ping}   {player.packetlossratio}");
 										orangeSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 									}
 
