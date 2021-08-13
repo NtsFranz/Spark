@@ -24,12 +24,21 @@ using static Spark.g_Team;
 using static Logger;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Management;
 using NetMQ.Sockets;
 using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
 using Grapevine;
 using System.Windows.Threading;
+using GenHTTP.Api.Infrastructure;
 using Newtonsoft.Json.Linq;
+using GenHTTP.Modules;
+using GenHTTP.Engine;
+using GenHTTP.Modules.Layouting;
+using GenHTTP.Modules.Layouting.Provider;
+using GenHTTP.Modules.Practices;
+using GenHTTP.Modules.Webservices;
+using GenHTTP.Modules.Security;
 
 //using System.Windows.Forms;
 
@@ -175,6 +184,7 @@ namespace Spark
 
 		public static string echoVRIP = "";
 		public static int echoVRPort = 6721;
+		public const int SPECTATEME_PORT = 6720; 
 		public static bool overrideEchoVRPort;
 
 		public static bool Personal => currentAccessCodeUsername == "Personal" || string.IsNullOrEmpty(currentAccessCodeUsername);
@@ -201,6 +211,8 @@ namespace Spark
 		public static PublisherSocket pubSocket;
 		public static OBS obs;
 		public static IRestServer overlayServer;
+		private static OverlayServer2 overlayServer2;
+		private static OverlayServer3 overlayServer3;
 
 
 
@@ -425,6 +437,8 @@ namespace Spark
 
 				keyboardCamera = new KeyboardCamera();
 
+
+				// web server grapevine
 				try
 				{
 					//overlayServer = new WebServer2(OverlayServer.HandleRequest, "http://*:6723/");
@@ -439,6 +453,39 @@ namespace Spark
 					Logger.Init();
 					Logger.LogRow(LogType.Error, e.ToString());
 				}
+
+
+
+				// web server genhttp
+				try
+				{
+					overlayServer2 = new OverlayServer2();
+				}
+				catch (Exception e)
+				{
+					Logger.Init();
+					Logger.LogRow(LogType.Error, e.ToString());
+				}
+
+				
+				
+				
+
+				// web server httplistener
+				try
+				{
+					overlayServer3 = new OverlayServer3();
+				}
+				catch (Exception e)
+				{
+					Logger.Init();
+					Logger.LogRow(LogType.Error, e.ToString());
+				}
+
+				
+
+
+
 
 				// Server Score Tests - this works
 				//float out1 = CalculateServerScore(new List<int> { 34, 78, 50, 53 }, new List<int> { 63, 562, 65, 81 });   // fail too high
@@ -486,33 +533,10 @@ namespace Spark
 						JToken toolsAll = EchoVRSettingsManager.loadingTips["tools-all"];
 						JArray tips = (JArray) EchoVRSettingsManager.loadingTips["tools-all"]["tips"];
 
-						string[] newTips =
-						{
-							"Use NVIDIA Highlights in Spark to automatically record clips of all your noteworthy moments.",
-							"Log into Spark with Discord to enable features like uploading stats to ignitevr.gg/stats and TTS.",
-							"Enable TTS in Spark for events like exact throw speed, joust times, player leave events, and more.",
-							"You can create a private match in any region you want using the \"Choose Server Region\" button in Spark.",
-							"Use the EchoVR Speaker System to make any audio on your PC sound like an arena.",
-							".echoreplay files can be used to play back and analyze matches in the Replay Viewer.",
-							"Spark is available in both English and Japanese!",
-							"IGNITE. Wow.",
-							"The server location provided by Spark is not 100% reliable.",
-							"Spark's OBS integration allows you to make replay buffer clips and automatically change scenes",
-							"You can change many of EchoVR's ingame settings from within Spark's settings.",
-							"Spark offers Discord Rich Presence and game invites.",
-							"Send someone a spark:// link to let them join your game without an invite.",
-							"You can sort the joust times in Spark's dashboard by time as well as by recent.",
-							"Use the server score provided by Spark to choose a server that is fair for both teams.",
-							"Lone Echo 2 releases tomorrow!",
-							"R E G G I E   W O O D S",
-							"Same Disc, Different Day",
-							"Respect the save!",
-						};
-
 						// keep only those without SPARK in the title
 						tips = new JArray(tips.Where(t => (string) t[1] != "SPARK"));
 
-						foreach (string tip in newTips)
+						foreach (string tip in LoadingTips.newTips)
 						{
 							if (!tips.Any(existingTip => (string) existingTip[2] == tip))
 							{
@@ -551,6 +575,15 @@ namespace Spark
 			var version = Application.Current.GetType().Assembly.GetName().Version;
 			return $"{version.Major}.{version.Minor}.{version.Build}";
 		}
+		
+		public static bool IsWindowsStore()
+		{
+			#if WINDOWS_STORE_RELEASE
+				return true;
+			#else
+				return false;
+			#endif
+		}
 
 		/// <summary>
 		/// This is just a failsafe so that the program doesn't leave a dangling thread.
@@ -563,6 +596,8 @@ namespace Spark
 				liveWindow = null;
 			}
 			overlayServer?.Stop();
+			overlayServer2?.Stop();
+			overlayServer3?.Stop();
 		}
 
 		static async Task GentleClose()
@@ -576,6 +611,8 @@ namespace Spark
 			running = false;
 
 			overlayServer?.Stop();
+			overlayServer2?.Stop();
+			overlayServer3?.Stop();
 
 			while (atlasHostingThread != null && atlasHostingThread.IsAlive)
 			{
@@ -1286,31 +1323,55 @@ namespace Spark
 			}
 		}
 
-		public static void KillEchoVR()
+		public static void KillEchoVR(string findInArgs = null)
 		{
 			Process[] process = Process.GetProcessesByName("echovr");
-			if (process != null && process.Length > 0)
+			foreach (Process p in process)
 			{
-				try
+				if (findInArgs == null || GetCommandLine(p).Contains(findInArgs))
 				{
-					process[0].Kill();
-				}
-				catch (Exception ex)
-				{
-					LogRow(LogType.Error, "Failed to kill process\n" + ex);
+					try
+					{
+						process[0].Kill();
+					}
+					catch (Exception ex)
+					{
+						LogRow(LogType.Error, "Failed to kill process\n" + ex);
+					}
 				}
 			}
 		}
+		
+		private static string GetCommandLine(Process process)
+		{
+			using ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT CommandLine FROM Win32_Process WHERE ProcessId = " + process.Id);
+			using ManagementObjectCollection objects = searcher.Get();
+			return objects.Cast<ManagementBaseObject>().SingleOrDefault()?["CommandLine"]?.ToString();
+		}
 
-		public static void StartEchoVR(string joinType = "choose")
+		public static void StartEchoVR(string joinType = "choose", int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null)
 		{
 			if (lastFrame != null)
 			{
-				Process.Start(new ProcessStartInfo
+				string echoPath = SparkSettings.instance.echoVRPath;
+				if (!string.IsNullOrEmpty(echoPath))
 				{
-					FileName = "spark://" + joinType + "/" + lastFrame.sessionid,
-					UseShellExecute = true
-				});
+					bool spectating = joinType is "spectate" or "s";
+					Process.Start(echoPath, 
+						(SparkSettings.instance.capturevp2 ? "-capturevp2 " : " ") + 
+						(spectating ? "-spectatorstream " : " ") + 
+						(session_id == null ? "" : $"-lobbyid {session_id} ") +  
+						(noovr ? "-noovr " : "") +
+						(port != 6721 ? $"-httpport {port} " : "") +
+						(level == null ? "" : $"-level {level} ") +
+						(region == null ? "" : $"-region {region} ")
+						);
+					Quit();
+				}
+				else
+				{
+					new MessageBox(Resources.echovr_path_not_set, Resources.Error, Quit).Show();
+				}
 			}
 			else
 			{
@@ -1628,8 +1689,8 @@ namespace Spark
 				{
 					try
 					{
-						KillEchoVR();
-						StartEchoVR("spectate");
+						KillEchoVR($"-httpport {SPECTATEME_PORT}");
+						StartEchoVR("spectate", SPECTATEME_PORT, echoVRIP == "127.0.0.1", lastFrame.sessionid);
 						lastSpectatedSessionId = lastFrame.sessionid;
 
 						liveWindow.SetSpectateMeSubtitle("Waiting for EchoVR to start");
@@ -1640,7 +1701,7 @@ namespace Spark
 					}
 				}
 
-				WaitUntilLocalGameLaunched(UseCameraControlKeys);
+				WaitUntilLocalGameLaunched(UseCameraControlKeys, port:Program.SPECTATEME_PORT);
 			}
 
 			// The time between the current frame and last frame in seconds based on the game clock
@@ -1812,17 +1873,21 @@ namespace Spark
 					if (frame.pause.paused_state == "paused")
 					{
 						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team paused the game");
-						matchData.Events.Add(
-							new EventData(
-								matchData,
-								EventData.EventType.pause_request,
-								frame.game_clock,
-								frame.teams[frame.pause.paused_requested_team == "blue" ? (int)TeamColor.blue : (int)TeamColor.orange],
-								null,
-								null,
-								Vector3.Zero,
-								Vector3.Zero)
-							);
+						
+						EventData pauseEvent = new EventData(
+							matchData,
+							EventData.EventType.pause_request,
+							frame.game_clock,
+							frame.teams[frame.pause.paused_requested_team == "blue" ? (int) TeamColor.blue : (int) TeamColor.orange],
+							null,
+							null,
+							Vector3.Zero,
+							Vector3.Zero);
+						
+						matchData.Events.Add(pauseEvent);
+						
+						// Upload to Firebase 🔥
+						_ = DoUploadEventFirebase(matchData, pauseEvent);
 
 						try
 						{
@@ -2133,7 +2198,7 @@ namespace Spark
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
 											Vector3.Zero));
 										LogRow(LogType.File, frame.sessionid,
-											frame.game_clock_display + " - " + stunner.name + " just stunned " +
+											frame.game_clock_display + " - " + stunner.name + " stunned " +
 											stunnee.name);
 										added = true;
 
@@ -2190,7 +2255,7 @@ namespace Spark
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
 											Vector3.Zero));
 										LogRow(LogType.File, frame.sessionid,
-											frame.game_clock_display + " - " + stunner.name + " just stunned " +
+											frame.game_clock_display + " - " + stunner.name + " stunned " +
 											stunnee.name);
 										added = true;
 
@@ -2311,7 +2376,7 @@ namespace Spark
 							matchData.Events.Add(new EventData(matchData, EventData.EventType.shot_taken,
 								frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
 							LogRow(LogType.File, frame.sessionid,
-								frame.game_clock_display + " - " + player.name + " just took a shot");
+								frame.game_clock_display + " - " + player.name + " took a shot");
 							if (lastThrowPlayerId == player.playerid)
 							{
 								lastThrowPlayerId = -1;
@@ -3276,7 +3341,7 @@ namespace Spark
 
 				string season = DiscordOAuth.SeasonName;
 
-				var match_data = matchData.ToDict();
+				Dictionary<string, object> match_data = matchData.ToDict();
 
 				// update the match stats
 				CollectionReference matchesRef = db.Collection("series/" + season + "/match_stats");
@@ -3711,6 +3776,7 @@ namespace Spark
 				}
 			}
 		}
+		
 		public static async void PingIPList(List<IPAddress> IPs, int threadID)
 		{
 			var tasks = IPs.Select(ip => new Ping().SendPingAsync(ip, 4000));
@@ -4021,17 +4087,11 @@ namespace Spark
 			return echoVRIP;
 		}
 
-
-		public static void WaitUntilLocalGameLaunched(Action callback)
+		public static void WaitUntilLocalGameLaunched(Action callback, string ip = "127.0.0.1", int port = 6721)
 		{
 			try
 			{
-				// if we're local anyway
-				if (echoVRIP == "127.0.0.1")
-				{
-					callback?.Invoke();
-				}
-				else if (spectateMe)
+				if (spectateMe)
 				{
 					// g_Team clientPlayerTeam = lastFrame?.GetTeam(lastFrame.client_name);
 					// if (clientPlayerTeam == null) return;
@@ -4040,7 +4100,7 @@ namespace Spark
 					Task.Run(async () =>
 					{
 						// check if we're actually on quest and running pc spectator
-						TimeSpan pcSpectatorStartupTime = TimeSpan.FromSeconds(60f);
+						TimeSpan pcSpectatorStartupTime = TimeSpan.FromSeconds(90f);
 						bool inPCSpectator = false;
 						string result = string.Empty;
 
@@ -4049,7 +4109,8 @@ namespace Spark
 							// if we stopped trying to spectate, cancel
 							if (!spectateMe) return;
 
-							result = await GetRequestAsync("http://127.0.0.1:6721/session", null);
+							// TODO this crashes on local pc
+							result = await GetRequestAsync($"http://{ip}:{port}/session", null);
 							if (string.IsNullOrEmpty(result))
 							{
 								await Task.Delay(200);

@@ -57,6 +57,7 @@
 			<ComboBoxItem Content="Combat Gauss"/>
 		</ComboBox>
 		<CheckBox Content="{x:Static p:Resources.Spectator_Mode}" ToolTip="{x:Static p:Resources.chooseRegionSpectator_ToolTip}" IsChecked="{l:SettingBinding chooseRegionSpectator}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" />
+		<CheckBox Content="Log in with test account" ToolTip="Test accounts allow you to join the match twice on the same computer." IsChecked="{l:SettingBinding chooseRegionNoOVR}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" />
 		<Button Width="150" Height="90" Margin="10,10,10,40" Content="{x:Static p:Resources.Create}" Click="Create" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
 
 	</Grid>

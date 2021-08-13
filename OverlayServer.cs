@@ -27,6 +27,21 @@ namespace Spark
 				this.y = y;
 			}
 		}
+		
+		[RestRoute("Get", "/spark_info")]
+		public async Task SparkInfo(IHttpContext context)
+		{
+			context.Response.AddHeader("Access-Control-Allow-Origin", "*");
+			context.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+			context.Response.AddHeader("Content-Type", "application/json");
+
+			await context.Response.SendResponseAsync(JsonConvert.SerializeObject(new Dictionary<string, object>
+			{
+				{"version", Program.AppVersion()},
+				{"windows_store", Program.IsWindowsStore()},
+				{"ess_version", Program.InstalledSpeakerSystemVersion},
+			}));
+		}
 
 		[RestRoute("Get", "/test")]
 		public async Task Test(IHttpContext context)

@@ -729,14 +729,14 @@ namespace Spark
 
 					RefreshAccessCode();
 
-					if (SparkSettings.instance.echoVRIP != "127.0.0.1")
-					{
-						spectateMeButton.Visibility = Visibility.Visible;
-					}
-					else
-					{
-						spectateMeButton.Visibility = Visibility.Collapsed;
-					}
+					// if (SparkSettings.instance.echoVRIP != "127.0.0.1")
+					// {
+					// 	spectateMeButton.Visibility = Visibility.Visible;
+					// }
+					// else
+					// {
+					// 	spectateMeButton.Visibility = Visibility.Collapsed;
+					// }
 
 
 					hostMatchButton.IsEnabled = Program.lastFrame != null && Program.lastFrame.private_match;
@@ -1074,15 +1074,15 @@ namespace Spark
 			g_Team team = Program.lastFrame.GetTeam(Program.lastFrame.client_name);
 			if (team != null && team.color == g_Team.TeamColor.spectator)
 			{
-				Program.StartEchoVR("s");
+				Program.StartEchoVR("s", session_id:Program.lastFrame.sessionid);
 			}
-			Program.StartEchoVR("j");
+			Program.StartEchoVR("j", session_id:Program.lastFrame.sessionid);
 		}
 
 		private void RestartAsSpectatorClick(object sender, RoutedEventArgs e)
 		{
 			Program.KillEchoVR();
-			Program.StartEchoVR("s");
+			Program.StartEchoVR("s", session_id:Program.lastFrame.sessionid);
 		}
 
 		private void showEventLogFileButton_Click(object sender, RoutedEventArgs e)
@@ -1154,17 +1154,7 @@ namespace Spark
 
 		private void startSpectatorStream_Click(object sender, RoutedEventArgs e)
 		{
-			try
-			{
-				if (!string.IsNullOrEmpty(SparkSettings.instance.echoVRPath))
-				{
-					Process.Start(SparkSettings.instance.echoVRPath, "-spectatorstream" + (SparkSettings.instance.capturevp2 ? " -capturevp2" : ""));
-				}
-			}
-			catch (Exception ex)
-			{
-				// TODO show message about path not set
-			}
+			Program.StartEchoVR("spectate");
 		}
 
 		private void ToggleHidden(object sender, RoutedEventArgs e)
@@ -1215,9 +1205,9 @@ namespace Spark
 				{
 					if (Program.inGame && Program.lastFrame != null && !Program.lastFrame.inLobby)
 					{
-						Program.KillEchoVR();
-						Program.StartEchoVR("spectate");
-						Program.WaitUntilLocalGameLaunched(Program.UseCameraControlKeys);
+						Program.KillEchoVR($"-httpport {Program.SPECTATEME_PORT}");
+						Program.StartEchoVR("spectate", port:Program.SPECTATEME_PORT, noovr:Program.echoVRIP == "127.0.0.1", session_id:Program.lastFrame.sessionid);
+						Program.WaitUntilLocalGameLaunched(Program.UseCameraControlKeys, port:Program.SPECTATEME_PORT);
 						spectateMeSubtitle.Text = "Waiting for EchoVR to start";
 					}
 					else

@@ -265,7 +265,7 @@ public class Logger
 						}
 						catch (IOException e)
 						{
-							LogRow(LogType.Error, "Can't open log file for writing");
+							LogRow(LogType.Error, $"Can't open log file for writing\n{e}");
 							continue;
 						}
 					}

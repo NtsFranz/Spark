@@ -41,7 +41,7 @@ body {
 	visibility: hidden;
 }
 
-.player > div {
+.player>div {
 	border-radius: 100px;
 	width: 30px;
 	height: 30px;
@@ -50,7 +50,7 @@ body {
 	left: -15px;
 }
 
-.player > p {
+.player>p {
 	font-family: Arial, sans-serif;
 	color: white;
 	font-weight: bold;
@@ -62,11 +62,11 @@ body {
 	font-size: 20px;
 }
 
-.blue > div {
+.blue>div {
 	background-color: #0199ff;
 }
 
-.orange > div {
+.orange>div {
 	background-color: #ff8d04;
 }
 
@@ -74,7 +74,7 @@ body {
 	position: absolute;
 	top: 86.5px;
 	left: 281.5px;
-	transition: all .1s;
+	transition: all .3s;
 }
 
 #timeout_banner {
@@ -90,7 +90,7 @@ body {
 	width: 100%;
 	margin: 0;
 	top: 32px;
-	background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.75) 25%, rgba(0,0,0,.75) 75%, rgba(0,0,0,0) 100%);
+	background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .75) 25%, rgba(0, 0, 0, .75) 75%, rgba(0, 0, 0, 0) 100%);
 	visibility: hidden;
 }
 

@@ -29,11 +29,12 @@ namespace Spark
         public void ConfigureServer(IRestServer server)
         {
 			// The path to your static content
-			string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "html");
+			string folderPath = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation), "html");
 
 			server.ContentFolders.Add(folderPath);
 			server.UseContentFolders();
 
+			// server.Prefixes.Add($"http://*:{_serverPort}/");
 			server.Prefixes.Add($"http://localhost:{_serverPort}/");
 			server.Prefixes.Add($"http://127.0.0.1:{_serverPort}/");
 
