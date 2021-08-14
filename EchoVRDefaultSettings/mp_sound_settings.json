@@ -1,0 +1,35 @@
+{
+  "bullet_impact": {
+    "assault": {
+      "player": "play_bullet_impact_player",
+      "barrier": "play_bullet_impact_shield",
+      "default": "play_bullet_impact_geo",
+    },
+    "scout": {
+      "player": "play_bullet_impact_player",
+      "barrier": "play_bullet_impact_shield",
+      "default": "play_bullet_impact_geo",
+    },
+    "rocket": {
+      "player": "play_bullet_impact_player",
+      "barrier": "play_bullet_impact_shield",
+      "default": "play_bullet_impact_geo",
+    },
+    "rifle": {
+        "player": "play_bullet_impact_player",
+        "barrier": "play_bullet_impact_shield",
+        "default": "play_bullet_impact_geo",
+    },
+    "smg": {
+        "player": "play_bullet_impact_player_quark",
+        "barrier": "play_bullet_impact_shield_quark",
+        "default": "play_bullet_impact_geo_quark",
+    }
+  },
+  "bullet_whizzby": {
+    "default": "loop_bullet_trail_start",
+    "comet": "loop_whizzby_comet_start",
+    "meteor": "loop_whizzby_meteor_start",
+    "pulsar": "loop_whizzby_pulsar_start",
+  },
+}

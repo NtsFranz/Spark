@@ -129,8 +129,8 @@
     <comment>Title of the app</comment>
   </data>
   <data name="Atlas" xml:space="preserve">
-    <value>Atlas</value>
-    <comment>button on right side of main window</comment>
+    <value>Links</value>
+    <comment>Tab in main window</comment>
   </data>
   <data name="atlas_button_tooltip" xml:space="preserve">
     <value>Shows copy-pastable links to let others join your match</value>
@@ -988,7 +988,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
     <comment>refers to Graphics settings for the game</comment>
   </data>
   <data name="Spectator Camera Settings" xml:space="preserve">
-    <value>Spectator Camera Settings (Beta)</value>
+    <value>Spectator Camera Settings</value>
   </data>
   <data name="EchoVR not installed game settings" xml:space="preserve">
     <value>EchoVR is not found on this PC. Make sure you have EchoVR installed if you want to be able to change these settings, or set the path to the EchoVR executable manually in the General tab.</value>

@@ -1140,6 +1140,13 @@ namespace Spark
 				new UploadTabletStatsMenu(stats) { Owner = this }.Show();
 			}
 		}
+
+		private void ResetAllSettings(object sender, RoutedEventArgs e)
+		{
+			EchoVRSettingsManager.ResetAllSettingsToDefault();
+
+			RefreshAllSettings(sender, null);
+		}
 	}
 
 	public class SettingBindingExtension : Binding

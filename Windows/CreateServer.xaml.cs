@@ -47,15 +47,15 @@ namespace Spark
 			string echoPath = SparkSettings.instance.echoVRPath;
 			if (!string.IsNullOrEmpty(echoPath))
 			{
-				// only include capturevp2 when launching in spectator
-				string args = (SparkSettings.instance.chooseRegionSpectator ? (SparkSettings.instance.capturevp2 ? "-capturevp2" : "") + " -spectatorstream" : "") + 
-					" -region " + IndexToRegion(SparkSettings.instance.chooseRegionIndex) +
-					" -level " + IndexToMap(SparkSettings.instance.chooseMapIndex);
-
 				try
 				{
-					Process.Start(echoPath, args);
-				} catch (Exception ex)
+					Program.StartEchoVR(
+						SparkSettings.instance.chooseRegionSpectator ? "s" : "p",
+						noovr: SparkSettings.instance.chooseRegionNoOVR,
+						level: IndexToMap(SparkSettings.instance.chooseMapIndex),
+						region: IndexToRegion(SparkSettings.instance.chooseRegionIndex));
+				}
+				catch (Exception ex)
 				{
 					Logger.LogRow(Logger.LogType.Error, $"Error opening EchoVR Process for region selection\n{ex}");
 				}

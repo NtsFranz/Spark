@@ -1,0 +1,170 @@
+{
+    "gametypes" : [
+        {
+            "name": "Social_2.0_Private",
+            "levels": [
+                "mpl_lobby_b2",
+                "mpl_lobby_b2_spooky",
+                "mpl_lobby_b2_xmas",
+                "mpl_lobby_b2_summer"
+            ],
+            "level_selection": "first",
+            "afktimeout": 300.0
+        },
+        {
+            "name": "Social_2.0_NPE",
+            "levels": [
+                "mpl_tutorial_lobby",
+                "tst_gpl_chr_cosmetics_appraisal"
+            ],
+            "level_selection": "first",
+            "afktimeout": 300.0
+        },
+        {
+            "name": "Social_2.0",
+            "levels": [
+                "mpl_lobby_b2",
+                "mpl_lobby_b2_spooky",
+                "mpl_lobby_b2_xmas",
+                "mpl_lobby_b2_summer"
+            ],
+            "level_selection": "first",
+            "afktimeout": 300.0
+        },
+        {
+            "name": "Echo_Arena",
+            "levels": [
+                "mpl_arena_a"
+            ],
+            "level_selection": "first",
+            "afktimeout": 60.0,
+            "stat_group": "arena",
+            "xp_group": "arena"
+        },
+        {
+            "name": "Echo_Arena_Tournament",
+            "tournament": true,
+            "levels": [
+                "mpl_arena_a"
+            ],
+            "level_selection": "first",
+            "afktimeout": 300.0,
+            "stat_group": "arena"
+        },
+        {
+            "name": "Echo_Arena_Public_AI",
+            "levels": [
+                "mpl_arena_a",
+                "tst_gpl_r15_arena_ai",
+                "tst_gpl_r15_arena_ai_pathing_test"
+            ],
+            "level_selection": "first",
+            "afktimeout": 60.0,
+            "stat_group": "arena_public_ai",
+            "xp_group": "arena",
+            "xp_scale": 0.75
+        },
+        {
+            "name": "Echo_Arena_Practice_AI",
+            "levels": [
+                "mpl_arena_a",
+                "tst_gpl_r15_arena_ai",
+                "tst_gpl_r15_arena_ai_pathing_test"
+            ],
+            "level_selection": "first",
+            "afktimeout": 300.0,
+            "stat_group": "arena_practice_ai",
+            "xp_group": "arena",
+            "xp_scale": 0.25
+        },
+        {
+            "name": "Echo_Arena_First_Match",
+            "levels": [
+                "mpl_arena_a",
+                "tst_gpl_r15_arena_ai",
+                "tst_gpl_r15_arena_ai_pathing_test"
+            ],
+            "level_selection": "first",
+            "afktimeout": 300.0,
+            "stat_group": "arena_public_ai",
+            "xp_group": "arena"
+        },
+        {
+            "name": "Echo_OC6Demo",
+            "levels": [
+                "mpl_arena_a"
+            ],
+            "level_selection": "first",
+            "afktimeout": 300.0,
+            "stat_group": "arena"
+        },
+        {
+            "name": "Echo_OC6Demo_Public",
+            "levels": [
+                "mpl_arena_a"
+            ],
+            "level_selection": "first",
+            "afktimeout": 60.0,
+            "stat_group": "arena",
+            "xp_group": "arena"
+        },
+        {
+            "name": "Echo_Arena_NPE",
+            "levels": [
+                "mpl_tutorial_arena"
+            ],
+            "level_selection": "first",
+            "afktimeout": 300.0,
+            "stat_group": "arena"
+        },
+        {
+            "name": "Echo_Arena_Private",
+            "levels": [
+                "mpl_arena_a",
+                "tst_gpl_r15_arena_ai",
+                "tst_gpl_r15_arena_ai_pathing_test"
+            ],
+            "level_selection": "first",
+            "afktimeout": 300.0,
+            "stat_group": "arena"
+        },
+        {
+            "name": "Echo_Combat",
+            "levels": [
+                "mpl_combat_fission",
+                "mpl_combat_combustion",
+                "mpl_combat_dyson",
+                "mpl_combat_gauss"
+            ],
+            "level_selection": "random",
+            "afktimeout": 60.0,
+            "stat_group": "combat",
+            "xp_group": "combat"
+        },
+        {
+            "name": "Echo_Combat_Tournament",
+            "tournament": true,
+            "levels": [
+                "mpl_combat_fission",
+                "mpl_combat_combustion",
+                "mpl_combat_dyson",
+                "mpl_combat_gauss"
+            ],
+            "level_selection": "random",
+            "afktimeout": 300.0,
+            "stat_group": "combat"
+        },
+        {
+            "name": "Echo_Combat_Private",
+            "levels": [
+                "mpl_combat_fission",
+                "mpl_combat_combustion",
+                "mpl_combat_dyson",
+                "mpl_combat_gauss"
+            ],
+            "level_selection": "random",
+            "afktimeout": 300.0,
+            "stat_group": "combat"
+        }
+    ]
+}

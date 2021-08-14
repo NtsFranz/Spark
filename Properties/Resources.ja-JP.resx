@@ -125,8 +125,8 @@
     <value>Spark</value>
   </data>
   <data name="Atlas" xml:space="preserve">
-    <value>アトラス</value>
-    <comment>button on right side of main window</comment>
+    <value />
+    <comment>Tab in main window</comment>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="baseline_replay_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">

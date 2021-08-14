@@ -401,7 +401,7 @@
 						<ContentPresenter x:Name="speakerSystemPanel" Visibility="Visible" Margin="0,50,0,0" SizeChanged="speakerSystemPanel_Resize" IsVisibleChanged="speakerSystemPanel_IsVisibleChanged"/>
 					</Grid>
 				</TabItem>
-				<TabItem x:Name="statsTab" FontSize="14" Padding="10,0,10,0">
+				<TabItem x:Name="statsTab" FontSize="14" Padding="10,0,10,0" Visibility="{Binding PlayercardsTabVisibility}">
 					<TabItem.Header>
 						<StackPanel Orientation="Horizontal">
 							<Label Content="Playercards"/>
@@ -454,8 +454,11 @@
 					<Button x:Name="showOverlay" Visibility="Collapsed" Content="Show Overlay" Height="40" Click="showOverlay_Click" Margin="4,4,4,4"/>
 				</StackPanel>
 			</GroupBox>
-			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://discord.gg/HDC2kvwup6" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static p:Resources.For_help__join_the_Discord}"/>
-			</Hyperlink></TextBlock>
+			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap">If you need help:</TextBlock>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://echopedia.gg/wiki/Spark" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Wiki"/></Hyperlink></TextBlock>
+				<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://discord.gg/HDC2kvwup6" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Discord"/></Hyperlink></TextBlock>
+			</StackPanel>
 
 			<Image x:Name="image" Height="175" Source="/img/alternate_white.png" Opacity="0.05"/>
 		</StackPanel>

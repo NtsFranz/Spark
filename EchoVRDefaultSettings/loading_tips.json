@@ -1,0 +1,562 @@
+{
+    "default" :
+    {
+        "tips":
+        [
+            [
+                "tip_icon_default",
+                "INFORMATION",
+                "Loading screen tips are tips found on the loading screen."
+            ]
+        ]
+    },
+    "lobby-rift" :
+    {
+        "include":
+        [
+            "lobby","tools-rift"
+        ]
+    },
+    "lobby-quest" :
+    {
+        "include":
+        [
+            "lobby","tools-quest"
+        ]
+    },
+    "arena-rift" :
+    {
+        "include":
+        [
+            "arena","tools-rift"
+        ]
+    },
+    "arena-quest" :
+    {
+        "include":
+        [
+            "arena","tools-quest"
+        ]
+    },
+    "combat-rift" :
+    {
+        "include":
+        [
+            "combat","tools-rift"
+        ]
+    },
+    "combat-quest" :
+    {
+        "include":
+        [
+            "combat","tools-quest"
+        ]
+    },
+    "lobby" :
+    {
+        "tips":
+        [
+            [
+                "",
+                "",
+                "The dinosaur toys will roar if you ask them nicely."
+            ],
+            [
+                "",
+                "DID YOU KNOW?",
+                "There are three Deformers toys that will make music if brought to a secret area."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "The Mini Arena and Quarter Court are great places to practice your shots in the lobby."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "You can summon your own personal disc in the Quarter Court. No one else can see or touch it."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "The Brawler Room is a good place to practice punching, dodging, and blocking skills between matches."
+            ],
+            [
+                "tip_icon_group",
+                "",
+                "Looking for more relaxed or more serious players? Try out the different lobby types from the main menu."
+            ],
+            [
+                "tip_icon_group",
+                "",
+                "Remember, only your party members are able to see and hear you in the Staging Area."
+            ],
+            [
+                "tip_icon_group",
+                "",
+                "The mini-map at the center of the lobby shows you where other players are."
+            ],
+            [
+                "",
+                "",
+                "Queue up for matches at the ring of matchmaking terminals in the center of the lobby."
+            ],
+            [
+                "",
+                "",
+                "The lobby has plenty of secrets, nooks, and crannies. Take some time to explore between matches!"
+            ],
+            [
+                "",
+                "",
+                "The remote-control Fury is a miniature version of a vehicle you can ride in our other game, Lone Echo."
+            ],
+            [
+                "",
+                "",
+                "Visit the Customization Terminal to view and track your progress through the Echo Pass."
+            ],
+            [
+                "",
+                "",
+                "You can earn Tier Experience Points (TXP) for the Echo Pass through CO-OP vs AI and PVP matches."
+            ],
+            [
+                "",
+                "",
+                "Earn Bonus TXP for the Echo Pass by completing one match per day and one win a week!"
+            ],
+            [
+                "",
+                "",
+                "TXP Boosts are unlocked in the Echo Pass. They boost Personal TXP gains and provide bonus Team TXP!"
+            ],
+            [
+                "",
+                "",
+                "You can upgrade your Echo Pass to Premium to unlock even more rewards!"
+            ],
+            [
+                "",
+                "",
+                "Completing the Premium Echo Pass will earn enough Echo Points to upgrade to Premium for Season 2!"
+            ],
+            [
+                "",
+                "",
+                "Don't miss out, some Echo Pass rewards won't be available after the season ends!"
+            ],
+            [
+                "",
+                "",
+                "Want to upgrade to the Premium Echo Pass? Visit the Customization Terminal."
+            ],
+            [
+                "",
+                "",
+                "Each Echo Pass will offer a variety of new rewards. Who knows what will show up next season?"
+            ],
+            [
+                "",
+                "",
+                "Echo Points can be used to upgrade to the Premium Echo Pass and unlock additional Tiers."
+            ],
+            [
+                "",
+                "",
+                "Echo Points are offered in various bundles. Choose the best one for you."
+            ],
+            [
+                "",
+                "",
+                "You can purchase Echo Points from the Echo Pass page of the Customization Terminal."
+            ],
+            [
+                "",
+                "",
+                "The Customization Interface received some fresh paint! Navigate using the pointer on your hand."
+            ],
+            [
+                "",
+                "",
+                "Heraldry shows off your style! Let Echo VR know who you are!"
+            ],
+            [
+                "",
+                "",
+                "Heraldry Tints affect your Chassis. Use the checkbox on the Outfit page to turn this off."
+            ],
+            [
+                "",
+                "",
+                "Cosmetics can be unlocked by gaining levels in Echo VR, or by advancing through the Echo Pass."
+            ],
+            [
+                "",
+                "",
+                "Customization is organized in 3 pages: Outfit, Heraldry, and Social."
+            ],
+            [
+                "",
+                "",
+                "Frame color denotes item quality: from white for Common, all the way to orange, for Legendary."
+            ],
+            [
+                "",
+                "",
+                "To interact with Customization Terminal pages, point with your controller and press a trigger."
+            ],
+            [
+                "",
+                "",
+                "You can use the circular rail above the Customization Terminal to rotate your character model."
+            ],
+            [
+                "",
+                "",
+                "Use the tabs above the Tint panel to set your Blue Team and Orange Team tints."
+            ],
+            [
+                "",
+                "",
+                "You can adjust the appearance of in-match Tags from the Gameplay page of the Settings menu."
+            ]
+
+        ],
+        "include":
+        [
+            "common"
+        ]
+    },
+    "arena" :
+    {
+        "tips":
+        [
+            [
+                "tip_icon_arena",
+                "",
+                "Launch with the catapult to beat the opposing team to the disc."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "After you score a goal, the disc will spawn closer to the opposing team."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "Try using the backboard behind the goal to make a bounce shot."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "Score 12 points more than the enemy team to trigger mercy win."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "Holding on to the disc will disable your boosters and limit your speed to 4.7 meters per second."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "Throw the disc any way that feels natural. In zero gravity, anything goes!"
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "You can hide behind obstacles to help you intercept disc passes."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "In 1-on-1 confrontations, pushing the attacker may give you the upper hand."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "Remember that a well-timed block will stun the attacker."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "Crouching or jumping can help avoid other players in some situations."
+            ],
+            [
+                "tip_icon_arena",
+                "",
+                "Your Banner will always show your Heraldry colors, no matter what team you're on."
+            ]
+        ],
+        "include":
+        [
+            "common"
+        ]
+    },
+    "combat" :
+    {
+        "tips":
+        [
+            [
+                "tip_icon_combat",
+                "",
+                "Charged Comet shots can be canceled by grabbing a nearby surface."
+            ],
+            [
+                "tip_icon_combat",
+                "",
+                "Primed Tactical Mods can be canceled by grabbing a nearby surface."
+            ],
+            [
+                "tip_icon_combat",
+                "",
+                "Cool down your weapon before it overheats to reduce downtime."
+            ],
+            [
+                "tip_icon_combat",
+                "",
+                "Ordnance can be holstered by returning them over your shoulder where you grabbed them."
+            ],
+            [
+                "tip_icon_combat",
+                "",
+                "The mini-map in the Combat War Room shows a tactical view of both teams."
+            ],
+            [
+                "tip_icon_combat",
+                "",
+                "It's not a swan. It's a flamingo."
+            ]
+        ],
+        "include":
+        [
+            "common"
+        ]
+    },
+    "community" :
+    {
+        "tips":
+        [
+            [
+                "tip_icon_values",
+                "OUR COMMUNITY",
+                "Respect fellow players: treat everyone with respect and empathy."
+            ],
+            [
+                "tip_icon_values",
+                "OUR COMMUNITY",
+                "Honor your team: show up as your best self, in victory and in defeat."
+            ],
+            [
+                "tip_icon_values",
+                "OUR COMMUNITY",
+                "Commit to fairness: don't cheat, use exploits, or try to gain unfair advantage."
+            ],
+            [
+                "tip_icon_values",
+                "OUR COMMUNITY",
+                "Protect your community: speak up to defend others and report toxic behavior."
+            ],
+            [
+                "tip_icon_values",
+                "OUR COMMUNITY",
+                "Don't give up on your teammates. They won't give up on you either."
+            ],
+            [
+                "tip_icon_values",
+                "OUR COMMUNITY",
+                "The players you meet here are real people. Don't be mean or rude!"
+            ],
+            [
+                "tip_icon_values",
+                "OUR COMMUNITY",
+                "A calm word of support is sometimes all it takes to help someone out of a bad situation."
+            ],
+            [
+                "tip_icon_values",
+                "OUR COMMUNITY",
+                "Science proves that staying positive increases your team's chances of winning. Fight to the last second!"
+            ]
+        ]
+    },
+    "conduct" :
+    {
+        "tips":
+        [
+            [
+                "tip_icon_conduct",
+                "CODE OF CONDUCT",
+                "Do not bully, harass, or otherwise threaten others."
+            ],
+            [
+                "tip_icon_conduct",
+                "CODE OF CONDUCT",
+                "Impersonating Ready At Dawn employees is a bannable offense."
+            ],
+            [
+                "tip_icon_conduct",
+                "CODE OF CONDUCT",
+                "Anyone who violates the Code of Conduct should be reported."
+            ],
+            [
+                "tip_icon_conduct",
+                "CODE OF CONDUCT",
+                "The Code of Conduct is posted on the wall in the Brawler Room."
+            ],
+            [
+                "tip_icon_conduct",
+                "CODE OF CONDUCT",
+                "Report toxic players by pressing the Oculus button and selecting 'Report Abuse.'"
+            ],
+            [
+                "tip_icon_conduct",
+                "CODE OF CONDUCT",
+                "When reporting a toxic player, you need to include a video or screenshot as evidence."
+            ],
+            [
+                "tip_icon_conduct",
+                "CODE OF CONDUCT",
+                "If you can't report a toxic player, you can always mute or ghost them via the arm computer."
+            ]
+        ]
+    },
+    "tools-rift" :
+    {
+        "tips":
+        [
+            [
+                "",
+                "",
+                "Press F8 to shut off the HUD UI when taking screenshots."
+            ],
+            [
+                "",
+                "",
+                "While spectating using Rift or Quest with Link, take your headset off to use 2D spectator mode."
+            ],
+            [
+                "tip_icon_combat",
+                "",
+                "You can test out your Combat prowess in the Skirmish Room, even if you don't own Echo Combat."
+            ]
+        ]
+    },
+    "tools-quest" :
+    {
+        "tips":
+        [
+            [
+                "",
+                "",
+                "If you have an Oculus-ready PC, you can buy and play Echo Combat by plugging in with a Link cable."
+            ]
+        ]
+    },
+    "tools-all" :
+    {
+        "tips":
+        [
+            [
+                "",
+                "",
+                "To return to the main menu, hold the Menu button on your left Touch controller."
+            ],
+            [
+                "",
+                "",
+                "Access advanced mic options, like push to talk or push to mute, on the Voice Options page of Settings."
+            ],
+            [
+                "",
+                "",
+                "Enable voice modulation on the Voice Options page of Settings in the main menu."
+            ],
+            [
+                "",
+                "",
+                "You can spectate top ranked matches via the top buttons on the Matchmaking Terminal."
+            ],
+            [
+                "",
+                "",
+                "If you have a strong stomach, you can enable pitch and roll via Settings in the main menu."
+            ],
+            [
+                "",
+                "",
+                "Enable smooth rotation via Settings in the main menu."
+            ],
+            [
+                "",
+                "",
+                "You can change your Personal Bubble defaults via Settings in the main menu."
+            ]
+        ]
+    },
+    "common" :
+    {
+        "tips": [
+            [
+                "",
+                "",
+                "Keep an ear out for thrusters and boosts so no one can sneak up behind you."
+            ],
+            [
+                "",
+                "",
+                "You can grab and push off other players for a boost in speed."
+            ],
+            [
+                "",
+                "",
+                "You can grab players that boost off you to gain even more speed. Chain this to reach incredible speeds!"
+            ],
+            [
+                "",
+                "",
+                "Tap the right side of your headset to activate your emote."
+            ],
+            [
+                "",
+                "",
+                "Get another tip by pressing the arrows next to this tip. Tips for days!"
+            ],
+            [
+                "tip_icon_group",
+                "DID YOU KNOW?",
+                "Players with the RAD Emblem or Tag are developers."
+            ],
+            [
+                "tip_icon_tbd",
+                "",
+                "Burping can be an early sign of motion sickness. Take a break before you start to feel ill!"
+            ]
+        ],
+        "include":
+        [
+            "default","random","community","conduct","tools-all"
+        ]
+
+    },
+    "random" :
+    {
+        "tips":
+        [
+            [
+                "",
+                "DID YOU KNOW?",
+                "A flock of flamingos is called a stand or a flamboyance."
+            ],
+            [
+                "",
+                "",
+                "It's important to stay hydrated!"
+            ],
+            [
+                "",
+                "GUESS WHAT?",
+                "01000010 01100101 01100101 01110000 00100000 01000010 01101111 01101111 01110000"
+            ]
+        ]
+    }
+}

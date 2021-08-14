@@ -77,6 +77,7 @@ namespace Spark
 		public int chooseRegionIndex { get; set; } = 0;
 		public int chooseMapIndex { get; set; } = 0;
 		public bool chooseRegionSpectator { get; set; } = false;
+		public bool chooseRegionNoOVR { get; set; } = false;
 		public string sparkExeLocation { get; set; } = "";
 
 		public Dictionary<string, bool> autoUploadProfiles { get; } = new Dictionary<string, bool>();

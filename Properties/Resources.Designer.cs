@@ -206,7 +206,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Atlas.
+        ///   Looks up a localized string similar to Links.
         /// </summary>
         public static string Atlas {
             get {
@@ -2357,7 +2357,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Spectator Camera Settings (Beta).
+        ///   Looks up a localized string similar to Spectator Camera Settings.
         /// </summary>
         public static string Spectator_Camera_Settings {
             get {

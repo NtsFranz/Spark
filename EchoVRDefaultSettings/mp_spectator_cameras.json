@@ -1,0 +1,1219 @@
+{
+    "levels": {
+        "mpl_arena_a": [
+            [
+                {
+                    "enable_pitch": true,
+                    "fovy": 50.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 21.891453,
+                    "position": {
+                        "x": 5.4749093,
+                        "y": 4.3582935,
+                        "z": -26.702404
+                    },
+                    "roll": 2.3003049e-6,
+                    "yaw": -151.20137
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 50.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 21.891453,
+                    "position": {
+                        "x": 5.4749093,
+                        "y": 4.3582935,
+                        "z": 26.702404
+                    },
+                    "roll": 2.3003049e-6,
+                    "yaw": -28.801371
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 18.070461,
+                    "position": {
+                        "x": 11.32141,
+                        "y": 4.5495839,
+                        "z": 23.73188
+                    },
+                    "roll": -4.4903516e-7,
+                    "yaw": -47.61615
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 17.94492,
+                    "position": {
+                        "x": 9.7019863,
+                        "y": 4.9824953,
+                        "z": 8.5468912
+                    },
+                    "roll": 1.2115316e-5,
+                    "yaw": -30.774097
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 9.9127569,
+                    "position": {
+                        "x": 15.181314,
+                        "y": 1.4916477,
+                        "z": 4.4123483
+                    },
+                    "roll": 9.750519e-6,
+                    "yaw": -46.536648
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": -0.49538317,
+                    "position": {
+                        "x": 15.730565,
+                        "y": 0.45838332,
+                        "z": -0.1038732
+                    },
+                    "roll": 1.7823191e-5,
+                    "yaw": -93.506927
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 30.286903,
+                    "position": {
+                        "x": 5.9630466,
+                        "y": 4.991868,
+                        "z": -0.032532468
+                    },
+                    "roll": -1.581958e-5,
+                    "yaw": -90.613976
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 9.9127569,
+                    "position": {
+                        "x": 15.181314,
+                        "y": 1.4916477,
+                        "z": -4.4123483
+                    },
+                    "roll": 9.750519e-6,
+                    "yaw": -134.53665
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 17.94492,
+                    "position": {
+                        "x": 9.7019863,
+                        "y": 4.9824953,
+                        "z": -8.5468912
+                    },
+                    "roll": 1.2115316e-5,
+                    "yaw": -150.77409
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 18.070461,
+                    "position": {
+                        "x": 11.32141,
+                        "y": 4.5495839,
+                        "z": -23.73188
+                    },
+                    "roll": -4.4903516e-7,
+                    "yaw": -133.61615
+                }
+            ]
+        ],
+        "mpl_combat_combustion": [
+            [
+                {
+                    "enable_pitch": false,
+                    "fovy": 65.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 25.090618,
+                    "position": {
+                        "x": 16.070812,
+                        "y": 6.9616604,
+                        "z": -12.84932
+                    },
+                    "roll": -3.393833e-5,
+                    "yaw": -25.865948
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 65.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 11.047055,
+                    "position": {
+                        "x": 50.087433,
+                        "y": 3.0110412,
+                        "z": 28.903036
+                    },
+                    "roll": -3.0011295e-5,
+                    "yaw": -77.626846
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 65.000008,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 18.085508,
+                    "position": {
+                        "x": -3.684917,
+                        "y": 2.317883,
+                        "z": 27.651348
+                    },
+                    "roll": 3.3231448e-5,
+                    "yaw": 100.27875
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.000008,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 20.800125,
+                    "position": {
+                        "x": -17.961374,
+                        "y": 0.80942845,
+                        "z": -2.2683077
+                    },
+                    "roll": 0.00010822581,
+                    "yaw": 39.318283
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.000008,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 16.042097,
+                    "position": {
+                        "x": -18.404989,
+                        "y": 1.0715977,
+                        "z": 1.2638943
+                    },
+                    "roll": 4.7083486e-5,
+                    "yaw": 135.74312
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.000008,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 10.138758,
+                    "position": {
+                        "x": -2.0031159,
+                        "y": 0.81813085,
+                        "z": -26.979813
+                    },
+                    "roll": 0.00010624639,
+                    "yaw": 72.987747
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.000008,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 11.66312,
+                    "position": {
+                        "x": 51.075699,
+                        "y": 3.0599179,
+                        "z": -27.661234
+                    },
+                    "roll": 6.4947089e-5,
+                    "yaw": -111.4603
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.000008,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 11.9634,
+                    "position": {
+                        "x": 26.825518,
+                        "y": 5.4776006,
+                        "z": 25.500195
+                    },
+                    "roll": 1.0472749e-5,
+                    "yaw": -174.15347
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.000008,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 10.931191,
+                    "position": {
+                        "x": 25.544838,
+                        "y": 5.2418036,
+                        "z": -25.047195
+                    },
+                    "roll": -3.2282085e-5,
+                    "yaw": 6.4745288
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 75.000008,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 33.132759,
+                    "position": {
+                        "x": 20.381294,
+                        "y": 7.1798148,
+                        "z": 9.5368729
+                    },
+                    "roll": -8.360271e-5,
+                    "yaw": -139.45479
+                }
+            ]
+        ],
+        "mpl_combat_dyson": [
+            [
+                {
+                    "enable_pitch": true,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 0.41377053,
+                    "position": {
+                        "x": 6.9433255,
+                        "y": 0.15918759,
+                        "z": 13.213552
+                    },
+                    "roll": -8.0043371e-8,
+                    "yaw": -166.834
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 17.0,
+                    "position": {
+                        "x": 22.796917,
+                        "y": 7.0,
+                        "z": 23.0
+                    },
+                    "roll": -7.1544509e-6,
+                    "yaw": -155.0
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 80.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 15.0,
+                    "position": {
+                        "x": 27.0,
+                        "y": 6.0,
+                        "z": -11.0
+                    },
+                    "roll": 4.5588298e-5,
+                    "yaw": -111.0
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 80.0,
+                    "max_pitch_angle": 15.0,
+                    "pitch": 48.27309,
+                    "position": {
+                        "x": -0.04656788,
+                        "y": 9.0048714,
+                        "z": -27.469553
+                    },
+                    "roll": -1.86149e-6,
+                    "yaw": 0.07225617
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 80.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 15.0,
+                    "position": {
+                        "x": -27.0,
+                        "y": 6.0,
+                        "z": -11.0
+                    },
+                    "roll": -9.0917829e-6,
+                    "yaw": 111.0
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 17.978176,
+                    "position": {
+                        "x": -22.0,
+                        "y": 7.0,
+                        "z": 23.0
+                    },
+                    "roll": -1.6549495e-6,
+                    "yaw": 155.0
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 20.0,
+                    "position": {
+                        "x": 5.0,
+                        "y": 5.0,
+                        "z": -12.0
+                    },
+                    "roll": -4.5636084e-6,
+                    "yaw": -27.0
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 60.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 20.0,
+                    "position": {
+                        "x": -5.0,
+                        "y": 5.0,
+                        "z": -12.0
+                    },
+                    "roll": 0.0,
+                    "yaw": 27.0
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 6.5426283,
+                    "position": {
+                        "x": -6.4620895,
+                        "y": 0.18052877,
+                        "z": 13.255354
+                    },
+                    "roll": 1.074213e-7,
+                    "yaw": 168.82719
+                },
+                {
+                    "enable_pitch": true,
+                    "fovy": 90.0,
+                    "max_pitch_angle": -6.0,
+                    "pitch": 21.279928,
+                    "position": {
+                        "x": 0.033656597,
+                        "y": 2.2893014,
+                        "z": 14.210067
+                    },
+                    "roll": 2.7201011e-7,
+                    "yaw": -179.36911
+                }
+            ]
+        ],
+        "mpl_combat_fission": [
+            [
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 1.488068,
+                    "position": {
+                        "x": 31.62549,
+                        "y": -10.306025,
+                        "z": -2.6352782
+                    },
+                    "roll": -3.2027312e-6,
+                    "yaw": 76.046341
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": -0.061771236,
+                    "position": {
+                        "x": -62.046581,
+                        "y": -3.5210109,
+                        "z": -5.4323025
+                    },
+                    "roll": 7.5739108e-6,
+                    "yaw": 84.032982
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 13.812758,
+                    "position": {
+                        "x": -49.200436,
+                        "y": -2.9311352,
+                        "z": -5.8761744
+                    },
+                    "roll": 1.3187986e-5,
+                    "yaw": 77.09304
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 18.650368,
+                    "position": {
+                        "x": -40.388496,
+                        "y": -2.8522348,
+                        "z": -1.9641273
+                    },
+                    "roll": -4.235133e-5,
+                    "yaw": 95.886398
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 25.157433,
+                    "position": {
+                        "x": -27.854589,
+                        "y": -3.003794,
+                        "z": 5.0311794
+                    },
+                    "roll": 3.7729883e-6,
+                    "yaw": 114.32716
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 14.889702,
+                    "position": {
+                        "x": -17.102604,
+                        "y": -5.7109251,
+                        "z": -2.2476795
+                    },
+                    "roll": -2.0319061e-5,
+                    "yaw": 76.275848
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 3.6583374,
+                    "position": {
+                        "x": -3.6197698,
+                        "y": -10.074894,
+                        "z": 0.11534724
+                    },
+                    "roll": -1.1549479e-5,
+                    "yaw": 89.487106
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 18.048283,
+                    "position": {
+                        "x": 1.5643052,
+                        "y": -5.2389135,
+                        "z": 0.059724361
+                    },
+                    "roll": -0.00017061182,
+                    "yaw": 89.511711
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 1.107191,
+                    "position": {
+                        "x": 14.699092,
+                        "y": -9.8084669,
+                        "z": -0.12473106
+                    },
+                    "roll": -1.5530906e-5,
+                    "yaw": 90.991386
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 5.5265617,
+                    "position": {
+                        "x": 23.243303,
+                        "y": -10.763486,
+                        "z": -0.93076378
+                    },
+                    "roll": -9.2209293e-6,
+                    "yaw": 72.945137
+                }
+            ],
+            [
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 1.8952125,
+                    "position": {
+                        "x": 32.266033,
+                        "y": -10.27361,
+                        "z": -1.606117
+                    },
+                    "roll": 9.2685143e-5,
+                    "yaw": 72.414024
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": -1.5774127,
+                    "position": {
+                        "x": -3.8935513,
+                        "y": -10.608163,
+                        "z": -0.092296109
+                    },
+                    "roll": 3.6085614e-5,
+                    "yaw": 89.692993
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 21.235409,
+                    "position": {
+                        "x": 2.0071452,
+                        "y": -5.623539,
+                        "z": 0.17992952
+                    },
+                    "roll": 6.9613554e-5,
+                    "yaw": 89.798378
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": -3.6205378,
+                    "position": {
+                        "x": 9.4336967,
+                        "y": -10.043781,
+                        "z": -7.4625254
+                    },
+                    "roll": 8.7900677e-5,
+                    "yaw": 67.366844
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 1.3101954,
+                    "position": {
+                        "x": 14.576386,
+                        "y": -9.6711016,
+                        "z": -0.14760956
+                    },
+                    "roll": 9.2445167e-5,
+                    "yaw": 90.093437
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 2.7602651,
+                    "position": {
+                        "x": 22.567122,
+                        "y": -11.161201,
+                        "z": -0.003223147
+                    },
+                    "roll": 9.0711976e-5,
+                    "yaw": 89.154617
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 17.176292,
+                    "position": {
+                        "x": 27.150248,
+                        "y": -9.309165,
+                        "z": 6.350801
+                    },
+                    "roll": 7.3277573e-5,
+                    "yaw": 108.00423
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 1.8952123,
+                    "position": {
+                        "x": 32.266033,
+                        "y": -10.27361,
+                        "z": -1.606117
+                    },
+                    "roll": 9.2685143e-5,
+                    "yaw": 72.414017
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 1.8952123,
+                    "position": {
+                        "x": 32.266033,
+                        "y": -10.27361,
+                        "z": -1.606117
+                    },
+                    "roll": 9.2685143e-5,
+                    "yaw": 72.414017
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 1.8952123,
+                    "position": {
+                        "x": 32.266033,
+                        "y": -10.27361,
+                        "z": -1.606117
+                    },
+                    "roll": 9.2685143e-5,
+                    "yaw": 72.414017
+                }
+            ],
+            [
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 10.269131,
+                    "position": {
+                        "x": 90.661201,
+                        "y": -3.1033638,
+                        "z": 14.358881
+                    },
+                    "roll": 2.1691819e-6,
+                    "yaw": 150.52376
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 1.6325834,
+                    "position": {
+                        "x": 32.801823,
+                        "y": -10.083558,
+                        "z": -1.7816249
+                    },
+                    "roll": -1.3879455e-6,
+                    "yaw": 74.10183
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": -2.4725564,
+                    "position": {
+                        "x": 44.565384,
+                        "y": -10.312807,
+                        "z": 2.383038
+                    },
+                    "roll": -2.1364233e-6,
+                    "yaw": 152.52599
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 28.55402,
+                    "position": {
+                        "x": 45.02002,
+                        "y": -3.869832,
+                        "z": -2.4449182
+                    },
+                    "roll": -2.2356029e-5,
+                    "yaw": 62.396954
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": -4.0135732,
+                    "position": {
+                        "x": 52.894646,
+                        "y": -5.9361658,
+                        "z": -9.8018351
+                    },
+                    "roll": -2.1289832e-5,
+                    "yaw": 133.02058
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": -2.5314023,
+                    "position": {
+                        "x": 59.712452,
+                        "y": -5.5803318,
+                        "z": -18.428194
+                    },
+                    "roll": -2.4463145e-5,
+                    "yaw": 40.811302
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 21.260088,
+                    "position": {
+                        "x": 68.726173,
+                        "y": -2.2796469,
+                        "z": -7.2460637
+                    },
+                    "roll": -6.4128481e-6,
+                    "yaw": 95.26458
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 21.148548,
+                    "position": {
+                        "x": 68.484459,
+                        "y": -4.0623827,
+                        "z": -5.288506
+                    },
+                    "roll": -3.3870892e-5,
+                    "yaw": -44.719124
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 16.131521,
+                    "position": {
+                        "x": 69.369301,
+                        "y": -2.73806,
+                        "z": 7.5743256
+                    },
+                    "roll": -4.8882219e-5,
+                    "yaw": 99.566635
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 60.000004,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 20.792931,
+                    "position": {
+                        "x": 78.129738,
+                        "y": -2.3603241,
+                        "z": 16.273649
+                    },
+                    "roll": -2.0091597e-5,
+                    "yaw": 74.383881
+                }
+            ]
+        ],
+        "mpl_combat_gauss": [
+            [
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 14.547816,
+                    "position": {
+                        "x": 9.614356,
+                        "y": 4.0311151,
+                        "z": -12.184237
+                    },
+                    "roll": -4.8071928e-5,
+                    "yaw": 49.524532
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 30.711721,
+                    "position": {
+                        "x": -46.832573,
+                        "y": 3.8329124,
+                        "z": 26.377312
+                    },
+                    "roll": 2.3833229e-5,
+                    "yaw": 162.29266
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": -2.2747335,
+                    "position": {
+                        "x": -41.616188,
+                        "y": 1.6038556,
+                        "z": 16.445087
+                    },
+                    "roll": 1.8691027e-5,
+                    "yaw": 125.19814
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 15.0,
+                    "pitch": 18.912271,
+                    "position": {
+                        "x": -32.0331,
+                        "y": 3.4721875,
+                        "z": 14.198197
+                    },
+                    "roll": 2.2449538e-5,
+                    "yaw": 170.17059
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 28.067972,
+                    "position": {
+                        "x": -36.25758,
+                        "y": 5.4333072,
+                        "z": 5.2627234
+                    },
+                    "roll": 1.4513542e-5,
+                    "yaw": 124.23072
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 0.015761176,
+                    "position": {
+                        "x": -22.347578,
+                        "y": 1.3583049,
+                        "z": -3.6827068
+                    },
+                    "roll": -5.2735538e-7,
+                    "yaw": 131.27126
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 19.00494,
+                    "position": {
+                        "x": -19.350945,
+                        "y": 5.8899727,
+                        "z": -11.144084
+                    },
+                    "roll": -1.6253918e-5,
+                    "yaw": 76.663139
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 39.882603,
+                    "position": {
+                        "x": -1.0598544,
+                        "y": 7.5147119,
+                        "z": -7.1386075
+                    },
+                    "roll": 9.5684605e-5,
+                    "yaw": -142.49586
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 2.1182542,
+                    "position": {
+                        "x": -8.1302195,
+                        "y": -0.94033849,
+                        "z": -7.8619952
+                    },
+                    "roll": -4.5067354e-5,
+                    "yaw": 112.03467
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": -6.0,
+                    "pitch": 39.144772,
+                    "position": {
+                        "x": 1.2386366,
+                        "y": 8.4145145,
+                        "z": -7.8348765
+                    },
+                    "roll": -6.0547158e-5,
+                    "yaw": 142.37343
+                }
+            ],
+            [
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 46.829063,
+                    "position": {
+                        "x": 52.366516,
+                        "y": 15.881783,
+                        "z": 31.046898
+                    },
+                    "roll": -0.00017907131,
+                    "yaw": 167.27377
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 11.574598,
+                    "position": {
+                        "x": 9.8858061,
+                        "y": 3.5410709,
+                        "z": -11.25858
+                    },
+                    "roll": -5.7518748e-5,
+                    "yaw": 53.585358
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 6.7579794,
+                    "position": {
+                        "x": 26.088278,
+                        "y": 4.1916108,
+                        "z": -7.0928416
+                    },
+                    "roll": -5.3881966e-5,
+                    "yaw": 3.6157033
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 15.0,
+                    "pitch": 18.604704,
+                    "position": {
+                        "x": 25.158293,
+                        "y": 9.4669199,
+                        "z": -2.4420295
+                    },
+                    "roll": -6.8014182e-5,
+                    "yaw": 29.838354
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 15.599529,
+                    "position": {
+                        "x": 33.546059,
+                        "y": 11.709496,
+                        "z": 6.9776707
+                    },
+                    "roll": -7.844864e-5,
+                    "yaw": 36.813046
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 22.229467,
+                    "position": {
+                        "x": 47.61203,
+                        "y": 11.845119,
+                        "z": 6.794764
+                    },
+                    "roll": -8.8543136e-5,
+                    "yaw": -26.041761
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 30.365772,
+                    "position": {
+                        "x": 44.959465,
+                        "y": 15.423108,
+                        "z": 29.528904
+                    },
+                    "roll": -7.8172088e-5,
+                    "yaw": 112.63409
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 23.587452,
+                    "position": {
+                        "x": 23.274134,
+                        "y": 10.829102,
+                        "z": 21.342918
+                    },
+                    "roll": -0.00013322012,
+                    "yaw": 69.964867
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 11.686436,
+                    "position": {
+                        "x": 38.229275,
+                        "y": 11.107752,
+                        "z": 29.884382
+                    },
+                    "roll": -0.00012009683,
+                    "yaw": -169.46118
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": -6.0,
+                    "pitch": 17.900166,
+                    "position": {
+                        "x": 40.970421,
+                        "y": 10.868827,
+                        "z": 28.47818
+                    },
+                    "roll": -0.00012381417,
+                    "yaw": 76.932243
+                }
+            ],
+            [
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 32.410389,
+                    "position": {
+                        "x": 111.95536,
+                        "y": 17.422802,
+                        "z": 12.602567
+                    },
+                    "roll": -0.00014562772,
+                    "yaw": 85.826897
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 25.201694,
+                    "position": {
+                        "x": 50.144737,
+                        "y": 12.909112,
+                        "z": 16.511114
+                    },
+                    "roll": -9.0584617e-5,
+                    "yaw": 23.061399
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 39.713062,
+                    "position": {
+                        "x": 50.781799,
+                        "y": 19.036142,
+                        "z": 30.379263
+                    },
+                    "roll": -0.0001243057,
+                    "yaw": 101.20999
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 15.0,
+                    "pitch": 12.962331,
+                    "position": {
+                        "x": 65.889084,
+                        "y": 10.98211,
+                        "z": 22.598114
+                    },
+                    "roll": -8.3667415e-5,
+                    "yaw": 129.67552
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 8.4340382,
+                    "position": {
+                        "x": 71.829628,
+                        "y": 10.420679,
+                        "z": 10.720355
+                    },
+                    "roll": -8.3721461e-5,
+                    "yaw": 85.991539
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 8.5274668,
+                    "position": {
+                        "x": 83.428185,
+                        "y": 12.869802,
+                        "z": 20.841429
+                    },
+                    "roll": -7.2950352e-5,
+                    "yaw": 93.650955
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 26.724689,
+                    "position": {
+                        "x": 83.509079,
+                        "y": 15.784262,
+                        "z": 12.502745
+                    },
+                    "roll": -9.941186e-5,
+                    "yaw": 84.513229
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 7.359942,
+                    "position": {
+                        "x": 82.408325,
+                        "y": 12.974483,
+                        "z": 4.2184777
+                    },
+                    "roll": -0.0001011518,
+                    "yaw": 89.271011
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 29.456551,
+                    "position": {
+                        "x": 102.20875,
+                        "y": 14.74425,
+                        "z": 5.5533128
+                    },
+                    "roll": -0.00014904019,
+                    "yaw": 66.113876
+                },
+                {
+                    "enable_pitch": false,
+                    "fovy": 70.0,
+                    "max_pitch_angle": -6.0,
+                    "pitch": 26.96035,
+                    "position": {
+                        "x": 100.71834,
+                        "y": 15.70803,
+                        "z": 12.534636
+                    },
+                    "roll": -0.00015230213,
+                    "yaw": 85.238411
+                }
+            ]
+        ],
+        "mpl_lobby_b2": [
+            [
+                {
+                    "enable_pitch": true,
+                    "fovy": 50.0,
+                    "max_pitch_angle": 20.0,
+                    "pitch": 21.891453,
+                    "position": {
+                        "x": 0,
+                        "y": 3.5,
+                        "z": -26.702404
+                    },
+                    "roll": 2.3003049e-6,
+                    "yaw": 0.0
+                }
+            ]
+        ]
+    }
+}

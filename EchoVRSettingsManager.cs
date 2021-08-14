@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using static Logger;
 
 namespace Spark
@@ -53,19 +54,50 @@ namespace Spark
 			loadingTips = ReadEchoVRLoadingTips();
 		}
 
+		public static void ResetAllSettingsToDefault()
+		{
+			instance ??= new EchoVRSettingsManager();
+			settings = ReadEchoVRSettings(true);
+
+			instance ??= new EchoVRSettingsManager();
+			settingsSpec = ReadEchoVRSettingsSpec(true);
+
+			instance ??= new EchoVRSettingsManager();
+			loadingTips = ReadEchoVRLoadingTips(true);
+
+			WriteEchoVRSettings(settings);
+			WriteEchoVRSettingsSpec(settingsSpec);
+			WriteEchoVRLoadingTips(loadingTips);
+		}
+
 		#region settings_mp_v2
-		public static JToken ReadEchoVRSettings()
+		public static JToken ReadEchoVRSettings(bool defaultSettings = false)
 		{
 			try
 			{
-				string file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "rad",
-				"loneecho", "settings_mp_v2.json");
-				if (!File.Exists(file))
+				string jsonData;
+				if (defaultSettings)
 				{
-					LogRow(LogType.Error, "Can't find the EchoVR settings file");
-					return null;
+					Assembly assembly = Assembly.GetExecutingAssembly();
+					string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("settings_mp_v2.json"));
+
+					using Stream stream = assembly.GetManifestResourceStream(resourceName);
+					using StreamReader reader = new StreamReader(stream);
+					jsonData = reader.ReadToEnd();
+				} else
+				{
+					string file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "rad", "loneecho", "settings_mp_v2.json");
+
+					if (!File.Exists(file))
+					{
+						LogRow(LogType.Error, "Can't find the EchoVR settings file");
+						return null;
+					}
+
+					jsonData = File.ReadAllText(file);
 				}
-				return JsonConvert.DeserializeObject<JToken>(File.ReadAllText(file));
+
+				return JsonConvert.DeserializeObject<JToken>(jsonData);
 			}
 			catch (Exception e)
 			{
@@ -78,8 +110,7 @@ namespace Spark
 		{
 			try
 			{
-				string file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "rad",
-					"loneecho", "settings_mp_v2.json");
+				string file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "rad", "loneecho", "settings_mp_v2.json");
 				if (!File.Exists(file))
 				{
 					throw new NullReferenceException("Can't find the EchoVR settings file");
@@ -230,17 +261,34 @@ namespace Spark
 
 		#region mp_spectator_settings.json
 
-		public static JToken ReadEchoVRSettingsSpec()
+		public static JToken ReadEchoVRSettingsSpec(bool defaultSettings = false)
 		{
 			try
 			{
-				string file = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "config", "mp_spectator_settings.json");
-				if (!File.Exists(file))
+				string jsonData;
+				if (defaultSettings)
 				{
-					LogRow(LogType.Error, "Can't find the EchoVR settings file");
-					return null;
+					Assembly assembly = Assembly.GetExecutingAssembly();
+					string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("mp_spectator_settings.json"));
+
+					using Stream stream = assembly.GetManifestResourceStream(resourceName);
+					using StreamReader reader = new StreamReader(stream);
+					jsonData = reader.ReadToEnd();
 				}
-				return JsonConvert.DeserializeObject<JToken>(File.ReadAllText(file));
+				else
+				{
+					string file = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "config", "mp_spectator_settings.json");
+
+					if (!File.Exists(file))
+					{
+						LogRow(LogType.Error, "Can't find the EchoVR settings file");
+						return null;
+					}
+
+					jsonData = File.ReadAllText(file);
+				}
+
+				return JsonConvert.DeserializeObject<JToken>(jsonData);
 			}
 			catch (Exception e)
 			{
@@ -405,17 +453,34 @@ namespace Spark
 		#region LoadingTips
 
 		
-		public static JToken ReadEchoVRLoadingTips()
+		public static JToken ReadEchoVRLoadingTips(bool defaultSettings = false)
 		{
 			try
 			{
-				string file = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "loading_tips.json");
-				if (!File.Exists(file))
+				string jsonData;
+				if (defaultSettings)
 				{
-					LogRow(LogType.Error, "Can't find the EchoVR settings file");
-					return null;
+					Assembly assembly = Assembly.GetExecutingAssembly();
+					string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("loading_tips.json"));
+
+					using Stream stream = assembly.GetManifestResourceStream(resourceName);
+					using StreamReader reader = new StreamReader(stream);
+					jsonData = reader.ReadToEnd();
 				}
-				return JsonConvert.DeserializeObject<JToken>(File.ReadAllText(file));
+				else
+				{
+					string file = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "loading_tips.json");
+
+					if (!File.Exists(file))
+					{
+						LogRow(LogType.Error, "Can't find the EchoVR settings file");
+						return null;
+					}
+
+					jsonData = File.ReadAllText(file);
+				}
+
+				return JsonConvert.DeserializeObject<JToken>(jsonData);
 			}
 			catch (Exception e)
 			{
@@ -518,6 +583,31 @@ namespace Spark
 
 
 
+		// Sounds
+		public static int AnnouncerVolume
+		{
+			get => GetInt("game", "announcer") * 10;
+			set => SetInt((int)(value/10f), "game", "announcer");
+		}
+		public static int MusicVolume
+		{
+			get => GetInt("game", "music") * 10;
+			set => SetInt((int)(value / 10f), "game", "music");
+		}
+		public static int SFXVolume
+		{
+			get => GetInt("game", "sfx") * 10;
+			set => SetInt((int)(value / 10f), "game", "sfx");
+		}
+		public static int VOIPVolume
+		{
+			get => GetInt("game", "voip") * 10;
+			set => SetInt((int)(value / 10f), "game", "voip");
+		}
+
+
+
+		// Cameras
 		public static string SpecFov {
 			get => GetFloatSpec("fov").ToString();
 			set => SetFloatSpec(float.Parse(value), "fov");
@@ -549,6 +639,56 @@ namespace Spark
 		public static string PovSmoothing {
 			get => GetFloatSpec("pov_smoothing").ToString();
 			set => SetFloatSpec(float.Parse(value), "pov_smoothing");
+		}
+		
+		// Free Cam
+		public static string FreeCamMaxSpeed
+		{
+			get => GetFloatSpec("free_cam_settings", "max_speed").ToString();
+			set => SetFloatSpec(float.Parse(value), "free_cam_settings", "max_speed");
+		}
+		public static string FreeCamMaxSpeedVertical
+		{
+			get => GetFloatSpec("free_cam_settings", "max_speed_v").ToString();
+			set => SetFloatSpec(float.Parse(value), "free_cam_settings", "max_speed_v");
+		}
+		public static string FreeCamAccelTime
+		{
+			get => GetFloatSpec("free_cam_settings", "acceleration_time").ToString();
+			set => SetFloatSpec(float.Parse(value), "free_cam_settings", "acceleration_time");
+		}
+		public static string FreeCamAccelTimeVertical
+		{
+			get => GetFloatSpec("free_cam_settings", "acceleration_time_v").ToString();
+			set => SetFloatSpec(float.Parse(value), "free_cam_settings", "acceleration_time_v");
+		}
+		public static string FreeCamAccelCurve
+		{
+			get => GetFloatSpec("free_cam_settings", "acceleration_curve").ToString();
+			set => SetFloatSpec(float.Parse(value), "free_cam_settings", "acceleration_curve");
+		}
+		public static string FreeCamAccelCurveVertical
+		{
+			get => GetFloatSpec("free_cam_settings", "acceleration_curve_v").ToString();
+			set => SetFloatSpec(float.Parse(value), "free_cam_settings", "acceleration_curve_v");
+		}
+		public static string FreeCamSpeedMult
+		{
+			get => GetFloatSpec("free_cam_settings", "speed_multiplier").ToString();
+			set => SetFloatSpec(float.Parse(value), "free_cam_settings", "speed_multiplier");
+		}
+		public static string FreeCamRotationDeccel
+		{
+			get => GetFloatSpec("free_cam_settings", "rotation_deccel").ToString();
+			set => SetFloatSpec(float.Parse(value), "free_cam_settings", "rotation_deccel");
+		}
+		public static string FreeCamRotationSpeed
+		{
+			get => Math.Max(GetFloatSpec("free_cam_settings", "yaw_speed"), GetFloatSpec("free_cam_settings", "pitch_speed")).ToString();
+			set  { 
+				SetFloatSpec(float.Parse(value), "free_cam_settings", "yaw_speed");
+				SetFloatSpec(float.Parse(value), "free_cam_settings", "pitch_speed");
+			}
 		}
 
 

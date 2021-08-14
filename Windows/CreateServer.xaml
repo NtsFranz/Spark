@@ -7,7 +7,7 @@
         xmlns:l="clr-namespace:Spark"
         mc:Ignorable="d"
         Title="{x:Static p:Resources.Create_Server_in_Region}" 
-		Height="275" 
+		Height="305" 
 		Width="440" 
 		WindowStartupLocation="CenterOwner" 
 		ResizeMode="NoResize" 
@@ -18,7 +18,7 @@
 	<Grid>
 		<Label Content="{x:Static p:Resources.Create_Server_in_Region}" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
 		<TextBlock Text="{x:Static p:Resources.This_creates_a_private_match_in_a_region_of_your_choice_}" TextWrapping="Wrap" Margin="0,60,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="25" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
-		<ComboBox SelectedIndex="{l:SettingBinding chooseRegionIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="54" Margin="10,10,10,75">
+		<ComboBox SelectedIndex="{l:SettingBinding chooseRegionIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="54" Margin="10,10,10,105">
 			<StackPanel>
 				<TextBlock Text="US Central North"/>
 				<TextBlock Text="e.g. Chicago, Iowa" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
@@ -48,17 +48,17 @@
 				<TextBlock Text="e.g. Sydney, Perth" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 		</ComboBox>
-		<ComboBox SelectedIndex="{l:SettingBinding chooseMapIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="28" Margin="10,10,10,40">
+		<ComboBox SelectedIndex="{l:SettingBinding chooseMapIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="28" Margin="10,10,10,70">
 			<ComboBoxItem Content="Arena"/>
 			<ComboBoxItem Content="Lobby"/>
 			<ComboBoxItem Content="Combat Dyson"/>
 			<ComboBoxItem Content="Combat Combustion"/>
 			<ComboBoxItem Content="Combat Fission"/>
-			<ComboBoxItem Content="Combat Gauss"/>
+			<ComboBoxItem Content="Combat Surge"/>
 		</ComboBox>
-		<CheckBox Content="{x:Static p:Resources.Spectator_Mode}" ToolTip="{x:Static p:Resources.chooseRegionSpectator_ToolTip}" IsChecked="{l:SettingBinding chooseRegionSpectator}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" />
-		<CheckBox Content="Log in with test account" ToolTip="Test accounts allow you to join the match twice on the same computer." IsChecked="{l:SettingBinding chooseRegionNoOVR}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" />
-		<Button Width="150" Height="90" Margin="10,10,10,40" Content="{x:Static p:Resources.Create}" Click="Create" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+		<CheckBox Content="{x:Static p:Resources.Spectator_Mode}" ToolTip="{x:Static p:Resources.chooseRegionSpectator_ToolTip}" IsChecked="{l:SettingBinding chooseRegionSpectator}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,40" />
+		<CheckBox Content="Log in with test account" ToolTip="Test accounts allow you to join the match twice on the same computer." IsChecked="{l:SettingBinding chooseRegionNoOVR}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" Height="24" />
+		<Button Width="150" Height="90" Margin="10,10,10,70" Content="{x:Static p:Resources.Create}" Click="Create" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
 
 	</Grid>
 </Window>

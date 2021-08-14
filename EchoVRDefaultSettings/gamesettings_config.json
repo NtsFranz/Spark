@@ -1,0 +1,79 @@
+{
+    "rift" : {
+        "settings" : [
+            
+            {
+                "path" : "game|experimentalthrowing",
+                "value" : 0,
+                "operator" : "remove"
+            },
+        ]
+    },
+    "quest" : {
+        "settings" : [
+            
+            {
+                "path" : "graphics|resolutionscale",
+                "value" : 1.0,
+                "operator" : "remove"
+            },
+            {
+                "path" : "graphics|multires",
+                "value" : true,
+                "operator" : "remove"
+            },
+            {
+                "path" : "graphics|adaptiveresolution",
+                "value" : true,
+                "operator" : "remove"
+            },
+            {
+                "path" : "graphics|msaa",
+                "value" : 1,
+                "operator" : "remove"
+            },
+            {
+                "path" : "graphics|quality|volumetrics",
+                "value" : false,
+                "operator" : "remove"
+            },
+            {
+                "path" : "graphics|quality|bloom",
+                "value" : false,
+                "operator" : "remove"
+            },
+            {
+                "path" : "graphics|quality|shadows",
+                "value" : 0,
+                "operator" : "remove"
+            },
+            {
+                "path" : "graphics|quality|fx",
+                "value" : 0,
+                "operator" : "remove"
+            },
+            {
+                "path" : "graphics|quality|textures",
+                "value" : 0,
+                "operator" : "remove"
+            },
+            {
+                "path" : "graphics|quality|lights",
+                "value" : 0,
+                "operator" : "remove"
+            },
+            {
+                "path" : "graphics|sharpening",
+                "value" : 2.0,
+                "operator" : "remove"
+            }
+        ],
+        "pages" : [
+            "ECHO COMBAT",
+            "DISPLAY",
+            "GRAPHICS (1/3)",
+            "GRAPHICS (2/3)",
+            "GRAPHICS (3/3)"
+        ]
+    }
+}

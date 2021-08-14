@@ -1351,31 +1351,23 @@ namespace Spark
 
 		public static void StartEchoVR(string joinType = "choose", int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null)
 		{
-			if (lastFrame != null)
+			string echoPath = SparkSettings.instance.echoVRPath;
+			if (!string.IsNullOrEmpty(echoPath))
 			{
-				string echoPath = SparkSettings.instance.echoVRPath;
-				if (!string.IsNullOrEmpty(echoPath))
-				{
-					bool spectating = joinType is "spectate" or "s";
-					Process.Start(echoPath, 
-						(SparkSettings.instance.capturevp2 ? "-capturevp2 " : " ") + 
-						(spectating ? "-spectatorstream " : " ") + 
-						(session_id == null ? "" : $"-lobbyid {session_id} ") +  
-						(noovr ? "-noovr " : "") +
-						(port != 6721 ? $"-httpport {port} " : "") +
-						(level == null ? "" : $"-level {level} ") +
-						(region == null ? "" : $"-region {region} ")
-						);
-					Quit();
-				}
-				else
-				{
-					new MessageBox(Resources.echovr_path_not_set, Resources.Error, Quit).Show();
-				}
+				bool spectating = joinType is "spectate" or "s";
+				Process.Start(echoPath, 
+					(spectating && SparkSettings.instance.capturevp2 ? "-capturevp2 " : " ") + 
+					(spectating ? "-spectatorstream " : " ") + 
+					(session_id == null ? "" : $"-lobbyid {session_id} ") +  
+					(noovr ? "-noovr " : "") +
+					(port != 6721 ? $"-httpport {port} " : "") +
+					(level == null ? "" : $"-level {level} ") +
+					(region == null ? "" : $"-region {region} ")
+					);
 			}
 			else
 			{
-				// No session id to launch
+				new MessageBox(Resources.echovr_path_not_set, Resources.Error, Quit).Show();
 			}
 		}
 
@@ -3268,7 +3260,7 @@ namespace Spark
 				hash = sb.ToString().ToLower();
 			}
 
-			if (SparkSettings.instance.uploadToIgniteDB)
+			if (SparkSettings.instance.uploadToIgniteDB || currentAccessCodeUsername.Contains("VRML"))
 			{
 				_ = DoUploadMatchBatchIgniteDB(dataString, hash, matchData.firstFrame.client_name);
 			}
@@ -4110,7 +4102,7 @@ namespace Spark
 							if (!spectateMe) return;
 
 							// TODO this crashes on local pc
-							result = await GetRequestAsync($"http://{ip}:{port}/session", null);
+							result = await GetRequestAsync($"http://127.0.0.1:6720/session", null);
 							if (string.IsNullOrEmpty(result))
 							{
 								await Task.Delay(200);

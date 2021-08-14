@@ -1,0 +1,50 @@
+
+
+
+
+
+
+
+
+
+{
+    "broadcaster_init": {
+        "name": "R14NetClient",     
+        "port": 6794,               
+        "retries": 2,               
+
+        "sendbufsize": 0,           
+        "recvbufsize": 0,           
+
+        "allow_incoming": false,    
+        "hostname_lookup": false,   
+
+        "compression": {
+            "reliable": {
+                "rel": true,        
+                "prt": true,        
+                "xor": true,        
+                "sub": true,        
+                "mix": true,        
+            },                      
+            "mailbox": {
+                "rel": true,        
+                "prt": true,        
+                "xor": true,        
+                "sub": true,        
+                "mix": true,        
+            },                      
+        },
+
+        "history": {                
+            "reliable": {
+                "outgoing": 100000,
+                "incoming": 100000,
+            },
+            "mailbox": {
+                "outgoing": 100000,
+                "incoming": 100000,
+            }
+        }
+    }
+}

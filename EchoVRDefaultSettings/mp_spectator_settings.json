@@ -1,0 +1,118 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
+    "follow_cam_offset"             : { "x" : 0.0, "y" : 0.4, "z" : -2.65 },
+    "pov_offset"                    : { "x" : 0.0, "y" : 0.0, "z" : 0.0 },
+    "max_follow_cam_pitch_angle"            : 30.0,
+    "smooth_time_translation"               : 0.15,
+    "smooth_time_rotation"                  : 0.5,
+    "smooth_time_camera_len_out"            : 1.25,
+    "smooth_time_camera_len_in"             : 0.35,
+    "smooth_time_while_holding_frisbee"     : 0.25,
+    "time_between_held_cam_and_followcam"   : 0.25,
+    "follow_cam_max_distance"       : 3.0,
+    "follow_cam_steady_angle"       : 10.0,
+    "follow_cam_turn_angle"         : 35.0,
+    "follow_cam_smooth_time"        : 0.5,
+    "follow_cam_end_smooth_time"    : 0.25,
+    "follow_cam_smooth_duration"    : 0.5,
+    "follow_reposition_wait_time"   : 1.0,
+    "follow_reposition_max_angle"   : 0.85,
+    "follow_reposition_min_angle"   : 0.65,
+    "follow_reposition_speed"       : 8.0,
+    "follow_reposition_rot_speed"   : 0.1,
+    "pov_smoothing"                 : 0.25,
+    "fov"                           : 88.0,
+    "pov_fov"                       : 80.0,
+    "endfov"                        : 34.0,
+    "goalendfov"                    : 64.0,
+    "fovblenddistance"              : 32.0,
+    "smooth_time_fov"               : 0.6,
+    "predicition_collision_radius"  : 1.00,
+    "collision_radius"              : 0.20,
+    "hide_at_dist_to_head"          : 0.35,
+    "level_camera_min_time"         : 2.0,
+    "level_camera_max_time"         : 5.0,
+    "joust_level_cam_time"          : 2.0,
+    "base_cam_switch_speed"         : 5.0,  
+    "point_cam_switch_speed"        : 5.0,  
+    "team_waiting_logic" : {
+        "cam_switch_time"           : 7.0   
+    },
+    "base_launch_logic" : {
+        "level_cam_time"                    : 2.0,
+        "pod_cam_time"                      : 4.0,
+        "first_follow_cam_time"             : 5.0
+    },
+
+    "follow_cam_rules" : {
+        "enable_exit_follow_after_max_time_elapsed"     : true,
+        "enable_min_time_req_to_switch"                 : true,
+        "enable_switch_to_other_player_after_x_seconds" : true,
+        "enable_exit_follow_player_to_disc_distance"    : true,
+        "enable_exit_after_following_n_players"         : true,
+        "enable_exit_if_n_players_are_nearbys"          : true,
+        "enable_keep_following_if_enemy_nearby"         : true,
+        "enable_stop_tracking_enemy_nearby"             : true,
+        "min_follow_time"                               : 2.0,
+        "max_follow_time"                               : 20.0,
+        "max_follow_time_combat"                        : 80.0,
+        "max_track_time"                                : 8.0,
+        "switch_follow_player_after_x_seconds"          : 10.0,
+        "dist_to_disc_to_switch_to_level"               : 15.0,
+        "dist_to_player_for_scrum_count"                : 10.0,
+        "max_follow_cam_player_count"                   : 5,
+        "max_follow_cam_tracking_count"                 : 2,
+        "min_time_after_disc_thrown"                    : 2.0,
+        "scrum_count"                                   : 3,
+    },
+
+    "level_cam_rules" : {
+        "enable_exit_level_after_max_time_elapsed"      : true,
+        "enable_min_time_req_to_switch"                 : true,
+        "enable_exit_if_player_close_to_disc"           : false,
+        "enable_exit_level_after_no_players_in_view"    : true,
+        "enable_exit_level_after_x_seconds"             : true,
+        "min_level_time"                                : 5.0,
+        "max_level_time"                                : 30.0,
+        "max_level_time_combat"                         : 30.0,
+        "max_level_switch_time"                         : 10.0,
+    },
+
+    "follow_to_level_transition" : {
+        "smooth_time_translation"                       : 0.7,
+        "smooth_time_rotation"                          : 0.7,
+        "enable_camera_cut"                             : true,
+        "camera_cut_min_angle"                          : 20.0,
+        "camera_cut_min_distance"                       : 20.0
+    },
+
+    "free_cam_settings" : {
+        "max_speed"                                     : 8.0,
+        "max_speed_v"                                   : 6.0,
+        "acceleration_time"                             : 0.3,
+        "acceleration_time_v"                           : 0.5,
+        "acceleration_curve"                            : 2.0,
+        "acceleration_curve_v"                          : 1.0,
+        "speed_multiplier"                              : 2.0,
+        "rotation_deccel"                               : 7.0,
+        "yaw_speed"                                     : 2.5,
+        "pitch_speed"                                   : 2.5,
+        "fov"                                           : 55,
+    }
+}

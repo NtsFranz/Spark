@@ -208,7 +208,8 @@ namespace Spark
 			});
 		}
 
-		public static string AppVersionLabelText => $"v{Program.AppVersion()}";
+		public static string AppVersionLabelText => $"v{Program.AppVersion()}{(Program.IsWindowsStore() ? "  Windows Store" : "")}";
+		public static Visibility PlayercardsTabVisibility => Program.IsWindowsStore() ? Visibility.Visible : Visibility.Collapsed;
 
 		private void ActivateUnityWindow()
 		{
@@ -1206,7 +1207,7 @@ namespace Spark
 					if (Program.inGame && Program.lastFrame != null && !Program.lastFrame.inLobby)
 					{
 						Program.KillEchoVR($"-httpport {Program.SPECTATEME_PORT}");
-						Program.StartEchoVR("spectate", port:Program.SPECTATEME_PORT, noovr:Program.echoVRIP == "127.0.0.1", session_id:Program.lastFrame.sessionid);
+						Program.StartEchoVR("spectate", port:Program.SPECTATEME_PORT, noovr:true, session_id:Program.lastFrame.sessionid);
 						Program.WaitUntilLocalGameLaunched(Program.UseCameraControlKeys, port:Program.SPECTATEME_PORT);
 						spectateMeSubtitle.Text = "Waiting for EchoVR to start";
 					}
@@ -1438,10 +1439,10 @@ namespace Spark
 						link = "<spark://c/" + sessionid + ">";
 						break;
 					case 1:
-						link = "<atlas://j/" + sessionid + ">";
+						link = "<spark://j/" + sessionid + ">";
 						break;
 					case 2:
-						link = "<atlas://s/" + sessionid + ">";
+						link = "<spark://s/" + sessionid + ">";
 						break;
 				}
 			}
@@ -1453,10 +1454,10 @@ namespace Spark
 						link = "spark://c/" + sessionid;
 						break;
 					case 1:
-						link = "atlas://j/" + sessionid;
+						link = "spark://j/" + sessionid;
 						break;
 					case 2:
-						link = "atlas://s/" + sessionid;
+						link = "spark://s/" + sessionid;
 						break;
 				}
 			}

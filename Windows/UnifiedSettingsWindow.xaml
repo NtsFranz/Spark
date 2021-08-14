@@ -481,6 +481,12 @@
 								   Background="#FF492727" TextWrapping="Wrap"
 								   Visibility="{Binding EchoVRSettingsProgramOpenWarning, Mode=OneWay}"
 								   Text="{x:Static p:Resources.EchoVROpen_settings_warning}" />
+
+							<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
+								   Background="#FF492727" TextWrapping="Wrap"
+								   Visibility="{Binding EchoVRNotInstalled, Mode=OneWay}"
+								   Text="{x:Static p:Resources.EchoVR_not_installed_game_settings}" />
+							
 							<StackPanel>
 								<!--DataContext="{Binding Source={x:Static l:EchoVRSettingsManager}">-->
 								<TextBlock TextWrapping="Wrap"
@@ -490,7 +496,10 @@
 									   Text="{x:Static p:Resources.EchoVR_Settings_info}">
 								</TextBlock>
 
-								<CheckBox Content="{x:Static p:Resources.Enable_API_Access}" IsChecked="{Binding Source={StaticResource es}, Path=EnableAPIAccess}"/>
+								<StackPanel Orientation="Horizontal">
+									<CheckBox Content="{x:Static p:Resources.Enable_API_Access}" IsChecked="{Binding Source={StaticResource es}, Path=EnableAPIAccess}"/>
+									<Button Content="Reset All Settings to Default" Click="ResetAllSettings" HorizontalAlignment="Right" Margin="200,0,0,0" Padding="5,5,5,5"></Button>
+								</StackPanel>
 
 								<GroupBox Margin="4,8,4,4" ToolTip="{x:Static p:Resources.EchoVR_Settings_info}">
 									<GroupBox.Header>
@@ -587,48 +596,123 @@
 										</Expander>
 									</StackPanel>
 								</GroupBox>
-								<Expander Header="{x:Static p:Resources.Spectator_Camera_Settings}" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
-									<GroupBox Margin="4,8,4,4" Header="For the 2D spectator" ToolTip="These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached.">
-										<StackPanel Margin="10,10,10,10">
-											<StackPanel Orientation="Horizontal">
-												<Label Content="Spectator Field of View" Width="160"/>
-												<Slider x:Name="specFovSlider" Value="{Binding Source={StaticResource es}, Path=SpecFovSlider}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
-												<TextBox Text="{Binding ElementName=specFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-												<Label Content="deg"/>
-											</StackPanel>
-											<TextBlock Text="FOV for auto cam" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
-											<StackPanel Orientation="Horizontal">
-												<Label Content="POV Field of View" Width="160"/>
-												<Slider x:Name="povFovSlider" Value="{Binding Source={StaticResource es}, Path=POVFov}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
-												<TextBox Text="{Binding ElementName=povFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-												<Label Content="deg"/>
-											</StackPanel>
-											<TextBlock Text="FOV for POV cam. (P on the keyboard when following a player)" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
-											<StackPanel Orientation="Horizontal">
-												<Label Content="Free Cam Field of View" Width="160"/>
-												<Slider x:Name="freeCamFovSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamFov}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
-												<TextBox Text="{Binding ElementName=freeCamFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-												<Label Content="deg"/>
-											</StackPanel>
-											<TextBlock Text="FOV for free camera. (C on the keyboard)" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
-											<StackPanel Orientation="Horizontal">
-												<Label Content="Follow Cam Offset" Width="160"/>
-												<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetX}" Width="50" Height="22" />
-												<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetY}" Width="50" Height="22" />
-												<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetZ}" Width="50" Height="22" />
-												<Label Content="x,y,z"/>
-											</StackPanel>
 
+
+								<Expander Header="Sound Settings" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
+									<StackPanel Margin="10,10,10,10">
+
+										<StackPanel Orientation="Horizontal">
+											<Label Content="Announcer Volume" Width="160"/>
+											<Slider x:Name="announcerVolumeSlider" Value="{Binding Source={StaticResource es}, Path=AnnouncerVolume}" Minimum="0" Maximum="100" Width="200" Margin="4,0,4,0" Height="20" TickFrequency="10" SmallChange="10"/>
+											<TextBox Text="{Binding ElementName=announcerVolumeSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+											<Label Content="%"/>
 										</StackPanel>
-									</GroupBox>
+
+										<StackPanel Orientation="Horizontal">
+											<Label Content="Music Volume" Width="160"/>
+											<Slider x:Name="musicVolumeSlider" Value="{Binding Source={StaticResource es}, Path=MusicVolume}" Minimum="0" Maximum="100" Width="200" Margin="4,0,4,0" Height="20" TickFrequency="10" SmallChange="10"/>
+											<TextBox Text="{Binding ElementName=musicVolumeSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+											<Label Content="%"/>
+										</StackPanel>
+
+										<StackPanel Orientation="Horizontal">
+											<Label Content="Sound Effects Volume" Width="160"/>
+											<Slider x:Name="sfxVolumeSlider" Value="{Binding Source={StaticResource es}, Path=SFXVolume}" Minimum="0" Maximum="100" Width="200" Margin="4,0,4,0"  Height="20" TickFrequency="10" SmallChange="10"/>
+											<TextBox Text="{Binding ElementName=sfxVolumeSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+											<Label Content="%"/>
+										</StackPanel>
+
+										<StackPanel Orientation="Horizontal">
+											<Label Content="VOIP Volume" Width="160"/>
+											<Slider x:Name="voipVolumeSlider" Value="{Binding Source={StaticResource es}, Path=VOIPVolume}" Minimum="0" Maximum="100" Width="200" Margin="4,0,4,0"  Height="20" TickFrequency="10" SmallChange="10"/>
+											<TextBox Text="{Binding ElementName=voipVolumeSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+											<Label Content="%"/>
+										</StackPanel>
+									</StackPanel>
+								</Expander>
+								
+								<Expander Header="{x:Static p:Resources.Spectator_Camera_Settings}" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
+									<StackPanel>
+										<GroupBox Margin="4,8,4,4" Header="Free Cam Settings  (C on the keyboard)" ToolTip="These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached.">
+											<StackPanel Margin="10,10,10,10">
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Free Cam Field of View" Width="160"/>
+													<Slider x:Name="freeCamFovSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamFov}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
+													<TextBox Text="{Binding ElementName=freeCamFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+													<Label Content="deg"/>
+												</StackPanel>
+												<TextBlock Text="FOV for free camera" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Movement Speed" Width="160"/>
+													<Slider x:Name="moveSpeedSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamMaxSpeed}" Minimum="0" Maximum="16" Width="200" Margin="4,0,4,0" Height="20" SmallChange="0.1" TickFrequency="0.1"/>
+													<TextBox Text="{Binding ElementName=moveSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+													<Label Content="m/s"/>
+												</StackPanel>
+												<TextBlock Text="Maximum translational movement speed" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Vertical Move Speed" Width="160"/>
+													<Slider x:Name="moveSpeedVerticalSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamMaxSpeedVertical}" Minimum="0" Maximum="16" Width="200" Margin="4,0,4,0" Height="20" TickFrequency="0.1"/>
+													<TextBox Text="{Binding ElementName=moveSpeedVerticalSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+													<Label Content="m/s"/>
+												</StackPanel>
+												<TextBlock Text="Maximum translational movement speed on the vertical axis" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Rotation Speed" Width="160"/>
+													<Slider  x:Name="freeCamRotationSpeedSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamRotationSpeed}" Minimum="0" Maximum="10" Width="200" Margin="4,0,4,0" Height="20" TickFrequency="0.1"/>
+													<TextBox Text="{Binding ElementName=freeCamRotationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+													<Label Content=""/>
+												</StackPanel>
+												<TextBlock Text="Maximum rotation speed of the camera" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Speed Multiplier" Width="160"/>
+													<Slider x:Name="freeCamSpeedMultSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamSpeedMult}" Minimum="0" Maximum="5" Width="200" Margin="4,0,4,0" Height="20" SmallChange="0.1" TickFrequency="0.1"/>
+													<TextBox Text="{Binding ElementName=freeCamSpeedMultSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+													<Label Content="x"/>
+												</StackPanel>
+												<TextBlock Text="Speed multiplier for movement speed when pressing the speed modifier button" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+
+											</StackPanel>
+										</GroupBox>
+
+
+										
+										
+										<GroupBox Margin="4,8,4,4" Header="For the 2D spectator" ToolTip="These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached.">
+											<StackPanel Margin="10,10,10,10">
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Spectator Field of View" Width="160"/>
+													<Slider x:Name="specFovSlider" Value="{Binding Source={StaticResource es}, Path=SpecFovSlider}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
+													<TextBox Text="{Binding ElementName=specFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+													<Label Content="deg"/>
+												</StackPanel>
+												<TextBlock Text="FOV for auto cam" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+
+												<StackPanel Orientation="Horizontal">
+													<Label Content="POV Field of View" Width="160"/>
+													<Slider x:Name="povFovSlider" Value="{Binding Source={StaticResource es}, Path=POVFov}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
+													<TextBox Text="{Binding ElementName=povFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+													<Label Content="deg"/>
+												</StackPanel>
+												<TextBlock Text="FOV for POV cam. (P on the keyboard when following a player)" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+
+												<StackPanel Orientation="Horizontal">
+													<Label Content="Follow Cam Offset" Width="160"/>
+													<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetX}" Width="50" Height="22" />
+													<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetY}" Width="50" Height="22" />
+													<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetZ}" Width="50" Height="22" />
+													<Label Content="x,y,z"/>
+												</StackPanel>
+
+											</StackPanel>
+										</GroupBox>
+									</StackPanel>
 								</Expander>
 							</StackPanel>
 						</StackPanel>
-
-						<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
-								   Background="#FF492727" TextWrapping="Wrap"
-								   Visibility="{Binding EchoVRNotInstalled, Mode=OneWay}"
-								   Text="{x:Static p:Resources.EchoVR_not_installed_game_settings}" />
 					</StackPanel>
 				</ScrollViewer>
 			</TabItem>
