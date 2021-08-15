@@ -56,8 +56,8 @@
 			<ComboBoxItem Content="Combat Fission"/>
 			<ComboBoxItem Content="Combat Surge"/>
 		</ComboBox>
-		<CheckBox Content="{x:Static p:Resources.Spectator_Mode}" ToolTip="{x:Static p:Resources.chooseRegionSpectator_ToolTip}" IsChecked="{l:SettingBinding chooseRegionSpectator}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,40" />
-		<CheckBox Content="Log in with test account" ToolTip="Test accounts allow you to join the match twice on the same computer." IsChecked="{l:SettingBinding chooseRegionNoOVR}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" Height="24" />
+		<CheckBox x:Name="spectatorModeCheckbox" Content="{x:Static p:Resources.Spectator_Mode}" ToolTip="{x:Static p:Resources.chooseRegionSpectator_ToolTip}" IsChecked="{l:SettingBinding chooseRegionSpectator}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,40" />
+		<CheckBox Content="Log in with test account" ToolTip="Test accounts allow you to join the match twice on the same computer." IsChecked="{l:SettingBinding chooseRegionNoOVR}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" Height="24" IsEnabled="{Binding ElementName=spectatorModeCheckbox, Path=IsChecked}" />
 		<Button Width="150" Height="90" Margin="10,10,10,70" Content="{x:Static p:Resources.Create}" Click="Create" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
 
 	</Grid>

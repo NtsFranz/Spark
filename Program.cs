@@ -1682,7 +1682,7 @@ namespace Spark
 					try
 					{
 						KillEchoVR($"-httpport {SPECTATEME_PORT}");
-						StartEchoVR("spectate", SPECTATEME_PORT, echoVRIP == "127.0.0.1", lastFrame.sessionid);
+						StartEchoVR("spectate", SPECTATEME_PORT, true, lastFrame.sessionid);
 						lastSpectatedSessionId = lastFrame.sessionid;
 
 						liveWindow.SetSpectateMeSubtitle("Waiting for EchoVR to start");

@@ -126,6 +126,9 @@
 											  Visibility="{Binding FirestoreVisible}"
 											  Margin="4,4,4,4" />
 								<Button Click="UploadTabletStats" Height="30" Margin="10,10,10,10">Upload Tablet Stats</Button>
+								<CheckBox Content="Save Events to Local CSV"
+								          IsChecked="{l:SettingBinding saveEventsToCSV}"
+								          Margin="4,4,4,4" Visibility="Collapsed" />
 							</StackPanel>
 						</GroupBox>
 
