@@ -1332,7 +1332,7 @@ namespace Spark
 				{
 					try
 					{
-						process[0].Kill();
+						p.Kill();
 					}
 					catch (Exception ex)
 					{
@@ -1349,12 +1349,24 @@ namespace Spark
 			return objects.Cast<ManagementBaseObject>().SingleOrDefault()?["CommandLine"]?.ToString();
 		}
 
-		public static void StartEchoVR(string joinType = "choose", int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null)
+
+		public enum JoinType
 		{
+			Choose,
+			Player,
+			Spectator
+		}
+		public static void StartEchoVR(JoinType joinType, int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null)
+		{
+			if (joinType == JoinType.Choose)
+			{
+				new MessageBox("Can't launch with join type Choose", Resources.Error).Show();
+				return;
+			}
 			string echoPath = SparkSettings.instance.echoVRPath;
 			if (!string.IsNullOrEmpty(echoPath))
 			{
-				bool spectating = joinType is "spectate" or "s";
+				bool spectating = joinType == JoinType.Spectator;
 				Process.Start(echoPath, 
 					(spectating && SparkSettings.instance.capturevp2 ? "-capturevp2 " : " ") + 
 					(spectating ? "-spectatorstream " : " ") + 
@@ -1682,7 +1694,7 @@ namespace Spark
 					try
 					{
 						KillEchoVR($"-httpport {SPECTATEME_PORT}");
-						StartEchoVR("spectate", SPECTATEME_PORT, true, lastFrame.sessionid);
+						StartEchoVR(JoinType.Spectator, SPECTATEME_PORT, true, lastFrame.sessionid);
 						lastSpectatedSessionId = lastFrame.sessionid;
 
 						liveWindow.SetSpectateMeSubtitle("Waiting for EchoVR to start");
@@ -3449,24 +3461,27 @@ namespace Spark
 				matchData.players.Add(player.userid, new MatchPlayer(matchData, teamData, player));
 			}
 
-			MatchPlayer playerData = matchData.players[player.userid];
-			playerData.teamData = teamData;
+			if (player.name != "anonymous")
+			{
+				MatchPlayer playerData = matchData.players[player.userid];
+				playerData.teamData = teamData;
 
-			playerData.Level = player.level;
-			playerData.Number = player.number;
-			playerData.PossessionTime = player.stats.possession_time;
-			playerData.Points = player.stats.points;
-			playerData.ShotsTaken = player.stats.shots_taken;
-			playerData.Saves = player.stats.saves;
-			// playerData.GoalsNum = player.stats.goals;	// disabled in favor of manual increment because the api is broken here
-			// playerData.Passes = player.stats.passes;		// api reports 0
-			// playerData.Catches = player.stats.catches;  	// api reports 0
-			playerData.Steals = player.stats.steals;
-			playerData.Stuns = player.stats.stuns;
-			playerData.Blocks = player.stats.blocks; // api reports 0
-													 // playerData.Interceptions = player.stats.interceptions;	// api reports 0
-			playerData.Assists = player.stats.assists;
-			playerData.Won = won;
+				playerData.Level = player.level;
+				playerData.Number = player.number;
+				playerData.PossessionTime = player.stats.possession_time;
+				playerData.Points = player.stats.points;
+				playerData.ShotsTaken = player.stats.shots_taken;
+				playerData.Saves = player.stats.saves;
+				// playerData.GoalsNum = player.stats.goals;	// disabled in favor of manual increment because the api is broken here
+				// playerData.Passes = player.stats.passes;		// api reports 0
+				// playerData.Catches = player.stats.catches;  	// api reports 0
+				playerData.Steals = player.stats.steals;
+				playerData.Stuns = player.stats.stuns;
+				playerData.Blocks = player.stats.blocks; // api reports 0
+														 // playerData.Interceptions = player.stats.interceptions;	// api reports 0
+				playerData.Assists = player.stats.assists;
+				playerData.Won = won;
+			}
 		}
 
 		static void UpdateAllPlayers(g_Instance frame)
@@ -3576,7 +3591,7 @@ namespace Spark
 			Task.Run(async () =>
 			{
 				string resp = await PostRequestAsync(uri, headers, body);
-				callback(resp);
+				callback?.Invoke(resp);
 			});
 		}
 

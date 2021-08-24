@@ -50,7 +50,7 @@ namespace Spark
 				try
 				{
 					Program.StartEchoVR(
-						SparkSettings.instance.chooseRegionSpectator ? "s" : "p",
+						SparkSettings.instance.chooseRegionSpectator ? Program.JoinType.Spectator : Program.JoinType.Player,
 						noovr: SparkSettings.instance.chooseRegionSpectator && SparkSettings.instance.chooseRegionNoOVR,
 						level: IndexToMap(SparkSettings.instance.chooseMapIndex),
 						region: IndexToRegion(SparkSettings.instance.chooseRegionIndex));

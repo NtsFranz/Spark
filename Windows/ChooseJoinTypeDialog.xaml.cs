@@ -21,7 +21,7 @@ namespace Spark
 		private void JoinAsPlayerClicked(object sender, RoutedEventArgs e)
 		{
 			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
-			Process.Start(SparkSettings.instance.echoVRPath, (SparkSettings.instance.capturevp2 ? "-capturevp2 " : "") + "-lobbyid " + sessionid);
+			Program.StartEchoVR(Program.JoinType.Player, session_id: sessionid);
 			Close();
 			Program.Quit();
 		}
@@ -29,7 +29,7 @@ namespace Spark
 		private void JoinAsSpectatorClicked(object sender, RoutedEventArgs e)
 		{
 			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
-			Process.Start(SparkSettings.instance.echoVRPath, (SparkSettings.instance.capturevp2 ? "-capturevp2 " : "") + "-spectatorstream -lobbyid " + sessionid);
+			Program.StartEchoVR(Program.JoinType.Spectator, session_id: sessionid, noovr: SparkSettings.instance.sparkLinkNoOVR);
 			Close();
 			Program.Quit();
 		}

@@ -1075,15 +1075,15 @@ namespace Spark
 			g_Team team = Program.lastFrame.GetTeam(Program.lastFrame.client_name);
 			if (team != null && team.color == g_Team.TeamColor.spectator)
 			{
-				Program.StartEchoVR("s", session_id:Program.lastFrame.sessionid);
+				Program.StartEchoVR(Program.JoinType.Spectator, session_id:Program.lastFrame.sessionid);
 			}
-			Program.StartEchoVR("j", session_id:Program.lastFrame.sessionid);
+			Program.StartEchoVR(Program.JoinType.Player, session_id:Program.lastFrame.sessionid);
 		}
 
 		private void RestartAsSpectatorClick(object sender, RoutedEventArgs e)
 		{
 			Program.KillEchoVR();
-			Program.StartEchoVR("s", session_id:Program.lastFrame.sessionid);
+			Program.StartEchoVR(Program.JoinType.Spectator, session_id:Program.lastFrame.sessionid);
 		}
 
 		private void showEventLogFileButton_Click(object sender, RoutedEventArgs e)
@@ -1155,7 +1155,7 @@ namespace Spark
 
 		private void startSpectatorStream_Click(object sender, RoutedEventArgs e)
 		{
-			Program.StartEchoVR("spectate");
+			Program.StartEchoVR(Program.JoinType.Spectator);
 		}
 
 		private void ToggleHidden(object sender, RoutedEventArgs e)
@@ -1207,8 +1207,8 @@ namespace Spark
 					if (Program.inGame && Program.lastFrame != null && !Program.lastFrame.inLobby)
 					{
 						Program.KillEchoVR($"-httpport {Program.SPECTATEME_PORT}");
-						Program.StartEchoVR("spectate", port:Program.SPECTATEME_PORT, noovr:true, session_id:Program.lastFrame.sessionid);
-						Program.WaitUntilLocalGameLaunched(Program.UseCameraControlKeys, port:Program.SPECTATEME_PORT);
+						Program.StartEchoVR(Program.JoinType.Spectator, port: Program.SPECTATEME_PORT, noovr: true, session_id: Program.lastFrame.sessionid);
+						Program.WaitUntilLocalGameLaunched(Program.UseCameraControlKeys, port: Program.SPECTATEME_PORT);
 						spectateMeSubtitle.Text = "Waiting for EchoVR to start";
 					}
 					else
@@ -2131,6 +2131,11 @@ namespace Spark
 		private void showOverlay_Click(object sender, RoutedEventArgs e)
 		{
 			Program.ToggleWindow(typeof(GameOverlay));
+		}
+
+		private void CameraWriteClick(object sender, RoutedEventArgs e)
+		{
+			Program.ToggleWindow(typeof(CameraWrite));
 		}
 	}
 }
