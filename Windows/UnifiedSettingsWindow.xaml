@@ -640,7 +640,7 @@
 											<StackPanel Margin="10,10,10,10">
 												<StackPanel Orientation="Horizontal">
 													<Label Content="Free Cam Field of View" Width="160"/>
-													<Slider x:Name="freeCamFovSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamFov}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
+													<Slider x:Name="freeCamFovSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamFov}" Minimum="20" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
 													<TextBox Text="{Binding ElementName=freeCamFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 													<Label Content="deg"/>
 												</StackPanel>

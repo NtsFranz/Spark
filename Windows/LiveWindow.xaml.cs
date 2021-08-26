@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -24,6 +26,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static Logger;
 using System.Numerics;
+using GenHTTP.Engine;
 
 namespace Spark
 {
@@ -55,6 +58,8 @@ namespace Spark
 
 		List<Label> blueScoreboardItems = new List<Label>();
 		List<Label> orangeScoreboardItems = new List<Label>();
+
+		private string lastTraceroute = "";
 
 		[DllImport("User32.dll")]
 		static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
@@ -885,6 +890,8 @@ namespace Spark
 					Program.matchData.ServerLocation = loc;
 					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
 					serverLocationLabel.ToolTip = $"{respObj["query"]}\n{respObj["org"]}\n{respObj["as"]}";
+					
+					FullServerLocationTextBox.Text = $"{loc}\n{respObj["query"]}\n{respObj["org"]}\n{respObj["as"]}";
 
 					if (SparkSettings.instance.serverLocationTTS)
 					{
@@ -2136,6 +2143,138 @@ namespace Spark
 		private void CameraWriteClick(object sender, RoutedEventArgs e)
 		{
 			Program.ToggleWindow(typeof(CameraWrite));
+		}
+		
+		private void RefreshTraceroute(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(lastIP)) return;
+				// lastTraceroute = string.Join('\n', GetTraceRoute(lastIP));
+
+				Task.Run(() =>
+				{
+					Tracert(lastIP, OnProgressCallback: entries =>
+					{
+						Dispatcher.Invoke(() =>
+						{
+							TracerouteTextBox.Text = entries.Aggregate("", (current, entry) => current + "\n" + entry);
+						});
+					});
+				});
+				// TracerouteTextBox.Text = lastTraceroute;
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, $"Traceroute failed.{ex}");
+			}
+		}
+		
+		/// <summary>
+		/// Modified from https://stackoverflow.com/a/45565253
+		/// </summary>
+		public static IEnumerable<string> GetTraceRoute(string hostname)
+		{
+			// following are similar to the defaults in the "traceroute" unix command.
+			const int timeout = 10000;
+			const int maxTTL = 30;
+			const int bufferSize = 32;
+
+			byte[] buffer = new byte[bufferSize];
+			new Random().NextBytes(buffer);
+
+			using Ping pinger = new();
+			
+			for (int ttl = 1; ttl <= maxTTL; ttl++)
+			{
+				PingOptions options = new(ttl, true);
+				PingReply reply = pinger.Send(hostname, timeout, buffer, options);
+
+				// we've found a route at this ttl
+				if (reply.Status is IPStatus.Success or IPStatus.TtlExpired)
+					yield return $"{reply.Address}";
+
+				// if we reach a status other than expired or timed out, we're done searching or there has been an error
+				if (reply.Status != IPStatus.TtlExpired && reply.Status != IPStatus.TimedOut)
+					break;
+			}
+		}
+
+		public class TracertEntry
+		{
+			public int HopID;
+			public string Address;
+			public string Hostname;
+			public long ReplyTime;
+			public IPStatus ReplyStatus;
+
+			public override string ToString()
+			{
+				return $"{HopID}\t{Address}\t{Hostname}\t{ReplyTime}";
+			}
+		}
+		
+		/// <summary>
+		/// Traces the route which data have to travel through in order to reach an IP address.
+		/// </summary>
+		/// <param name="ipAddress">The IP address of the destination.</param>
+		/// <param name="maxHops">Max hops to be returned.</param>
+		public static IEnumerable<TracertEntry> Tracert(string ipAddress, int maxHops = 30, int timeout = 10000, Action<IEnumerable<TracertEntry>> OnProgressCallback = null)
+		{
+			List<TracertEntry> entries = new List<TracertEntry>();
+			
+			// Ensure that the argument address is valid.
+			if (!IPAddress.TryParse(ipAddress, out IPAddress address))
+				throw new ArgumentException($"{ipAddress} is not a valid IP address.");
+
+			// Max hops should be at least one or else there won't be any data to return.
+			if (maxHops < 1)
+				throw new ArgumentException("Max hops can't be lower than 1.");
+
+			// Ensure that the timeout is not set to 0 or a negative number.
+			if (timeout < 1) throw new ArgumentException("Timeout value must be higher than 0.");
+			Ping ping = new Ping();
+			PingOptions pingOptions = new PingOptions(1, true);
+			Stopwatch pingReplyTime = new Stopwatch();
+			PingReply reply;
+			do
+			{
+				pingReplyTime.Start();
+				reply = ping.Send(address, timeout, new byte[] {0}, pingOptions);
+				pingReplyTime.Stop();
+				string hostname = string.Empty;
+				if (reply.Address != null)
+				{
+					try
+					{
+						IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+						hostname = ipHostInfo.HostName; 
+						//IPAddress ipA = ipHostInfo.AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
+						//var ame = Dns.GetHostByAddress(reply.Address);    // Retrieve the hostname for the replied address.
+					}
+					catch (SocketException)
+					{
+						/* No host available for that address. */
+					}
+				}
+
+				// Return out TracertEntry object with all the information about the hop.
+				entries.Add(new TracertEntry()
+				{
+					HopID = pingOptions.Ttl,
+					Address = reply.Address.ToString(),
+					Hostname = hostname,
+					ReplyTime = pingReplyTime.ElapsedMilliseconds,
+					ReplyStatus = reply.Status
+				});
+				
+				OnProgressCallback?.Invoke(entries);
+
+				pingOptions.Ttl++;
+				pingReplyTime.Reset();
+			} while (reply.Status != IPStatus.Success && pingOptions.Ttl <= maxHops);
+
+			return entries;
 		}
 	}
 }

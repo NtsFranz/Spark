@@ -4287,7 +4287,7 @@ namespace Spark
 				if (!Directory.Exists(baseFolder))
 				{
 					LogRow(LogType.Error, "Can't find the EchoVR profile folder.");
-					return null;
+					return new List<TabletStats>();
 				}
 
 				List<string> folders = Directory.GetDirectories(baseFolder).ToList();
@@ -4310,8 +4310,8 @@ namespace Spark
 			catch (Exception ex)
 			{
 				LogRow(LogType.Error, ex.ToString());
-				new MessageBox($"Failed to upload tablet stats.\nPlease report this to NtsFranz.").Show();
-				return null;
+				new MessageBox($"Failed to find tablet stats.\nPlease report this to NtsFranz.").Show();
+				return new List<TabletStats>();
 			}
 		}
 

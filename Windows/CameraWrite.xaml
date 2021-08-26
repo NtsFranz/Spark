@@ -7,8 +7,8 @@
         xmlns:l="clr-namespace:Spark"
         mc:Ignorable="d"
         Title="Camera Write" 
-		Height="300" 
-		Width="330" 
+		Height="460" 
+		Width="350" 
 		WindowStartupLocation="CenterOwner" 
 		ResizeMode="NoResize" 
 		Background="#FF232323" 
@@ -16,22 +16,53 @@
         Icon="/img/ignite_logo.ico"
 		DataContext="{Binding RelativeSource={RelativeSource Self}}"
         >
-	<Grid>
-		<Label Content="Set Spectator Camera Position" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
-		<TextBlock Margin="10,60,10,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" Grid.RowSpan="1" Height="74" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}" TextWrapping="Wrap">
-			This works using Graic's WriteAPI, available <Hyperlink NavigateUri="https://github.com/Graicc/WriteAPI/releases/latest">here</Hyperlink>. Make sure you are in free-cam mode in spectator view (C on the keyboard).
-		</TextBlock>
-		<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,130,0,0" Width="113">
-			<Button Margin="5,0,5,5" Height="45" Click="SetStart">Set Start</Button>
-			<Button Margin="5,0,5,5" Height="45" Click="SetEnd">Set End</Button>
-		</StackPanel>
-		<StackPanel Margin="0,130,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="120">
-			<Button Width="150" Height="60" Content="Play" Click="StartAnimation" />
-			<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-				<Label>Duration:</Label>
-				<TextBox x:Name="durationInput" Text="{Binding Duration}" HorizontalContentAlignment="Left" Width="70" Height="24" />
-			</StackPanel>
-		</StackPanel>
+    <Grid>
+        <Label Content="Set Spectator Camera Position" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
+        <TextBlock Margin="10,60,10,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" Grid.RowSpan="1" Height="90" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}" TextWrapping="Wrap">
+			This works using Graic's WriteAPI, available <Hyperlink NavigateUri="https://github.com/Graicc/WriteAPI/releases/latest">here</Hyperlink>.<LineBreak/><LineBreak/>Make sure you are in free-cam mode in spectator view (C on the keyboard).
+        </TextBlock>
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,150,0,0" Width="113">
+            <Button Margin="5,0,5,5" Height="45" Click="SetStart">Set Start</Button>
+            <Button Margin="5,0,5,5" Height="45" Click="SetEnd">Set End</Button>
+        </StackPanel>
+        <StackPanel Margin="0,150,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="120">
+            <Button x:Name="startButton" Width="150" Height="60" Content="Play" Click="StartAnimation" />
+            <ProgressBar x:Name="animationProgressBar" Width="150" Height="10"></ProgressBar>
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Label>Duration:</Label>
+                <TextBox x:Name="durationInput" Text="{Binding Duration}" HorizontalContentAlignment="Left" Width="70" Height="24" />
+            </StackPanel>
+        </StackPanel>
 
-	</Grid>
+        <GroupBox VerticalAlignment="Bottom">
+            <GroupBox.Header>
+                Exact Positions
+            </GroupBox.Header>
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,85">
+                    <Label Width="50" HorizontalContentAlignment="Right">X:</Label>
+                    <TextBox x:Name="x" Width="40" Height="25" ></TextBox>
+                    <Label Width="50" HorizontalContentAlignment="Right">Y:</Label>
+                    <TextBox x:Name="y" Width="40" Height="25" ></TextBox>
+                    <Label Width="50" HorizontalContentAlignment="Right">Z:</Label>
+                    <TextBox x:Name="z" Width="40" Height="25" ></TextBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,50">
+                    <Label Width="50" HorizontalContentAlignment="Right">Yaw:</Label>
+                    <TextBox x:Name="yaw" Width="40" Height="25" ></TextBox>
+                    <Label Width="50" HorizontalContentAlignment="Right">Pitch:</Label>
+                    <TextBox x:Name="pitch" Width="40" Height="25" ></TextBox>
+                    <Label Width="50" HorizontalContentAlignment="Right">Roll:</Label>
+                    <TextBox x:Name="roll" Width="40" Height="25" ></TextBox>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,10">
+                    <Button x:Name="readXYZ" Width="70" Height="32" Margin="0,0,10,0" Click="ReadXYZ">Read</Button>
+                    <Button x:Name="writeXYZ" Width="70" Height="32"  Click="WriteXYZ">Write</Button>
+                </StackPanel>
+
+            </Grid>
+        </GroupBox>
+
+    </Grid>
 </Window>

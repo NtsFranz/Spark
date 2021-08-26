@@ -139,7 +139,9 @@
     <Resource Include="img\ignite_logo_128.png" />
     <Resource Include="img\ignite_logo_32.png" />
     <Resource Include="img\ignite_logo_64.png" />
-    <Resource Include="img\link.png" />
+    <Resource Include="img\link.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="img\open-in-new.png" />
     <Resource Include="img\speaker.png" />
     <Resource Include="img\text-box-outline.png" />
@@ -148,6 +150,8 @@
     <EmbeddedResource Include="html\js\heatmap.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Remove="img\web.png" />
+    <Resource Include="img\web.png" />
   </ItemGroup>
 
   <ItemGroup>
