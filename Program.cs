@@ -157,7 +157,7 @@ namespace Spark
 			get => statsDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexStats];
 		}
 
-		private static readonly List<int> statsDeltaTimes = new() { 16, 100 };
+		private static readonly List<int> statsDeltaTimes = new() { 4, 100 };
 		private static readonly List<int> fullDeltaTimes = new() { 16, 33, 100 };
 
 		public static string fileName;

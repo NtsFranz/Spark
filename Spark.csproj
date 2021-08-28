@@ -115,6 +115,7 @@
     <PackageReference Include="Grapevine" Version="5.0.0-rc.6" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.818.41" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
     <PackageReference Include="NetMQ" Version="4.0.1.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="obs-websocket-dotnet" Version="4.9.0" />

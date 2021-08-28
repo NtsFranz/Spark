@@ -7,62 +7,161 @@
         xmlns:l="clr-namespace:Spark"
         mc:Ignorable="d"
         Title="Camera Write" 
-		Height="460" 
-		Width="350" 
+		Height="850" 
+		Width="740" 
 		WindowStartupLocation="CenterOwner" 
-		ResizeMode="NoResize" 
+		ResizeMode="CanResize" 
 		Background="#FF232323" 
 		FontSize="16"
         Icon="/img/ignite_logo.ico"
 		DataContext="{Binding RelativeSource={RelativeSource Self}}"
+		Closed="WindowClosed"
         >
-    <Grid>
-        <Label Content="Set Spectator Camera Position" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
-        <TextBlock Margin="10,60,10,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" Grid.RowSpan="1" Height="90" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}" TextWrapping="Wrap">
+	<StackPanel>
+		<Label Content="Set Spectator Camera Position" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
+		<TextBlock Margin="10,10,10,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" Grid.RowSpan="1" Height="90" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}" TextWrapping="Wrap">
 			This works using Graic's WriteAPI, available <Hyperlink NavigateUri="https://github.com/Graicc/WriteAPI/releases/latest">here</Hyperlink>.<LineBreak/><LineBreak/>Make sure you are in free-cam mode in spectator view (C on the keyboard).
-        </TextBlock>
-        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12,150,0,0" Width="113">
-            <Button Margin="5,0,5,5" Height="45" Click="SetStart">Set Start</Button>
-            <Button Margin="5,0,5,5" Height="45" Click="SetEnd">Set End</Button>
-        </StackPanel>
-        <StackPanel Margin="0,150,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="120">
-            <Button x:Name="startButton" Width="150" Height="60" Content="Play" Click="StartAnimation" />
-            <ProgressBar x:Name="animationProgressBar" Width="150" Height="10"></ProgressBar>
-            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                <Label>Duration:</Label>
-                <TextBox x:Name="durationInput" Text="{Binding Duration}" HorizontalContentAlignment="Left" Width="70" Height="24" />
-            </StackPanel>
-        </StackPanel>
+		</TextBlock>
+		<WrapPanel>
+			<GroupBox Header="Animation" Margin="5,10,5,0" Width="350" VerticalAlignment="Top">
+				<Grid>
+					<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Width="160">
+						<Button Visibility="Collapsed" Margin="5,0,5,5" Height="45" Click="SetStart">Set Start</Button>
+						<Button Visibility="Collapsed" Margin="5,0,5,5" Height="45" Click="SetEnd">Set End</Button>
+						<StackPanel Orientation="Horizontal">
+							<Button Content="Add Keyframe" Padding="5" Click="AddKeyframe"/>
+							<Button Content="Clear" Padding="5" Click="ClearKeyframes" />
+						</StackPanel>
+						<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="200" Margin="0,10,0,0" BorderThickness="1" BorderBrush="{DynamicResource ContainerBorder}">
+							<StackPanel x:Name="KeyframesList"></StackPanel>
+						</ScrollViewer>
+					</StackPanel>
+					<StackPanel Margin="0,5,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="180">
+						<Button x:Name="startButton" Width="150" Height="60" Content="Play" Click="StartAnimation" />
+						<ProgressBar x:Name="animationProgressBar" Width="150" Height="10" Maximum="1" LargeChange="0.01" SmallChange="0.01"></ProgressBar>
+						<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+							<Label>Duration:</Label>
+							<TextBox x:Name="durationInput" Text="{Binding Duration}" HorizontalContentAlignment="Left" Width="70" Height="24" />
+						</StackPanel>
+						<CheckBox Content="Ease In" IsChecked="{Binding easeIn}" Margin="10,10,0,5"/>
+						<CheckBox Content="Ease Out" IsChecked="{Binding easeOut}" Margin="10,0,0,10"/>
+					</StackPanel>
+				</Grid>
+			</GroupBox>
 
-        <GroupBox VerticalAlignment="Bottom">
-            <GroupBox.Header>
-                Exact Positions
-            </GroupBox.Header>
-            <Grid>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,85">
-                    <Label Width="50" HorizontalContentAlignment="Right">X:</Label>
-                    <TextBox x:Name="x" Width="40" Height="25" ></TextBox>
-                    <Label Width="50" HorizontalContentAlignment="Right">Y:</Label>
-                    <TextBox x:Name="y" Width="40" Height="25" ></TextBox>
-                    <Label Width="50" HorizontalContentAlignment="Right">Z:</Label>
-                    <TextBox x:Name="z" Width="40" Height="25" ></TextBox>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,50">
-                    <Label Width="50" HorizontalContentAlignment="Right">Yaw:</Label>
-                    <TextBox x:Name="yaw" Width="40" Height="25" ></TextBox>
-                    <Label Width="50" HorizontalContentAlignment="Right">Pitch:</Label>
-                    <TextBox x:Name="pitch" Width="40" Height="25" ></TextBox>
-                    <Label Width="50" HorizontalContentAlignment="Right">Roll:</Label>
-                    <TextBox x:Name="roll" Width="40" Height="25" ></TextBox>
-                </StackPanel>
+			<GroupBox Header="Waypoints" Margin="5,10,5,0" Width="350">
+				<StackPanel>
+					<Grid Margin="0,0,0,10">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="1*"/>
+							<ColumnDefinition Width="80"/>
+						</Grid.ColumnDefinitions>
+						<TextBox x:Name="NewWaypointName" Grid.Column="0"/>
+						<Button Content="Save" Click="SaveWaypoint" Grid.Column="1" />
+					</Grid>
+					<ScrollViewer MaxHeight="200" VerticalScrollBarVisibility="Auto">
+						<StackPanel x:Name="WaypointsPanel">
+						</StackPanel>
+					</ScrollViewer>
 
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,10">
-                    <Button x:Name="readXYZ" Width="70" Height="32" Margin="0,0,10,0" Click="ReadXYZ">Read</Button>
-                    <Button x:Name="writeXYZ" Width="70" Height="32"  Click="WriteXYZ">Write</Button>
-                </StackPanel>
+				</StackPanel>
+			</GroupBox>
 
-            </Grid>
-        </GroupBox>
 
-    </Grid>
+			<GroupBox Header="Exact Positions" VerticalAlignment="Top" Margin="5,10,5,0"  Width="350">
+				<StackPanel>
+
+					<Label Content="Position"/>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="X: " Width="30" Margin="10,0,0,0"/>
+						<Slider x:Name="xSlider" Value="{Binding xPos}" Minimum="-24" Maximum="24" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<TextBox Text="{Binding ElementName=xSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Y: " Width="30" Margin="10,0,0,0"/>
+						<Slider x:Name="ySlider" Value="{Binding yPos}" Minimum="-15" Maximum="15" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<TextBox Text="{Binding ElementName=ySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Z: " Width="30" Margin="10,0,0,0"/>
+						<Slider x:Name="zSlider" Value="{Binding zPos}" Minimum="-80" Maximum="80" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<TextBox Text="{Binding ElementName=zSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+					</StackPanel>
+					
+					<Label Content="Rotation (Quaternion)"/>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="X: " Width="30" Margin="10,0,0,0"/>
+						<Slider x:Name="xRotSlider" Value="{Binding xRot}" Minimum="-30" Maximum="30" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<TextBox Text="{Binding ElementName=xRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Y: " Width="30" Margin="10,0,0,0"/>
+						<Slider x:Name="yRotSlider" Value="{Binding yRot}" Minimum="-20" Maximum="20" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<TextBox Text="{Binding ElementName=yRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Z: " Width="30" Margin="10,0,0,0"/>
+						<Slider x:Name="zRotSlider" Value="{Binding zRot}" Minimum="-60" Maximum="60" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<TextBox Text="{Binding ElementName=zRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="W: " Width="30" Margin="10,0,0,0"/>
+						<Slider x:Name="wRotSlider" Value="{Binding wRot}" Minimum="-60" Maximum="60" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<TextBox Text="{Binding ElementName=wRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,5,0,5">
+						<Label Width="50" HorizontalContentAlignment="Right">X:</Label>
+						<TextBox x:Name="x" Width="40" Height="25" ></TextBox>
+						<Label Width="50" HorizontalContentAlignment="Right">Y:</Label>
+						<TextBox x:Name="y" Width="40" Height="25" ></TextBox>
+						<Label Width="50" HorizontalContentAlignment="Right">Z:</Label>
+						<TextBox x:Name="z" Width="40" Height="25" ></TextBox>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,5,0,5">
+						<Label Width="50" HorizontalContentAlignment="Right">Yaw:</Label>
+						<TextBox x:Name="yaw" Width="40" Height="25" ></TextBox>
+						<Label Width="50" HorizontalContentAlignment="Right">Pitch:</Label>
+						<TextBox x:Name="pitch" Width="40" Height="25" ></TextBox>
+						<Label Width="50" HorizontalContentAlignment="Right">Roll:</Label>
+						<TextBox x:Name="roll" Width="40" Height="25" ></TextBox>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,5,0,5">
+						<Button x:Name="readXYZ" Width="70" Height="32" Margin="0,0,10,0" Click="ReadXYZ">Read</Button>
+						<Button x:Name="writeXYZ" Width="70" Height="32"  Click="WriteXYZ">Write</Button>
+					</StackPanel>
+
+				</StackPanel>
+			</GroupBox>
+
+
+			<GroupBox Header="Algorithms" Margin="5,10,5,0" Width="350">
+				<StackPanel>
+					<Button Content="Orbit Disc" Click="ToggleOrbitDisc"/>
+
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Rot Speed: " Width="110" Margin="10,0,0,0"/>
+						<Slider x:Name="rotSpeedSlider" Value="{Binding rotSpeed}" Minimum="-720" Maximum="720" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<TextBox Text="{Binding ElementName=rotSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+					</StackPanel>
+					
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Orbit Radius: " Width="110" Margin="10,0,0,0"/>
+						<Slider x:Name="orbitRadiusSlider" Value="{Binding orbitRadius}" Minimum="0" Maximum="20" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<TextBox Text="{Binding ElementName=orbitRadiusSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+					</StackPanel>
+
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Smoothing: " Width="110" Margin="10,0,0,0"/>
+						<Slider x:Name="smoothingSlider" Value="{Binding followSmoothing}" Minimum="0" Maximum="10" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+						<TextBox Text="{Binding ElementName=smoothingSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+					</StackPanel>
+					
+				</StackPanel>
+			</GroupBox>
+		</WrapPanel>
+		
+
+	</StackPanel>
 </Window>

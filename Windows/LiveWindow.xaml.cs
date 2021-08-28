@@ -891,7 +891,7 @@ namespace Spark
 					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
 					serverLocationLabel.ToolTip = $"{respObj["query"]}\n{respObj["org"]}\n{respObj["as"]}";
 					
-					FullServerLocationTextBox.Text = $"{loc}\n{respObj["query"]}\n{respObj["org"]}\n{respObj["as"]}";
+					FullServerLocationTextBox.Text = $"City:\t{loc}\nIP:\t{respObj["query"]}\nOrg:\t{respObj["org"]}\nISP:\t{respObj["isp"]}";
 
 					if (SparkSettings.instance.serverLocationTTS)
 					{
@@ -2150,7 +2150,6 @@ namespace Spark
 			try
 			{
 				if (string.IsNullOrEmpty(lastIP)) return;
-				// lastTraceroute = string.Join('\n', GetTraceRoute(lastIP));
 
 				Task.Run(() =>
 				{
@@ -2158,11 +2157,10 @@ namespace Spark
 					{
 						Dispatcher.Invoke(() =>
 						{
-							TracerouteTextBox.Text = entries.Aggregate("", (current, entry) => current + "\n" + entry);
+							TracerouteTextBox.Text = entries.Aggregate("ID\tPing\tIP\t\tHostname\n", (current, entry) => current + "\n" + entry);
 						});
 					});
 				});
-				// TracerouteTextBox.Text = lastTraceroute;
 			}
 			catch (Exception ex)
 			{
@@ -2170,36 +2168,6 @@ namespace Spark
 			}
 		}
 		
-		/// <summary>
-		/// Modified from https://stackoverflow.com/a/45565253
-		/// </summary>
-		public static IEnumerable<string> GetTraceRoute(string hostname)
-		{
-			// following are similar to the defaults in the "traceroute" unix command.
-			const int timeout = 10000;
-			const int maxTTL = 30;
-			const int bufferSize = 32;
-
-			byte[] buffer = new byte[bufferSize];
-			new Random().NextBytes(buffer);
-
-			using Ping pinger = new();
-			
-			for (int ttl = 1; ttl <= maxTTL; ttl++)
-			{
-				PingOptions options = new(ttl, true);
-				PingReply reply = pinger.Send(hostname, timeout, buffer, options);
-
-				// we've found a route at this ttl
-				if (reply.Status is IPStatus.Success or IPStatus.TtlExpired)
-					yield return $"{reply.Address}";
-
-				// if we reach a status other than expired or timed out, we're done searching or there has been an error
-				if (reply.Status != IPStatus.TtlExpired && reply.Status != IPStatus.TimedOut)
-					break;
-			}
-		}
-
 		public class TracertEntry
 		{
 			public int HopID;
@@ -2210,7 +2178,7 @@ namespace Spark
 
 			public override string ToString()
 			{
-				return $"{HopID}\t{Address}\t{Hostname}\t{ReplyTime}";
+				return $"{HopID}\t{ReplyTime}\t{Address}\t{Hostname}";
 			}
 		}
 		
@@ -2247,7 +2215,7 @@ namespace Spark
 				{
 					try
 					{
-						IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+						IPHostEntry ipHostInfo = Dns.GetHostEntry(reply.Address);
 						hostname = ipHostInfo.HostName; 
 						//IPAddress ipA = ipHostInfo.AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
 						//var ame = Dns.GetHostByAddress(reply.Address);    // Retrieve the hostname for the replied address.
@@ -2259,7 +2227,7 @@ namespace Spark
 				}
 
 				// Return out TracertEntry object with all the information about the hop.
-				entries.Add(new TracertEntry()
+				entries.Add(new TracertEntry
 				{
 					HopID = pingOptions.Ttl,
 					Address = reply.Address.ToString(),

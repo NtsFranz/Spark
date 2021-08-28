@@ -426,8 +426,8 @@
 					<Grid>
 						
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="1*"/>
-							<ColumnDefinition Width="1*"/>
+							<ColumnDefinition Width="2*"/>
+							<ColumnDefinition Width="3*"/>
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="1*"/>
@@ -435,12 +435,12 @@
 						</Grid.RowDefinitions>
 						
 						<GroupBox Header="Server Location" Grid.Column="0" Grid.Row="0" Margin="10,10,10,10">
-							<TextBox x:Name="FullServerLocationTextBox"></TextBox>
+							<TextBox x:Name="FullServerLocationTextBox" IsReadOnly="True" VerticalScrollBarVisibility="Auto"></TextBox>
 						</GroupBox>
 						<GroupBox Header="Traceroute" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="10,10,10,10">
 							<StackPanel VerticalAlignment="Stretch">
 								<Button Click="RefreshTraceroute">Refresh</Button>
-								<TextBox x:Name="TracerouteTextBox" VerticalAlignment="Stretch"></TextBox>
+								<TextBox x:Name="TracerouteTextBox" VerticalAlignment="Stretch" IsReadOnly="True" VerticalScrollBarVisibility="Auto"></TextBox>
 							</StackPanel>
 						</GroupBox>
 						
