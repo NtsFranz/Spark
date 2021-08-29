@@ -275,6 +275,18 @@
     <Setting Name="obsClipSecondsAfter" Type="System.Single" Scope="User">
       <Value Profile="(Default)">2</Value>
     </Setting>
+    <Setting Name="obsGoalSecondsAfter" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="obsSaveSecondsAfter" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="obsGoalReplayLength" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="obsSaveReplayLength" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
     <Setting Name="replayClipSecondsBefore" Type="System.Single" Scope="User">
       <Value Profile="(Default)">3</Value>
     </Setting>
@@ -333,6 +345,12 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="obsBetweenGameScene" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="obsGoalReplayScene" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="obsSaveReplayScene" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

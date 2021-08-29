@@ -1163,4 +1163,16 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   <data name="Follow client player camera mode:" xml:space="preserve">
     <value>Follow player camera mode:</value>
   </data>
+  <data name="Replay_Delay" xml:space="preserve">
+    <value>Delay:</value>
+    <comment>label for replay transition delay</comment>
+  </data>
+  <data name="Replay_Length" xml:space="preserve">
+    <value>Duration:</value>
+    <comment>label for length of time for replay scene</comment>
+  </data>
+  <data name="Replay_Scene" xml:space="preserve">
+    <value>Scene:</value>
+    <comment>header for scene selector for replays</comment>
+  </data>
 </root>
