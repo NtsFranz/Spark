@@ -127,6 +127,10 @@ namespace Spark
 		public bool replayClipAssist { get; set; } = false;
 		public float replayClipSecondsAfter { get; set; } = 3;
 		public float obsClipSecondsAfter { get; set; } = 3;
+		public float obsGoalSecondsAfter { get; set; } = 3;
+		public float obsSaveSecondsAfter { get; set; } = 3;
+		public float obsGoalReplayLength { get; set; } = 5;
+		public float obsSaveReplayLength { get; set; } = 5;
 		public float replayClipSecondsBefore { get; set; } = 7;
 		public float obsClipSecondsBefore { get; set; } = 7;
 		public bool obsAutostartReplayBuffer { get; set; } = false;
@@ -143,6 +147,8 @@ namespace Spark
 		public bool obsSpectatorRecord { get; set; } = false;
 		public string obsInGameScene { get; set; } = "";
 		public string obsBetweenGameScene { get; set; } = "";
+		public string obsGoalReplayScene { get; set; } = "";
+		public string obsSaveReplayScene { get; set; } = "";
 
 
 		#endregion

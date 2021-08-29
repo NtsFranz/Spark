@@ -78,6 +78,22 @@ namespace Spark
 						{
 							betweenGameScene.SelectedIndex = i + 1;
 						}
+						goalReplayScene.Items.Add(new ComboBoxItem
+						{
+							Content = sceneNames[i]
+						});
+						if (SparkSettings.instance.obsGoalReplayScene == sceneNames[i])
+						{
+							goalReplayScene.SelectedIndex = i + 1;
+						}
+						saveReplayScene.Items.Add(new ComboBoxItem
+						{
+							Content = sceneNames[i]
+						});
+						if (SparkSettings.instance.obsSaveReplayScene == sceneNames[i])
+						{
+							saveReplayScene.SelectedIndex = i + 1;
+						}
 					};
 				}
 				else
@@ -93,6 +109,8 @@ namespace Spark
 
 			inGameScene.SelectionChanged += InGameSceneChanged;
 			betweenGameScene.SelectionChanged += BetweenGameSceneChanged;
+			goalReplayScene.SelectionChanged += GoalReplaySceneChanged;
+			saveReplayScene.SelectionChanged += SaveReplaySceneChanged;
 
 			// passwordbox can't use binding
 			obsPasswordBox.Password = SparkSettings.instance.obsPassword;
@@ -838,6 +856,50 @@ namespace Spark
 			}
 		}
 
+		public string GoalReplayLength
+		{
+			get
+			{
+				return clipsTab switch
+				{
+					ClipsTab.OBS => SparkSettings.instance.obsGoalReplayLength.ToString(),
+					_ => "0",
+				};
+			}
+			set
+			{
+				if (!float.TryParse(value, out float sec)) return;
+				switch (clipsTab)
+				{
+					case ClipsTab.OBS:
+						SparkSettings.instance.obsGoalReplayLength = sec;
+						break;
+				}
+			}
+		}
+
+		public string SaveReplayLength
+		{
+			get
+			{
+				return clipsTab switch
+				{
+					ClipsTab.OBS => SparkSettings.instance.obsSaveReplayLength.ToString(),
+					_ => "0",
+				};
+			}
+			set
+			{
+				if (!float.TryParse(value, out float sec)) return;
+				switch (clipsTab)
+				{
+					case ClipsTab.OBS:
+						SparkSettings.instance.obsSaveReplayLength = sec;
+						break;
+				}
+			}
+		}
+
 		public string SecondsAfter {
 			get {
 				return clipsTab switch
@@ -860,6 +922,52 @@ namespace Spark
 						break;
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipSecondsAfter = sec;
+						break;
+				}
+				DoClipLengthSum();
+			}
+		}
+
+		public string GoalSecondsAfter
+		{
+			get
+			{
+				return clipsTab switch
+				{
+					ClipsTab.OBS => SparkSettings.instance.obsGoalSecondsAfter.ToString(),
+					_ => "0",
+				};
+			}
+			set
+			{
+				if (!float.TryParse(value, out float sec)) return;
+				switch (clipsTab)
+				{
+					case ClipsTab.OBS:
+						SparkSettings.instance.obsGoalSecondsAfter = sec;
+						break;
+				}
+				DoClipLengthSum();
+			}
+		}
+
+		public string SaveSecondsAfter
+		{
+			get
+			{
+				return clipsTab switch
+				{
+					ClipsTab.OBS => SparkSettings.instance.obsSaveSecondsAfter.ToString(),
+					_ => "0",
+				};
+			}
+			set
+			{
+				if (!float.TryParse(value, out float sec)) return;
+				switch (clipsTab)
+				{
+					case ClipsTab.OBS:
+						SparkSettings.instance.obsSaveSecondsAfter = sec;
 						break;
 				}
 				DoClipLengthSum();
@@ -1070,6 +1178,16 @@ namespace Spark
 		private void BetweenGameSceneChanged(object sender, SelectionChangedEventArgs e)
 		{
 			SparkSettings.instance.obsBetweenGameScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
+		}
+
+		private void GoalReplaySceneChanged(object sender, SelectionChangedEventArgs e)
+		{
+			SparkSettings.instance.obsGoalReplayScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
+		}
+
+		private void SaveReplaySceneChanged(object sender, SelectionChangedEventArgs e)
+		{
+			SparkSettings.instance.obsSaveReplayScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
 		}
 
 		private void CameraModeDropdownChanged(object sender, SelectionChangedEventArgs e)

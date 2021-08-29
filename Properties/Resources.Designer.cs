@@ -1942,11 +1942,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delay:.
+        /// </summary>
+        public static string Replay_Delay {
+            get {
+                return ResourceManager.GetString("Replay_Delay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replay File Splitting:.
         /// </summary>
         public static string Replay_File_Splitting_ {
             get {
                 return ResourceManager.GetString("Replay File Splitting:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Length:.
+        /// </summary>
+        public static string Replay_Length {
+            get {
+                return ResourceManager.GetString("Replay_Length", resourceCulture);
             }
         }
         
@@ -1965,6 +1983,15 @@ namespace Spark.Properties {
         public static string Replay_Recording_Settings {
             get {
                 return ResourceManager.GetString("Replay Recording Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scene:.
+        /// </summary>
+        public static string Replay_Scene {
+            get {
+                return ResourceManager.GetString("Replay_Scene", resourceCulture);
             }
         }
         
