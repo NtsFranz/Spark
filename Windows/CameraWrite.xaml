@@ -23,31 +23,35 @@
 			This works using Graic's WriteAPI, available <Hyperlink NavigateUri="https://github.com/Graicc/WriteAPI/releases/latest">here</Hyperlink>.<LineBreak/><LineBreak/>Make sure you are in free-cam mode in spectator view (C on the keyboard).
 		</TextBlock>
 		<WrapPanel>
+			<!--<Expander Header="Animation" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >-->
 			<GroupBox Header="Animation" Margin="5,10,5,0" Width="350" VerticalAlignment="Top">
 				<Grid>
-					<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Width="160">
+					<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Width="175">
 						<Button Visibility="Collapsed" Margin="5,0,5,5" Height="45" Click="SetStart">Set Start</Button>
 						<Button Visibility="Collapsed" Margin="5,0,5,5" Height="45" Click="SetEnd">Set End</Button>
 						<StackPanel Orientation="Horizontal">
-							<Button Content="Add Keyframe" Padding="5" Click="AddKeyframe"/>
-							<Button Content="Clear" Padding="5" Click="ClearKeyframes" />
+							<Button Content="Add Keyframe +" Padding="5" Click="AddKeyframe"/>
+							<Button Padding="5" Margin="5,0,0,0" Click="ClearKeyframes" >
+								<Image Source="/img/delete.png" Width="18"/>
+							</Button>
 						</StackPanel>
 						<ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="200" Margin="0,10,0,0" BorderThickness="1" BorderBrush="{DynamicResource ContainerBorder}">
 							<StackPanel x:Name="KeyframesList"></StackPanel>
 						</ScrollViewer>
 					</StackPanel>
 					<StackPanel Margin="0,5,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="180">
-						<Button x:Name="startButton" Width="150" Height="60" Content="Play" Click="StartAnimation" />
-						<ProgressBar x:Name="animationProgressBar" Width="150" Height="10" Maximum="1" LargeChange="0.01" SmallChange="0.01"></ProgressBar>
+						<Button x:Name="startButton" Width="140" Height="60" Content="Play" Click="StartKeyframeAnimation" />
+						<ProgressBar x:Name="animationProgressBar" Width="140" Height="10" Maximum="1" LargeChange="0.01" SmallChange="0.01"></ProgressBar>
 						<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
 							<Label>Duration:</Label>
-							<TextBox x:Name="durationInput" Text="{Binding Duration}" HorizontalContentAlignment="Left" Width="70" Height="24" />
+							<TextBox x:Name="durationInput" Text="{Binding Duration}" HorizontalContentAlignment="Left" Width="60" Height="24" />
 						</StackPanel>
 						<CheckBox Content="Ease In" IsChecked="{Binding easeIn}" Margin="10,10,0,5"/>
 						<CheckBox Content="Ease Out" IsChecked="{Binding easeOut}" Margin="10,0,0,10"/>
 					</StackPanel>
 				</Grid>
 			</GroupBox>
+			<!--</Expander>-->
 
 			<GroupBox Header="Waypoints" Margin="5,10,5,0" Width="350">
 				<StackPanel>
@@ -87,30 +91,30 @@
 						<Slider x:Name="zSlider" Value="{Binding zPos}" Minimum="-80" Maximum="80" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=zSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
-					
+
 					<Label Content="Rotation (Quaternion)"/>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="X: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="xRotSlider" Value="{Binding xRot}" Minimum="-30" Maximum="30" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="xRotSlider" Value="{Binding xRot}" Minimum="-1" Maximum="1" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=xRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="Y: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="yRotSlider" Value="{Binding yRot}" Minimum="-20" Maximum="20" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="yRotSlider" Value="{Binding yRot}" Minimum="-1" Maximum="1" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=yRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="Z: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="zRotSlider" Value="{Binding zRot}" Minimum="-60" Maximum="60" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="zRotSlider" Value="{Binding zRot}" Minimum="-1" Maximum="1" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=zRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="W: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="wRotSlider" Value="{Binding wRot}" Minimum="-60" Maximum="60" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="wRotSlider" Value="{Binding wRot}" Minimum="-1" Maximum="1" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=wRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 
-					<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,5,0,5">
+					<!--<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,5,0,5">
 						<Label Width="50" HorizontalContentAlignment="Right">X:</Label>
 						<TextBox x:Name="x" Width="40" Height="25" ></TextBox>
 						<Label Width="50" HorizontalContentAlignment="Right">Y:</Label>
@@ -125,7 +129,7 @@
 						<TextBox x:Name="pitch" Width="40" Height="25" ></TextBox>
 						<Label Width="50" HorizontalContentAlignment="Right">Roll:</Label>
 						<TextBox x:Name="roll" Width="40" Height="25" ></TextBox>
-					</StackPanel>
+					</StackPanel>-->
 
 					<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,5,0,5">
 						<Button x:Name="readXYZ" Width="70" Height="32" Margin="0,0,10,0" Click="ReadXYZ">Read</Button>
@@ -138,30 +142,50 @@
 
 			<GroupBox Header="Algorithms" Margin="5,10,5,0" Width="350">
 				<StackPanel>
-					<Button Content="Orbit Disc" Click="ToggleOrbitDisc"/>
+					<Expander Header="Orbit Disc">
+						<StackPanel Margin="0,5,0,0">
+							<Button Click="ToggleOrbitDisc">
+								<StackPanel Orientation="Horizontal">
+									<Label Content="Orbit Disc"/>
+									<Image Source="/img/orbit.png" Width="20" Margin="10,0,0,0"/>
+									<CheckBox x:Name="IsOrbitingCheckbox" Margin="20,0,0,0"/>
+								</StackPanel>
+							</Button>
 
-					<StackPanel Orientation="Horizontal">
-						<Label Content="Rot Speed: " Width="110" Margin="10,0,0,0"/>
-						<Slider x:Name="rotSpeedSlider" Value="{Binding rotSpeed}" Minimum="-720" Maximum="720" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
-						<TextBox Text="{Binding ElementName=rotSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-					</StackPanel>
-					
-					<StackPanel Orientation="Horizontal">
-						<Label Content="Orbit Radius: " Width="110" Margin="10,0,0,0"/>
-						<Slider x:Name="orbitRadiusSlider" Value="{Binding orbitRadius}" Minimum="0" Maximum="20" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
-						<TextBox Text="{Binding ElementName=orbitRadiusSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-					</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Rot Speed: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="rotSpeedSlider" Value="{Binding rotSpeed}" Minimum="-720" Maximum="720" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+								<TextBox Text="{Binding ElementName=rotSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
 
-					<StackPanel Orientation="Horizontal">
-						<Label Content="Smoothing: " Width="110" Margin="10,0,0,0"/>
-						<Slider x:Name="smoothingSlider" Value="{Binding followSmoothing}" Minimum="0" Maximum="10" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
-						<TextBox Text="{Binding ElementName=smoothingSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-					</StackPanel>
-					
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Orbit Radius: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="orbitRadiusSlider" Value="{Binding orbitRadius}" Minimum="0" Maximum="20" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+								<TextBox Text="{Binding ElementName=orbitRadiusSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Smoothing: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="smoothingSlider" Value="{Binding followSmoothing}" Minimum="0" Maximum="10" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<TextBox Text="{Binding ElementName=smoothingSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+						</StackPanel>
+					</Expander>
+					<Expander Header="Follow All">
+						<StackPanel Margin="0,5,0,0">
+							<TextBlock Text="This is an attempt at a better smooth autocam. It's not close to finished." TextWrapping="Wrap" Margin="5,5,5,5"/>
+							<Button>
+								<StackPanel Orientation="Horizontal">
+									<Label Content="Follow All"/>
+									<CheckBox Margin="10,0,0,0"/>
+								</StackPanel>
+							</Button>
+						</StackPanel>
+					</Expander>
 				</StackPanel>
 			</GroupBox>
 		</WrapPanel>
-		
+
 
 	</StackPanel>
 </Window>

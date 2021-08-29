@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.3.11</Version>
+    <Version>2.3.12</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports, Graic</Authors>
@@ -64,14 +64,18 @@
     <None Remove="img\baseline_replay_white_48dp.png" />
     <None Remove="img\cards-outline.png" />
     <None Remove="img\clipboard-outline.png" />
+    <None Remove="img\delete.png" />
+    <None Remove="img\download.png" />
     <None Remove="img\ignite_logo.ico" />
     <None Remove="img\ignite_logo_128.png" />
     <None Remove="img\ignite_logo_32.png" />
     <None Remove="img\ignite_logo_64.png" />
     <None Remove="img\link.png" />
     <None Remove="img\open-in-new.png" />
+    <None Remove="img\orbit.png" />
     <None Remove="img\speaker.png" />
     <None Remove="img\text-box-outline.png" />
+    <None Remove="img\upload.png" />
     <None Remove="img\view-dashboard.png" />
     <None Remove="InstallEchoSpeakerSystem.bat" />
   </ItemGroup>
@@ -136,6 +140,8 @@
     <Resource Include="img\baseline_replay_white_48dp.png" />
     <Resource Include="img\cards-outline.png" />
     <Resource Include="img\clipboard-outline.png" />
+    <Resource Include="img\delete.png" />
+    <Resource Include="img\download.png" />
     <Resource Include="img\ignite_logo.ico" />
     <Resource Include="img\ignite_logo_128.png" />
     <Resource Include="img\ignite_logo_32.png" />
@@ -144,8 +150,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="img\open-in-new.png" />
+    <Resource Include="img\orbit.png" />
     <Resource Include="img\speaker.png" />
     <Resource Include="img\text-box-outline.png" />
+    <Resource Include="img\upload.png" />
     <Resource Include="img\view-dashboard.png" />
     <None Remove="html\js\heatmap.min.js" />
     <EmbeddedResource Include="html\js\heatmap.min.js">

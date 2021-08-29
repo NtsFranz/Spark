@@ -1,11 +1,13 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Timer = System.Timers.Timer;
 
@@ -33,59 +35,78 @@ namespace Spark
 
 		public float xPos
 		{
-			get => manualTransform.position.X; set
+			get => manualTransform.position.X;
+			set
 			{
 				manualTransform.position.X = value;
-				WriteXYZ();
+				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
 		public float yPos
 		{
-			get => manualTransform.position.Y; set
+			get => manualTransform.position.Y;
+			set
 			{
 				manualTransform.position.Y = value;
-				WriteXYZ();
+				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
 		public float zPos
 		{
-			get => manualTransform.position.Z; set
+			get => manualTransform.position.Z;
+			set
 			{
 				manualTransform.position.Z = value;
-				WriteXYZ();
+				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
 
 		public float xRot
 		{
-			get => manualTransform.rotation.X; set
+			//get => QuaternionToEuler(manualTransform.rotation).X;
+			get => manualTransform.rotation.X;
+			set
 			{
+				//manualTransform.rotation = Quaternion.CreateFromYawPitchRoll(
+				//	value * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad
+				//);
 				manualTransform.rotation.X = value;
-				WriteXYZ();
+				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
 		public float yRot
 		{
-			get => manualTransform.rotation.Y; set
+			//get => QuaternionToEuler(manualTransform.rotation).Y;
+			get => manualTransform.rotation.Y;
+			set
 			{
+				//manualTransform.rotation = Quaternion.CreateFromYawPitchRoll(
+				//	xRot * Deg2Rad, value * Deg2Rad, zRot * Deg2Rad
+				//);
 				manualTransform.rotation.Y = value;
-				WriteXYZ();
+				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
 		public float zRot
 		{
-			get => manualTransform.rotation.Z; set
+			//get => QuaternionToEuler(manualTransform.rotation).Z;
+			get => manualTransform.rotation.Z;
+			set
 			{
+				//manualTransform.rotation = Quaternion.CreateFromYawPitchRoll(
+				//	xRot * Deg2Rad, yRot * Deg2Rad, value * Deg2Rad
+				//);
 				manualTransform.rotation.Z = value;
-				WriteXYZ();
+				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
 		public float wRot
 		{
-			get => manualTransform.rotation.W; set
+			get => manualTransform.rotation.W;
+			set
 			{
 				manualTransform.rotation.W = value;
-				WriteXYZ();
+				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
 
@@ -93,7 +114,11 @@ namespace Spark
 		[Serializable]
 		public class CameraTransform
 		{
-			public CameraTransform() { }
+			public CameraTransform()
+			{
+				position = Vector3.Zero;
+				rotation = Quaternion.Identity;
+			}
 
 			public CameraTransform(Vector3 pos, Quaternion rot)
 			{
@@ -119,6 +144,8 @@ namespace Spark
 		public const float Deg2Rad = 1 / 57.29578f;
 		public const float Rad2Deg = 57.29578f;
 
+		public bool sliderListenersActivated;
+
 		public CameraWrite()
 		{
 			InitializeComponent();
@@ -137,6 +164,10 @@ namespace Spark
 
 			RegenerateWaypointButtons();
 			RegenerateKeyframeButtons();
+
+			SetSliderPositions();
+
+			sliderListenersActivated = true;
 		}
 
 
@@ -198,6 +229,71 @@ namespace Spark
 				animationThread.Start();
 				startButton.Content = "Stop";
 			}
+		}
+		private void StartKeyframeAnimation(object sender, RoutedEventArgs e)
+		{
+			if (animationThread is { IsAlive: true })
+			{
+				isAnimating = false;
+				startButton.Content = "Start";
+			}
+			else
+			{
+				isAnimating = true;
+				animationThread = new Thread(KeyframeAnimationThread);
+				animationThread.Start();
+				startButton.Content = "Stop";
+			}
+		}
+
+
+		private void KeyframeAnimationThread()
+		{
+			BezierSpline spline = new BezierSpline(CameraWriteSettings.instance.keyframePositions);
+
+			DateTime startTime = DateTime.Now;
+			while (animationProgress < 1 && isAnimating)
+			{
+				DateTime currentTime = DateTime.Now;
+				float elapsed = (currentTime.Ticks - startTime.Ticks) / 10000000f;
+				animationProgress = elapsed / duration;
+
+				// Change t to use easing in and out
+				float t = animationProgress;
+				if (easeIn && easeOut)
+				{
+					t = EaseInOut(animationProgress);
+				}
+				else if (easeIn)
+				{
+					t = EaseIn(animationProgress);
+				}
+				else if (easeOut)
+				{
+					t = EaseOut(animationProgress);
+				}
+
+
+				Vector3 newPos = spline.GetPoint(t);
+				//Quaternion newRot = QuaternionLookRotation(spline.GetDirection(t), Vector3.UnitY);
+				Quaternion newRot = spline.GetRotation(t);
+
+				CameraTransform newTransform = new(newPos, newRot);
+
+				string data = JsonConvert.SerializeObject(newTransform);
+
+				Program.PostRequestCallback(url, null, data, null);
+
+				Thread.Sleep(8);
+			}
+			Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(end), null);
+
+			Dispatcher.Invoke(() =>
+			{
+				startButton.Content = "Start";
+			});
+			animationProgress = 0;
+			isAnimating = false;
 		}
 
 		private void AnimationThread()
@@ -280,19 +376,33 @@ namespace Spark
 
 				Dispatcher.Invoke(() =>
 				{
-					DataContext = null;
-					DataContext = data;
-
-					x.Text = $"{data.position.X:N1}";
-					y.Text = $"{data.position.Y:N1}";
-					z.Text = $"{data.position.Z:N1}";
-
-					Vector3 yawPitchRoll = QuaternionToEuler(data.rotation);
-					yaw.Text = $"{yawPitchRoll.X * Rad2Deg:N1}";
-					pitch.Text = $"{yawPitchRoll.Y * Rad2Deg:N1}";
-					roll.Text = $"{yawPitchRoll.Z * Rad2Deg:N1}";
+					SetSliderPositions();
 				});
 			});
+		}
+
+		private void SetSliderPositions()
+		{
+			sliderListenersActivated = false;
+
+			try
+			{
+				xSlider.Value = manualTransform.position.X;
+				ySlider.Value = manualTransform.position.Y;
+				zSlider.Value = manualTransform.position.Z;
+
+				//Vector3 rot = QuaternionToEuler(manualTransform.rotation);
+				Quaternion rot = manualTransform.rotation;
+				xRotSlider.Value = rot.X;
+				yRotSlider.Value = rot.Y;
+				zRotSlider.Value = rot.Z;
+				wRotSlider.Value = rot.W;
+			}
+			finally
+			{
+				sliderListenersActivated = true;
+			}
+
 		}
 
 		private void WriteXYZ(object sender, RoutedEventArgs e)
@@ -304,23 +414,10 @@ namespace Spark
 		{
 			try
 			{
-				//CameraTransform transform = new CameraTransform(
-				//	new Vector3(
-				//		float.Parse(x.Text),
-				//		float.Parse(y.Text),
-				//		float.Parse(z.Text)
-				//	),
-				//	Quaternion.CreateFromYawPitchRoll(
-				//		float.Parse(yaw.Text),
-				//		float.Parse(pitch.Text),
-				//		float.Parse(roll.Text)
-				//	)
-				//);
-
-
 				CameraTransform transform = new CameraTransform(
 					new Vector3(xPos, yPos, zPos),
-					Quaternion.CreateFromYawPitchRoll(xRot * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad)
+					new Quaternion(xRot, yRot, zRot, wRot)
+				//Quaternion.CreateFromYawPitchRoll(xRot * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad)
 				);
 
 				Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(transform), null);
@@ -331,6 +428,10 @@ namespace Spark
 				new MessageBox("Can't parse position/rotation values. Make sure they are all numbers.").Show();
 			}
 		}
+
+		/// <summary>
+		/// Output is in degrees
+		/// </summary>
 		private static Vector3 QuaternionToEuler(Quaternion q)
 		{
 			Vector3 euler;
@@ -399,7 +500,11 @@ namespace Spark
 				};
 				Button goTo = new Button
 				{
-					Content = "Go To",
+					Content = new Image
+					{
+						Source = new BitmapImage(new Uri("/img/card-search-outline.png", UriKind.Relative)),
+						Width = 16
+					},
 					Margin = new Thickness(5, 0, 0, 0),
 				};
 				goTo.Click += (_, _) =>
@@ -546,10 +651,12 @@ namespace Spark
 			if (orbitThread?.IsAlive == true)
 			{
 				orbitingDisc = false;
+				IsOrbitingCheckbox.IsChecked = false;
 			}
 			else
 			{
 				orbitingDisc = true;
+				IsOrbitingCheckbox.IsChecked = true;
 				orbitThread = new Thread(OrbitDiscThread);
 				orbitThread.Start();
 			}
@@ -634,6 +741,11 @@ namespace Spark
 
 				Thread.Sleep(2);
 			}
+
+			Dispatcher.Invoke(() =>
+			{
+				IsOrbitingCheckbox.IsChecked = false;
+			});
 		}
 
 		private static Quaternion QuaternionLookRotation(Vector3 forward, Vector3 up)
