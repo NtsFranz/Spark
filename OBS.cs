@@ -10,6 +10,8 @@ namespace Spark
 	{
 		public readonly OBSWebsocket instance;
 
+		public int currentReplay = 0;
+
 		public OBS()
 		{
 			instance = new OBSWebsocket();
@@ -59,37 +61,47 @@ namespace Spark
 
 		private void Save(g_Instance frame, g_Team team, g_Player player)
 		{
-			SaveClip(SparkSettings.instance.obsClipSave, player.name, frame);
+			SaveClip(SparkSettings.instance.obsClipSave, player.name, frame, SparkSettings.instance.obsSaveReplayScene, SparkSettings.instance.obsSaveSecondsAfter, SparkSettings.instance.obsSaveReplayLength);
 		}
 
 		private void Goal(g_Instance frame, GoalData goalData)
 		{
-			SaveClip(SparkSettings.instance.obsClipGoal, frame.last_score.person_scored, frame);
+			SaveClip(SparkSettings.instance.obsClipGoal, frame.last_score.person_scored, frame, SparkSettings.instance.obsGoalReplayScene, SparkSettings.instance.obsGoalSecondsAfter, SparkSettings.instance.obsGoalReplayLength);
 		}
 
 		private void PlayspaceAbuse(g_Instance frame, g_Team team, g_Player player, Vector3 arg4)
 		{
-			SaveClip(SparkSettings.instance.obsClipPlayspace, player.name, frame);
+			SaveClip(SparkSettings.instance.obsClipPlayspace, player.name, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0);
 		}
 
 		private void Assist(g_Instance frame, GoalData goal)
 		{
-			SaveClip(SparkSettings.instance.obsClipAssist, frame.last_score.assist_scored, frame);
+			SaveClip(SparkSettings.instance.obsClipAssist, frame.last_score.assist_scored, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0);
 		}
 
 		private void Interception(g_Instance frame, g_Team team, g_Player throwPlayer, g_Player catchPlayer)
 		{
-			SaveClip(SparkSettings.instance.obsClipInterception, catchPlayer.name, frame);
+			SaveClip(SparkSettings.instance.obsClipInterception, catchPlayer.name, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0);
 		}
 
-		private void SaveClip(bool setting, string player_name, g_Instance frame)
+		private void SaveClip(bool setting, string player_name, g_Instance frame, string to_scene, float delay, float length)
 		{
 			if (!instance.IsConnected) return;
 			if (!setting) return;
 			if (!IsPlayerScopeEnabled(player_name, frame)) return;
-			Task.Delay((int)(SparkSettings.instance.obsClipSecondsAfter * 1000)).ContinueWith(_ => instance.SaveReplayBuffer());
+			Task.Delay((int)(delay * 1000)).ContinueWith(_ => instance.SaveReplayBuffer());
+
+			currentReplay++;
+			Task.Delay((int)(delay * 1000)).ContinueWith(_ => SetSceneIfLastReplay(to_scene, currentReplay));
+			Task.Delay((int)((delay + length) * 1000)).ContinueWith(_ => SetSceneIfLastReplay(SparkSettings.instance.obsInGameScene, currentReplay));
 		}
 
+		private void SetSceneIfLastReplay(string scene, int replayNum)
+		{
+			// the last event takes precednce
+			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
+			if (replayNum == currentReplay) instance.SetCurrentScene(scene);
+		}
 
 		private static bool IsPlayerScopeEnabled(string player_name, g_Instance frame)
 		{

@@ -1117,6 +1117,54 @@ namespace Spark.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public float obsGoalSecondsAfter {
+            get {
+                return ((float)(this["obsGoalSecondsAfter"]));
+            }
+            set {
+                this["obsGoalSecondsAfter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public float obsSaveSecondsAfter {
+            get {
+                return ((float)(this["obsSaveSecondsAfter"]));
+            }
+            set {
+                this["obsSaveSecondsAfter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public float obsGoalReplayLength {
+            get {
+                return ((float)(this["obsGoalReplayLength"]));
+            }
+            set {
+                this["obsGoalReplayLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public float obsSaveReplayLength {
+            get {
+                return ((float)(this["obsSaveReplayLength"]));
+            }
+            set {
+                this["obsSaveReplayLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("3")]
         public float replayClipSecondsBefore {
             get {
@@ -1352,6 +1400,30 @@ namespace Spark.Properties {
             }
             set {
                 this["obsBetweenGameScene"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string obsGoalReplayScene {
+            get {
+                return ((string)(this["obsGoalReplayScene"]));
+            }
+            set {
+                this["obsGoalReplayScene"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string obsSaveReplayScene {
+            get {
+                return ((string)(this["obsSaveReplayScene"]));
+            }
+            set {
+                this["obsSaveReplayScene"] = value;
             }
         }
     }

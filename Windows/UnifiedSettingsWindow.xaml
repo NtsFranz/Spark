@@ -454,8 +454,36 @@
 								<StackPanel x:Name="eventsToChoose">
 									<CheckBox Content="{x:Static p:Resources.Playspace_Abuse}" Margin="5,5,5,5" IsChecked="{Binding ClipPlayspaceSetting}" />
 									<CheckBox Content="{x:Static p:Resources.Goal}" Margin="5,5,5,5" IsChecked="{Binding ClipGoalSetting}" />
+									<StackPanel Orientation="Horizontal" Margin="15,5,5,5">
+										<Label Content="{x:Static p:Resources.Replay_Scene}"/>
+										<ComboBox x:Name="goalReplayScene" Width="300"  HorizontalAlignment="Left" SelectedIndex="0">
+											<ComboBoxItem Content="Do Not Switch"/>
+										</ComboBox>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal" Margin="15,5,5,5">
+										<Label x:Name="labelGoalAfter" Content="{x:Static p:Resources.Replay_Delay}" />
+										<TextBox x:Name="secondsAfterGoal" Text="{Binding GoalSecondsAfter}" TextWrapping="Wrap" Width="64"
+												 FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox"/>
+										<Label x:Name="labelGoalLength" Content="{x:Static p:Resources.Replay_Length}" />
+										<TextBox x:Name="replayGoalLength" Text="{Binding GoalReplayLength}" TextWrapping="Wrap" Width="64"
+												 FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox"/>
+									</StackPanel>
 									<CheckBox Content="{x:Static p:Resources.Score_Assist}" Margin="5,5,5,5" IsChecked="{Binding ClipAssistSetting}" />
 									<CheckBox Content="{x:Static p:Resources.Save}" Margin="5,5,5,5" IsChecked="{Binding ClipSaveSetting}" />
+									<StackPanel Orientation="Horizontal" Margin="15,5,5,5">
+										<Label Content="{x:Static p:Resources.Replay_Scene}"/>
+										<ComboBox x:Name="saveReplayScene" Width="300"  HorizontalAlignment="Left" SelectedIndex="0">
+											<ComboBoxItem Content="Do Not Switch"/>
+										</ComboBox>
+									</StackPanel>
+									<StackPanel Orientation="Horizontal" Margin="15,5,5,5">
+										<Label x:Name="labelSaveAfter" Content="{x:Static p:Resources.Replay_Delay}" />
+										<TextBox x:Name="secondsAfterSave" Text="{Binding SaveSecondsAfter}" TextWrapping="Wrap" Width="64"
+												 FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox"/>
+										<Label x:Name="labelSaveLength" Content="{x:Static p:Resources.Replay_Length}" />
+										<TextBox x:Name="replaySaveLength" Text="{Binding SaveReplayLength}" TextWrapping="Wrap" Width="64"
+												 FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox"/>
+									</StackPanel>
 									<CheckBox Content="{x:Static p:Resources.Interception}" Margin="5,5,5,5" IsChecked="{Binding ClipInterceptionSetting}" />
 									<CheckBox Content="Neutral Joust" Margin="5,5,5,5" IsChecked="{Binding ClipNeutralJoustSetting}" />
 									<CheckBox Content="Defensive Joust" Margin="5,5,5,5" IsChecked="{Binding ClipDefensiveJoustSetting}" />
