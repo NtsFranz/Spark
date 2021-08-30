@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Windows.Threading;
+using Microsoft.WindowsAPICodePack.Shell.Interop;
 using static Spark.CameraWrite;
 
 namespace Spark
@@ -13,24 +15,29 @@ namespace Spark
 
         public BezierSpline(IReadOnlyList<CameraTransform> keyframes)
         {
-            List<CameraTransform> newKeyframes = new();
             List<CameraTransform> currentCurve = new();
             curves = new List<BezierCurve>();
-            
+
             // add extra handles
             if (keyframes.Count > 2)
             {
                 // split each node in a set of triplets
-                // newKeyframes.Add(keyframes[0]);
                 currentCurve.Add(keyframes[0]);
                 for (int i = 1; i < keyframes.Count - 1; i++)
                 {
                     Vector3 dir = keyframes[i + 1].position - keyframes[i - 1].position;
-                    CameraTransform handle1 = new(keyframes[i].position - dir / 4,
-                        Quaternion.Lerp(keyframes[i - 1].rotation, keyframes[i].rotation, .5f));
+                    Quaternion rotDiff = keyframes[i + 1].rotation - keyframes[i - 1].rotation;
+                    CameraTransform handle1 = new(
+                        keyframes[i].position - dir / 4,
+                        // Quaternion.Lerp(keyframes[i - 1].rotation, keyframes[i].rotation, .5f)
+                        keyframes[i].rotation - rotDiff * .25f
+                    );
 
-                    CameraTransform handle2 = new(keyframes[i].position + dir / 4,
-                        Quaternion.Lerp(keyframes[i].rotation, keyframes[i + 1].rotation, .5f));
+                    CameraTransform handle2 = new(
+                        keyframes[i].position + dir / 4,
+                        // Quaternion.Lerp(keyframes[i].rotation, keyframes[i + 1].rotation, .5f)
+                        keyframes[i].rotation + rotDiff * .25f
+                    );
 
                     currentCurve.Add(handle1);
                     currentCurve.Add(keyframes[i]);
@@ -38,129 +45,68 @@ namespace Spark
                     currentCurve.Clear();
                     currentCurve.Add(keyframes[i]);
                     currentCurve.Add(handle2);
-                    
-                    // newKeyframes.Add(handle1);
-                    // newKeyframes.Add(keyframes[i]);
-                    // newKeyframes.Add(handle2);
                 }
-                
-                currentCurve.Add(keyframes.Last());
+
+                currentCurve.Add(keyframes[^1]);
                 curves.Add(new BezierCurve(currentCurve));
-                // newKeyframes.Add(keyframes.Last());
             }
-            else
+            else if (keyframes.Count > 1)
             {
                 curves.Add(new BezierCurve(keyframes[0], keyframes[1]));
             }
-            
-            // // chunk these new keyframes into curves
-            // while (keyframes.Count > 0)
-            // {
-            //     switch (keyframes.Count)
-            //     {
-            //         case 1:
-            //             new MessageBox("Only one keyframe left").Show();
-            //             break;
-            //         case 2:
-            //             curves.Add(new BezierCurve(new CameraTransform[]
-            //             {
-            //                 keyframes[0], keyframes[1]
-            //             }));
-            //             break;
-            //         case 3:
-            //             curves.Add(new BezierCurve(new CameraTransform[]
-            //             {
-            //                 keyframes[0], keyframes[1], keyframes[2]
-            //             }));
-            //             break;
-            //         case 4:
-            //             curves.Add(new BezierCurve(new CameraTransform[]
-            //             {
-            //                 keyframes[0], keyframes[1], keyframes[2], keyframes[3]
-            //             }));
-            //             break;
-            //     }
-            // }
-
-            // this.keyframes = newKeyframes.ToArray();
+            else if (keyframes.Count > 0)
+            {
+                curves.Add(new BezierCurve(keyframes[0]));
+            }
         }
 
-        public int CurveCount => (keyframes.Length - 1) / 3;
+        public (BezierCurve, float) GetCurve(float t)
+        {
+            t = Clamp01(t);
+            BezierCurve targetCurve = null;
+            float totalCurveLength = curves.Sum(c => c.ArcLength());
+            float currentSum = 0;
+            foreach (BezierCurve curve in curves)
+            {
+                float sumAfter = currentSum + curve.ArcLength();
+                if (t <= sumAfter / totalCurveLength)
+                {
+                    targetCurve = curve;
+                    t *= totalCurveLength;
+                    t -= currentSum;
+                    t /= sumAfter - currentSum; 
+                    break;
+                }
+
+                currentSum = sumAfter;
+            }
+            return (targetCurve, t);
+        }
 
         public Vector3 GetPoint(float t)
         {
             // find out which curve we are using
-            t = Clamp01(t) * curves.Count;
-            int i = (int) t;
-            t -= i;
-            
-            // avoid an error for t=1
-            if (i == curves.Count) i = curves.Count - 1;
-            
+            BezierCurve curve;
+            (curve, t) = GetCurve(t);
+
             // sample from that curve
-            return curves[i].GetPoint(t);
+            if (curve != null) return curve.GetPoint(t);
 
-
-            // switch (keyframes.Length)
-            // {
-            //     case 1:
-            //         return keyframes[0].position;
-            //     case 2:
-            //         return Bezier.GetPoint(keyframes[0].position, keyframes[1].position, t);
-            //     case 3:
-            //         return Bezier.GetPoint(keyframes[0].position, keyframes[1].position, keyframes[2].position, t);
-            //     default:
-            //     {
-            //         t = Clamp01(t) * CurveCount;
-            //         int i = (int) t;
-            //         t -= i;
-            //         i *= 3;
-            //         return Bezier.GetPoint(keyframes[i].position, keyframes[i + 1].position, keyframes[i + 2].position,
-            //             t);
-            //     }
-            // }
+            Logger.LogRow(Logger.LogType.Error, "Error getting point from bezier");
+            return Vector3.Zero;
         }
 
         public Quaternion GetRotation(float t)
         {
-            
             // find out which curve we are using
-            t = Clamp01(t) * curves.Count;
-            int i = (int) t;
-            t -= i;
-            
-            // avoid an error for t=1
-            if (i == curves.Count) i = curves.Count - 1;
-            
+            BezierCurve curve;
+            (curve, t) = GetCurve(t);
+
             // sample from that curve
-            return curves[i].GetRotation(t);
-            
-            
-            // // if this is the endpoint
-            // if (t >= 1f)
-            // {
-            //     return keyframes.Last().rotation;
-            // }
-            //
-            // switch (keyframes.Length)
-            // {
-            //     case 1:
-            //         return keyframes[0].rotation;
-            //     case 2:
-            //         return Bezier.GetRotation(keyframes[0].rotation, keyframes[1].rotation, t);
-            //     case 3:
-            //         return Bezier.GetRotation(keyframes[0].rotation, keyframes[1].rotation, keyframes[2].rotation, t);
-            //     default:
-            //     {
-            //         // 
-            //         t = Clamp01(t) * CurveCount;
-            //         int i = (int) t;
-            //         t -= i;
-            //         i *= 3;
-            //         return Bezier.GetRotation(keyframes[i].rotation, keyframes[i + 1].rotation,
-            //             keyframes[i + 2].rotation, t);
-            //     }
-            // }
+            if (curve != null) return curve.GetRotation(t);
+
+            Logger.LogRow(Logger.LogType.Error, "Error getting point from bezier");
+            return Quaternion.Identity;
         }
 
         public Vector3 GetVelocity(float t)
@@ -173,7 +119,7 @@ namespace Spark
             }
             else
             {
-                t = Clamp01(t) * CurveCount;
+                t = Clamp01(t) * curves.Count;
                 i = (int) t;
                 t -= i;
                 i *= 3;
@@ -200,13 +146,14 @@ namespace Spark
     public class BezierCurve
     {
         public CameraTransform[] keyframes;
+        private float arcLength;
 
-        
+
         public BezierCurve(IEnumerable<CameraTransform> keyframes)
         {
             this.keyframes = keyframes.ToArray();
         }
-        
+
         public BezierCurve(params CameraTransform[] keyframes)
         {
             this.keyframes = keyframes;
@@ -214,7 +161,23 @@ namespace Spark
 
         public float ArcLength()
         {
-            return 0;
+            int samples = 32;
+
+            if (arcLength != 0) return arcLength;
+            if (keyframes.Length == 1)
+            {
+                return 0;
+            }
+
+            Vector3 lastPosition = keyframes[0].position;
+            for (int i = 1; i <= samples; i++)
+            {
+                Vector3 newPoint = GetPoint((float) i / samples);
+                arcLength += Vector3.Distance(lastPosition, newPoint);
+                lastPosition = newPoint;
+            }
+
+            return arcLength;
         }
 
         public Vector3 GetPoint(float t)
@@ -248,9 +211,12 @@ namespace Spark
     {
         private static float Clamp01(float t)
         {
-            if (t > 1) return 1;
-            else if (t < 0) return 0;
-            else return t;
+            return t switch
+            {
+                > 1 => 1,
+                < 0 => 0,
+                _ => t
+            };
         }
 
         public static Vector3 GetPoint(Vector3 p0, Vector3 p1, float t)
@@ -265,16 +231,26 @@ namespace Spark
             return Quaternion.Lerp(p0, p1, t);
         }
 
+        /// <summary>
+        /// 3 positions
+        /// </summary>
         public static Vector3 GetPoint(Vector3 p0, Vector3 p1, Vector3 p2, float t)
         {
+            // t = Clamp01(t);
+            // float oneMinusT = 1f - t;
+            // return
+            //     oneMinusT * oneMinusT * p0 +
+            //     2f * oneMinusT * t * p1 +
+            //     t * t * p2;
+
+
             t = Clamp01(t);
-            float oneMinusT = 1f - t;
-            return
-                oneMinusT * oneMinusT * p0 +
-                2f * oneMinusT * t * p1 +
-                t * t * p2;
+            return Vector3.Lerp(Vector3.Lerp(p0, p1, t), Vector3.Lerp(p1, p2, t), t);
         }
 
+        /// <summary>
+        /// 3 rotations
+        /// </summary>
         public static Quaternion GetRotation(Quaternion p0, Quaternion p1, Quaternion p2, float t)
         {
             t = Clamp01(t);
@@ -289,17 +265,30 @@ namespace Spark
                 2f * t * (p2 - p1);
         }
 
+
+        /// <summary>
+        /// 4 positions
+        /// </summary>
         public static Vector3 GetPoint(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t)
         {
+            // t = Clamp01(t);
+            // float OneMinusT = 1f - t;
+            // return
+            //     OneMinusT * OneMinusT * OneMinusT * p0 +
+            //     3f * OneMinusT * OneMinusT * t * p1 +
+            //     3f * OneMinusT * t * t * p2 +
+            //     t * t * t * p3;
+
+
             t = Clamp01(t);
-            float OneMinusT = 1f - t;
-            return
-                OneMinusT * OneMinusT * OneMinusT * p0 +
-                3f * OneMinusT * OneMinusT * t * p1 +
-                3f * OneMinusT * t * t * p2 +
-                t * t * t * p3;
+            return Vector3.Lerp(Vector3.Lerp(Vector3.Lerp(p0, p1, t), Vector3.Lerp(p1, p2, t), t),
+                Vector3.Lerp(Vector3.Lerp(p1, p2, t), Vector3.Lerp(p2, p3, t), t), t);
         }
 
+
+        /// <summary>
+        /// 4 rotations
+        /// </summary>
         public static Quaternion GetRotation(Quaternion p0, Quaternion p1, Quaternion p2, Quaternion p3, float t)
         {
             t = Clamp01(t);

@@ -23,7 +23,7 @@ namespace Spark
 		public string echoVRIP { get; set; } = "127.0.0.1";
 		public int echoVRPort { get; set; } = 6721;
 		public bool enableStatsLogging { get; set; } = false;
-		public int targetDeltaTimeIndexStats { get; set; } = 0;
+		public bool lowFrequencyMode { get; set; } = false;
 		public bool uploadToIgniteDB { get; set; } = false;
 		public bool uploadToFirestore { get; set; } = true;
 		public bool saveEventsToCSV { get; set; } = false;

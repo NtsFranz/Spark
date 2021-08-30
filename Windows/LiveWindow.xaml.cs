@@ -136,7 +136,7 @@ namespace Spark
 					if (gameSettings["game"] != null && gameSettings["game"]["EnableAPIAccess"] != null)
 					{
 						// TODO re-enable this feature once game setting saving works again
-						//enableAPIButton.Visibility = !(bool)gameSettings["game"]["EnableAPIAccess"] ? Visibility.Visible : Visibility.Collapsed;
+						enableAPIButton.Visibility = !(bool)gameSettings["game"]["EnableAPIAccess"] ? Visibility.Visible : Visibility.Collapsed;
 					}
 				}
 				catch (Exception)

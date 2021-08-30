@@ -7,7 +7,7 @@
         xmlns:l="clr-namespace:Spark"
         mc:Ignorable="d"
         Title="Camera Write" 
-		Height="850" 
+		Height="880" 
 		Width="740" 
 		WindowStartupLocation="CenterOwner" 
 		ResizeMode="CanResize" 
@@ -171,9 +171,9 @@
 							</StackPanel>
 						</StackPanel>
 					</Expander>
-					<Expander Header="Follow All">
+					<Expander Header="Follow All" Visibility="Collapsed">
 						<StackPanel Margin="0,5,0,0">
-							<TextBlock Text="This is an attempt at a better smooth autocam. It's not close to finished." TextWrapping="Wrap" Margin="5,5,5,5"/>
+							<TextBlock Text="This is an attempt at a better smooth autocam. It's even not close to finished." TextWrapping="Wrap" Margin="5,5,5,5"/>
 							<Button>
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Follow All"/>

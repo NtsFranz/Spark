@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
-using Spark.Properties;
+﻿using System.Windows;
 
 namespace Spark
 {
@@ -30,6 +28,7 @@ namespace Spark
 		{
 			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
 			Program.StartEchoVR(Program.JoinType.Spectator, session_id: sessionid, noovr: SparkSettings.instance.sparkLinkNoOVR);
+			SparkSettings.instance.Save();
 			Close();
 			Program.Quit();
 		}

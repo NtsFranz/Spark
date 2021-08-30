@@ -11,7 +11,7 @@ namespace Spark
 	{
         public IConfiguration Configuration { get; private set; }
 
-        private int _serverPort = 6724;
+        private int _serverPort = 6725;
 
         public OverlayServerConfiguration(IConfiguration configuration)
         {

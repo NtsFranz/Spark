@@ -29,16 +29,7 @@ using NetMQ.Sockets;
 using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
 using Grapevine;
-using System.Windows.Threading;
-using GenHTTP.Api.Infrastructure;
 using Newtonsoft.Json.Linq;
-using GenHTTP.Modules;
-using GenHTTP.Engine;
-using GenHTTP.Modules.Layouting;
-using GenHTTP.Modules.Layouting.Provider;
-using GenHTTP.Modules.Practices;
-using GenHTTP.Modules.Webservices;
-using GenHTTP.Modules.Security;
 
 //using System.Windows.Forms;
 
@@ -153,11 +144,9 @@ namespace Spark
 		static bool inPostMatch = false;
 
 
-		public static int StatsHz {
-			get => statsDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexStats];
-		}
+		public static int StatsHz => statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0];
 
-		private static readonly List<int> statsDeltaTimes = new() { 4, 100 };
+		private static readonly List<int> statsDeltaTimes = new() { 16, 33 };
 		private static readonly List<int> fullDeltaTimes = new() { 16, 33, 100 };
 
 		public static string fileName;
@@ -213,6 +202,7 @@ namespace Spark
 		public static IRestServer overlayServer;
 		private static OverlayServer2 overlayServer2;
 		private static OverlayServer3 overlayServer3;
+		private static OverlayServer4 overlayServer4;
 
 
 
@@ -385,7 +375,7 @@ namespace Spark
 				// Check for command-line flags
 				if (args.Contains("-slowmode"))
 				{
-					SparkSettings.instance.targetDeltaTimeIndexStats = 1;
+					SparkSettings.instance.lowFrequencyMode = true;
 				}
 
 				if (args.Contains("-autorestart"))
@@ -427,8 +417,8 @@ namespace Spark
 				DiscordOAuth.authenticated += () =>
 				{
 					synth = new SpeechSynthesizer();
-				// Configure the audio output.
-				synth.SetOutputToDefaultAudioDevice();
+					// Configure the audio output.
+					synth.SetOutputToDefaultAudioDevice();
 					synth.SetRate(SparkSettings.instance.TTSSpeed);
 				};
 
@@ -483,6 +473,16 @@ namespace Spark
 				}
 
 				
+				// web server asp.net
+				try
+				{
+					overlayServer4 = new OverlayServer4();
+				}
+				catch (Exception e)
+				{
+					Logger.Init();
+					Logger.LogRow(LogType.Error, e.ToString());
+				}
 
 
 
@@ -598,6 +598,7 @@ namespace Spark
 			overlayServer?.Stop();
 			overlayServer2?.Stop();
 			overlayServer3?.Stop();
+			overlayServer4?.Stop();
 		}
 
 		static async Task GentleClose()
@@ -613,6 +614,7 @@ namespace Spark
 			overlayServer?.Stop();
 			overlayServer2?.Stop();
 			overlayServer3?.Stop();
+			overlayServer4?.Stop();
 
 			while (atlasHostingThread != null && atlasHostingThread.IsAlive)
 			{
@@ -853,8 +855,6 @@ namespace Spark
 		{
 			// TODO these times aren't used, but we could do a difference on before and after times to 
 			// calculate an accurate deltaTime. Right now the execution time isn't taken into account.
-			DateTime time = DateTime.Now;
-			TimeSpan deltaTimeSpan = new TimeSpan(0, 0, 0, 0, statsDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexStats]);
 
 			Thread.Sleep(10);
 
@@ -1036,7 +1036,7 @@ namespace Spark
 						}
 					}
 
-					Thread.Sleep(statsDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexStats]);
+					Thread.Sleep(statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0]);
 				}
 				else
 				{
@@ -3235,10 +3235,15 @@ namespace Spark
 				Console.WriteLine("Won't upload right now.");
 			}
 
-			BatchOutputFormat data = new BatchOutputFormat();
-			data.final = final;
-			data.match_data = matchData.ToDict();
-			matchData.players.Values.ToList().ForEach(e => data.match_players.Add(e.ToDict()));
+			BatchOutputFormat data = new()
+			{
+				final = final,
+				match_data = matchData.ToDict()
+			};
+			matchData.players.Values.ToList().ForEach(e =>
+			{
+				if (e.Name != "anonymous") data.match_players.Add(e.ToDict());
+			});
 
 			matchData.Events.ForEach(e =>
 			{
@@ -3260,13 +3265,13 @@ namespace Spark
 			string hash;
 			using (SHA256 sha = SHA256.Create())
 			{
-				var rawHash = sha.ComputeHash(Encoding.ASCII.GetBytes(dataString + matchData.firstFrame.client_name));
+				byte[] rawHash = sha.ComputeHash(Encoding.ASCII.GetBytes(dataString + matchData.firstFrame.client_name));
 
 				// Convert the byte array to hexadecimal string
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < rawHash.Length; i++)
+				StringBuilder sb = new();
+				foreach (byte b in rawHash)
 				{
-					sb.Append(rawHash[i].ToString("X2"));
+					sb.Append(b.ToString("X2"));
 				}
 
 				hash = sb.ToString().ToLower();
@@ -3295,7 +3300,7 @@ namespace Spark
 
 			try
 			{
-				var response =
+				HttpResponseMessage response =
 					await client.PostAsync("add_data?hashkey=" + hash + "&client_name=" + client_name, content);
 				LogRow(LogType.Info, "[DB][Response] " + response.Content.ReadAsStringAsync().Result);
 			}
@@ -3456,14 +3461,14 @@ namespace Spark
 			TeamData teamData = matchData.teams[team.color];
 
 			// add a new match player if they didn't exist before
-			if (!matchData.players.ContainsKey(player.userid))
+			if (!matchData.players.ContainsKey(player.name))
 			{
-				matchData.players.Add(player.userid, new MatchPlayer(matchData, teamData, player));
+				matchData.players.Add(player.name, new MatchPlayer(matchData, teamData, player));
 			}
 
 			if (player.name != "anonymous")
 			{
-				MatchPlayer playerData = matchData.players[player.userid];
+				MatchPlayer playerData = matchData.players[player.name];
 				playerData.teamData = teamData;
 
 				playerData.Level = player.level;

@@ -237,7 +237,7 @@ namespace Spark
 				isAnimating = false;
 				startButton.Content = "Start";
 			}
-			else
+			else if (CameraWriteSettings.instance.keyframePositions.Count > 0)
 			{
 				isAnimating = true;
 				animationThread = new Thread(KeyframeAnimationThread);
@@ -252,6 +252,7 @@ namespace Spark
 			BezierSpline spline = new BezierSpline(CameraWriteSettings.instance.keyframePositions);
 
 			DateTime startTime = DateTime.Now;
+			CameraTransform lastTransform = new CameraTransform();
 			while (animationProgress < 1 && isAnimating)
 			{
 				DateTime currentTime = DateTime.Now;
@@ -280,13 +281,24 @@ namespace Spark
 
 				CameraTransform newTransform = new(newPos, newRot);
 
+				string distance = Vector3.Distance(newPos, lastTransform.position) + "\t" + spline.GetCurve(t).Item1;
+				Console.WriteLine(distance);
+
 				string data = JsonConvert.SerializeObject(newTransform);
 
 				Program.PostRequestCallback(url, null, data, null);
 
+				lastTransform = newTransform;
+
 				Thread.Sleep(8);
 			}
-			Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(end), null);
+			// write out the last frame
+			// the if check is to avoid doing so if the stop button was clicked
+			if (animationProgress >= 1)
+			{
+				Program.PostRequestCallback(url, null,
+					JsonConvert.SerializeObject(CameraWriteSettings.instance.keyframePositions.Last()), null);
+			}
 
 			Dispatcher.Invoke(() =>
 			{
@@ -500,11 +512,7 @@ namespace Spark
 				};
 				Button goTo = new Button
 				{
-					Content = new Image
-					{
-						Source = new BitmapImage(new Uri("/img/card-search-outline.png", UriKind.Relative)),
-						Width = 16
-					},
+					Content = "Go To",
 					Margin = new Thickness(5, 0, 0, 0),
 				};
 				goTo.Click += (_, _) =>
@@ -515,7 +523,7 @@ namespace Spark
 				Button delete = new Button
 				{
 					Content = "X",
-					Margin = new Thickness(5, 0, 0, 0),
+					Margin = new Thickness(5, 0, 5, 0),
 				};
 				delete.Click += (_, _) =>
 				{
@@ -575,7 +583,7 @@ namespace Spark
 				Button delete = new Button
 				{
 					Content = "X",
-					Margin = new Thickness(5, 0, 0, 0),
+					Margin = new Thickness(5, 0, 5, 0),
 				};
 				delete.Click += (_, _) =>
 				{

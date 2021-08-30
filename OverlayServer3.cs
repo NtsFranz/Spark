@@ -21,7 +21,8 @@ namespace Spark
 				webServer2 = new WebServer2((req) =>
 				{
 					return "wowwowowowowwoww";
-				}, "http://*:6726/");
+				}, "http://127.0.0.1:6726/", "http://192.168.0.128:6726/");
+				// }, "http://*:6728/", "http://127.0.0.1:6728/");
 				webServer2.Run();
 		}
 

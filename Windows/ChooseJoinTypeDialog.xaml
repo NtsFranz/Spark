@@ -7,7 +7,7 @@
         xmlns:l="clr-namespace:Spark"
         mc:Ignorable="d"
         Title="{x:Static p:Resources.Join_EchoVR_Match}" 
-        Height="190" Width="370" 
+        Height="190" Width="385" 
         WindowStartupLocation="CenterScreen" 
         ResizeMode="CanResize" 
         Icon="/img/ignite_logo.ico" 

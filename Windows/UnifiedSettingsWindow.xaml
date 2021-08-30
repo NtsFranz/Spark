@@ -69,6 +69,9 @@
 						<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite"
 									  IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
 									  VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
+						<CheckBox x:Name="LowFrequencyModeCheckBox" Content="Low Frequency Mode" ToolTip="Queries the API less frequently if you are having performance problems."
+						          IsChecked="{l:SettingBinding lowFrequencyMode}" HorizontalAlignment="Left"
+						          VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						<CheckBox x:Name="enableAutoFocusCheckbox" Content="{x:Static p:Resources.Autofocus_EchoVR}" Margin="10,4,10,4" IsChecked="{l:SettingBinding isAutofocusEnabled}" ToolTip="{x:Static p:Resources.enableAutoFocusCheckbox_ToolTip}"/>
 						<CheckBox x:Name="enableBetasCheckbox" Content="{x:Static p:Resources.Get_Beta_Updates_to_Spark}" Margin="10,4,10,4" IsChecked="{l:SettingBinding betaUpdates}" ToolTip="{x:Static p:Resources.betaUpdates_ToolTip}"/>
 

@@ -14,7 +14,7 @@ namespace Spark
 		public string customId;
 		public readonly Dictionary<TeamColor, TeamData> teams;
 
-		public readonly Dictionary<long, MatchPlayer> players = new Dictionary<long, MatchPlayer>();
+		public readonly Dictionary<string, MatchPlayer> players = new Dictionary<string, MatchPlayer>();
 
 		public List<GoalData> Goals { get; set; } = new List<GoalData>();
 		public List<EventData> Events { get; set; } = new List<EventData>();
@@ -69,7 +69,7 @@ namespace Spark
 				{ TeamColor.spectator, new TeamData(TeamColor.spectator, firstFrame.teams[2].team) },
 			};
 
-			Settings.Default.client_name = firstFrame.client_name;
+			SparkSettings.instance.client_name = firstFrame.client_name;
 
 			if (firstFrame.teams != null)
 			{
@@ -87,9 +87,9 @@ namespace Spark
 		/// <returns>The PlayerData about the requested player from this match.</returns>
 		public MatchPlayer GetPlayerData(g_Player player)
 		{
-			if (players.ContainsKey(player.userid))
+			if (players.ContainsKey(player.name))
 			{
-				return players[player.userid];
+				return players[player.name];
 			}
 
 			Console.WriteLine("Player not found");  // TODO this happens a lot
