@@ -96,6 +96,7 @@
 									 Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged"
 									 MaxLines="1" />
 
+						<Label x:Name="thisPCLocalIP"/>
 						<StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,-8">
 							<Label x:Name="echoVRIPLabel" Content="{x:Static p:Resources.EchoVR_IP__for_Quest_}" Margin="4,4,4,4" />
 							<TextBox x:Name="echoVRIPTextBox" Text="{l:SettingLoad echoVRIP}" TextWrapping="Wrap" Width="130"

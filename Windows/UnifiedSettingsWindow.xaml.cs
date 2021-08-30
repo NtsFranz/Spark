@@ -120,6 +120,9 @@ namespace Spark
 			enableBetasCheckbox.Visibility = Visibility.Collapsed;
 #endif
 
+
+			thisPCLocalIP.Content = $"This PC's Local IP: {Program.GetLocalIP()} (for PC-PC Spectate Me)"; 
+
 			CameraModeDropdownChanged(SparkSettings.instance.spectatorCamera);
 
 			initialized = true;

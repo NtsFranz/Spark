@@ -28,7 +28,7 @@ namespace Spark
             getHTTPHost = Host.Create()
                 // .Defaults()
                 .Handler(service)
-                .Port(6724)
+                .Port(6727)
                 .Start();
         }
 

@@ -24,7 +24,7 @@ namespace Spark
         {
             server = WebHost
                 .CreateDefaultBuilder()
-                .UseKestrel(x => { x.ListenAnyIP(6727); })
+                .UseKestrel(x => { x.ListenAnyIP(6724); })
                 .UseStartup<Routes>()
                 .Build();
 
@@ -57,13 +57,14 @@ namespace Spark
 
                 app.UseEndpoints(endpoints =>
                 {
-                    endpoints.MapGet("/", async context => { await context.Response.WriteAsync("Hello World!"); });
+                    endpoints.MapGet("/",
+                        async context => { await context.Response.WriteAsync("Locally hosted Spark routes."); });
+                    
                     endpoints.MapGet("/spark_info", async context =>
                     {
                         context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                         context.Response.Headers.Add("Access-Control-Allow-Headers",
                             "Content-Type, Accept, X-Requested-With");
-                        context.Response.Headers.Add("Content-Type", "application/json");
 
                         await context.Response.WriteAsJsonAsync(
                             new Dictionary<string, object>
@@ -82,16 +83,15 @@ namespace Spark
                             "Content-Type, Accept, X-Requested-With");
                         context.Response.Headers.Add("Content-Type", "application/json");
 
-                        await context.Response.WriteAsJsonAsync(Program.inGame ? Program.lastJSON : "");
+                        await context.Response.WriteAsync(Program.inGame ? Program.lastJSON : "");
                     });
 
 
-                    endpoints.MapGet("/session", async context =>
+                    endpoints.MapGet("/stats", async context =>
                     {
                         context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                         context.Response.Headers.Add("Access-Control-Allow-Headers",
                             "Content-Type, Accept, X-Requested-With");
-                        context.Response.Headers.Add("Content-Type", "application/json");
 
                         if (Program.inGame)
                         {
@@ -161,88 +161,88 @@ namespace Spark
                         {
                             await context.Response.WriteAsync("");
                         }
-
-                        await context.Response.WriteAsJsonAsync(Program.inGame ? Program.lastJSON : "");
                     });
 
 
-                    endpoints.MapGet("/session", async context =>
+                    endpoints.MapGet("/position_map", async context =>
                     {
                         context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                         context.Response.Headers.Add("Access-Control-Allow-Headers",
                             "Content-Type, Accept, X-Requested-With");
-                        context.Response.Headers.Add("Content-Type", "application/json");
+
                         if (Program.matchData == null)
                         {
                             await context.Response.WriteAsync("Not in match yet");
                         }
-
-
-                        // get the most recent file in the replay folder
-                        DirectoryInfo directory = new DirectoryInfo(SparkSettings.instance.saveFolder);
-                        FileInfo[] files = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
-                            .Where(f => f.Name.StartsWith("rec")).ToArray();
-
-
-                        // gets a list of all the times of previous matches in memory that are for the current set
-                        List<DateTime> selectedMatchTimes = Program.lastMatches
-                            .Where(m => m.customId == Program.matchData.customId &&
-                                        m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
-                            .Select(m => m.matchTime).ToList();
-                        Debug.Assert(Program.matchData != null, "Program.matchData != null");
-                        selectedMatchTimes.Add(Program.matchData.matchTime);
-
-                        // finds all the files that match one of the matches in memory
-                        FileInfo[] selectedFiles = files
-                            .Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss",
-                                            CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
-                                        && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
-                            )
-                            .ToArray();
-
-                        // function to check if a time matches fuzzily
-                        bool MatchesOneTime(DateTime time, List<DateTime> timeList, TimeSpan diff)
+                        else
                         {
-                            foreach (DateTime time2 in timeList)
+                            // get the most recent file in the replay folder
+                            DirectoryInfo directory = new DirectoryInfo(SparkSettings.instance.saveFolder);
+                            FileInfo[] files = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
+                                .Where(f => f.Name.StartsWith("rec")).ToArray();
+
+
+                            // gets a list of all the times of previous matches in memory that are for the current set
+                            List<DateTime> selectedMatchTimes = Program.lastMatches
+                                .Where(m => m.customId == Program.matchData.customId &&
+                                            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+                                .Select(m => m.matchTime).ToList();
+                            Debug.Assert(Program.matchData != null, "Program.matchData != null");
+                            selectedMatchTimes.Add(Program.matchData.matchTime);
+
+                            // finds all the files that match one of the matches in memory
+                            FileInfo[] selectedFiles = files
+                                .Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss",
+                                                CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
+                                            && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
+                                )
+                                .ToArray();
+
+                            // function to check if a time matches fuzzily
+                            bool MatchesOneTime(DateTime time, List<DateTime> timeList, TimeSpan diff)
                             {
-                                if ((time - time2).Duration() < diff)
+                                foreach (DateTime time2 in timeList)
                                 {
-                                    return true;
+                                    if ((time - time2).Duration() < diff)
+                                    {
+                                        return true;
+                                    }
                                 }
+
+                                return false;
                             }
 
-                            return false;
-                        }
-
-                        //FileInfo firstFile = files.First();
-                        //FileInfo[] selectedFiles = files.Where(f => firstFile.LastWriteTime - f.LastWriteTime < TimeSpan.FromMinutes(20)).ToArray();
-                        if (selectedFiles.Length == 0)
-                        {
-                            await context.Response.WriteAsync("No recent replay file found.");
-                        }
-
-                        List<xyPos> positions = new List<xyPos>();
-                        foreach (FileInfo file in selectedFiles)
-                        {
-                            ReplayFileReader reader = new ReplayFileReader();
-                            ReplayFile replayFile = reader.LoadFileAsync(file.FullName, processFrames: true).Result;
-                            if (replayFile == null) continue;
-
-                            // loop through every nth frame
-                            const int n = 10;
-                            int nframes = replayFile.nframes;
-                            Console.WriteLine(nframes);
-                            for (int i = 0; i < nframes; i += n)
+                            //FileInfo firstFile = files.First();
+                            //FileInfo[] selectedFiles = files.Where(f => firstFile.LastWriteTime - f.LastWriteTime < TimeSpan.FromMinutes(20)).ToArray();
+                            if (selectedFiles.Length == 0)
                             {
-                                g_Instance frame = replayFile.GetFrame(i);
-
-                                if (frame.game_status != "playing") continue;
-                                Vector3 pos = frame.disc.position.ToVector3();
-                                positions.Add(new xyPos((int) (pos.X * 5 + 100), (int) (pos.Z * 5 + 225)));
+                                await context.Response.WriteAsync("No recent replay file found.");
                             }
-                        }
+                            else
+                            {
+                                List<xyPos> positions = new List<xyPos>();
+                                foreach (FileInfo file in selectedFiles)
+                                {
+                                    ReplayFileReader reader = new ReplayFileReader();
+                                    ReplayFile replayFile =
+                                        reader.LoadFileAsync(file.FullName, processFrames: true).Result;
+                                    if (replayFile == null) continue;
 
-                        string resp = @"<!DOCTYPE html>
+                                    // loop through every nth frame
+                                    const int n = 10;
+                                    int nframes = replayFile.nframes;
+                                    Console.WriteLine(nframes);
+                                    for (int i = 0; i < nframes; i += n)
+                                    {
+                                        g_Instance frame = replayFile.GetFrame(i);
+
+                                        if (frame.game_status != "playing") continue;
+                                        Vector3 pos = frame.disc.position.ToVector3();
+                                        positions.Add(new xyPos((int) (pos.X * 5 + 100), (int) (pos.Z * 5 + 225)));
+                                    }
+                                }
+
+                                string resp = @"<!DOCTYPE html>
                     <html lang=""en"">
 
 					<head>
@@ -360,9 +360,9 @@ namespace Spark
 					});
 
 					t = "
-                                      +
-                                      JsonConvert.SerializeObject(positions)
-                                      + @";
+                                              +
+                                              JsonConvert.SerializeObject(positions)
+                                              + @";
 
 					// set the generated dataset
 					heatmap.setData({
@@ -416,7 +416,9 @@ namespace Spark
 					</body>
 
 					</html>";
-                        await context.Response.WriteAsync(resp);
+                                await context.Response.WriteAsync(resp);
+                            }
+                        }
                     });
                 });
             }
