@@ -83,7 +83,15 @@ namespace Spark
                             "Content-Type, Accept, X-Requested-With");
                         context.Response.Headers.Add("Content-Type", "application/json");
 
-                        await context.Response.WriteAsync(Program.inGame ? Program.lastJSON : "");
+                        if (Program.inGame)
+                        {
+                            await context.Response.WriteAsync(Program.lastJSON);   
+                        }
+                        else
+                        {
+                            context.Response.StatusCode = 404;
+                            await context.Response.WriteAsync("");
+                        }
                     });
 
 
