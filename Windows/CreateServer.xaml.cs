@@ -23,6 +23,7 @@ namespace Spark
 				4 => "euw",
 				5 => "jp",
 				6 => "aus",
+				7 => "sin",
 				_ => "",
 			};
 		}

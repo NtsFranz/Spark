@@ -119,14 +119,23 @@ namespace Spark
 				{
 					//InitializeDiscord();
 					LogRow(LogType.Error, "Discord RP client disposed while in normal thread.");
+					return;
 				}
 
 				RichPresence rp = new RichPresence();
 
 				if (frame == null)
 				{
-					discordClient.SetPresence(null);
-					return;
+					try
+					{
+						discordClient.SetPresence(null);
+						return;
+					}
+					catch (Exception ex)
+					{
+						LogRow(LogType.Error, "Discord RP client error when setting null presence.");
+						return;
+					}
 				}
 
 				StringBuilder details = new StringBuilder();

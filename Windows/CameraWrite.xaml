@@ -19,9 +19,16 @@
         >
 	<StackPanel>
 		<Label Content="Set Spectator Camera Position" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
-		<TextBlock Margin="10,10,10,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" Grid.RowSpan="1" Height="90" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}" TextWrapping="Wrap">
-			This works using Graic's WriteAPI, available <Hyperlink NavigateUri="https://github.com/Graicc/WriteAPI/releases/latest">here</Hyperlink>.<LineBreak/><LineBreak/>Make sure you are in free-cam mode in spectator view (C on the keyboard).
-		</TextBlock>
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+			<TextBlock Margin="10,10,10,0" HorizontalAlignment="Center" TextAlignment="Center" Grid.RowSpan="1" Height="85" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}" TextWrapping="Wrap">
+				This works using Graic's WriteAPI, available <Hyperlink NavigateUri="https://github.com/Graicc/WriteAPI" RequestNavigate="Hyperlink_RequestNavigate">here</Hyperlink>.<LineBreak/><LineBreak/>
+				Make sure you are in free-cam mode in spectator view (C on the keyboard).<LineBreak/>
+				You will need to restart WriteAPI whenever you restart EchoVR.
+			</TextBlock>
+
+			<Button x:Name="installWriteAPIButton" Click="InstallLaunchWriteAPI" Padding="10,10,10,10" HorizontalAlignment="Center" Margin="10,0,0,10" Height="45">Install WriteAPI</Button>
+		</StackPanel>
+		
 		<WrapPanel>
 			<!--<Expander Header="Animation" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >-->
 			<GroupBox Header="Animation" Margin="5,10,5,0" Width="350" VerticalAlignment="Top">
@@ -166,8 +173,14 @@
 
 							<StackPanel Orientation="Horizontal">
 								<Label Content="Smoothing: " Width="110" Margin="10,0,0,0"/>
-								<Slider x:Name="smoothingSlider" Value="{Binding followSmoothing}" Minimum="0" Maximum="10" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<Slider x:Name="smoothingSlider" Value="{Binding followSmoothing}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 								<TextBox Text="{Binding ElementName=smoothingSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Lag Comp: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="lagCompSlider" Value="{Binding lagCompDiscFollow}" Minimum="0" Maximum="10" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<TextBox Text="{Binding ElementName=lagCompSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 							</StackPanel>
 						</StackPanel>
 					</Expander>

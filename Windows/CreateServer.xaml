@@ -47,6 +47,10 @@
 				<TextBlock Text="Australia"/>
 				<TextBlock Text="e.g. Sydney, Perth" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
+			<StackPanel>
+				<TextBlock Text="Singapore"/>
+				<TextBlock Text="e.g. Singapore" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+			</StackPanel>
 		</ComboBox>
 		<ComboBox SelectedIndex="{l:SettingBinding chooseMapIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="28" Margin="10,10,10,70">
 			<ComboBoxItem Content="Arena"/>

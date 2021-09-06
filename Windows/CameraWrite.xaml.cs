@@ -1,13 +1,19 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Numerics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 using Timer = System.Timers.Timer;
 
@@ -26,6 +32,7 @@ namespace Spark
 		public float rotSpeed { get; set; } = 30;
 		public float orbitRadius { get; set; } = 2;
 		public float followSmoothing { get; set; } = 1f;
+		public float lagCompDiscFollow { get; set; } = 0f;
 
 		public bool easeIn { get; set; }
 		public bool easeOut { get; set; }
@@ -168,6 +175,8 @@ namespace Spark
 			SetSliderPositions();
 
 			sliderListenersActivated = true;
+
+			installWriteAPIButton.Content = File.Exists(WriteAPIExePath) ? "Launch WriteAPI" : "Install WriteAPI";
 		}
 
 
@@ -617,10 +626,7 @@ namespace Spark
 				CameraWriteSettings.instance.waypointPositions[keyName] = data;
 
 				// update the UI with the new waypoint
-				Dispatcher.Invoke(() =>
-				{
-					RegenerateWaypointButtons();
-				});
+				Dispatcher.Invoke(RegenerateWaypointButtons);
 			});
 
 		}
@@ -628,6 +634,9 @@ namespace Spark
 		private void WindowClosed(object sender, EventArgs e)
 		{
 			CameraWriteSettings.instance.Save();
+
+			orbitingDisc = false;
+			isAnimating = false;
 		}
 
 		private void AddKeyframe(object sender, RoutedEventArgs e)
@@ -674,8 +683,7 @@ namespace Spark
 		{
 			DateTime startTime = DateTime.Now;
 
-			int avgCount = 5;
-			double angle = 0;
+			const int avgCount = 5;
 
 			List<CameraTransform> lastTransforms = new List<CameraTransform>();
 
@@ -686,10 +694,11 @@ namespace Spark
 				DateTime currentTime = DateTime.Now;
 				double elapsed = (currentTime - startTime).TotalSeconds;
 
-				angle = elapsed * rotSpeed * Deg2Rad;
+				double angle = elapsed * rotSpeed * Deg2Rad;
 
 				Vector3 diff = Program.lastFrame.disc.position.ToVector3() - Program.lastLastFrame.disc.position.ToVector3();
 				Vector3 discVel = Program.lastFrame.disc.velocity.ToVector3();
+				Vector3 lastDiscVel = Program.lastLastFrame.disc.velocity.ToVector3();
 				if (discVel != Vector3.Zero)
 				{
 					diff = discVel;
@@ -713,8 +722,13 @@ namespace Spark
 
 				Vector3 discPos = Program.lastFrame.disc.position.ToVector3();
 				Vector3 lastDiscPos = Program.lastLastFrame.disc.position.ToVector3();
+
+				// add lag comp
+				discPos += discVel * lagCompDiscFollow;
+				lastDiscPos += lastDiscVel * lagCompDiscFollow;
+
 				//discPos = Vector3.Lerp(lastDiscPos, discPos, (float)(DateTime.Now - Program.lastDataTime).TotalSeconds/1);
-				smoothDiscPos = Vector3.Lerp(smoothDiscPos, discPos, followSmoothing * .01f);
+				smoothDiscPos = Vector3.Lerp(smoothDiscPos, discPos, followSmoothing);
 				discPos = smoothDiscPos;
 
 				Vector3 pos = discPos - offset;
@@ -730,11 +744,11 @@ namespace Spark
 
 				CameraTransform avg = lastTransforms[0];
 
-				for (int i = 0; i < lastTransforms.Count; i++)
+				foreach (CameraTransform t in lastTransforms)
 				{
 					//avg.position = Vector3.Lerp(lastTransforms[i].position, avg.position, .5f);
-					avg.position += lastTransforms[i].position;
-					avg.rotation = Quaternion.Lerp(lastTransforms[i].rotation, avg.rotation, .5f);
+					avg.position += t.position;
+					avg.rotation = Quaternion.Lerp(t.rotation, avg.rotation, .5f);
 				}
 
 				avg.position /= avgCount;
@@ -754,6 +768,19 @@ namespace Spark
 			{
 				IsOrbitingCheckbox.IsChecked = false;
 			});
+		}
+
+		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+		{
+			try
+			{
+				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+				e.Handled = true;
+			}
+			catch (Exception ex)
+			{
+				Logger.LogRow(Logger.LogType.Error, ex.ToString());
+			}
 		}
 
 		private static Quaternion QuaternionLookRotation(Vector3 forward, Vector3 up)
@@ -813,6 +840,62 @@ namespace Spark
 			quaternion.Z = 0.5f * num5;
 			quaternion.W = (m01 - m10) * num2;
 			return quaternion;
+		}
+
+
+		private string WriteAPIFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "WriteAPI");
+		private string WriteAPIExePath => Path.Combine(WriteAPIFolder, "WriteAPI.exe");
+		private string WriteAPIZipPath => Path.Combine(WriteAPIFolder, "WriteAPI.zip");
+
+
+		private void InstallLaunchWriteAPI(object sender, RoutedEventArgs e)
+		{
+			if (File.Exists(WriteAPIExePath))
+			{
+				try
+				{
+					Process.Start(new ProcessStartInfo(WriteAPIExePath) { UseShellExecute = true });
+				}
+				catch (Exception ex)
+				{
+					Logger.LogRow(Logger.LogType.Error, ex.ToString());
+				}
+			}
+			else
+			{
+				try
+				{
+					installWriteAPIButton.Content = "Installing...";
+					Task.Run(() =>
+					{
+						try
+						{
+							using WebClient webClient = new WebClient();
+
+							if (!Directory.Exists(WriteAPIFolder))
+							{
+								Directory.CreateDirectory(WriteAPIFolder);
+							}
+							webClient.DownloadFile("https://github.com/Graicc/WriteAPI/releases/download/v1.0.0/WriteAPI.zip", WriteAPIZipPath);
+
+							ZipFile.ExtractToDirectory(WriteAPIZipPath, WriteAPIFolder);
+
+							Dispatcher.Invoke(() =>
+							{
+								installWriteAPIButton.Content = "Launch WriteAPI";
+							});
+						}
+						catch (Exception ex)
+						{
+							Logger.LogRow(Logger.LogType.Error, ex.ToString());
+						}
+					});
+				}
+				catch (Exception ex)
+				{
+					Logger.LogRow(Logger.LogType.Error, ex.ToString());
+				}
+			}
 		}
 	}
 }
