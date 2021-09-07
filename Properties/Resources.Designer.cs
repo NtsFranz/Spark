@@ -990,7 +990,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For help using the IgniteBot, check out the.
+        ///   Looks up a localized string similar to For help using Spark, check out the.
         /// </summary>
         public static string for_help_check_out {
             get {
@@ -1363,7 +1363,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Share this link with others who have the IgniteBot and play on PC. They will be able to click the link to immediately join your match without an invite..
+        ///   Looks up a localized string similar to Share this link with others who have Spark and play on PC. They will be able to click the link to immediately join your match without an invite..
         /// </summary>
         public static string join_link_tooltip {
             get {
@@ -1960,7 +1960,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Length:.
+        ///   Looks up a localized string similar to Duration:.
         /// </summary>
         public static string Replay_Length {
             get {

@@ -11,8 +11,9 @@ namespace Spark
 	{
 		#region Settings
 
-		public Dictionary<string, CameraTransform> waypointPositions { get; } = new Dictionary<string, CameraTransform>();
-		public List<CameraTransform> keyframePositions { get; } = new List<CameraTransform>();
+		public Dictionary<string, CameraTransform> waypoints { get; } = new Dictionary<string, CameraTransform>();
+		public Dictionary<string, List<CameraTransform>> animations { get; } = new Dictionary<string, List<CameraTransform>>();
+		public string activeAnimation { get; set; } = "";
 
 		#endregion
 

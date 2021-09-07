@@ -81,6 +81,7 @@ namespace Spark
 		public bool chooseRegionNoOVR { get; set; } = false;
 		public bool sparkLinkNoOVR { get; set; } = false;
 		public string sparkExeLocation { get; set; } = "";
+		public bool allowSpectateMeOnLocalPC { get; set; } = false;
 
 		public Dictionary<string, bool> autoUploadProfiles { get; } = new Dictionary<string, bool>();
 

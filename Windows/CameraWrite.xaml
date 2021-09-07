@@ -31,9 +31,26 @@
 		
 		<WrapPanel>
 			<!--<Expander Header="Animation" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >-->
-			<GroupBox Header="Animation" Margin="5,10,5,0" Width="350" VerticalAlignment="Top">
+			<GroupBox Margin="5,10,5,0" Width="350" VerticalAlignment="Top">
+				<GroupBox.Header>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Animation"/>
+						<ComboBox x:Name="AnimationsComboBox" SelectionChanged="AnimationsComboBoxChanged" Width="200" Margin="20,0,0,0">
+						</ComboBox>
+					</StackPanel>
+				</GroupBox.Header>
 				<Grid>
-					<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0" Width="175">
+					<Grid VerticalAlignment="Top">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="70"/>
+							<ColumnDefinition Width="70"/>
+						</Grid.ColumnDefinitions>
+						<TextBox x:Name="AnimationNameTextBox" Width="200" Grid.Column="0" Margin="2,2,2,2" ToolTip="The animation name"></TextBox>
+						<Button Content="Save" Click="AnimationSaveClicked" Grid.Column="1" Padding="5,5,5,5" Margin="2,2,2,2"/>
+						<Button Content="Delete" Click="AnimationDeleteClicked" Grid.Column="2" Padding="5,5,5,5" Margin="2,2,2,2"/>
+					</Grid>
+					<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,40,0,0" Width="175">
 						<Button Visibility="Collapsed" Margin="5,0,5,5" Height="45" Click="SetStart">Set Start</Button>
 						<Button Visibility="Collapsed" Margin="5,0,5,5" Height="45" Click="SetEnd">Set End</Button>
 						<StackPanel Orientation="Horizontal">
@@ -46,7 +63,7 @@
 							<StackPanel x:Name="KeyframesList"></StackPanel>
 						</ScrollViewer>
 					</StackPanel>
-					<StackPanel Margin="0,5,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="180">
+					<StackPanel Margin="0,40,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="180">
 						<Button x:Name="startButton" Width="140" Height="60" Content="Play" Click="StartKeyframeAnimation" />
 						<ProgressBar x:Name="animationProgressBar" Width="140" Height="10" Maximum="1" LargeChange="0.01" SmallChange="0.01"></ProgressBar>
 						<StackPanel Orientation="Horizontal" Margin="0,10,0,0">

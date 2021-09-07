@@ -73,6 +73,7 @@
 						          IsChecked="{l:SettingBinding lowFrequencyMode}" HorizontalAlignment="Left"
 						          VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						<CheckBox x:Name="enableAutoFocusCheckbox" Content="{x:Static p:Resources.Autofocus_EchoVR}" Margin="10,4,10,4" IsChecked="{l:SettingBinding isAutofocusEnabled}" ToolTip="{x:Static p:Resources.enableAutoFocusCheckbox_ToolTip}"/>
+						<CheckBox Content="Allow Spectate Me on local PC" Margin="10,4,10,4" IsChecked="{l:SettingBinding allowSpectateMeOnLocalPC}" ToolTip="Enables the Spectate Me function when your IP is 127.0.0.1. This is not recommended and is still experimental."/>
 						<CheckBox x:Name="enableBetasCheckbox" Content="{x:Static p:Resources.Get_Beta_Updates_to_Spark}" Margin="10,4,10,4" IsChecked="{l:SettingBinding betaUpdates}" ToolTip="{x:Static p:Resources.betaUpdates_ToolTip}"/>
 
 						<StackPanel Orientation="Horizontal" Margin="10,4,10,4">

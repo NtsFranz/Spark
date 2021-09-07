@@ -259,7 +259,7 @@
     <value>Join Link:</value>
   </data>
   <data name="join_link_tooltip" xml:space="preserve">
-    <value>Share this link with others who have the IgniteBot and play on PC. They will be able to click the link to immediately join your match without an invite.</value>
+    <value>Share this link with others who have Spark and play on PC. They will be able to click the link to immediately join your match without an invite.</value>
   </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
@@ -603,7 +603,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Echopedia page</value>
   </data>
   <data name="for_help_check_out" xml:space="preserve">
-    <value>For help using the IgniteBot, check out the</value>
+    <value>For help using Spark, check out the</value>
   </data>
   <data name="Ignite Discord Server" xml:space="preserve">
     <value>Ignite Discord Server</value>

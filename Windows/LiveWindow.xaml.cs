@@ -735,14 +735,14 @@ namespace Spark
 
 					RefreshAccessCode();
 
-					// if (SparkSettings.instance.echoVRIP != "127.0.0.1")
-					// {
-					// 	spectateMeButton.Visibility = Visibility.Visible;
-					// }
-					// else
-					// {
-					// 	spectateMeButton.Visibility = Visibility.Collapsed;
-					// }
+					if (SparkSettings.instance.echoVRIP != "127.0.0.1" || SparkSettings.instance.allowSpectateMeOnLocalPC)
+					{
+						spectateMeButton.Visibility = Visibility.Visible;
+					}
+					else
+					{
+						spectateMeButton.Visibility = Visibility.Collapsed;
+					}
 
 
 					hostMatchButton.IsEnabled = Program.lastFrame != null && Program.lastFrame.private_match;

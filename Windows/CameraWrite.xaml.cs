@@ -152,10 +152,34 @@ namespace Spark
 		public const float Rad2Deg = 57.29578f;
 
 		public bool sliderListenersActivated;
+		private bool animationsComboBoxListenersActivated;
+
+		public List<CameraTransform> CurrentAnimation;
+		//{
+		//	get
+		//	{
+		//		// if the key exists normally
+		//		if (CameraWriteSettings.instance.animations.ContainsKey(CameraWriteSettings.instance.activeAnimation))
+		//		{
+		//			return CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation];
+		//		}
+		//		// if there are still other animations to choose from
+		//		else if (CameraWriteSettings.instance.animations.Count > 0)
+		//		{
+		//			// change the selected animation to one of those
+		//			CameraWriteSettings.instance.activeAnimation = CameraWriteSettings.instance.animations.Keys.First();
+		//			return CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation];
+		//		}
+		//		// make an empty animation
+		//		else
+		//		{
+		//			return new List<CameraTransform>();
+		//		}
+		//	}
+		//}
 
 		public CameraWrite()
 		{
-			InitializeComponent();
 
 			CameraWriteSettings.Load();
 
@@ -165,20 +189,61 @@ namespace Spark
 				return;
 			}
 
+			InitializeComponent();
+
 			outputUpdateTimer.Interval = deltaMillis;
 			outputUpdateTimer.Elapsed += Update;
 			outputUpdateTimer.Enabled = true;
 
-			RegenerateWaypointButtons();
-			RegenerateKeyframeButtons();
 
 			SetSliderPositions();
 
 			sliderListenersActivated = true;
 
 			installWriteAPIButton.Content = File.Exists(WriteAPIExePath) ? "Launch WriteAPI" : "Install WriteAPI";
+
+			// set the current animation in memory
+			//if the key exists normally
+			if (CameraWriteSettings.instance.animations.ContainsKey(CameraWriteSettings.instance.activeAnimation))
+			{
+				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation].ToList();
+			}
+			// if there are still other animations to choose from
+			else if (CameraWriteSettings.instance.animations.Count > 0)
+			{
+				// change the selected animation to one of those
+				CameraWriteSettings.instance.activeAnimation = CameraWriteSettings.instance.animations.Keys.First();
+				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation].ToList();
+			}
+			// make an empty animation
+			else
+			{
+				CurrentAnimation = new List<CameraTransform>();
+			}
+
+			RefreshAnimationsComboBoxFromSettings();
+			RegenerateWaypointButtons();
+			RegenerateKeyframeButtons();
 		}
 
+		private void RefreshAnimationsComboBoxFromSettings()
+		{
+			animationsComboBoxListenersActivated = false;
+			AnimationsComboBox.Items.Clear();
+
+			List<string> keys = CameraWriteSettings.instance.animations.Keys.ToList();
+			for (int i = 0; i < keys.Count; i++)
+			{
+				AnimationsComboBox.Items.Add(new ComboBoxItem
+				{
+					Content = keys[i]
+				});
+			}
+			AnimationsComboBox.SelectedIndex = keys.IndexOf(CameraWriteSettings.instance.activeAnimation);
+			AnimationNameTextBox.Text = CameraWriteSettings.instance.activeAnimation;
+
+			animationsComboBoxListenersActivated = true;
+		}
 
 		private void Update(object source, ElapsedEventArgs e)
 		{
@@ -246,7 +311,7 @@ namespace Spark
 				isAnimating = false;
 				startButton.Content = "Start";
 			}
-			else if (CameraWriteSettings.instance.keyframePositions.Count > 0)
+			else if (CameraWriteSettings.instance.animations.Count > 0)
 			{
 				isAnimating = true;
 				animationThread = new Thread(KeyframeAnimationThread);
@@ -258,7 +323,7 @@ namespace Spark
 
 		private void KeyframeAnimationThread()
 		{
-			BezierSpline spline = new BezierSpline(CameraWriteSettings.instance.keyframePositions);
+			BezierSpline spline = new BezierSpline(CurrentAnimation);
 
 			DateTime startTime = DateTime.Now;
 			CameraTransform lastTransform = new CameraTransform();
@@ -306,7 +371,7 @@ namespace Spark
 			if (animationProgress >= 1)
 			{
 				Program.PostRequestCallback(url, null,
-					JsonConvert.SerializeObject(CameraWriteSettings.instance.keyframePositions.Last()), null);
+					JsonConvert.SerializeObject(CurrentAnimation.Last()), null);
 			}
 
 			Dispatcher.Invoke(() =>
@@ -497,7 +562,7 @@ namespace Spark
 		{
 			WaypointsPanel.Children.Clear();
 
-			foreach (var wp in CameraWriteSettings.instance.waypointPositions)
+			foreach (var wp in CameraWriteSettings.instance.waypoints)
 			{
 				Grid row = new Grid
 				{
@@ -536,7 +601,7 @@ namespace Spark
 				};
 				delete.Click += (_, _) =>
 				{
-					CameraWriteSettings.instance.waypointPositions.Remove(wp.Key);
+					CameraWriteSettings.instance.waypoints.Remove(wp.Key);
 					RegenerateWaypointButtons();
 				};
 
@@ -555,9 +620,9 @@ namespace Spark
 		{
 			KeyframesList.Children.Clear();
 
-			for (int i = 0; i < CameraWriteSettings.instance.keyframePositions.Count; i++)
+			for (int i = 0; i < CurrentAnimation.Count; i++)
 			{
-				CameraTransform wp = CameraWriteSettings.instance.keyframePositions[i];
+				CameraTransform wp = CurrentAnimation[i];
 
 				Grid row = new Grid
 				{
@@ -596,7 +661,7 @@ namespace Spark
 				};
 				delete.Click += (_, _) =>
 				{
-					CameraWriteSettings.instance.keyframePositions.Remove(wp);
+					CurrentAnimation.Remove(wp);
 					RegenerateKeyframeButtons();
 				};
 
@@ -623,7 +688,7 @@ namespace Spark
 			{
 				CameraTransform data = JsonConvert.DeserializeObject<CameraTransform>(response);
 
-				CameraWriteSettings.instance.waypointPositions[keyName] = data;
+				CameraWriteSettings.instance.waypoints[keyName] = data;
 
 				// update the UI with the new waypoint
 				Dispatcher.Invoke(RegenerateWaypointButtons);
@@ -647,7 +712,7 @@ namespace Spark
 
 				if (data == null) return;
 
-				CameraWriteSettings.instance.keyframePositions.Add(data);
+				CurrentAnimation.Add(data);
 
 				// update the UI with the new waypoint
 				Dispatcher.Invoke(() =>
@@ -659,7 +724,7 @@ namespace Spark
 
 		private void ClearKeyframes(object sender, RoutedEventArgs e)
 		{
-			CameraWriteSettings.instance.keyframePositions.Clear();
+			CurrentAnimation.Clear();
 			RegenerateKeyframeButtons();
 		}
 
@@ -896,6 +961,55 @@ namespace Spark
 					Logger.LogRow(Logger.LogType.Error, ex.ToString());
 				}
 			}
+		}
+
+		private void AnimationsComboBoxChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (animationsComboBoxListenersActivated)
+			{
+				CameraWriteSettings.instance.activeAnimation = ((ComboBoxItem)AnimationsComboBox.SelectedItem).Content.ToString();
+				AnimationNameTextBox.Text = CameraWriteSettings.instance.activeAnimation;
+
+				if (!CameraWriteSettings.instance.animations.ContainsKey(CameraWriteSettings.instance.activeAnimation))
+				{
+					new MessageBox("Error 4853: Report this to NtsFranz immediately, or else. >:|").Show();
+					return;
+				}
+
+				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation].ToList();
+				RegenerateKeyframeButtons();
+			}
+		}
+
+		private void AnimationSaveClicked(object sender, RoutedEventArgs e)
+		{
+			string newName = AnimationNameTextBox.Text;
+
+			if (string.IsNullOrEmpty(newName))
+			{
+				new MessageBox("Please enter a name first.").Show();
+			}
+			else
+			{
+				CameraWriteSettings.instance.activeAnimation = newName;
+				CameraWriteSettings.instance.animations[newName] = CurrentAnimation;
+
+				RefreshAnimationsComboBoxFromSettings();
+			}
+		}
+
+		private void AnimationDeleteClicked(object sender, RoutedEventArgs e)
+		{
+			string name = AnimationNameTextBox.Text;
+			CameraWriteSettings.instance.animations.Remove(name);
+			if (CameraWriteSettings.instance.animations.Count > 0)
+			{
+				CameraWriteSettings.instance.activeAnimation = CameraWriteSettings.instance.animations.Keys.First();
+				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation].ToList();
+			}
+
+			RefreshAnimationsComboBoxFromSettings();
+			RegenerateKeyframeButtons();
 		}
 	}
 }
