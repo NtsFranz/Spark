@@ -2153,11 +2153,15 @@ namespace Spark
 
 				Task.Run(() =>
 				{
-					Tracert(lastIP, OnProgressCallback: entries =>
+					Tracert(lastIP, OnProgressCallback: (entries, done) =>
 					{
 						Dispatcher.Invoke(() =>
 						{
-							TracerouteTextBox.Text = entries.Aggregate("ID\tPing\tIP\t\tHostname\n", (current, entry) => current + "\n" + entry);
+							TracerouteTextBox.Text = entries.Aggregate("ID\tPing\tIP\t\tHostname", (current, entry) => current + "\n" + entry);
+							if (done)
+							{
+								TracerouteTextBox.Text += "\nDONE";
+							}
 						});
 					});
 				});
@@ -2187,7 +2191,7 @@ namespace Spark
 		/// </summary>
 		/// <param name="ipAddress">The IP address of the destination.</param>
 		/// <param name="maxHops">Max hops to be returned.</param>
-		public static IEnumerable<TracertEntry> Tracert(string ipAddress, int maxHops = 30, int timeout = 10000, Action<IEnumerable<TracertEntry>> OnProgressCallback = null)
+		public static IEnumerable<TracertEntry> Tracert(string ipAddress, int maxHops = 30, int timeout = 10000, Action<IEnumerable<TracertEntry>, bool> OnProgressCallback = null)
 		{
 			List<TracertEntry> entries = new List<TracertEntry>();
 			
@@ -2236,11 +2240,14 @@ namespace Spark
 					ReplyStatus = reply.Status
 				});
 				
-				OnProgressCallback?.Invoke(entries);
+				OnProgressCallback?.Invoke(entries, false);
 
 				pingOptions.Ttl++;
 				pingReplyTime.Reset();
 			} while (reply.Status != IPStatus.Success && pingOptions.Ttl <= maxHops);
+
+
+			OnProgressCallback?.Invoke(entries, true);
 
 			return entries;
 		}

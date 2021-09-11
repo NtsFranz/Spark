@@ -2802,7 +2802,8 @@ namespace Spark
 						{
 							g_Player p = new g_Player
 							{
-								userid = player.Id
+								userid = player.Id,
+								name = player.Name
 							};
 
 							// TODO isn't this just a shallow copy anyway and won't do anything? How is this working?
