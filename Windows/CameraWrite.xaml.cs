@@ -327,6 +327,8 @@ namespace Spark
 
 			DateTime startTime = DateTime.Now;
 			CameraTransform lastTransform = new CameraTransform();
+			Stopwatch sw = new Stopwatch();
+			sw.Start();
 			while (animationProgress < 1 && isAnimating)
 			{
 				DateTime currentTime = DateTime.Now;
@@ -355,8 +357,9 @@ namespace Spark
 
 				CameraTransform newTransform = new(newPos, newRot);
 
-				string distance = Vector3.Distance(newPos, lastTransform.position) + "\t" + spline.GetCurve(t).Item1;
-				Console.WriteLine(distance);
+				string distance = Vector3.Distance(newPos, lastTransform.position)/sw.Elapsed.TotalSeconds + "\t" + spline.GetCurve(t).Item1?.keyframes[0].position.X;
+				sw.Restart();
+				Debug.WriteLine(distance);
 
 				string data = JsonConvert.SerializeObject(newTransform);
 
@@ -638,11 +641,34 @@ namespace Spark
 				});
 				row.ColumnDefinitions.Add(new ColumnDefinition
 				{
+					Width = new GridLength(70)
+				});
+				row.ColumnDefinitions.Add(new ColumnDefinition
+				{
 					Width = new GridLength(40)
 				});
 				Label name = new Label
 				{
 					Content = i + 1,
+				};
+				Button replace = new Button
+				{
+					Content = "Replace",
+					Margin = new Thickness(5, 0, 0, 0),
+				};
+				replace.Click += (_, _) =>
+				{
+					Program.GetRequestCallback(url, null, response =>
+					{
+						CameraTransform data = JsonConvert.DeserializeObject<CameraTransform>(response);
+
+						if (data == null) return;
+
+						CurrentAnimation[CurrentAnimation.FindIndex(val => val==wp)] = data;
+
+						// update the UI with the new waypoint
+						Dispatcher.Invoke(RegenerateKeyframeButtons);
+					});
 				};
 				Button goTo = new Button
 				{
@@ -666,10 +692,12 @@ namespace Spark
 				};
 
 				Grid.SetColumn(name, 0);
-				Grid.SetColumn(goTo, 1);
-				Grid.SetColumn(delete, 2);
+				Grid.SetColumn(replace, 1);
+				Grid.SetColumn(goTo, 2);
+				Grid.SetColumn(delete, 3);
 
 				row.Children.Add(name);
+				row.Children.Add(replace);
 				row.Children.Add(goTo);
 				row.Children.Add(delete);
 				KeyframesList.Children.Add(row);
@@ -692,6 +720,8 @@ namespace Spark
 
 				// update the UI with the new waypoint
 				Dispatcher.Invoke(RegenerateWaypointButtons);
+				
+				CameraWriteSettings.instance.Save();
 			});
 
 		}
@@ -995,6 +1025,8 @@ namespace Spark
 				CameraWriteSettings.instance.animations[newName] = CurrentAnimation;
 
 				RefreshAnimationsComboBoxFromSettings();
+				
+				CameraWriteSettings.instance.Save();
 			}
 		}
 

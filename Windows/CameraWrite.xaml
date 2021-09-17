@@ -31,7 +31,7 @@
 		
 		<WrapPanel>
 			<!--<Expander Header="Animation" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >-->
-			<GroupBox Margin="5,10,5,0" Width="350" VerticalAlignment="Top">
+			<GroupBox Margin="5,10,5,0" Width="450" VerticalAlignment="Top">
 				<GroupBox.Header>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="Animation"/>
@@ -45,12 +45,13 @@
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="70"/>
 							<ColumnDefinition Width="70"/>
+							<ColumnDefinition Width="70"/>
 						</Grid.ColumnDefinitions>
-						<TextBox x:Name="AnimationNameTextBox" Width="200" Grid.Column="0" Margin="2,2,2,2" ToolTip="The animation name"></TextBox>
+						<TextBox x:Name="AnimationNameTextBox" Width="300" Grid.Column="0" Margin="2,2,2,2" ToolTip="The animation name"></TextBox>
 						<Button Content="Save" Click="AnimationSaveClicked" Grid.Column="1" Padding="5,5,5,5" Margin="2,2,2,2"/>
 						<Button Content="Delete" Click="AnimationDeleteClicked" Grid.Column="2" Padding="5,5,5,5" Margin="2,2,2,2"/>
 					</Grid>
-					<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,40,0,0" Width="175">
+					<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,40,0,0" Width="275">
 						<Button Visibility="Collapsed" Margin="5,0,5,5" Height="45" Click="SetStart">Set Start</Button>
 						<Button Visibility="Collapsed" Margin="5,0,5,5" Height="45" Click="SetEnd">Set End</Button>
 						<StackPanel Orientation="Horizontal">

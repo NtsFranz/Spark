@@ -146,7 +146,7 @@
 							<GroupBox.Header>
 								<StackPanel Orientation="Horizontal">
 									<Label Content="{x:Static p:Resources.Joust_Times}"/>
-									<ComboBox SelectedIndex="{l:SettingBinding dashboardJoustTimeOrder}" ToolTip="Only stores up to the 50 most recent joust times.">
+									<ComboBox SelectedIndex="{l:SettingBinding dashboardJoustTimeOrder}" ToolTip="Only stores up to the 100 most recent joust times.">
 										<ComboBoxItem Content="Recent"/>
 										<ComboBoxItem Content="Fastest"/>
 									</ComboBox>

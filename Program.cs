@@ -2640,7 +2640,7 @@ namespace Spark
 						_ = DoUploadEventFirebase(matchData, joustEvent);
 
 						lastJousts.Enqueue(joustEvent);
-						if (lastJousts.Count > 50)
+						if (lastJousts.Count > 100)
 						{
 							lastJousts.TryDequeue(out EventData joust);
 						}
