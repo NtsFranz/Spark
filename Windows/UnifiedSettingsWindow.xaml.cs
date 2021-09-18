@@ -727,6 +727,8 @@ namespace Spark
 				secondsBefore.Visibility = Visibility.Collapsed;
 				labelTotal.Visibility = Visibility.Collapsed;
 				totalSeconds.Visibility = Visibility.Collapsed;
+				goalReplaySceneBox.Visibility = Visibility.Visible;
+				saveReplaySceneBox.Visibility = Visibility.Visible;
 			}
 			else
 			{
@@ -734,6 +736,8 @@ namespace Spark
 				secondsBefore.Visibility = Visibility.Visible;
 				labelTotal.Visibility = Visibility.Visible;
 				totalSeconds.Visibility = Visibility.Visible;
+				goalReplaySceneBox.Visibility = Visibility.Collapsed;
+				saveReplaySceneBox.Visibility = Visibility.Collapsed;
 			}
 
 			RefreshAllSettings(null, null);

@@ -428,49 +428,49 @@ namespace Spark
 				keyboardCamera = new KeyboardCamera();
 
 
-				// web server grapevine
-				try
-				{
-					//overlayServer = new WebServer2(OverlayServer.HandleRequest, "http://*:6723/");
-					overlayServer = RestServerBuilder.From<OverlayServerConfiguration>().Build();
-					//if (!Personal)
-					{
-						overlayServer.Start();
-					}
-				}
-				catch (Exception e)
-				{
-					Logger.Init();
-					Logger.LogRow(LogType.Error, e.ToString());
-				}
+				//// web server grapevine
+				//try
+				//{
+				//	//overlayServer = new WebServer2(OverlayServer.HandleRequest, "http://*:6723/");
+				//	overlayServer = RestServerBuilder.From<OverlayServerConfiguration>().Build();
+				//	//if (!Personal)
+				//	{
+				//		overlayServer.Start();
+				//	}
+				//}
+				//catch (Exception e)
+				//{
+				//	Logger.Init();
+				//	Logger.LogRow(LogType.Error, e.ToString());
+				//}
 
 
 
-				// web server genhttp
-				try
-				{
-					overlayServer2 = new OverlayServer2();
-				}
-				catch (Exception e)
-				{
-					Logger.Init();
-					Logger.LogRow(LogType.Error, e.ToString());
-				}
+				//// web server genhttp
+				//try
+				//{
+				//	overlayServer2 = new OverlayServer2();
+				//}
+				//catch (Exception e)
+				//{
+				//	Logger.Init();
+				//	Logger.LogRow(LogType.Error, e.ToString());
+				//}
 
 				
 				
 				
 
-				// web server httplistener
-				try
-				{
-					overlayServer3 = new OverlayServer3();
-				}
-				catch (Exception e)
-				{
-					Logger.Init();
-					Logger.LogRow(LogType.Error, e.ToString());
-				}
+				//// web server httplistener
+				//try
+				//{
+				//	overlayServer3 = new OverlayServer3();
+				//}
+				//catch (Exception e)
+				//{
+				//	Logger.Init();
+				//	Logger.LogRow(LogType.Error, e.ToString());
+				//}
 
 				
 				// web server asp.net

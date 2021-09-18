@@ -1,0 +1,211 @@
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Midmatch Overlay</title>
+
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap" rel="stylesheet">
+
+
+	<style>
+
+		body {
+			margin: 0;
+			font-family: 'Inconsolata', monospace;
+		}
+
+		.container {
+			margin: 0;
+			width: 100%;
+		}
+
+		.top_row {
+			width: 100%;
+		}
+
+		.team_logo {
+			width: 6em;
+			height: 6em;
+			position: absolute;
+			top: -.6em;
+			border: .4em solid blue;
+			border-top-width: 1em;
+			border-radius: .5em;
+		}
+
+			.team_logo.orange {
+				left: -.6em;
+				border-color: #d4791a;
+				border-left-width: 1em;
+				background-color: #936230;
+			}
+
+			.team_logo.blue {
+				right: -.6em;
+				border-color: #2981df;
+				border-right-width: 1em;
+				background-color: #426b97;
+			}
+
+		.team_name {
+			font-size: 2.6em;
+			font-weight: 900;
+			text-align: center;
+			color: #ccc;
+			width: 36.65rem;
+			position: absolute;
+			top: 0;
+			padding: 1.88rem;
+			height: 0.3rem;
+			line-height: 0;
+			text-shadow: .07em .07em #0005;
+			text-transform: uppercase;
+		}
+
+			.team_name.orange {
+				background-color: #d4791a;
+				left: 6.4rem;
+			}
+
+			.team_name.blue {
+				background-color: #2981df;
+				right: 6.4rem;
+			}
+
+		.joust {
+			border: 0.13rem solid #ccc;
+			background-color: #0004;
+			background: linear-gradient(0deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.5) 100%);
+			opacity: 0;
+			position: absolute;
+			top: 5rem;
+			width: 11rem;
+			height: 3rem;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 1.7em;
+			text-shadow: .07em .07em #0005;
+			color: #eee;
+			transition: all .5s;
+		}
+			.joust.orange {
+				left: 33rem;
+			}
+			.joust.blue {
+				right: 33rem;
+			}
+			.joust > span {
+				display: inline-block;
+				vertical-align: middle;
+				line-height: normal;
+			}
+		.joust.visible {
+			opacity: 1;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<div class="top_row">
+
+			<img id="team_logo_orange" class="team_logo orange" src="" alt="">
+			<div id="team_name_orange" class="team_name orange"></div>
+			<div id="orange_joust" class="joust orange"><span></span></div>
+			<div id="blue_joust" class="joust blue"><span></span></div>
+			<div id="team_name_blue" class="team_name blue"></div>
+			<img id="team_logo_blue" class="team_logo blue" src="" alt="">
+
+		</div>
+	</div>
+
+	<script>
+		//const ip = "127.0.0.1"
+		const ip = "localhost"
+		const port = "6724"
+
+		const team_logo_orange = document.getElementById("team_logo_orange");
+		const team_name_orange = document.getElementById("team_name_orange");
+		const team_name_blue = document.getElementById("team_name_blue");
+		const team_logo_blue = document.getElementById("team_logo_blue");
+
+		const orange_joust = document.getElementById("orange_joust");
+		const blue_joust = document.getElementById("blue_joust");
+
+		var lastStats = null;
+
+
+		function get_data() {
+			const url = `http://${ip}:${port}/stats`;
+			httpGetAsync(url, process_response);
+		}
+
+		function process_response(resp) {
+			if (resp == "" || resp.length < 10) return;
+			let data = JSON.parse(resp);
+			if (data == null) return;
+
+
+			// if the team has changed
+			if (lastStats == null || lastStats["teams"][0]["vrml_team_name"] != data["teams"][0]["vrml_team_name"]) {
+				team_name_blue.innerText = data["teams"][0]["vrml_team_name"];
+				team_logo_blue.src = data["teams"][0]["vrml_team_logo"];
+				if (data["teams"][0]["vrml_team_logo"] == "") {
+					team_logo_blue.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+				}
+			}
+			// if the team has changed
+			if (lastStats == null || lastStats["teams"][1]["vrml_team_name"] != data["teams"][1]["vrml_team_name"]) {
+				team_logo_orange.src = data["teams"][1]["vrml_team_logo"];
+				team_name_orange.innerText = data["teams"][1]["vrml_team_name"];
+				if (data["teams"][1]["vrml_team_logo"] == "") {
+					team_logo_orange.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+				}
+			}
+
+			// if the number of jousts has changed
+			if (lastStats != null && data["joust_events"].length > lastStats["joust_events"].length) {
+				for (let i = lastStats["joust_events"].length; i < data["joust_events"].length; i++) {
+					let joust = data["joust_events"][i];
+					if (joust["other_player_name"] == "orange") {
+						orange_joust.classList.add("visible");
+						orange_joust.innerText = Math.round(joust["z2"] * 100) / 100 + " s";
+						// hide it after a delay
+						setTimeout(function () { orange_joust.classList.remove("visible"); }, 10000);
+					} else if (joust["other_player_name"] == "blue") {
+						blue_joust.classList.add("visible");
+						blue_joust.innerText = Math.round(joust["z2"] * 100) / 100 + " s";
+						// hide it after a delay
+						setTimeout(function () { blue_joust.classList.remove("visible"); }, 10000);
+					}
+				}
+			}
+
+			lastStats = data;
+		}
+
+
+		function httpGetAsync(theUrl, callback, failcallback = null) {
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function () {
+				if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+					callback(xmlHttp.responseText);
+				else if (xmlHttp.status === 404 && failcallback != null) {
+					failcallback();
+				}
+			}
+			xmlHttp.open("GET", theUrl, true); // true for asynchronous
+			xmlHttp.send(null);
+		}
+
+		get_data();
+
+		setInterval(get_data, 1000);
+	</script>
+</body>
+
+</html>
