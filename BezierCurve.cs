@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using System.Windows.Threading;
-using Microsoft.WindowsAPICodePack.Shell.Interop;
 using static Spark.CameraWrite;
 
 namespace Spark

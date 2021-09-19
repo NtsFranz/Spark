@@ -275,7 +275,7 @@ namespace Spark
 		private async void FindQuestClick(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			findQuestStatusLabel.Content = "Searching for Quest on network";
+			findQuestStatusLabel.Content = Properties.Resources.Searching_for_Quest_on_network;
 			findQuestStatusLabel.Visibility = Visibility.Visible;
 			echoVRIPTextBox.IsEnabled = false;
 			echoVRPortTextBox.IsEnabled = false;

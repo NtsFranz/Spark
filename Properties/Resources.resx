@@ -758,10 +758,10 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Apply</value>
   </data>
   <data name="Atlas Whitelist" xml:space="preserve">
-    <value>Atlas Whitelist</value>
+    <value>Hosting Whitelist</value>
   </data>
   <data name="atlas_whitelist_title" xml:space="preserve">
-    <value>Spark | Atlas Whitelist</value>
+    <value>Spark | Hosting Whitelist</value>
   </data>
   <data name="cant_connect_to_internet_for_discord" xml:space="preserve">
     <value>Can't connect to the internet to log into Discord.</value>
@@ -845,7 +845,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Refresh List</value>
   </data>
   <data name="Shutting down Atlas..." xml:space="preserve">
-    <value>Shutting down Atlas...</value>
+    <value>Shutting down Match Hosting...</value>
     <comment>message when closing the program</comment>
   </data>
   <data name="Spark Message" xml:space="preserve">
@@ -876,7 +876,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Choose</value>
   </data>
   <data name="Copy Atlas Link" xml:space="preserve">
-    <value>Copy Atlas Link</value>
+    <value>Copy Spark Link</value>
   </data>
   <data name="Copy to Clipboard" xml:space="preserve">
     <value>Copy to Clipboard</value>
@@ -1123,7 +1123,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
     <comment>refers to the creation of a server in a specific region</comment>
   </data>
   <data name="chooseRegionSpectator.ToolTip" xml:space="preserve">
-    <value>Starts EchoVR in spectator mode. The only way to add players to this match is by sharing the Atlas link.</value>
+    <value>Starts EchoVR in spectator mode. The only way to add players to this match is by sharing the Spark link.</value>
   </data>
   <data name="Not Connected" xml:space="preserve">
     <value>Not Connected</value>
@@ -1174,5 +1174,143 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   <data name="Replay_Scene" xml:space="preserve">
     <value>Scene:</value>
     <comment>header for scene selector for replays</comment>
+  </data>
+  <data name="noovrCheckbox.Content" xml:space="preserve">
+    <value>Use Anonymous Account</value>
+  </data>
+  <data name="US Central North" xml:space="preserve">
+    <value>US Central North</value>
+  </data>
+  <data name="US Central South" xml:space="preserve">
+    <value>US Central South</value>
+  </data>
+  <data name="US East" xml:space="preserve">
+    <value>US East</value>
+  </data>
+  <data name="US West" xml:space="preserve">
+    <value>US West</value>
+  </data>
+  <data name="Europe" xml:space="preserve">
+    <value>Europe</value>
+  </data>
+  <data name="Japan" xml:space="preserve">
+    <value>Japan</value>
+  </data>
+  <data name="Australia" xml:space="preserve">
+    <value>Australia</value>
+  </data>
+  <data name="Singapore" xml:space="preserve">
+    <value>Singapore</value>
+  </data>
+  <data name="e.g. Singapore" xml:space="preserve">
+    <value>e.g. Singapore</value>
+  </data>
+  <data name="e.g. Sydney, Perth" xml:space="preserve">
+    <value>e.g. Sydney, Perth</value>
+  </data>
+  <data name="e.g. Tokyo" xml:space="preserve">
+    <value>e.g. Tokyo</value>
+  </data>
+  <data name="e.g. London, Amsterdam, Brussels" xml:space="preserve">
+    <value>e.g. London, Amsterdam, Brussels</value>
+  </data>
+  <data name="e.g. California" xml:space="preserve">
+    <value>e.g. California</value>
+  </data>
+  <data name="e.g. New York, Miami, Charleston" xml:space="preserve">
+    <value>e.g. New York, Miami, Charleston</value>
+  </data>
+  <data name="e.g. Texas" xml:space="preserve">
+    <value>e.g. Texas</value>
+  </data>
+  <data name="e.g. Chicago, Iowa" xml:space="preserve">
+    <value>e.g. Chicago, Iowa</value>
+  </data>
+  <data name="Arena" xml:space="preserve">
+    <value>Arena</value>
+  </data>
+  <data name="Lobby" xml:space="preserve">
+    <value>Lobby</value>
+  </data>
+  <data name="Combat Dyson" xml:space="preserve">
+    <value>Combat Dyson</value>
+  </data>
+  <data name="Combat Combustion" xml:space="preserve">
+    <value>Combat Combustion</value>
+  </data>
+  <data name="Combat Fission" xml:space="preserve">
+    <value>Combat Fission</value>
+  </data>
+  <data name="Combat Surge" xml:space="preserve">
+    <value>Combat Surge</value>
+  </data>
+  <data name="Anonymous accounts allow you to join the match twice on the same computer." xml:space="preserve">
+    <value>Anonymous accounts allow you to join the match twice on the same computer.</value>
+  </data>
+  <data name="Camera Write" xml:space="preserve">
+    <value>Camera Write</value>
+  </data>
+  <data name="Choose Server Region" xml:space="preserve">
+    <value>Choose Server Region</value>
+  </data>
+  <data name="Not active" xml:space="preserve">
+    <value>Not active</value>
+  </data>
+  <data name="Show Overlay" xml:space="preserve">
+    <value>Show Overlay</value>
+  </data>
+  <data name="If you need help:" xml:space="preserve">
+    <value>If you need help:</value>
+  </data>
+  <data name="Wiki" xml:space="preserve">
+    <value>Wiki</value>
+  </data>
+  <data name="Discord" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="Upload Tablet Stats" xml:space="preserve">
+    <value>Upload Tablet Stats</value>
+  </data>
+  <data name="Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other in any way." xml:space="preserve">
+    <value>Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other in any way.</value>
+  </data>
+  <data name="You can view tablet stats using the /tabletstats PlayerName command in Discord or on ignitevr.gg/stats" xml:space="preserve">
+    <value>You can view tablet stats using the /tabletstats PlayerName command in Discord or on ignitevr.gg/stats</value>
+  </data>
+  <data name="Profiles:" xml:space="preserve">
+    <value>Profiles:</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
+  <data name="Uploading..." xml:space="preserve">
+    <value>Uploading...</value>
+  </data>
+  <data name="Success!" xml:space="preserve">
+    <value>Success!</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="Uploaded" xml:space="preserve">
+    <value>Uploaded</value>
+  </data>
+  <data name="Windows Store" xml:space="preserve">
+    <value>Windows Store</value>
+  </data>
+  <data name="Waiting for EchoVR to start" xml:space="preserve">
+    <value>Waiting for EchoVR to start</value>
+  </data>
+  <data name="Waiting until you join a game" xml:space="preserve">
+    <value>Waiting until you join a game</value>
+  </data>
+  <data name="Copy Spark Link" xml:space="preserve">
+    <value>Copy Spark Link</value>
+  </data>
+  <data name="Searching for Quest on network" xml:space="preserve">
+    <value>Searching for Quest on network</value>
+  </data>
+  <data name="Playercards" xml:space="preserve">
+    <value>Playercards</value>
   </data>
 </root>

@@ -213,7 +213,7 @@ namespace Spark
 			});
 		}
 
-		public static string AppVersionLabelText => $"v{Program.AppVersion()}{(Program.IsWindowsStore() ? "  Windows Store" : "")}";
+		public static string AppVersionLabelText => $"v{Program.AppVersion()}  {(Program.IsWindowsStore() ? Properties.Resources.Windows_Store : "")}";
 		public static Visibility PlayercardsTabVisibility => Program.IsWindowsStore() ? Visibility.Visible : Visibility.Collapsed;
 
 		private void ActivateUnityWindow()
@@ -349,7 +349,7 @@ namespace Spark
 					}
 					showHighlights.IsEnabled = HighlightsHelper.DoNVClipsExist();
 					showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
-					showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? "Show " + HighlightsHelper.nvHighlightClipCount + " Highlights" : "No clips available";
+					showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? "Show " + HighlightsHelper.nvHighlightClipCount + " Highlights" : Properties.Resources.No_clips_available;
 
 
 					if (Program.inGame)
@@ -493,15 +493,21 @@ namespace Spark
 						orangePlayerPingsNames.Text = orangeTextNames.ToString();
 						orangePlayerPingsPings.Text = orangePingsTextPings.ToString();
 
+						bluePlayerPingsNamesServerInfoTab.Text = blueTextNames.ToString();
+						bluePlayerPingsPingsServerInfoTab.Text = bluePingsTextPings.ToString();
+						orangePlayerPingsNamesServerInfoTab.Text = orangeTextNames.ToString();
+						orangePlayerPingsPingsServerInfoTab.Text = orangePingsTextPings.ToString();
+
 						float serverScore = Program.CalculateServerScore(pings[0], pings[1]);
+						string playerPingsHeader = "";
 
 						if (pings[0].Count != 4 || pings[1].Count != 4)
 						{
-							playerPingsGroupbox.Header = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} --";
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} --";
 						}
 						else if (serverScore < 0)
 						{
-							playerPingsGroupbox.Header = $"{Properties.Resources.Player_Pings}     >150";
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}     >150";
 						}
 						else
 						{
@@ -515,8 +521,11 @@ namespace Spark
 							{
 								smoothedServerScore = smoothedServerScore * serverScoreSmoothingFactor + (1 - serverScoreSmoothingFactor) * serverScore;
 							}
-							playerPingsGroupbox.Header = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {smoothedServerScore:N1}";
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {smoothedServerScore:N1}";
 						}
+						playerPingsGroupbox.Header = playerPingsHeader;
+						playerPingsGroupboxServerInfoTab.Header = playerPingsHeader;
+
 						if (Program.matchData != null)
 						{
 							Program.matchData.ServerScore = smoothedServerScore;
@@ -1216,11 +1225,11 @@ namespace Spark
 						Program.KillEchoVR($"-httpport {Program.SPECTATEME_PORT}");
 						Program.StartEchoVR(Program.JoinType.Spectator, port: Program.SPECTATEME_PORT, noovr: true, session_id: Program.lastFrame.sessionid);
 						Program.WaitUntilLocalGameLaunched(Program.UseCameraControlKeys, port: Program.SPECTATEME_PORT);
-						spectateMeSubtitle.Text = "Waiting for EchoVR to start";
+						spectateMeSubtitle.Text = Properties.Resources.Waiting_for_EchoVR_to_start;
 					}
 					else
 					{
-						spectateMeSubtitle.Text = "Waiting until you join a game";
+						spectateMeSubtitle.Text = Properties.Resources.Waiting_until_you_join_a_game;
 					}
 					spectateMeLabel.Content = Properties.Resources.Stop_Spectating_Me;
 				}
@@ -1228,7 +1237,7 @@ namespace Spark
 				{
 					Program.KillEchoVR();
 					spectateMeLabel.Content = Properties.Resources.Spectate_Me;
-					spectateMeSubtitle.Text = "Not active";
+					spectateMeSubtitle.Text = Properties.Resources.Not_active;
 				}
 			}
 			catch (Exception ex)
@@ -1706,13 +1715,13 @@ namespace Spark
 						};
 						header.Children.Add(new Label
 						{
-							Content = match.is_protected ? (match.visible_to_casters ? "Casters Only" : "Private") : "Public"
+							Content = match.is_protected ? (match.visible_to_casters ? Properties.Resources.Casters_Only : Properties.Resources.Private) : Properties.Resources.Public
 						});
 
 						byte buttonColor = 70;
 						Button copyLinkButton = new Button
 						{
-							Content = "Copy Atlas Link",
+							Content = Properties.Resources.Copy_Spark_Link,
 							Margin = new Thickness(50, 0, 0, 0),
 							Padding = new Thickness(10, 0, 10, 0),
 							Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(buttonColor, buttonColor, buttonColor)),
@@ -1724,7 +1733,7 @@ namespace Spark
 						header.Children.Add(copyLinkButton);
 						Button joinButton = new Button
 						{
-							Content = "Join",
+							Content = Properties.Resources.Join,
 							Margin = new Thickness(20, 0, 0, 0),
 							Padding = new Thickness(10, 0, 10, 0),
 							Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(buttonColor, buttonColor, buttonColor)),
@@ -2075,7 +2084,7 @@ namespace Spark
 
 		private async void FindQuestIP(object sender, RoutedEventArgs e)
 		{
-			findQuestStatusLabel.Content = "Searching for Quest on network";
+			findQuestStatusLabel.Content = Properties.Resources.Searching_for_Quest_on_network;
 			findQuestStatusLabel.Visibility = Visibility.Visible;
 			alternateIPTextBox.IsEnabled = false;
 			findQuest.IsEnabled = false;

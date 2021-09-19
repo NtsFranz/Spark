@@ -19,7 +19,7 @@ namespace Spark
 
 		private async void QuestClicked(object sender, RoutedEventArgs e)
 		{
-			setupLabel.Content = "Searching for Quest on network";
+			setupLabel.Content = Properties.Resources.Searching_for_Quest_on_network;
 			setupText.Visibility = Visibility.Hidden;
 			spectatorButton.IsEnabled = false;
 			playerButton.IsEnabled = false;

@@ -6,7 +6,7 @@
 		xmlns:p="clr-namespace:Spark.Properties"
         xmlns:l="clr-namespace:Spark"
         mc:Ignorable="d"
-        Title="Camera Write" 
+        Title="{x:Static p:Resources.Camera_Write}" 
 		Height="880" 
 		Width="740" 
 		WindowStartupLocation="CenterOwner" 

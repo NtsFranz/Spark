@@ -160,6 +160,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Anonymous accounts allow you to join the match twice on the same computer..
+        /// </summary>
+        public static string Anonymous_accounts_allow_you_to_join_the_match_twice_on_the_same_computer_ {
+            get {
+                return ResourceManager.GetString("Anonymous accounts allow you to join the match twice on the same computer.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Append team names.
         /// </summary>
         public static string Append_team_names {
@@ -206,6 +215,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Arena.
+        /// </summary>
+        public static string Arena {
+            get {
+                return ResourceManager.GetString("Arena", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Links.
         /// </summary>
         public static string Atlas {
@@ -224,7 +242,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Atlas Whitelist.
+        ///   Looks up a localized string similar to Hosting Whitelist.
         /// </summary>
         public static string Atlas_Whitelist {
             get {
@@ -233,11 +251,20 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Spark | Atlas Whitelist.
+        ///   Looks up a localized string similar to Spark | Hosting Whitelist.
         /// </summary>
         public static string atlas_whitelist_title {
             get {
                 return ResourceManager.GetString("atlas_whitelist_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Australia.
+        /// </summary>
+        public static string Australia {
+            get {
+                return ResourceManager.GetString("Australia", resourceCulture);
             }
         }
         
@@ -351,6 +378,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Camera Write.
+        /// </summary>
+        public static string Camera_Write {
+            get {
+                return ResourceManager.GetString("Camera Write", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t connect to the internet to log into Discord..
         /// </summary>
         public static string cant_connect_to_internet_for_discord {
@@ -378,6 +414,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose Server Region.
+        /// </summary>
+        public static string Choose_Server_Region {
+            get {
+                return ResourceManager.GetString("Choose Server Region", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose the events you want to clip in the NVIDIA overlay (ALT+Z).
         /// </summary>
         public static string Choose_the_events_you_want_to_clip_in_the_NVIDIA_overlay__ALT_Z_ {
@@ -387,7 +432,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Starts EchoVR in spectator mode. The only way to add players to this match is by sharing the Atlas link..
+        ///   Looks up a localized string similar to Starts EchoVR in spectator mode. The only way to add players to this match is by sharing the Spark link..
         /// </summary>
         public static string chooseRegionSpectator_ToolTip {
             get {
@@ -486,6 +531,42 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Combat Combustion.
+        /// </summary>
+        public static string Combat_Combustion {
+            get {
+                return ResourceManager.GetString("Combat Combustion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Combat Dyson.
+        /// </summary>
+        public static string Combat_Dyson {
+            get {
+                return ResourceManager.GetString("Combat Dyson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Combat Fission.
+        /// </summary>
+        public static string Combat_Fission {
+            get {
+                return ResourceManager.GetString("Combat Fission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Combat Surge.
+        /// </summary>
+        public static string Combat_Surge {
+            get {
+                return ResourceManager.GetString("Combat Surge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compressing Replay File....
         /// </summary>
         public static string Compressing_Replay_File___ {
@@ -549,7 +630,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy Atlas Link.
+        ///   Looks up a localized string similar to Copy Spark Link.
         /// </summary>
         public static string Copy_Atlas_Link {
             get {
@@ -563,6 +644,15 @@ namespace Spark.Properties {
         public static string copy_link_tooltip {
             get {
                 return ResourceManager.GetString("copy_link_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy Spark Link.
+        /// </summary>
+        public static string Copy_Spark_Link {
+            get {
+                return ResourceManager.GetString("Copy Spark Link", resourceCulture);
             }
         }
         
@@ -639,6 +729,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discord.
+        /// </summary>
+        public static string Discord {
+            get {
+                return ResourceManager.GetString("Discord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Discord Login.
         /// </summary>
         public static string Discord_Login {
@@ -698,6 +797,78 @@ namespace Spark.Properties {
         public static string Downloads_and_installs_the_most_recent_update__recommended_ {
             get {
                 return ResourceManager.GetString("Downloads and installs the most recent update (recommended)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. California.
+        /// </summary>
+        public static string e_g__California {
+            get {
+                return ResourceManager.GetString("e.g. California", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Chicago, Iowa.
+        /// </summary>
+        public static string e_g__Chicago__Iowa {
+            get {
+                return ResourceManager.GetString("e.g. Chicago, Iowa", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. London, Amsterdam, Brussels.
+        /// </summary>
+        public static string e_g__London__Amsterdam__Brussels {
+            get {
+                return ResourceManager.GetString("e.g. London, Amsterdam, Brussels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. New York, Miami, Charleston.
+        /// </summary>
+        public static string e_g__New_York__Miami__Charleston {
+            get {
+                return ResourceManager.GetString("e.g. New York, Miami, Charleston", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Singapore.
+        /// </summary>
+        public static string e_g__Singapore {
+            get {
+                return ResourceManager.GetString("e.g. Singapore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Sydney, Perth.
+        /// </summary>
+        public static string e_g__Sydney__Perth {
+            get {
+                return ResourceManager.GetString("e.g. Sydney, Perth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Texas.
+        /// </summary>
+        public static string e_g__Texas {
+            get {
+                return ResourceManager.GetString("e.g. Texas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Tokyo.
+        /// </summary>
+        public static string e_g__Tokyo {
+            get {
+                return ResourceManager.GetString("e.g. Tokyo", resourceCulture);
             }
         }
         
@@ -873,6 +1044,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Europe.
+        /// </summary>
+        public static string Europe {
+            get {
+                return ResourceManager.GetString("Europe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Event Log.
         /// </summary>
         public static string Event_Log {
@@ -905,6 +1085,15 @@ namespace Spark.Properties {
         public static string Exit {
             get {
                 return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed.
+        /// </summary>
+        public static string Failed {
+            get {
+                return ResourceManager.GetString("Failed", resourceCulture);
             }
         }
         
@@ -1161,6 +1350,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If you need help:.
+        /// </summary>
+        public static string If_you_need_help_ {
+            get {
+                return ResourceManager.GetString("If you need help:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignite Discord Server.
         /// </summary>
         public static string Ignite_Discord_Server {
@@ -1287,6 +1485,15 @@ namespace Spark.Properties {
         public static string IP_Address_ {
             get {
                 return ResourceManager.GetString("IP Address:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Japan.
+        /// </summary>
+        public static string Japan {
+            get {
+                return ResourceManager.GetString("Japan", resourceCulture);
             }
         }
         
@@ -1445,6 +1652,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Lobby.
+        /// </summary>
+        public static string Lobby {
+            get {
+                return ResourceManager.GetString("Lobby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Local PC.
         /// </summary>
         public static string Local_PC {
@@ -1553,11 +1769,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Anonymous Account.
+        /// </summary>
+        public static string noovrCheckbox_Content {
+            get {
+                return ResourceManager.GetString("noovrCheckbox.Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Normal.
         /// </summary>
         public static string Normal {
             get {
                 return ResourceManager.GetString("Normal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not active.
+        /// </summary>
+        public static string Not_active {
+            get {
+                return ResourceManager.GetString("Not active", resourceCulture);
             }
         }
         
@@ -1675,6 +1909,16 @@ namespace Spark.Properties {
         public static string Only_Record_Private_Matches {
             get {
                 return ResourceManager.GetString("Only Record Private Matches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other in any way..
+        /// </summary>
+        public static string Only_the_selected_profiles_will_be_uploaded__Your_alternate_accounts_will_not_be_linked_to_each_other_in_any_way_ {
+            get {
+                return ResourceManager.GetString("Only the selected profiles will be uploaded. Your alternate accounts will not be " +
+                        "linked to each other in any way.", resourceCulture);
             }
         }
         
@@ -1824,6 +2068,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Playercards.
+        /// </summary>
+        public static string Playercards {
+            get {
+                return ResourceManager.GetString("Playercards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Playspace Abuse.
         /// </summary>
         public static string Playspace_Abuse {
@@ -1875,6 +2128,15 @@ namespace Spark.Properties {
         public static string Private {
             get {
                 return ResourceManager.GetString("Private", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profiles:.
+        /// </summary>
+        public static string Profiles_ {
+            get {
+                return ResourceManager.GetString("Profiles:", resourceCulture);
             }
         }
         
@@ -2122,6 +2384,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Searching for Quest on network.
+        /// </summary>
+        public static string Searching_for_Quest_on_network {
+            get {
+                return ResourceManager.GetString("Searching for Quest on network", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Seconds After:.
         /// </summary>
         public static string Seconds_After_ {
@@ -2249,6 +2520,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Overlay.
+        /// </summary>
+        public static string Show_Overlay {
+            get {
+                return ResourceManager.GetString("Show Overlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Playspace.
         /// </summary>
         public static string Show_Playspace {
@@ -2258,7 +2538,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shutting down Atlas....
+        ///   Looks up a localized string similar to Shutting down Match Hosting....
         /// </summary>
         public static string Shutting_down_Atlas___ {
             get {
@@ -2272,6 +2552,15 @@ namespace Spark.Properties {
         public static string Sideline {
             get {
                 return ResourceManager.GetString("Sideline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Singapore.
+        /// </summary>
+        public static string Singapore {
+            get {
+                return ResourceManager.GetString("Singapore", resourceCulture);
             }
         }
         
@@ -2552,6 +2841,15 @@ namespace Spark.Properties {
         public static string Streamer_Mode {
             get {
                 return ResourceManager.GetString("Streamer Mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success!.
+        /// </summary>
+        public static string Success_ {
+            get {
+                return ResourceManager.GetString("Success!", resourceCulture);
             }
         }
         
@@ -2862,11 +3160,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Upload.
+        /// </summary>
+        public static string Upload {
+            get {
+                return ResourceManager.GetString("Upload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uploads data to the Personal Ignite database. This is separate from the public match stats, but is still visible on the website. Discord Login is required for stat uploading. Only public matches are uploaded..
         /// </summary>
         public static string upload_description {
             get {
                 return ResourceManager.GetString("upload_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload Tablet Stats.
+        /// </summary>
+        public static string Upload_Tablet_Stats {
+            get {
+                return ResourceManager.GetString("Upload Tablet Stats", resourceCulture);
             }
         }
         
@@ -2885,6 +3201,60 @@ namespace Spark.Properties {
         public static string Upload_to_IgniteVR_Database {
             get {
                 return ResourceManager.GetString("Upload to IgniteVR Database", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploaded.
+        /// </summary>
+        public static string Uploaded {
+            get {
+                return ResourceManager.GetString("Uploaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploading....
+        /// </summary>
+        public static string Uploading___ {
+            get {
+                return ResourceManager.GetString("Uploading...", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to US Central North.
+        /// </summary>
+        public static string US_Central_North {
+            get {
+                return ResourceManager.GetString("US Central North", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to US Central South.
+        /// </summary>
+        public static string US_Central_South {
+            get {
+                return ResourceManager.GetString("US Central South", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to US East.
+        /// </summary>
+        public static string US_East {
+            get {
+                return ResourceManager.GetString("US East", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to US West.
+        /// </summary>
+        public static string US_West {
+            get {
+                return ResourceManager.GetString("US West", resourceCulture);
             }
         }
         
@@ -2925,6 +3295,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Waiting for EchoVR to start.
+        /// </summary>
+        public static string Waiting_for_EchoVR_to_start {
+            get {
+                return ResourceManager.GetString("Waiting for EchoVR to start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting until you join a game.
+        /// </summary>
+        public static string Waiting_until_you_join_a_game {
+            get {
+                return ResourceManager.GetString("Waiting until you join a game", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Whitelist.
         /// </summary>
         public static string Whitelist {
@@ -2934,11 +3322,39 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wiki.
+        /// </summary>
+        public static string Wiki {
+            get {
+                return ResourceManager.GetString("Wiki", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows Store.
+        /// </summary>
+        public static string Windows_Store {
+            get {
+                return ResourceManager.GetString("Windows Store", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to wrong number of &apos;/&apos; characters for link:.
         /// </summary>
         public static string wrong_number_of_____characters_for_link_ {
             get {
                 return ResourceManager.GetString("wrong number of \'/\' characters for link:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can view tablet stats using the /tabletstats PlayerName command in Discord or on ignitevr.gg/stats.
+        /// </summary>
+        public static string You_can_view_tablet_stats_using_the__tabletstats_PlayerName_command_in_Discord_or_on_ignitevr_gg_stats {
+            get {
+                return ResourceManager.GetString("You can view tablet stats using the /tabletstats PlayerName command in Discord or" +
+                        " on ignitevr.gg/stats", resourceCulture);
             }
         }
     }

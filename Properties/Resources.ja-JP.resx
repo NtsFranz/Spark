@@ -722,7 +722,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>リプレイファイルを圧縮しています…</value>
   </data>
   <data name="Copy Atlas Link" xml:space="preserve">
-    <value>Atlasのリンクをコピーする</value>
+    <value>Sparkのリンクをコピーする</value>
   </data>
   <data name="Copy to Clipboard" xml:space="preserve">
     <value>クリップボードにコピー</value>

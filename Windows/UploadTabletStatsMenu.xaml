@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Spark"
+        xmlns:properties="clr-namespace:Spark.Properties"
         mc:Ignorable="d"
-        Title="Upload Tablet Stats" 
+        Title="{x:Static properties:Resources.Upload_Tablet_Stats}" 
         Height="300" Width="400"
         Background="{DynamicResource BackgroundColour}" 
         FontSize="16" 
@@ -15,10 +16,10 @@
         Icon="/img/ignite_logo.ico"
         >
     <StackPanel Margin="10,10,10,10">
-        <Label Content="Upload Tablet Stats" HorizontalAlignment="Center" FontSize="16"/>
-        <TextBlock Text="Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other in any way." TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
-        <TextBlock Text="You can view tablet stats using the /tabletstats PlayerName command in Discord or on ignitevr.gg/stats" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
-        <TextBlock Text="Profiles:" TextWrapping="Wrap" FontSize="14" Margin="20,20,0,0"/>
+        <Label Content="{x:Static properties:Resources.Upload_Tablet_Stats}" HorizontalAlignment="Center" FontSize="16"/>
+        <TextBlock Text="{x:Static properties:Resources.Only_the_selected_profiles_will_be_uploaded__Your_alternate_accounts_will_not_be_linked_to_each_other_in_any_way_}" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+        <TextBlock Text="{x:Static properties:Resources.You_can_view_tablet_stats_using_the__tabletstats_PlayerName_command_in_Discord_or_on_ignitevr_gg_stats}" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+        <TextBlock Text="{x:Static properties:Resources.Profiles_}" TextWrapping="Wrap" FontSize="14" Margin="20,20,0,0"/>
         <StackPanel x:Name="profilesList" Margin="10,10,10,10">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -55,7 +56,7 @@
                     <CheckBox  HorizontalAlignment="Center"/>
                 </Border>
                 <Border BorderBrush="{DynamicResource ControlDarkerBorderBrush}" BorderThickness="1" Grid.Column="3">
-                    <Button Content="Upload" />
+                    <Button Content="{x:Static properties:Resources.Upload}" />
                 </Border>
 
             </Grid>

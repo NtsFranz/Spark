@@ -82,20 +82,20 @@ namespace Spark
 
 				Button button = new Button()
 				{
-					Content = "Upload",
+					Content = Properties.Resources.Upload,
 					HorizontalAlignment = HorizontalAlignment.Stretch,
 					VerticalAlignment = VerticalAlignment.Stretch,
 					Height = 40,
 				};
 				button.Click += (sender, _) =>
 				{
-					uploadStatus.Text = "Uploading...";
+					uploadStatus.Text = Properties.Resources.Uploading___;
 					Program.UploadTabletStats(t, (success) =>
 					{
 						Dispatcher.Invoke(() =>
 						{
-							uploadStatus.Text = success ? "Success!" : "Failed";
-							(sender as Button).Content = success ? "Uploaded" : "Failed";
+							uploadStatus.Text = success ? Properties.Resources.Success_ : Properties.Resources.Failed;
+							((Button) sender).Content = success ? Properties.Resources.Uploaded : Properties.Resources.Failed;
 						});
 					});
 				};

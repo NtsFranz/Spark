@@ -110,7 +110,7 @@ namespace Spark
 				if (string.IsNullOrEmpty(player_name) || frame.teams == null) return false;
 
 				// if in spectator and record-all-in-spectator is checked
-				if (SparkSettings.instance.obsSpectatorRecord && frame.client_name == player_name)
+				if (SparkSettings.instance.obsSpectatorRecord)
 				{
 					return true;
 				}

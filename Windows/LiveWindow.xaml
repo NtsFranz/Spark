@@ -244,7 +244,7 @@
 
 											<GroupBox.Header>
 												<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
-													<TextBlock Text="Public" Margin="0,0,10,0" Foreground="{DynamicResource ControlDisabledGlythColour}"></TextBlock>
+													<TextBlock Text="{x:Static p:Resources.Public}" Margin="0,0,10,0" Foreground="{DynamicResource ControlDisabledGlythColour}"></TextBlock>
 													<Button Content="{x:Static p:Resources.Copy_Atlas_Link}" Margin="200,0,10,0" Background="{DynamicResource ControlDisabledBackground}"/>
 													<Button Content="{x:Static p:Resources.Join}" Margin="10,0,10,0"/>
 												</StackPanel>
@@ -406,7 +406,7 @@
 				<TabItem x:Name="statsTab" FontSize="14" Padding="10,0,10,0" Visibility="{Binding PlayercardsTabVisibility}">
 					<TabItem.Header>
 						<StackPanel Orientation="Horizontal">
-							<Label Content="Playercards"/>
+							<Label Content="{x:Static p:Resources.Playercards}"/>
 							<Image Source="/img/cards-outline.png" Height="16"/>
 						</StackPanel>
 					</TabItem.Header>
@@ -419,7 +419,7 @@
 				<TabItem x:Name="ServerInfoTab" FontSize="14" Padding="10,0,10,0" Visibility="Visible">
 					<TabItem.Header>
 						<StackPanel Orientation="Horizontal">
-							<Label Content="Server Info"/>
+							<Label Content="{x:Static p:Resources.Server_Info}"/>
 							<Image Source="/img/web.png" Height="16"/>
 						</StackPanel>
 					</TabItem.Header>
@@ -486,25 +486,25 @@
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton"  Visibility="Collapsed" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
 					<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="{x:Static p:Resources.Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing}"/>
-					<Button x:Name="chooseServerRegion" Content="Choose Server Region" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="This creates a private match in a region of your choice."/>
+					<Button x:Name="chooseServerRegion" Content="{x:Static p:Resources.Choose_Server_Region}" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="This creates a private match in a region of your choice."/>
 					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
 					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
-					<Button x:Name="cameraWriteButton" Content="Camera Write" Height="40" Margin="4,4,4,4" Click="CameraWriteClick" Visibility="Collapsed"/>
+					<Button x:Name="cameraWriteButton" Content="{x:Static p:Resources.Camera_Write}" Height="40" Margin="4,4,4,4" Click="CameraWriteClick" Visibility="Collapsed"/>
 					<Button x:Name="showPlayerSpeedsButton" Content="{x:Static p:Resources.Player_Speeds}" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
 					<Button x:Name="showHighlights" Content="{x:Static p:Resources.NVIDIAHighlights}" Height="40" Click="showHighlights_Click" Margin="4,4,4,4"/>
 					<Button x:Name="spectateMeButton" Height="40" Click="SpectateMeClicked" Margin="4,4,4,4">
 						<StackPanel>
 							<Label x:Name="spectateMeLabel" Content="{x:Static p:Resources.Spectate_Me}" Margin="0,-6,0,0"/>
-							<TextBlock x:Name="spectateMeSubtitle" Text="Not active" Margin="0,-8,0,0" FontSize="11" Foreground="{DynamicResource ControlDisabledGlythColour}" HorizontalAlignment="Center"/>
+							<TextBlock x:Name="spectateMeSubtitle" Text="{x:Static p:Resources.Not_active}" Margin="0,-8,0,0" FontSize="11" Foreground="{DynamicResource ControlDisabledGlythColour}" HorizontalAlignment="Center"/>
 						</StackPanel>
 					</Button>
-					<Button x:Name="showOverlay" Visibility="Collapsed" Content="Show Overlay" Height="40" Click="showOverlay_Click" Margin="4,4,4,4"/>
+					<Button x:Name="showOverlay" Visibility="Collapsed" Content="{x:Static p:Resources.Show_Overlay}" Height="40" Click="showOverlay_Click" Margin="4,4,4,4"/>
 				</StackPanel>
 			</GroupBox>
-			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap">If you need help:</TextBlock>
+			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap" Text="{x:Static p:Resources.If_you_need_help_}" />
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-				<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://echopedia.gg/wiki/Spark" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Wiki"/></Hyperlink></TextBlock>
-				<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://discord.gg/HDC2kvwup6" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Discord"/></Hyperlink></TextBlock>
+				<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://echopedia.gg/wiki/Spark" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static p:Resources.Wiki}"/></Hyperlink></TextBlock>
+				<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://discord.gg/HDC2kvwup6" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="{x:Static p:Resources.Discord}"/></Hyperlink></TextBlock>
 			</StackPanel>
 
 			<Image x:Name="image" Height="175" Source="/img/alternate_white.png" Opacity="0.05"/>

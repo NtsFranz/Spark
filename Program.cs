@@ -1697,7 +1697,7 @@ namespace Spark
 						StartEchoVR(JoinType.Spectator, SPECTATEME_PORT, true, lastFrame.sessionid);
 						lastSpectatedSessionId = lastFrame.sessionid;
 
-						liveWindow.SetSpectateMeSubtitle("Waiting for EchoVR to start");
+						liveWindow.SetSpectateMeSubtitle(Resources.Waiting_for_EchoVR_to_start);
 					}
 					catch (Exception e)
 					{
@@ -4040,7 +4040,7 @@ namespace Spark
 		{
 			try
 			{
-				string QuestStatusLabel = "Searching for Quest on network";
+				string QuestStatusLabel = Resources.Searching_for_Quest_on_network;
 				QuestIP = null;
 				ClearARPCache();
 				CheckARPTable();

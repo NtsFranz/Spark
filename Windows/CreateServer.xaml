@@ -20,48 +20,48 @@
 		<TextBlock Text="{x:Static p:Resources.This_creates_a_private_match_in_a_region_of_your_choice_}" TextWrapping="Wrap" Margin="0,60,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="25" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 		<ComboBox SelectedIndex="{l:SettingBinding chooseRegionIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="54" Margin="10,10,10,105">
 			<StackPanel>
-				<TextBlock Text="US Central North"/>
-				<TextBlock Text="e.g. Chicago, Iowa" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+				<TextBlock Text="{x:Static p:Resources.US_Central_North}"/>
+				<TextBlock Text="{x:Static p:Resources.e_g__Chicago__Iowa}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 			<StackPanel>
-				<TextBlock Text="US Central South"/>
-				<TextBlock Text="e.g. Texas" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+				<TextBlock Text="{x:Static p:Resources.US_Central_South}"/>
+				<TextBlock Text="{x:Static p:Resources.e_g__Texas}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 			<StackPanel>
-				<TextBlock Text="US East"/>
-				<TextBlock Text="e.g. New York, Miami, Charleston" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+				<TextBlock Text="{x:Static p:Resources.US_East}"/>
+				<TextBlock Text="{x:Static p:Resources.e_g__New_York__Miami__Charleston}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 			<StackPanel>
-				<TextBlock Text="US West"/>
-				<TextBlock Text="e.g. California" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+				<TextBlock Text="{x:Static p:Resources.US_West}"/>
+				<TextBlock Text="{x:Static p:Resources.e_g__California}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 			<StackPanel>
-				<TextBlock Text="Europe"/>
-				<TextBlock Text="e.g. London, Amsterdam, Brussels" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+				<TextBlock Text="{x:Static p:Resources.Europe}"/>
+				<TextBlock Text="{x:Static p:Resources.e_g__London__Amsterdam__Brussels}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 			<StackPanel>
-				<TextBlock Text="Japan"/>
-				<TextBlock Text="e.g. Tokyo" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+				<TextBlock Text="{x:Static p:Resources.Japan}"/>
+				<TextBlock Text="{x:Static p:Resources.e_g__Tokyo}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 			<StackPanel>
-				<TextBlock Text="Australia"/>
-				<TextBlock Text="e.g. Sydney, Perth" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+				<TextBlock Text="{x:Static p:Resources.Australia}"/>
+				<TextBlock Text="{x:Static p:Resources.e_g__Sydney__Perth}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 			<StackPanel>
-				<TextBlock Text="Singapore"/>
-				<TextBlock Text="e.g. Singapore" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+				<TextBlock Text="{x:Static p:Resources.Singapore}"/>
+				<TextBlock Text="{x:Static p:Resources.e_g__Singapore}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 		</ComboBox>
 		<ComboBox SelectedIndex="{l:SettingBinding chooseMapIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="28" Margin="10,10,10,70">
-			<ComboBoxItem Content="Arena"/>
-			<ComboBoxItem Content="Lobby"/>
-			<ComboBoxItem Content="Combat Dyson"/>
-			<ComboBoxItem Content="Combat Combustion"/>
-			<ComboBoxItem Content="Combat Fission"/>
-			<ComboBoxItem Content="Combat Surge"/>
+			<ComboBoxItem Content="{x:Static p:Resources.Arena}"/>
+			<ComboBoxItem Content="{x:Static p:Resources.Lobby}"/>
+			<ComboBoxItem Content="{x:Static p:Resources.Combat_Dyson}"/>
+			<ComboBoxItem Content="{x:Static p:Resources.Combat_Combustion}"/>
+			<ComboBoxItem Content="{x:Static p:Resources.Combat_Fission}"/>
+			<ComboBoxItem Content="{x:Static p:Resources.Combat_Surge}"/>
 		</ComboBox>
 		<CheckBox x:Name="spectatorModeCheckbox" Content="{x:Static p:Resources.Spectator_Mode}" ToolTip="{x:Static p:Resources.chooseRegionSpectator_ToolTip}" IsChecked="{l:SettingBinding chooseRegionSpectator}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,40" />
-		<CheckBox Content="Use Anonymous Account" ToolTip="Anonymous accounts allow you to join the match twice on the same computer." IsChecked="{l:SettingBinding chooseRegionNoOVR}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" Height="24" IsEnabled="{Binding ElementName=spectatorModeCheckbox, Path=IsChecked}" />
+		<CheckBox Content="{x:Static p:Resources.noovrCheckbox_Content}" ToolTip="{x:Static p:Resources.Anonymous_accounts_allow_you_to_join_the_match_twice_on_the_same_computer_}" IsChecked="{l:SettingBinding chooseRegionNoOVR}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" Height="24" IsEnabled="{Binding ElementName=spectatorModeCheckbox, Path=IsChecked}" />
 		<Button Width="150" Height="90" Margin="10,10,10,70" Content="{x:Static p:Resources.Create}" Click="Create" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
 
 	</Grid>
