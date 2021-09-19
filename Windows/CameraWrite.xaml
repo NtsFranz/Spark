@@ -213,15 +213,26 @@
 							</Button>
 						</StackPanel>
 					</Expander>
-					<Expander Header="3D Mouse Support" Visibility="Collapsed">
+					<Expander Header="3D Mouse Support" Visibility="Visible">
 						<StackPanel Margin="0,5,0,0">
 							<TextBlock Text="Adds compatibility with the 3DConnexion SpaceMouse." TextWrapping="Wrap" Margin="5,5,5,5"/>
-							<Button>
+							<Button Click="Toggle3DMouse">
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Enable 3D Mouse Input"/>
-									<CheckBox Margin="10,0,0,0"/>
+									<CheckBox x:Name="SpaceMouseCheckBox" Margin="10,0,0,0"/>
 								</StackPanel>
 							</Button>
+
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Move Speed: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="translationSpeedSlider" Value="{Binding spaceMouseMoveSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<TextBox Text="{Binding ElementName=translationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Rotate Speed: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="rotationSpeedSlider" Value="{Binding spaceMouseRotateSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<TextBox Text="{Binding ElementName=rotationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
 						</StackPanel>
 					</Expander>
 				</StackPanel>

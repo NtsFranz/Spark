@@ -489,7 +489,7 @@
 					<Button x:Name="chooseServerRegion" Content="{x:Static p:Resources.Choose_Server_Region}" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="This creates a private match in a region of your choice."/>
 					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
 					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
-					<Button x:Name="cameraWriteButton" Content="{x:Static p:Resources.Camera_Write}" Height="40" Margin="4,4,4,4" Click="CameraWriteClick" Visibility="Collapsed"/>
+					<Button x:Name="cameraWriteButton" Content="{x:Static p:Resources.Camera_Write}" Height="40" Margin="4,4,4,4" Click="CameraWriteClick" Visibility="Visible"/>
 					<Button x:Name="showPlayerSpeedsButton" Content="{x:Static p:Resources.Player_Speeds}" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
 					<Button x:Name="showHighlights" Content="{x:Static p:Resources.NVIDIAHighlights}" Height="40" Click="showHighlights_Click" Margin="4,4,4,4"/>
 					<Button x:Name="spectateMeButton" Height="40" Click="SpectateMeClicked" Margin="4,4,4,4">

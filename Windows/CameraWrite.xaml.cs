@@ -25,7 +25,13 @@ namespace Spark
 	public partial class CameraWrite : Window
 	{
 		public const string url = "http://127.0.0.1:6723/";
-		public string Duration { set { float.TryParse(value, out duration); } get => duration.ToString(); }
+
+		public string Duration
+		{
+			set { float.TryParse(value, out duration); }
+			get => duration.ToString();
+		}
+
 		public float duration = 5;
 
 		public bool orbitingDisc = false;
@@ -33,6 +39,9 @@ namespace Spark
 		public float orbitRadius { get; set; } = 2;
 		public float followSmoothing { get; set; } = 1f;
 		public float lagCompDiscFollow { get; set; } = 0f;
+
+		public double spaceMouseMoveSpeed { get; set; } = .05f;
+		public double spaceMouseRotateSpeed { get; set; } = .01f;
 
 		public bool easeIn { get; set; }
 		public bool easeOut { get; set; }
@@ -49,6 +58,7 @@ namespace Spark
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
+
 		public float yPos
 		{
 			get => manualTransform.position.Y;
@@ -58,6 +68,7 @@ namespace Spark
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
+
 		public float zPos
 		{
 			get => manualTransform.position.Z;
@@ -81,6 +92,7 @@ namespace Spark
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
+
 		public float yRot
 		{
 			//get => QuaternionToEuler(manualTransform.rotation).Y;
@@ -94,6 +106,7 @@ namespace Spark
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
+
 		public float zRot
 		{
 			//get => QuaternionToEuler(manualTransform.rotation).Z;
@@ -107,6 +120,7 @@ namespace Spark
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
+
 		public float wRot
 		{
 			get => manualTransform.rotation.W;
@@ -180,12 +194,13 @@ namespace Spark
 
 		public CameraWrite()
 		{
-
 			CameraWriteSettings.Load();
 
 			if (CameraWriteSettings.instance == null)
 			{
-				new MessageBox($"Error accessing settings.\nTry renaming/deleting the file in C:\\Users\\[USERNAME]\\AppData\\Roaming\\IgniteVR\\Spark\\camerawrite_settings.json").Show();
+				new MessageBox(
+						$"Error accessing settings.\nTry renaming/deleting the file in C:\\Users\\[USERNAME]\\AppData\\Roaming\\IgniteVR\\Spark\\camerawrite_settings.json")
+					.Show();
 				return;
 			}
 
@@ -206,14 +221,16 @@ namespace Spark
 			//if the key exists normally
 			if (CameraWriteSettings.instance.animations.ContainsKey(CameraWriteSettings.instance.activeAnimation))
 			{
-				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation].ToList();
+				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation]
+					.ToList();
 			}
 			// if there are still other animations to choose from
 			else if (CameraWriteSettings.instance.animations.Count > 0)
 			{
 				// change the selected animation to one of those
 				CameraWriteSettings.instance.activeAnimation = CameraWriteSettings.instance.animations.Keys.First();
-				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation].ToList();
+				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation]
+					.ToList();
 			}
 			// make an empty animation
 			else
@@ -239,6 +256,7 @@ namespace Spark
 					Content = keys[i]
 				});
 			}
+
 			AnimationsComboBox.SelectedIndex = keys.IndexOf(CameraWriteSettings.instance.activeAnimation);
 			AnimationNameTextBox.Text = CameraWriteSettings.instance.activeAnimation;
 
@@ -249,11 +267,7 @@ namespace Spark
 		{
 			if (Program.running)
 			{
-
-				Dispatcher.Invoke(() =>
-				{
-					animationProgressBar.Value = animationProgress;
-				});
+				Dispatcher.Invoke(() => { animationProgressBar.Value = animationProgress; });
 			}
 		}
 
@@ -261,10 +275,8 @@ namespace Spark
 		{
 			try
 			{
-				Program.GetRequestCallback(url, null, response =>
-				{
-					start = JsonConvert.DeserializeObject<CameraTransform>(response);
-				});
+				Program.GetRequestCallback(url, null,
+					response => { start = JsonConvert.DeserializeObject<CameraTransform>(response); });
 			}
 			catch (Exception ex)
 			{
@@ -276,10 +288,8 @@ namespace Spark
 		{
 			try
 			{
-				Program.GetRequestCallback(url, null, response =>
-				{
-					end = JsonConvert.DeserializeObject<CameraTransform>(response);
-				});
+				Program.GetRequestCallback(url, null,
+					response => { end = JsonConvert.DeserializeObject<CameraTransform>(response); });
 			}
 			catch (Exception ex)
 			{
@@ -291,7 +301,7 @@ namespace Spark
 		{
 			if (start == null || end == null) return;
 
-			if (animationThread is { IsAlive: true })
+			if (animationThread is {IsAlive: true})
 			{
 				isAnimating = false;
 				startButton.Content = "Start";
@@ -304,9 +314,10 @@ namespace Spark
 				startButton.Content = "Stop";
 			}
 		}
+
 		private void StartKeyframeAnimation(object sender, RoutedEventArgs e)
 		{
-			if (animationThread is { IsAlive: true })
+			if (animationThread is {IsAlive: true})
 			{
 				isAnimating = false;
 				startButton.Content = "Start";
@@ -357,7 +368,8 @@ namespace Spark
 
 				CameraTransform newTransform = new(newPos, newRot);
 
-				string distance = Vector3.Distance(newPos, lastTransform.position)/sw.Elapsed.TotalSeconds + "\t" + spline.GetCurve(t).Item1?.keyframes[0].position.X;
+				string distance = Vector3.Distance(newPos, lastTransform.position) / sw.Elapsed.TotalSeconds + "\t" +
+				                  spline.GetCurve(t).Item1?.keyframes[0].position.X;
 				sw.Restart();
 				Debug.WriteLine(distance);
 
@@ -369,6 +381,7 @@ namespace Spark
 
 				Thread.Sleep(8);
 			}
+
 			// write out the last frame
 			// the if check is to avoid doing so if the stop button was clicked
 			if (animationProgress >= 1)
@@ -377,10 +390,7 @@ namespace Spark
 					JsonConvert.SerializeObject(CurrentAnimation.Last()), null);
 			}
 
-			Dispatcher.Invoke(() =>
-			{
-				startButton.Content = "Start";
-			});
+			Dispatcher.Invoke(() => { startButton.Content = "Start"; });
 			animationProgress = 0;
 			isAnimating = false;
 		}
@@ -419,12 +429,10 @@ namespace Spark
 
 				Thread.Sleep(8);
 			}
+
 			Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(end), null);
 
-			Dispatcher.Invoke(() =>
-			{
-				startButton.Content = "Start";
-			});
+			Dispatcher.Invoke(() => { startButton.Content = "Start"; });
 			animationProgress = 0;
 			isAnimating = false;
 		}
@@ -463,10 +471,7 @@ namespace Spark
 				manualTransform = data;
 
 
-				Dispatcher.Invoke(() =>
-				{
-					SetSliderPositions();
-				});
+				Dispatcher.Invoke(() => { SetSliderPositions(); });
 			});
 		}
 
@@ -491,7 +496,6 @@ namespace Spark
 			{
 				sliderListenersActivated = true;
 			}
-
 		}
 
 		private void WriteXYZ(object sender, RoutedEventArgs e)
@@ -506,7 +510,7 @@ namespace Spark
 				CameraTransform transform = new CameraTransform(
 					new Vector3(xPos, yPos, zPos),
 					new Quaternion(xRot, yRot, zRot, wRot)
-				//Quaternion.CreateFromYawPitchRoll(xRot * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad)
+					//Quaternion.CreateFromYawPitchRoll(xRot * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad)
 				);
 
 				Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(transform), null);
@@ -533,21 +537,21 @@ namespace Spark
 
 			if (test > 0.4995f * unit) // singularity at north pole
 			{
-				euler.X = (float)Math.PI / 2;
-				euler.Y = 2f * (float)Math.Atan2(q.Y, q.X);
+				euler.X = (float) Math.PI / 2;
+				euler.Y = 2f * (float) Math.Atan2(q.Y, q.X);
 				euler.Z = 0;
 			}
 			else if (test < -0.4995f * unit) // singularity at south pole
 			{
-				euler.X = -(float)Math.PI / 2;
-				euler.Y = -2f * (float)Math.Atan2(q.Y, q.X);
+				euler.X = -(float) Math.PI / 2;
+				euler.Y = -2f * (float) Math.Atan2(q.Y, q.X);
 				euler.Z = 0;
 			}
 			else // no singularity - this is the majority of cases
 			{
-				euler.X = (float)Math.Asin(2f * (q.W * q.X - q.Y * q.Z));
-				euler.Y = (float)Math.Atan2(2f * q.W * q.Y + 2f * q.Z * q.X, 1 - 2f * (q.X * q.X + q.Y * q.Y));
-				euler.Z = (float)Math.Atan2(2f * q.W * q.Z + 2f * q.X * q.Y, 1 - 2f * (q.Z * q.Z + q.X * q.X));
+				euler.X = (float) Math.Asin(2f * (q.W * q.X - q.Y * q.Z));
+				euler.Y = (float) Math.Atan2(2f * q.W * q.Y + 2f * q.Z * q.X, 1 - 2f * (q.X * q.X + q.Y * q.Y));
+				euler.Z = (float) Math.Atan2(2f * q.W * q.Z + 2f * q.X * q.Y, 1 - 2f * (q.Z * q.Z + q.X * q.X));
 			}
 
 			// all the math so far has been done in radians. Before returning, we convert to degrees...
@@ -664,7 +668,7 @@ namespace Spark
 
 						if (data == null) return;
 
-						CurrentAnimation[CurrentAnimation.FindIndex(val => val==wp)] = data;
+						CurrentAnimation[CurrentAnimation.FindIndex(val => val == wp)] = data;
 
 						// update the UI with the new waypoint
 						Dispatcher.Invoke(RegenerateKeyframeButtons);
@@ -720,10 +724,9 @@ namespace Spark
 
 				// update the UI with the new waypoint
 				Dispatcher.Invoke(RegenerateWaypointButtons);
-				
+
 				CameraWriteSettings.instance.Save();
 			});
-
 		}
 
 		private void WindowClosed(object sender, EventArgs e)
@@ -732,6 +735,7 @@ namespace Spark
 
 			orbitingDisc = false;
 			isAnimating = false;
+			SpaceMouseInput.Start();
 		}
 
 		private void AddKeyframe(object sender, RoutedEventArgs e)
@@ -745,10 +749,7 @@ namespace Spark
 				CurrentAnimation.Add(data);
 
 				// update the UI with the new waypoint
-				Dispatcher.Invoke(() =>
-				{
-					RegenerateKeyframeButtons();
-				});
+				Dispatcher.Invoke(() => { RegenerateKeyframeButtons(); });
 			});
 		}
 
@@ -791,7 +792,8 @@ namespace Spark
 
 				double angle = elapsed * rotSpeed * Deg2Rad;
 
-				Vector3 diff = Program.lastFrame.disc.position.ToVector3() - Program.lastLastFrame.disc.position.ToVector3();
+				Vector3 diff = Program.lastFrame.disc.position.ToVector3() -
+				               Program.lastLastFrame.disc.position.ToVector3();
 				Vector3 discVel = Program.lastFrame.disc.velocity.ToVector3();
 				Vector3 lastDiscVel = Program.lastLastFrame.disc.velocity.ToVector3();
 				if (discVel != Vector3.Zero)
@@ -812,7 +814,7 @@ namespace Spark
 					offset = diff.Normalized();
 				}
 
-				offset = new Vector3((float)Math.Cos(angle), 0, (float)Math.Sin(angle)) * orbitRadius;
+				offset = new Vector3((float) Math.Cos(angle), 0, (float) Math.Sin(angle)) * orbitRadius;
 
 
 				Vector3 discPos = Program.lastFrame.disc.position.ToVector3();
@@ -848,7 +850,8 @@ namespace Spark
 
 				avg.position /= avgCount;
 
-				avg.rotation = new Quaternion(avg.rotation.X / avgCount, avg.rotation.Y / avgCount, avg.rotation.Z / avgCount, avg.rotation.W / avgCount);
+				avg.rotation = new Quaternion(avg.rotation.X / avgCount, avg.rotation.Y / avgCount,
+					avg.rotation.Z / avgCount, avg.rotation.W / avgCount);
 				//avg.rotation /= (float)avgCount;
 
 
@@ -859,17 +862,14 @@ namespace Spark
 				Thread.Sleep(2);
 			}
 
-			Dispatcher.Invoke(() =>
-			{
-				IsOrbitingCheckbox.IsChecked = false;
-			});
+			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
 		}
 
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
 		{
 			try
 			{
-				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) {UseShellExecute = true});
 				e.Handled = true;
 			}
 			catch (Exception ex)
@@ -900,7 +900,7 @@ namespace Spark
 			var quaternion = new Quaternion();
 			if (num8 > 0f)
 			{
-				var num = (float)Math.Sqrt(num8 + 1f);
+				var num = (float) Math.Sqrt(num8 + 1f);
 				quaternion.W = num * 0.5f;
 				num = 0.5f / num;
 				quaternion.X = (m12 - m21) * num;
@@ -908,9 +908,10 @@ namespace Spark
 				quaternion.Z = (m01 - m10) * num;
 				return quaternion;
 			}
+
 			if ((m00 >= m11) && (m00 >= m22))
 			{
-				var num7 = (float)Math.Sqrt(((1f + m00) - m11) - m22);
+				var num7 = (float) Math.Sqrt(((1f + m00) - m11) - m22);
 				var num4 = 0.5f / num7;
 				quaternion.X = 0.5f * num7;
 				quaternion.Y = (m01 + m10) * num4;
@@ -918,9 +919,10 @@ namespace Spark
 				quaternion.W = (m12 - m21) * num4;
 				return quaternion;
 			}
+
 			if (m11 > m22)
 			{
-				var num6 = (float)Math.Sqrt(((1f + m11) - m00) - m22);
+				var num6 = (float) Math.Sqrt(((1f + m11) - m00) - m22);
 				var num3 = 0.5f / num6;
 				quaternion.X = (m10 + m01) * num3;
 				quaternion.Y = 0.5f * num6;
@@ -928,7 +930,8 @@ namespace Spark
 				quaternion.W = (m20 - m02) * num3;
 				return quaternion;
 			}
-			var num5 = (float)Math.Sqrt(((1f + m22) - m00) - m11);
+
+			var num5 = (float) Math.Sqrt(((1f + m22) - m00) - m11);
 			var num2 = 0.5f / num5;
 			quaternion.X = (m20 + m02) * num2;
 			quaternion.Y = (m21 + m12) * num2;
@@ -938,7 +941,9 @@ namespace Spark
 		}
 
 
-		private string WriteAPIFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "WriteAPI");
+		private string WriteAPIFolder =>
+			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "WriteAPI");
+
 		private string WriteAPIExePath => Path.Combine(WriteAPIFolder, "WriteAPI.exe");
 		private string WriteAPIZipPath => Path.Combine(WriteAPIFolder, "WriteAPI.zip");
 
@@ -949,7 +954,7 @@ namespace Spark
 			{
 				try
 				{
-					Process.Start(new ProcessStartInfo(WriteAPIExePath) { UseShellExecute = true });
+					Process.Start(new ProcessStartInfo(WriteAPIExePath) {UseShellExecute = true});
 				}
 				catch (Exception ex)
 				{
@@ -971,14 +976,14 @@ namespace Spark
 							{
 								Directory.CreateDirectory(WriteAPIFolder);
 							}
-							webClient.DownloadFile("https://github.com/Graicc/WriteAPI/releases/download/v1.0.0/WriteAPI.zip", WriteAPIZipPath);
+
+							webClient.DownloadFile(
+								"https://github.com/Graicc/WriteAPI/releases/download/v1.0.0/WriteAPI.zip",
+								WriteAPIZipPath);
 
 							ZipFile.ExtractToDirectory(WriteAPIZipPath, WriteAPIFolder);
 
-							Dispatcher.Invoke(() =>
-							{
-								installWriteAPIButton.Content = "Launch WriteAPI";
-							});
+							Dispatcher.Invoke(() => { installWriteAPIButton.Content = "Launch WriteAPI"; });
 						}
 						catch (Exception ex)
 						{
@@ -997,7 +1002,8 @@ namespace Spark
 		{
 			if (animationsComboBoxListenersActivated)
 			{
-				CameraWriteSettings.instance.activeAnimation = ((ComboBoxItem)AnimationsComboBox.SelectedItem).Content.ToString();
+				CameraWriteSettings.instance.activeAnimation =
+					((ComboBoxItem) AnimationsComboBox.SelectedItem).Content.ToString();
 				AnimationNameTextBox.Text = CameraWriteSettings.instance.activeAnimation;
 
 				if (!CameraWriteSettings.instance.animations.ContainsKey(CameraWriteSettings.instance.activeAnimation))
@@ -1006,7 +1012,8 @@ namespace Spark
 					return;
 				}
 
-				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation].ToList();
+				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation]
+					.ToList();
 				RegenerateKeyframeButtons();
 			}
 		}
@@ -1025,7 +1032,7 @@ namespace Spark
 				CameraWriteSettings.instance.animations[newName] = CurrentAnimation;
 
 				RefreshAnimationsComboBoxFromSettings();
-				
+
 				CameraWriteSettings.instance.Save();
 			}
 		}
@@ -1037,11 +1044,48 @@ namespace Spark
 			if (CameraWriteSettings.instance.animations.Count > 0)
 			{
 				CameraWriteSettings.instance.activeAnimation = CameraWriteSettings.instance.animations.Keys.First();
-				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation].ToList();
+				CurrentAnimation = CameraWriteSettings.instance.animations[CameraWriteSettings.instance.activeAnimation]
+					.ToList();
 			}
 
 			RefreshAnimationsComboBoxFromSettings();
 			RegenerateKeyframeButtons();
+		}
+
+
+		private void Toggle3DMouse(object sender, RoutedEventArgs e)
+		{
+			if (SpaceMouseInput.Running)
+			{
+				SpaceMouseInput.Stop();
+				SpaceMouseCheckBox.IsChecked = false;
+			}
+			else
+			{
+				SpaceMouseInput.OnChanged += OnSpaceMouseChanged;
+				SpaceMouseInput.Start();
+				SpaceMouseCheckBox.IsChecked = true;
+			}
+		}
+
+		private void OnSpaceMouseChanged(ConnexionState state)
+		{
+			Program.GetRequestCallback(url, null, response =>
+			{
+				CameraTransform camPos = JsonConvert.DeserializeObject<CameraTransform>(response);
+				if (camPos == null) return;
+
+				camPos.position.X += (float) (state.xPos * spaceMouseMoveSpeed);
+				camPos.position.Y += (float) -(state.zPos * spaceMouseMoveSpeed);
+				camPos.position.Z += (float) (state.yPos * spaceMouseMoveSpeed);
+				Quaternion rotate = Quaternion.CreateFromYawPitchRoll(
+					(float) (state.zRot * spaceMouseRotateSpeed),
+					(float) (state.xRot * spaceMouseRotateSpeed),
+					(float) (state.yRot * spaceMouseRotateSpeed)
+				);
+				camPos.rotation = rotate * camPos.rotation;
+				Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(camPos), null);
+			});
 		}
 	}
 }

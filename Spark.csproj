@@ -122,6 +122,7 @@
     <PackageReference Include="Google.Cloud.TextToSpeech.V1" Version="2.1.0" />
     <PackageReference Include="Grapevine" Version="5.0.0-rc.6" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
+    <PackageReference Include="HidSharpCore" Version="1.2.1.1" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.818.41" />
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
     <PackageReference Include="NetMQ" Version="4.0.1.6" />
