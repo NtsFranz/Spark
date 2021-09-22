@@ -40,8 +40,10 @@ namespace Spark
 		public float followSmoothing { get; set; } = 1f;
 		public float lagCompDiscFollow { get; set; } = 0f;
 
-		public double spaceMouseMoveSpeed { get; set; } = .05f;
-		public double spaceMouseRotateSpeed { get; set; } = .01f;
+		public double spaceMouseMoveSpeed { get; set; } = .7f;
+		public double spaceMouseRotateSpeed { get; set; } = .5f;
+		public float spaceMouseMoveExponential { get; set; } = 2;
+		public float spaceMouseRotateExponential { get; set; } = 2;
 
 		public bool easeIn { get; set; }
 		public bool easeOut { get; set; }
@@ -1068,23 +1070,87 @@ namespace Spark
 			}
 		}
 
+		private CameraTransform lastTransform = null;
+		private DateTime lastTransformTime = DateTime.MinValue;
 		private void OnSpaceMouseChanged(ConnexionState state)
 		{
+			float Exponential(float value, float expo)
+			{
+				if (value < 0)
+				{
+					return -MathF.Pow(-value, expo);
+				}
+				else
+				{
+					return MathF.Pow(value, expo);
+				}
+			}
+
 			Program.GetRequestCallback(url, null, response =>
 			{
-				CameraTransform camPos = JsonConvert.DeserializeObject<CameraTransform>(response);
+				if (DateTime.Now - lastTransformTime > TimeSpan.FromSeconds(1))
+				{
+					Debug.WriteLine("Reloading from WriteAPI");
+					lastTransform = null;
+				}
+				CameraTransform camPos = lastTransform ?? JsonConvert.DeserializeObject<CameraTransform>(response);
 				if (camPos == null) return;
 
-				camPos.position.X += (float) (state.xPos * spaceMouseMoveSpeed);
-				camPos.position.Y += (float) -(state.zPos * spaceMouseMoveSpeed);
-				camPos.position.Z += (float) (state.yPos * spaceMouseMoveSpeed);
-				Quaternion rotate = Quaternion.CreateFromYawPitchRoll(
-					(float) (state.zRot * spaceMouseRotateSpeed),
-					(float) (state.xRot * spaceMouseRotateSpeed),
-					(float) (state.yRot * spaceMouseRotateSpeed)
+				CameraTransform output = new CameraTransform();
+
+
+				Dispatcher.Invoke(() =>
+				{
+					inputPosX.Value = state.position.X;
+					inputPosY.Value = state.position.Y;
+					inputPosZ.Value = state.position.Z;
+
+					inputRotX.Value = state.rotation.X;
+					inputRotY.Value = state.rotation.Y;
+					inputRotZ.Value = state.rotation.Z;
+				});
+
+				state.position *= (float) spaceMouseMoveSpeed;
+				state.rotation *= (float) spaceMouseRotateSpeed;
+
+				Vector3 inputPosition = new Vector3(
+					Exponential(-state.position.X, spaceMouseMoveExponential),
+					Exponential(-state.position.Z, spaceMouseMoveExponential),
+					Exponential(-state.position.Y, spaceMouseMoveExponential)
 				);
-				camPos.rotation = rotate * camPos.rotation;
-				Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(camPos), null);
+				Quaternion rotate = Quaternion.CreateFromYawPitchRoll(
+					Exponential(-state.rotation.Z, spaceMouseRotateExponential),
+					Exponential(-state.rotation.X, spaceMouseRotateExponential),
+					Exponential(-state.rotation.Y, spaceMouseRotateExponential)
+				);
+
+				Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(camPos.rotation);
+				Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(rotate);
+				
+				output.position = camPos.position + Vector3.Transform(inputPosition, camPosMatrix);
+				// output.rotation = Quaternion.CreateFromRotationMatrix(transformMatrix * camPosMatrix);
+				output.rotation = Quaternion.Multiply(camPos.rotation, rotate);
+
+
+				lastTransform = output;
+				lastTransformTime = DateTime.Now;
+				
+				// do manual serialization to get more precision
+				string serializedOutput = $@"{{
+					""position"": {{
+						""X"": {output.position.X},
+						""Y"": {output.position.Y},
+						""Z"": {output.position.Z}
+					}},
+					""rotation"": {{
+						""X"": {output.rotation.X},
+						""Y"": {output.rotation.Y},
+						""Z"": {output.rotation.Z},
+						""W"": {output.rotation.W}
+					}}
+				}}";
+
+				Program.PostRequestCallback(url, null, serializedOutput, null);
 			});
 		}
 	}

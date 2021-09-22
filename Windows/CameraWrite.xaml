@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="{x:Static p:Resources.Camera_Write}" 
 		Height="880" 
-		Width="740" 
+		Width="840" 
 		WindowStartupLocation="CenterOwner" 
 		ResizeMode="CanResize" 
 		Background="#FF232323" 
@@ -97,45 +97,45 @@
 			</GroupBox>
 
 
-			<GroupBox Header="Exact Positions" VerticalAlignment="Top" Margin="5,10,5,0"  Width="350">
+			<GroupBox Header="Exact Positions" VerticalAlignment="Top" Margin="5,10,5,0"  Width="400">
 				<StackPanel>
 
 					<Label Content="Position"/>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="X: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="xSlider" Value="{Binding xPos}" Minimum="-24" Maximum="24" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="xSlider" Value="{Binding xPos}" Minimum="-24" Maximum="24" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=xSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="Y: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="ySlider" Value="{Binding yPos}" Minimum="-15" Maximum="15" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="ySlider" Value="{Binding yPos}" Minimum="-15" Maximum="15" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=ySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="Z: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="zSlider" Value="{Binding zPos}" Minimum="-80" Maximum="80" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="zSlider" Value="{Binding zPos}" Minimum="-80" Maximum="80" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=zSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 
 					<Label Content="Rotation (Quaternion)"/>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="X: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="xRotSlider" Value="{Binding xRot}" Minimum="-1" Maximum="1" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="xRotSlider" Value="{Binding xRot}" Minimum="-1" Maximum="1" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=xRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="Y: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="yRotSlider" Value="{Binding yRot}" Minimum="-1" Maximum="1" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="yRotSlider" Value="{Binding yRot}" Minimum="-1" Maximum="1" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=yRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="Z: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="zRotSlider" Value="{Binding zRot}" Minimum="-1" Maximum="1" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="zRotSlider" Value="{Binding zRot}" Minimum="-1" Maximum="1" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=zRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<Label Content="W: " Width="30" Margin="10,0,0,0"/>
-						<Slider x:Name="wRotSlider" Value="{Binding wRot}" Minimum="-1" Maximum="1" Width="240" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+						<Slider x:Name="wRotSlider" Value="{Binding wRot}" Minimum="-1" Maximum="1" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 						<TextBox Text="{Binding ElementName=wRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 					</StackPanel>
 
@@ -165,7 +165,7 @@
 			</GroupBox>
 
 
-			<GroupBox Header="Algorithms" Margin="5,10,5,0" Width="350">
+			<GroupBox Header="Algorithms" Margin="5,10,5,0" Width="400">
 				<StackPanel>
 					<Expander Header="Orbit Disc">
 						<StackPanel Margin="0,5,0,0">
@@ -224,7 +224,19 @@
 							</Button>
 
 							<StackPanel Orientation="Horizontal">
-								<Label Content="Move Speed: " Width="110" Margin="10,0,0,0"/>
+								<Label Content="Move Exponential: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="translationPowerSlider" Value="{Binding spaceMouseMoveExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<TextBox Text="{Binding ElementName=translationPowerSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Rotation Exponential: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="rotationPowerSlider" Value="{Binding spaceMouseRotateExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<TextBox Text="{Binding ElementName=rotationPowerSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+
+							
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Move Speed: " Width="110" Margin="10,10,0,0"/>
 								<Slider x:Name="translationSpeedSlider" Value="{Binding spaceMouseMoveSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 								<TextBox Text="{Binding ElementName=translationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 							</StackPanel>
@@ -233,6 +245,14 @@
 								<Slider x:Name="rotationSpeedSlider" Value="{Binding spaceMouseRotateSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 								<TextBox Text="{Binding ElementName=rotationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 							</StackPanel>
+
+							<Slider x:Name="inputPosX" Minimum="-1" Maximum="1" Width="300" Margin="4,5,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+							<Slider x:Name="inputPosY" Minimum="-1" Maximum="1" Width="300" Margin="4,5,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+							<Slider x:Name="inputPosZ" Minimum="-1" Maximum="1" Width="300" Margin="4,5,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+							<Slider x:Name="inputRotX" Minimum="-1" Maximum="1" Width="300" Margin="4,15,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+							<Slider x:Name="inputRotY" Minimum="-1" Maximum="1" Width="300" Margin="4,5,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+							<Slider x:Name="inputRotZ" Minimum="-1" Maximum="1" Width="300" Margin="4,5,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+
 						</StackPanel>
 					</Expander>
 				</StackPanel>

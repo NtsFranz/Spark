@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Threading;
 using HidSharp;
 
@@ -11,16 +13,18 @@ namespace Spark
 		public bool leftClick;
 		public bool rightClick;
 
-		public float xPos;
-		public float yPos;
-		public float zPos;
-		public float xRot;
-		public float yRot;
-		public float zRot;
+		public Vector3 position;
+		public Vector3 rotation;
+		//public float xPos;
+		//public float yPos;
+		//public float zPos;
+		//public float xRot;
+		//public float yRot;
+		//public float zRot;
 
 		public override string ToString()
 		{
-			return $"{leftClick}\t{rightClick}\t{xPos:N2}\t{yPos:N2}\t{zPos:N2}\t{xRot:N2}\t{yRot:N2}\t{zRot:N2}";
+			return $"{leftClick}\t{rightClick}\t{position.X:N2}\t{position.Y:N2}\t{position.Z:N2}\t{rotation.X:N2}\t{rotation.Y:N2}\t{rotation.Z:N2}";
 		}
 	}
 
@@ -61,7 +65,7 @@ namespace Spark
 					while (Running)
 					{
 						byte[] bytes = hidStream.Read();
-						// Console.WriteLine(string.Join("\t", bytes));
+						Debug.WriteLine(string.Join("\t", bytes));
 						if (bytes[0] == 3)
 						{
 							state.leftClick = (bytes[1] & 1) != 0;
@@ -69,15 +73,19 @@ namespace Spark
 						}
 						else if (bytes[0] == 1)
 						{
-							state.xPos = (short) ((bytes[2] << 8) | bytes[1]) / 350f;
-							state.yPos = (short) ((bytes[4] << 8) | bytes[3]) / 350f;
-							state.zPos = (short) ((bytes[6] << 8) | bytes[5]) / 350f;
+							state.position = new Vector3(
+								(short)((bytes[2] << 8) | bytes[1]) / 350f,
+								(short)((bytes[4] << 8) | bytes[3]) / 350f,
+								(short)((bytes[6] << 8) | bytes[5]) / 350f
+							);
 						}
 						else if (bytes[0] == 2)
 						{
-							state.xRot = (short) ((bytes[2] << 8) | bytes[1]) / 350f;
-							state.yRot = (short) ((bytes[4] << 8) | bytes[3]) / 350f;
-							state.zRot = (short) ((bytes[6] << 8) | bytes[5]) / 350f;
+							state.rotation = new Vector3(
+								(short)((bytes[2] << 8) | bytes[1]) / 350f,
+								(short)((bytes[4] << 8) | bytes[3]) / 350f,
+								(short)((bytes[6] << 8) | bytes[5]) / 350f
+							);
 						}
 						OnChanged?.Invoke(state);
 					}
