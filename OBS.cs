@@ -61,39 +61,39 @@ namespace Spark
 
 		private void Save(g_Instance frame, g_Team team, g_Player player)
 		{
-			SaveClip(SparkSettings.instance.obsClipSave, player.name, frame, SparkSettings.instance.obsSaveReplayScene, SparkSettings.instance.obsSaveSecondsAfter, SparkSettings.instance.obsSaveReplayLength);
+			SaveClip(SparkSettings.instance.obsClipSave, player.name, frame, SparkSettings.instance.obsSaveReplayScene, SparkSettings.instance.obsClipSecondsAfter, SparkSettings.instance.obsSaveSecondsAfter, SparkSettings.instance.obsSaveReplayLength);
 		}
 
 		private void Goal(g_Instance frame, GoalData goalData)
 		{
-			SaveClip(SparkSettings.instance.obsClipGoal, frame.last_score.person_scored, frame, SparkSettings.instance.obsGoalReplayScene, SparkSettings.instance.obsGoalSecondsAfter, SparkSettings.instance.obsGoalReplayLength);
+			SaveClip(SparkSettings.instance.obsClipGoal, frame.last_score.person_scored, frame, SparkSettings.instance.obsGoalReplayScene, SparkSettings.instance.obsClipSecondsAfter, SparkSettings.instance.obsGoalSecondsAfter, SparkSettings.instance.obsGoalReplayLength);
 		}
 
 		private void PlayspaceAbuse(g_Instance frame, g_Team team, g_Player player, Vector3 arg4)
 		{
-			SaveClip(SparkSettings.instance.obsClipPlayspace, player.name, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0);
+			SaveClip(SparkSettings.instance.obsClipPlayspace, player.name, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0, 0);
 		}
 
 		private void Assist(g_Instance frame, GoalData goal)
 		{
-			SaveClip(SparkSettings.instance.obsClipAssist, frame.last_score.assist_scored, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0);
+			SaveClip(SparkSettings.instance.obsClipAssist, frame.last_score.assist_scored, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0, 0);
 		}
 
 		private void Interception(g_Instance frame, g_Team team, g_Player throwPlayer, g_Player catchPlayer)
 		{
-			SaveClip(SparkSettings.instance.obsClipInterception, catchPlayer.name, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0);
+			SaveClip(SparkSettings.instance.obsClipInterception, catchPlayer.name, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0, 0);
 		}
 
-		private void SaveClip(bool setting, string player_name, g_Instance frame, string to_scene, float delay, float length)
+		private void SaveClip(bool setting, string player_name, g_Instance frame, string to_scene, float save_delay, float scene_delay, float scene_length)
 		{
 			if (!instance.IsConnected) return;
 			if (!setting) return;
 			if (!IsPlayerScopeEnabled(player_name, frame)) return;
-			Task.Delay((int)(delay * 1000)).ContinueWith(_ => instance.SaveReplayBuffer());
+			Task.Delay((int)(save_delay * 1000)).ContinueWith(_ => instance.SaveReplayBuffer());
 
 			currentReplay++;
-			Task.Delay((int)(delay * 1000)).ContinueWith(_ => SetSceneIfLastReplay(to_scene, currentReplay));
-			Task.Delay((int)((delay + length) * 1000)).ContinueWith(_ => SetSceneIfLastReplay(SparkSettings.instance.obsInGameScene, currentReplay));
+			Task.Delay((int)(scene_delay * 1000)).ContinueWith(_ => SetSceneIfLastReplay(to_scene, currentReplay));
+			Task.Delay((int)((scene_delay + scene_length) * 1000)).ContinueWith(_ => SetSceneIfLastReplay(SparkSettings.instance.obsInGameScene, currentReplay));
 		}
 
 		private void SetSceneIfLastReplay(string scene, int replayNum)
