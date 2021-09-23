@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -107,7 +108,7 @@ namespace Spark
 							// gets a list of all previous matches in memory that are for the current set
 							List<MatchData> selectedMatches = Program.lastMatches
 								.Where(m => m.customId == Program.matchData.customId &&
-											m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+								            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 								.ToList();
 							selectedMatches.Add(Program.matchData);
 
@@ -125,6 +126,23 @@ namespace Spark
 								m.Throws.ForEach(e => data.throws.Add(e.ToDict()));
 							});
 
+
+							List<List<Dictionary<string, object>>> matchStats = GetMatchStats();
+
+							// var bluePlayers = selectedMatches
+							// 	.SelectMany(m => m.players)
+							// 	.Where(p => p.Value.teamData.teamColor == g_Team.TeamColor.blue)
+							// 	.GroupBy(
+							// 		p => p.Key,
+							// 		(key, values) => new 
+							// 		{
+							// 			Name = key,
+							// 			Data = values.Sum((x1, x2) => x1.Value+x2.Value)
+							// 		}
+							// 	)
+							// 	;
+
+
 							Dictionary<string, object> response = new Dictionary<string, object>
 							{
 								{
@@ -140,6 +158,10 @@ namespace Spark
 												"vrml_team_logo",
 												selectedMatches.Last().teams[g_Team.TeamColor.blue].vrmlTeamLogo
 											},
+											{
+												"players",
+												matchStats[0]
+											}
 										},
 										new Dictionary<string, object>
 										{
@@ -151,6 +173,10 @@ namespace Spark
 												"vrml_team_logo",
 												selectedMatches.Last().teams[g_Team.TeamColor.orange].vrmlTeamLogo
 											},
+											{
+												"players",
+												matchStats[1]
+											}
 										}
 									}
 								},
@@ -180,6 +206,85 @@ namespace Spark
 					});
 
 
+					endpoints.MapGet("/scoreboard", async context =>
+					{
+						string file = ReadResource("default_scoreboard.html");
+
+						string[] columns =
+						{
+							"player_name",
+							"points",
+							"assists",
+							"saves",
+							"stuns",
+						};
+
+						List<List<Dictionary<string, object>>> matchStats = GetMatchStats();
+
+						string[] teamHTMLs = new string[2];
+						for (int i = 0; i < 2; i++)
+						{
+							StringBuilder html = new StringBuilder();
+							html.Append("<thead>");
+							foreach (string column in columns)
+							{
+								html.Append("<th>");
+								if (column == "player_name")
+								{
+									if (Program.matchData != null &&
+									    Program.matchData.teams[(g_Team.TeamColor) i].vrmlTeamName != "")
+									{
+										html.Append(Program.matchData.teams[(g_Team.TeamColor) i].vrmlTeamName);
+									}
+									else
+									{
+										html.Append(i == 0 ? "BLUE TEAM" : "ORANGE TEAM");
+									}
+								}
+								else
+								{
+									html.Append(column);
+								}
+
+								html.Append("</th>");
+							}
+
+							html.Append("</thead>");
+
+							html.Append("<body>");
+
+
+							foreach (Dictionary<string, object> player in matchStats[i])
+							{
+								html.Append("<tr>");
+								foreach (string column in columns)
+								{
+									html.Append("<td>");
+									html.Append(player[column]);
+									html.Append("</td>");
+								}
+
+								html.Append("</tr>");
+							}
+
+							html.Append("<body>");
+							teamHTMLs[i] = html.ToString();
+						}
+
+						file = file.Replace("{{ BLUE_TEAM }}", teamHTMLs[0]);
+						file = file.Replace("{{ ORANGE_TEAM }}", teamHTMLs[1]);
+
+						await context.Response.WriteAsync(file);
+					});
+
+
+					endpoints.MapGet("/Inconsolata.ttf", async context =>
+					{
+						string file = ReadResource("Inconsolata.ttf");
+						await context.Response.WriteAsync(file);
+					});
+
+
 					endpoints.MapGet("/position_map", async context =>
 					{
 						context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
@@ -201,7 +306,7 @@ namespace Spark
 							// gets a list of all the times of previous matches in memory that are for the current set
 							List<DateTime> selectedMatchTimes = Program.lastMatches
 								.Where(m => m.customId == Program.matchData.customId &&
-											m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+								            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 								.Select(m => m.matchTime).ToList();
 							Debug.Assert(Program.matchData != null, "Program.matchData != null");
 							selectedMatchTimes.Add(Program.matchData.matchTime);
@@ -209,8 +314,8 @@ namespace Spark
 							// finds all the files that match one of the matches in memory
 							FileInfo[] selectedFiles = files
 								.Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss",
-												CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
-											&& MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
+									            CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
+								            && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
 								)
 								.ToArray();
 
@@ -254,7 +359,7 @@ namespace Spark
 
 										if (frame.game_status != "playing") continue;
 										Vector3 pos = frame.disc.position.ToVector3();
-										positions.Add(new xyPos((int)(pos.X * 5 + 100), (int)(pos.Z * 5 + 225)));
+										positions.Add(new xyPos((int) (pos.X * 5 + 100), (int) (pos.Z * 5 + 225)));
 									}
 								}
 
@@ -376,9 +481,9 @@ namespace Spark
 					});
 
 					t = "
-											  +
-											  JsonConvert.SerializeObject(positions)
-											  + @";
+								              +
+								              JsonConvert.SerializeObject(positions)
+								              + @";
 
 					// set the generated dataset
 					heatmap.setData({
@@ -437,6 +542,54 @@ namespace Spark
 						}
 					});
 				});
+			}
+
+			private static List<List<Dictionary<string, object>>> GetMatchStats()
+			{
+				// gets a list of all previous matches in memory that are for the current set
+				List<MatchData> selectedMatches = Program.lastMatches
+					.Where(m => m.customId == Program.matchData.customId &&
+					            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+					.ToList();
+				if (Program.matchData != null) selectedMatches.Add(Program.matchData);
+
+				Dictionary<string, MatchPlayer> bluePlayers = new Dictionary<string, MatchPlayer>();
+				IEnumerable<MatchPlayer> blueRoundPlayers = selectedMatches
+					.SelectMany(m => m.players.Values)
+					.Where(p => p.teamData.teamColor == g_Team.TeamColor.blue);
+				foreach (MatchPlayer blueRoundPlayer in blueRoundPlayers)
+				{
+					if (bluePlayers.ContainsKey(blueRoundPlayer.Name))
+					{
+						bluePlayers[blueRoundPlayer.Name] += blueRoundPlayer;
+					}
+					else
+					{
+						bluePlayers[blueRoundPlayer.Name] = new MatchPlayer(blueRoundPlayer);
+					}
+				}
+
+				Dictionary<string, MatchPlayer> orangePlayers = new Dictionary<string, MatchPlayer>();
+				IEnumerable<MatchPlayer> orangeRoundPlayers = selectedMatches
+					.SelectMany(m => m.players.Values)
+					.Where(p => p.teamData.teamColor == g_Team.TeamColor.orange);
+				foreach (MatchPlayer orangeRoundPlayer in orangeRoundPlayers)
+				{
+					if (orangePlayers.ContainsKey(orangeRoundPlayer.Name))
+					{
+						orangePlayers[orangeRoundPlayer.Name] += orangeRoundPlayer;
+					}
+					else
+					{
+						orangePlayers[orangeRoundPlayer.Name] = new MatchPlayer(orangeRoundPlayer);
+					}
+				}
+
+				return new List<List<Dictionary<string, object>>>
+				{
+					bluePlayers.Values.Select(p => p.ToDict()).ToList(),
+					orangePlayers.Values.Select(p => p.ToDict()).ToList(),
+				};
 			}
 
 

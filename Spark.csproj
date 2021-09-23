@@ -44,6 +44,14 @@
     <EmbeddedResource Remove="SparkLinkLauncher\**" />
     <None Remove="SparkLinkLauncher\**" />
     <Page Remove="SparkLinkLauncher\**" />
+    <None Remove="html\default_scoreboard.html" />
+    <EmbeddedResource Include="html\default_scoreboard.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="html\fonts\Inconsolata.ttf" />
+    <EmbeddedResource Include="html\fonts\Inconsolata.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

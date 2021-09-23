@@ -13,6 +13,8 @@ namespace Spark
 	/// </summary>
 	public class MatchPlayer : DataContainer
 	{
+		public MatchPlayer() {}
+		
 		public MatchPlayer(MatchData match, TeamData team, g_Player player)
 		{
 			matchData = match;
@@ -21,6 +23,32 @@ namespace Spark
 			Name = player.name;
 			playspaceLocation = player.head.Position;
 			PlayspaceAbuses = 0;
+		}
+
+		/// <summary>
+		/// Copy constructor
+		/// </summary>
+		public MatchPlayer(MatchPlayer player)
+		{
+			Id = player.Id;
+			Name = player.Name;
+			Level = player.Level;
+			Number = player.Number;
+			currentStats = player.currentStats;
+			cachedStats = player.cachedStats;
+			oldRoundStats = player.oldRoundStats;
+			PlayTime = player.PlayTime;
+			InvertedTime = player.InvertedTime;
+			GoalsNum = player.GoalsNum;
+			TwoPointers = player.TwoPointers;
+			ThreePointers = player.ThreePointers;
+			Passes = player.Passes;
+			Catches = player.Catches;
+			Won = player.Won;
+			Turnovers = player.Turnovers;
+			matchData = player.matchData;
+			teamData = player.teamData;
+			playspaceLocation = player.playspaceLocation;
 		}
 
 		/// <summary>
@@ -75,9 +103,9 @@ namespace Spark
 		public int Level { get; set; }
 		public int Number { get; set; }
 
-		private g_PlayerStats currentStats = new g_PlayerStats();
-		private g_PlayerStats cachedStats = new g_PlayerStats();
-		private g_PlayerStats oldRoundStats = new g_PlayerStats();
+		public g_PlayerStats currentStats = new g_PlayerStats();
+		public g_PlayerStats cachedStats = new g_PlayerStats();
+		public g_PlayerStats oldRoundStats = new g_PlayerStats();
 
 		public float PossessionTime {
 			get => Math.Clamp(cachedStats.possession_time + currentStats.possession_time - oldRoundStats.possession_time, MINCLAMP, int.MaxValue);
@@ -273,6 +301,32 @@ namespace Spark
 			oldRoundStats = lastPlayer.oldRoundStats;
 
 			oldRoundStats = cachedStats + currentStats;
+		}
+		
+		public static MatchPlayer operator +(MatchPlayer a, MatchPlayer b)
+		{
+			return new MatchPlayer
+			{
+				Id = a.Id+b.Id,
+				Name = a.Name+b.Name,
+				Level = a.Level+b.Level,
+				Number = a.Number+b.Number,
+				currentStats = a.currentStats+b.currentStats,
+				cachedStats = a.cachedStats+b.cachedStats,
+				oldRoundStats = a.oldRoundStats+b.oldRoundStats,
+				PlayTime = a.PlayTime+b.PlayTime,
+				InvertedTime = a.InvertedTime+b.InvertedTime,
+				GoalsNum = a.GoalsNum+b.GoalsNum,
+				TwoPointers = a.TwoPointers+b.TwoPointers,
+				ThreePointers = a.ThreePointers+b.ThreePointers,
+				Passes = a.Passes+b.Passes,
+				Catches = a.Catches+b.Catches,
+				Won = a.Won+b.Won,
+				Turnovers = a.Turnovers+b.Turnovers,
+				matchData = a.matchData,
+				teamData = a.teamData,
+				playspaceLocation = a.playspaceLocation+b.playspaceLocation,
+			};
 		}
 	}
 }
