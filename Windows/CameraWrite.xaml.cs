@@ -6,7 +6,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Numerics;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -44,6 +46,7 @@ namespace Spark
 		public double spaceMouseRotateSpeed { get; set; } = .5f;
 		public float spaceMouseMoveExponential { get; set; } = 2;
 		public float spaceMouseRotateExponential { get; set; } = 2;
+		public float xPlanePosMultiplier { get; set; } = .1f;
 
 		public bool easeIn { get; set; }
 		public bool easeOut { get; set; }
@@ -303,7 +306,7 @@ namespace Spark
 		{
 			if (start == null || end == null) return;
 
-			if (animationThread is {IsAlive: true})
+			if (animationThread is { IsAlive: true })
 			{
 				isAnimating = false;
 				startButton.Content = "Start";
@@ -319,7 +322,7 @@ namespace Spark
 
 		private void StartKeyframeAnimation(object sender, RoutedEventArgs e)
 		{
-			if (animationThread is {IsAlive: true})
+			if (animationThread is { IsAlive: true })
 			{
 				isAnimating = false;
 				startButton.Content = "Start";
@@ -371,7 +374,7 @@ namespace Spark
 				CameraTransform newTransform = new(newPos, newRot);
 
 				string distance = Vector3.Distance(newPos, lastTransform.position) / sw.Elapsed.TotalSeconds + "\t" +
-				                  spline.GetCurve(t).Item1?.keyframes[0].position.X;
+								  spline.GetCurve(t).Item1?.keyframes[0].position.X;
 				sw.Restart();
 				Debug.WriteLine(distance);
 
@@ -512,7 +515,7 @@ namespace Spark
 				CameraTransform transform = new CameraTransform(
 					new Vector3(xPos, yPos, zPos),
 					new Quaternion(xRot, yRot, zRot, wRot)
-					//Quaternion.CreateFromYawPitchRoll(xRot * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad)
+				//Quaternion.CreateFromYawPitchRoll(xRot * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad)
 				);
 
 				Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(transform), null);
@@ -539,21 +542,21 @@ namespace Spark
 
 			if (test > 0.4995f * unit) // singularity at north pole
 			{
-				euler.X = (float) Math.PI / 2;
-				euler.Y = 2f * (float) Math.Atan2(q.Y, q.X);
+				euler.X = (float)Math.PI / 2;
+				euler.Y = 2f * (float)Math.Atan2(q.Y, q.X);
 				euler.Z = 0;
 			}
 			else if (test < -0.4995f * unit) // singularity at south pole
 			{
-				euler.X = -(float) Math.PI / 2;
-				euler.Y = -2f * (float) Math.Atan2(q.Y, q.X);
+				euler.X = -(float)Math.PI / 2;
+				euler.Y = -2f * (float)Math.Atan2(q.Y, q.X);
 				euler.Z = 0;
 			}
 			else // no singularity - this is the majority of cases
 			{
-				euler.X = (float) Math.Asin(2f * (q.W * q.X - q.Y * q.Z));
-				euler.Y = (float) Math.Atan2(2f * q.W * q.Y + 2f * q.Z * q.X, 1 - 2f * (q.X * q.X + q.Y * q.Y));
-				euler.Z = (float) Math.Atan2(2f * q.W * q.Z + 2f * q.X * q.Y, 1 - 2f * (q.Z * q.Z + q.X * q.X));
+				euler.X = (float)Math.Asin(2f * (q.W * q.X - q.Y * q.Z));
+				euler.Y = (float)Math.Atan2(2f * q.W * q.Y + 2f * q.Z * q.X, 1 - 2f * (q.X * q.X + q.Y * q.Y));
+				euler.Z = (float)Math.Atan2(2f * q.W * q.Z + 2f * q.X * q.Y, 1 - 2f * (q.Z * q.Z + q.X * q.X));
 			}
 
 			// all the math so far has been done in radians. Before returning, we convert to degrees...
@@ -795,7 +798,7 @@ namespace Spark
 				double angle = elapsed * rotSpeed * Deg2Rad;
 
 				Vector3 diff = Program.lastFrame.disc.position.ToVector3() -
-				               Program.lastLastFrame.disc.position.ToVector3();
+							   Program.lastLastFrame.disc.position.ToVector3();
 				Vector3 discVel = Program.lastFrame.disc.velocity.ToVector3();
 				Vector3 lastDiscVel = Program.lastLastFrame.disc.velocity.ToVector3();
 				if (discVel != Vector3.Zero)
@@ -816,7 +819,7 @@ namespace Spark
 					offset = diff.Normalized();
 				}
 
-				offset = new Vector3((float) Math.Cos(angle), 0, (float) Math.Sin(angle)) * orbitRadius;
+				offset = new Vector3((float)Math.Cos(angle), 0, (float)Math.Sin(angle)) * orbitRadius;
 
 
 				Vector3 discPos = Program.lastFrame.disc.position.ToVector3();
@@ -871,7 +874,7 @@ namespace Spark
 		{
 			try
 			{
-				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) {UseShellExecute = true});
+				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
 				e.Handled = true;
 			}
 			catch (Exception ex)
@@ -902,7 +905,7 @@ namespace Spark
 			var quaternion = new Quaternion();
 			if (num8 > 0f)
 			{
-				var num = (float) Math.Sqrt(num8 + 1f);
+				var num = (float)Math.Sqrt(num8 + 1f);
 				quaternion.W = num * 0.5f;
 				num = 0.5f / num;
 				quaternion.X = (m12 - m21) * num;
@@ -913,7 +916,7 @@ namespace Spark
 
 			if ((m00 >= m11) && (m00 >= m22))
 			{
-				var num7 = (float) Math.Sqrt(((1f + m00) - m11) - m22);
+				var num7 = (float)Math.Sqrt(((1f + m00) - m11) - m22);
 				var num4 = 0.5f / num7;
 				quaternion.X = 0.5f * num7;
 				quaternion.Y = (m01 + m10) * num4;
@@ -924,7 +927,7 @@ namespace Spark
 
 			if (m11 > m22)
 			{
-				var num6 = (float) Math.Sqrt(((1f + m11) - m00) - m22);
+				var num6 = (float)Math.Sqrt(((1f + m11) - m00) - m22);
 				var num3 = 0.5f / num6;
 				quaternion.X = (m10 + m01) * num3;
 				quaternion.Y = 0.5f * num6;
@@ -933,7 +936,7 @@ namespace Spark
 				return quaternion;
 			}
 
-			var num5 = (float) Math.Sqrt(((1f + m22) - m00) - m11);
+			var num5 = (float)Math.Sqrt(((1f + m22) - m00) - m11);
 			var num2 = 0.5f / num5;
 			quaternion.X = (m20 + m02) * num2;
 			quaternion.Y = (m21 + m12) * num2;
@@ -956,7 +959,7 @@ namespace Spark
 			{
 				try
 				{
-					Process.Start(new ProcessStartInfo(WriteAPIExePath) {UseShellExecute = true});
+					Process.Start(new ProcessStartInfo(WriteAPIExePath) { UseShellExecute = true });
 				}
 				catch (Exception ex)
 				{
@@ -1005,7 +1008,7 @@ namespace Spark
 			if (animationsComboBoxListenersActivated)
 			{
 				CameraWriteSettings.instance.activeAnimation =
-					((ComboBoxItem) AnimationsComboBox.SelectedItem).Content.ToString();
+					((ComboBoxItem)AnimationsComboBox.SelectedItem).Content.ToString();
 				AnimationNameTextBox.Text = CameraWriteSettings.instance.activeAnimation;
 
 				if (!CameraWriteSettings.instance.animations.ContainsKey(CameraWriteSettings.instance.activeAnimation))
@@ -1110,8 +1113,8 @@ namespace Spark
 					inputRotZ.Value = state.rotation.Z;
 				});
 
-				state.position *= (float) spaceMouseMoveSpeed;
-				state.rotation *= (float) spaceMouseRotateSpeed;
+				state.position *= (float)spaceMouseMoveSpeed;
+				state.rotation *= (float)spaceMouseRotateSpeed;
 
 				Vector3 inputPosition = new Vector3(
 					Exponential(-state.position.X, spaceMouseMoveExponential),
@@ -1126,7 +1129,7 @@ namespace Spark
 
 				Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(camPos.rotation);
 				Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(rotate);
-				
+
 				output.position = camPos.position + Vector3.Transform(inputPosition, camPosMatrix);
 				// output.rotation = Quaternion.CreateFromRotationMatrix(transformMatrix * camPosMatrix);
 				output.rotation = Quaternion.Multiply(camPos.rotation, rotate);
@@ -1134,9 +1137,16 @@ namespace Spark
 
 				lastTransform = output;
 				lastTransformTime = DateTime.Now;
-				
-				// do manual serialization to get more precision
-				string serializedOutput = $@"{{
+
+				SetCamera(output);
+
+			});
+		}
+
+		public void SetCamera(CameraTransform output)
+		{
+			// do manual serialization to get more precision
+			string serializedOutput = $@"{{
 					""position"": {{
 						""X"": {output.position.X},
 						""Y"": {output.position.Y},
@@ -1150,8 +1160,275 @@ namespace Spark
 					}}
 				}}";
 
-				Program.PostRequestCallback(url, null, serializedOutput, null);
-			});
+			Program.PostRequestCallback(url, null, serializedOutput, null);
+		}
+
+		private bool xPlaneInputActive;
+		private AircraftState aircraftState = new AircraftState();
+		private Vector3 aircraftOrigin = new Vector3();
+		private void ToggleXPlaneCamera(object sender, RoutedEventArgs e)
+		{
+			if (xPlaneInputActive)
+			{
+				xPlaneInputActive = false;
+				XPlaneCameraCheckBox.IsChecked = false;
+			}
+			else
+			{
+				xPlaneInputActive = true;
+				Thread xPlaneInput = new Thread(XPlaneInputThread);
+				xPlaneInput.Start();
+				XPlaneCameraCheckBox.IsChecked = true;
+			}
+		}
+
+		private void XPlaneInputThread()
+		{
+			var client = new UdpClient(49003);
+			while (xPlaneInputActive)
+			{
+				try
+				{
+					// Recieve Bytes
+					IPEndPoint connectionIP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 49003);
+					byte[] bytes = client.Receive(ref connectionIP);
+
+					string packetType = Encoding.UTF8.GetString(bytes.Take(4).ToArray());
+
+					if (packetType == "DATA")
+					{
+						Debug.WriteLine("Got DATA");
+						GetData(bytes.Skip(5).ToArray());
+						SetCamera(new CameraTransform((aircraftState.GetXYZPosition(Vector3.Zero) - aircraftOrigin) * xPlanePosMultiplier, aircraftState.Rotation));
+					}
+					else if (packetType == "RPOS")
+					{
+						Debug.WriteLine("Got DATA");
+						GetRPOS(bytes.Skip(5).ToArray());
+						SetCamera(new CameraTransform((aircraftState.GetXYZPosition(Vector3.Zero) - aircraftOrigin) * xPlanePosMultiplier, aircraftState.Rotation));
+					}
+				}
+				catch (Exception)
+				{
+					//
+				}
+			}
+		}
+
+		/// <summary>
+		/// Process the data from a "RPOS" field.
+		/// </summary>
+		/// <param name="bytes">The data not including label and null.</param>
+		private void GetRPOS(byte[] bytes)
+		{
+			if (bytes.Length < 64)
+			{
+				return;
+			}
+			aircraftState.longitude = BitConverter.ToDouble(bytes, 0);
+			aircraftState.latitude = BitConverter.ToDouble(bytes, 8);
+			aircraftState.altitude = BitConverter.ToDouble(bytes, 16);
+			aircraftState.pitch = BitConverter.ToSingle(bytes, 28);
+			aircraftState.heading = BitConverter.ToSingle(bytes, 32);
+			aircraftState.roll = BitConverter.ToSingle(bytes, 36);
+			aircraftState.velocity = new Vector3(
+				BitConverter.ToSingle(bytes, 48),
+				BitConverter.ToSingle(bytes, 44),
+				BitConverter.ToSingle(bytes, 40));
+			aircraftState.angVelocity = new Vector3(
+				BitConverter.ToSingle(bytes, 60),
+				BitConverter.ToSingle(bytes, 56),
+				BitConverter.ToSingle(bytes, 52));
+
+		}
+
+		/// <summary>
+		/// Process the data from a "DATA" field.
+		/// </summary>
+		/// <param name="bytes">The data not including label and null.</param>
+		private void GetData(byte[] bytes)
+		{
+			for (int i = 0; i < bytes.Length / 36; i++)
+			{
+				int index = BitConverter.ToInt32(bytes, 36 * i);
+				float[] floats = new float[8];
+				for (int j = 0; j < 8; j++)
+				{
+					floats[j] = BitConverter.ToSingle(bytes, (36 * i) + 4 + (j * 4));
+				}
+
+				switch (index)
+				{
+					// pitch, roll, heading
+					case 17:
+						aircraftState.pitch = floats[0];
+						aircraftState.roll = floats[1];
+						aircraftState.heading = floats[2];
+						break;
+					// lat, long, alt
+					case 20:
+						aircraftState.latitude = floats[0];
+						aircraftState.longitude = floats[1];
+						aircraftState.altitude = floats[2];
+						break;
+					// loc, vel, dist traveled
+					case 21:
+						aircraftState.position = new Vector3(-floats[0], floats[1], floats[2]);
+						aircraftState.velocity = new Vector3(-floats[3], floats[4], floats[5]);
+						if (MathF.Abs(aircraftState.velocity.X) < .001)
+						{
+							aircraftState.velocity.X = 0;
+						}
+						if (MathF.Abs(aircraftState.velocity.Y) < .001)
+						{
+							aircraftState.velocity.Y = 0;
+						}
+						if (MathF.Abs(aircraftState.velocity.Z) < .001)
+						{
+							aircraftState.velocity.Z = 0;
+						}
+						break;
+					// angular velocity
+					case 16:
+						aircraftState.angVelocity = new Vector3(floats[0], floats[2], floats[1]);
+						break;
+				}
+			}
+		}
+
+		public static class GeoUtils
+		{
+			public const double lat2Y = -110918.3;
+			public const double long2X = -92439.5;
+			public const double feet2Meters = 3.28084;
+			public const double lon2tile_factor = 16 / 0.087948;
+			public const double lat2tile_factor = 16 / 0.072836;
+			public const float metersPerSecondToKnots = 1.94384f;
+			public const float metersPerSecondToFtPerMin = 196.85f;
+			public const float metersToFt = 3.28084f;
+			public const float secondsToFtTimesKnots = .4975f;
+
+			public static int lon2tile(double lon)
+			{
+				float rawVal = (float)(lon * lon2tile_factor + 32750.1010597);
+				return (int)MathF.Round(rawVal / 16) * 16;
+			}
+
+			public static int lat2tile(double lat)
+			{
+				float rawVal = (float)(lat * lat2tile_factor + 18711.6072272);
+				return (int)MathF.Round(rawVal / 16) * 16;
+			}
+
+			// lat
+			// 33.943364
+			// 34.016200
+			// avg = 33.979782
+			// tile = 26176
+
+			// lon
+			//-83.320292
+			//-83.408240
+			// avg = -83.364266
+			// tile = 17584
+
+			public static Vector3 LatLon2M(Vector3 origin, Vector3 latlon)
+			{
+				return new Vector3(
+					(float)((latlon.X - origin.Z) * long2X),
+					(float)((latlon.Y - origin.Y) / feet2Meters),
+					(float)((latlon.Z - origin.X) * lat2Y));
+			}
+
+			public static Vector2 LatLon2M(Vector2 origin, Vector2 latlon)
+			{
+				return new Vector2(
+					(float)((latlon.X - origin.X) * long2X),
+					(float)((latlon.Y - origin.Y) * lat2Y));
+			}
+		}
+
+		/// <summary>
+		/// Saves the values for the current aircraft state in conventional units for easier use
+		/// </summary>
+		public class AircraftState
+		{
+			/// <summary>
+			/// raw latitude from X-Plane
+			/// </summary>
+			public double latitude;
+			/// <summary>
+			/// raw latitude from X-Plane
+			/// </summary>
+			public double longitude;
+			/// <summary>
+			/// Elevation in m (above ground in Unity)
+			/// </summary>
+			public double altitude;
+			public float pitch;
+			public float roll;
+			public float heading;
+			public float airspeed;
+			public Vector3 velocity;
+			public Vector3 position;
+			public Vector3 angVelocity;
+
+			// contains the number of times the ground must be moved away from the plane
+			public Vector3 centeringMult;
+
+			public Quaternion Rotation
+			{
+				get { return Quaternion.CreateFromYawPitchRoll(-heading * Deg2Rad, -pitch * Deg2Rad, roll * Deg2Rad); }
+			}
+
+			public Vector3 Position
+			{
+				get { return new Vector3((float)longitude, (float)altitude, (float)latitude); }
+			}
+
+			// assumes origin is in lat, lon, alt format
+			public Vector3 GetLatLongPosition(double lat, double lon, double alt)
+			{
+				return new Vector3(
+					(float)((longitude - lon) * GeoUtils.long2X),
+					(float)((altitude - alt)),
+					(float)((latitude - lat) * GeoUtils.lat2Y));
+			}
+
+			public Vector3 GetXYZPosition(Vector3 origin)
+			{
+				// pos is in lon, alt, lat
+				// origin is in lat, lon, alt
+				Vector3 pos = origin;
+				pos.Z = origin.X;
+				pos.Y = origin.Z;
+				pos.X = origin.Y;
+				pos.X += (float)longitude;
+				pos.Z -= (float)latitude;
+				pos.Y += (float)altitude;
+				pos.Z *= (float)GeoUtils.lat2Y;
+				pos.X *= (float)GeoUtils.long2X;
+
+				return pos;
+				//return new Vector3(pos.X, pos.Y, pos.X);
+
+				//Vector3 pos = position - origin;
+
+				//centeringMult.x = -(int)(pos.x / 1000);
+				//centeringMult.y = -(int)(pos.y / 1000);
+				//centeringMult.z = -(int)(pos.z / 1000);
+
+				//pos.x %= 1000;
+				//pos.y %= 1000;
+				//pos.z %= 1000;
+
+				//return pos;
+			}
+		}
+
+		private void ResetXPlanePosition(object sender, RoutedEventArgs e)
+		{
+			aircraftOrigin = aircraftState.GetXYZPosition(Vector3.Zero);
 		}
 	}
 }

@@ -255,6 +255,26 @@
 
 						</StackPanel>
 					</Expander>
+					<Expander Header="Flight Sim Camera" Visibility="Visible">
+						<StackPanel Margin="0,5,0,0">
+							<TextBlock Text="Adds camera input from X-Plane position." TextWrapping="Wrap" Margin="5,5,5,5"/>
+							<Button Click="ToggleXPlaneCamera">
+								<StackPanel Orientation="Horizontal">
+									<Label Content="Enable X-Plane Input"/>
+									<CheckBox x:Name="XPlaneCameraCheckBox" Margin="10,0,0,0"/>
+								</StackPanel>
+							</Button>
+							
+							<Button Click="ResetXPlanePosition" Content="Reset Position" Margin="0,10,0,0" Padding="10,10,10,10"/>
+							
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Multiplier: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="XPlanePosMultiplier" Value="{Binding xPlanePosMultiplier}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".0001" SmallChange=".0001"/>
+								<TextBox Text="{Binding ElementName=XPlanePosMultiplier, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+
+						</StackPanel>
+					</Expander>
 				</StackPanel>
 			</GroupBox>
 		</WrapPanel>
