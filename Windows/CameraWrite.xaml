@@ -255,6 +255,54 @@
 
 						</StackPanel>
 					</Expander>
+
+
+
+
+					<Expander Header="Joystick Support" Visibility="Visible">
+						<StackPanel Margin="0,5,0,0">
+							<TextBlock Text="Adds compatibility with the 1 or 2 joysticks." TextWrapping="Wrap" Margin="5,5,5,5"/>
+							<Button Click="ToggleJoystickInput">
+								<StackPanel Orientation="Horizontal">
+									<Label Content="Enable Joystick Input"/>
+									<CheckBox x:Name="JoystickInputCheckBox" Margin="10,0,0,0"/>
+								</StackPanel>
+							</Button>
+
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Move Exponential: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="joystickTranslationPowerSlider" Value="{Binding joystickMoveExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<TextBox Text="{Binding ElementName=joystickTranslationPowerSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Rotation Exponential: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="joystickRotationPowerSlider" Value="{Binding joystickRotateExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<TextBox Text="{Binding ElementName=joystickRotationPowerSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+
+
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Move Speed: " Width="110" Margin="10,10,0,0"/>
+								<Slider x:Name="joystickTranslationSpeedSlider" Value="{Binding joystickMoveSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<TextBox Text="{Binding ElementName=joystickTranslationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Rotate Speed: " Width="110" Margin="10,0,0,0"/>
+								<Slider x:Name="joystickRotationSpeedSlider" Value="{Binding joystickRotateSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+								<TextBox Text="{Binding ElementName=joystickRotationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+							</StackPanel>
+
+							<Slider x:Name="joyInputPosX" Minimum="-1" Maximum="1" Width="300" Margin="4,5,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+							<Slider x:Name="joyInputPosY" Minimum="-1" Maximum="1" Width="300" Margin="4,5,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+							<Slider x:Name="joyInputPosZ" Minimum="-1" Maximum="1" Width="300" Margin="4,5,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+							<Slider x:Name="joyInputRotX" Minimum="-1" Maximum="1" Width="300" Margin="4,15,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+							<Slider x:Name="joyInputRotY" Minimum="-1" Maximum="1" Width="300" Margin="4,5,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+							<Slider x:Name="joyInputRotZ" Minimum="-1" Maximum="1" Width="300" Margin="4,5,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+
+						</StackPanel>
+					</Expander>
+
+
 					<Expander Header="Flight Sim Camera" Visibility="Visible">
 						<StackPanel Margin="0,5,0,0">
 							<TextBlock Text="Adds camera input from X-Plane position." TextWrapping="Wrap" Margin="5,5,5,5"/>

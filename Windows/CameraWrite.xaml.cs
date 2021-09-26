@@ -14,9 +14,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Threading;
 using Timer = System.Timers.Timer;
 
 namespace Spark
@@ -42,10 +40,14 @@ namespace Spark
 		public float followSmoothing { get; set; } = 1f;
 		public float lagCompDiscFollow { get; set; } = 0f;
 
-		public double spaceMouseMoveSpeed { get; set; } = .7f;
-		public double spaceMouseRotateSpeed { get; set; } = .5f;
-		public float spaceMouseMoveExponential { get; set; } = 2;
-		public float spaceMouseRotateExponential { get; set; } = 2;
+		public float spaceMouseMoveSpeed { get; set; } = .5f;
+		public float spaceMouseRotateSpeed { get; set; } = .2f;
+		public float spaceMouseMoveExponential { get; set; } = 1.5f;
+		public float spaceMouseRotateExponential { get; set; } = 1.5f;
+		public float joystickMoveSpeed { get; set; } = .5f;
+		public float joystickRotateSpeed { get; set; } = .1f;
+		public float joystickMoveExponential { get; set; } = 1.2f;
+		public float joystickRotateExponential { get; set; } = 1.2f;
 		public float xPlanePosMultiplier { get; set; } = .1f;
 
 		public bool easeIn { get; set; }
@@ -306,7 +308,7 @@ namespace Spark
 		{
 			if (start == null || end == null) return;
 
-			if (animationThread is { IsAlive: true })
+			if (animationThread is {IsAlive: true})
 			{
 				isAnimating = false;
 				startButton.Content = "Start";
@@ -322,7 +324,7 @@ namespace Spark
 
 		private void StartKeyframeAnimation(object sender, RoutedEventArgs e)
 		{
-			if (animationThread is { IsAlive: true })
+			if (animationThread is {IsAlive: true})
 			{
 				isAnimating = false;
 				startButton.Content = "Start";
@@ -374,7 +376,7 @@ namespace Spark
 				CameraTransform newTransform = new(newPos, newRot);
 
 				string distance = Vector3.Distance(newPos, lastTransform.position) / sw.Elapsed.TotalSeconds + "\t" +
-								  spline.GetCurve(t).Item1?.keyframes[0].position.X;
+				                  spline.GetCurve(t).Item1?.keyframes[0].position.X;
 				sw.Restart();
 				Debug.WriteLine(distance);
 
@@ -515,7 +517,7 @@ namespace Spark
 				CameraTransform transform = new CameraTransform(
 					new Vector3(xPos, yPos, zPos),
 					new Quaternion(xRot, yRot, zRot, wRot)
-				//Quaternion.CreateFromYawPitchRoll(xRot * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad)
+					//Quaternion.CreateFromYawPitchRoll(xRot * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad)
 				);
 
 				Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(transform), null);
@@ -542,21 +544,21 @@ namespace Spark
 
 			if (test > 0.4995f * unit) // singularity at north pole
 			{
-				euler.X = (float)Math.PI / 2;
-				euler.Y = 2f * (float)Math.Atan2(q.Y, q.X);
+				euler.X = (float) Math.PI / 2;
+				euler.Y = 2f * (float) Math.Atan2(q.Y, q.X);
 				euler.Z = 0;
 			}
 			else if (test < -0.4995f * unit) // singularity at south pole
 			{
-				euler.X = -(float)Math.PI / 2;
-				euler.Y = -2f * (float)Math.Atan2(q.Y, q.X);
+				euler.X = -(float) Math.PI / 2;
+				euler.Y = -2f * (float) Math.Atan2(q.Y, q.X);
 				euler.Z = 0;
 			}
 			else // no singularity - this is the majority of cases
 			{
-				euler.X = (float)Math.Asin(2f * (q.W * q.X - q.Y * q.Z));
-				euler.Y = (float)Math.Atan2(2f * q.W * q.Y + 2f * q.Z * q.X, 1 - 2f * (q.X * q.X + q.Y * q.Y));
-				euler.Z = (float)Math.Atan2(2f * q.W * q.Z + 2f * q.X * q.Y, 1 - 2f * (q.Z * q.Z + q.X * q.X));
+				euler.X = (float) Math.Asin(2f * (q.W * q.X - q.Y * q.Z));
+				euler.Y = (float) Math.Atan2(2f * q.W * q.Y + 2f * q.Z * q.X, 1 - 2f * (q.X * q.X + q.Y * q.Y));
+				euler.Z = (float) Math.Atan2(2f * q.W * q.Z + 2f * q.X * q.Y, 1 - 2f * (q.Z * q.Z + q.X * q.X));
 			}
 
 			// all the math so far has been done in radians. Before returning, we convert to degrees...
@@ -740,7 +742,8 @@ namespace Spark
 
 			orbitingDisc = false;
 			isAnimating = false;
-			SpaceMouseInput.Start();
+			spaceMouseDevice.Stop();
+			joystickDevice.Stop();
 		}
 
 		private void AddKeyframe(object sender, RoutedEventArgs e)
@@ -779,6 +782,44 @@ namespace Spark
 				orbitThread.Start();
 			}
 		}
+		
+		
+		private void OrbitDiscThread2()
+		{
+			DateTime startTime = DateTime.Now;
+			
+			while (orbitingDisc)
+			{
+				DateTime currentTime = DateTime.Now;
+				double elapsed = (currentTime - startTime).TotalSeconds;
+				double angle = elapsed * rotSpeed * Deg2Rad;
+
+
+				Vector3 offset = new Vector3((float) Math.Cos(angle), 0, (float) Math.Sin(angle)) * orbitRadius;
+
+				// do another API request for lowest latency
+				Program.GetRequestCallback("http://localhost:6721/session", null, resp =>
+				{
+					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(resp);
+					if (frame == null) return;
+					Vector3 discPos = frame.disc.position.ToVector3();
+					Vector3 pos = discPos - offset;
+
+					Quaternion lookDir = QuaternionLookRotation(discPos - pos, Vector3.UnitY);
+
+					CameraTransform newTransform = new CameraTransform(pos, lookDir);
+
+					string data = JsonConvert.SerializeObject(newTransform);
+
+					Program.PostRequestCallback(url, null, data, null);
+				});
+
+
+				Thread.Sleep(2);
+			}
+
+			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
+		}
 
 		private void OrbitDiscThread()
 		{
@@ -790,81 +831,92 @@ namespace Spark
 
 			Vector3 smoothDiscPos = Vector3.Zero;
 
+			Vector3 lastDiscPos = Vector3.Zero;
+			Vector3 lastDiscVel = Vector3.Zero;
+
 			while (orbitingDisc)
 			{
-				DateTime currentTime = DateTime.Now;
-				double elapsed = (currentTime - startTime).TotalSeconds;
 
-				double angle = elapsed * rotSpeed * Deg2Rad;
-
-				Vector3 diff = Program.lastFrame.disc.position.ToVector3() -
-							   Program.lastLastFrame.disc.position.ToVector3();
-				Vector3 discVel = Program.lastFrame.disc.velocity.ToVector3();
-				Vector3 lastDiscVel = Program.lastLastFrame.disc.velocity.ToVector3();
-				if (discVel != Vector3.Zero)
+				
+				// do another API request for lowest latency
+				Program.GetRequestCallback("http://localhost:6721/session", null, resp =>
 				{
-					diff = discVel;
-				}
+					DateTime currentTime = DateTime.Now;
+					double elapsed = (currentTime - startTime).TotalSeconds;
 
-				Quaternion vel;
-				Vector3 offset;
-				if (diff == Vector3.Zero)
-				{
-					vel = Quaternion.Identity;
-					offset = Vector3.UnitZ;
-				}
-				else
-				{
-					vel = QuaternionLookRotation(diff.Normalized(), Vector3.UnitY);
-					offset = diff.Normalized();
-				}
+					double angle = elapsed * rotSpeed * Deg2Rad;
+					
+					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(resp);
+					if (frame == null) return;
+					
+					Vector3 discPos = frame.disc.position.ToVector3();
+					Vector3 discVel = frame.disc.velocity.ToVector3();
+					
+					Vector3 diff = discPos - lastDiscPos;
+					if (discVel != Vector3.Zero)
+					{
+						diff = discVel;
+					}
 
-				offset = new Vector3((float)Math.Cos(angle), 0, (float)Math.Sin(angle)) * orbitRadius;
+					Quaternion vel;
+					Vector3 offset;
+					if (diff == Vector3.Zero)
+					{
+						vel = Quaternion.Identity;
+						offset = Vector3.UnitZ;
+					}
+					else
+					{
+						vel = QuaternionLookRotation(diff.Normalized(), Vector3.UnitY);
+						offset = diff.Normalized();
+					}
+
+					offset = new Vector3((float) Math.Cos(angle), 0, (float) Math.Sin(angle)) * orbitRadius;
+
+					// add lag comp
+					discPos += discVel * lagCompDiscFollow;
+					lastDiscPos += lastDiscVel * lagCompDiscFollow;
+
+					//discPos = Vector3.Lerp(lastDiscPos, discPos, (float)(DateTime.Now - Program.lastDataTime).TotalSeconds/1);
+					smoothDiscPos = Vector3.Lerp(smoothDiscPos, discPos, followSmoothing);
+					discPos = smoothDiscPos;
+
+					Vector3 pos = discPos - offset;
+
+					Quaternion lookDir = QuaternionLookRotation(discPos - pos, Vector3.UnitY);
+
+					CameraTransform newTransform = new CameraTransform(pos, lookDir);
+					lastTransforms.Add(newTransform);
+					if (lastTransforms.Count > avgCount)
+					{
+						lastTransforms.RemoveAt(0);
+					}
+
+					CameraTransform avg = lastTransforms[0];
+
+					foreach (CameraTransform t in lastTransforms)
+					{
+						//avg.position = Vector3.Lerp(lastTransforms[i].position, avg.position, .5f);
+						avg.position += t.position;
+						avg.rotation = Quaternion.Lerp(t.rotation, avg.rotation, .5f);
+					}
+
+					avg.position /= avgCount;
+
+					avg.rotation = new Quaternion(avg.rotation.X / avgCount, avg.rotation.Y / avgCount,
+						avg.rotation.Z / avgCount, avg.rotation.W / avgCount);
+					//avg.rotation /= (float)avgCount;
 
 
-				Vector3 discPos = Program.lastFrame.disc.position.ToVector3();
-				Vector3 lastDiscPos = Program.lastLastFrame.disc.position.ToVector3();
+					string data = JsonConvert.SerializeObject(newTransform);
 
-				// add lag comp
-				discPos += discVel * lagCompDiscFollow;
-				lastDiscPos += lastDiscVel * lagCompDiscFollow;
+					Program.PostRequestCallback(url, null, data, null);
 
-				//discPos = Vector3.Lerp(lastDiscPos, discPos, (float)(DateTime.Now - Program.lastDataTime).TotalSeconds/1);
-				smoothDiscPos = Vector3.Lerp(smoothDiscPos, discPos, followSmoothing);
-				discPos = smoothDiscPos;
+					lastDiscPos = discPos;
+					lastDiscVel = discVel;
+				});
 
-				Vector3 pos = discPos - offset;
-
-				Quaternion lookDir = QuaternionLookRotation(discPos - pos, Vector3.UnitY);
-
-				CameraTransform newTransform = new(pos, lookDir);
-				lastTransforms.Add(newTransform);
-				if (lastTransforms.Count > avgCount)
-				{
-					lastTransforms.RemoveAt(0);
-				}
-
-				CameraTransform avg = lastTransforms[0];
-
-				foreach (CameraTransform t in lastTransforms)
-				{
-					//avg.position = Vector3.Lerp(lastTransforms[i].position, avg.position, .5f);
-					avg.position += t.position;
-					avg.rotation = Quaternion.Lerp(t.rotation, avg.rotation, .5f);
-				}
-
-				avg.position /= avgCount;
-
-				avg.rotation = new Quaternion(avg.rotation.X / avgCount, avg.rotation.Y / avgCount,
-					avg.rotation.Z / avgCount, avg.rotation.W / avgCount);
-				//avg.rotation /= (float)avgCount;
-
-
-				string data = JsonConvert.SerializeObject(newTransform);
-
-				Program.PostRequestCallback(url, null, data, null);
-
-				Thread.Sleep(2);
+				Thread.Sleep(8);
 			}
 
 			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
@@ -874,7 +926,7 @@ namespace Spark
 		{
 			try
 			{
-				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) {UseShellExecute = true});
 				e.Handled = true;
 			}
 			catch (Exception ex)
@@ -905,7 +957,7 @@ namespace Spark
 			var quaternion = new Quaternion();
 			if (num8 > 0f)
 			{
-				var num = (float)Math.Sqrt(num8 + 1f);
+				var num = (float) Math.Sqrt(num8 + 1f);
 				quaternion.W = num * 0.5f;
 				num = 0.5f / num;
 				quaternion.X = (m12 - m21) * num;
@@ -916,7 +968,7 @@ namespace Spark
 
 			if ((m00 >= m11) && (m00 >= m22))
 			{
-				var num7 = (float)Math.Sqrt(((1f + m00) - m11) - m22);
+				var num7 = (float) Math.Sqrt(((1f + m00) - m11) - m22);
 				var num4 = 0.5f / num7;
 				quaternion.X = 0.5f * num7;
 				quaternion.Y = (m01 + m10) * num4;
@@ -927,7 +979,7 @@ namespace Spark
 
 			if (m11 > m22)
 			{
-				var num6 = (float)Math.Sqrt(((1f + m11) - m00) - m22);
+				var num6 = (float) Math.Sqrt(((1f + m11) - m00) - m22);
 				var num3 = 0.5f / num6;
 				quaternion.X = (m10 + m01) * num3;
 				quaternion.Y = 0.5f * num6;
@@ -936,7 +988,7 @@ namespace Spark
 				return quaternion;
 			}
 
-			var num5 = (float)Math.Sqrt(((1f + m22) - m00) - m11);
+			var num5 = (float) Math.Sqrt(((1f + m22) - m00) - m11);
 			var num2 = 0.5f / num5;
 			quaternion.X = (m20 + m02) * num2;
 			quaternion.Y = (m21 + m12) * num2;
@@ -959,7 +1011,7 @@ namespace Spark
 			{
 				try
 				{
-					Process.Start(new ProcessStartInfo(WriteAPIExePath) { UseShellExecute = true });
+					Process.Start(new ProcessStartInfo(WriteAPIExePath) {UseShellExecute = true});
 				}
 				catch (Exception ex)
 				{
@@ -1008,7 +1060,7 @@ namespace Spark
 			if (animationsComboBoxListenersActivated)
 			{
 				CameraWriteSettings.instance.activeAnimation =
-					((ComboBoxItem)AnimationsComboBox.SelectedItem).Content.ToString();
+					((ComboBoxItem) AnimationsComboBox.SelectedItem).Content.ToString();
 				AnimationNameTextBox.Text = CameraWriteSettings.instance.activeAnimation;
 
 				if (!CameraWriteSettings.instance.animations.ContainsKey(CameraWriteSettings.instance.activeAnimation))
@@ -1058,45 +1110,55 @@ namespace Spark
 		}
 
 
+		private HIDDeviceInput spaceMouseDevice = new HIDDeviceInput(0x46d, 0xc626);
+
 		private void Toggle3DMouse(object sender, RoutedEventArgs e)
 		{
-			if (SpaceMouseInput.Running)
+			if (spaceMouseDevice.Running)
 			{
-				SpaceMouseInput.Stop();
+				spaceMouseDevice.Stop();
 				SpaceMouseCheckBox.IsChecked = false;
 			}
 			else
 			{
-				SpaceMouseInput.OnChanged += OnSpaceMouseChanged;
-				SpaceMouseInput.Start();
+				spaceMouseDevice.OnChanged += bytes =>
+				{
+					ConnexionState state = new ConnexionState();
+					switch (bytes[0])
+					{
+						case 1:
+							state.position = new Vector3(
+								(short) ((bytes[2] << 8) | bytes[1]) / 350f,
+								(short) ((bytes[4] << 8) | bytes[3]) / 350f,
+								(short) ((bytes[6] << 8) | bytes[5]) / 350f
+							);
+							break;
+						case 2:
+							state.rotation = new Vector3(
+								(short) ((bytes[2] << 8) | bytes[1]) / 350f,
+								(short) ((bytes[4] << 8) | bytes[3]) / 350f,
+								(short) ((bytes[6] << 8) | bytes[5]) / 350f
+							);
+							break;
+						case 3:
+							state.leftClick = (bytes[1] & 1) != 0;
+							state.rightClick = (bytes[1] & 2) != 0;
+							break;
+					}
+
+					OnSpaceMouseChanged(state);
+				};
+				spaceMouseDevice.Start();
 				SpaceMouseCheckBox.IsChecked = true;
 			}
 		}
 
-		private CameraTransform lastTransform = null;
-		private DateTime lastTransformTime = DateTime.MinValue;
+
 		private void OnSpaceMouseChanged(ConnexionState state)
 		{
-			float Exponential(float value, float expo)
-			{
-				if (value < 0)
-				{
-					return -MathF.Pow(-value, expo);
-				}
-				else
-				{
-					return MathF.Pow(value, expo);
-				}
-			}
-
 			Program.GetRequestCallback(url, null, response =>
 			{
-				if (DateTime.Now - lastTransformTime > TimeSpan.FromSeconds(1))
-				{
-					Debug.WriteLine("Reloading from WriteAPI");
-					lastTransform = null;
-				}
-				CameraTransform camPos = lastTransform ?? JsonConvert.DeserializeObject<CameraTransform>(response);
+				CameraTransform camPos = JsonConvert.DeserializeObject<CameraTransform>(response);
 				if (camPos == null) return;
 
 				CameraTransform output = new CameraTransform();
@@ -1113,18 +1175,15 @@ namespace Spark
 					inputRotZ.Value = state.rotation.Z;
 				});
 
-				state.position *= (float)spaceMouseMoveSpeed;
-				state.rotation *= (float)spaceMouseRotateSpeed;
-
 				Vector3 inputPosition = new Vector3(
-					Exponential(-state.position.X, spaceMouseMoveExponential),
-					Exponential(-state.position.Z, spaceMouseMoveExponential),
-					Exponential(-state.position.Y, spaceMouseMoveExponential)
+					Exponential(-state.position.X * spaceMouseMoveSpeed, spaceMouseMoveExponential),
+					Exponential(-state.position.Z * spaceMouseMoveSpeed, spaceMouseMoveExponential),
+					Exponential(-state.position.Y * spaceMouseMoveSpeed, spaceMouseMoveExponential)
 				);
 				Quaternion rotate = Quaternion.CreateFromYawPitchRoll(
-					Exponential(-state.rotation.Z, spaceMouseRotateExponential),
-					Exponential(-state.rotation.X, spaceMouseRotateExponential),
-					Exponential(-state.rotation.Y, spaceMouseRotateExponential)
+					Exponential(-state.rotation.Z * spaceMouseRotateSpeed, spaceMouseRotateExponential),
+					Exponential(-state.rotation.X * spaceMouseRotateSpeed, spaceMouseRotateExponential),
+					Exponential(-state.rotation.Y * spaceMouseRotateSpeed, spaceMouseRotateExponential)
 				);
 
 				Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(camPos.rotation);
@@ -1134,12 +1193,7 @@ namespace Spark
 				// output.rotation = Quaternion.CreateFromRotationMatrix(transformMatrix * camPosMatrix);
 				output.rotation = Quaternion.Multiply(camPos.rotation, rotate);
 
-
-				lastTransform = output;
-				lastTransformTime = DateTime.Now;
-
 				SetCamera(output);
-
 			});
 		}
 
@@ -1166,6 +1220,7 @@ namespace Spark
 		private bool xPlaneInputActive;
 		private AircraftState aircraftState = new AircraftState();
 		private Vector3 aircraftOrigin = new Vector3();
+
 		private void ToggleXPlaneCamera(object sender, RoutedEventArgs e)
 		{
 			if (xPlaneInputActive)
@@ -1199,13 +1254,17 @@ namespace Spark
 					{
 						Debug.WriteLine("Got DATA");
 						GetData(bytes.Skip(5).ToArray());
-						SetCamera(new CameraTransform((aircraftState.GetXYZPosition(Vector3.Zero) - aircraftOrigin) * xPlanePosMultiplier, aircraftState.Rotation));
+						SetCamera(new CameraTransform(
+							(aircraftState.GetXYZPosition(Vector3.Zero) - aircraftOrigin) * xPlanePosMultiplier,
+							aircraftState.Rotation));
 					}
 					else if (packetType == "RPOS")
 					{
 						Debug.WriteLine("Got DATA");
 						GetRPOS(bytes.Skip(5).ToArray());
-						SetCamera(new CameraTransform((aircraftState.GetXYZPosition(Vector3.Zero) - aircraftOrigin) * xPlanePosMultiplier, aircraftState.Rotation));
+						SetCamera(new CameraTransform(
+							(aircraftState.GetXYZPosition(Vector3.Zero) - aircraftOrigin) * xPlanePosMultiplier,
+							aircraftState.Rotation));
 					}
 				}
 				catch (Exception)
@@ -1225,6 +1284,7 @@ namespace Spark
 			{
 				return;
 			}
+
 			aircraftState.longitude = BitConverter.ToDouble(bytes, 0);
 			aircraftState.latitude = BitConverter.ToDouble(bytes, 8);
 			aircraftState.altitude = BitConverter.ToDouble(bytes, 16);
@@ -1239,7 +1299,6 @@ namespace Spark
 				BitConverter.ToSingle(bytes, 60),
 				BitConverter.ToSingle(bytes, 56),
 				BitConverter.ToSingle(bytes, 52));
-
 		}
 
 		/// <summary>
@@ -1279,14 +1338,17 @@ namespace Spark
 						{
 							aircraftState.velocity.X = 0;
 						}
+
 						if (MathF.Abs(aircraftState.velocity.Y) < .001)
 						{
 							aircraftState.velocity.Y = 0;
 						}
+
 						if (MathF.Abs(aircraftState.velocity.Z) < .001)
 						{
 							aircraftState.velocity.Z = 0;
 						}
+
 						break;
 					// angular velocity
 					case 16:
@@ -1310,14 +1372,14 @@ namespace Spark
 
 			public static int lon2tile(double lon)
 			{
-				float rawVal = (float)(lon * lon2tile_factor + 32750.1010597);
-				return (int)MathF.Round(rawVal / 16) * 16;
+				float rawVal = (float) (lon * lon2tile_factor + 32750.1010597);
+				return (int) MathF.Round(rawVal / 16) * 16;
 			}
 
 			public static int lat2tile(double lat)
 			{
-				float rawVal = (float)(lat * lat2tile_factor + 18711.6072272);
-				return (int)MathF.Round(rawVal / 16) * 16;
+				float rawVal = (float) (lat * lat2tile_factor + 18711.6072272);
+				return (int) MathF.Round(rawVal / 16) * 16;
 			}
 
 			// lat
@@ -1335,16 +1397,16 @@ namespace Spark
 			public static Vector3 LatLon2M(Vector3 origin, Vector3 latlon)
 			{
 				return new Vector3(
-					(float)((latlon.X - origin.Z) * long2X),
-					(float)((latlon.Y - origin.Y) / feet2Meters),
-					(float)((latlon.Z - origin.X) * lat2Y));
+					(float) ((latlon.X - origin.Z) * long2X),
+					(float) ((latlon.Y - origin.Y) / feet2Meters),
+					(float) ((latlon.Z - origin.X) * lat2Y));
 			}
 
 			public static Vector2 LatLon2M(Vector2 origin, Vector2 latlon)
 			{
 				return new Vector2(
-					(float)((latlon.X - origin.X) * long2X),
-					(float)((latlon.Y - origin.Y) * lat2Y));
+					(float) ((latlon.X - origin.X) * long2X),
+					(float) ((latlon.Y - origin.Y) * lat2Y));
 			}
 		}
 
@@ -1357,14 +1419,17 @@ namespace Spark
 			/// raw latitude from X-Plane
 			/// </summary>
 			public double latitude;
+
 			/// <summary>
 			/// raw latitude from X-Plane
 			/// </summary>
 			public double longitude;
+
 			/// <summary>
 			/// Elevation in m (above ground in Unity)
 			/// </summary>
 			public double altitude;
+
 			public float pitch;
 			public float roll;
 			public float heading;
@@ -1383,16 +1448,16 @@ namespace Spark
 
 			public Vector3 Position
 			{
-				get { return new Vector3((float)longitude, (float)altitude, (float)latitude); }
+				get { return new Vector3((float) longitude, (float) altitude, (float) latitude); }
 			}
 
 			// assumes origin is in lat, lon, alt format
 			public Vector3 GetLatLongPosition(double lat, double lon, double alt)
 			{
 				return new Vector3(
-					(float)((longitude - lon) * GeoUtils.long2X),
-					(float)((altitude - alt)),
-					(float)((latitude - lat) * GeoUtils.lat2Y));
+					(float) ((longitude - lon) * GeoUtils.long2X),
+					(float) ((altitude - alt)),
+					(float) ((latitude - lat) * GeoUtils.lat2Y));
 			}
 
 			public Vector3 GetXYZPosition(Vector3 origin)
@@ -1403,11 +1468,11 @@ namespace Spark
 				pos.Z = origin.X;
 				pos.Y = origin.Z;
 				pos.X = origin.Y;
-				pos.X += (float)longitude;
-				pos.Z -= (float)latitude;
-				pos.Y += (float)altitude;
-				pos.Z *= (float)GeoUtils.lat2Y;
-				pos.X *= (float)GeoUtils.long2X;
+				pos.X += (float) longitude;
+				pos.Z -= (float) latitude;
+				pos.Y += (float) altitude;
+				pos.Z *= (float) GeoUtils.lat2Y;
+				pos.X *= (float) GeoUtils.long2X;
 
 				return pos;
 				//return new Vector3(pos.X, pos.Y, pos.X);
@@ -1429,6 +1494,94 @@ namespace Spark
 		private void ResetXPlanePosition(object sender, RoutedEventArgs e)
 		{
 			aircraftOrigin = aircraftState.GetXYZPosition(Vector3.Zero);
+		}
+
+		private HIDDeviceInput joystickDevice = new HIDDeviceInput(1103, 45322);
+
+		private struct JoystickValues
+		{
+			public float x;
+			public float y;
+			public float spin;
+			public float slider;
+		}
+
+		private JoystickValues joystickValues = new JoystickValues();
+
+		private void ToggleJoystickInput(object sender, RoutedEventArgs e)
+		{
+			if (joystickDevice.Running)
+			{
+				JoystickInputCheckBox.IsChecked = false;
+
+				joystickDevice?.Stop();
+			}
+			else
+			{
+				joystickDevice.OnChanged += bytes =>
+				{
+					joystickValues.x = (short) ((((bytes[5] << 8) | bytes[4]) >> 2) - 2048) / 2048f;
+					joystickValues.y = (short) ((((bytes[7] << 8) | bytes[6]) >> 2) - 2048) / 2048f;
+					joystickValues.spin = -(bytes[8] / 255f) + .5f;
+					joystickValues.slider = -(bytes[9] / 127f) + 1f;
+
+
+					Dispatcher.Invoke(() =>
+					{
+						joyInputPosX.Value = joystickValues.x;
+						joyInputPosY.Value = joystickValues.y;
+						joyInputPosZ.Value = joystickValues.spin;
+						joyInputRotX.Value = joystickValues.slider;
+					});
+				};
+				joystickDevice.Start();
+				JoystickInputCheckBox.IsChecked = true;
+				Thread joystickInputThread = new Thread(JoystickInputThread);
+				joystickInputThread.Start();
+			}
+		}
+
+		private void JoystickInputThread()
+		{
+			while (joystickDevice.Running)
+			{
+				Program.GetRequestCallback(url, null, response =>
+				{
+					CameraTransform camPos = JsonConvert.DeserializeObject<CameraTransform>(response);
+					if (camPos == null) return;
+
+					CameraTransform output = new CameraTransform();
+
+					float x = Exponential(joystickValues.x * -joystickMoveSpeed, joystickMoveExponential);
+					float y = Exponential(joystickValues.y * -joystickMoveSpeed, joystickMoveExponential);
+					float spin = Exponential(joystickValues.spin * joystickRotateSpeed, joystickRotateExponential);
+
+					Vector3 translateBy = new Vector3(x, 0, y);
+					Quaternion rotateBy = Quaternion.CreateFromYawPitchRoll(spin, 0, 0);
+
+					Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(camPos.rotation);
+
+					output.position = camPos.position + Vector3.Transform(translateBy, camPosMatrix);
+					output.position.Y = joystickValues.slider * 10;
+					output.rotation = Quaternion.Multiply(camPos.rotation, rotateBy);
+
+					SetCamera(output);
+				});
+				Thread.Sleep(8);
+			}
+		}
+
+
+		float Exponential(float value, float expo)
+		{
+			if (value < 0)
+			{
+				return -MathF.Pow(-value, expo);
+			}
+			else
+			{
+				return MathF.Pow(value, expo);
+			}
 		}
 	}
 }

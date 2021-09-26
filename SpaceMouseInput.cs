@@ -33,24 +33,24 @@ namespace Spark
 		private const int CONNEXION_VENDOR = 0x46d;
 		private const int CONNEXION_PRODUCT = 0xc626;
 
-		private static HidDevice device;
-		private static readonly ConnexionState state = new ConnexionState();
-		public static Action<ConnexionState> OnChanged;
-		public static bool Running { get; private set; }
+		private HidDevice device;
+		private readonly ConnexionState state = new ConnexionState();
+		public Action<ConnexionState> OnChanged;
+		public bool Running { get; private set; }
 
-		public static void Start()
+		public void Start()
 		{
 			Running = true;
 			Thread spaceMouseThread = new Thread(InputThread);
 			spaceMouseThread.Start();
 		}
 
-		public static void Stop()
+		public void Stop()
 		{
 			Running = false;
 		}
 
-		private static void InputThread()
+		private void InputThread()
 		{
 			IEnumerable<HidDevice> list = DeviceList.Local.GetHidDevices(CONNEXION_VENDOR, CONNEXION_PRODUCT);
 			device = list.FirstOrDefault();
