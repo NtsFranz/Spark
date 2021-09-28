@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Navigation;
 using Timer = System.Timers.Timer;
 
@@ -22,14 +24,16 @@ namespace Spark
 	/// <summary>
 	/// Based on the example from Graic's WriteAPI
 	/// </summary>
-	public partial class CameraWrite : Window
+	public partial class CameraWrite : UserControl
 	{
+		private LiveWindow liveWindow = null;
+
 		public const string url = "http://127.0.0.1:6723/";
 
 		public string Duration
 		{
-			set { float.TryParse(value, out duration); }
-			get => duration.ToString();
+			set => float.TryParse(value, out duration);
+			get => duration.ToString(CultureInfo.InvariantCulture);
 		}
 
 		public float duration = 5;
@@ -199,6 +203,9 @@ namespace Spark
 		//	}
 		//}
 
+		private GlobalHotKey[] numPadHotKeys = null;
+		
+
 		public CameraWrite()
 		{
 			CameraWriteSettings.Load();
@@ -244,10 +251,47 @@ namespace Spark
 			{
 				CurrentAnimation = new List<CameraTransform>();
 			}
+			
+			numPadHotKeys = new GlobalHotKey[]{
+				new GlobalHotKey(Key.NumPad1, KeyModifier.None, (_) => { TryGoToWaypoint(0); }),
+				new GlobalHotKey(Key.NumPad2, KeyModifier.None, (_) => { TryGoToWaypoint(1); }),
+				new GlobalHotKey(Key.NumPad3, KeyModifier.None, (_) => { TryGoToWaypoint(2); }),
+				new GlobalHotKey(Key.NumPad4, KeyModifier.None, (_) => { TryPlayAnim(0); }),
+				new GlobalHotKey(Key.NumPad5, KeyModifier.None, (_) => { TryPlayAnim(1); }),
+				new GlobalHotKey(Key.NumPad6, KeyModifier.None, (_) => { TryPlayAnim(2); }),
+				new GlobalHotKey(Key.NumPad7, KeyModifier.None, (_) => { TryPlayAnim(3); }),
+				new GlobalHotKey(Key.NumPad8, KeyModifier.None, (_) => { TryPlayAnim(4); }),
+				new GlobalHotKey(Key.NumPad9, KeyModifier.None, (_) => { TryPlayAnim(5); })
+			};
 
 			RefreshAnimationsComboBoxFromSettings();
 			RegenerateWaypointButtons();
 			RegenerateKeyframeButtons();
+		}
+
+		// get a reference to main windows when it is available.
+		// The Loaded Event is set in the XAML code above.
+		private void OnControlLoaded(object sender, RoutedEventArgs e)
+		{
+			liveWindow = Window.GetWindow(this) as LiveWindow;
+		}
+
+		private static void TryGoToWaypoint(int index)
+		{
+			CameraTransform[] waypoints = CameraWriteSettings.instance.waypoints.Values.ToArray();
+			if (waypoints.Length <= index) return;
+			Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(waypoints[index]), null);
+		}
+
+		private void TryPlayAnim(int index)
+		{
+			if (AnimationsComboBox.Items.Count <= index) return;
+			Dispatcher.Invoke(() =>
+			{
+				AnimationsComboBox.SelectedIndex = index;
+				StartKeyframeAnimation(null,null);
+			});
+
 		}
 
 		private void RefreshAnimationsComboBoxFromSettings()
@@ -484,6 +528,8 @@ namespace Spark
 
 		private void SetSliderPositions()
 		{
+			if (manualTransform == null) return;
+
 			sliderListenersActivated = false;
 
 			try
@@ -633,6 +679,7 @@ namespace Spark
 		private void RegenerateKeyframeButtons()
 		{
 			KeyframesList.Children.Clear();
+			
 
 			for (int i = 0; i < CurrentAnimation.Count; i++)
 			{
@@ -730,12 +777,13 @@ namespace Spark
 				CameraWriteSettings.instance.waypoints[keyName] = data;
 
 				// update the UI with the new waypoint
-				Dispatcher.Invoke(RegenerateWaypointButtons);
+				liveWindow.Dispatcher.Invoke(RegenerateWaypointButtons);
 
 				CameraWriteSettings.instance.Save();
 			});
 		}
 
+		
 		private void WindowClosed(object sender, EventArgs e)
 		{
 			CameraWriteSettings.instance.Save();
@@ -1035,7 +1083,7 @@ namespace Spark
 							}
 
 							webClient.DownloadFile(
-								"https://github.com/Graicc/WriteAPI/releases/download/v1.0.0/WriteAPI.zip",
+								"https://github.com/Graicc/WriteAPI/releases/download/v1.0.1/Write.API.zip",
 								WriteAPIZipPath);
 
 							ZipFile.ExtractToDirectory(WriteAPIZipPath, WriteAPIFolder);

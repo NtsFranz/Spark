@@ -86,7 +86,7 @@ namespace Spark
 						}, _listener.GetContext());
 					}
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					// ignored
 				}

@@ -56,11 +56,6 @@ namespace Spark
 			SparkSettings.instance.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
 			SparkSettings.instance.Save();
 
-			if (!Program.Personal && !Program.overlayServer.IsListening)
-			{
-				Program.overlayServer.Start();
-			}
-
 			if (Program.liveWindow == null)
 			{
 				Program.liveWindow = new LiveWindow();

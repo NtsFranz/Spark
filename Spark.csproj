@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.3.19</Version>
+    <Version>2.3.21</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -23,20 +23,20 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,6 +45,7 @@
     <None Remove="SparkLinkLauncher\**" />
     <Page Remove="SparkLinkLauncher\**" />
     <None Remove="html\default_scoreboard.html" />
+    <None Remove="img\camera-outline.png" />
     <EmbeddedResource Include="html\default_scoreboard.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -117,6 +118,9 @@
     <EmbeddedResource Include="html\js\get_data.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Resource Include="img\camera-outline.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <EmbeddedResource Include="InstallEchoSpeakerSystem.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -195,6 +199,7 @@
     </Compile>
     <Compile Update="Windows\CameraWrite.xaml.cs">
       <SubType>Code</SubType>
+      <DependentUpon>CameraWrite.xaml</DependentUpon>
     </Compile>
     <Compile Update="Windows\CreateServer.xaml.cs">
       <SubType>Code</SubType>

@@ -9,7 +9,7 @@
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
 		mc:Ignorable="d"
 		Title="Spark" 
-		Height="700" Width="1200" 
+		Height="720" Width="1280" 
 		FontSize="14" 
 		Background="{DynamicResource BackgroundColour}" 
 		ResizeMode="CanResize" 
@@ -458,7 +458,17 @@
 						</GroupBox>
 					</Grid>
 				</TabItem>
-				
+
+				<TabItem x:Name="WriteAPITab" FontSize="14" Padding="10,0,10,0" Visibility="Visible">
+					<TabItem.Header>
+						<StackPanel Orientation="Horizontal">
+							<Label Content="{x:Static p:Resources.Camera_Write}"/>
+							<Image Source="/img/camera-outline.png" Height="16"/>
+						</StackPanel>
+					</TabItem.Header>
+					<l:CameraWrite/>
+				</TabItem>
+
 			</TabControl>
 			<StackPanel Height="48" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,0,4" Grid.Row="1">
 				<Button x:Name="rejoinButton" Content="{x:Static p:Resources.Rejoin}" Width="110" Background="#FF6E2F2F" VerticalAlignment="Stretch" Margin="4,4,4,5" Click="RejoinClicked" ToolTip="{x:Static p:Resources.rejoin_tooltip}"/>
@@ -489,7 +499,6 @@
 					<Button x:Name="chooseServerRegion" Content="{x:Static p:Resources.Choose_Server_Region}" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="This creates a private match in a region of your choice."/>
 					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
 					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
-					<Button x:Name="cameraWriteButton" Content="{x:Static p:Resources.Camera_Write}" Height="40" Margin="4,4,4,4" Click="CameraWriteClick" Visibility="Visible"/>
 					<Button x:Name="showPlayerSpeedsButton" Content="{x:Static p:Resources.Player_Speeds}" Height="40" Margin="4,4,4,4" Click="openSpeedometer" Visibility="Collapsed"/>
 					<Button x:Name="showHighlights" Content="{x:Static p:Resources.NVIDIAHighlights}" Height="40" Click="showHighlights_Click" Margin="4,4,4,4"/>
 					<Button x:Name="spectateMeButton" Height="40" Click="SpectateMeClicked" Margin="4,4,4,4">

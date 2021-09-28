@@ -249,7 +249,7 @@
 			<TabItem Header="{x:Static p:Resources.Text_to_Speech}" Padding="8,6,8,6">
 				<ScrollViewer VerticalScrollBarVisibility="Auto" >
 					<StackPanel Margin="10,0,10,10">
-						<Label x:Name="Title" Content="{x:Static p:Resources.Text_to_Speech__TTS__Settings}" FontSize="16"
+						<Label Content="{x:Static p:Resources.Text_to_Speech__TTS__Settings}" FontSize="16"
 								   Margin="5,5,5,5" />
 						<TextBlock x:Name="discordLoginWarning" Margin="16,16,16,16" Padding="10,10,10,10"
 									   Background="#FF492727" TextWrapping="Wrap"

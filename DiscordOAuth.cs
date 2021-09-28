@@ -164,7 +164,7 @@ namespace Spark
 					ProcessResponse(data);
 				}
 			}
-			catch (HttpRequestException e)
+			catch (HttpRequestException)
 			{
 				RevertToPersonal();
 				new MessageBox(Resources.cant_connect_to_internet_for_discord, Resources.Error).Show();

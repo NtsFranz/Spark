@@ -131,7 +131,7 @@ namespace Spark
 						discordClient.SetPresence(null);
 						return;
 					}
-					catch (Exception ex)
+					catch (Exception)
 					{
 						LogRow(LogType.Error, "Discord RP client error when setting null presence.");
 						return;

@@ -25,6 +25,7 @@ using static Logger;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
+using System.Windows.Input;
 using NetMQ.Sockets;
 using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
@@ -588,7 +589,7 @@ namespace Spark
 		/// <summary>
 		/// This is just a failsafe so that the program doesn't leave a dangling thread.
 		/// </summary>
-		static async Task KillAll()
+		static void KillAll()
 		{
 			if (liveWindow != null)
 			{
@@ -647,7 +648,7 @@ namespace Spark
 			await Task.Delay(100);
 
 			closingWindow.label.Content = "Failed to close gracefully. Using an axe instead...";
-			_ = KillAll();
+			KillAll();
 		}
 
 		public static bool IsSparkOpen()
@@ -1561,7 +1562,7 @@ namespace Spark
 					SparkSettings.instance.Save();
 				}
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				new MessageBox($"Error accessing replay folder path:\n{SparkSettings.instance.saveFolder}").Show();
 				LogRow(LogType.Error, $"Error accessing replay folder path:\n{SparkSettings.instance.saveFolder}");
@@ -4006,7 +4007,7 @@ namespace Spark
 				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
 				IsSpeakerSystemUpdateAvailable = false;
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
 				IsSpeakerSystemUpdateAvailable = false;
@@ -4260,7 +4261,7 @@ namespace Spark
 					popupWindows[windowName].Close();
 					return false;
 				}
-			}catch (Exception ex)
+			}catch (Exception)
 			{
 				new MessageBox($"Failed to open window: {type}.\nPlease report this to NtsFranz.").Show();
 				return false;

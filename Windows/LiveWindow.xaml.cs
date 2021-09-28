@@ -470,14 +470,16 @@ namespace Spark
 									if (t == 0)
 									{
 										blueTextNames.AppendLine(player.name);
-										bluePingsTextPings.AppendLine($"{player.ping}   {player.packetlossratio}");
+										// bluePingsTextPings.AppendLine($"{player.ping}   {player.packetlossratio}");
+										bluePingsTextPings.AppendLine($"{player.ping}");
 										blueSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 									}
 
 									if (t == 1)
 									{
 										orangeTextNames.AppendLine(player.name);
-										orangePingsTextPings.AppendLine($"{player.ping}   {player.packetlossratio}");
+										// orangePingsTextPings.AppendLine($"{player.ping}   {player.packetlossratio}");
+										orangePingsTextPings.AppendLine($"{player.ping}");
 										orangeSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 									}
 
@@ -570,31 +572,28 @@ namespace Spark
 						lastGoalsTextBlock.Text = lastGoalsString.ToString();
 
 						StringBuilder lastMatchesString = new StringBuilder();
-						var lastMatches = Program.lastMatches.ToArray();
+						MatchData[] lastMatches = Program.lastMatches.ToArray();
 						if (lastMatches.Length > 0)
 						{
 							for (int j = lastMatches.Length - 1; j >= 0; j--)
 							{
-								var match = lastMatches[j];
+								MatchData match = lastMatches[j];
 								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[g_Team.TeamColor.orange].points + "  BLUE: " + match.teams[g_Team.TeamColor.blue].points);
 							}
 						}
 						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
 
 						StringBuilder lastJoustsString = new StringBuilder();
-						var lastJousts = Program.lastJousts.ToList();
+						List<EventData> lastJousts = Program.lastJousts.ToList();
 						if (lastJousts.Count > 0)
 						{
 							if (SparkSettings.instance.dashboardJoustTimeOrder == 1)
 							{
-								lastJousts.Sort((j1, j2) =>
-								{
-									return j2.joustTimeMillis.CompareTo(j1.joustTimeMillis);
-								});
+								lastJousts.Sort((j1, j2) => j2.joustTimeMillis.CompareTo(j1.joustTimeMillis));
 							}
 							for (int j = lastJousts.Count - 1; j >= 0; j--)
 							{
-								var joust = lastJousts[j];
+								EventData joust = lastJousts[j];
 								lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventData.EventType.joust_speed ? " N" : ""));
 							}
 						}
@@ -1045,7 +1044,7 @@ namespace Spark
 				webClient.DownloadProgressChanged += ProgressChanged;
 				webClient.DownloadFileAsync(new Uri(updateFilename), Path.GetTempPath() + Path.GetFileName(updateFilename));
 			}
-			catch (Exception exp)
+			catch (Exception)
 			{
 				new MessageBox("Something broke while trying to download update", Properties.Resources.Error).Show();
 			}
@@ -1072,7 +1071,7 @@ namespace Spark
 
 				Program.Quit();
 			}
-			catch (Exception exp)
+			catch (Exception)
 			{
 				new MessageBox("Something broke while trying to launch update installer", Properties.Resources.Error).Show();
 			}
@@ -1407,7 +1406,7 @@ namespace Spark
 					SpeakerSystemProcess.WaitForInputIdle();
 					SpeakerSystemStart(unityHandle);
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					startStopEchoSpeakerSystem.Content = Properties.Resources.Start_Echo_Speaker_System;
 					startStopEchoSpeakerSystem.IsEnabled = true;

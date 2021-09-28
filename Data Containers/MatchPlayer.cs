@@ -307,10 +307,10 @@ namespace Spark
 		{
 			return new MatchPlayer
 			{
-				Id = a.Id+b.Id,
-				Name = a.Name+b.Name,
-				Level = a.Level+b.Level,
-				Number = a.Number+b.Number,
+				Id = a.Id,
+				Name = a.Name,
+				Level = b.Level,
+				Number = a.Number,
 				currentStats = a.currentStats+b.currentStats,
 				cachedStats = a.cachedStats+b.cachedStats,
 				oldRoundStats = a.oldRoundStats+b.oldRoundStats,
@@ -325,7 +325,7 @@ namespace Spark
 				Turnovers = a.Turnovers+b.Turnovers,
 				matchData = a.matchData,
 				teamData = a.teamData,
-				playspaceLocation = a.playspaceLocation+b.playspaceLocation,
+				playspaceLocation = b.playspaceLocation,
 			};
 		}
 	}
