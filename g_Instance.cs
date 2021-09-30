@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Spark.Properties;
 using static Spark.g_Team;
@@ -159,6 +160,14 @@ namespace Spark
 			}
 
 			return TeamColor.spectator;
+		}
+
+		public CameraWrite.CameraTransform GetCameraTransform()
+		{
+			return new CameraWrite.CameraTransform(
+				player.vr_position.ToVector3(),
+				CameraWrite.QuaternionLookRotation(player.vr_forward.ToVector3(), player.vr_up.ToVector3())
+			);
 		}
 	}
 
