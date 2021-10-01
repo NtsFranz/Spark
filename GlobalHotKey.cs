@@ -89,7 +89,7 @@ namespace Spark
 			if (!dictHotKeyToCalBackProc.TryGetValue((int) msg.wParam, out GlobalHotKey hotKey)) return;
 			
 			hotKey.Action?.Invoke(hotKey);
-			// handled = true;
+			handled = false;
 		}
 
 		// ******************************************************************

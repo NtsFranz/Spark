@@ -387,6 +387,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to These settings are only used if the game is launched in spectator mode. This includes the Spectate Me function as well as spectating other matches..
+        /// </summary>
+        public static string CameraSettingsDescription {
+            get {
+                return ResourceManager.GetString("CameraSettingsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t connect to the internet to log into Discord..
         /// </summary>
         public static string cant_connect_to_internet_for_discord {

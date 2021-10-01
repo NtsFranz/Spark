@@ -31,7 +31,7 @@ namespace Spark
 		private LiveWindow liveWindow = null;
 
 		public const string url = "http://127.0.0.1:6721/camera_transform";
-		public const string writeAPIURL = "http://127.0.0.1:6721/camera_transform";
+		public const string sessionUrl = "http://127.0.0.1:6721/session";
 
 		public string Duration
 		{
@@ -378,15 +378,8 @@ namespace Spark
 
 		private void SetEnd(object sender, RoutedEventArgs e)
 		{
-			try
-			{
-				Program.GetRequestCallback(writeAPIURL, null,
-					response => { end = JsonConvert.DeserializeObject<CameraTransform>(response); });
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Can't get camera position\n{ex}");
-			}
+			if (Program.lastFrame == null) return;
+			end = Program.lastFrame.GetCameraTransform();
 		}
 
 		private void StartAnimation(object sender, RoutedEventArgs e)
@@ -552,14 +545,9 @@ namespace Spark
 
 		private void ReadXYZ(object sender, RoutedEventArgs e)
 		{
-			Program.GetRequestCallback(writeAPIURL, null, response =>
-			{
-				CameraTransform data = JsonConvert.DeserializeObject<CameraTransform>(response);
-				manualTransform = data;
-
-
-				Dispatcher.Invoke(() => { SetSliderPositions(); });
-			});
+			if (Program.lastFrame == null) return;
+			manualTransform = Program.lastFrame.GetCameraTransform();
+			SetSliderPositions();
 		}
 
 		private void SetSliderPositions()
@@ -751,17 +739,11 @@ namespace Spark
 				};
 				replace.Click += (_, _) =>
 				{
-					Program.GetRequestCallback(writeAPIURL, null, response =>
-					{
-						CameraTransform data = JsonConvert.DeserializeObject<CameraTransform>(response);
+					if (Program.lastFrame == null) return;
+					CurrentAnimation[CurrentAnimation.FindIndex(val => val == wp)] = Program.lastFrame.GetCameraTransform();
 
-						if (data == null) return;
-
-						CurrentAnimation[CurrentAnimation.FindIndex(val => val == wp)] = data;
-
-						// update the UI with the new waypoint
-						Dispatcher.Invoke(RegenerateKeyframeButtons);
-					});
+					// update the UI with the new waypoint
+					RegenerateKeyframeButtons();
 				};
 				Button goTo = new Button
 				{
@@ -805,17 +787,13 @@ namespace Spark
 				return;
 			}
 
-			Program.GetRequestCallback(writeAPIURL, null, response =>
-			{
-				CameraTransform data = JsonConvert.DeserializeObject<CameraTransform>(response);
+			if (Program.lastFrame == null) return;
+			CameraWriteSettings.instance.waypoints[keyName] = Program.lastFrame.GetCameraTransform();
 
-				CameraWriteSettings.instance.waypoints[keyName] = data;
-
-				// update the UI with the new waypoint
-				liveWindow.Dispatcher.Invoke(RegenerateWaypointButtons);
-
-				CameraWriteSettings.instance.Save();
-			});
+			// update the UI with the new waypoint
+			RegenerateWaypointButtons();
+			
+			CameraWriteSettings.instance.Save();
 		}
 
 
@@ -831,17 +809,11 @@ namespace Spark
 
 		private void AddKeyframe(object sender, RoutedEventArgs e)
 		{
-			Program.GetRequestCallback(writeAPIURL, null, response =>
-			{
-				CameraTransform data = JsonConvert.DeserializeObject<CameraTransform>(response);
+			if (Program.lastFrame == null) return;
+			CurrentAnimation.Add(Program.lastFrame.GetCameraTransform());
 
-				if (data == null) return;
-
-				CurrentAnimation.Add(data);
-
-				// update the UI with the new waypoint
-				Dispatcher.Invoke(() => { RegenerateKeyframeButtons(); });
-			});
+			// update the UI with the new waypoint
+			RegenerateKeyframeButtons();
 		}
 
 		private void ClearKeyframes(object sender, RoutedEventArgs e)
@@ -881,7 +853,7 @@ namespace Spark
 				Vector3 offset = new Vector3((float) Math.Cos(angle), 0, (float) Math.Sin(angle)) * orbitRadius;
 
 				// do another API request for lowest latency
-				Program.GetRequestCallback("http://localhost:6721/session", null, resp =>
+				Program.GetRequestCallback(sessionUrl, null, resp =>
 				{
 					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(resp);
 					if (frame == null) return;
@@ -915,7 +887,7 @@ namespace Spark
 			Vector3 lastDiscVel = Vector3.Zero;
 
 
-			Program.PostRequestCallback("http://localhost:6721/camera_mode", null, "{\"mode\": \"api\"}", null);
+			CameraController.SetCameraMode(CameraController.CameraMode.api);
 
 			while (orbitingDisc)
 			{
@@ -1235,9 +1207,11 @@ namespace Spark
 
 		private void OnSpaceMouseChanged(ConnexionState state)
 		{
-			Program.GetRequestCallback(writeAPIURL, null, response =>
+			Program.GetRequestCallback(sessionUrl, null, response =>
 			{
-				CameraTransform camPos = JsonConvert.DeserializeObject<CameraTransform>(response);
+				if (response == null) return;
+				g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(response);
+				CameraTransform camPos = frame?.GetCameraTransform();
 				if (camPos == null) return;
 
 				CameraTransform output = new CameraTransform();
@@ -1278,6 +1252,7 @@ namespace Spark
 
 		public static void SetCamera(CameraTransform output)
 		{
+			CameraController.SetCameraMode(CameraController.CameraMode.api);
 			Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(output), null);
 		}
 
@@ -1609,9 +1584,11 @@ namespace Spark
 		{
 			while (joystickDevice.Running)
 			{
-				Program.GetRequestCallback(writeAPIURL, null, response =>
+				Program.GetRequestCallback(sessionUrl, null, response =>
 				{
-					CameraTransform camPos = JsonConvert.DeserializeObject<CameraTransform>(response);
+					if (response == null) return;
+					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(response);
+					CameraTransform camPos = frame?.GetCameraTransform();
 					if (camPos == null) return;
 
 					CameraTransform output = new CameraTransform();

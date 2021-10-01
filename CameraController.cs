@@ -11,9 +11,11 @@ using static Spark.g_Team;
 
 namespace Spark
 {
-	class KeyboardCamera
+	class CameraController
 	{
-		public KeyboardCamera()
+		public static string BaseUrl = "http://localhost:6721/";
+
+		public CameraController()
 		{
 			Program.Goal += (_, _) =>
 			{
@@ -22,16 +24,10 @@ namespace Spark
 					Task.Run(async () =>
 					{
 						await Task.Delay(500);
-						Program.FocusEchoVR();
-						await Task.Delay(10);
-						Program.FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_M, false, Keyboard.InputType.Keyboard);
+
+						SetMinimapVisibility(false);
 						await Task.Delay(20);
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_M, true, Keyboard.InputType.Keyboard);
-						await Task.Delay(20);
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_M, false, Keyboard.InputType.Keyboard);
-						await Task.Delay(20);
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_M, true, Keyboard.InputType.Keyboard);
+						SetMinimapVisibility(true);
 					});
 				}
 			};
@@ -56,41 +52,32 @@ namespace Spark
 					await Task.Delay(500);
 
 					// try to find player
-					Program.FocusEchoVR();
-					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
-					await Task.Delay(20);
-					Program.FocusEchoVR();
-					Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
+					SetCameraMode(CameraMode.pov);
 
 					await Task.Delay(50);
 					bool found = false;
 					found = await CheckPOVCamIsCorrect(playerName);
+					int foundIndex = 0;
 
 					// loop through all the players twice if we don't find the right one the first time
 					int foundTries = 1;
 					while (foundTries > 0 && !found)
 					{
-						Program.FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
-						await Task.Delay(20);
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
-						await Task.Delay(20);
-
 						for (int i = 0; i < Keyboard.numbers.Length; i++)
 						{
-							Program.FocusEchoVR();
 							// press the keys to visit a player
-							Keyboard.SendKey(Keyboard.numbers[i], false, Keyboard.InputType.Keyboard);
-							await Task.Delay(20);
-							Program.FocusEchoVR();
-							Keyboard.SendKey(Keyboard.numbers[i], true, Keyboard.InputType.Keyboard);
+							SetCameraMode(CameraMode.pov, i);
 
 							// check if this is the right player
 							await Task.Delay(50);
 							found = await CheckPOVCamIsCorrect(playerName, i);
 
 							// if we found the correct player
-							if (found) break;
+							if (found)
+							{
+								foundIndex = i;
+								break;
+							}
 						}
 
 						foundTries--;
@@ -103,33 +90,20 @@ namespace Spark
 						{
 							// Follow
 							case 0:
-								Program.FocusEchoVR();
-								Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F, false, Keyboard.InputType.Keyboard);
-								await Task.Delay(20);
-								Program.FocusEchoVR();
-								Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F, true, Keyboard.InputType.Keyboard);
+								SetCameraMode(CameraMode.follow, foundIndex);
 								break;
 							// POV
 							case 1:
-								// don't press P again, since this will switch to a different player
-								// we are already in POV mode.
-
-								//Program.FocusEchoVR();
-								//Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, false, Keyboard.InputType.Keyboard);
-								//await Task.Delay(20);
-								//Program.FocusEchoVR();
-								//Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_P, true, Keyboard.InputType.Keyboard);
+								SetCameraMode(CameraMode.pov, foundIndex);
 								break;
 						}
 					}
 					else
 					{
-						LogRow(LogType.File, Program.lastFrame.sessionid, "Failed to find player, switching to auto instead.");
-						Program.FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, false, Keyboard.InputType.Keyboard);
-						await Task.Delay(20);
-						Program.FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, true, Keyboard.InputType.Keyboard);
+						LogRow(LogType.File, Program.lastFrame.sessionid,
+							"Failed to find player, switching to auto instead.");
+
+						SetCameraMode(CameraMode.side);
 					}
 				});
 			}
@@ -148,17 +122,93 @@ namespace Spark
 			List<g_Player> players = frame.GetAllPlayers(false);
 			g_Player targetPlayer = frame.GetPlayer(playerName);
 
-			var sortedList = players.OrderBy(p => Vector3.Distance(p.head.Position, frame.player.vr_position.ToVector3())).ToList();
+			List<g_Player> sortedList = players
+				.OrderBy(p => Vector3.Distance(p.head.Position, frame.player.vr_position.ToVector3())).ToList();
 
 			// debug all player distances
 			//sortedList.ForEach(p => LogRow(LogType.File, frame.sessionid, $"{Vector3.Distance(p.head.Position, frame.player.vr_position.ToVector3())}\t{p.name}"));
-			
+
 			g_Player minPlayer = sortedList.First();
 			float dist = Vector3.Distance(minPlayer.head.Position, frame.player.vr_position.ToVector3());
 
 			LogRow(LogType.File, frame.sessionid, $"Player {i} camera distance: {dist:N3} m.  Name: {minPlayer.name}");
 
 			return minPlayer.name == playerName;
+		}
+
+		public static void SetUIVisibility(bool visible)
+		{
+			Dictionary<string, bool> data = new Dictionary<string, bool>()
+			{
+				{"enabled", visible}
+			};
+			Program.PostRequestCallback(BaseUrl + "ui_visibility", null, JsonConvert.SerializeObject(data), null);
+		}
+
+		public static void SetNameplatesVisibility(bool visible)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{"enabled", visible}
+			};
+			Program.PostRequestCallback(BaseUrl + "nameplates_visibility", null, JsonConvert.SerializeObject(data), null);
+		}
+
+		public static void SetMinimapVisibility(bool visible)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{"enabled", visible}
+			};
+			Program.PostRequestCallback(BaseUrl + "minimap_visibility", null, JsonConvert.SerializeObject(data), null);
+		}
+
+		public static void SetTeamsMuted(bool blueTeamMuted, bool orangeTeamMuted)
+		{
+			Dictionary<string, bool> data = new Dictionary<string, bool>()
+			{
+				{"blue_team_muted", blueTeamMuted},
+				{"orange_team_muted", orangeTeamMuted},
+			};
+			Program.PostRequestCallback(BaseUrl + "team_muted", null, JsonConvert.SerializeObject(data), null);
+		}
+
+		public enum CameraMode
+		{
+			pov,
+			level,
+			follow,
+			side,
+			free,
+			api
+		}
+
+		public static void SetCameraMode(CameraMode mode)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{"mode", mode.ToString()},
+			};
+			Program.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
+		}
+
+		public static void SetCameraMode(int playerId)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{"num", playerId},
+			};
+			Program.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
+		}
+
+		public static void SetCameraMode(CameraMode mode, int playerId)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{"mode", mode.ToString()},
+				{"num", playerId},
+			};
+			Program.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
 		}
 	}
 }

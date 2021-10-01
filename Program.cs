@@ -187,7 +187,7 @@ namespace Spark
 
 		public static SpeechSynthesizer synth;
 		public static ReplayClips replayClips;
-		public static KeyboardCamera keyboardCamera;
+		public static CameraController CameraController;
 
 		private static Thread statsThread;
 		private static Thread fullLogThread;
@@ -426,7 +426,7 @@ namespace Spark
 				// this sets up the event listeners for replay clips
 				replayClips = new ReplayClips();
 
-				keyboardCamera = new KeyboardCamera();
+				CameraController = new CameraController();
 
 
 				//// web server grapevine
@@ -4179,19 +4179,17 @@ namespace Spark
 
 				if (firstLoad)
 				{
+					if (SparkSettings.instance.hideNameplates)
+					{
+						CameraController.SetNameplatesVisibility(false);
+					}
 					if (SparkSettings.instance.hideEchoVRUI)
 					{
-						FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
-						Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, true, Keyboard.InputType.Keyboard); });
-						LogRow(LogType.File, lastFrame.sessionid, "Tried to Hide EchoVR UI");
+						CameraController.SetUIVisibility(false);
 					}
 					if (SparkSettings.instance.mutePlayerComms)
 					{
-						FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F5, false, Keyboard.InputType.Keyboard);
-						Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F5, true, Keyboard.InputType.Keyboard); });
-						LogRow(LogType.File, lastFrame.sessionid, "Tried to mute player comms");
+						CameraController.SetTeamsMuted(true, true);
 					}
 				}
 
@@ -4199,33 +4197,18 @@ namespace Spark
 				{
 					// auto
 					case 0:
-						// FocusEchoVR();
-						// Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, false, Keyboard.InputType.Keyboard);
-						// Task.Delay(10).ContinueWith((_) =>
-						// {
-						// 	FocusEchoVR();
-						// 	Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, true, Keyboard.InputType.Keyboard);
-						// });
-						// LogRow(LogType.File, lastFrame.sessionid, "Tried to switch to auto cam.");
 						break;
 					// sideline
 					case 1:
-						FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_S, false, Keyboard.InputType.Keyboard);
-						Task.Delay(10).ContinueWith((_) =>
-						{
-							FocusEchoVR();
-							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_S, true, Keyboard.InputType.Keyboard);
-						});
-						LogRow(LogType.File, lastFrame.sessionid, "Tried to switch to sideline cam.");
+						CameraController.SetCameraMode(CameraController.CameraMode.side);
 						break;
 					// follow client
 					case 2:
-						if (spectateMe) KeyboardCamera.SpectatorCamFindPlayer();
+						if (spectateMe) CameraController.SpectatorCamFindPlayer();
 						break;
 					// follow specific player
 					case 3:
-						KeyboardCamera.SpectatorCamFindPlayer(SparkSettings.instance.followPlayerName);
+						CameraController.SpectatorCamFindPlayer(SparkSettings.instance.followPlayerName);
 						break;
 				}
 			}

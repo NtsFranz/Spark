@@ -1236,24 +1236,20 @@ namespace Spark
 
 		private void HideEchoVRUINow(object sender, RoutedEventArgs e)
 		{
-			if (Program.inGame)
-			{
-				Program.FocusEchoVR();
-				Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
-				Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, true, Keyboard.InputType.Keyboard); });
-				Logger.LogRow(Logger.LogType.File, Program.lastFrame?.sessionid, "Tried to Hide EchoVR UI");
-			}
+			if (!Program.inGame) return;
+			CameraController.SetUIVisibility(HideUICheckbox.IsChecked != true);
 		}
 
 		private void ToggleTeamMuteNow(object sender, RoutedEventArgs e)
 		{
-			if (Program.inGame)
-			{
-				Program.FocusEchoVR();
-				Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F5, false, Keyboard.InputType.Keyboard);
-				Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F5, true, Keyboard.InputType.Keyboard); });
-				Logger.LogRow(Logger.LogType.File, Program.lastFrame?.sessionid, "Tried to mute team comms (manual)");
-			}
+			if (!Program.inGame) return;
+			CameraController.SetTeamsMuted(MutePlayerCommsCheckbox.IsChecked == true, MutePlayerCommsCheckbox.IsChecked == true);
+		}
+
+		private void ToggleNameplatesNow(object sender, RoutedEventArgs e)
+		{
+			if (!Program.inGame) return;
+			CameraController.SetNameplatesVisibility(HideNameplates.IsChecked != true);
 		}
 
 		private void UploadTabletStats(object sender, RoutedEventArgs e)
