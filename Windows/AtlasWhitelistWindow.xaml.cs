@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Spark.Properties;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -61,17 +59,17 @@ namespace Spark
 			Program.atlasWhitelist.teams.Add(team);
 
 			Program.GetRequestCallback(
-				"https://ignitevr.gg/cgi-bin/EchoStats.cgi/get_players_on_vrml_team?team_name=" + teamName,
+				$"{Program.API_URL_2}get_players_on_vrml_team?team_name=" + teamName,
 				new Dictionary<string, string>(),
 				(response) =>
 				{
 					try
 					{
-						var data = JObject.Parse(response);
-						var players = data["players"]?.ToObject<List<Dictionary<string, string>>>();
+						JObject data = JObject.Parse(response);
+						List<Dictionary<string, string>> players = data["players"]?.ToObject<List<Dictionary<string, string>>>();
 						if (players == null) return;
 						
-						foreach (var player in players)
+						foreach (Dictionary<string, string> player in players)
 						{
 							team.players.Add(player["player_name"]);
 						}

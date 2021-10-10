@@ -223,10 +223,12 @@ namespace Spark
 			// get the access codes for this user
 			try
 			{
-				HttpResponseMessage accessCodesResponse = await client.GetAsync(SecretKeys.accessCodesURL + oauthToken + $"?v={SparkSettings.instance.client_name}_{Program.AppVersion()}");
-				string accessCodesResponseString = await accessCodesResponse.Content.ReadAsStringAsync();
+				string accessCodesResponseString = await Program.GetRequestAsync(
+					SecretKeys.accessCodesURL + oauthToken +
+					$"?v={SparkSettings.instance.client_name}_{Program.AppVersion()}", null);
 
-				Dictionary<string, JToken> accessCodesResponseData = JsonConvert.DeserializeObject<Dictionary<string, JToken>>(accessCodesResponseString);
+				Dictionary<string, JToken> accessCodesResponseData =
+					JsonConvert.DeserializeObject<Dictionary<string, JToken>>(accessCodesResponseString);
 				availableAccessCodes = accessCodesResponseData["keys"].ToObject<List<Dictionary<string, string>>>();
 				if (accessCodesResponseData.ContainsKey("write"))
 				{

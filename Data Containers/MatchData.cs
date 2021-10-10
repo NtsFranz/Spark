@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using SharpDX.Direct3D9;
 using static Spark.g_Team;
 
 namespace Spark
@@ -69,7 +70,10 @@ namespace Spark
 				{ TeamColor.spectator, new TeamData(TeamColor.spectator, firstFrame.teams[2].team) },
 			};
 
-			SparkSettings.instance.client_name = firstFrame.client_name;
+			if (firstFrame.client_name != "anonymous")
+			{
+				SparkSettings.instance.client_name = firstFrame.client_name;
+			}
 
 			if (firstFrame.teams != null)
 			{

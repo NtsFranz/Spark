@@ -28,7 +28,7 @@ namespace Spark
 	/// </summary>
 	public partial class CameraWrite : UserControl
 	{
-		private LiveWindow liveWindow = null;
+		private LiveWindow liveWindow;
 
 		public const string url = "http://127.0.0.1:6721/camera_transform";
 		public const string sessionUrl = "http://127.0.0.1:6721/session";
@@ -41,7 +41,7 @@ namespace Spark
 
 		public float duration = 5;
 
-		public bool orbitingDisc = false;
+		public bool orbitingDisc;
 		public float rotSpeed { get; set; } = 30;
 		public float orbitRadius { get; set; } = 2;
 		public float followSmoothing { get; set; } = 1f;
@@ -172,16 +172,16 @@ namespace Spark
 				qx = rotation.X;
 				qy = rotation.Y;
 				qz = rotation.Z;
-				qz = rotation.W;
+				qw = rotation.W;
 			}
 
-			public float px = 0;
-			public float py = 0;
-			public float pz = 0;
+			public float px;
+			public float py;
+			public float pz;
 
-			public float qx = 0;
-			public float qy = 0;
-			public float qz = 0;
+			public float qx;
+			public float qy;
+			public float qz;
 			public float qw = 1;
 
 			public float fovy = 1;
@@ -214,7 +214,7 @@ namespace Spark
 		public CameraTransform end;
 
 		public bool isAnimating;
-		private float animationProgress = 0;
+		private float animationProgress;
 		public Thread animationThread;
 		public Thread orbitThread;
 
@@ -251,7 +251,7 @@ namespace Spark
 		//	}
 		//}
 
-		private GlobalHotKey[] numPadHotKeys = null;
+		private GlobalHotKey[] numPadHotKeys;
 
 
 		public CameraWrite()
@@ -740,7 +740,8 @@ namespace Spark
 				replace.Click += (_, _) =>
 				{
 					if (Program.lastFrame == null) return;
-					CurrentAnimation[CurrentAnimation.FindIndex(val => val == wp)] = Program.lastFrame.GetCameraTransform();
+					CurrentAnimation[CurrentAnimation.FindIndex(val => val == wp)] =
+						Program.lastFrame.GetCameraTransform();
 
 					// update the UI with the new waypoint
 					RegenerateKeyframeButtons();
@@ -792,7 +793,7 @@ namespace Spark
 
 			// update the UI with the new waypoint
 			RegenerateWaypointButtons();
-			
+
 			CameraWriteSettings.instance.Save();
 		}
 
@@ -839,7 +840,7 @@ namespace Spark
 		}
 
 
-		private void OrbitDiscThread2()
+		private void OrbitDiscThreadSimple()
 		{
 			DateTime startTime = DateTime.Now;
 
@@ -860,7 +861,8 @@ namespace Spark
 					Vector3 discPos = frame.disc.position.ToVector3();
 					Vector3 pos = discPos - offset;
 
-					Quaternion lookDir = QuaternionLookRotation(discPos - pos, Vector3.UnitY);
+					// Quaternion lookDir = QuaternionLookRotation(offset, Vector3.UnitY);
+					Quaternion lookDir = Quaternion.CreateFromAxisAngle(Vector3.UnitY, (float) (angle - Math.PI / 2));
 
 					CameraTransform newTransform = new CameraTransform(pos, lookDir);
 					SetCamera(newTransform);
@@ -1161,7 +1163,9 @@ namespace Spark
 		}
 
 
-		private HIDDeviceInput spaceMouseDevice = new HIDDeviceInput(0x46d, 0xc626);
+		private readonly HIDDeviceInput spaceMouseDevice = new HIDDeviceInput(0x46d, 0xc626);
+		private bool spaceMouseSetCameraThreadRunning;
+		private CameraTransform spaceMouseCameraState = new CameraTransform();
 
 		private void Toggle3DMouse(object sender, RoutedEventArgs e)
 		{
@@ -1169,6 +1173,7 @@ namespace Spark
 			{
 				spaceMouseDevice.Stop();
 				SpaceMouseCheckBox.IsChecked = false;
+				spaceMouseSetCameraThreadRunning = false;
 			}
 			else
 			{
@@ -1201,64 +1206,72 @@ namespace Spark
 				};
 				spaceMouseDevice.Start();
 				SpaceMouseCheckBox.IsChecked = true;
+				spaceMouseSetCameraThreadRunning = true;
+				new Thread(() =>
+				{
+					while (spaceMouseSetCameraThreadRunning)
+					{
+						SetCamera(spaceMouseCameraState);
+						Thread.Sleep(8);
+					}
+				}).Start();
+				
+				Program.GetRequestCallback(sessionUrl, null, response =>
+				{
+					if (response == null) return;
+					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(response);
+					spaceMouseCameraState = frame?.GetCameraTransform();
+				});
 			}
 		}
 
 
 		private void OnSpaceMouseChanged(ConnexionState state)
 		{
-			Program.GetRequestCallback(sessionUrl, null, response =>
+			Dispatcher.Invoke(() =>
 			{
-				if (response == null) return;
-				g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(response);
-				CameraTransform camPos = frame?.GetCameraTransform();
-				if (camPos == null) return;
+				inputPosX.Value = state.position.X;
+				inputPosY.Value = state.position.Y;
+				inputPosZ.Value = state.position.Z;
 
-				CameraTransform output = new CameraTransform();
-
-
-				Dispatcher.Invoke(() =>
-				{
-					inputPosX.Value = state.position.X;
-					inputPosY.Value = state.position.Y;
-					inputPosZ.Value = state.position.Z;
-
-					inputRotX.Value = state.rotation.X;
-					inputRotY.Value = state.rotation.Y;
-					inputRotZ.Value = state.rotation.Z;
-				});
-
-				Vector3 inputPosition = new Vector3(
-					Exponential(-state.position.X * spaceMouseMoveSpeed, spaceMouseMoveExponential),
-					Exponential(-state.position.Z * spaceMouseMoveSpeed, spaceMouseMoveExponential),
-					Exponential(-state.position.Y * spaceMouseMoveSpeed, spaceMouseMoveExponential)
-				);
-				Quaternion rotate = Quaternion.CreateFromYawPitchRoll(
-					Exponential(-state.rotation.Z * spaceMouseRotateSpeed, spaceMouseRotateExponential),
-					Exponential(-state.rotation.X * spaceMouseRotateSpeed, spaceMouseRotateExponential),
-					Exponential(-state.rotation.Y * spaceMouseRotateSpeed, spaceMouseRotateExponential)
-				);
-
-				Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(camPos.Rotation);
-				Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(rotate);
-
-				output.Position = camPos.Position + Vector3.Transform(inputPosition, camPosMatrix);
-				// output.rotation = Quaternion.CreateFromRotationMatrix(transformMatrix * camPosMatrix);
-				output.Rotation = Quaternion.Multiply(camPos.Rotation, rotate);
-
-				SetCamera(output);
+				inputRotX.Value = state.rotation.X;
+				inputRotY.Value = state.rotation.Y;
+				inputRotZ.Value = state.rotation.Z;
 			});
+
+			Vector3 inputPosition = new Vector3(
+				Exponential(-state.position.X * spaceMouseMoveSpeed, spaceMouseMoveExponential),
+				Exponential(-state.position.Z * spaceMouseMoveSpeed, spaceMouseMoveExponential),
+				Exponential(-state.position.Y * spaceMouseMoveSpeed, spaceMouseMoveExponential)
+			);
+			Quaternion rotate = Quaternion.CreateFromYawPitchRoll(
+				Exponential(-state.rotation.Z * spaceMouseRotateSpeed, spaceMouseRotateExponential),
+				Exponential(-state.rotation.X * spaceMouseRotateSpeed, spaceMouseRotateExponential),
+				Exponential(-state.rotation.Y * spaceMouseRotateSpeed, spaceMouseRotateExponential)
+			);
+
+			Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(spaceMouseCameraState.Rotation);
+
+			spaceMouseCameraState.Position += Vector3.Transform(inputPosition, camPosMatrix);
+			spaceMouseCameraState.Rotation = Quaternion.Multiply(spaceMouseCameraState.Rotation, rotate);
 		}
 
-		public static void SetCamera(CameraTransform output)
+		public static void SetCamera(CameraTransform output, bool mirror = false)
 		{
+			output.Rotation = Quaternion.Normalize(output.Rotation);
+			if (mirror)
+			{
+				output.qy *= -1;
+				output.qz *= -1;
+			}
+
 			CameraController.SetCameraMode(CameraController.CameraMode.api);
 			Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(output), null);
 		}
 
 		private bool xPlaneInputActive;
 		private AircraftState aircraftState = new AircraftState();
-		private Vector3 aircraftOrigin = new Vector3();
+		private Vector3 aircraftOrigin;
 
 		private void ToggleXPlaneCamera(object sender, RoutedEventArgs e)
 		{
@@ -1545,7 +1558,8 @@ namespace Spark
 			public float slider;
 		}
 
-		private JoystickValues joystickValues = new JoystickValues();
+		private JoystickValues joystickValues;
+		private CameraTransform joystickCameraTransform = new CameraTransform();
 
 		private void ToggleJoystickInput(object sender, RoutedEventArgs e)
 		{
@@ -1577,6 +1591,13 @@ namespace Spark
 				JoystickInputCheckBox.IsChecked = true;
 				Thread joystickInputThread = new Thread(JoystickInputThread);
 				joystickInputThread.Start();
+				
+				Program.GetRequestCallback(sessionUrl, null, response =>
+				{
+					if (response == null) return;
+					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(response);
+					joystickCameraTransform = frame?.GetCameraTransform();
+				});
 			}
 		}
 
@@ -1584,30 +1605,20 @@ namespace Spark
 		{
 			while (joystickDevice.Running)
 			{
-				Program.GetRequestCallback(sessionUrl, null, response =>
-				{
-					if (response == null) return;
-					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(response);
-					CameraTransform camPos = frame?.GetCameraTransform();
-					if (camPos == null) return;
+				float x = Exponential(joystickValues.x * -joystickMoveSpeed, joystickMoveExponential);
+				float y = Exponential(joystickValues.y * -joystickMoveSpeed, joystickMoveExponential);
+				float spin = Exponential(joystickValues.spin * joystickRotateSpeed, joystickRotateExponential);
 
-					CameraTransform output = new CameraTransform();
+				Vector3 translateBy = new Vector3(x, 0, y);
+				Quaternion rotateBy = Quaternion.CreateFromYawPitchRoll(spin, 0, 0);
 
-					float x = Exponential(joystickValues.x * -joystickMoveSpeed, joystickMoveExponential);
-					float y = Exponential(joystickValues.y * -joystickMoveSpeed, joystickMoveExponential);
-					float spin = Exponential(joystickValues.spin * joystickRotateSpeed, joystickRotateExponential);
+				Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(joystickCameraTransform.Rotation);
 
-					Vector3 translateBy = new Vector3(x, 0, y);
-					Quaternion rotateBy = Quaternion.CreateFromYawPitchRoll(spin, 0, 0);
+				joystickCameraTransform.Position += Vector3.Transform(translateBy, camPosMatrix);
+				joystickCameraTransform.py = joystickValues.slider * 10;
+				joystickCameraTransform.Rotation = Quaternion.Multiply(joystickCameraTransform.Rotation, rotateBy);
 
-					Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(camPos.Rotation);
-
-					output.Position = camPos.Position + Vector3.Transform(translateBy, camPosMatrix);
-					output.py = joystickValues.slider * 10;
-					output.Rotation = Quaternion.Multiply(camPos.Rotation, rotateBy);
-
-					SetCamera(output);
-				});
+				SetCamera(joystickCameraTransform);
 				Thread.Sleep(8);
 			}
 		}

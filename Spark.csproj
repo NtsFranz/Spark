@@ -42,15 +42,44 @@
   <ItemGroup>
     <Compile Remove="SparkLinkLauncher\**" />
     <EmbeddedResource Remove="SparkLinkLauncher\**" />
+    <EmbeddedResource Include="wwwroot\css\main.css" />
+    <EmbeddedResource Include="wwwroot\fonts\Inconsolata.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\fonts\Inconsolata.woff">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\fonts\Inconsolata.woff2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\img\minimap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\img\minimap_disc.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\js\get_data.js" />
+    <EmbeddedResource Include="wwwroot\js\heatmap.min.js" />
     <None Remove="SparkLinkLauncher\**" />
     <Page Remove="SparkLinkLauncher\**" />
     <None Remove="html\default_scoreboard.html" />
     <None Remove="img\camera-outline.png" />
-    <EmbeddedResource Include="html\default_scoreboard.html">
+    <EmbeddedResource Include="wwwtemplates\default_scoreboard.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Remove="html\fonts\Inconsolata.ttf" />
-    <EmbeddedResource Include="html\fonts\Inconsolata.ttf">
+    <None Remove="html\fonts\Inconsolata.woff" />
+    <None Remove="html\fonts\Inconsolata.woff2" />
+    <None Remove="html\index.html" />
+    <EmbeddedResource Include="wwwtemplates\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\img\ignite_logo.png" />
+    <EmbeddedResource Include="wwwroot\img\ignite_logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\img\ignite_logo_128.png" />
+    <EmbeddedResource Include="wwwroot\img\ignite_logo_128.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -100,27 +129,18 @@
     <EmbeddedResource Include="HighlightsPlugin64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="html\css\main.css">
+    <EmbeddedResource Include="wwwtemplates\midmatch_overlay.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="html\midmatch_overlay.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="html\default_minimap.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="html\img\minimap.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="html\img\minimap_disc.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="html\js\get_data.js">
+    <EmbeddedResource Include="wwwtemplates\default_minimap.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <Resource Include="img\camera-outline.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <None Include="wwwtemplates\vrml\scoreboard.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <EmbeddedResource Include="InstallEchoSpeakerSystem.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -179,9 +199,6 @@
     <Resource Include="img\upload.png" />
     <Resource Include="img\view-dashboard.png" />
     <None Remove="html\js\heatmap.min.js" />
-    <EmbeddedResource Include="html\js\heatmap.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
     <None Remove="img\web.png" />
     <Resource Include="img\web.png" />
   </ItemGroup>

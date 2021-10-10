@@ -74,6 +74,7 @@ namespace Spark
 		public int followPlayerCameraMode { get; set; } = 0;
 		public string followPlayerName { get; set; } = "";
 		public bool toggleMinimapAfterGoals { get; set; } = false;
+		public bool alwaysHideMinimap { get; set; } = false;
 		public bool mutePlayerComms { get; set; } = false;
 		public bool hideNameplates { get; set; } = false;
 		public int chooseRegionIndex { get; set; } = 0;

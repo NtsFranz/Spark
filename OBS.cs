@@ -47,6 +47,7 @@ namespace Spark
 
 		private void LeftGame(g_Instance obj)
 		{
+			if (!instance.IsConnected) return;
 			string scene = SparkSettings.instance.obsBetweenGameScene;
 			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
 			instance.SetCurrentScene(scene);
@@ -54,6 +55,7 @@ namespace Spark
 
 		private void JoinedGame(g_Instance obj)
 		{
+			if (!instance.IsConnected) return;
 			string scene = SparkSettings.instance.obsInGameScene;
 			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
 			instance.SetCurrentScene(scene);
@@ -98,6 +100,7 @@ namespace Spark
 
 		private void SetSceneIfLastReplay(string scene, int replayNum)
 		{
+			if (!instance.IsConnected) return;
 			// the last event takes precednce
 			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
 			if (replayNum == currentReplay) instance.SetCurrentScene(scene);

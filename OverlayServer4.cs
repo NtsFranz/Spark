@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
@@ -13,6 +15,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
@@ -55,12 +58,20 @@ namespace Spark
 					app.UseDeveloperExceptionPage();
 				}
 
+				app.UseStaticFiles();
+
 				app.UseRouting();
 
 				app.UseEndpoints(endpoints =>
 				{
-					endpoints.MapGet("/",
-						async context => { await context.Response.WriteAsync("Locally hosted Spark routes."); });
+					OverlaysVRML.MapRoutes(endpoints);
+
+
+					endpoints.MapGet("/", async context =>
+					{
+						string file = ReadResource("index.html");
+						await context.Response.WriteAsync(file);
+					});
 
 					endpoints.MapGet("/spark_info", async context =>
 					{
@@ -278,92 +289,209 @@ namespace Spark
 					});
 
 
-					endpoints.MapGet("/Inconsolata.ttf", async context =>
+
+					endpoints.MapGet("/disc_position_heatmap", async context =>
 					{
-						string file = ReadResource("Inconsolata.ttf");
-						await context.Response.WriteAsync(file);
+						await GenerateDiscPositionHeatMap(context, "");
 					});
+				});
+			}
+		}
 
 
-					endpoints.MapGet("/position_map", async context =>
+
+
+		[Serializable]
+		private class xyPos
+		{
+			public float x;
+			public float y;
+
+			public xyPos(float x, float y)
+			{
+				this.x = x;
+				this.y = y;
+			}
+		}
+		
+		public static string ReadResource(string name)
+		{
+			// Determine path
+			Assembly assembly = Assembly.GetExecutingAssembly();
+			// Format: "{Namespace}.{Folder}.{filename}.{Extension}"
+			string resourcePath = assembly.GetManifestResourceNames().Single(str => str.EndsWith(name));
+
+			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
+			if (stream == null) return "";
+			using StreamReader reader = new StreamReader(stream);
+			return reader.ReadToEnd();
+		}
+
+		public static async Task<Dictionary<string, string>> GetOverlays(string accessCode)
+		{
+			try
+			{
+				Dictionary<string, string> data = new Dictionary<string, string>();
+				using WebClient webClient = new WebClient();
+				byte[] result = webClient.DownloadData(Program.API_URL_2 + "get_overlays/" + accessCode + "/" +
+				                                       DiscordOAuth.oauthToken);
+				// Stream resp = await Program.GetRequestAsyncStream(Program.API_URL_2 + "get_overlays/" + accessCode + "/" + DiscordOAuth.oauthToken, null);
+				// await using MemoryStream file = new MemoryStream();
+				// await resp.CopyToAsync(file);
+				await using MemoryStream file = new MemoryStream(result);
+				using ZipArchive zip = new ZipArchive(file, ZipArchiveMode.Read);
+				foreach (ZipArchiveEntry entry in zip.Entries)
+				{
+					await using Stream stream = entry.Open();
+					using StreamReader reader = new StreamReader(stream);
+					data[entry.Name] = await reader.ReadToEndAsync();
+				}
+
+				return data;
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+
+		public static Stream GenerateStreamFromString(string s)
+		{
+			MemoryStream stream = new MemoryStream();
+			StreamWriter writer = new StreamWriter(stream);
+			writer.Write(s);
+			writer.Flush();
+			stream.Position = 0;
+			return stream;
+		}
+
+		public static List<List<Dictionary<string, object>>> GetMatchStats()
+		{
+			// gets a list of all previous matches in memory that are for the current set
+			List<MatchData> selectedMatches = Program.lastMatches
+				.Where(m => m.customId == Program.matchData.customId &&
+				            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+				.ToList();
+			if (Program.matchData != null) selectedMatches.Add(Program.matchData);
+
+			Dictionary<string, MatchPlayer> bluePlayers = new Dictionary<string, MatchPlayer>();
+			IEnumerable<MatchPlayer> blueRoundPlayers = selectedMatches
+				.SelectMany(m => m.players.Values)
+				.Where(p => p.teamData.teamColor == g_Team.TeamColor.blue);
+			foreach (MatchPlayer blueRoundPlayer in blueRoundPlayers)
+			{
+				if (bluePlayers.ContainsKey(blueRoundPlayer.Name))
+				{
+					bluePlayers[blueRoundPlayer.Name] += blueRoundPlayer;
+				}
+				else
+				{
+					bluePlayers[blueRoundPlayer.Name] = new MatchPlayer(blueRoundPlayer);
+				}
+			}
+
+			Dictionary<string, MatchPlayer> orangePlayers = new Dictionary<string, MatchPlayer>();
+			IEnumerable<MatchPlayer> orangeRoundPlayers = selectedMatches
+				.SelectMany(m => m.players.Values)
+				.Where(p => p.teamData.teamColor == g_Team.TeamColor.orange);
+			foreach (MatchPlayer orangeRoundPlayer in orangeRoundPlayers)
+			{
+				if (orangePlayers.ContainsKey(orangeRoundPlayer.Name))
+				{
+					orangePlayers[orangeRoundPlayer.Name] += orangeRoundPlayer;
+				}
+				else
+				{
+					orangePlayers[orangeRoundPlayer.Name] = new MatchPlayer(orangeRoundPlayer);
+				}
+			}
+
+			return new List<List<Dictionary<string, object>>>
+			{
+				bluePlayers.Values.Select(p => p.ToDict()).ToList(),
+				orangePlayers.Values.Select(p => p.ToDict()).ToList(),
+			};
+		}
+
+		public static async Task GenerateDiscPositionHeatMap(HttpContext context, string additionalCSS)
+		{
+			context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+			context.Response.Headers.Add("Access-Control-Allow-Headers",
+				"Content-Type, Accept, X-Requested-With");
+
+			if (Program.matchData == null)
+			{
+				await context.Response.WriteAsync("Not in match yet");
+			}
+			else
+			{
+				// get the most recent file in the replay folder
+				DirectoryInfo directory = new DirectoryInfo(SparkSettings.instance.saveFolder);
+				FileInfo[] files = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
+					.Where(f => f.Name.StartsWith("rec")).ToArray();
+
+
+				// gets a list of all the times of previous matches in memory that are for the current set
+				List<DateTime> selectedMatchTimes = Program.lastMatches
+					.Where(m => m.customId == Program.matchData.customId &&
+					            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+					.Select(m => m.matchTime).ToList();
+				Debug.Assert(Program.matchData != null, "Program.matchData != null");
+				selectedMatchTimes.Add(Program.matchData.matchTime);
+
+				// finds all the files that match one of the matches in memory
+				FileInfo[] selectedFiles = files
+					.Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss",
+						            CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
+					            && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
+					)
+					.ToArray();
+
+				// function to check if a time matches fuzzily
+				bool MatchesOneTime(DateTime time, List<DateTime> timeList, TimeSpan diff)
+				{
+					foreach (DateTime time2 in timeList)
 					{
-						context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-						context.Response.Headers.Add("Access-Control-Allow-Headers",
-							"Content-Type, Accept, X-Requested-With");
-
-						if (Program.matchData == null)
+						if ((time - time2).Duration() < diff)
 						{
-							await context.Response.WriteAsync("Not in match yet");
+							return true;
 						}
-						else
+					}
+
+					return false;
+				}
+
+				//FileInfo firstFile = files.First();
+				//FileInfo[] selectedFiles = files.Where(f => firstFile.LastWriteTime - f.LastWriteTime < TimeSpan.FromMinutes(20)).ToArray();
+				if (selectedFiles.Length == 0)
+				{
+					await context.Response.WriteAsync("No recent replay file found.");
+				}
+				else
+				{
+					List<xyPos> positions = new List<xyPos>();
+					foreach (FileInfo file in selectedFiles)
+					{
+						ReplayFileReader reader = new ReplayFileReader();
+						ReplayFile replayFile =
+							reader.LoadFileAsync(file.FullName, processFrames: true).Result;
+						if (replayFile == null) continue;
+
+						// loop through every nth frame
+						const int n = 10;
+						int nframes = replayFile.nframes;
+						Console.WriteLine(nframes);
+						for (int i = 0; i < nframes; i += n)
 						{
-							// get the most recent file in the replay folder
-							DirectoryInfo directory = new DirectoryInfo(SparkSettings.instance.saveFolder);
-							FileInfo[] files = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
-								.Where(f => f.Name.StartsWith("rec")).ToArray();
+							g_Instance frame = replayFile.GetFrame(i);
 
+							if (frame.game_status != "playing") continue;
+							Vector3 pos = frame.disc.position.ToVector3();
+							positions.Add(new xyPos((int) (pos.X * 5 + 100), (int) (pos.Z * 5 + 225)));
+						}
+					}
 
-							// gets a list of all the times of previous matches in memory that are for the current set
-							List<DateTime> selectedMatchTimes = Program.lastMatches
-								.Where(m => m.customId == Program.matchData.customId &&
-								            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
-								.Select(m => m.matchTime).ToList();
-							Debug.Assert(Program.matchData != null, "Program.matchData != null");
-							selectedMatchTimes.Add(Program.matchData.matchTime);
-
-							// finds all the files that match one of the matches in memory
-							FileInfo[] selectedFiles = files
-								.Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss",
-									            CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
-								            && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
-								)
-								.ToArray();
-
-							// function to check if a time matches fuzzily
-							bool MatchesOneTime(DateTime time, List<DateTime> timeList, TimeSpan diff)
-							{
-								foreach (DateTime time2 in timeList)
-								{
-									if ((time - time2).Duration() < diff)
-									{
-										return true;
-									}
-								}
-
-								return false;
-							}
-
-							//FileInfo firstFile = files.First();
-							//FileInfo[] selectedFiles = files.Where(f => firstFile.LastWriteTime - f.LastWriteTime < TimeSpan.FromMinutes(20)).ToArray();
-							if (selectedFiles.Length == 0)
-							{
-								await context.Response.WriteAsync("No recent replay file found.");
-							}
-							else
-							{
-								List<xyPos> positions = new List<xyPos>();
-								foreach (FileInfo file in selectedFiles)
-								{
-									ReplayFileReader reader = new ReplayFileReader();
-									ReplayFile replayFile =
-										reader.LoadFileAsync(file.FullName, processFrames: true).Result;
-									if (replayFile == null) continue;
-
-									// loop through every nth frame
-									const int n = 10;
-									int nframes = replayFile.nframes;
-									Console.WriteLine(nframes);
-									for (int i = 0; i < nframes; i += n)
-									{
-										g_Instance frame = replayFile.GetFrame(i);
-
-										if (frame.game_status != "playing") continue;
-										Vector3 pos = frame.disc.position.ToVector3();
-										positions.Add(new xyPos((int) (pos.X * 5 + 100), (int) (pos.Z * 5 + 225)));
-									}
-								}
-
-								string resp = @"<!DOCTYPE html>
+					string resp = @"<!DOCTYPE html>
                     <html lang=""en"">
 
 					<head>
@@ -395,11 +523,6 @@ namespace Spark
             to {
                 opacity: 1;
             }
-        }
-
-        @font-face {
-            font-family: goodtimes;
-            src: url(https://cdn.discordapp.com/attachments/706393776918364211/838618091817795634/goodtimes.ttf);
         }
 
         #heatmapContainer {
@@ -452,6 +575,10 @@ namespace Spark
             padding: 4px 0;
         }
     </style>
+
+	<style>
+		" + additionalCSS + @"
+	</style>
 </head>
 
 <body>
@@ -462,7 +589,7 @@ namespace Spark
         <!-- Plotly chart will be drawn inside this DIV -->
     </div>
     <div id='backgrounddiv'></div>
-    <h2 id='title'>Disc Position</h2>
+    <!--<h2 id='title'>Disc Position</h2>-->
 					<script src=""https://cdnjs.cloudflare.com/ajax/libs/heatmap.js/2.0.2/heatmap.min.js"" integrity=""sha512-R35I7hl+fX4IeSVk1c99L/SW0RkDG5dyt2EgU/OY2t0Bx16wC89HGkiXqYykemT0qAYmZOsO5JtxPgv0uzSyKQ=="" crossorigin=""anonymous""></script>
 					<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 					<script>
@@ -481,9 +608,9 @@ namespace Spark
 					});
 
 					t = "
-								              +
-								              JsonConvert.SerializeObject(positions)
-								              + @";
+					              +
+					              JsonConvert.SerializeObject(positions)
+					              + @";
 
 					// set the generated dataset
 					heatmap.setData({
@@ -537,88 +664,7 @@ namespace Spark
 					</body>
 
 					</html>";
-								await context.Response.WriteAsync(resp);
-							}
-						}
-					});
-				});
-			}
-
-			private static List<List<Dictionary<string, object>>> GetMatchStats()
-			{
-				// gets a list of all previous matches in memory that are for the current set
-				List<MatchData> selectedMatches = Program.lastMatches
-					.Where(m => m.customId == Program.matchData.customId &&
-					            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
-					.ToList();
-				if (Program.matchData != null) selectedMatches.Add(Program.matchData);
-
-				Dictionary<string, MatchPlayer> bluePlayers = new Dictionary<string, MatchPlayer>();
-				IEnumerable<MatchPlayer> blueRoundPlayers = selectedMatches
-					.SelectMany(m => m.players.Values)
-					.Where(p => p.teamData.teamColor == g_Team.TeamColor.blue);
-				foreach (MatchPlayer blueRoundPlayer in blueRoundPlayers)
-				{
-					if (bluePlayers.ContainsKey(blueRoundPlayer.Name))
-					{
-						bluePlayers[blueRoundPlayer.Name] += blueRoundPlayer;
-					}
-					else
-					{
-						bluePlayers[blueRoundPlayer.Name] = new MatchPlayer(blueRoundPlayer);
-					}
-				}
-
-				Dictionary<string, MatchPlayer> orangePlayers = new Dictionary<string, MatchPlayer>();
-				IEnumerable<MatchPlayer> orangeRoundPlayers = selectedMatches
-					.SelectMany(m => m.players.Values)
-					.Where(p => p.teamData.teamColor == g_Team.TeamColor.orange);
-				foreach (MatchPlayer orangeRoundPlayer in orangeRoundPlayers)
-				{
-					if (orangePlayers.ContainsKey(orangeRoundPlayer.Name))
-					{
-						orangePlayers[orangeRoundPlayer.Name] += orangeRoundPlayer;
-					}
-					else
-					{
-						orangePlayers[orangeRoundPlayer.Name] = new MatchPlayer(orangeRoundPlayer);
-					}
-				}
-
-				return new List<List<Dictionary<string, object>>>
-				{
-					bluePlayers.Values.Select(p => p.ToDict()).ToList(),
-					orangePlayers.Values.Select(p => p.ToDict()).ToList(),
-				};
-			}
-
-
-			public string ReadResource(string name)
-			{
-				// Determine path
-				var assembly = Assembly.GetExecutingAssembly();
-				string resourcePath = name;
-				// Format: "{Namespace}.{Folder}.{filename}.{Extension}"
-				resourcePath = assembly.GetManifestResourceNames().Single(str => str.EndsWith(name));
-
-				using (Stream stream = assembly.GetManifestResourceStream(resourcePath))
-				using (StreamReader reader = new StreamReader(stream))
-				{
-					return reader.ReadToEnd();
-				}
-			}
-
-
-			[Serializable]
-			private class xyPos
-			{
-				public float x;
-				public float y;
-
-				public xyPos(float x, float y)
-				{
-					this.x = x;
-					this.y = y;
+					await context.Response.WriteAsync(resp);
 				}
 			}
 		}

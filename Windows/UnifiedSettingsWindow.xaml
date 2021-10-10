@@ -142,6 +142,7 @@
 								<TextBlock Text="{x:Static p:Resources.CameraSettingsDescription}" TextWrapping="Wrap" Margin="10,10,10,10"></TextBlock>
 								<CheckBox x:Name="HideUICheckbox" Content="{x:Static p:Resources.Hide_EchoVR_UI}" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Click="HideEchoVRUINow"/>
 								<CheckBox Content="{x:Static p:Resources.Toggle_Minimap_after_Goals}" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
+								<CheckBox x:Name="HideMinimapCheckbox" Content="Don't Show Minimap (M)" IsChecked="{l:SettingBinding alwaysHideMinimap}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Click="HideMinimapNow" />
 								<CheckBox x:Name="MutePlayerCommsCheckbox"  Content="Mute Player Comms (F5)" IsChecked="{l:SettingBinding mutePlayerComms}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4"  Click="ToggleTeamMuteNow"/>
 								<CheckBox x:Name="HideNameplates" Content="Hide Player Nameplates" IsChecked="{l:SettingBinding hideNameplates}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4"  Click="ToggleNameplatesNow"/>
 								<Label Content="{x:Static p:Resources.Camera_Mode_}"/>
