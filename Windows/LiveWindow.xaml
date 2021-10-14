@@ -226,7 +226,8 @@
 
 						</StackPanel>
 
-						<GroupBox x:Name="groupBox" Margin="10,10,10,10" Grid.Row="1">
+						
+						<GroupBox Margin="10,10,10,10" Grid.Row="1">
 							<GroupBox.Header>
 								<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,10,0">
 									<Label Content="{x:Static p:Resources.Hosted_Matches}"/>
@@ -239,6 +240,7 @@
 							</GroupBox.Header>
 							<ScrollViewer MaxHeight="480">
 								<StackPanel x:Name="MatchesBox">
+									
 									<StackPanel x:Name="IgniteMatchesBox">
 										<GroupBox x:Name="button" Margin="10,10,10,10" Visibility="Collapsed">
 
@@ -283,13 +285,17 @@
 								<StackPanel Orientation="Horizontal">
 									<CheckBox x:Name="hostingMatchCheckbox" Margin="10,0,10,0"/>
 									<Label x:Name="hostingMatchLabel" Content="{x:Static p:Resources.Host_Match}"/>
+									
+									<TextBlock Padding="10,10,10,10" Background="#FF492727" TextWrapping="Wrap" Visibility="{Binding DiscordNotLoggedInVisible}">
+										<Run Text="Match Hosting only works when you're logged in with Discord (top left of main window)." />
+									</TextBlock>
 								</StackPanel>
 							</Button>
 							<StackPanel Orientation="Horizontal">
 								<Label Content="{x:Static p:Resources.Visibility_}"/>
 								<ComboBox Width="150" SelectedIndex="{l:SettingBinding atlasHostingVisibility}">
 									<ComboBoxItem Content="{x:Static p:Resources.Public}"/>
-									<ComboBoxItem Content="{x:Static p:Resources.Casters_Only}"/>
+									<!-- <ComboBoxItem Content="{x:Static p:Resources.Casters_Only}"/> -->
 									<ComboBoxItem Content="{x:Static p:Resources.Private}"/>
 								</ComboBox>
 								<Button Content="{x:Static p:Resources.Whitelist}" Click="WhitelistButtonClicked" Margin="10,0,10,0" Padding="10,0,10,0"/>

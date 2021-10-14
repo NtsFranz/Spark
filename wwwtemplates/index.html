@@ -11,6 +11,17 @@
         h1 {
             font-size: 2em;
         }
+
+        @font-face {
+            font-family: 'Inconsolata';
+            src: url('/fonts/Inconsolata.woff2') format('woff2'),
+                 url('/fonts/Inconsolata.woff') format('woff'),
+                 url('/fonts/Inconsolata.ttf') format('truetype');
+        }
+
+        body {
+            font-family: 'Inconsolata';
+        }
     </style>
 </head>
 
@@ -22,7 +33,7 @@
         <div class="hero-body" style="background-color: #0003;padding: 4rem 1.5rem;">
             <div class="container has-text-centered">
                 <h1>Spark</h1>
-                <img src="img/ignite_logo.png" style="height:15rem;">
+                <img src="/img/ignite_logo.png" style="height:15rem;">
                 <p class="subtitle" style="font-size: 1.2em;">
                     <span style="color: var(--ignite-orange);">Spark</span> is a Windows desktop program that can
                     record, process, and upload EchoVR data from either a local EchoVR client or an Oculus Quest on the

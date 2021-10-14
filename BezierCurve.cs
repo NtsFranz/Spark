@@ -26,26 +26,26 @@ namespace Spark
 				// loop through all keyframes except first and last
 				for (int i = 1; i < keyframes.Count - 1; i++)
 				{
-					Vector3 dir = keyframes[i + 1].position - keyframes[i - 1].position;
-					Quaternion rotDiff = keyframes[i + 1].rotation - keyframes[i - 1].rotation;
+					Vector3 dir = keyframes[i + 1].Position - keyframes[i - 1].Position;
+					Quaternion rotDiff = keyframes[i + 1].Rotation - keyframes[i - 1].Rotation;
 					
 					float divisionFactor = 6;
-					float dist1 = Vector3.Distance(keyframes[i + 1].position, keyframes[i].position);
-					float dist2 = Vector3.Distance(keyframes[i - 1].position, keyframes[i].position);
+					float dist1 = Vector3.Distance(keyframes[i + 1].Position, keyframes[i].Position);
+					float dist2 = Vector3.Distance(keyframes[i - 1].Position, keyframes[i].Position);
 					if (Math.Min(dist1, dist2) / Math.Max(dist1, dist2) < .5f)
 					{
 						divisionFactor = 8;
 					}
 					
 					CameraTransform handle1 = new(
-						keyframes[i].position - dir / divisionFactor,
-						// Quaternion.Lerp(keyframes[i - 1].rotation, keyframes[i].rotation, .5f)
-						keyframes[i].rotation - rotDiff * .25f
+						keyframes[i].Position - dir / divisionFactor,
+						// Quaternion.Lerp(keyframes[i - 1].Rotation, keyframes[i].Rotation, .5f)
+						keyframes[i].Rotation - rotDiff * .25f
 					);
 					CameraTransform handle2 = new(
-						keyframes[i].position + dir / divisionFactor,
-						// Quaternion.Lerp(keyframes[i].rotation, keyframes[i + 1].rotation, .5f)
-						keyframes[i].rotation + rotDiff * .25f
+						keyframes[i].Position + dir / divisionFactor,
+						// Quaternion.Lerp(keyframes[i].Rotation, keyframes[i + 1].Rotation, .5f)
+						keyframes[i].Rotation + rotDiff * .25f
 					);
 
 					currentCurve.Add(handle1);
@@ -138,8 +138,8 @@ namespace Spark
 				i *= 3;
 			}
 
-			return Bezier.GetFirstDerivative(keyframes[i].position, keyframes[i + 1].position,
-				keyframes[i + 2].position, keyframes[i + 3].position, t);
+			return Bezier.GetFirstDerivative(keyframes[i].Position, keyframes[i + 1].Position,
+				keyframes[i + 2].Position, keyframes[i + 3].Position, t);
 		}
 
 		public Vector3 GetDirection(float t)
@@ -197,7 +197,7 @@ namespace Spark
 			}
 
 			LUT = new float[samples];
-			Vector3 lastPosition = keyframes[0].position;
+			Vector3 lastPosition = keyframes[0].Position;
 			LUT[0] = 0;
 			for (int i = 1; i < samples; i++)
 			{
@@ -213,7 +213,7 @@ namespace Spark
 				Debug.WriteLine(LUT[i]);
 			}
 
-			Debug.WriteLine($"Arc Length for curve {keyframes[0].position.X}: {arcLength}");
+			Debug.WriteLine($"Arc Length for curve {keyframes[0].Position.X}: {arcLength}");
 		}
 
 		private float GetDistanceNormalizedT(float t)
@@ -243,11 +243,11 @@ namespace Spark
 
 			return keyframes.Length switch
 			{
-				1 => keyframes[0].position,
-				2 => Bezier.GetPoint(keyframes[0].position, keyframes[1].position, t),
-				3 => Bezier.GetPoint(keyframes[0].position, keyframes[1].position, keyframes[2].position, t),
-				4 => Bezier.GetPoint(keyframes[0].position, keyframes[1].position, keyframes[2].position,
-					keyframes[3].position, t),
+				1 => keyframes[0].Position,
+				2 => Bezier.GetPoint(keyframes[0].Position, keyframes[1].Position, t),
+				3 => Bezier.GetPoint(keyframes[0].Position, keyframes[1].Position, keyframes[2].Position, t),
+				4 => Bezier.GetPoint(keyframes[0].Position, keyframes[1].Position, keyframes[2].Position,
+					keyframes[3].Position, t),
 				_ => Vector3.Zero
 			};
 		}
@@ -258,11 +258,11 @@ namespace Spark
 
 			return keyframes.Length switch
 			{
-				1 => keyframes[0].rotation,
-				2 => Bezier.GetRotation(keyframes[0].rotation, keyframes[1].rotation, t),
-				3 => Bezier.GetRotation(keyframes[0].rotation, keyframes[1].rotation, keyframes[2].rotation, t),
-				4 => Bezier.GetRotation(keyframes[0].rotation, keyframes[1].rotation, keyframes[2].rotation,
-					keyframes[3].rotation, t),
+				1 => keyframes[0].Rotation,
+				2 => Bezier.GetRotation(keyframes[0].Rotation, keyframes[1].Rotation, t),
+				3 => Bezier.GetRotation(keyframes[0].Rotation, keyframes[1].Rotation, keyframes[2].Rotation, t),
+				4 => Bezier.GetRotation(keyframes[0].Rotation, keyframes[1].Rotation, keyframes[2].Rotation,
+					keyframes[3].Rotation, t),
 				_ => Quaternion.Identity
 			};
 		}

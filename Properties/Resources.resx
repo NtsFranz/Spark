@@ -1313,4 +1313,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   <data name="Playercards" xml:space="preserve">
     <value>Playercards</value>
   </data>
+  <data name="CameraSettingsDescription" xml:space="preserve">
+    <value>These settings are only used if the game is launched in spectator mode. This includes the Spectate Me function as well as spectating other matches.</value>
+  </data>
 </root>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,13 +19,10 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Spark.Properties;
 using NetMQ;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static Logger;
-using System.Numerics;
-using GenHTTP.Engine;
 
 namespace Spark
 {
@@ -107,6 +103,12 @@ namespace Spark
 		private const int GWL_STYLE = (-16);
 		private const int WS_VISIBLE = 0x10000000;
 		private const int GWL_USERDATA = (-21);
+		
+		
+		public static Visibility DiscordNotLoggedInVisible => 
+			DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
+		public static Visibility DiscordLoggedInVisible => 
+			!DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
 
 		public LiveWindow()
 		{
@@ -1891,7 +1893,7 @@ namespace Spark
 					(Program.lastFrame.teams[0].stats != null && match.blue_points != Program.lastFrame.teams[0].stats.points) ||
 					(Program.lastFrame.teams[1].stats != null && match.orange_points != Program.lastFrame.teams[1].stats.points) ||
 					match.is_protected != (SparkSettings.instance.atlasHostingVisibility > 0) ||
-					match.visible_to_casters != (SparkSettings.instance.atlasHostingVisibility == 1) ||
+					// match.visible_to_casters != (SparkSettings.instance.atlasHostingVisibility == 1) ||
 					match.whitelist.Length != Program.atlasWhitelist.AllPlayers.Count;
 
 				if (diff)
@@ -1902,7 +1904,7 @@ namespace Spark
 					match.blue_points = Program.lastFrame.teams[0].stats != null ? Program.lastFrame.teams[0].stats.points : 0;
 					match.orange_points = Program.lastFrame.teams[1].stats != null ? Program.lastFrame.teams[1].stats.points : 0;
 					match.is_protected = (SparkSettings.instance.atlasHostingVisibility > 0);
-					match.visible_to_casters = (SparkSettings.instance.atlasHostingVisibility == 1);
+					// match.visible_to_casters = (SparkSettings.instance.atlasHostingVisibility == 1);
 					match.server_score = Program.matchData.ServerScore;
 					match.username = Program.lastFrame.client_name;
 					match.whitelist = Program.atlasWhitelist.AllPlayers.ToArray();
@@ -1916,7 +1918,7 @@ namespace Spark
 						hostURL,
 						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						data,
-						(responseJSON) => { GetAtlasMatches(); });
+						(_) => { GetAtlasMatches(); });
 				}
 
 				Thread.Sleep(100);

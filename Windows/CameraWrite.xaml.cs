@@ -16,7 +16,9 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
+using Quaternion = System.Numerics.Quaternion;
 using Timer = System.Timers.Timer;
 
 namespace Spark
@@ -26,9 +28,10 @@ namespace Spark
 	/// </summary>
 	public partial class CameraWrite : UserControl
 	{
-		private LiveWindow liveWindow = null;
+		private LiveWindow liveWindow;
 
-		public const string url = "http://127.0.0.1:6723/";
+		public const string url = "http://127.0.0.1:6721/camera_transform";
+		public const string sessionUrl = "http://127.0.0.1:6721/session";
 
 		public string Duration
 		{
@@ -38,7 +41,7 @@ namespace Spark
 
 		public float duration = 5;
 
-		public bool orbitingDisc = false;
+		public bool orbitingDisc;
 		public float rotSpeed { get; set; } = 30;
 		public float orbitRadius { get; set; } = 2;
 		public float followSmoothing { get; set; } = 1f;
@@ -62,30 +65,30 @@ namespace Spark
 
 		public float xPos
 		{
-			get => manualTransform.position.X;
+			get => manualTransform.px;
 			set
 			{
-				manualTransform.position.X = value;
+				manualTransform.px = value;
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
 
 		public float yPos
 		{
-			get => manualTransform.position.Y;
+			get => manualTransform.py;
 			set
 			{
-				manualTransform.position.Y = value;
+				manualTransform.py = value;
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
 
 		public float zPos
 		{
-			get => manualTransform.position.Z;
+			get => manualTransform.pz;
 			set
 			{
-				manualTransform.position.Z = value;
+				manualTransform.pz = value;
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
@@ -93,13 +96,13 @@ namespace Spark
 		public float xRot
 		{
 			//get => QuaternionToEuler(manualTransform.rotation).X;
-			get => manualTransform.rotation.X;
+			get => manualTransform.qx;
 			set
 			{
 				//manualTransform.rotation = Quaternion.CreateFromYawPitchRoll(
 				//	value * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad
 				//);
-				manualTransform.rotation.X = value;
+				manualTransform.qx = value;
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
@@ -107,13 +110,13 @@ namespace Spark
 		public float yRot
 		{
 			//get => QuaternionToEuler(manualTransform.rotation).Y;
-			get => manualTransform.rotation.Y;
+			get => manualTransform.qy;
 			set
 			{
 				//manualTransform.rotation = Quaternion.CreateFromYawPitchRoll(
 				//	xRot * Deg2Rad, value * Deg2Rad, zRot * Deg2Rad
 				//);
-				manualTransform.rotation.Y = value;
+				manualTransform.qy = value;
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
@@ -121,23 +124,33 @@ namespace Spark
 		public float zRot
 		{
 			//get => QuaternionToEuler(manualTransform.rotation).Z;
-			get => manualTransform.rotation.Z;
+			get => manualTransform.qz;
 			set
 			{
 				//manualTransform.rotation = Quaternion.CreateFromYawPitchRoll(
 				//	xRot * Deg2Rad, yRot * Deg2Rad, value * Deg2Rad
 				//);
-				manualTransform.rotation.Z = value;
+				manualTransform.qz = value;
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
 
 		public float wRot
 		{
-			get => manualTransform.rotation.W;
+			get => manualTransform.qw;
 			set
 			{
-				manualTransform.rotation.W = value;
+				manualTransform.qw = value;
+				if (sliderListenersActivated) WriteXYZ();
+			}
+		}
+
+		public float fov
+		{
+			get => manualTransform.fovy;
+			set
+			{
+				manualTransform.fovy = value;
 				if (sliderListenersActivated) WriteXYZ();
 			}
 		}
@@ -148,25 +161,60 @@ namespace Spark
 		{
 			public CameraTransform()
 			{
-				position = Vector3.Zero;
-				rotation = Quaternion.Identity;
 			}
 
-			public CameraTransform(Vector3 pos, Quaternion rot)
+			public CameraTransform(Vector3 position, Quaternion rotation)
 			{
-				position = pos;
-				rotation = rot;
+				px = position.X;
+				py = position.Y;
+				pz = position.Z;
+
+				qx = rotation.X;
+				qy = rotation.Y;
+				qz = rotation.Z;
+				qw = rotation.W;
 			}
 
-			public Vector3 position;
-			public Quaternion rotation;
+			public float px;
+			public float py;
+			public float pz;
+
+			public float qx;
+			public float qy;
+			public float qz;
+			public float qw = 1;
+
+			public float fovy = 1;
+
+			public Vector3 Position
+			{
+				get => new Vector3(px, py, pz);
+				set
+				{
+					px = value.X;
+					py = value.Y;
+					pz = value.Z;
+				}
+			}
+
+			public Quaternion Rotation
+			{
+				get => new Quaternion(qx, qy, qz, qw);
+				set
+				{
+					qx = value.X;
+					qy = value.Y;
+					qz = value.Z;
+					qw = value.W;
+				}
+			}
 		}
 
 		public CameraTransform start;
 		public CameraTransform end;
 
 		public bool isAnimating;
-		private float animationProgress = 0;
+		private float animationProgress;
 		public Thread animationThread;
 		public Thread orbitThread;
 
@@ -203,8 +251,8 @@ namespace Spark
 		//	}
 		//}
 
-		private GlobalHotKey[] numPadHotKeys = null;
-		
+		private GlobalHotKey[] numPadHotKeys;
+
 
 		public CameraWrite()
 		{
@@ -229,7 +277,7 @@ namespace Spark
 
 			sliderListenersActivated = true;
 
-			installWriteAPIButton.Content = File.Exists(WriteAPIExePath) ? "Launch WriteAPI" : "Install WriteAPI";
+			// installWriteAPIButton.Content = File.Exists(WriteAPIExePath) ? "Launch WriteAPI" : "Install WriteAPI";
 
 			// set the current animation in memory
 			//if the key exists normally
@@ -251,8 +299,9 @@ namespace Spark
 			{
 				CurrentAnimation = new List<CameraTransform>();
 			}
-			
-			numPadHotKeys = new GlobalHotKey[]{
+
+			numPadHotKeys = new GlobalHotKey[]
+			{
 				new GlobalHotKey(Key.NumPad1, KeyModifier.None, (_) => { TryGoToWaypoint(0); }),
 				new GlobalHotKey(Key.NumPad2, KeyModifier.None, (_) => { TryGoToWaypoint(1); }),
 				new GlobalHotKey(Key.NumPad3, KeyModifier.None, (_) => { TryGoToWaypoint(2); }),
@@ -280,7 +329,7 @@ namespace Spark
 		{
 			CameraTransform[] waypoints = CameraWriteSettings.instance.waypoints.Values.ToArray();
 			if (waypoints.Length <= index) return;
-			Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(waypoints[index]), null);
+			SetCamera(waypoints[index]);
 		}
 
 		private void TryPlayAnim(int index)
@@ -289,9 +338,8 @@ namespace Spark
 			Dispatcher.Invoke(() =>
 			{
 				AnimationsComboBox.SelectedIndex = index;
-				StartKeyframeAnimation(null,null);
+				StartKeyframeAnimation(null, null);
 			});
-
 		}
 
 		private void RefreshAnimationsComboBoxFromSettings()
@@ -324,28 +372,14 @@ namespace Spark
 
 		private void SetStart(object sender, RoutedEventArgs e)
 		{
-			try
-			{
-				Program.GetRequestCallback(url, null,
-					response => { start = JsonConvert.DeserializeObject<CameraTransform>(response); });
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Can't get camera position\n{ex}");
-			}
+			if (Program.lastFrame == null) return;
+			start = Program.lastFrame.GetCameraTransform();
 		}
 
 		private void SetEnd(object sender, RoutedEventArgs e)
 		{
-			try
-			{
-				Program.GetRequestCallback(url, null,
-					response => { end = JsonConvert.DeserializeObject<CameraTransform>(response); });
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Can't get camera position\n{ex}");
-			}
+			if (Program.lastFrame == null) return;
+			end = Program.lastFrame.GetCameraTransform();
 		}
 
 		private void StartAnimation(object sender, RoutedEventArgs e)
@@ -419,14 +453,12 @@ namespace Spark
 
 				CameraTransform newTransform = new(newPos, newRot);
 
-				string distance = Vector3.Distance(newPos, lastTransform.position) / sw.Elapsed.TotalSeconds + "\t" +
-				                  spline.GetCurve(t).Item1?.keyframes[0].position.X;
+				string distance = Vector3.Distance(newPos, lastTransform.Position) / sw.Elapsed.TotalSeconds + "\t" +
+				                  spline.GetCurve(t).Item1?.keyframes[0].px;
 				sw.Restart();
 				Debug.WriteLine(distance);
 
-				string data = JsonConvert.SerializeObject(newTransform);
-
-				Program.PostRequestCallback(url, null, data, null);
+				SetCamera(newTransform);
 
 				lastTransform = newTransform;
 
@@ -437,8 +469,7 @@ namespace Spark
 			// the if check is to avoid doing so if the stop button was clicked
 			if (animationProgress >= 1)
 			{
-				Program.PostRequestCallback(url, null,
-					JsonConvert.SerializeObject(CurrentAnimation.Last()), null);
+				SetCamera(CurrentAnimation.Last());
 			}
 
 			Dispatcher.Invoke(() => { startButton.Content = "Start"; });
@@ -469,19 +500,17 @@ namespace Spark
 					t = EaseOut(animationProgress);
 				}
 
-				Vector3 newPos = Vector3.Lerp(start.position, end.position, t);
-				Quaternion newRot = Quaternion.Slerp(start.rotation, end.rotation, t);
+				Vector3 newPos = Vector3.Lerp(start.Position, end.Position, t);
+				Quaternion newRot = Quaternion.Slerp(start.Rotation, end.Rotation, t);
 
-				CameraTransform newTransform = new(newPos, newRot);
+				CameraTransform newTransform = new CameraTransform(newPos, newRot);
 
-				string data = JsonConvert.SerializeObject(newTransform);
-
-				Program.PostRequestCallback(url, null, data, null);
+				SetCamera(newTransform);
 
 				Thread.Sleep(8);
 			}
 
-			Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(end), null);
+			SetCamera(end);
 
 			Dispatcher.Invoke(() => { startButton.Content = "Start"; });
 			animationProgress = 0;
@@ -516,14 +545,9 @@ namespace Spark
 
 		private void ReadXYZ(object sender, RoutedEventArgs e)
 		{
-			Program.GetRequestCallback(url, null, response =>
-			{
-				CameraTransform data = JsonConvert.DeserializeObject<CameraTransform>(response);
-				manualTransform = data;
-
-
-				Dispatcher.Invoke(() => { SetSliderPositions(); });
-			});
+			if (Program.lastFrame == null) return;
+			manualTransform = Program.lastFrame.GetCameraTransform();
+			SetSliderPositions();
 		}
 
 		private void SetSliderPositions()
@@ -534,16 +558,14 @@ namespace Spark
 
 			try
 			{
-				xSlider.Value = manualTransform.position.X;
-				ySlider.Value = manualTransform.position.Y;
-				zSlider.Value = manualTransform.position.Z;
+				xSlider.Value = manualTransform.px;
+				ySlider.Value = manualTransform.py;
+				zSlider.Value = manualTransform.pz;
 
-				//Vector3 rot = QuaternionToEuler(manualTransform.rotation);
-				Quaternion rot = manualTransform.rotation;
-				xRotSlider.Value = rot.X;
-				yRotSlider.Value = rot.Y;
-				zRotSlider.Value = rot.Z;
-				wRotSlider.Value = rot.W;
+				xRotSlider.Value = manualTransform.qx;
+				yRotSlider.Value = manualTransform.qy;
+				zRotSlider.Value = manualTransform.qz;
+				wRotSlider.Value = manualTransform.qw;
 			}
 			finally
 			{
@@ -560,13 +582,14 @@ namespace Spark
 		{
 			try
 			{
-				CameraTransform transform = new CameraTransform(
-					new Vector3(xPos, yPos, zPos),
-					new Quaternion(xRot, yRot, zRot, wRot)
-					//Quaternion.CreateFromYawPitchRoll(xRot * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad)
-				);
+				CameraTransform transform = new CameraTransform()
+				{
+					px = xPos, py = yPos, pz = zPos,
+					qx = xRot, qy = yRot, qz = zRot, qw = wRot,
+					fovy = fov,
+				};
 
-				Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(transform), null);
+				SetCamera(transform);
 			}
 			catch (Exception ex)
 			{
@@ -651,7 +674,7 @@ namespace Spark
 				};
 				goTo.Click += (_, _) =>
 				{
-					Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(wp.Value), null);
+					SetCamera(wp.Value);
 					RegenerateWaypointButtons();
 				};
 				Button delete = new Button
@@ -679,7 +702,7 @@ namespace Spark
 		private void RegenerateKeyframeButtons()
 		{
 			KeyframesList.Children.Clear();
-			
+
 
 			for (int i = 0; i < CurrentAnimation.Count; i++)
 			{
@@ -716,17 +739,12 @@ namespace Spark
 				};
 				replace.Click += (_, _) =>
 				{
-					Program.GetRequestCallback(url, null, response =>
-					{
-						CameraTransform data = JsonConvert.DeserializeObject<CameraTransform>(response);
+					if (Program.lastFrame == null) return;
+					CurrentAnimation[CurrentAnimation.FindIndex(val => val == wp)] =
+						Program.lastFrame.GetCameraTransform();
 
-						if (data == null) return;
-
-						CurrentAnimation[CurrentAnimation.FindIndex(val => val == wp)] = data;
-
-						// update the UI with the new waypoint
-						Dispatcher.Invoke(RegenerateKeyframeButtons);
-					});
+					// update the UI with the new waypoint
+					RegenerateKeyframeButtons();
 				};
 				Button goTo = new Button
 				{
@@ -735,7 +753,7 @@ namespace Spark
 				};
 				goTo.Click += (_, _) =>
 				{
-					Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(wp), null);
+					SetCamera(wp);
 					RegenerateKeyframeButtons();
 				};
 				Button delete = new Button
@@ -770,20 +788,16 @@ namespace Spark
 				return;
 			}
 
-			Program.GetRequestCallback(url, null, response =>
-			{
-				CameraTransform data = JsonConvert.DeserializeObject<CameraTransform>(response);
+			if (Program.lastFrame == null) return;
+			CameraWriteSettings.instance.waypoints[keyName] = Program.lastFrame.GetCameraTransform();
 
-				CameraWriteSettings.instance.waypoints[keyName] = data;
+			// update the UI with the new waypoint
+			RegenerateWaypointButtons();
 
-				// update the UI with the new waypoint
-				liveWindow.Dispatcher.Invoke(RegenerateWaypointButtons);
-
-				CameraWriteSettings.instance.Save();
-			});
+			CameraWriteSettings.instance.Save();
 		}
 
-		
+
 		private void WindowClosed(object sender, EventArgs e)
 		{
 			CameraWriteSettings.instance.Save();
@@ -796,17 +810,11 @@ namespace Spark
 
 		private void AddKeyframe(object sender, RoutedEventArgs e)
 		{
-			Program.GetRequestCallback(url, null, response =>
-			{
-				CameraTransform data = JsonConvert.DeserializeObject<CameraTransform>(response);
+			if (Program.lastFrame == null) return;
+			CurrentAnimation.Add(Program.lastFrame.GetCameraTransform());
 
-				if (data == null) return;
-
-				CurrentAnimation.Add(data);
-
-				// update the UI with the new waypoint
-				Dispatcher.Invoke(() => { RegenerateKeyframeButtons(); });
-			});
+			// update the UI with the new waypoint
+			RegenerateKeyframeButtons();
 		}
 
 		private void ClearKeyframes(object sender, RoutedEventArgs e)
@@ -830,12 +838,12 @@ namespace Spark
 				orbitThread.Start();
 			}
 		}
-		
-		
-		private void OrbitDiscThread2()
+
+
+		private void OrbitDiscThreadSimple()
 		{
 			DateTime startTime = DateTime.Now;
-			
+
 			while (orbitingDisc)
 			{
 				DateTime currentTime = DateTime.Now;
@@ -846,20 +854,18 @@ namespace Spark
 				Vector3 offset = new Vector3((float) Math.Cos(angle), 0, (float) Math.Sin(angle)) * orbitRadius;
 
 				// do another API request for lowest latency
-				Program.GetRequestCallback("http://localhost:6721/session", null, resp =>
+				Program.GetRequestCallback(sessionUrl, null, resp =>
 				{
 					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(resp);
 					if (frame == null) return;
 					Vector3 discPos = frame.disc.position.ToVector3();
 					Vector3 pos = discPos - offset;
 
-					Quaternion lookDir = QuaternionLookRotation(discPos - pos, Vector3.UnitY);
+					// Quaternion lookDir = QuaternionLookRotation(offset, Vector3.UnitY);
+					Quaternion lookDir = Quaternion.CreateFromAxisAngle(Vector3.UnitY, (float) (angle - Math.PI / 2));
 
 					CameraTransform newTransform = new CameraTransform(pos, lookDir);
-
-					string data = JsonConvert.SerializeObject(newTransform);
-
-					Program.PostRequestCallback(url, null, data, null);
+					SetCamera(newTransform);
 				});
 
 
@@ -882,10 +888,11 @@ namespace Spark
 			Vector3 lastDiscPos = Vector3.Zero;
 			Vector3 lastDiscVel = Vector3.Zero;
 
+
+			CameraController.SetCameraMode(CameraController.CameraMode.api);
+
 			while (orbitingDisc)
 			{
-
-				
 				// do another API request for lowest latency
 				Program.GetRequestCallback("http://localhost:6721/session", null, resp =>
 				{
@@ -893,13 +900,13 @@ namespace Spark
 					double elapsed = (currentTime - startTime).TotalSeconds;
 
 					double angle = elapsed * rotSpeed * Deg2Rad;
-					
+
 					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(resp);
 					if (frame == null) return;
-					
+
 					Vector3 discPos = frame.disc.position.ToVector3();
 					Vector3 discVel = frame.disc.velocity.ToVector3();
-					
+
 					Vector3 diff = discPos - lastDiscPos;
 					if (discVel != Vector3.Zero)
 					{
@@ -945,20 +952,18 @@ namespace Spark
 					foreach (CameraTransform t in lastTransforms)
 					{
 						//avg.position = Vector3.Lerp(lastTransforms[i].position, avg.position, .5f);
-						avg.position += t.position;
-						avg.rotation = Quaternion.Lerp(t.rotation, avg.rotation, .5f);
+						avg.Position += t.Position;
+						avg.Rotation = Quaternion.Lerp(t.Rotation, avg.Rotation, .5f);
 					}
 
-					avg.position /= avgCount;
+					avg.Position /= avgCount;
 
-					avg.rotation = new Quaternion(avg.rotation.X / avgCount, avg.rotation.Y / avgCount,
-						avg.rotation.Z / avgCount, avg.rotation.W / avgCount);
+					avg.Rotation = new Quaternion(avg.Rotation.X / avgCount, avg.Rotation.Y / avgCount,
+						avg.Rotation.Z / avgCount, avg.Rotation.W / avgCount);
 					//avg.rotation /= (float)avgCount;
 
 
-					string data = JsonConvert.SerializeObject(newTransform);
-
-					Program.PostRequestCallback(url, null, data, null);
+					SetCamera(newTransform);
 
 					lastDiscPos = discPos;
 					lastDiscVel = discVel;
@@ -983,7 +988,7 @@ namespace Spark
 			}
 		}
 
-		private static Quaternion QuaternionLookRotation(Vector3 forward, Vector3 up)
+		public static Quaternion QuaternionLookRotation(Vector3 forward, Vector3 up)
 		{
 			forward /= forward.Length();
 
@@ -1046,62 +1051,62 @@ namespace Spark
 		}
 
 
-		private string WriteAPIFolder =>
-			Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "WriteAPI");
-
-		private string WriteAPIExePath => Path.Combine(WriteAPIFolder, "WriteAPI.exe");
-		private string WriteAPIZipPath => Path.Combine(WriteAPIFolder, "WriteAPI.zip");
-
-
-		private void InstallLaunchWriteAPI(object sender, RoutedEventArgs e)
-		{
-			if (File.Exists(WriteAPIExePath))
-			{
-				try
-				{
-					Process.Start(new ProcessStartInfo(WriteAPIExePath) {UseShellExecute = true});
-				}
-				catch (Exception ex)
-				{
-					Logger.LogRow(Logger.LogType.Error, ex.ToString());
-				}
-			}
-			else
-			{
-				try
-				{
-					installWriteAPIButton.Content = "Installing...";
-					Task.Run(() =>
-					{
-						try
-						{
-							using WebClient webClient = new WebClient();
-
-							if (!Directory.Exists(WriteAPIFolder))
-							{
-								Directory.CreateDirectory(WriteAPIFolder);
-							}
-
-							webClient.DownloadFile(
-								"https://github.com/Graicc/WriteAPI/releases/download/v1.0.1/Write.API.zip",
-								WriteAPIZipPath);
-
-							ZipFile.ExtractToDirectory(WriteAPIZipPath, WriteAPIFolder);
-
-							Dispatcher.Invoke(() => { installWriteAPIButton.Content = "Launch WriteAPI"; });
-						}
-						catch (Exception ex)
-						{
-							Logger.LogRow(Logger.LogType.Error, ex.ToString());
-						}
-					});
-				}
-				catch (Exception ex)
-				{
-					Logger.LogRow(Logger.LogType.Error, ex.ToString());
-				}
-			}
-		}
+		// private string WriteAPIFolder =>
+		// 	Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "WriteAPI");
+		//
+		// private string WriteAPIExePath => Path.Combine(WriteAPIFolder, "WriteAPI.exe");
+		// private string WriteAPIZipPath => Path.Combine(WriteAPIFolder, "WriteAPI.zip");
+		//
+		//
+		// private void InstallLaunchWriteAPI(object sender, RoutedEventArgs e)
+		// {
+		// 	if (File.Exists(WriteAPIExePath))
+		// 	{
+		// 		try
+		// 		{
+		// 			Process.Start(new ProcessStartInfo(WriteAPIExePath) {UseShellExecute = true});
+		// 		}
+		// 		catch (Exception ex)
+		// 		{
+		// 			Logger.LogRow(Logger.LogType.Error, ex.ToString());
+		// 		}
+		// 	}
+		// 	else
+		// 	{
+		// 		try
+		// 		{
+		// 			installWriteAPIButton.Content = "Installing...";
+		// 			Task.Run(() =>
+		// 			{
+		// 				try
+		// 				{
+		// 					using WebClient webClient = new WebClient();
+		//
+		// 					if (!Directory.Exists(WriteAPIFolder))
+		// 					{
+		// 						Directory.CreateDirectory(WriteAPIFolder);
+		// 					}
+		//
+		// 					webClient.DownloadFile(
+		// 						"https://github.com/Graicc/WriteAPI/releases/download/v1.0.1/Write.API.zip",
+		// 						WriteAPIZipPath);
+		//
+		// 					ZipFile.ExtractToDirectory(WriteAPIZipPath, WriteAPIFolder);
+		//
+		// 					Dispatcher.Invoke(() => { installWriteAPIButton.Content = "Launch WriteAPI"; });
+		// 				}
+		// 				catch (Exception ex)
+		// 				{
+		// 					Logger.LogRow(Logger.LogType.Error, ex.ToString());
+		// 				}
+		// 			});
+		// 		}
+		// 		catch (Exception ex)
+		// 		{
+		// 			Logger.LogRow(Logger.LogType.Error, ex.ToString());
+		// 		}
+		// 	}
+		// }
 
 		private void AnimationsComboBoxChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -1158,7 +1163,9 @@ namespace Spark
 		}
 
 
-		private HIDDeviceInput spaceMouseDevice = new HIDDeviceInput(0x46d, 0xc626);
+		private readonly HIDDeviceInput spaceMouseDevice = new HIDDeviceInput(0x46d, 0xc626);
+		private bool spaceMouseSetCameraThreadRunning;
+		private CameraTransform spaceMouseCameraState = new CameraTransform();
 
 		private void Toggle3DMouse(object sender, RoutedEventArgs e)
 		{
@@ -1166,6 +1173,7 @@ namespace Spark
 			{
 				spaceMouseDevice.Stop();
 				SpaceMouseCheckBox.IsChecked = false;
+				spaceMouseSetCameraThreadRunning = false;
 			}
 			else
 			{
@@ -1198,76 +1206,72 @@ namespace Spark
 				};
 				spaceMouseDevice.Start();
 				SpaceMouseCheckBox.IsChecked = true;
+				spaceMouseSetCameraThreadRunning = true;
+				new Thread(() =>
+				{
+					while (spaceMouseSetCameraThreadRunning)
+					{
+						SetCamera(spaceMouseCameraState);
+						Thread.Sleep(8);
+					}
+				}).Start();
+				
+				Program.GetRequestCallback(sessionUrl, null, response =>
+				{
+					if (response == null) return;
+					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(response);
+					spaceMouseCameraState = frame?.GetCameraTransform();
+				});
 			}
 		}
 
 
 		private void OnSpaceMouseChanged(ConnexionState state)
 		{
-			Program.GetRequestCallback(url, null, response =>
+			Dispatcher.Invoke(() =>
 			{
-				CameraTransform camPos = JsonConvert.DeserializeObject<CameraTransform>(response);
-				if (camPos == null) return;
+				inputPosX.Value = state.position.X;
+				inputPosY.Value = state.position.Y;
+				inputPosZ.Value = state.position.Z;
 
-				CameraTransform output = new CameraTransform();
-
-
-				Dispatcher.Invoke(() =>
-				{
-					inputPosX.Value = state.position.X;
-					inputPosY.Value = state.position.Y;
-					inputPosZ.Value = state.position.Z;
-
-					inputRotX.Value = state.rotation.X;
-					inputRotY.Value = state.rotation.Y;
-					inputRotZ.Value = state.rotation.Z;
-				});
-
-				Vector3 inputPosition = new Vector3(
-					Exponential(-state.position.X * spaceMouseMoveSpeed, spaceMouseMoveExponential),
-					Exponential(-state.position.Z * spaceMouseMoveSpeed, spaceMouseMoveExponential),
-					Exponential(-state.position.Y * spaceMouseMoveSpeed, spaceMouseMoveExponential)
-				);
-				Quaternion rotate = Quaternion.CreateFromYawPitchRoll(
-					Exponential(-state.rotation.Z * spaceMouseRotateSpeed, spaceMouseRotateExponential),
-					Exponential(-state.rotation.X * spaceMouseRotateSpeed, spaceMouseRotateExponential),
-					Exponential(-state.rotation.Y * spaceMouseRotateSpeed, spaceMouseRotateExponential)
-				);
-
-				Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(camPos.rotation);
-				Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(rotate);
-
-				output.position = camPos.position + Vector3.Transform(inputPosition, camPosMatrix);
-				// output.rotation = Quaternion.CreateFromRotationMatrix(transformMatrix * camPosMatrix);
-				output.rotation = Quaternion.Multiply(camPos.rotation, rotate);
-
-				SetCamera(output);
+				inputRotX.Value = state.rotation.X;
+				inputRotY.Value = state.rotation.Y;
+				inputRotZ.Value = state.rotation.Z;
 			});
+
+			Vector3 inputPosition = new Vector3(
+				Exponential(-state.position.X * spaceMouseMoveSpeed, spaceMouseMoveExponential),
+				Exponential(-state.position.Z * spaceMouseMoveSpeed, spaceMouseMoveExponential),
+				Exponential(-state.position.Y * spaceMouseMoveSpeed, spaceMouseMoveExponential)
+			);
+			Quaternion rotate = Quaternion.CreateFromYawPitchRoll(
+				Exponential(-state.rotation.Z * spaceMouseRotateSpeed, spaceMouseRotateExponential),
+				Exponential(-state.rotation.X * spaceMouseRotateSpeed, spaceMouseRotateExponential),
+				Exponential(-state.rotation.Y * spaceMouseRotateSpeed, spaceMouseRotateExponential)
+			);
+
+			Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(spaceMouseCameraState.Rotation);
+
+			spaceMouseCameraState.Position += Vector3.Transform(inputPosition, camPosMatrix);
+			spaceMouseCameraState.Rotation = Quaternion.Multiply(spaceMouseCameraState.Rotation, rotate);
 		}
 
-		public void SetCamera(CameraTransform output)
+		public static void SetCamera(CameraTransform output, bool mirror = false)
 		{
-			// do manual serialization to get more precision
-			string serializedOutput = $@"{{
-					""position"": {{
-						""X"": {output.position.X},
-						""Y"": {output.position.Y},
-						""Z"": {output.position.Z}
-					}},
-					""rotation"": {{
-						""X"": {output.rotation.X},
-						""Y"": {output.rotation.Y},
-						""Z"": {output.rotation.Z},
-						""W"": {output.rotation.W}
-					}}
-				}}";
+			output.Rotation = Quaternion.Normalize(output.Rotation);
+			if (mirror)
+			{
+				output.qy *= -1;
+				output.qz *= -1;
+			}
 
-			Program.PostRequestCallback(url, null, serializedOutput, null);
+			CameraController.SetCameraMode(CameraController.CameraMode.api);
+			Program.PostRequestCallback(url, null, JsonConvert.SerializeObject(output), null);
 		}
 
 		private bool xPlaneInputActive;
 		private AircraftState aircraftState = new AircraftState();
-		private Vector3 aircraftOrigin = new Vector3();
+		private Vector3 aircraftOrigin;
 
 		private void ToggleXPlaneCamera(object sender, RoutedEventArgs e)
 		{
@@ -1554,7 +1558,8 @@ namespace Spark
 			public float slider;
 		}
 
-		private JoystickValues joystickValues = new JoystickValues();
+		private JoystickValues joystickValues;
+		private CameraTransform joystickCameraTransform = new CameraTransform();
 
 		private void ToggleJoystickInput(object sender, RoutedEventArgs e)
 		{
@@ -1586,6 +1591,13 @@ namespace Spark
 				JoystickInputCheckBox.IsChecked = true;
 				Thread joystickInputThread = new Thread(JoystickInputThread);
 				joystickInputThread.Start();
+				
+				Program.GetRequestCallback(sessionUrl, null, response =>
+				{
+					if (response == null) return;
+					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(response);
+					joystickCameraTransform = frame?.GetCameraTransform();
+				});
 			}
 		}
 
@@ -1593,34 +1605,26 @@ namespace Spark
 		{
 			while (joystickDevice.Running)
 			{
-				Program.GetRequestCallback(url, null, response =>
-				{
-					CameraTransform camPos = JsonConvert.DeserializeObject<CameraTransform>(response);
-					if (camPos == null) return;
+				float x = Exponential(joystickValues.x * -joystickMoveSpeed, joystickMoveExponential);
+				float y = Exponential(joystickValues.y * -joystickMoveSpeed, joystickMoveExponential);
+				float spin = Exponential(joystickValues.spin * joystickRotateSpeed, joystickRotateExponential);
 
-					CameraTransform output = new CameraTransform();
+				Vector3 translateBy = new Vector3(x, 0, y);
+				Quaternion rotateBy = Quaternion.CreateFromYawPitchRoll(spin, 0, 0);
 
-					float x = Exponential(joystickValues.x * -joystickMoveSpeed, joystickMoveExponential);
-					float y = Exponential(joystickValues.y * -joystickMoveSpeed, joystickMoveExponential);
-					float spin = Exponential(joystickValues.spin * joystickRotateSpeed, joystickRotateExponential);
+				Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(joystickCameraTransform.Rotation);
 
-					Vector3 translateBy = new Vector3(x, 0, y);
-					Quaternion rotateBy = Quaternion.CreateFromYawPitchRoll(spin, 0, 0);
+				joystickCameraTransform.Position += Vector3.Transform(translateBy, camPosMatrix);
+				joystickCameraTransform.py = joystickValues.slider * 10;
+				joystickCameraTransform.Rotation = Quaternion.Multiply(joystickCameraTransform.Rotation, rotateBy);
 
-					Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(camPos.rotation);
-
-					output.position = camPos.position + Vector3.Transform(translateBy, camPosMatrix);
-					output.position.Y = joystickValues.slider * 10;
-					output.rotation = Quaternion.Multiply(camPos.rotation, rotateBy);
-
-					SetCamera(output);
-				});
+				SetCamera(joystickCameraTransform);
 				Thread.Sleep(8);
 			}
 		}
 
 
-		float Exponential(float value, float expo)
+		private static float Exponential(float value, float expo)
 		{
 			if (value < 0)
 			{

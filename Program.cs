@@ -25,7 +25,6 @@ using static Logger;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
-using System.Windows.Input;
 using NetMQ.Sockets;
 using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
@@ -78,6 +77,8 @@ namespace Spark
 
 		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
 		// public const string APIURL = "http://127.0.0.1:5005/";
+		public const string API_URL_2 = "https://api.ignitevr.workers.dev/";
+		// public const string API_URL_2 = "http://127.0.0.1:8787/";
 
 
 		public static readonly HttpClient client = new HttpClient();
@@ -187,7 +188,7 @@ namespace Spark
 
 		public static SpeechSynthesizer synth;
 		public static ReplayClips replayClips;
-		public static KeyboardCamera keyboardCamera;
+		public static CameraController CameraController;
 
 		private static Thread statsThread;
 		private static Thread fullLogThread;
@@ -426,7 +427,7 @@ namespace Spark
 				// this sets up the event listeners for replay clips
 				replayClips = new ReplayClips();
 
-				keyboardCamera = new KeyboardCamera();
+				CameraController = new CameraController();
 
 
 				//// web server grapevine
@@ -493,8 +494,10 @@ namespace Spark
 				//float out2 = CalculateServerScore(new List<int> { 29, 60, 59, 30 }, new List<int> { 30, 70, 15, 26 });    // 90.54
 				//float out3 = CalculateServerScore(new List<int> { 61, 59, 69, 67 }, new List<int> { 73, 57, 50, 51 });    // 92.33
 
-				PlayerJoined += (_, _, player) => { UseCameraControlKeys(false); };
-				PlayerLeft += (_, _, player) => { UseCameraControlKeys(false); };
+				JoinedGame += (_) => { UseCameraControlKeys(); };
+				PlayerJoined += (_, _, _) => { UseCameraControlKeys(); };
+				PlayerLeft += (_, _, _) => { UseCameraControlKeys(); };
+				PlayerSwitchedTeams += (_, _, _, _) => { UseCameraControlKeys(); };
 
 
 				UpdateEchoExeLocation();
@@ -857,7 +860,7 @@ namespace Spark
 			// TODO these times aren't used, but we could do a difference on before and after times to 
 			// calculate an accurate deltaTime. Right now the execution time isn't taken into account.
 
-			Thread.Sleep(10);
+			Thread.Sleep(50);
 
 			// Session pull loop.
 			while (running)
@@ -1630,7 +1633,10 @@ namespace Spark
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null) return;
 
-			SparkSettings.instance.client_name = frame.client_name;
+			if (frame.client_name != "anonymous")
+			{
+				SparkSettings.instance.client_name = frame.client_name;
+			}
 
 			// lobby stuff
 
@@ -2525,7 +2531,7 @@ namespace Spark
 				if (team.players.Count > 0 && matchDataLocal != null)
 				{
 					GetRequestCallback(
-						$"{APIURL}get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
+						$"{API_URL_2}get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
 						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						returnJSON =>
 						{
@@ -3563,12 +3569,13 @@ namespace Spark
 		/// <summary>
 		/// Generic method for getting data from a web url
 		/// </summary>
+		/// <param name="uri">The URL to GET</param>
 		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
 		public static async Task<string> GetRequestAsync(string uri, Dictionary<string, string> headers)
 		{
 			try
 			{
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+				HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
 				if (headers != null)
 				{
 					foreach ((string key, string value) in headers)
@@ -3576,17 +3583,52 @@ namespace Spark
 						request.Headers[key] = value;
 					}
 				}
+
 				request.UserAgent = $"Spark/{AppVersion()}";
 				using WebResponse response = await request.GetResponseAsync();
 				await using Stream stream = response.GetResponseStream();
-				using StreamReader reader = new StreamReader(stream);
-				return await reader.ReadToEndAsync();
+				if (stream != null)
+				{
+					using StreamReader reader = new StreamReader(stream);
+					return await reader.ReadToEndAsync();
+				}
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine($"Can't get data\n{e}");
-				return string.Empty;
 			}
+			
+			return string.Empty;
+		}
+		
+		/// <summary>
+		/// Generic method for getting data from a web url. Returns a Stream
+		/// </summary>
+		/// <param name="uri">The URL to GET</param>
+		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
+		public static async Task<Stream> GetRequestAsyncStream(string uri, Dictionary<string, string> headers)
+		{
+			try
+			{
+				HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
+				if (headers != null)
+				{
+					foreach ((string key, string value) in headers)
+					{
+						request.Headers[key] = value;
+					}
+				}
+
+				request.UserAgent = $"Spark/{AppVersion()}";
+				using WebResponse response = await request.GetResponseAsync();
+				return response.GetResponseStream();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Can't get data\n{e}");
+			}
+			
+			return null;
 		}
 
 		/// <summary>
@@ -4165,67 +4207,36 @@ namespace Spark
 
 
 		}
-
 		public static void UseCameraControlKeys()
-		{
-			UseCameraControlKeys(true);
-		}
-
-		public static void UseCameraControlKeys(bool firstLoad)
 		{
 			try
 			{
 				if (spectateMe) liveWindow.SetSpectateMeSubtitle("In Game!");
 
-				if (firstLoad)
-				{
-					if (SparkSettings.instance.hideEchoVRUI)
-					{
-						FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, false, Keyboard.InputType.Keyboard);
-						Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_U, true, Keyboard.InputType.Keyboard); });
-						LogRow(LogType.File, lastFrame.sessionid, "Tried to Hide EchoVR UI");
-					}
-					if (SparkSettings.instance.mutePlayerComms)
-					{
-						FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F5, false, Keyboard.InputType.Keyboard);
-						Task.Delay(10).ContinueWith((_) => { Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_F5, true, Keyboard.InputType.Keyboard); });
-						LogRow(LogType.File, lastFrame.sessionid, "Tried to mute player comms");
-					}
-				}
-
+				CameraController.SetNameplatesVisibility(!SparkSettings.instance.hideNameplates);
+				CameraController.SetUIVisibility(!SparkSettings.instance.hideEchoVRUI);
+				CameraController.SetMinimapVisibility(!SparkSettings.instance.alwaysHideMinimap);
+				CameraController.SetTeamsMuted(
+					SparkSettings.instance.mutePlayerComms, 
+					SparkSettings.instance.mutePlayerComms
+				);
+				
 				switch (SparkSettings.instance.spectatorCamera)
 				{
 					// auto
 					case 0:
-						// FocusEchoVR();
-						// Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, false, Keyboard.InputType.Keyboard);
-						// Task.Delay(10).ContinueWith((_) =>
-						// {
-						// 	FocusEchoVR();
-						// 	Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_A, true, Keyboard.InputType.Keyboard);
-						// });
-						// LogRow(LogType.File, lastFrame.sessionid, "Tried to switch to auto cam.");
 						break;
 					// sideline
 					case 1:
-						FocusEchoVR();
-						Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_S, false, Keyboard.InputType.Keyboard);
-						Task.Delay(10).ContinueWith((_) =>
-						{
-							FocusEchoVR();
-							Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_S, true, Keyboard.InputType.Keyboard);
-						});
-						LogRow(LogType.File, lastFrame.sessionid, "Tried to switch to sideline cam.");
+						CameraController.SetCameraMode(CameraController.CameraMode.side);
 						break;
 					// follow client
 					case 2:
-						if (spectateMe) KeyboardCamera.SpectatorCamFindPlayer();
+						if (spectateMe) CameraController.SpectatorCamFindPlayer();
 						break;
 					// follow specific player
 					case 3:
-						KeyboardCamera.SpectatorCamFindPlayer(SparkSettings.instance.followPlayerName);
+						CameraController.SpectatorCamFindPlayer(SparkSettings.instance.followPlayerName);
 						break;
 				}
 			}
@@ -4499,6 +4510,16 @@ namespace Spark
 			}
 
 			return new Vector3(input[0], input[1], input[2]);
+		}
+		
+		public static Vector3 ToVector3Backwards(this float[] input)
+		{
+			if (input.Length != 3)
+			{
+				throw new Exception("Can't convert array to Vector3");
+			}
+
+			return new Vector3(input[2], input[1], input[0]);
 		}
 
 		public static float DistanceTo(this Vector3 v1, Vector3 v2)
