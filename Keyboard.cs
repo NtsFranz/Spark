@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Spark
 {
@@ -9,7 +9,7 @@ namespace Spark
 	/// https://stackoverflow.com/questions/35138778/sending-keys-to-a-directx-game
 	/// http://www.gamespp.com/directx/directInputKeyboardScanCodes.html
 	/// </summary>
-	class Keyboard
+	public class Keyboard
 	{
 		[Flags]
 		public enum InputType
@@ -36,7 +36,7 @@ namespace Spark
 		private static extern IntPtr GetMessageExtraInfo();
 
 		/// <summary>
-		/// DirectX key list collected out from the gamespp.com list by me.
+		/// DirectX key list collected out from the gamespp.com list
 		/// </summary>
 		public enum DirectXKeyStrokes
 		{
@@ -214,6 +214,31 @@ namespace Spark
 				if (holdShift) SendKey(DirectXKeyStrokes.DIK_LSHIFT, true, InputType.Keyboard);
 			});
 
+		}
+
+		/// <summary>
+		///   Sends the specified key.
+		/// </summary>
+		/// <param name="key">The key.</param>
+		public static void Send(Key key)
+		{
+			if (System.Windows.Input.Keyboard.PrimaryDevice != null)
+			{
+				if (System.Windows.Input.Keyboard.PrimaryDevice.ActiveSource != null)
+				{
+					var e = new KeyEventArgs(System.Windows.Input.Keyboard.PrimaryDevice,
+						System.Windows.Input.Keyboard.PrimaryDevice.ActiveSource, 0, key)
+					{
+						RoutedEvent = System.Windows.Input.Keyboard.KeyDownEvent
+					};
+					InputManager.Current.ProcessInput(e);
+
+					// Note: Based on your requirements you may also need to fire events for:
+					// RoutedEvent = Keyboard.PreviewKeyDownEvent
+					// RoutedEvent = Keyboard.KeyUpEvent
+					// RoutedEvent = Keyboard.PreviewKeyUpEvent
+				}
+			}
 		}
 
 		/// <summary>
