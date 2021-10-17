@@ -1,10 +1,10 @@
-﻿using Spark.Properties;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 
@@ -20,7 +20,13 @@ namespace Spark
 		private DirectoryInfo directory;
 		private StreamReader reader;
 		private bool logFileFound;
-		private readonly System.Timers.Timer outputUpdateTimer = new();
+		private readonly Timer outputUpdateTimer = new Timer();
+
+		public enum LoneEchoVersion
+		{
+			LoneEcho1,
+			LoneEcho2
+		}
 
 
 		public LoneEchoSubtitles()
@@ -38,7 +44,7 @@ namespace Spark
 		{
 			try
 			{
-				FindLoneEchoInstallationLocation();
+				FindLoneEchoInstallationLocation((LoneEchoVersion)SparkSettings.instance.loneEchoVersion);
 
 				Dispatcher.Invoke(() =>
 				{
@@ -68,21 +74,40 @@ namespace Spark
 		{
 			try
 			{
-				if (string.IsNullOrEmpty(SparkSettings.instance.loneEchoPath))
+				switch ((LoneEchoVersion) SparkSettings.instance.loneEchoVersion)
 				{
-					statusLabel.Text = "Lone Echo installation not found";
-					statusLabel.Foreground = Brushes.Red;
-					logFileFound = false;
-					return;
+					case LoneEchoVersion.LoneEcho1:
+					{
+						if (string.IsNullOrEmpty(SparkSettings.instance.loneEchoPath))
+						{
+							statusLabel.Text = "Lone Echo installation not found";
+							statusLabel.Foreground = Brushes.Red;
+							logFileFound = false;
+							return;
+						}
+
+						logPathBase = SparkSettings.instance.loneEchoPath[..SparkSettings.instance.loneEchoPath.LastIndexOf("\\bin", StringComparison.Ordinal)] + "\\_local\\r14logs\\";
+						break;
+					}
+					case LoneEchoVersion.LoneEcho2:
+					{
+						if (string.IsNullOrEmpty(SparkSettings.instance.loneEcho2Path))
+						{
+							statusLabel.Text = "Lone Echo 2 installation not found";
+							statusLabel.Foreground = Brushes.Red;
+							logFileFound = false;
+							return;
+						}
+
+						logPathBase = SparkSettings.instance.loneEcho2Path[..SparkSettings.instance.loneEcho2Path.LastIndexOf("\\bin", StringComparison.Ordinal)] + "\\_local\\r14logs\\";
+						break;
+					}
 				}
 
-				logPathBase =
-					SparkSettings.instance.loneEchoPath[
-						..SparkSettings.instance.loneEchoPath.LastIndexOf("\\bin", StringComparison.Ordinal)] +
-					"\\_local\\r14logs\\";
 
 				directory = new DirectoryInfo(logPathBase);
-				string newLogPath = directory.GetFiles().OrderByDescending(f => f.LastWriteTime).First().ToString();
+				string newLogPath = directory.GetFiles().OrderByDescending(f => f.LastWriteTime).First()
+					.ToString();
 
 				if (newLogPath.Equals(logPath)) return;
 				logPath = newLogPath;
@@ -107,7 +132,7 @@ namespace Spark
 			}
 		}
 
-		private static void FindLoneEchoInstallationLocation()
+		private static void FindLoneEchoInstallationLocation(LoneEchoVersion loneEchoVersion)
 		{
 			// skip if we already have a valid path
 			if (File.Exists(SparkSettings.instance.loneEchoPath)) return;
@@ -126,11 +151,30 @@ namespace Spark
 				List<string> paths = oculusReg.GetSubKeyNames()
 					.Select(subkey => (string) oculusReg.OpenSubKey(subkey)?.GetValue("OriginalPath")).ToList();
 
-				const string echoDir = "Software\\ready-at-dawn-lone-echo\\bin\\win7\\loneecho.exe";
-				foreach (string file in paths.Select(path => Path.Combine(path, echoDir)).Where(File.Exists))
+				switch (loneEchoVersion)
 				{
-					SparkSettings.instance.loneEchoPath = file;
-					return;
+					case LoneEchoVersion.LoneEcho1:
+					{
+						const string echoDir = "Software\\ready-at-dawn-lone-echo\\bin\\win7\\loneecho.exe";
+						foreach (string file in paths.Select(path => Path.Combine(path, echoDir)).Where(File.Exists))
+						{
+							SparkSettings.instance.loneEchoPath = file;
+							return;
+						}
+
+						break;
+					}
+					case LoneEchoVersion.LoneEcho2:
+					{
+						const string echoDir = "Software\\ready-at-dawn-lone-echo-2\\bin\\win10\\loneecho2.exe";
+						foreach (string file in paths.Select(path => Path.Combine(path, echoDir)).Where(File.Exists))
+						{
+							SparkSettings.instance.loneEcho2Path = file;
+							return;
+						}
+
+						break;
+					}
 				}
 			}
 			catch (Exception e)
@@ -147,6 +191,12 @@ namespace Spark
 				grid.Background = value ? Brushes.Green : Brushes.Black; //(Brush) FindResource("ContainerBackground");
 				SparkSettings.instance.loneEchoSubtitlesStreamerMode = value;
 			}
+		}
+
+		public int LoneEchoVersionDropdown
+		{
+			get => SparkSettings.instance.loneEchoVersion;
+			set { SparkSettings.instance.loneEchoVersion = value; }
 		}
 
 

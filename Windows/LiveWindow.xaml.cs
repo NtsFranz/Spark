@@ -1120,7 +1120,7 @@ namespace Spark
 			}
 		}
 
-		private void openSpeedometer(object sender, RoutedEventArgs e)
+		private void OpenSpeedometer(object sender, RoutedEventArgs e)
 		{
 			Program.ToggleWindow(typeof(Speedometer), ownedBy: this);
 		}

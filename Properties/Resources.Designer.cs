@@ -2755,6 +2755,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Speedometer.
+        /// </summary>
+        public static string Speedometer {
+            get {
+                return ResourceManager.GetString("Speedometer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Split File.
         /// </summary>
         public static string Split_File {

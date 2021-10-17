@@ -78,6 +78,7 @@ namespace Spark
 		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
 		// public const string APIURL = "http://127.0.0.1:5005/";
 		public const string API_URL_2 = "https://api.ignitevr.workers.dev/";
+		public const string WRITE_API_URL = "http://127.0.0.1:6723/";
 		// public const string API_URL_2 = "http://127.0.0.1:8787/";
 
 

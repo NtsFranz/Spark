@@ -8,14 +8,17 @@
         Background="{DynamicResource BackgroundColour}" 
         ResizeMode="CanResize" 
         Title="Lone Echo Subtitles" Height="400" Width="1200"
-        DataContext="{Binding 
-        RelativeSource={RelativeSource Self}}"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Icon="/img/ignite_logo.ico"
         >
 	<Grid x:Name="grid">
 		<TextBlock x:Name="subtitlesText" Text="{Binding SubtitleText}" Foreground="LightGray" HorizontalAlignment="Left" Margin="10,10,10,10" TextWrapping="Wrap" FontSize="50" VerticalAlignment="Top"/>
 		<TextBlock x:Name="statusLabel" Text="{Binding StatusLabelText}" Foreground="{Binding StatusLabelColor}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="8,8,8,8"/>
 		<CheckBox x:Name="streamerModeCheckbox" Content="Streamer Mode" IsChecked="{Binding StreamerModeChecked}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="8,8,100,14" />
+		<ComboBox x:Name="gameVersionDropdown" SelectedIndex="{Binding LoneEchoVersionDropdown}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="8,8,100,14" Visibility="Collapsed">
+			<ComboBoxItem Content="Lone Echo 1"></ComboBoxItem>
+			<ComboBoxItem Content="Lone Echo 2"></ComboBoxItem>
+		</ComboBox>
 		<Button x:Name="closeButton" Content="Close" Margin="0,0,8,8" HorizontalAlignment="Right" IsCancel="True" IsDefault="True" Padding="4,4,4,4" Width="81" Click="CloseClick" VerticalAlignment="Bottom"/>
 	</Grid>
 </Window>

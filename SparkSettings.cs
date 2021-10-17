@@ -56,7 +56,11 @@ namespace Spark
 		public bool firstTimeSetupShown { get; set; } = false;
 		public bool isAutofocusEnabled { get; set; } = false;
 		public bool loneEchoSubtitlesStreamerMode { get; set; } = false;
+		public bool loneEchoSpeedometerStreamerMode { get; set; } = false;
+		public int loneEchoVersion { get; set; } = 0;
+		public int speedometerGameVersion { get; set; } = 1;
 		public string loneEchoPath { get; set; } = "";
+		public string loneEcho2Path { get; set; } = "";
 		public float liveWindowTop { get; set; } = 10;
 		public float liveWindowLeft { get; set; } = 10;
 		public float settingsWindowTop { get; set; } = 20;

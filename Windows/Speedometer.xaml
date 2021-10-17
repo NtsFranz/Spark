@@ -4,11 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Spark"
+        xmlns:properties="clr-namespace:Spark.Properties"
         mc:Ignorable="d"
         Icon="/img/ignite_logo_64.png"
-        Title="Speedometer" Height="450" Width="800"
-        >
-    <Grid>
-        
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="{x:Static properties:Resources.Speedometer}" 
+        Height="300" Width="300">
+    <Grid x:Name="Grid">
+        <TextBlock x:Name="CurrentSpeedText" FontSize="30" Margin="60,60,60,60" FontWeight="Bold"></TextBlock>
+        <ComboBox x:Name="GameVersionDropdown" SelectedIndex="{Binding GameVersionDropdownValue}"
+                  VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,10,10,10" Visibility="Visible">
+            <ComboBoxItem Content="Echo VR" />
+            <ComboBoxItem Content="Lone Echo 1" />
+            <ComboBoxItem Content="Lone Echo 2" />
+        </ComboBox>
     </Grid>
 </Window>
