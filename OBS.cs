@@ -91,7 +91,17 @@ namespace Spark
 			if (!instance.IsConnected) return;
 			if (!setting) return;
 			if (!IsPlayerScopeEnabled(player_name, frame)) return;
-			Task.Delay((int)(save_delay * 1000)).ContinueWith(_ => instance.SaveReplayBuffer());
+			Task.Delay((int) (save_delay * 1000)).ContinueWith(_ =>
+			{
+				try
+				{
+					instance.SaveReplayBuffer();
+				}
+				catch (Exception)
+				{
+					// replay buffer probably not active
+				}
+			});
 
 			currentReplay++;
 			Task.Delay((int)(scene_delay * 1000)).ContinueWith(_ => SetSceneIfLastReplay(to_scene, currentReplay));

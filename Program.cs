@@ -4167,7 +4167,7 @@ namespace Spark
 							if (!spectateMe) return;
 
 							// TODO this crashes on local pc
-							result = await GetRequestAsync($"http://127.0.0.1:6720/session", null);
+							result = await GetRequestAsync($"http://{ip}:{port}/session", null);
 							if (string.IsNullOrEmpty(result))
 							{
 								await Task.Delay(200);

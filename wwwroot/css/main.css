@@ -78,7 +78,6 @@ body {
 }
 
 #timeout_banner {
-	background-color: #000a;
 	padding: 20px 0;
 	font-size: 40px;
 	font-weight: bold;
@@ -90,7 +89,7 @@ body {
 	width: 100%;
 	margin: 0;
 	top: 32px;
-	background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .75) 25%, rgba(0, 0, 0, .75) 75%, rgba(0, 0, 0, 0) 100%);
+	background: #000a linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .75) 25%, rgba(0, 0, 0, .75) 75%, rgba(0, 0, 0, 0) 100%);
 	visibility: hidden;
 }
 

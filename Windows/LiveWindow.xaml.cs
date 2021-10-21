@@ -1236,7 +1236,7 @@ namespace Spark
 				}
 				else
 				{
-					Program.KillEchoVR();
+					Program.KillEchoVR($"-httpport {Program.SPECTATEME_PORT}");
 					spectateMeLabel.Content = Properties.Resources.Spectate_Me;
 					spectateMeSubtitle.Text = Properties.Resources.Not_active;
 				}

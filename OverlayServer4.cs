@@ -289,16 +289,82 @@ namespace Spark
 					});
 
 
+					endpoints.MapGet("/disc_position_heatmap",
+						async context => { await GenerateDiscPositionHeatMap(context, ""); });
 
-					endpoints.MapGet("/disc_position_heatmap", async context =>
+
+					endpoints.MapGet("/get_player_speed", async context =>
 					{
-						await GenerateDiscPositionHeatMap(context, "");
+						context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+						context.Response.Headers.Add("Access-Control-Allow-Headers",
+							"Content-Type, Accept, X-Requested-With");
+
+						await context.Response.WriteAsJsonAsync(
+							new Dictionary<string, object>
+							{
+								{
+									"speed",
+									Program.lastFrame?.GetPlayer(Program.lastFrame.client_name)?.velocity.ToVector3()
+										.Length() ?? -1
+								},
+							});
 					});
+					endpoints.MapGet("/get_disc_speed", async context =>
+					{
+						context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+						context.Response.Headers.Add("Access-Control-Allow-Headers",
+							"Content-Type, Accept, X-Requested-With");
+
+						await context.Response.WriteAsJsonAsync(
+							new Dictionary<string, object>
+							{
+								{
+									"speed", Program.lastFrame?.disc.velocity.ToVector3().Length() ?? -1
+								},
+							});
+					});
+
+					endpoints.MapGet("/speedometer/player",
+						async context =>
+						{
+							string file = ReadResource("speedometer.html");
+							file = file.Replace("FETCH_URL", "/get_player_speed");
+							await context.Response.WriteAsync(file);
+						});
+
+					endpoints.MapGet("/speedometer/lone_echo_1",
+						async context =>
+						{
+							string file = ReadResource("speedometer.html");
+							file = file.Replace("FETCH_URL", "http://127.0.0.1:6723/le1/speed/");
+							await context.Response.WriteAsync(file);
+						});
+
+					endpoints.MapGet("/speedometer/lone_echo_2",
+						async context =>
+						{
+							string file = ReadResource("speedometer.html");
+							file = file.Replace("FETCH_URL", "http://127.0.0.1:6723/le2/speed/");
+							await context.Response.WriteAsync(file);
+						});
+
+					endpoints.MapGet("/speedometer/disc",
+						async context =>
+						{
+							string file = ReadResource("speedometer.html");
+							file = file.Replace("FETCH_URL", "/get_disc_speed");
+							await context.Response.WriteAsync(file);
+						});
+
+					endpoints.MapGet("/minimap",
+						async context =>
+						{
+							string file = ReadResource("default_minimap.html");
+							await context.Response.WriteAsync(file);
+						});
 				});
 			}
 		}
-
-
 
 
 		[Serializable]
@@ -313,7 +379,7 @@ namespace Spark
 				this.y = y;
 			}
 		}
-		
+
 		public static string ReadResource(string name)
 		{
 			// Determine path

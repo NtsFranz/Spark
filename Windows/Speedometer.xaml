@@ -11,7 +11,7 @@
         Title="{x:Static properties:Resources.Speedometer}" 
         Height="300" Width="300">
     <Grid x:Name="Grid">
-        <TextBlock x:Name="CurrentSpeedText" FontSize="30" Margin="60,60,60,60" FontWeight="Bold"></TextBlock>
+        <TextBlock x:Name="CurrentSpeedText" FontSize="30" Margin="30,60,30,60" FontWeight="Bold" TextAlignment="Center"></TextBlock>
         <ComboBox x:Name="GameVersionDropdown" SelectedIndex="{Binding GameVersionDropdownValue}"
                   VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10,10,10,10" Visibility="Visible">
             <ComboBoxItem Content="Echo VR" />

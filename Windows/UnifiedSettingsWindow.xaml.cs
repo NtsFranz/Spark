@@ -709,46 +709,49 @@ namespace Spark
 
 		private void OBSConnect(object sender, RoutedEventArgs e)
 		{
-			if (!Program.obs.instance.IsConnected)
+			Task.Run(() =>
 			{
-				try
-				{
-					Program.obs.instance.Connect(SparkSettings.instance.obsIP, SparkSettings.instance.obsPassword);
-					Program.obs.instance.GetReplayBufferStatus();
-				}
-				catch (AuthFailureException)
-				{
-					Logger.LogRow(Logger.LogType.Error, "Failed to connect to OBS. AuthFailure");
-					new MessageBox("Authentication failed.", Properties.Resources.Error).Show();
-					Program.obs.instance.Disconnect();
-					return;
-				}
-				catch (ErrorResponseException ex)
-				{
-					Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS.\n{ex}");
-					new MessageBox("Connect failed.", Properties.Resources.Error).Show();
-					Program.obs.instance.Disconnect();
-					return;
-				}
-				catch (Exception ex)
-				{
-					Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS for another reason.\n{ex}");
-					new MessageBox("Connect failed.", Properties.Resources.Error).Show();
-					Program.obs.instance.Disconnect();
-					return;
-				}
-
 				if (!Program.obs.instance.IsConnected)
 				{
-					new MessageBox(
-						"Connect failed.\nMake sure OBS is open and you have installed the OBS Websocket plugin.",
-						Properties.Resources.Error).Show();
+					try
+					{
+						Program.obs.instance.Connect(SparkSettings.instance.obsIP, SparkSettings.instance.obsPassword);
+						// Program.obs.instance.GetReplayBufferStatus();
+					}
+					catch (AuthFailureException)
+					{
+						Logger.LogRow(Logger.LogType.Error, "Failed to connect to OBS. AuthFailure");
+						new MessageBox("Authentication failed.", Properties.Resources.Error).Show();
+						Program.obs.instance.Disconnect();
+						return;
+					}
+					catch (ErrorResponseException ex)
+					{
+						Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS.\n{ex}");
+						new MessageBox("Connect failed.", Properties.Resources.Error).Show();
+						Program.obs.instance.Disconnect();
+						return;
+					}
+					catch (Exception ex)
+					{
+						Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS for another reason.\n{ex}");
+						new MessageBox("Connect failed.", Properties.Resources.Error).Show();
+						Program.obs.instance.Disconnect();
+						return;
+					}
+
+					if (!Program.obs.instance.IsConnected)
+					{
+						new MessageBox(
+							"Connect failed.\nMake sure OBS is open and you have installed the OBS Websocket plugin.",
+							Properties.Resources.Error).Show();
+					}
 				}
-			}
-			else
-			{
-				Program.obs.instance.Disconnect();
-			}
+				else
+				{
+					Program.obs.instance.Disconnect();
+				}
+			});
 		}
 
 		private enum ClipsTab
@@ -1437,7 +1440,7 @@ namespace Spark
 		private void HideMinimapNow(object sender, RoutedEventArgs e)
 		{
 			if (!Program.inGame) return;
-			CameraController.SetMinimapVisibility(HideMinimapCheckbox.IsChecked == true);
+			CameraController.SetMinimapVisibility(HideMinimapCheckbox.IsChecked != true);
 		}
 
 		private void ToggleNameplatesNow(object sender, RoutedEventArgs e)

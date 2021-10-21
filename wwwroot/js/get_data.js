@@ -62,8 +62,8 @@ function update_minimap(data) {
 //      min: 68
 //      max: 495
 function set_pos(elem, z, x) {
-	elem.style.left = (-z / 80 + .5) * 427 + 68;
-	elem.style.top = (x / 32 + .5) * 165 + 5;
+	elem.style.left = (-z / 80 + .5) * 427 + 68 + "px";
+	elem.style.top = (x / 32 + .5) * 165 + 5 + "px";
 }
 
 function set_number(elem, text) {
@@ -88,4 +88,4 @@ function httpGetAsync(theUrl, callback, failcallback = null) {
 	xmlHttp.send(null);
 }
 
-setInterval(get_data, 250);
+setInterval(get_data, 100);

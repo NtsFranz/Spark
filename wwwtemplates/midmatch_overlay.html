@@ -55,7 +55,6 @@
 			font-weight: 900;
 			text-align: center;
 			color: #ccc;
-			width: 36.65rem;
 			position: absolute;
 			top: 0;
 			padding: 1.88rem;
@@ -63,16 +62,19 @@
 			line-height: 0;
 			text-shadow: .07em .07em #0005;
 			text-transform: uppercase;
+			border-bottom: 3px solid #ccca;
 		}
 
 			.team_name.orange {
 				background-color: #d4791a;
 				left: 6.4rem;
+				width: 36.65rem;
 			}
 
 			.team_name.blue {
 				background-color: #2981df;
 				right: 6.4rem;
+				width: 36.7rem;
 			}
 
 		.joust {
@@ -113,12 +115,13 @@
 	<div class="container">
 		<div class="top_row">
 
-			<img id="team_logo_orange" class="team_logo orange" src="" alt="">
 			<div id="team_name_orange" class="team_name orange"></div>
+			<img id="team_logo_orange" class="team_logo orange" src="" alt="">
 			<div id="orange_joust" class="joust orange"><span></span></div>
-			<div id="blue_joust" class="joust blue"><span></span></div>
+			
 			<div id="team_name_blue" class="team_name blue"></div>
 			<img id="team_logo_blue" class="team_logo blue" src="" alt="">
+			<div id="blue_joust" class="joust blue"><span></span></div>
 
 		</div>
 	</div>

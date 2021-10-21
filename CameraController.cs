@@ -1,19 +1,16 @@
 ﻿using Newtonsoft.Json;
-using Spark.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
 using static Logger;
-using static Spark.g_Team;
 
 namespace Spark
 {
 	class CameraController
 	{
-		public static string BaseUrl = "http://localhost:6721/";
+		public static string BaseUrl => "http://127.0.0.1:" + (Program.spectateMe ? Program.SPECTATEME_PORT:"6721") + "/";
 
 		public CameraController()
 		{
@@ -37,7 +34,7 @@ namespace Spark
 		{
 			if (Program.lastFrame == null) return;
 
-			if (playerName == null) playerName = Program.lastFrame.client_name;
+			playerName ??= Program.lastFrame.client_name;
 
 			if (Program.lastFrame.GetPlayer(playerName) == null)
 			{
@@ -56,7 +53,7 @@ namespace Spark
 
 					await Task.Delay(50);
 					bool found = false;
-					found = await CheckPOVCamIsCorrect(playerName);
+					found = await CheckPovCamIsCorrect(playerName);
 					int foundIndex = 0;
 
 					// loop through all the players twice if we don't find the right one the first time
@@ -70,7 +67,7 @@ namespace Spark
 
 							// check if this is the right player
 							await Task.Delay(50);
-							found = await CheckPOVCamIsCorrect(playerName, i);
+							found = await CheckPovCamIsCorrect(playerName, i);
 
 							// if we found the correct player
 							if (found)
@@ -113,9 +110,9 @@ namespace Spark
 			}
 		}
 
-		private static async Task<bool> CheckPOVCamIsCorrect(string playerName, int i = -1)
+		private static async Task<bool> CheckPovCamIsCorrect(string playerName, int i = -1)
 		{
-			string result = await Program.GetRequestAsync($"http://127.0.0.1:6721/session", null);
+			string result = await Program.GetRequestAsync(BaseUrl + "session", null);
 			if (string.IsNullOrEmpty(result)) return false;
 			g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(result);
 			if (frame == null) return false;

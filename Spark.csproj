@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.3.22</Version>
+    <Version>2.3.23</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -42,7 +42,9 @@
   <ItemGroup>
     <Compile Remove="SparkLinkLauncher\**" />
     <EmbeddedResource Remove="SparkLinkLauncher\**" />
-    <EmbeddedResource Include="wwwroot\css\main.css" />
+    <EmbeddedResource Include="wwwroot\css\main.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\fonts\Inconsolata.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -58,8 +60,15 @@
     <EmbeddedResource Include="wwwroot\img\minimap_disc.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\js\get_data.js" />
-    <EmbeddedResource Include="wwwroot\js\heatmap.min.js" />
+    <EmbeddedResource Include="wwwroot\js\get_data.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\js\heatmap.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwtemplates\speedometer.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Remove="SparkLinkLauncher\**" />
     <Page Remove="SparkLinkLauncher\**" />
     <None Remove="html\default_scoreboard.html" />
