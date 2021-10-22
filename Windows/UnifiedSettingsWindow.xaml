@@ -399,7 +399,7 @@
 								<StackPanel>
 									<TextBlock Margin="8,8,8,8" TextWrapping="Wrap">
 										<Run Text="{x:Static p:Resources.OBS_integration_requires_the_OBS_Websocket_plugin_}"/><LineBreak/>
-										<Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases/download/4.9.0/obs-websocket-4.9.0-Windows-Installer.exe" RequestNavigate="Hyperlink_RequestNavigate">Download Installer</Hyperlink>
+										<Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases/download/4.9.1/obs-websocket-4.9.1-Windows-Installer.exe" RequestNavigate="Hyperlink_RequestNavigate">Download Installer</Hyperlink>
 										<Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases" RequestNavigate="Hyperlink_RequestNavigate">(GitHub)</Hyperlink>
 									</TextBlock>
 									<StackPanel Orientation="Horizontal">

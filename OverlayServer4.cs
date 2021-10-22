@@ -415,8 +415,9 @@ namespace Spark
 
 				return data;
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
+				Debug.WriteLine(e.ToString());
 				return null;
 			}
 		}
@@ -650,13 +651,13 @@ namespace Spark
 <body>
     <div id='heatmapContainer'></div>
     <img id='backgroundImage'
-        src='https://cdn.discordapp.com/attachments/706393776918364211/838605247487279134/minimap.png' />
+        src='/img/minimap.png' />
     <div id='discPositionHistogram'>
         <!-- Plotly chart will be drawn inside this DIV -->
     </div>
     <div id='backgrounddiv'></div>
     <!--<h2 id='title'>Disc Position</h2>-->
-					<script src=""https://cdnjs.cloudflare.com/ajax/libs/heatmap.js/2.0.2/heatmap.min.js"" integrity=""sha512-R35I7hl+fX4IeSVk1c99L/SW0RkDG5dyt2EgU/OY2t0Bx16wC89HGkiXqYykemT0qAYmZOsO5JtxPgv0uzSyKQ=="" crossorigin=""anonymous""></script>
+					<script src=""/js/heatmap.min.js"" integrity=""sha512-R35I7hl+fX4IeSVk1c99L/SW0RkDG5dyt2EgU/OY2t0Bx16wC89HGkiXqYykemT0qAYmZOsO5JtxPgv0uzSyKQ=="" crossorigin=""anonymous""></script>
 					<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 					<script>
 					 window.onload = function () {
@@ -674,7 +675,7 @@ namespace Spark
 					});
 
 					t = "
-					              +
+								  +
 					              JsonConvert.SerializeObject(positions)
 					              + @";
 

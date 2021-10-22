@@ -1,108 +1,109 @@
 ﻿<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player Stats</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Player Stats</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inconsolata&display=swap" rel="stylesheet">
-    
-    <style>
+	<style>
 
-        :root {
-            --blue: #00c2e8;
-            --orange: #e6a011;
-            font-size: 1em;
-        }
+		:root {
+			--blue: #00c2e8;
+			--orange: #e6a011;
+			font-size: 1em;
+		}
 
-        body {
-            margin: 0;
-            /* font-size: 2em; */
-        }
+		@font-face {
+			font-family: 'Inconsolata';
+			src: url('/fonts/Inconsolata.woff2') format('woff2'), url('/fonts/Inconsolata.woff') format('woff'), url('/fonts/Inconsolata.ttf') format('truetype');
+		}
 
-        .stats {
-            background-color: #5c5661;
-            width: 50rem;
-            height: 17rem;
-            color: #f7e8e8;
-            position: relative;
-            text-align: center;
-            font-family: Inconsolata, Ubuntu, consolas, monospace;
-            border-collapse: collapse;
-            margin-bottom: .5rem;
-        }
+		body {
+			margin: 0;
+			/* font-size: 2em; */
+		}
 
-        .stats th {
-            padding: 0.6rem;
-            margin: 0;
-            font-size: 1.5rem;
-            text-transform: uppercase;
-            color: #fffb;
-        }
+		.stats {
+			background-color: #5c5661;
+			width: 50rem;
+			height: 17rem;
+			color: #f7e8e8;
+			position: relative;
+			text-align: center;
+			font-family: Inconsolata, Ubuntu, consolas, monospace;
+			border-collapse: collapse;
+			margin-bottom: .5rem;
+		}
 
-        .stats td {
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
+			.stats th {
+				padding: 0.6rem;
+				margin: 0;
+				font-size: 1.5rem;
+				text-transform: uppercase;
+				color: #fffb;
+			}
 
-        .stats tr:nth-child(2n+1) {
-            /* Dark stat bars */
-            background-color: #423b47;
-        }
+			.stats td {
+				font-size: 1.8rem;
+				font-weight: bold;
+			}
 
-        .stats td:nth-child(1) {
-            width: 18rem;
-            text-align: left;
-            padding-left: 3rem;
-        }
+			.stats tr:nth-child(2n+1) {
+				/* Dark stat bars */
+				background-color: #423b47;
+			}
 
-        .stats th:nth-child(1) {
-            text-align: left;
-            padding-left: 1rem;
-        }
+			.stats td:nth-child(1) {
+				width: 18rem;
+				text-align: left;
+				padding-left: 3rem;
+			}
 
-        .stats:after {
-            content: '';
-            width: 100%;
-            height: .5rem;
-            display: block;
-            position: absolute;
-            bottom: -.5rem;
-        }
+			.stats th:nth-child(1) {
+				text-align: left;
+				padding-left: 1rem;
+			}
 
-        .stats.blue:after {
-            background-color: var(--blue);
-        }
+			.stats:after {
+				content: '';
+				width: 100%;
+				height: .5rem;
+				display: block;
+				position: absolute;
+				bottom: -.5rem;
+			}
 
-        .stats.orange:after {
-            background-color: var(--orange);
-        }
+			.stats.blue:after {
+				background-color: var(--blue);
+			}
 
-        .stats.blue th {
-            background-color: var(--blue);
-        }
+			.stats.orange:after {
+				background-color: var(--orange);
+			}
 
-        .stats.orange th {
-            background-color: var(--orange);
-        }
-    </style>
+			.stats.blue th {
+				background-color: var(--blue);
+			}
+
+			.stats.orange th {
+				background-color: var(--orange);
+			}
+	</style>
 </head>
 
 <body>
 
-<div class="container">
-    <table class="stats blue">
-        {{ BLUE_TEAM }}
-    </table>
+	<div class="container">
+		<table class="stats blue">
+			{{ BLUE_TEAM }}
+		</table>
 
 
-    <table class="stats orange">
-        {{ ORANGE_TEAM }}
-    </table>
-</div>
+		<table class="stats orange">
+			{{ ORANGE_TEAM }}
+		</table>
+	</div>
 </body>
 
 </html>

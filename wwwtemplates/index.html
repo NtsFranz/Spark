@@ -2,94 +2,94 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Spark</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
-    <style>
-        h1 {
-            font-size: 2em;
-        }
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Spark</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+	<style>
+		h1 {
+			font-size: 2em;
+		}
 
-        @font-face {
-            font-family: 'Inconsolata';
-            src: url('/fonts/Inconsolata.woff2') format('woff2'),
-            url('/fonts/Inconsolata.woff') format('woff'),
-            url('/fonts/Inconsolata.ttf') format('truetype');
-        }
+		@font-face {
+			font-family: 'Inconsolata';
+			src: url('/fonts/Inconsolata.woff2') format('woff2'), url('/fonts/Inconsolata.woff') format('woff'), url('/fonts/Inconsolata.ttf') format('truetype');
+		}
 
-        body {
-            font-family: 'Inconsolata';
-        }
-        
-        .content ul li {
-            list-style: none;
-            margin-top: 2em;
-        }
-    </style>
+		body {
+			font-family: 'Inconsolata';
+		}
+
+		.content ul li {
+			list-style: none;
+			margin-top: 2em;
+		}
+	</style>
 </head>
 
 <body>
-<!-- <div class="watermark">
-    <img src="img/secondary_white.png">
-</div> -->
-<section class="hero is-medium">
-    <div class="hero-body" style="background-color: #0003;padding: 4rem 1.5rem;">
-        <div class="container has-text-centered">
-            <h1>Spark</h1>
-            <img src="/img/ignite_logo.png" style="height:15rem;">
-            <p class="subtitle" style="font-size: 1.2em;">
-                <span style="color: var(--ignite-orange);">Spark</span> is a Windows desktop program that can
-                record, process, and upload EchoVR data from either a local EchoVR client or an Oculus Quest on the
-                same network. Check out the <a href="https://echopedia.gg/wiki/Spark" target="blank">Echopedia
-                page</a> for a full list of features.
-            </p>
+	<!-- <div class="watermark">
+		<img src="img/secondary_white.png">
+	</div> -->
+	<section class="hero is-medium">
+		<div class="hero-body" style="background-color: #0003;padding: 4rem 1.5rem;">
+			<div class="container has-text-centered">
+				<h1>Spark</h1>
+				<img src="/img/ignite_logo.png" style="height:15rem;">
+				<p class="subtitle" style="font-size: 1.2em;">
+					<span style="color: var(--ignite-orange);">Spark</span> is a Windows desktop program that can
+					record, process, and upload EchoVR data from either a local EchoVR client or an Oculus Quest on the
+					same network. Check out the <a href="https://echopedia.gg/wiki/Spark" target="blank">
+						Echopedia
+						page
+					</a> for a full list of features.
+				</p>
 
-        </div>
-    </div>
-</section>
-<div class="content" style="max-width: 60em; margin: 5em auto;">
-    <h2>Pages hosted here:</h2>
-    <div class="box">
-        <ul>
-            <li>
-                <a href="/session"><h3>/session</h3></a>A direct re-host of the EchoVR API, but without CORS restrictions.
-            </li>
-            <li>
-                <a href="/stats"><h3>/stats</h3></a>A collection of current stats collected by Spark. Includes VRML team names and logos
-                from the VRML API based on the player list.
-            </li>
-            <li>
-                <a href="/midmatch_overlay"><h3>/midmatch_overlay</h3></a>An overlay that covers the ORANGE TEAM and BLUE TEAM banners with
-                automatically generated team names from VRML team lists. Also shows neutral and defensive joust times.
-            </li>
-            <li>
-                <a href="/scoreboard"><h3>/scoreboard</h3></a>A recreation of the default scoreboard shown at the end of matches. This includes data for players that have dropped during the course of the match.
-            </li>
-            <li>
-                <a href="/minimap"><h3>/minimap</h3></a>A recreation of the default minimap, but with smoother motion and
-                without the bug of disappearing after some goals.
-            </li>
-            <li>
-                <a href="/disc_position_heatmap"><h3>/disc_position_heatmap</h3></a>A heatmap of player positions over time. Reads from .echoreplay files, so
-                those need to be enabled. This accumulates positions over all rounds in the session.
-            </li>
-            <li>
-                <a href="/speedometer/player"><h3>/speedometer/player</h3></a>A simple speed reading overlay for the client player speed.
-            </li>
-            <li>
-                <a href="/speedometer/disc"><h3>/speedometer/disc</h3></a>A simple speed reading overlay for the disc speed.
-            </li>
-            <li>
-                <a href="/speedometer/lone_echo_1"><h3>/speedometer/lone_echo_1</h3></a>A simple speed reading overlay for the player speed in Lone Echo.
-            </li>
-            <li>
-                <a href="/speedometer/lone_echo_2"><h3>/speedometer/lone_echo_2</h3></a>A simple speed reading overlay for the player speed in Lone Echo II.
-            </li>
-        </ul>
-    </div>
-</div>
+			</div>
+		</div>
+	</section>
+	<div class="content" style="max-width: 60em; margin: 5em auto;">
+		<h2>Pages hosted here:</h2>
+		<div class="box">
+			<ul>
+				<li>
+					<a href="/session"><h3>/session</h3></a>A direct re-host of the EchoVR API, but without CORS restrictions.
+				</li>
+				<li>
+					<a href="/stats"><h3>/stats</h3></a>A collection of current stats collected by Spark. Includes VRML team names and logos
+					from the VRML API based on the player list.
+				</li>
+				<li>
+					<a href="/midmatch_overlay"><h3>/midmatch_overlay</h3></a>An overlay that covers the ORANGE TEAM and BLUE TEAM banners with
+					automatically generated team names from VRML team lists. Also shows neutral and defensive joust times.
+				</li>
+				<li>
+					<a href="/scoreboard"><h3>/scoreboard</h3></a>A recreation of the default scoreboard shown at the end of matches. This includes data for players that have dropped during the course of the match.
+				</li>
+				<li>
+					<a href="/minimap"><h3>/minimap</h3></a>A recreation of the default minimap, but with smoother motion and
+					without the bug of disappearing after some goals.
+				</li>
+				<li>
+					<a href="/disc_position_heatmap"><h3>/disc_position_heatmap</h3></a>A heatmap of player positions over time. Reads from .echoreplay files, so
+					those need to be enabled. This accumulates positions over all rounds in the session.
+				</li>
+				<li>
+					<a href="/speedometer/player"><h3>/speedometer/player</h3></a>A simple speed reading overlay for the client player speed.
+				</li>
+				<li>
+					<a href="/speedometer/disc"><h3>/speedometer/disc</h3></a>A simple speed reading overlay for the disc speed.
+				</li>
+				<li>
+					<a href="/speedometer/lone_echo_1"><h3>/speedometer/lone_echo_1</h3></a>A simple speed reading overlay for the player speed in Lone Echo.
+				</li>
+				<li>
+					<a href="/speedometer/lone_echo_2"><h3>/speedometer/lone_echo_2</h3></a>A simple speed reading overlay for the player speed in Lone Echo II.
+				</li>
+			</ul>
+		</div>
+	</div>
 </body>
 
 </html>

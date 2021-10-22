@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -58,7 +59,7 @@ namespace Spark
 							"steals",
 							"stuns",
 							"possession_time",
-							"shot_attempts",
+							"shots_taken",
 						};
 
 						List<List<Dictionary<string, object>>> matchStats = OverlayServer4.GetMatchStats();
@@ -102,7 +103,14 @@ namespace Spark
 								foreach (string column in columns)
 								{
 									html.Append("<td>");
-									html.Append(player[column]);
+									if (column == "possession_time")
+									{
+										html.Append(MathF.Round((float)player[column]));
+									}
+									else
+									{
+										html.Append(player[column]);
+									}
 									html.Append("</td>");
 								}
 
@@ -127,7 +135,7 @@ namespace Spark
 				else
 				{
 					context.Response.StatusCode = 403;
-					await context.Response.WriteAsync("");
+					await context.Response.WriteAsync("Not authorized");
 				}
 			});
 			
@@ -141,6 +149,21 @@ namespace Spark
 				}
 				await OverlayServer4.GenerateDiscPositionHeatMap(context, css);
 			});
+
+
+
+			endpoints.MapGet("/vrml/minimap",
+				async context =>
+				{
+					if (overlayData.ContainsKey("minimap.html"))
+					{
+						await context.Response.WriteAsync(overlayData["minimap.html"]);
+					} else
+					{
+						context.Response.StatusCode = 403;
+						await context.Response.WriteAsync("Not authorized");
+					}
+				});
 
 			// resources
 		}

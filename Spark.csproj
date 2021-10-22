@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.3.23</Version>
+    <Version>2.3.25</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -66,6 +66,9 @@
     <EmbeddedResource Include="wwwroot\js\heatmap.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwtemplates\vrml\minimap.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwtemplates\speedometer.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -73,6 +76,7 @@
     <Page Remove="SparkLinkLauncher\**" />
     <None Remove="html\default_scoreboard.html" />
     <None Remove="img\camera-outline.png" />
+    <None Remove="wwwtemplates\default_minimap - Copy.html" />
     <EmbeddedResource Include="wwwtemplates\default_scoreboard.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
