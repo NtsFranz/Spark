@@ -45,14 +45,7 @@ namespace Spark
 
 			while (Program.running)
 			{
-				if (Program.inGame)
-				{
-					ProcessDiscordPresence(Program.lastFrame);
-				}
-				else
-				{
-					ProcessDiscordPresence(null);
-				}
+				ProcessDiscordPresence(Program.inGame ? Program.lastFrame : null);
 
 				Thread.Sleep(1000);
 			}
@@ -139,65 +132,69 @@ namespace Spark
 				}
 
 				StringBuilder details = new StringBuilder();
-				if (frame.map_name == "mpl_arena_a")
+				switch (frame.map_name)
 				{
-					if (frame.teams[2].players.Find(p => p.name == frame.client_name) != null)
+					case "mpl_arena_a":
 					{
-						details.Append("Spectating ");
-					}
-					else
-					{
-						details.Append("Playing ");
-					}
-
-					details.Append("Arena ");
-
-					if (frame.private_match)
-					{
-						details.Append("pvt.");
-
-						rp.WithSecrets(new Secrets
+						if (frame.teams[2].players.Find(p => p.name == frame.client_name) != null)
 						{
-							JoinSecret = "spark://c/" + frame.sessionid,
-							SpectateSecret = "spark://s/" + frame.sessionid,
+							details.Append("Spectating ");
+						}
+						else
+						{
+							details.Append("Playing ");
+						}
+
+						details.Append("Arena ");
+
+						if (frame.private_match)
+						{
+							details.Append("pvt.");
+
+							rp.WithSecrets(new Secrets
+							{
+								JoinSecret = "spark://c/" + SecretKeys.Hash(frame.sessionid),
+								SpectateSecret = "spark://s/" + SecretKeys.Hash(frame.sessionid),
+							});
+						}
+						else
+						{
+							details.Append("pub.");
+						}
+
+						rp.State = "Score: " + frame.orange_points + " - " + frame.blue_points;
+						rp.Timestamps = new Timestamps
+						{
+							End = frame.game_status == "post_match" ? DateTime.UtcNow : DateTime.UtcNow.AddSeconds(frame.game_clock)
+						};
+						rp.WithParty(new Party
+						{
+							ID = frame.sessionid,
+							Size = frame.GetAllPlayers().Count,
+							Max = frame.private_match ? 15 : 8
 						});
+						break;
 					}
-					else
+					case "mpl_lobby_b2":
 					{
-						details.Append("pub.");
+						details.Append("in EchoVR Lobby");
+
+						// how long have we been in the lobby?
+						if (!inLobby)
+						{
+							inLobby = true;
+							lobbyEntryTime = DateTime.UtcNow;
+						}
+						rp.Timestamps = new Timestamps
+						{
+							Start = lobbyEntryTime
+						};
+						break;
 					}
-
-					rp.State = "Score: " + frame.orange_points + " - " + frame.blue_points;
-					rp.Timestamps = new Timestamps
-					{
-						End = frame.game_status == "post_match" ? DateTime.UtcNow : DateTime.UtcNow.AddSeconds(frame.game_clock)
-					};
-					rp.WithParty(new Party
-					{
-						ID = frame.sessionid,
-						Size = frame.GetAllPlayers().Count,
-						Max = frame.private_match ? 15 : 8
-					});
-
-				}
-				else if (frame.map_name == "mpl_lobby_b2")
-				{
-					details.Append("in EchoVR Lobby");
-
-					// how long have we been in the lobby?
-					if (!inLobby)
-					{
-						inLobby = true;
-						lobbyEntryTime = DateTime.UtcNow;
-					}
-					rp.Timestamps = new Timestamps
-					{
-						Start = lobbyEntryTime
-					};
-				}
-				else // if (frame.map_name == "whatever combat is")
-				{
-					details.Append("Playing Combat");
+					// if (frame.map_name == "whatever combat is")
+					default:
+						details.Append("Playing Combat");
+						break;
 				}
 
 				rp.Details = details.ToString();

@@ -92,6 +92,42 @@
     <EmbeddedResource Include="wwwroot\img\ignite_logo_128.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Remove="wwwroot\fonts\Atmospheric.otf" />
+    <EmbeddedResource Include="wwwroot\fonts\Atmospheric.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\fonts\big_noodle_titling.ttf" />
+    <EmbeddedResource Include="wwwroot\fonts\big_noodle_titling.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\fonts\Furore.otf" />
+    <EmbeddedResource Include="wwwroot\fonts\Furore.otf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\fonts\goodtimes.ttf" />
+    <EmbeddedResource Include="wwwroot\fonts\goodtimes.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\fonts\Prototype.ttf" />
+    <EmbeddedResource Include="wwwroot\fonts\Prototype.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\fonts\SF_Sports_Night_NS_Upright.ttf" />
+    <EmbeddedResource Include="wwwroot\fonts\SF_Sports_Night_NS_Upright.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\favicon.ico" />
+    <EmbeddedResource Include="wwwroot\favicon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\js\util.js" />
+    <EmbeddedResource Include="wwwroot\js\util.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\img\combat_head_240px.png" />
+    <EmbeddedResource Include="wwwroot\img\combat_head_240px.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

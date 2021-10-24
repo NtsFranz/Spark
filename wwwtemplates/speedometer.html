@@ -37,20 +37,6 @@
         });
     }
 
-
-    function httpGetAsync(theUrl, callback, failcallback = null) {
-        let xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function () {
-            if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-                callback(xmlHttp.responseText);
-            else if (xmlHttp.status === 404 && failcallback != null) {
-                failcallback();
-            }
-        }
-        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-        xmlHttp.send(null);
-    }
-
     setInterval(get_speed, 250);
 </script>
 </body>

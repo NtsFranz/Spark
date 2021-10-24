@@ -838,16 +838,24 @@ namespace Spark
 					sReader = new StreamReader(dataStream);
 
 					// Session Contents
-					string rawJSON = sReader.ReadToEnd();
-					// pls close (;-;)
-					sReader.Close();
-					response.Close();
-
-					lock (lastJSONLock)
+					try
 					{
-						lastJSON = rawJSON;
-						lastJSONUsed = false;
-						pubSocket.SendMoreFrame("RawFrame").SendFrame(lastJSON);
+						string rawJson = sReader.ReadToEnd();
+
+						// pls close (;-;)
+						sReader.Close();
+						response.Close();
+
+						lock (lastJSONLock)
+						{
+							lastJSON = rawJson;
+							lastJSONUsed = false;
+							pubSocket.SendMoreFrame("RawFrame").SendFrame(lastJSON);
+						}
+					}
+					catch (IOException)
+					{
+						
 					}
 				}
 			}

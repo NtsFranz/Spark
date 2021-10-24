@@ -9,6 +9,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap" rel="stylesheet">
 
+	<script src="/js/util.js"></script>
 
 	<style>
 
@@ -189,20 +190,6 @@
 			}
 
 			lastStats = data;
-		}
-
-
-		function httpGetAsync(theUrl, callback, failcallback = null) {
-			var xmlHttp = new XMLHttpRequest();
-			xmlHttp.onreadystatechange = function () {
-				if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-					callback(xmlHttp.responseText);
-				else if (xmlHttp.status === 404 && failcallback != null) {
-					failcallback();
-				}
-			}
-			xmlHttp.open("GET", theUrl, true); // true for asynchronous
-			xmlHttp.send(null);
 		}
 
 		get_data();

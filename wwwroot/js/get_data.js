@@ -73,19 +73,4 @@ function set_number(elem, text) {
 	elem.innerText = text;
 }
 
-
-
-function httpGetAsync(theUrl, callback, failcallback = null) {
-	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.onreadystatechange = function () {
-		if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-			callback(xmlHttp.responseText);
-		else if (xmlHttp.status === 404 && failcallback != null) {
-			failcallback();
-		}
-	}
-	xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-	xmlHttp.send(null);
-}
-
 setInterval(get_data, 100);
