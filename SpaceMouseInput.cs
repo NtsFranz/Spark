@@ -65,7 +65,6 @@ namespace Spark
 					while (Running)
 					{
 						byte[] bytes = hidStream.Read();
-						Debug.WriteLine(string.Join("\t", bytes));
 						if (bytes[0] == 3)
 						{
 							state.leftClick = (bytes[1] & 1) != 0;

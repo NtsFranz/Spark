@@ -11,6 +11,7 @@ using Google.Api;
 using Spark.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Windows.Threading;
 
 namespace Spark
 {
@@ -253,7 +254,10 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				new MessageBox("Error connecting to login server. Check your internet connect or check if ignitevr.gg is down.", Resources.Error).Show();
+				//Dispatcher.Invoke(() =>
+				//{
+				//	new MessageBox("Error connecting to login server. Check your internet connect or check if ignitevr.gg is down.", Resources.Error).Show();
+				//});
 				Logger.LogRow(Logger.LogType.Error, $"Error connecting to login server. {e}");
 			}
 		}

@@ -31,6 +31,7 @@ namespace Spark
 				{
 					accessCodeComboBox.Items.Add(code["username"]);
 				}
+
 				// if not logged in with discord
 				if (!accessCodeComboBox.Items.Contains("Personal")) accessCodeComboBox.Items.Add("Personal");
 

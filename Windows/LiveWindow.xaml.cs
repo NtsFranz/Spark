@@ -41,6 +41,9 @@ namespace Spark
 		private string lastIP;
 
 		private string lastDiscordUsername = string.Empty;
+		private string lastAccessCode = string.Empty;
+		private int lastAccessCodeCount = 0;
+		private bool accessCodeDropdownListenerActive;
 		public bool hidden;
 
 		private bool isExplicitClose = false;
@@ -103,12 +106,8 @@ namespace Spark
 		private const int GWL_STYLE = (-16);
 		private const int WS_VISIBLE = 0x10000000;
 		private const int GWL_USERDATA = (-21);
-		
-		
-		public static Visibility DiscordNotLoggedInVisible => 
-			DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
-		public static Visibility DiscordLoggedInVisible => 
-			!DiscordOAuth.IsLoggedIn ? Visibility.Collapsed : Visibility.Visible;
+
+
 
 		public LiveWindow()
 		{
@@ -159,6 +158,8 @@ namespace Spark
 			{
 				AddSpeedBar();
 			}
+
+			DiscordOAuth.authenticated += RefreshDiscordLogin;
 
 			RefreshDiscordLogin();
 
@@ -353,16 +354,19 @@ namespace Spark
 					showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
 					showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? "Show " + HighlightsHelper.nvHighlightClipCount + " Highlights" : Properties.Resources.No_clips_available;
 
+					DiscordNotLoggedInHosting.Visibility = !DiscordOAuth.IsLoggedIn ? Visibility.Visible : Visibility.Collapsed;
 
-					if (Program.inGame)
+					if (Program.connectedToGame)
 					{
 						statusLabel.Content = Properties.Resources.Connected;
 						statusCircle.Fill = new SolidColorBrush(Colors.Green);
+						NotConnectedHelp.Visibility = Visibility.Collapsed;
 					}
 					else
 					{
 						statusLabel.Content = Properties.Resources.Not_Connected;
 						statusCircle.Fill = new SolidColorBrush(Colors.Red);
+						NotConnectedHelp.Visibility = Visibility.Visible;
 					}
 
 
@@ -394,21 +398,15 @@ namespace Spark
 						serverLocationLabel.Content = $"{Properties.Resources.Server_IP_} ---";
 					}
 
-					if (Program.lastFrame != null && Program.lastFrame.map_name != "mpl_lobby_b2")  // 'mpl_lobby_b2' may change in the future
+					if (Program.lastFrame != null && Program.lastFrame.map_name == "mpl_arena_a")  // only the arena has a disc
 					{
 						discSpeedLabel.Text = Program.lastFrame.disc.velocity.ToVector3().Length().ToString("N2");
-						switch (Program.lastFrame.possession[0])
+						discSpeedLabel.Foreground = Program.lastFrame.possession[0] switch
 						{
-							case 0:
-								discSpeedLabel.Foreground = System.Windows.Media.Brushes.CornflowerBlue;
-								break;
-							case 1:
-								discSpeedLabel.Foreground = System.Windows.Media.Brushes.Orange;
-								break;
-							default:
-								discSpeedLabel.Foreground = System.Windows.Media.Brushes.White;
-								break;
-						}
+							0 => Brushes.CornflowerBlue,
+							1 => Brushes.Orange,
+							_ => Brushes.White
+						};
 						//discSpeedProgressBar.Value = (int)Program.lastFrame.disc.Velocity.Length();
 						//if (Program.lastFrame.teams[0].possession)
 						//{
@@ -743,8 +741,6 @@ namespace Spark
 
 					RefreshDiscordLogin();
 
-					RefreshAccessCode();
-
 					if (SparkSettings.instance.echoVRIP != "127.0.0.1" || SparkSettings.instance.allowSpectateMeOnLocalPC)
 					{
 						spectateMeButton.Visibility = Visibility.Visible;
@@ -785,12 +781,6 @@ namespace Spark
 
 		}
 
-		private void RefreshAccessCode()
-		{
-			string accessCodeLocal = Program.currentAccessCodeUsername == "Personal" ? Properties.Resources.Personal : Program.currentAccessCodeUsername;
-			accessCodeLabel.Text = Properties.Resources.Mode + accessCodeLocal;
-			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
-		}
 
 		public void RefreshDiscordLogin()
 		{
@@ -816,8 +806,48 @@ namespace Spark
 					}
 				}
 
-				lastDiscordUsername = username;
 			}
+
+
+			if (Program.currentAccessCodeUsername != lastAccessCode || username != lastDiscordUsername || DiscordOAuth.availableAccessCodes.Count != lastAccessCodeCount)
+			{
+				accessCodeDropdownListenerActive = false;
+				string accessCodeLocal = Program.currentAccessCodeUsername == "Personal" ? Properties.Resources.Personal : Program.currentAccessCodeUsername;
+				if (DiscordOAuth.availableAccessCodes.Count < 2)
+				{
+					accessCodeLabel.Text = Properties.Resources.Mode + accessCodeLocal;
+				}
+				else
+				{
+					accessCodeLabel.Text = Properties.Resources.Mode;
+				}
+				casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
+
+
+				AccessCodesComboboxLiveWindow.Items.Clear();
+				foreach (Dictionary<string, string> code in DiscordOAuth.availableAccessCodes)
+				{
+					AccessCodesComboboxLiveWindow.Items.Add(code["username"]);
+				}
+
+				// if not logged in with discord
+				if (!AccessCodesComboboxLiveWindow.Items.Contains("Personal")) AccessCodesComboboxLiveWindow.Items.Add("Personal");
+
+				// set the dropdown value
+				AccessCodesComboboxLiveWindow.SelectedIndex = DiscordOAuth.GetAccessCodeIndex(SparkSettings.instance.accessCode);
+
+				// show or hide the dropdown entirely
+				AccessCodesComboboxLiveWindow.Visibility = DiscordOAuth.availableAccessCodes.Count < 2 ? Visibility.Collapsed : Visibility.Visible;
+
+				accessCodeDropdownListenerActive = true;
+
+			}
+
+
+			lastAccessCodeCount = DiscordOAuth.availableAccessCodes.Count;
+			lastAccessCode = Program.currentAccessCodeUsername;
+			lastDiscordUsername = username;
+
 		}
 
 		private void AddSpeedBar()
@@ -900,7 +930,7 @@ namespace Spark
 					Program.matchData.ServerLocation = loc;
 					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
 					serverLocationLabel.ToolTip = $"{respObj["query"]}\n{respObj["org"]}\n{respObj["as"]}";
-					
+
 					FullServerLocationTextBox.Text = $"City:\t{loc}\nIP:\t{respObj["query"]}\nOrg:\t{respObj["org"]}\nISP:\t{respObj["isp"]}";
 
 					if (SparkSettings.instance.serverLocationTTS)
@@ -1092,15 +1122,15 @@ namespace Spark
 			g_Team team = Program.lastFrame.GetTeam(Program.lastFrame.client_name);
 			if (team != null && team.color == g_Team.TeamColor.spectator)
 			{
-				Program.StartEchoVR(Program.JoinType.Spectator, session_id:Program.lastFrame.sessionid);
+				Program.StartEchoVR(Program.JoinType.Spectator, session_id: Program.lastFrame.sessionid);
 			}
-			Program.StartEchoVR(Program.JoinType.Player, session_id:Program.lastFrame.sessionid);
+			Program.StartEchoVR(Program.JoinType.Player, session_id: Program.lastFrame.sessionid);
 		}
 
 		private void RestartAsSpectatorClick(object sender, RoutedEventArgs e)
 		{
 			Program.KillEchoVR();
-			Program.StartEchoVR(Program.JoinType.Spectator, session_id:Program.lastFrame.sessionid);
+			Program.StartEchoVR(Program.JoinType.Spectator, session_id: Program.lastFrame.sessionid);
 		}
 
 		private void showEventLogFileButton_Click(object sender, RoutedEventArgs e)
@@ -1224,7 +1254,11 @@ namespace Spark
 					if (Program.inGame && Program.lastFrame != null && !Program.lastFrame.inLobby)
 					{
 						Program.KillEchoVR($"-httpport {Program.SPECTATEME_PORT}");
-						Program.StartEchoVR(Program.JoinType.Spectator, port: Program.SPECTATEME_PORT, noovr: true, session_id: Program.lastFrame.sessionid);
+						Program.StartEchoVR(
+							Program.JoinType.Spectator,
+							port: Program.SPECTATEME_PORT,
+							noovr: SparkSettings.instance.useAnonymousSpectateMe,
+							session_id: Program.lastFrame.sessionid);
 						Program.WaitUntilLocalGameLaunched(Program.UseCameraControlKeys, port: Program.SPECTATEME_PORT);
 						spectateMeSubtitle.Text = Properties.Resources.Waiting_for_EchoVR_to_start;
 					}
@@ -1443,7 +1477,7 @@ namespace Spark
 			}
 		}
 
-#region Atlas Links Tab
+		#region Atlas Links Tab
 
 		private static string CurrentLink(string sessionid)
 		{
@@ -1682,8 +1716,10 @@ namespace Spark
 			public List<string> players = new();
 
 			public List<string> TeamNames => teams.Select(t => t.teamName).ToList();
-			public List<string> AllPlayers {
-				get {
+			public List<string> AllPlayers
+			{
+				get
+				{
 					List<string> allPlayers = new List<string>(players);
 					foreach (AtlasTeam team in teams)
 					{
@@ -2075,9 +2111,11 @@ namespace Spark
 			Program.ToggleWindow(typeof(AtlasWhitelistWindow), "Atlas Whitelist", this);
 		}
 
-		public int LinkType {
+		public int LinkType
+		{
 			get => SparkSettings.instance.atlasLinkStyle;
-			set {
+			set
+			{
 				SparkSettings.instance.atlasLinkStyle = value;
 				RefreshCurrentLink();
 			}
@@ -2116,7 +2154,7 @@ namespace Spark
 			SparkSettings.instance.echoVRIP = Program.echoVRIP;
 		}
 
-#endregion
+		#endregion
 
 		private void DashboardItem1Changed(object sender, SelectionChangedEventArgs e)
 		{
@@ -2154,7 +2192,7 @@ namespace Spark
 		{
 			Program.ToggleWindow(typeof(CameraWrite));
 		}
-		
+
 		private void RefreshTraceroute(object sender, RoutedEventArgs e)
 		{
 			try
@@ -2181,7 +2219,7 @@ namespace Spark
 				LogRow(LogType.Error, $"Traceroute failed.{ex}");
 			}
 		}
-		
+
 		public class TracertEntry
 		{
 			public int HopID;
@@ -2195,7 +2233,7 @@ namespace Spark
 				return $"{HopID}\t{ReplyTime}\t{Address}\t{Hostname}";
 			}
 		}
-		
+
 		/// <summary>
 		/// Traces the route which data have to travel through in order to reach an IP address.
 		/// </summary>
@@ -2204,7 +2242,7 @@ namespace Spark
 		public static IEnumerable<TracertEntry> Tracert(string ipAddress, int maxHops = 30, int timeout = 10000, Action<IEnumerable<TracertEntry>, bool> OnProgressCallback = null)
 		{
 			List<TracertEntry> entries = new List<TracertEntry>();
-			
+
 			// Ensure that the argument address is valid.
 			if (!IPAddress.TryParse(ipAddress, out IPAddress address))
 				throw new ArgumentException($"{ipAddress} is not a valid IP address.");
@@ -2222,7 +2260,7 @@ namespace Spark
 			do
 			{
 				pingReplyTime.Start();
-				reply = ping.Send(address, timeout, new byte[] {0}, pingOptions);
+				reply = ping.Send(address, timeout, new byte[] { 0 }, pingOptions);
 				pingReplyTime.Stop();
 				string hostname = string.Empty;
 				if (reply.Address != null)
@@ -2230,7 +2268,7 @@ namespace Spark
 					try
 					{
 						IPHostEntry ipHostInfo = Dns.GetHostEntry(reply.Address);
-						hostname = ipHostInfo.HostName; 
+						hostname = ipHostInfo.HostName;
 						//IPAddress ipA = ipHostInfo.AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
 						//var ame = Dns.GetHostByAddress(reply.Address);    // Retrieve the hostname for the replied address.
 					}
@@ -2249,7 +2287,7 @@ namespace Spark
 					ReplyTime = pingReplyTime.ElapsedMilliseconds,
 					ReplyStatus = reply.Status
 				});
-				
+
 				OnProgressCallback?.Invoke(entries, false);
 
 				pingOptions.Ttl++;
@@ -2260,6 +2298,17 @@ namespace Spark
 			OnProgressCallback?.Invoke(entries, true);
 
 			return entries;
+		}
+
+		private void AccessCodeChangedLiveWindow(object sender, SelectionChangedEventArgs e)
+		{
+			if (accessCodeDropdownListenerActive)
+			{
+				string username = AccessCodesComboboxLiveWindow.SelectedValue.ToString();
+				Program.currentAccessCodeUsername = username;
+				SparkSettings.instance.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
+				SparkSettings.instance.Save();
+			}
 		}
 	}
 }

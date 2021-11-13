@@ -42,6 +42,7 @@
 					<StackPanel Orientation="Horizontal">
 						<Ellipse x:Name="statusCircle" Width="10" Height="10" Fill="Red" Stroke="Black" StrokeThickness="1" Margin="10,10,10,10"/>
 						<Label x:Name="statusLabel" Content="{x:Static p:Resources.Not_Connected}"/>
+						<TextBlock x:Name="NotConnectedHelp" HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://echopedia.gg/wiki/Spark#Spark_says_Not_Connected_in_the_top_left_corner" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Help"/></Hyperlink></TextBlock>
 					</StackPanel>
 				</GroupBox.Header>
 				<StackPanel>
@@ -286,7 +287,7 @@
 									<CheckBox x:Name="hostingMatchCheckbox" Margin="10,0,10,0"/>
 									<Label x:Name="hostingMatchLabel" Content="{x:Static p:Resources.Host_Match}"/>
 									
-									<TextBlock Padding="10,10,10,10" Background="#FF492727" TextWrapping="Wrap" Visibility="{Binding DiscordNotLoggedInVisible}">
+									<TextBlock x:Name="DiscordNotLoggedInHosting" Padding="10,10,10,10" Background="#FF492727" TextWrapping="Wrap" >
 										<Run Text="Match Hosting only works when you're logged in with Discord (top left of main window)." />
 									</TextBlock>
 								</StackPanel>
@@ -525,6 +526,7 @@
 			<Image x:Name="image" Height="175" Source="/img/alternate_white.png" Opacity="0.05"/>
 		</StackPanel>
 		<TextBlock x:Name="accessCodeLabel" Text="{x:Static p:Resources.Mode}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+		<ComboBox x:Name="AccessCodesComboboxLiveWindow" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="60,0,0,26" Grid.Column="2" SelectedIndex="0" SelectionChanged="AccessCodeChangedLiveWindow"></ComboBox>
 		<TextBlock x:Name="versionLabel" Text="{Binding AppVersionLabelText}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 

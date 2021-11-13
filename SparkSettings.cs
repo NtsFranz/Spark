@@ -88,6 +88,7 @@ namespace Spark
 		public bool sparkLinkNoOVR { get; set; } = false;
 		public string sparkExeLocation { get; set; } = "";
 		public bool allowSpectateMeOnLocalPC { get; set; } = false;
+		public bool useAnonymousSpectateMe { get; set; } = true;
 
 		public Dictionary<string, bool> autoUploadProfiles { get; } = new Dictionary<string, bool>();
 

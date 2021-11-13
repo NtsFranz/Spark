@@ -198,7 +198,6 @@ namespace Spark
 				// loop through every nth frame
 				const int n = 10;
 				int nframes = replayFile.nframes;
-				Console.WriteLine(nframes);
 				for (int i = 0; i < nframes; i += n)
 				{
 					g_Instance frame = replayFile.GetFrame(i);

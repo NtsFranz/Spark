@@ -88,7 +88,7 @@ namespace Spark
 		{
 			try
 			{
-				if ((int)msg.wParam != 0) Debug.WriteLine(msg.wParam);
+				// if ((int)msg.wParam != 0) Debug.WriteLine(msg.wParam);
 			}
 			catch
 			{

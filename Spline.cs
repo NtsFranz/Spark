@@ -6,10 +6,10 @@ namespace Spark
 {
     public class Spline
     {
-        private CameraWrite.CameraTransform[] keyframes;
+        private CameraTransform[] keyframes;
         private Vector3[] velocities;
 
-        public Spline(CameraWrite.CameraTransform[] keyframes)
+        public Spline(CameraTransform[] keyframes)
         {
             this.keyframes = keyframes;
             velocities = new Vector3[keyframes.Length];

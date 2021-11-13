@@ -61,6 +61,7 @@
 							<TextBox x:Name="AnimationNameTextBox" Width="300" Grid.Column="0" Margin="2,2,2,2" ToolTip="The animation name"></TextBox>
 							<Button Content="Save" Click="AnimationSaveClicked" Grid.Column="1" Padding="5,5,5,5" Margin="2,2,2,2"/>
 							<Button Content="Delete" Click="AnimationDeleteClicked" Grid.Column="2" Padding="5,5,5,5" Margin="2,2,2,2"/>
+							<Button Content="New" Click="NewAnimationClicked" Grid.Column="3" Padding="5,5,5,5" Margin="2,2,2,2"/>
 						</Grid>
 						<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,40,0,0" Grid.Column="0">
 							<Button Visibility="Collapsed" Margin="5,0,5,5" Height="45" Click="SetStart">Set Start</Button>
@@ -82,8 +83,8 @@
 								<Label>Duration:</Label>
 								<TextBox x:Name="durationInput" Text="{Binding Duration}" HorizontalContentAlignment="Left" Width="60" Height="24" />
 							</StackPanel>
-							<CheckBox Content="Ease In" IsChecked="{Binding easeIn}" Margin="10,10,0,5"/>
-							<CheckBox Content="Ease Out" IsChecked="{Binding easeOut}" Margin="10,0,0,10"/>
+							<CheckBox x:Name="EaseInCheckbox" Content="Ease In" IsChecked="{Binding EaseIn}" Margin="10,10,0,5"/>
+							<CheckBox x:Name="EaseOutCheckbox" Content="Ease Out" IsChecked="{Binding EaseOut}" Margin="10,0,0,10"/>
 						</StackPanel>
 					</Grid>
 				</GroupBox>
@@ -177,8 +178,8 @@
 					</StackPanel>-->
 
 						<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,5,0,5">
-							<Button x:Name="readXYZ" Width="70" Height="32" Margin="0,0,10,0" Click="ReadXYZ">Read</Button>
-							<Button x:Name="writeXYZ" Width="70" Height="32"  Click="WriteXYZ">Write</Button>
+							<Button x:Name="readXYZ" Width="70" Height="32" Margin="0,0,10,0" Click="ReadXYZ">Read All</Button>
+							<Button x:Name="writeXYZ" Width="70" Height="32"  Click="WriteXYZ">Write All</Button>
 						</StackPanel>
 
 					</StackPanel>
@@ -199,25 +200,25 @@
 
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Rot Speed: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="rotSpeedSlider" Value="{Binding rotSpeed}" Minimum="-720" Maximum="720" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+									<Slider x:Name="rotSpeedSlider" Value="{l:CameraSettingBinding rotSpeed}" Minimum="-720" Maximum="720" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 									<TextBox Text="{Binding ElementName=rotSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Orbit Radius: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="orbitRadiusSlider" Value="{Binding orbitRadius}" Minimum="0" Maximum="20" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+									<Slider x:Name="orbitRadiusSlider" Value="{l:CameraSettingBinding orbitRadius}" Minimum="0" Maximum="20" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
 									<TextBox Text="{Binding ElementName=orbitRadiusSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Smoothing: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="smoothingSlider" Value="{Binding followSmoothing}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+									<Slider x:Name="smoothingSlider" Value="{l:CameraSettingBinding followSmoothing}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 									<TextBox Text="{Binding ElementName=smoothingSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Lag Comp: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="lagCompSlider" Value="{Binding lagCompDiscFollow}" Minimum="0" Maximum="10" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+									<Slider x:Name="lagCompSlider" Value="{l:CameraSettingBinding lagCompDiscFollow}" Minimum="0" Maximum="10" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 									<TextBox Text="{Binding ElementName=lagCompSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 							</StackPanel>
@@ -245,24 +246,24 @@
 
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Move Exponential: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="translationPowerSlider" Value="{Binding spaceMouseMoveExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+									<Slider x:Name="translationPowerSlider" Value="{l:CameraSettingBinding spaceMouseMoveExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 									<TextBox Text="{Binding ElementName=translationPowerSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Rotation Exponential: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="rotationPowerSlider" Value="{Binding spaceMouseRotateExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+									<Slider x:Name="rotationPowerSlider" Value="{l:CameraSettingBinding spaceMouseRotateExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 									<TextBox Text="{Binding ElementName=rotationPowerSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 
 
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Move Speed: " Width="110" Margin="10,10,0,0"/>
-									<Slider x:Name="translationSpeedSlider" Value="{Binding spaceMouseMoveSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+									<Slider x:Name="translationSpeedSlider" Value="{l:CameraSettingBinding spaceMouseMoveSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 									<TextBox Text="{Binding ElementName=translationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Rotate Speed: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="rotationSpeedSlider" Value="{Binding spaceMouseRotateSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+									<Slider x:Name="rotationSpeedSlider" Value="{l:CameraSettingBinding spaceMouseRotateSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 									<TextBox Text="{Binding ElementName=rotationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 
@@ -291,24 +292,24 @@
 
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Move Exponential: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="joystickTranslationPowerSlider" Value="{Binding joystickMoveExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+									<Slider x:Name="joystickTranslationPowerSlider" Value="{l:CameraSettingBinding joystickMoveExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 									<TextBox Text="{Binding ElementName=joystickTranslationPowerSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Rotation Exponential: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="joystickRotationPowerSlider" Value="{Binding joystickRotateExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+									<Slider x:Name="joystickRotationPowerSlider" Value="{l:CameraSettingBinding joystickRotateExponential}" Minimum="1" Maximum="5" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 									<TextBox Text="{Binding ElementName=joystickRotationPowerSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 
 
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Move Speed: " Width="110" Margin="10,10,0,0"/>
-									<Slider x:Name="joystickTranslationSpeedSlider" Value="{Binding joystickMoveSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+									<Slider x:Name="joystickTranslationSpeedSlider" Value="{l:CameraSettingBinding joystickMoveSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 									<TextBox Text="{Binding ElementName=joystickTranslationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Rotate Speed: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="joystickRotationSpeedSlider" Value="{Binding joystickRotateSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
+									<Slider x:Name="joystickRotationSpeedSlider" Value="{l:CameraSettingBinding joystickRotateSpeed}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".001" SmallChange=".001"/>
 									<TextBox Text="{Binding ElementName=joystickRotationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 
@@ -337,7 +338,7 @@
 
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Multiplier: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="XPlanePosMultiplier" Value="{Binding xPlanePosMultiplier}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".0001" SmallChange=".0001"/>
+									<Slider x:Name="XPlanePosMultiplier" Value="{l:CameraSettingBinding xPlanePosMultiplier}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".0001" SmallChange=".0001"/>
 									<TextBox Text="{Binding ElementName=XPlanePosMultiplier, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 

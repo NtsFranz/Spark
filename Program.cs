@@ -46,15 +46,13 @@ namespace Spark
 		public static bool running = true;
 
 		public static bool inGame;
+		public static bool connectedToGame;
 		private static bool wasInGame;
 
 		/// <summary>
 		/// Whether to continue reading input right now (for reading files)
 		/// </summary>
 		public static bool paused = false;
-
-		// READ FROM FILE
-		private const bool READ_FROM_FILE = false;
 
 		/// <summary>
 		/// whether to read slower when reading file 
@@ -698,101 +696,16 @@ namespace Spark
 		/// </summary>
 		public static void FetchThread()
 		{
-			StreamReader fileReader = null;
-
-			if (READ_FROM_FILE)
-			{
-				filesInFolder = Directory.GetFiles(readFromFolder, "*.zip").ToList();
-				filesInFolder.Sort();
-				fileReader = ExtractFile(fileReader, filesInFolder[readFromFolderIndex++]);
-			}
-
-
-			while (running && !fileFinishedReading)
+			while (running)
 			{
 				while (paused && running)
 				{
 					Thread.Sleep(10);
 				}
 
-				if (READ_FROM_FILE)
-				{
-					if (fileReader != null)
-					{
-						string rawJSON = fileReader.ReadLine();
-						if (rawJSON == null)
-						{
-							fileReader.Close();
-							if (readFromFolderIndex >= filesInFolder.Count)
-							{
-								fileFinishedReading = true;
-							}
-							else
-							{
-								fileReader = ExtractFile(fileReader, filesInFolder[readFromFolderIndex++]);
-							}
-						}
-						else
-						{
-							string[] splitJSON = rawJSON.Split('\t');
-							string onlyJSON, onlyTime;
-							if (splitJSON.Length > 1)
-							{
-								onlyJSON = splitJSON[1];
-								onlyTime = splitJSON[0];
-							}
-							else
-							{
-								onlyJSON = splitJSON[0];
-								string fileName = filesInFolder[readFromFolderIndex - 1].Split('\\').Last();
-								onlyTime = fileName.Substring(4, fileName.Length - 8);
-							}
-
-							inGame = true;
-
-							if (readIntoQueue)
-							{
-								lastJSONQueue.Enqueue(onlyJSON);
-								lastDateTimeStringQueue.Enqueue(onlyTime);
-							}
-							else
-							{
-								lock (lastJSONLock)
-								{
-									lastDateTimeString = onlyTime;
-									lastJSON = onlyJSON;
-									lastJSONUsed = false;
-								}
-							}
-						}
-					}
-					else
-					{
-						LogRow(LogType.Error, "File doesn't exist or something");
-						return;
-					}
-
-					if (readIntoQueue)
-					{
-						if (lastJSONQueue.Count > 100000)
-						{
-							Console.WriteLine("Got 100k lines ahead");
-							// sleep for 1 sec to let the other thread catch up
-							Thread.Sleep(1000);
-						}
-					}
-					else
-					{
-						// wait until we need to get another row
-						while (!lastJSONUsed)
-						{
-							Thread.Sleep(1);
-						}
-					}
-				}
 
 				{
-					WebResponse response;
+					HttpWebResponse response;
 					StreamReader sReader;
 
 
@@ -800,18 +713,16 @@ namespace Spark
 					try
 					{
 						// Create Session.
-						WebRequest request = WebRequest.Create($"http://{echoVRIP}:{echoVRPort}/session");
-						response = request.GetResponse();
+						HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"http://{echoVRIP}:{echoVRPort}/session");
+						response = (HttpWebResponse)request.GetResponse();
 					}
-					catch (Exception)
+					catch (Exception e)
 					{
 						if (lastFrame != null && inGame)
 						{
 							MatchEventZMQMessage msg = new MatchEventZMQMessage("LeaveMatch", "sessionid", lastFrame.sessionid);
 							pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
 						}
-						// Don't update so quick if we aren't in a match anyway
-						Thread.Sleep(2000);
 
 						// split file between matches
 						if (SparkSettings.instance.whenToSplitReplays < 3)
@@ -822,17 +733,30 @@ namespace Spark
 						LogRow(LogType.Info, "Not in Match");
 						inGame = false;
 
+						if (e is WebException w && w.Status == WebExceptionStatus.ProtocolError)
+						{
+							connectedToGame = true;
+						}
+						else
+						{
+							connectedToGame = false;
+						}
+
 
 						lock (lastJSONLock)
 						{
 							lastJSON = null;
 						}
 
+						// Don't update so quick if we aren't in a match anyway
+						Thread.Sleep(2000);
+
 						continue;
 					}
 
 					lastDataTime = DateTime.Now;
 					inGame = true;
+					connectedToGame = true;
 
 					Stream dataStream = response.GetResponseStream();
 					sReader = new StreamReader(dataStream);
@@ -914,21 +838,7 @@ namespace Spark
 					try
 					{
 						string json, recordedTime;
-						if (READ_FROM_FILE && readIntoQueue)
-						{
-							if (!lastJSONQueue.TryDequeue(out json))
-							{
-								if (fileFinishedReading)
-								{
-									running = false;
-								}
-
-								Thread.Sleep(1);
-								continue;
-							}
-
-							lastDateTimeStringQueue.TryDequeue(out recordedTime);
-						}
+						
 
 						lock (lastJSONLock)
 						{
@@ -1036,18 +946,6 @@ namespace Spark
 						LogRow(LogType.Error, "Big oopsie. Please catch inside. " + ex);
 					}
 
-					if (READ_FROM_FILE && !realtimeWhenReadingFile)
-					{
-						while (running)
-						{
-							if (!lastJSONUsed)
-							{
-								break;
-							}
-
-							//Thread.Sleep(1);
-						}
-					}
 
 					Thread.Sleep(statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0]);
 				}
@@ -1179,8 +1077,6 @@ namespace Spark
 		public static void AutorestartThread()
 		{
 			lastDataTime = DateTime.Now;
-
-			if (READ_FROM_FILE) SparkSettings.instance.autoRestart = false;
 
 			// Session pull loop.
 			while (running)
@@ -1710,7 +1606,7 @@ namespace Spark
 					try
 					{
 						KillEchoVR($"-httpport {SPECTATEME_PORT}");
-						StartEchoVR(JoinType.Spectator, SPECTATEME_PORT, true, lastFrame.sessionid);
+						StartEchoVR(JoinType.Spectator, SPECTATEME_PORT, SparkSettings.instance.useAnonymousSpectateMe, lastFrame.sessionid);
 						lastSpectatedSessionId = lastFrame.sessionid;
 
 						liveWindow.SetSpectateMeSubtitle(Resources.Waiting_for_EchoVR_to_start);
@@ -2809,10 +2705,7 @@ namespace Spark
 					// if we just started a new 'round' (so stats haven't been reset)
 					if (lastFrame.game_status == "round_over")
 					{
-						if (!READ_FROM_FILE)
-						{
-							UpdateStatsIngame(frame, false, false);
-						}
+						UpdateStatsIngame(frame, false, false);
 
 						foreach (MatchPlayer player in matchData.players.Values)
 						{
@@ -2842,10 +2735,7 @@ namespace Spark
 						FocusEchoVR();
 					}
 
-					if (!READ_FROM_FILE)
-					{
-						UpdateStatsIngame(frame);
-					}
+					UpdateStatsIngame(frame);
 
 					break;
 
@@ -2854,10 +2744,7 @@ namespace Spark
 
 					#region Started Playing
 
-					if (!READ_FROM_FILE)
-					{
-						UpdateStatsIngame(frame);
-					}
+					UpdateStatsIngame(frame);
 
 					// Autofocus
 					if (SparkSettings.instance.isAutofocusEnabled)

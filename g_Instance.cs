@@ -162,11 +162,12 @@ namespace Spark
 			return TeamColor.spectator;
 		}
 
-		public CameraWrite.CameraTransform GetCameraTransform()
+		public CameraTransform GetCameraTransform()
 		{
-			return new CameraWrite.CameraTransform(
+			return new CameraTransform(
 				player.vr_position.ToVector3(),
-				CameraWrite.QuaternionLookRotation(player.vr_forward.ToVector3(), player.vr_up.ToVector3())
+				CameraWrite.QuaternionLookRotation(player.vr_forward.ToVector3(), player.vr_up.ToVector3()),
+				CameraWrite.lastSetFov
 			);
 		}
 	}

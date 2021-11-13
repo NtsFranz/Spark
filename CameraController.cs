@@ -10,7 +10,7 @@ namespace Spark
 {
 	class CameraController
 	{
-		public static string BaseUrl => "http://127.0.0.1:" + (Program.spectateMe ? Program.SPECTATEME_PORT:"6721") + "/";
+		public static string BaseUrl => "http://127.0.0.1:" + (Program.spectateMe ? Program.SPECTATEME_PORT : "6721") + "/";
 
 		public CameraController()
 		{
@@ -137,7 +137,7 @@ namespace Spark
 		{
 			Dictionary<string, bool> data = new Dictionary<string, bool>()
 			{
-				{"enabled", visible}
+				{ "enabled", visible }
 			};
 			Program.PostRequestCallback(BaseUrl + "ui_visibility", null, JsonConvert.SerializeObject(data), null);
 		}
@@ -146,7 +146,7 @@ namespace Spark
 		{
 			Dictionary<string, object> data = new Dictionary<string, object>()
 			{
-				{"enabled", visible}
+				{ "enabled", visible }
 			};
 			Program.PostRequestCallback(BaseUrl + "nameplates_visibility", null, JsonConvert.SerializeObject(data), null);
 		}
@@ -155,7 +155,7 @@ namespace Spark
 		{
 			Dictionary<string, object> data = new Dictionary<string, object>()
 			{
-				{"enabled", visible}
+				{ "enabled", visible }
 			};
 			Program.PostRequestCallback(BaseUrl + "minimap_visibility", null, JsonConvert.SerializeObject(data), null);
 		}
@@ -164,8 +164,8 @@ namespace Spark
 		{
 			Dictionary<string, bool> data = new Dictionary<string, bool>()
 			{
-				{"blue_team_muted", blueTeamMuted},
-				{"orange_team_muted", orangeTeamMuted},
+				{ "blue_team_muted", blueTeamMuted },
+				{ "orange_team_muted", orangeTeamMuted },
 			};
 			Program.PostRequestCallback(BaseUrl + "team_muted", null, JsonConvert.SerializeObject(data), null);
 		}
@@ -184,7 +184,7 @@ namespace Spark
 		{
 			Dictionary<string, object> data = new Dictionary<string, object>()
 			{
-				{"mode", mode.ToString()},
+				{ "mode", mode.ToString() },
 			};
 			Program.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
 		}
@@ -193,7 +193,7 @@ namespace Spark
 		{
 			Dictionary<string, object> data = new Dictionary<string, object>()
 			{
-				{"num", playerId},
+				{ "num", playerId },
 			};
 			Program.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
 		}
@@ -202,10 +202,16 @@ namespace Spark
 		{
 			Dictionary<string, object> data = new Dictionary<string, object>()
 			{
-				{"mode", mode.ToString()},
-				{"num", playerId},
+				{ "mode", mode.ToString() },
+				{ "num", playerId },
 			};
 			Program.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
+		}
+
+
+		public static void SetCameraTransform(CameraTransform data)
+		{
+			Program.PostRequestCallback(BaseUrl + "camera_transform", null, JsonConvert.SerializeObject(data), null);
 		}
 	}
 }
