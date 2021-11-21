@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="Spark.OverlaysConfigWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:Spark"
+		mc:Ignorable="d"
+		d:DesignHeight="950" d:DesignWidth="600"
+		FontSize="14" 
+		Background="{DynamicResource BackgroundColour}" 
+		DataContext="{Binding RelativeSource={RelativeSource Self}}"
+		>
+	<ScrollViewer  VerticalScrollBarVisibility="Auto">
+		<StackPanel Margin="10,0,10,10">
+			<Label Content="Spark Overlays" FontSize="16" Margin="5,5,5,5" />
+			<TextBlock TextWrapping="Wrap" Background="{DynamicResource ControlBrightDefaultBackground}" Padding="10,10,10,10" Margin="10,0,10,0">
+							<Run Text="Spark includes a modular set of overlays for things like team names, joust times, and complete stats. These overlays are free for personal use with attribution. To use the overlays, add a browser source in OBS. Generally you will need to set the resolution to 1920x1080."/>
+			</TextBlock>
+
+			<Button Click="OpenOverlaysMainPage" Padding="10,10,10,10"  HorizontalAlignment="Center" Margin="0,20,0,20">
+				<StackPanel Orientation="Horizontal">
+					<Label Content="Open Overlays in Browser"/>
+					<Image Source="/img/open-in-new.png" Width="20"/>
+				</StackPanel>
+			</Button>
+
+			<GroupBox Header="Settings">
+				<StackPanel>
+					<Label Content="Team Name/Logo Source" Margin="20,0,0,0"/>
+					<ComboBox Margin="20,0,20,10" SelectionChanged="TeamsDataSourceChanged" SelectedIndex="{local:SettingBinding overlaysTeamSource}">
+						<ComboBoxItem>Manual Team Entry</ComboBoxItem>
+						<ComboBoxItem>Automatic VRML Teams</ComboBoxItem>
+					</ComboBox>
+
+					<Grid x:Name="ManualInputSettings" Visibility="{Binding ManualInputVisible}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="50"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="30" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<Label Content="Orange Team" Grid.Column="0" HorizontalContentAlignment="Center" Background="{DynamicResource ContainerBackground}"/>
+						<Button Click="SwapTeamSettings" Grid.Column="1">
+							<Image Source="/img/swap-horizontal-bold.png" Width="20"/>
+						</Button>
+						<Label Content="Blue Team"  Grid.Column="2" HorizontalContentAlignment="Center" Background="{DynamicResource ContainerBackground}"/>
+
+						<StackPanel Grid.Row="1" Grid.Column="0">
+							<Label Content="Team Name"/>
+							<TextBox x:Name="ManualTeamNameOrange" Text="{local:SettingBinding overlaysManualTeamNameOrange}"/>
+							<Label Content="Team Logo (URL)"/>
+							<TextBox x:Name="ManualTeamLogoOrange" Text="{local:SettingBinding overlaysManualTeamLogoOrange}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Row="1" Grid.Column="2">
+							<Label Content="Team Name"/>
+							<TextBox x:Name="ManualTeamNameBlue" Text="{local:SettingBinding overlaysManualTeamNameBlue}"/>
+							<Label  Content="Team Logo (URL)"/>
+							<TextBox x:Name="ManualTeamLogoBlue" Text="{local:SettingBinding overlaysManualTeamLogoBlue}"/>
+						</StackPanel>
+					</Grid>
+				</StackPanel>
+			</GroupBox>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

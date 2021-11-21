@@ -89,6 +89,7 @@ namespace Spark
 		public string sparkExeLocation { get; set; } = "";
 		public bool allowSpectateMeOnLocalPC { get; set; } = false;
 		public bool useAnonymousSpectateMe { get; set; } = true;
+		public bool spectateMeOnByDefault { get; set; } = false;
 
 		public Dictionary<string, bool> autoUploadProfiles { get; } = new Dictionary<string, bool>();
 
@@ -159,6 +160,23 @@ namespace Spark
 		public string obsSaveReplayScene { get; set; } = "";
 
 
+		#endregion
+
+		#region Overlays
+		/// <summary>
+		/// 0 for manual, 1 for vrml api
+		/// </summary>
+		public int overlaysTeamSource { get; set; } = 1;
+		public string overlaysManualTeamNameOrange { get; set; } = "";
+		public string overlaysManualTeamNameBlue { get; set; } = "";
+		public string overlaysManualTeamLogoOrange { get; set; } = "";
+		public string overlaysManualTeamLogoBlue { get; set; } = "";
+
+		/// <summary>
+		/// 0: automatic, 1: manual
+		/// </summary>
+		public int overlaysRoundScoresSource { get; set; } = 0;
+		public int[] overlaysManualRoundScores { get; set; } = null;
 		#endregion
 
 		#endregion

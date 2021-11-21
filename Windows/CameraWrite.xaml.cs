@@ -297,6 +297,8 @@ namespace Spark
 			outputUpdateTimer.Elapsed += Update;
 			outputUpdateTimer.Enabled = true;
 
+			Program.cameraWriteWindow = this;
+
 
 			SetSliderPositions(manualTransform);
 
@@ -348,14 +350,14 @@ namespace Spark
 			liveWindow = Window.GetWindow(this) as LiveWindow;
 		}
 
-		private static void TryGoToWaypoint(int index)
+		public static void TryGoToWaypoint(int index)
 		{
 			CameraTransform[] waypoints = CameraWriteSettings.instance.waypoints.Values.ToArray();
 			if (waypoints.Length <= index) return;
 			SetCamera(waypoints[index]);
 		}
 
-		private void TryPlayAnim(int index)
+		public void TryPlayAnim(int index)
 		{
 			if (AnimationsComboBox.Items.Count <= index) return;
 			Dispatcher.Invoke(() =>
@@ -864,18 +866,27 @@ namespace Spark
 
 		private void ToggleOrbitDisc(object sender, RoutedEventArgs e)
 		{
-			if (orbitThread?.IsAlive == true)
+			OrbitDisc(!orbitingDisc);
+		}
+
+		public void OrbitDisc(bool enabled)
+		{
+			// just in case this is called from the api.
+			Dispatcher.Invoke(() =>
 			{
-				orbitingDisc = false;
-				IsOrbitingCheckbox.IsChecked = false;
-			}
-			else
-			{
-				orbitingDisc = true;
-				IsOrbitingCheckbox.IsChecked = true;
-				orbitThread = new Thread(OrbitDiscThread);
-				orbitThread.Start();
-			}
+				if (orbitThread?.IsAlive == true && !enabled)
+				{
+					orbitingDisc = false;
+					IsOrbitingCheckbox.IsChecked = false;
+				}
+				else if (orbitThread?.IsAlive != true && enabled)
+				{
+					orbitingDisc = true;
+					IsOrbitingCheckbox.IsChecked = true;
+					orbitThread = new Thread(OrbitDiscThread);
+					orbitThread.Start();
+				}
+			});
 		}
 
 

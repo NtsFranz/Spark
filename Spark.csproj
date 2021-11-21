@@ -42,6 +42,12 @@
   <ItemGroup>
     <Compile Remove="SparkLinkLauncher\**" />
     <EmbeddedResource Remove="SparkLinkLauncher\**" />
+    <Resource Include="img\swap-horizontal-bold.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <EmbeddedResource Include="wwwroot\api\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\css\main.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -60,10 +66,13 @@
     <EmbeddedResource Include="wwwroot\img\minimap_disc.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\js\get_data.js">
+    <EmbeddedResource Include="wwwroot\js\minimap.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\js\heatmap.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwtemplates\vrml\midmatch_events.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwtemplates\speedometer.html">
@@ -73,7 +82,10 @@
     <Page Remove="SparkLinkLauncher\**" />
     <None Remove="html\default_scoreboard.html" />
     <None Remove="img\camera-outline.png" />
+    <None Remove="img\swap-horizontal-bold.png" />
+    <None Remove="wwwroot\api\index.html" />
     <None Remove="wwwtemplates\default_minimap - Copy.html" />
+    <None Remove="wwwtemplates\midmatch_overlay - Copy.html" />
     <EmbeddedResource Include="wwwtemplates\default_scoreboard.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -81,7 +93,7 @@
     <None Remove="html\fonts\Inconsolata.woff" />
     <None Remove="html\fonts\Inconsolata.woff2" />
     <None Remove="html\index.html" />
-    <EmbeddedResource Include="wwwtemplates\index.html">
+    <EmbeddedResource Include="wwwroot\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Remove="wwwroot\img\ignite_logo.png" />

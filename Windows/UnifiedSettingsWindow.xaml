@@ -75,6 +75,7 @@
 						<CheckBox x:Name="enableAutoFocusCheckbox" Content="{x:Static p:Resources.Autofocus_EchoVR}" Margin="10,4,10,4" IsChecked="{l:SettingBinding isAutofocusEnabled}" ToolTip="{x:Static p:Resources.enableAutoFocusCheckbox_ToolTip}"/>
 						<CheckBox Content="Allow Spectate Me on local PC" Margin="10,4,10,4" IsChecked="{l:SettingBinding allowSpectateMeOnLocalPC}" ToolTip="Enables the Spectate Me function when your IP is 127.0.0.1. This is not recommended and is still experimental."/>
 						<CheckBox Content="Use anonymous mode in Spectate Me" Margin="10,4,10,4" IsChecked="{l:SettingBinding useAnonymousSpectateMe}" ToolTip="Enables the anonymous mode for the Spectate Me function. Uncheck this to use a second Oculus account for your spectator."/>
+						<CheckBox Content="Spectate Me on by default" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectateMeOnByDefault}" ToolTip="Automatically enables the Spectate Me feature when Spark starts."/>
 						<CheckBox x:Name="enableBetasCheckbox" Content="{x:Static p:Resources.Get_Beta_Updates_to_Spark}" Margin="10,4,10,4" IsChecked="{l:SettingBinding betaUpdates}" ToolTip="{x:Static p:Resources.betaUpdates_ToolTip}"/>
 
 						<StackPanel Orientation="Horizontal" Margin="10,4,10,4">
@@ -511,6 +512,10 @@
 					
 				</ScrollViewer>
 			</TabItem>-->
+
+			<TabItem Header="Overlays" Visibility="Visible">
+				<l:OverlaysConfigWindow/>
+			</TabItem>
 
 
 			<TabItem Header="{x:Static p:Resources.EchoVR_Settings}" Visibility="Visible">

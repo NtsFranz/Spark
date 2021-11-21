@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Grapevine.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -17,9 +17,20 @@ namespace Spark
 		private static async Task FetchOverlayData()
 		{
 #if DEBUG
-			overlayData = await OverlayServer4.GetOverlays("vrml");
-#endif
+			Dictionary<string, string> data = new Dictionary<string, string>();
+
+			string[] files = Directory.GetFiles(@"S:\git_repo\Spark\wwwtemplates\vrml");
+			foreach (string file in files)
+			{
+				data[Path.GetFileName(file)] = File.ReadAllText(file);
+			}
+
+			overlayData = data;
+
+			//overlayData = await OverlayServer4.GetOverlays("vrml");
+#else
 			overlayData ??= await OverlayServer4.GetOverlays("vrml");
+#endif
 		}
 
 		public static void MapRoutes(IEndpointRouteBuilder endpoints)
@@ -217,6 +228,25 @@ namespace Spark
 						if (overlayData.ContainsKey("most_recent_goal.html"))
 						{
 							await context.Response.WriteAsync(overlayData["most_recent_goal.html"]);
+						}
+					}
+					else
+					{
+						context.Response.StatusCode = 403;
+						await context.Response.WriteAsync("Not authorized");
+					}
+				});
+
+
+			endpoints.MapGet("/vrml/midmatch_events",
+				async context =>
+				{
+					if (DiscordOAuth.AccessCode.Contains("vrml"))
+					{
+						await FetchOverlayData();
+						if (overlayData.ContainsKey("midmatch_events.html"))
+						{
+							await context.Response.WriteAsync(overlayData["midmatch_events.html"]);
 						}
 					}
 					else

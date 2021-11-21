@@ -16,6 +16,7 @@
 		body {
 			margin: 0;
 			font-family: 'Inconsolata', monospace;
+			overflow: hidden;
 		}
 
 		.container {
@@ -26,6 +27,7 @@
 		.top_row {
 			width: 100%;
 		}
+
 
 		.team_logo {
 			width: 6em;
@@ -66,17 +68,41 @@
 			border-bottom: 3px solid #ccca;
 		}
 
+			.team_name::after,
+			.team_name::before {
+				content: '';
+				display: block;
+				position: absolute;
+				width: 1.5em;
+				height: 1.6em;
+				top: 0;
+			}
+
+			.team_name.orange::after,
+			.team_name.blue::before {
+				background: linear-gradient(90deg, rgba(0, 0, 0, 0.25) 0%, rgba(0,0,0,0) 100%);
+				left: 0;
+			}
+
+			.team_name.blue::after,
+			.team_name.orange::before {
+				background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.25) 100%);
+				right: 0;
+			}
+
 			.team_name.orange {
 				background-color: #d4791a;
 				left: 6.4rem;
 				width: 36.65rem;
 			}
 
+
 			.team_name.blue {
 				background-color: #2981df;
 				right: 6.4rem;
 				width: 36.7rem;
 			}
+
 
 		.joust {
 			border: 0.13rem solid #ccc;
@@ -95,20 +121,24 @@
 			color: #eee;
 			transition: all .5s;
 		}
+
 			.joust.orange {
 				left: 33rem;
 			}
+
 			.joust.blue {
 				right: 33rem;
 			}
+
 			.joust > span {
 				display: inline-block;
 				vertical-align: middle;
 				line-height: normal;
 			}
-		.joust.visible {
-			opacity: 1;
-		}
+
+			.joust.visible {
+				opacity: 1;
+			}
 	</style>
 </head>
 
@@ -119,7 +149,7 @@
 			<div id="team_name_orange" class="team_name orange"></div>
 			<img id="team_logo_orange" class="team_logo orange" src="" alt="">
 			<div id="orange_joust" class="joust orange"><span></span></div>
-			
+
 			<div id="team_name_blue" class="team_name blue"></div>
 			<img id="team_logo_blue" class="team_logo blue" src="" alt="">
 			<div id="blue_joust" class="joust blue"><span></span></div>
@@ -155,18 +185,22 @@
 
 
 			// if the team has changed
-			if (lastStats == null || lastStats["teams"][0]["vrml_team_name"] != data["teams"][0]["vrml_team_name"]) {
-				team_name_blue.innerText = data["teams"][0]["vrml_team_name"];
-				team_logo_blue.src = data["teams"][0]["vrml_team_logo"];
-				if (data["teams"][0]["vrml_team_logo"] == "") {
+			if (lastStats == null ||
+				lastStats["teams"][0]["team_name"] != data["teams"][0]["team_name"] ||
+				lastStats["teams"][0]["team_logo"] != data["teams"][0]["team_logo"]) {
+				team_name_blue.innerText = data["teams"][0]["team_name"];
+				team_logo_blue.src = data["teams"][0]["team_logo"];
+				if (data["teams"][0]["team_logo"] == "") {
 					team_logo_blue.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 				}
 			}
 			// if the team has changed
-			if (lastStats == null || lastStats["teams"][1]["vrml_team_name"] != data["teams"][1]["vrml_team_name"]) {
-				team_logo_orange.src = data["teams"][1]["vrml_team_logo"];
-				team_name_orange.innerText = data["teams"][1]["vrml_team_name"];
-				if (data["teams"][1]["vrml_team_logo"] == "") {
+			if (lastStats == null ||
+				lastStats["teams"][1]["team_name"] != data["teams"][1]["team_name"] ||
+				lastStats["teams"][1]["team_logo"] != data["teams"][1]["team_logo"]) {
+				team_logo_orange.src = data["teams"][1]["team_logo"];
+				team_name_orange.innerText = data["teams"][1]["team_name"];
+				if (data["teams"][1]["team_logo"] == "") {
 					team_logo_orange.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 				}
 			}

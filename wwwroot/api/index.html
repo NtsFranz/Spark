@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Spark API</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+	<style>
+		h1 {
+			font-size: 2em;
+		}
+
+		@font-face {
+			font-family: 'Inconsolata';
+			src: url('/fonts/Inconsolata.woff2') format('woff2'), url('/fonts/Inconsolata.woff') format('woff'), url('/fonts/Inconsolata.ttf') format('truetype');
+		}
+
+		body {
+			font-family: 'Inconsolata';
+		}
+
+		.content ul li {
+			list-style: none;
+			margin-top: 2em;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- <div class="watermark">
+		<img src="img/secondary_white.png">
+	</div> -->
+	<section class="hero is-medium">
+		<div class="hero-body" style="background-color: #0003;padding: 4rem 1.5rem;">
+			<div class="container has-text-centered">
+				<h1>Spark API</h1>
+				<img src="/img/ignite_logo.png" style="height:15rem;">
+				<p class="subtitle" style="font-size: 1.2em;">
+					The Spark API can be used to control various aspects of Spark using 3rd party tools such as AutoHotKey.
+				</p>
+
+			</div>
+		</div>
+	</section>
+	<div class="content" style="max-width: 60em; margin: 5em auto;">
+		<div class="box">
+			<ul>
+				<li>
+					<a href="/api/go_to_waypoint/0"><h3>/api/go_to_waypoint/{index}</h3></a>Goes to a Camera Write waypoint by index. The index must be an integer.
+				</li>
+				<li>
+					<a href="/api/play_animation/0"><h3>/api/play_animation/{index}</h3></a>Plays a Camera Write animation by index. The index must be an integer.
+				</li>
+				<li>
+					<a href="/api/orbit_disc_enabled/true"><h3>/api/orbit_disc_enabled/{enabled}</h3></a>Enables or disables the Orbit Disc algorithm. The parameter must be true/false.
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+
+</html>

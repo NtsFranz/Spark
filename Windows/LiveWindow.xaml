@@ -6,7 +6,7 @@
 		xmlns:tb="http://www.hardcodet.net/taskbar"
 		xmlns:l="clr-namespace:Spark"
 		xmlns:p="clr-namespace:Spark.Properties"
-        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+		xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
 		mc:Ignorable="d"
 		Title="Spark" 
 		Height="720" Width="1280" 

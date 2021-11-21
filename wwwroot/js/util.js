@@ -1,10 +1,13 @@
 ﻿function httpGetAsync(theUrl, callback, failCallback = null) {
     let xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
-        if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-            callback(xmlHttp.responseText);
-        else if (failCallback != null) {
-            failCallback();
+        if (xmlHttp.readyState === 4) {
+            if (xmlHttp.status === 200) {
+                callback(xmlHttp.responseText);
+            }
+            else if (failCallback != null) {
+                failCallback();
+            }
         }
     }
     xmlHttp.open("GET", theUrl, true); // true for asynchronous 

@@ -188,6 +188,7 @@ namespace Spark
 		public static SpeechSynthesizer synth;
 		public static ReplayClips replayClips;
 		public static CameraController CameraController;
+		public static CameraWrite cameraWriteWindow;
 
 		private static Thread statsThread;
 		private static Thread fullLogThread;
@@ -427,6 +428,7 @@ namespace Spark
 				replayClips = new ReplayClips();
 
 				CameraController = new CameraController();
+				
 
 
 				//// web server grapevine
@@ -502,6 +504,8 @@ namespace Spark
 				UpdateEchoExeLocation();
 
 				DiscordRichPresence.Start();
+
+				spectateMe = SparkSettings.instance.spectateMeOnByDefault;
 
 
 				statsThread = new Thread(StatsThread);

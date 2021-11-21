@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
@@ -44,14 +43,11 @@ namespace Spark
 
 		public class Routes
 		{
-			// This method gets called by the runtime. Use this method to add services to the container.
-			// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 			public void ConfigureServices(IServiceCollection services)
 			{
 				services.AddDirectoryBrowser();
 			}
 
-			// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 			public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 			{
 				if (env.IsDevelopment())
@@ -66,13 +62,8 @@ namespace Spark
 				app.UseEndpoints(endpoints =>
 				{
 					OverlaysVRML.MapRoutes(endpoints);
+					SparkAPI.MapRoutes(endpoints);
 
-
-					endpoints.MapGet("/", async context =>
-					{
-						string file = ReadResource("index.html");
-						await context.Response.WriteAsync(file);
-					});
 
 					endpoints.MapGet("/spark_info", async context =>
 					{
@@ -120,7 +111,7 @@ namespace Spark
 							// gets a list of all previous matches in memory that are for the current set
 							List<MatchData> selectedMatches = Program.lastMatches
 								.Where(m => m.customId == Program.matchData.customId &&
-								            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+											m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 								.ToList();
 							selectedMatches.Add(Program.matchData);
 
@@ -154,6 +145,28 @@ namespace Spark
 							// 	)
 							// 	;
 
+							string overlayOrangeTeamName = "";
+							string overlayBlueTeamName = "";
+							string overlayOrangeTeamLogo = "";
+							string overlayBlueTeamLogo = "";
+							switch (SparkSettings.instance.overlaysTeamSource)
+							{
+								case 0:
+									overlayOrangeTeamName = SparkSettings.instance.overlaysManualTeamNameOrange;
+									overlayBlueTeamName = SparkSettings.instance.overlaysManualTeamNameBlue;
+									overlayOrangeTeamLogo = SparkSettings.instance.overlaysManualTeamLogoOrange;
+									overlayBlueTeamLogo = SparkSettings.instance.overlaysManualTeamLogoBlue;
+									break;
+								case 1:
+									var orangeTeam = selectedMatches.Last().teams[g_Team.TeamColor.orange];
+									var blueTeam = selectedMatches.Last().teams[g_Team.TeamColor.blue];
+									overlayOrangeTeamName = orangeTeam.vrmlTeamName;
+									overlayBlueTeamName = blueTeam.vrmlTeamName;
+									overlayOrangeTeamLogo = orangeTeam.vrmlTeamLogo;
+									overlayBlueTeamLogo = blueTeam.vrmlTeamLogo;
+									break;
+							}
+
 
 							Dictionary<string, object> response = new Dictionary<string, object>
 							{
@@ -171,6 +184,14 @@ namespace Spark
 												selectedMatches.Last().teams[g_Team.TeamColor.blue].vrmlTeamLogo
 											},
 											{
+												"team_name",
+												overlayBlueTeamName
+											},
+											{
+												"team_logo",
+												overlayBlueTeamLogo
+											},
+											{
 												"players",
 												matchStats[0]
 											}
@@ -184,6 +205,14 @@ namespace Spark
 											{
 												"vrml_team_logo",
 												selectedMatches.Last().teams[g_Team.TeamColor.orange].vrmlTeamLogo
+											},
+											{
+												"team_name",
+												overlayOrangeTeamName
+											},
+											{
+												"team_logo",
+												overlayOrangeTeamLogo
 											},
 											{
 												"players",
@@ -233,6 +262,32 @@ namespace Spark
 
 						List<List<Dictionary<string, object>>> matchStats = GetMatchStats();
 
+
+						string overlayOrangeTeamName = "";
+						string overlayBlueTeamName = "";
+						switch (SparkSettings.instance.overlaysTeamSource)
+						{
+							case 0:
+								overlayOrangeTeamName = SparkSettings.instance.overlaysManualTeamNameOrange;
+								overlayBlueTeamName = SparkSettings.instance.overlaysManualTeamNameBlue;
+								break;
+							case 1:
+								if (Program.matchData != null)
+								{
+									overlayOrangeTeamName = Program.matchData.teams[g_Team.TeamColor.orange].vrmlTeamName;
+									overlayBlueTeamName = Program.matchData.teams[g_Team.TeamColor.blue].vrmlTeamName;
+								}
+								break;
+						}
+						if (string.IsNullOrWhiteSpace(overlayOrangeTeamName))
+						{
+							overlayOrangeTeamName = "ORANGE TEAM";
+						}
+						if (string.IsNullOrWhiteSpace(overlayBlueTeamName))
+						{
+							overlayBlueTeamName = "BLUE TEAM";
+						}
+
 						string[] teamHTMLs = new string[2];
 						for (int i = 0; i < 2; i++)
 						{
@@ -243,15 +298,7 @@ namespace Spark
 								html.Append("<th>");
 								if (column == "player_name")
 								{
-									if (Program.matchData != null &&
-									    Program.matchData.teams[(g_Team.TeamColor) i].vrmlTeamName != "")
-									{
-										html.Append(Program.matchData.teams[(g_Team.TeamColor) i].vrmlTeamName);
-									}
-									else
-									{
-										html.Append(i == 0 ? "BLUE TEAM" : "ORANGE TEAM");
-									}
+									html.Append(i == 0 ? overlayBlueTeamName : overlayOrangeTeamName);
 								}
 								else
 								{
@@ -266,8 +313,15 @@ namespace Spark
 							html.Append("<body>");
 
 
-							foreach (Dictionary<string, object> player in matchStats[i])
+							if (matchStats[i].Count >= 8)
 							{
+								Logger.LogRow(Logger.LogType.Error, "8 or more players on a team. Must have failed to split.");
+							}
+
+							// cap out at 8 players. Anything more breaks the layout
+							for (int playerIndex = 0; playerIndex < matchStats[i].Count && playerIndex < 8; playerIndex++)
+							{
+								Dictionary<string, object> player = matchStats[i][playerIndex];
 								html.Append("<tr>");
 								foreach (string column in columns)
 								{
@@ -401,7 +455,7 @@ namespace Spark
 				Dictionary<string, string> data = new Dictionary<string, string>();
 				using WebClient webClient = new WebClient();
 				byte[] result = webClient.DownloadData(Program.API_URL_2 + "get_overlays/" + accessCode + "/" +
-				                                       DiscordOAuth.oauthToken);
+													   DiscordOAuth.oauthToken);
 				// Stream resp = await Program.GetRequestAsyncStream(Program.API_URL_2 + "get_overlays/" + accessCode + "/" + DiscordOAuth.oauthToken, null);
 				// await using MemoryStream file = new MemoryStream();
 				// await resp.CopyToAsync(file);
@@ -438,7 +492,7 @@ namespace Spark
 			// gets a list of all previous matches in memory that are for the current set
 			List<MatchData> selectedMatches = Program.lastMatches
 				.Where(m => m.customId == Program.matchData.customId &&
-				            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+							m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 				.ToList();
 			if (Program.matchData != null) selectedMatches.Add(Program.matchData);
 
@@ -502,7 +556,7 @@ namespace Spark
 				// gets a list of all the times of previous matches in memory that are for the current set
 				List<DateTime> selectedMatchTimes = Program.lastMatches
 					.Where(m => m.customId == Program.matchData.customId &&
-					            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+								m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 					.Select(m => m.matchTime).ToList();
 				Debug.Assert(Program.matchData != null, "Program.matchData != null");
 				selectedMatchTimes.Add(Program.matchData.matchTime);
@@ -510,8 +564,8 @@ namespace Spark
 				// finds all the files that match one of the matches in memory
 				FileInfo[] selectedFiles = files
 					.Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss",
-						            CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
-					            && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
+									CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
+								&& MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
 					)
 					.ToArray();
 
@@ -554,7 +608,7 @@ namespace Spark
 
 							if (frame.game_status != "playing") continue;
 							Vector3 pos = frame.disc.position.ToVector3();
-							positions.Add(new xyPos((int) (pos.X * 5 + 100), (int) (pos.Z * 5 + 225)));
+							positions.Add(new xyPos((int)(pos.X * 5 + 100), (int)(pos.Z * 5 + 225)));
 						}
 					}
 
@@ -676,8 +730,8 @@ namespace Spark
 
 					t = "
 								  +
-					              JsonConvert.SerializeObject(positions)
-					              + @";
+								  JsonConvert.SerializeObject(positions)
+								  + @";
 
 					// set the generated dataset
 					heatmap.setData({

@@ -1,5 +1,4 @@
-//const ip = "127.0.0.1"
-const ip = "localhost"
+const ip = "127.0.0.1"
 const port = "6724"
 
 const body = document.getElementsByClassName("minimap_container")[0];
