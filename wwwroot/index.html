@@ -8,6 +8,17 @@
 	<title>Spark</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
 	<style>
+		:root {
+			--ignite-orange: #f27d18;
+			--echo-stats-header-orange: #240407;
+			--echo-stats-header-blue: #0b0b13;
+			--echo-stats-row-dark: rgba(0, 0, 0, 0.4);
+			--echo-stats-row-dark-hover: rgba(0, 0, 0, 0.5);
+			--echo-stats-table-orange: rgba(255, 150, 50, 0.7);
+			--echo-stats-table-blue: rgba(50, 150, 255, 0.7)
+		}
+		
+		
 		h1 {
 			font-size: 2em;
 		}
@@ -18,12 +29,32 @@
 		}
 
 		body {
-			font-family: 'Inconsolata';
+			font-family: 'Inconsolata',sans-serif;
 		}
 
 		.content ul li {
 			list-style: none;
 			margin-top: 2em;
+		}
+		.showcase-button {
+			overflow: hidden;
+			background-color: #0005;
+			color: black;
+			text-shadow: 0 0 0.5em white;
+			height: 6em;
+			font-weight: bold;
+			font-family: Inconsolata,sans-serif;
+		}
+
+		.showcase-button > img {
+			position: absolute;
+			filter: blur(.1em);
+		}
+
+		.showcase-button > svg {
+			position: absolute;
+			color: #0003;
+			transform: scale(6) translateX(-0.9em)
 		}
 	</style>
 </head>
@@ -50,47 +81,15 @@
 		</div>
 	</section>
 	<div class="content" style="max-width: 60em; margin: 5em auto;">
-		<h2>Pages hosted here:</h2>
-		<div class="box">
-			<ul>
-				<li>
-					<a href="/session"><h3>/session</h3></a>A direct re-host of the EchoVR API, but without CORS restrictions.
-				</li>
-				<li>
-					<a href="/stats"><h3>/stats</h3></a>JSON for the current stats collected by Spark. Includes VRML team names and logos
-					from the VRML API based on the player list.
-				</li>
-				<li>
-					<a href="/api"><h3>/api/</h3></a>Documentation for the Spark API.
-				</li>
-				<li>
-					<a href="/midmatch_overlay"><h3>/midmatch_overlay</h3></a>An overlay that covers the ORANGE TEAM and BLUE TEAM banners with
-					automatically generated team names from VRML team lists. Also shows neutral and defensive joust times. Customize the team names and logos in Spark's Settings->Overlay window.'
-				</li>
-				<li>
-					<a href="/scoreboard"><h3>/scoreboard</h3></a>A recreation of the default scoreboard shown at the end of matches. This includes data for players that have dropped during the course of the match.
-				</li>
-				<li>
-					<a href="/minimap"><h3>/minimap</h3></a>A recreation of the default minimap, but with smoother motion and
-					without the bug of disappearing after some goals.
-				</li>
-				<!--<li>
-		<a href="/disc_position_heatmap"><h3>/disc_position_heatmap</h3></a>A heatmap of player positions over time. Reads from .echoreplay files, so
-		those need to be enabled. This accumulates positions over all rounds in the session.
-	</li>-->
-				<li>
-					<a href="/speedometer/player"><h3>/speedometer/player</h3></a>A simple speed reading overlay for the client player speed. The text is in white, so it won't immediately be visible in your browser.
-				</li>
-				<li>
-					<a href="/speedometer/disc"><h3>/speedometer/disc</h3></a>A simple speed reading overlay for the disc speed. The text is in white, so it won't immediately be visible in your browser.
-				</li>
-				<li>
-					<a href="/speedometer/lone_echo_1"><h3>/speedometer/lone_echo_1</h3></a>A simple speed reading overlay for the player speed in Lone Echo. The text is in white, so it won't immediately be visible in your browser.
-				</li>
-				<li>
-					<a href="/speedometer/lone_echo_2"><h3>/speedometer/lone_echo_2</h3></a>A simple speed reading overlay for the player speed in Lone Echo II. The text is in white, so it won't immediately be visible in your browser.
-				</li>
-			</ul>
+
+		<div class="field has-addons">
+			<a href="/game_data" style="width: 100%;"><button class="button is-large is-fullwidth showcase-button">Game Data<img style="filter: blur(.1em) brightness(4);z-index: -1;transform: rotate(-10deg);" src="/img/json_cover.png"></button></a>
+			<a href="/overlays" style="width: 100%;"><button class="button is-large is-fullwidth showcase-button">Overlays<img src="/img/minimap.png"></button></a>
+			<a href="/api" style="width: 100%;"><button class="button is-large is-fullwidth showcase-button">Spark API
+				<svg style="width:24px;height:24px" viewBox="0 0 24 24">
+					<path fill="currentColor" d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+				</svg>
+			</button></a>
 		</div>
 	</div>
 </body>

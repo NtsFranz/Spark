@@ -34,7 +34,8 @@ function update_minimap(data) {
 	//console.log(data);
 	set_pos(disc, data['disc']['position'][2], data['disc']['position'][0]);
 	for (let i = 0; i < 10; i++) {
-		if (data['teams'][Math.floor(i / 5)]['players'].length > i % 5) {
+		if (data['teams'][Math.floor(i / 5)]['players'] && 
+			data['teams'][Math.floor(i / 5)]['players'].length > i % 5) {
 			const player_data = data['teams'][Math.floor(i / 5)]['players'][Math.floor(i % 5)];
 			set_pos(players[i], player_data['head']['position'][2], player_data['head']['position'][0]);
 			set_number(player_numbers[i], "" + player_data['number']);

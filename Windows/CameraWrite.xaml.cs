@@ -61,9 +61,9 @@ namespace Spark
 			{
 				manualTransform.px = value;
 				if (sliderListenersActivated)
-				{	
+				{
 					WriteXYZ();
-					
+
 					// reenable if the Echo supports setting axes individually
 					// CameraTransform transform = new CameraTransform()
 					// {
@@ -84,7 +84,7 @@ namespace Spark
 				if (sliderListenersActivated)
 				{
 					WriteXYZ();
-					
+
 					// reenable if the Echo supports setting axes individually
 					// CameraTransform transform = new CameraTransform()
 					// {
@@ -105,7 +105,7 @@ namespace Spark
 				if (sliderListenersActivated)
 				{
 					WriteXYZ();
-					
+
 					// reenable if the Echo supports setting axes individually
 					// CameraTransform transform = new CameraTransform()
 					// {
@@ -130,7 +130,7 @@ namespace Spark
 				if (sliderListenersActivated)
 				{
 					WriteXYZ();
-					
+
 					// reenable if the Echo supports setting axes individually
 					// CameraTransform transform = new CameraTransform()
 					// {
@@ -155,7 +155,7 @@ namespace Spark
 				if (sliderListenersActivated)
 				{
 					WriteXYZ();
-					
+
 					// reenable if the Echo supports setting axes individually
 					// CameraTransform transform = new CameraTransform()
 					// {
@@ -180,7 +180,7 @@ namespace Spark
 				if (sliderListenersActivated)
 				{
 					WriteXYZ();
-					
+
 					// reenable if the Echo supports setting axes individually
 					// CameraTransform transform = new CameraTransform()
 					// {
@@ -201,7 +201,7 @@ namespace Spark
 				if (sliderListenersActivated)
 				{
 					WriteXYZ();
-					
+
 					// reenable if the Echo supports setting axes individually
 					// CameraTransform transform = new CameraTransform()
 					// {
@@ -222,7 +222,7 @@ namespace Spark
 				if (sliderListenersActivated)
 				{
 					WriteXYZ();
-					
+
 					// reenable if the Echo supports setting axes individually
 					// CameraTransform transform = new CameraTransform()
 					// {
@@ -325,22 +325,34 @@ namespace Spark
 				CurrentAnimation = new AnimationKeyframes();
 			}
 
-			numPadHotKeys = new GlobalHotKey[]
-			{
-				new GlobalHotKey(Key.NumPad1, KeyModifier.None, (_) => { TryGoToWaypoint(0); }),
-				new GlobalHotKey(Key.NumPad2, KeyModifier.None, (_) => { TryGoToWaypoint(1); }),
-				new GlobalHotKey(Key.NumPad3, KeyModifier.None, (_) => { TryGoToWaypoint(2); }),
-				new GlobalHotKey(Key.NumPad4, KeyModifier.None, (_) => { TryPlayAnim(0); }),
-				new GlobalHotKey(Key.NumPad5, KeyModifier.None, (_) => { TryPlayAnim(1); }),
-				new GlobalHotKey(Key.NumPad6, KeyModifier.None, (_) => { TryPlayAnim(2); }),
-				new GlobalHotKey(Key.NumPad7, KeyModifier.None, (_) => { TryPlayAnim(3); }),
-				new GlobalHotKey(Key.NumPad8, KeyModifier.None, (_) => { TryPlayAnim(4); }),
-				new GlobalHotKey(Key.NumPad9, KeyModifier.None, (_) => { TryPlayAnim(5); })
-			};
+			EnableHotKeys(CameraWriteSettings.instance.enableHotKeys);
 
 			RefreshAnimationsComboBoxFromSettings();
 			RegenerateWaypointButtons();
 			RegenerateKeyframeButtons();
+		}
+
+		private void EnableHotKeys(bool enable)
+		{
+			if (enable)
+			{
+				numPadHotKeys = new GlobalHotKey[]
+				{
+					new GlobalHotKey(Key.NumPad1, KeyModifier.None, (_) => { TryGoToWaypoint(0); }),
+					new GlobalHotKey(Key.NumPad2, KeyModifier.None, (_) => { TryGoToWaypoint(1); }),
+					new GlobalHotKey(Key.NumPad3, KeyModifier.None, (_) => { TryGoToWaypoint(2); }),
+					new GlobalHotKey(Key.NumPad4, KeyModifier.None, (_) => { TryPlayAnim(0); }),
+					new GlobalHotKey(Key.NumPad5, KeyModifier.None, (_) => { TryPlayAnim(1); }),
+					new GlobalHotKey(Key.NumPad6, KeyModifier.None, (_) => { TryPlayAnim(2); }),
+					new GlobalHotKey(Key.NumPad7, KeyModifier.None, (_) => { TryPlayAnim(3); }),
+					new GlobalHotKey(Key.NumPad8, KeyModifier.None, (_) => { TryPlayAnim(4); }),
+					new GlobalHotKey(Key.NumPad9, KeyModifier.None, (_) => { TryPlayAnim(5); })
+				};
+			}
+			else
+			{
+				numPadHotKeys = null;
+			}
 		}
 
 		// get a reference to main windows when it is available.
@@ -480,7 +492,7 @@ namespace Spark
 				CameraTransform newTransform = new CameraTransform(newPos, newRot, newFov);
 
 				string distance = Vector3.Distance(newPos, lastTransform.Position) / sw.Elapsed.TotalSeconds + "\t" +
-				                  spline.GetCurve(t).Item1?.keyframes[0].px;
+								  spline.GetCurve(t).Item1?.keyframes[0].px;
 				sw.Restart();
 				// Debug.WriteLine(distance);
 
@@ -621,8 +633,13 @@ namespace Spark
 			{
 				CameraTransform transform = new CameraTransform()
 				{
-					px = xPos, py = yPos, pz = zPos,
-					qx = xRot, qy = yRot, qz = zRot, qw = wRot,
+					px = xPos,
+					py = yPos,
+					pz = zPos,
+					qx = xRot,
+					qy = yRot,
+					qz = zRot,
+					qw = wRot,
 					fovy = fov,
 				};
 
@@ -1706,6 +1723,13 @@ namespace Spark
 			{
 				return MathF.Pow(value, expo);
 			}
+		}
+
+		private void ToggleKeyboardShortcuts(object sender, RoutedEventArgs e)
+		{
+			CameraWriteSettings.instance.enableHotKeys = !CameraWriteSettings.instance.enableHotKeys;
+			EnableKeyboardShortcutsCheckbox.IsChecked = CameraWriteSettings.instance.enableHotKeys;
+			EnableHotKeys(CameraWriteSettings.instance.enableHotKeys);
 		}
 	}
 

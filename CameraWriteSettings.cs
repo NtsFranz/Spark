@@ -28,6 +28,7 @@ namespace Spark
 		public float joystickMoveExponential { get; set; } = 1.2f;
 		public float joystickRotateExponential { get; set; } = 1.2f;
 		public float xPlanePosMultiplier { get; set; } = .1f;
+		public bool enableHotKeys { get; set; } = false;
 
 		#endregion
 
@@ -136,6 +137,43 @@ namespace Spark
 			catch (Exception e)
 			{
 				Console.WriteLine($"Error reading animation files\n{e}");
+			}
+		}
+
+
+		public void SaveAnimation(string animName)
+		{
+			if (!animations.ContainsKey(animName)) return;
+			if (animations[animName] == null) return;
+
+			try
+			{
+				string settingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark");
+				string animationsFolder = Path.Combine(settingsFolder, "Animations");
+
+				Task.Run(() =>
+				{
+					try
+					{
+						// animation files
+						if (!Directory.Exists(animationsFolder))
+						{
+							Console.WriteLine("Animations folder doesn't exist, creating.");
+							Directory.CreateDirectory(animationsFolder);
+						}
+
+						string animJson = JsonConvert.SerializeObject(animations[animName], Formatting.Indented);
+						File.WriteAllText(Path.Combine(animationsFolder, animName + ".json"), animJson);
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine($"Error writing to settings file\n{e}");
+					}
+				});
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Error writing to settings file (outside)\n{e}");
 			}
 		}
 	}

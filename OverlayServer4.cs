@@ -106,139 +106,41 @@ namespace Spark
 						context.Response.Headers.Add("Access-Control-Allow-Headers",
 							"Content-Type, Accept, X-Requested-With");
 
-						if (Program.inGame && Program.matchData != null)
-						{
-							// gets a list of all previous matches in memory that are for the current set
-							List<MatchData> selectedMatches = Program.lastMatches
-								.Where(m => m.customId == Program.matchData.customId &&
-											m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
-								.ToList();
-							selectedMatches.Add(Program.matchData);
-
-
-							BatchOutputFormat data = new BatchOutputFormat
-							{
-								match_data = Program.matchData.ToDict()
-							};
-
-							selectedMatches.ForEach(m =>
-							{
-								m.players.Values.ToList().ForEach(e => data.match_players.Add(e.ToDict()));
-								m.Events.ForEach(e => data.events.Add(e.ToDict()));
-								m.Goals.ForEach(e => data.goals.Add(e.ToDict()));
-								m.Throws.ForEach(e => data.throws.Add(e.ToDict()));
-							});
-
-
-							List<List<Dictionary<string, object>>> matchStats = GetMatchStats();
-
-							// var bluePlayers = selectedMatches
-							// 	.SelectMany(m => m.players)
-							// 	.Where(p => p.Value.teamData.teamColor == g_Team.TeamColor.blue)
-							// 	.GroupBy(
-							// 		p => p.Key,
-							// 		(key, values) => new 
-							// 		{
-							// 			Name = key,
-							// 			Data = values.Sum((x1, x2) => x1.Value+x2.Value)
-							// 		}
-							// 	)
-							// 	;
-
-							string overlayOrangeTeamName = "";
-							string overlayBlueTeamName = "";
-							string overlayOrangeTeamLogo = "";
-							string overlayBlueTeamLogo = "";
-							switch (SparkSettings.instance.overlaysTeamSource)
-							{
-								case 0:
-									overlayOrangeTeamName = SparkSettings.instance.overlaysManualTeamNameOrange;
-									overlayBlueTeamName = SparkSettings.instance.overlaysManualTeamNameBlue;
-									overlayOrangeTeamLogo = SparkSettings.instance.overlaysManualTeamLogoOrange;
-									overlayBlueTeamLogo = SparkSettings.instance.overlaysManualTeamLogoBlue;
-									break;
-								case 1:
-									var orangeTeam = selectedMatches.Last().teams[g_Team.TeamColor.orange];
-									var blueTeam = selectedMatches.Last().teams[g_Team.TeamColor.blue];
-									overlayOrangeTeamName = orangeTeam.vrmlTeamName;
-									overlayBlueTeamName = blueTeam.vrmlTeamName;
-									overlayOrangeTeamLogo = orangeTeam.vrmlTeamLogo;
-									overlayBlueTeamLogo = blueTeam.vrmlTeamLogo;
-									break;
-							}
-
-
-							Dictionary<string, object> response = new Dictionary<string, object>
-							{
-								{
-									"teams", new[]
-									{
-										new Dictionary<string, object>
-										{
-											{
-												"vrml_team_name",
-												selectedMatches.Last().teams[g_Team.TeamColor.blue].vrmlTeamName
-											},
-											{
-												"vrml_team_logo",
-												selectedMatches.Last().teams[g_Team.TeamColor.blue].vrmlTeamLogo
-											},
-											{
-												"team_name",
-												overlayBlueTeamName
-											},
-											{
-												"team_logo",
-												overlayBlueTeamLogo
-											},
-											{
-												"players",
-												matchStats[0]
-											}
-										},
-										new Dictionary<string, object>
-										{
-											{
-												"vrml_team_name",
-												selectedMatches.Last().teams[g_Team.TeamColor.orange].vrmlTeamName
-											},
-											{
-												"vrml_team_logo",
-												selectedMatches.Last().teams[g_Team.TeamColor.orange].vrmlTeamLogo
-											},
-											{
-												"team_name",
-												overlayOrangeTeamName
-											},
-											{
-												"team_logo",
-												overlayOrangeTeamLogo
-											},
-											{
-												"players",
-												matchStats[1]
-											}
-										}
-									}
-								},
-								{
-									"joust_events", selectedMatches
-										.SelectMany(m => m.Events)
-										.Where(e =>
-											e.eventType is EventData.EventType.joust_speed or EventData.EventType
-												.defensive_joust)
-										.Select(e => e.ToDict())
-								},
-								{"goals", selectedMatches.SelectMany(m => m.Goals).Select(e => e.ToDict())}
-							};
-							await context.Response.WriteAsJsonAsync(response);
-						}
-						else
-						{
-							await context.Response.WriteAsJsonAsync(new object());
-						}
+						Dictionary<string, object> response = GetStatsResponse();
+						await context.Response.WriteAsJsonAsync(response);
+						
 					});
 
+
+					// TODO in progress. This will have settings for the overlay replacement
+					endpoints.MapGet("/overlay_info", async context =>
+					{
+						context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+						context.Response.Headers.Add("Access-Control-Allow-Headers",
+							"Content-Type, Accept, X-Requested-With");
+
+						Dictionary<string, object> response = new Dictionary<string, object>();
+
+						response["stats"] = GetStatsResponse();
+						response["visibility"] = new Dictionary<string, object>()
+						{
+							{"minimap", true},
+							{"main_banner", true},
+							{"neutral_jousts", true},
+							{"defensive_jousts", true},
+							{"event_log", true},
+							{"playspace", true},
+							{"player_speed", true},
+							{"disc_speed", true},
+						};
+
+						if (Program.inGame && Program.matchData != null)
+						{
+							response["session"] = Program.lastJSON;
+						}
+						
+						await context.Response.WriteAsJsonAsync(response);
+					});
 
 					endpoints.MapGet("/midmatch_overlay", async context =>
 					{
@@ -417,7 +319,148 @@ namespace Spark
 							string file = ReadResource("default_minimap.html");
 							await context.Response.WriteAsync(file);
 						});
+					
+					
+					endpoints.MapGet("/full_overlay",
+						async context =>
+						{
+							string file = ReadResource("full_overlay.html");
+							await context.Response.WriteAsync(file);
+						});
 				});
+			}
+
+			private static Dictionary<string, object> GetStatsResponse()
+			{
+				List<MatchData> selectedMatches = null;
+				List<List<Dictionary<string, object>>> matchStats = null;
+				if (Program.inGame && Program.matchData != null)
+				{
+					// gets a list of all previous matches in memory that are for the current set
+					selectedMatches = Program.lastMatches
+						.Where(m => m.customId == Program.matchData.customId &&
+						            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+						.ToList();
+					selectedMatches.Add(Program.matchData);
+
+
+					BatchOutputFormat data = new BatchOutputFormat
+					{
+						match_data = Program.matchData.ToDict()
+					};
+
+					selectedMatches.ForEach(m =>
+					{
+						m.players.Values.ToList().ForEach(e => data.match_players.Add(e.ToDict()));
+						m.Events.ForEach(e => data.events.Add(e.ToDict()));
+						m.Goals.ForEach(e => data.goals.Add(e.ToDict()));
+						m.Throws.ForEach(e => data.throws.Add(e.ToDict()));
+					});
+
+
+					matchStats = GetMatchStats();
+
+					// var bluePlayers = selectedMatches
+					// 	.SelectMany(m => m.players)
+					// 	.Where(p => p.Value.teamData.teamColor == g_Team.TeamColor.blue)
+					// 	.GroupBy(
+					// 		p => p.Key,
+					// 		(key, values) => new 
+					// 		{
+					// 			Name = key,
+					// 			Data = values.Sum((x1, x2) => x1.Value+x2.Value)
+					// 		}
+					// 	)
+					// 	;
+				}
+
+				string overlayOrangeTeamName = "";
+				string overlayBlueTeamName = "";
+				string overlayOrangeTeamLogo = "";
+				string overlayBlueTeamLogo = "";
+				switch (SparkSettings.instance.overlaysTeamSource)
+				{
+					case 0:
+						overlayOrangeTeamName = SparkSettings.instance.overlaysManualTeamNameOrange;
+						overlayBlueTeamName = SparkSettings.instance.overlaysManualTeamNameBlue;
+						overlayOrangeTeamLogo = SparkSettings.instance.overlaysManualTeamLogoOrange;
+						overlayBlueTeamLogo = SparkSettings.instance.overlaysManualTeamLogoBlue;
+						break;
+					case 1:
+						TeamData orangeTeam = selectedMatches?.Last().teams[g_Team.TeamColor.orange];
+						TeamData blueTeam = selectedMatches?.Last().teams[g_Team.TeamColor.blue];
+						overlayOrangeTeamName = orangeTeam?.vrmlTeamName ?? "";
+						overlayBlueTeamName = blueTeam?.vrmlTeamName ?? "";
+						overlayOrangeTeamLogo = orangeTeam?.vrmlTeamLogo ?? "";
+						overlayBlueTeamLogo = blueTeam?.vrmlTeamLogo ?? "";
+						break;
+				}
+
+
+				Dictionary<string, object> response = new Dictionary<string, object>
+				{
+					{
+						"teams", new[]
+						{
+							new Dictionary<string, object>
+							{
+								{
+									"vrml_team_name",
+									selectedMatches?.Last().teams[g_Team.TeamColor.blue].vrmlTeamName ?? ""
+								},
+								{
+									"vrml_team_logo",
+									selectedMatches?.Last().teams[g_Team.TeamColor.blue].vrmlTeamLogo ?? ""
+								},
+								{
+									"team_name",
+									overlayBlueTeamName
+								},
+								{
+									"team_logo",
+									overlayBlueTeamLogo
+								},
+								{
+									"players",
+									matchStats?[0]
+								}
+							},
+							new Dictionary<string, object>
+							{
+								{
+									"vrml_team_name",
+									selectedMatches?.Last().teams[g_Team.TeamColor.orange].vrmlTeamName ?? ""
+								},
+								{
+									"vrml_team_logo",
+									selectedMatches?.Last().teams[g_Team.TeamColor.orange].vrmlTeamLogo ?? ""
+								},
+								{
+									"team_name",
+									overlayOrangeTeamName
+								},
+								{
+									"team_logo",
+									overlayOrangeTeamLogo
+								},
+								{
+									"players",
+									matchStats?[1]
+								}
+							}
+						}
+					},
+					{
+						"joust_events", selectedMatches?
+							.SelectMany(m => m.Events)
+							.Where(e =>
+								e.eventType is EventData.EventType.joust_speed or EventData.EventType
+									.defensive_joust)
+							.Select(e => e.ToDict())
+					},
+					{ "goals", selectedMatches?.SelectMany(m => m.Goals).Select(e => e.ToDict()) }
+				};
+				return response;
 			}
 		}
 

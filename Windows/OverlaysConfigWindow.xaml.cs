@@ -50,6 +50,11 @@ namespace Spark
 			string tempLogo = ManualTeamLogoOrange.Text;
 			ManualTeamLogoOrange.Text = ManualTeamLogoBlue.Text;
 			ManualTeamLogoBlue.Text = tempLogo;
+
+			SparkSettings.instance.overlaysManualTeamNameOrange = ManualTeamNameOrange.Text;
+			SparkSettings.instance.overlaysManualTeamNameBlue = ManualTeamNameBlue.Text;
+			SparkSettings.instance.overlaysManualTeamLogoOrange = ManualTeamLogoOrange.Text;
+			SparkSettings.instance.overlaysManualTeamLogoBlue = ManualTeamLogoBlue.Text;
 		}
 
 		private void TeamsDataSourceChanged(object sender, SelectionChangedEventArgs e)

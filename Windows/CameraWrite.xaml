@@ -282,7 +282,7 @@
 
 						<Expander Header="Joystick Support" Visibility="Visible">
 							<StackPanel Margin="0,5,0,0">
-								<TextBlock Text="Adds compatibility with the 1 or 2 joysticks." TextWrapping="Wrap" Margin="5,5,5,5"/>
+								<TextBlock Text="Adds compatibility with the Thrustmaster T.16000M joystick." TextWrapping="Wrap" Margin="5,5,5,5"/>
 								<Button Click="ToggleJoystickInput">
 									<StackPanel Orientation="Horizontal">
 										<Label Content="Enable Joystick Input"/>
@@ -340,6 +340,27 @@
 									<Label Content="Multiplier: " Width="110" Margin="10,0,0,0"/>
 									<Slider x:Name="XPlanePosMultiplier" Value="{l:CameraSettingBinding xPlanePosMultiplier}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".0001" SmallChange=".0001"/>
 									<TextBox Text="{Binding ElementName=XPlanePosMultiplier, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+								</StackPanel>
+
+							</StackPanel>
+						</Expander>
+						<Expander Header="Keyboard Shortcuts" Visibility="Visible">
+							<StackPanel Margin="0,5,0,0">
+								<TextBlock Text="Enables/Disables Keyboard shortcuts. You can also use 3rd party tools such as AutoHotKey and use the Spark API." TextWrapping="Wrap" Margin="5,5,5,5"/>
+								<Button Click="ToggleKeyboardShortcuts">
+									<StackPanel Orientation="Horizontal">
+										<Label Content="Enable Keyboard Shortcuts"/>
+										<CheckBox x:Name="EnableKeyboardShortcutsCheckbox" Margin="10,0,0,0"/>
+									</StackPanel>
+								</Button>
+
+								
+
+								<StackPanel Orientation="Vertical" Margin="0,10,0,0">
+									<TextBlock>Numpad 1-3: Waypoints</TextBlock>
+									<TextBlock>Numpad 4-6: Play Animations</TextBlock>
+									<TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ControlDisabledGlythColour}" Margin="0,10,0,0">For animations, activating the an animation while another is playing will stop playing the old animation and not play the new one.</TextBlock>
+									<TextBlock TextWrapping="Wrap" Foreground="{DynamicResource ControlDisabledGlythColour}" Margin="0,10,0,0">When keyboard shortcuts are enabled, those keys will be disabled for the rest of your computer.</TextBlock>
 								</StackPanel>
 
 							</StackPanel>

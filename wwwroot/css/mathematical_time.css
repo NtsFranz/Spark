@@ -1,0 +1,24 @@
+#mathematical_time_box {
+    background: linear-gradient(#222 0%, #444 100%);
+    width: 100px;
+    color: white;
+    text-align: center;
+    font-family: Consolas, monospace;
+    font-size: 17px;
+    font-weight: 100;
+    padding: 20px 10px 10px;
+    margin: -18px auto 0;
+    /*border-radius: 10px;*/
+    border: 1px solid #aaa5;
+    position: relative;
+    z-index: -1;
+    box-shadow: 0 0 20px #000a;
+}
+
+#mathematical_time {
+    font-family: 'Inconsolata', monospace;
+    font-size: 20px;
+    font-weight: 900;
+    
+}
+

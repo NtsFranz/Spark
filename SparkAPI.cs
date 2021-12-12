@@ -56,6 +56,20 @@ namespace Spark
 				}
 			});
 
+
+			endpoints.MapGet("/api/reload_camera_settings", async context =>
+			{
+				try
+				{
+					CameraWriteSettings.Load();
+					await context.Response.WriteAsync("Reloaded camera settings");
+				}
+				catch (Exception e)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"{e}");
+				}
+			});
+
 			// resources
 		}
 	}

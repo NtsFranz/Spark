@@ -1,0 +1,118 @@
+#main_banner > div {
+    width: 990px;
+    margin: 1em auto 0 auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    text-align: center;
+    color: #ddd;
+    font-size: 24px;
+    font-family: sans-serif;
+    border: 1px solid #aaa5;
+    border-bottom: none;
+    box-shadow: 0 0 40px #000f;
+    background: linear-gradient(#444 0%, #222 100%);
+}
+
+#main_banner > div > div {
+    height: 0;
+    line-height: 0;
+    margin: auto;
+}
+
+#main_banner > div > .center_clock_area {
+    width: 150px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 100%
+}
+
+#main_banner > div > .center_clock_area > div {
+    line-height: 1.3;
+    flex-grow: 1;
+    font-size: 40px;
+    margin: 0;
+    text-shadow: 0 0 10px #fff5;
+}
+
+#main_banner #points_orange {
+    border-top: 1px solid #e59433;
+    border-right: none;
+}
+
+#main_banner #points_blue {
+    border-top: 1px solid #4f98cb;
+    border-left: 1px solid #fff2;
+}
+
+#main_banner #game_clock_display {
+    font-size: 30px;
+    text-align: center;
+    width: 100%;
+    font-family: 'Inconsolata', monospace;
+    font-weight: 900;
+    transform: scaleY(1.2);
+}
+
+#main_banner .team_logo {
+    height: 100px;
+    width: 100px;
+}
+
+#main_banner .team_name {
+    flex-grow: 1;
+    line-height: 0;
+    height: 0;
+    margin: auto;
+    width: 300px;
+    text-transform: uppercase;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+}
+
+#main_banner .points {
+    width: 10px;
+}
+
+#main_banner .round_scores {
+    width: 10px;
+    border: 2px solid #FFF2;
+    height: 90px;
+    margin: 3px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+#main_banner .round_scores>div {
+    border: 1px solid #fff5;
+    flex-grow: 1;
+    margin: 1px
+}
+#main_banner .round_scores>div.active {
+    background-color: white;
+    box-shadow: 0 0 5px #fff2;
+}
+
+#main_banner > .underlay {
+    height: 5px;
+    border-top: none;
+    margin-top: 0;
+    background: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: row;
+}
+
+#main_banner > .underlay > .orange {
+    background: linear-gradient(#ff9627 0%, #755e41 100%);
+    height: 100%;
+    flex-grow: 1;
+}
+
+#main_banner > .underlay > .blue {
+    background: linear-gradient(#4890dd 0%, #4f5462 100%);
+    height: 100%;
+    flex-grow: 1;
+}

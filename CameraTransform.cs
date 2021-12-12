@@ -67,7 +67,7 @@ namespace Spark
 	{
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{
-			if (value is not CameraTransform t) return;
+			if (!(value is CameraTransform t)) return;
 			writer.WriteStartObject();
 			string[] vars = {
 				"px",

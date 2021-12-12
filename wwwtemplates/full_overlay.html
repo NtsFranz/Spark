@@ -3,14 +3,40 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Minimap overlay</title>
+    <title>Configurable Overlay</title>
     <link rel="stylesheet" href="/css/minimap.css">
+    <link rel="stylesheet" href="/css/main_banner.css">
+    <link rel="stylesheet" href="/css/mathematical_time.css">
     <script src="/js/util.js"></script>
-    <script defer src="/js/minimap.js"></script>
+    <script defer src="/js/full_overlay.js"></script>
 </head>
 
 <body>
     <div class="container_1080">
+        <div id="main_banner">
+            <div>
+                <img id="team_logo_orange" class="team_logo"/>
+                <div id="round_score_orange" class="round_scores"></div>
+                <div id="team_name_orange" class="team_name"></div>
+                
+                <div class="center_clock_area">
+                <div id="game_clock_display"></div>
+                    <div id="points_orange" class="points"></div>
+                    <div id="points_blue" class="points"></div>    
+                </div>
+                
+                <div id="team_name_blue" class="team_name"></div>
+                <div id="round_score_blue" class="round_scores"></div>
+                <img id="team_logo_blue" class="team_logo"/>
+            </div>
+            <div class="underlay"><div class="orange"></div><div class="blue"></div></div>
+        </div>
+        
+        <div id="mathematical_time_box">
+            MATH. TIME<br>
+            <div id="mathematical_time"></div>
+        </div>
+        
         <div class="minimap_container">
 
             <img class="minimap_image" src="/img/minimap.png">

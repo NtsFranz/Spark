@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.3.27</Version>
+    <Version>2.3.28</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -20,6 +20,7 @@
     <RootNamespace>Spark</RootNamespace>
     <AssemblyOriginatorKeyFile>IgniteBotKey.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -48,7 +49,16 @@
     <EmbeddedResource Include="wwwroot\api\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\css\main.css">
+    <EmbeddedResource Include="wwwroot\branding\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\main_banner.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\mathematical_time.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\minimap.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\fonts\Inconsolata.ttf">
@@ -60,16 +70,28 @@
     <EmbeddedResource Include="wwwroot\fonts\Inconsolata.woff2">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\game_data\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\img\minimap.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\img\minimap_disc.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\js\full_overlay.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\js\minimap.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\js\heatmap.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\overlays\index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwtemplates\full_overlay.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwtemplates\vrml\midmatch_events.html">
@@ -138,6 +160,18 @@
     </EmbeddedResource>
     <None Remove="wwwroot\img\combat_head_240px.png" />
     <EmbeddedResource Include="wwwroot\img\combat_head_240px.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\img\json_cover.png" />
+    <EmbeddedResource Include="wwwroot\img\json_cover.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\img\ignite_logo_primary_256.png" />
+    <EmbeddedResource Include="wwwroot\img\ignite_logo_primary_256.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot\img\ignite_logo_primary_white_256.png" />
+    <EmbeddedResource Include="wwwroot\img\ignite_logo_primary_white_256.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

@@ -1238,6 +1238,7 @@ namespace Spark
 
 		public static void KillEchoVR(string findInArgs = null)
 		{
+			LogRow(LogType.File, "Killing EchoVR...");
 			Process[] process = Process.GetProcessesByName("echovr");
 			foreach (Process p in process)
 			{
@@ -3577,7 +3578,7 @@ namespace Spark
 			try
 			{
 				string applicationLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
-				LogRow(LogType.Error, $"[URI ASSOC] Spark path: {applicationLocation}");
+				// LogRow(LogType.Error, $"[URI ASSOC] Spark path: {applicationLocation}");
 
 				GetKey(UriScheme, out RegistryKey key, out RegistryKey defaultIcon, out RegistryKey commandKey);
 
