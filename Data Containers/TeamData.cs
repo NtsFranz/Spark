@@ -1,4 +1,4 @@
-﻿using static Spark.g_Team;
+﻿using EchoVRAPI;
 
 namespace Spark
 {
@@ -7,14 +7,14 @@ namespace Spark
 	/// </summary>
 	public class TeamData
 	{
-		public TeamColor teamColor;
+		public Team.TeamColor teamColor;
 		public string teamName;
 		public int points;
 
 		public string vrmlTeamName = "";
 		public string vrmlTeamLogo = "";
 
-		public TeamData(TeamColor teamColor, string teamName)
+		public TeamData(Team.TeamColor teamColor, string teamName)
 		{
 			this.teamColor = teamColor;
 			this.teamName = teamName;

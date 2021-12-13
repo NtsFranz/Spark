@@ -1,0 +1,85 @@
+#player_lists {
+    display: none;
+    animation: fade_in 1s;
+}
+
+#player_lists>.player_list {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 20px;
+    font-family: 'Inconsolata', monospace;
+    font-weight: 900;
+    font-size: 20px;
+    color: #eee;
+    text-shadow: 2px 2px 0 #0005;
+    z-index: 11;
+}
+
+#player_lists>.player_list.orange {
+    left: 20px;
+}
+
+#player_lists>.player_list.blue {
+    right: 20px;
+    text-align: right;
+}
+#player_lists>.player_list.orange>div {
+    background: none;
+    flex-direction: row-reverse;
+}
+#player_lists>.player_list.blue>div {
+    background: none;
+}
+
+
+#player_lists>.player_list>div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    
+}
+
+#player_lists>.player_list>div>div {
+    padding: 8px 20px;
+}
+
+
+/* name */
+#player_lists>.player_list>div>div:first-child {
+    flex-grow: 1;
+}
+
+
+#player_lists>.player_list>div.stunned>div:first-child {
+    opacity: .5;
+}
+
+/* number */
+#player_lists>.player_list>div>div:last-child {
+    width: 30px;
+    border: 2px solid #0004;
+    background-color: #0002;
+    margin: 2px 10px;
+    padding: 5px;
+    text-align: center;
+}
+
+#player_lists>.player_list>div.possession>div:last-child {
+    border: 2px solid #000a;
+    background-color: #000a;
+}
+
+#player_lists>.player_list.orange>div>div:first-child {
+    background: linear-gradient(90deg, #ff9627aa 0%, #bd7a2400 100%);
+    border-bottom: 2px solid #ff9627;
+}
+#player_lists>.player_list.blue>div>div:first-child {
+    background: linear-gradient(-90deg, #4890ddaa 0%, #3f6ae100 100%);
+    border-bottom: 2px solid #2478d0;
+}
+
+#player_lists>.player_list>div {
+    margin: 2px;
+}

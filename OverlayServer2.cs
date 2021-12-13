@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using Newtonsoft.Json;
 using System.Globalization;
+using EchoVRAPI;
 using GenHTTP.Api.Infrastructure;
 using GenHTTP.Engine;
 using GenHTTP.Modules.Layouting;
@@ -105,22 +106,22 @@ namespace Spark
                                 {
                                     {
                                         "vrml_team_name",
-                                        selectedMatches.Last().teams[g_Team.TeamColor.blue].vrmlTeamName
+                                        selectedMatches.Last().teams[Team.TeamColor.blue].vrmlTeamName
                                     },
                                     {
                                         "vrml_team_logo",
-                                        selectedMatches.Last().teams[g_Team.TeamColor.blue].vrmlTeamLogo
+                                        selectedMatches.Last().teams[Team.TeamColor.blue].vrmlTeamLogo
                                     },
                                 },
                                 new Dictionary<string, object>
                                 {
                                     {
                                         "vrml_team_name",
-                                        selectedMatches.Last().teams[g_Team.TeamColor.orange].vrmlTeamName
+                                        selectedMatches.Last().teams[Team.TeamColor.orange].vrmlTeamName
                                     },
                                     {
                                         "vrml_team_logo",
-                                        selectedMatches.Last().teams[g_Team.TeamColor.orange].vrmlTeamLogo
+                                        selectedMatches.Last().teams[Team.TeamColor.orange].vrmlTeamLogo
                                     },
                                 }
                             }
@@ -209,7 +210,7 @@ namespace Spark
                     int nframes = replayFile.nframes;
                     for (int i = 0; i < nframes; i += n)
                     {
-                        g_Instance frame = replayFile.GetFrame(i);
+                        Frame frame = replayFile.GetFrame(i);
 
                         if (frame.game_status != "playing") continue;
                         Vector3 pos = frame.disc.position.ToVector3();

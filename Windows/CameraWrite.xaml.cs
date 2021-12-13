@@ -3,22 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
+using Frame = EchoVRAPI.Frame;
 using Quaternion = System.Numerics.Quaternion;
 using Timer = System.Timers.Timer;
 
@@ -410,13 +407,15 @@ namespace Spark
 		private void SetStart(object sender, RoutedEventArgs e)
 		{
 			if (Program.lastFrame == null) return;
-			start = Program.lastFrame.GetCameraTransform();
+			(Vector3 p, Quaternion q) = Program.lastFrame.GetCameraTransform();
+			start = new CameraTransform(p, q, lastSetFov);
 		}
 
 		private void SetEnd(object sender, RoutedEventArgs e)
 		{
 			if (Program.lastFrame == null) return;
-			end = Program.lastFrame.GetCameraTransform();
+			(Vector3 p, Quaternion q) = Program.lastFrame.GetCameraTransform();
+			end = new CameraTransform(p, q, lastSetFov);
 		}
 
 		private void StartAnimation(object sender, RoutedEventArgs e)
@@ -591,7 +590,9 @@ namespace Spark
 		private void ReadXYZ(object sender, RoutedEventArgs e)
 		{
 			if (Program.lastFrame == null) return;
-			manualTransform = Program.lastFrame.GetCameraTransform();
+			
+			(Vector3 p, Quaternion q) = Program.lastFrame.GetCameraTransform();
+			manualTransform = new CameraTransform(p, q, lastSetFov);
 			SetSliderPositions(manualTransform);
 		}
 
@@ -797,8 +798,10 @@ namespace Spark
 				replace.Click += (_, _) =>
 				{
 					if (Program.lastFrame == null) return;
+					
+					(Vector3 p, Quaternion q) = Program.lastFrame.GetCameraTransform();
 					CurrentAnimation.keyframes[CurrentAnimation.keyframes.FindIndex(val => val == wp)] =
-						Program.lastFrame.GetCameraTransform();
+						new CameraTransform(p, q, lastSetFov);
 
 					// update the UI with the new waypoint
 					RegenerateKeyframeButtons();
@@ -847,7 +850,9 @@ namespace Spark
 			}
 
 			if (Program.lastFrame == null) return;
-			CameraWriteSettings.instance.waypoints[keyName] = Program.lastFrame.GetCameraTransform();
+			
+			(Vector3 p, Quaternion q) = Program.lastFrame.GetCameraTransform();
+			CameraWriteSettings.instance.waypoints[keyName] = new CameraTransform(p, q, lastSetFov);
 
 			// update the UI with the new waypoint
 			RegenerateWaypointButtons();
@@ -869,7 +874,9 @@ namespace Spark
 		private void AddKeyframe(object sender, RoutedEventArgs e)
 		{
 			if (Program.lastFrame == null) return;
-			CurrentAnimation.keyframes.Add(Program.lastFrame.GetCameraTransform());
+			
+			(Vector3 p, Quaternion q) = Program.lastFrame.GetCameraTransform();
+			CurrentAnimation.keyframes.Add(new CameraTransform(p, q, lastSetFov));
 
 			// update the UI with the new waypoint
 			RegenerateKeyframeButtons();
@@ -923,7 +930,7 @@ namespace Spark
 				// do another API request for lowest latency
 				Program.GetRequestCallback(sessionUrl, null, resp =>
 				{
-					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(resp);
+					Frame frame = JsonConvert.DeserializeObject<Frame>(resp);
 					if (frame == null) return;
 					Vector3 discPos = frame.disc.position.ToVector3();
 					Vector3 pos = discPos - offset;
@@ -968,7 +975,7 @@ namespace Spark
 
 					double angle = elapsed * CameraWriteSettings.instance.rotSpeed * Deg2Rad;
 
-					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(resp);
+					Frame frame = JsonConvert.DeserializeObject<Frame>(resp);
 					if (frame == null) return;
 
 					Vector3 discPos = frame.disc.position.ToVector3();
@@ -1300,8 +1307,10 @@ namespace Spark
 				Program.GetRequestCallback(sessionUrl, null, response =>
 				{
 					if (response == null) return;
-					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(response);
-					spaceMouseCameraState = frame?.GetCameraTransform();
+					Frame frame = JsonConvert.DeserializeObject<Frame>(response);
+					if (frame == null) return;
+					(Vector3 p, Quaternion q) = frame.GetCameraTransform();
+					spaceMouseCameraState = new CameraTransform(p, q, lastSetFov);
 				});
 			}
 		}
@@ -1684,8 +1693,10 @@ namespace Spark
 				Program.GetRequestCallback(sessionUrl, null, response =>
 				{
 					if (response == null) return;
-					g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(response);
-					joystickCameraTransform = frame?.GetCameraTransform();
+					Frame frame = JsonConvert.DeserializeObject<Frame>(response);
+					if (frame == null) return;
+					(Vector3 p, Quaternion q) = frame.GetCameraTransform();
+					joystickCameraTransform = new CameraTransform(p, q, lastSetFov);
 				});
 			}
 		}

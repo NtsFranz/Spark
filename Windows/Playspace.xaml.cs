@@ -6,6 +6,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using EchoVRAPI;
 
 namespace Spark
 {
@@ -52,7 +53,7 @@ namespace Spark
 							else
 							{
 								string playerName = choosePlayerDropdown.SelectedValue.ToString();
-								g_Player player = Program.lastFrame.GetPlayer(playerName);
+								Player player = Program.lastFrame.GetPlayer(playerName);
 								if (player == null) return;
 								MatchPlayer playerData = Program.matchData.GetPlayerData(player);
 								if (playerData == null) return;
@@ -102,8 +103,8 @@ namespace Spark
 				choosePlayerDropdown.Items.Clear();
 				choosePlayerDropdown.Items.Add("Local Player");
 				if (Program.lastFrame == null) return;
-				List<g_Player> players = Program.lastFrame.GetAllPlayers();
-				foreach (g_Player p in players)
+				List<Player> players = Program.lastFrame.GetAllPlayers();
+				foreach (Player p in players)
 				{
 					choosePlayerDropdown.Items.Add(p.name);
 				}

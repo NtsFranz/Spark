@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
+using EchoVRAPI;
 
 namespace Spark
 {
@@ -13,20 +14,20 @@ namespace Spark
 		public int nframes;
 		public string filename;
 		public List<string> rawFrames;
-		public List<g_Instance> frames { private get; set; }
+		public List<Frame> frames { private get; set; }
 
 		/// <summary>
 		/// Gets or converts the requested frame.
 		/// May return null if the frame can't be converted.
 		/// </summary>
-		public g_Instance GetFrame(int index)
+		public Frame GetFrame(int index)
 		{
 			if (frames[index] != null) return frames[index];
 
 			// repeat because maybe the requested frame needs to be discarded.
 			while (rawFrames.Count > 0)
 			{
-				g_Instance newFrame = ReplayFileReader.FromEchoReplayString(rawFrames[index]);
+				Frame newFrame = ReplayFileReader.FromEchoReplayString(rawFrames[index]);
 				if (newFrame != null)
 				{
 					frames[index] = newFrame;
@@ -105,7 +106,7 @@ namespace Spark
 					rawFrames = allLines,
 					nframes = allLines.Count,
 					filename = filename,
-					frames = new List<g_Instance>(new g_Instance[allLines.Count])
+					frames = new List<Frame>(new Frame[allLines.Count])
 				};
 
 				lock (replayFileLock)
@@ -130,7 +131,7 @@ namespace Spark
 			return ret;
 		}
 		
-		public static g_Instance FromEchoReplayString(string line)
+		public static Frame FromEchoReplayString(string line)
 		{
 			if (!string.IsNullOrEmpty(line))
 			{
@@ -168,9 +169,9 @@ namespace Spark
 		/// <param name="time">The time the frame was recorded</param>
 		/// <param name="json">The json for the frame</param>
 		/// <returns>A Frame object</returns>
-		private static g_Instance FromJSON(DateTime time, string json)
+		private static Frame FromJSON(DateTime time, string json)
 		{
-			g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(json);
+			Frame frame = JsonConvert.DeserializeObject<Frame>(json);
 			if (frame == null) return null;
 			
 			frame.recorded_time = time;

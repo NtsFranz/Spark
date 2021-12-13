@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/css/minimap.css">
     <link rel="stylesheet" href="/css/main_banner.css">
     <link rel="stylesheet" href="/css/mathematical_time.css">
+    <link rel="stylesheet" href="/css/player_lists.css">
+    <link rel="stylesheet" href="/css/event_banners.css">
     <script src="/js/util.js"></script>
     <script defer src="/js/full_overlay.js"></script>
 </head>
@@ -20,7 +22,7 @@
                 <div id="team_name_orange" class="team_name"></div>
                 
                 <div class="center_clock_area">
-                <div id="game_clock_display"></div>
+                    <div id="game_clock_display"></div>
                     <div id="points_orange" class="points"></div>
                     <div id="points_blue" class="points"></div>    
                 </div>
@@ -35,6 +37,32 @@
         <div id="mathematical_time_box">
             MATH. TIME<br>
             <div id="mathematical_time"></div>
+        </div>
+        
+        <div id="player_lists">
+            <div id="orange_players" class="player_list orange"></div>
+            <div id="blue_players" class="player_list blue"></div>
+        </div>
+        
+        <div id="joust_banners" class="banner_box">
+            <div id="orange_joust" class="banner orange"><span></span></div>
+            <div id="blue_joust" class="banner blue"><span></span></div>
+        </div>
+
+        <div id="pause_banners" class="banner_box">
+            <div id="orange_pause" class="banner orange"><span></span></div>
+            <div id="blue_pause" class="banner blue"><span></span></div>
+        </div>
+
+        <div id="goal_banners" class="banner_box">
+            <div id="orange_goal_banner" class="banner orange">
+                <span id="orange_goal_banner_text"></span>
+                <span id="orange_goal_banner_secondary"></span>
+            </div>
+            <div id="blue_goal_banner" class="banner blue">
+                <span id="blue_goal_banner_text"></span>
+                <span id="blue_goal_banner_secondary"></span>
+            </div>
         </div>
         
         <div class="minimap_container">

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using EchoVRAPI;
 using static Logger;
 
 namespace Spark
@@ -114,18 +115,18 @@ namespace Spark
 		{
 			string result = await Program.GetRequestAsync(BaseUrl + "session", null);
 			if (string.IsNullOrEmpty(result)) return false;
-			g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(result);
+			Frame frame = JsonConvert.DeserializeObject<Frame>(result);
 			if (frame == null) return false;
-			List<g_Player> players = frame.GetAllPlayers(false);
-			g_Player targetPlayer = frame.GetPlayer(playerName);
+			List<Player> players = frame.GetAllPlayers(false);
+			Player targetPlayer = frame.GetPlayer(playerName);
 
-			List<g_Player> sortedList = players
+			List<Player> sortedList = players
 				.OrderBy(p => Vector3.Distance(p.head.Position, frame.player.vr_position.ToVector3())).ToList();
 
 			// debug all player distances
 			//sortedList.ForEach(p => LogRow(LogType.File, frame.sessionid, $"{Vector3.Distance(p.head.Position, frame.player.vr_position.ToVector3())}\t{p.name}"));
 
-			g_Player minPlayer = sortedList.First();
+			Player minPlayer = sortedList.First();
 			float dist = Vector3.Distance(minPlayer.head.Position, frame.player.vr_position.ToVector3());
 
 			LogRow(LogType.File, frame.sessionid, $"Player {i} camera distance: {dist:N3} m.  Name: {minPlayer.name}");

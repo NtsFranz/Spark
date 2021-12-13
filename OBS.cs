@@ -3,6 +3,7 @@ using Spark.Properties;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;
+using EchoVRAPI;
 
 namespace Spark
 {
@@ -45,7 +46,7 @@ namespace Spark
 			}
 		}
 
-		private void LeftGame(g_Instance obj)
+		private void LeftGame(Frame obj)
 		{
 			if (!instance.IsConnected) return;
 			string scene = SparkSettings.instance.obsBetweenGameScene;
@@ -53,7 +54,7 @@ namespace Spark
 			instance.SetCurrentScene(scene);
 		}
 
-		private void JoinedGame(g_Instance obj)
+		private void JoinedGame(Frame obj)
 		{
 			if (!instance.IsConnected) return;
 			string scene = SparkSettings.instance.obsInGameScene;
@@ -61,32 +62,32 @@ namespace Spark
 			instance.SetCurrentScene(scene);
 		}
 
-		private void Save(g_Instance frame, g_Team team, g_Player player)
+		private void Save(Frame frame, Team team, Player player)
 		{
 			SaveClip(SparkSettings.instance.obsClipSave, player.name, frame, SparkSettings.instance.obsSaveReplayScene, SparkSettings.instance.obsClipSecondsAfter, SparkSettings.instance.obsSaveSecondsAfter, SparkSettings.instance.obsSaveReplayLength);
 		}
 
-		private void Goal(g_Instance frame, GoalData goalData)
+		private void Goal(Frame frame, GoalData goalData)
 		{
 			SaveClip(SparkSettings.instance.obsClipGoal, frame.last_score.person_scored, frame, SparkSettings.instance.obsGoalReplayScene, SparkSettings.instance.obsClipSecondsAfter, SparkSettings.instance.obsGoalSecondsAfter, SparkSettings.instance.obsGoalReplayLength);
 		}
 
-		private void PlayspaceAbuse(g_Instance frame, g_Team team, g_Player player, Vector3 arg4)
+		private void PlayspaceAbuse(Frame frame, Team team, Player player, Vector3 arg4)
 		{
 			SaveClip(SparkSettings.instance.obsClipPlayspace, player.name, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0, 0);
 		}
 
-		private void Assist(g_Instance frame, GoalData goal)
+		private void Assist(Frame frame, GoalData goal)
 		{
 			SaveClip(SparkSettings.instance.obsClipAssist, frame.last_score.assist_scored, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0, 0);
 		}
 
-		private void Interception(g_Instance frame, g_Team team, g_Player throwPlayer, g_Player catchPlayer)
+		private void Interception(Frame frame, Team team, Player throwPlayer, Player catchPlayer)
 		{
 			SaveClip(SparkSettings.instance.obsClipInterception, catchPlayer.name, frame, "", SparkSettings.instance.obsClipSecondsAfter, 0, 0);
 		}
 
-		private void SaveClip(bool setting, string player_name, g_Instance frame, string to_scene, float save_delay, float scene_delay, float scene_length)
+		private void SaveClip(bool setting, string player_name, Frame frame, string to_scene, float save_delay, float scene_delay, float scene_length)
 		{
 			if (!instance.IsConnected) return;
 			if (!setting) return;
@@ -116,7 +117,7 @@ namespace Spark
 			if (replayNum == currentReplay) instance.SetCurrentScene(scene);
 		}
 
-		private static bool IsPlayerScopeEnabled(string player_name, g_Instance frame)
+		private static bool IsPlayerScopeEnabled(string player_name, Frame frame)
 		{
 			try
 			{

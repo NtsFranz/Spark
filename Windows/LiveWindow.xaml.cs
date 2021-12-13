@@ -19,6 +19,7 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using EchoVRAPI;
 using NetMQ;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -386,7 +387,7 @@ namespace Spark
 
 
 						// last throw stuff
-						g_LastThrow lt = Program.lastFrame.last_throw;
+						LastThrow lt = Program.lastFrame.last_throw;
 						if (lt != null)
 						{
 							string stats = $"Total Speed:\t{lt.total_speed:N2} m/s\n Arm:\t\t{lt.speed_from_arm:N2} m/s\n Wrist:\t\t{lt.speed_from_wrist:N2} m/s\n Movement:\t{lt.speed_from_movement:N2} m/s\n\nTouch Data\n Arm Speed:\t{lt.arm_speed:N2} m/s\n Rots/second:\t{lt.rot_per_sec:N2} r/s\n Pot spd from rot:\t{lt.pot_speed_from_rot:N2} m/s\n\nAlignment Analysis\n Off Axis Spin:\t{lt.off_axis_spin_deg:N1} deg\n Wrist align:\t{lt.wrist_align_to_throw_deg:N1} deg\n Movement align:\t{lt.throw_align_to_movement_deg:N1} deg";
@@ -464,7 +465,7 @@ namespace Spark
 										i++;
 
 										updatedHTML = true;
-										playerSpeedHTML += "<div style=\"width:" + speed + "px;\" class=\"speed_bar " + (g_Team.TeamColor)t + "\"></div>\n";
+										playerSpeedHTML += "<div style=\"width:" + speed + "px;\" class=\"speed_bar " + (Team.TeamColor)t + "\"></div>\n";
 									}
 
 									if (t == 0)
@@ -532,17 +533,17 @@ namespace Spark
 						{
 							Program.matchData.ServerScore = smoothedServerScore;
 
-							if (blueLogo != Program.matchData.teams[g_Team.TeamColor.blue].vrmlTeamLogo)
+							if (blueLogo != Program.matchData.teams[Team.TeamColor.blue].vrmlTeamLogo)
 							{
-								blueLogo = Program.matchData.teams[g_Team.TeamColor.blue].vrmlTeamLogo;
+								blueLogo = Program.matchData.teams[Team.TeamColor.blue].vrmlTeamLogo;
 								blueTeamLogo.Source = string.IsNullOrEmpty(blueLogo) ? null : new BitmapImage(new Uri(blueLogo));
-								blueTeamLogo.ToolTip = Program.matchData.teams[g_Team.TeamColor.blue].vrmlTeamName;
+								blueTeamLogo.ToolTip = Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName;
 							}
-							if (orangeLogo != Program.matchData.teams[g_Team.TeamColor.orange].vrmlTeamLogo)
+							if (orangeLogo != Program.matchData.teams[Team.TeamColor.orange].vrmlTeamLogo)
 							{
-								orangeLogo = Program.matchData.teams[g_Team.TeamColor.orange].vrmlTeamLogo;
+								orangeLogo = Program.matchData.teams[Team.TeamColor.orange].vrmlTeamLogo;
 								orangeTeamLogo.Source = string.IsNullOrEmpty(orangeLogo) ? null : new BitmapImage(new Uri(orangeLogo));
-								orangeTeamLogo.ToolTip = Program.matchData.teams[g_Team.TeamColor.orange].vrmlTeamName;
+								orangeTeamLogo.ToolTip = Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName;
 							}
 						}
 
@@ -578,7 +579,7 @@ namespace Spark
 							for (int j = lastMatches.Length - 1; j >= 0; j--)
 							{
 								MatchData match = lastMatches[j];
-								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[g_Team.TeamColor.orange].points + "  BLUE: " + match.teams[g_Team.TeamColor.blue].points);
+								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[Team.TeamColor.orange].points + "  BLUE: " + match.teams[Team.TeamColor.blue].points);
 							}
 						}
 						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
@@ -627,14 +628,14 @@ namespace Spark
 						//	Grid board = null;
 						//	int currentRow = 0;
 						//	List<Label> currentItems = null;
-						//	if (player.Value.teamData.teamColor == g_Team.TeamColor.orange)
+						//	if (player.Value.teamData.teamColor == Team.TeamColor.orange)
 						//	{
 						//		board = orangeScoreboardGrid;
 						//		orangeRow++;
 						//		currentRow = orangeRow;
 						//		currentItems = orangeScoreboardItems;
 						//	}
-						//	else if (player.Value.teamData.teamColor == g_Team.TeamColor.blue)
+						//	else if (player.Value.teamData.teamColor == Team.TeamColor.blue)
 						//	{
 						//		board = blueScoreboardGrid;
 						//		blueRow++;
@@ -1119,8 +1120,8 @@ namespace Spark
 			Program.KillEchoVR();
 
 			// join in spectator if we were in spectator before
-			g_Team team = Program.lastFrame.GetTeam(Program.lastFrame.client_name);
-			if (team != null && team.color == g_Team.TeamColor.spectator)
+			Team team = Program.lastFrame.GetTeam(Program.lastFrame.client_name);
+			if (team != null && team.color == Team.TeamColor.spectator)
 			{
 				Program.StartEchoVR(Program.JoinType.Spectator, session_id: Program.lastFrame.sessionid);
 			}
@@ -1516,12 +1517,12 @@ namespace Spark
 			if (SparkSettings.instance.atlasLinkAppendTeamNames)
 			{
 				if (Program.matchData != null &&
-					Program.matchData.teams[g_Team.TeamColor.blue] != null &&
-					Program.matchData.teams[g_Team.TeamColor.orange] != null &&
-					!string.IsNullOrEmpty(Program.matchData.teams[g_Team.TeamColor.blue].vrmlTeamName) &&
-					!string.IsNullOrEmpty(Program.matchData.teams[g_Team.TeamColor.orange].vrmlTeamName))
+					Program.matchData.teams[Team.TeamColor.blue] != null &&
+					Program.matchData.teams[Team.TeamColor.orange] != null &&
+					!string.IsNullOrEmpty(Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName) &&
+					!string.IsNullOrEmpty(Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName))
 				{
-					link += $" {Program.matchData.teams[g_Team.TeamColor.orange].vrmlTeamName} vs {Program.matchData.teams[g_Team.TeamColor.blue].vrmlTeamName}";
+					link += $" {Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName} vs {Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName}";
 				}
 			}
 
@@ -1535,7 +1536,7 @@ namespace Spark
 			{
 				try
 				{
-					g_InstanceSimple obj = JsonConvert.DeserializeObject<g_InstanceSimple>(responseJSON);
+					SimpleFrame obj = JsonConvert.DeserializeObject<SimpleFrame>(responseJSON);
 
 					if (obj != null && !string.IsNullOrEmpty(obj.sessionid))
 					{

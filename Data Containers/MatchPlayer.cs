@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using EchoVRAPI;
 
 namespace Spark
 {
@@ -15,7 +16,7 @@ namespace Spark
 	{
 		public MatchPlayer() {}
 		
-		public MatchPlayer(MatchData match, TeamData team, g_Player player)
+		public MatchPlayer(MatchData match, TeamData team, Player player)
 		{
 			matchData = match;
 			teamData = team;
@@ -97,15 +98,15 @@ namespace Spark
 		private const int MINCLAMP = 0;
 
 		#region Get/Set Methods
-		public long Id { get; set; }
+		public ulong Id { get; set; }
 
 		public string Name { get; set; }
 		public int Level { get; set; }
 		public int Number { get; set; }
 
-		public g_PlayerStats currentStats = new g_PlayerStats();
-		public g_PlayerStats cachedStats = new g_PlayerStats();
-		public g_PlayerStats oldRoundStats = new g_PlayerStats();
+		public Stats currentStats = new Stats();
+		public Stats cachedStats = new Stats();
+		public Stats oldRoundStats = new Stats();
 
 		public float PossessionTime {
 			get => Math.Clamp(cachedStats.possession_time + currentStats.possession_time - oldRoundStats.possession_time, MINCLAMP, int.MaxValue);
@@ -272,7 +273,7 @@ namespace Spark
 		/// Store players current stats in case we lose them from a crash.
 		/// </summary>
 		/// <param name="newPlayerStats"></param>
-		public void CacheStats(g_PlayerStats newPlayerStats)
+		public void CacheStats(Stats newPlayerStats)
 		{
 			// if player joined back from spectator
 			if ((newPlayerStats.possession_time + 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+using EchoVRAPI;
 using Newtonsoft.Json;
 
 namespace Spark
@@ -15,7 +16,7 @@ namespace Spark
 		public bool inDB = false;
 
 		public MatchData matchData;
-		public g_Player player;
+		public Player player;
 		public float gameClock;
 		public Vector3 position;
 		public Vector3 velocity;
@@ -27,7 +28,7 @@ namespace Spark
 		}
 		public bool scored;
 
-		public ThrowData(MatchData matchData, float gameClock, g_Player player, Vector3 position, Vector3 velocity, bool isLeftHanded, float underhandedness)
+		public ThrowData(MatchData matchData, float gameClock, Player player, Vector3 position, Vector3 velocity, bool isLeftHanded, float underhandedness)
 		{
 			this.matchData = matchData;
 			this.player = player;

@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Types;
 using System.Linq;
+using EchoVRAPI;
 
 namespace Spark
 {
@@ -486,8 +487,8 @@ namespace Spark
 			{
 				SparkSettings.instance.joustTimeTTS = value;
 
-				if (value) Program.synth.SpeakAsync($"{g_Team.TeamColor.orange.ToLocalizedString()} 1.8");
-				Console.WriteLine($"{g_Team.TeamColor.orange.ToLocalizedString()} 1.8");
+				if (value) Program.synth.SpeakAsync($"{Team.TeamColor.orange.ToLocalizedString()} 1.8");
+				Console.WriteLine($"{Team.TeamColor.orange.ToLocalizedString()} 1.8");
 			}
 		}
 
@@ -500,7 +501,7 @@ namespace Spark
 
 				if (value)
 					Program.synth.SpeakAsync(
-						$"{g_Team.TeamColor.orange.ToLocalizedString()} 32 {Properties.Resources.tts_meters_per_second}");
+						$"{Team.TeamColor.orange.ToLocalizedString()} 32 {Properties.Resources.tts_meters_per_second}");
 			}
 		}
 
@@ -560,7 +561,7 @@ namespace Spark
 
 				if (value)
 					Program.synth.SpeakAsync(
-						$"{g_Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_paused}");
+						$"{Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_paused}");
 			}
 		}
 
@@ -573,7 +574,7 @@ namespace Spark
 
 				if (value)
 					Program.synth.SpeakAsync(
-						$"NtsFranz {Properties.Resources.tts_join_1} {g_Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_join_2}");
+						$"NtsFranz {Properties.Resources.tts_join_1} {Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_join_2}");
 			}
 		}
 
@@ -586,7 +587,7 @@ namespace Spark
 
 				if (value)
 					Program.synth.SpeakAsync(
-						$"NtsFranz {Properties.Resources.tts_leave_1} {g_Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_leave_2}");
+						$"NtsFranz {Properties.Resources.tts_leave_1} {Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_leave_2}");
 			}
 		}
 
@@ -599,7 +600,7 @@ namespace Spark
 
 				if (value)
 					Program.synth.SpeakAsync(
-						$"NtsFranz {Properties.Resources.tts_switch_1} {g_Team.TeamColor.blue.ToLocalizedString()} {Properties.Resources.tts_switch_2} {g_Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_switch_3}");
+						$"NtsFranz {Properties.Resources.tts_switch_1} {Team.TeamColor.blue.ToLocalizedString()} {Properties.Resources.tts_switch_2} {Team.TeamColor.orange.ToLocalizedString()} {Properties.Resources.tts_switch_3}");
 			}
 		}
 

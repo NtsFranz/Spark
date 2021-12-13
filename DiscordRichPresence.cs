@@ -5,6 +5,7 @@ using System.Threading;
 using DiscordRPC;
 using DiscordRPC.Logging;
 using DiscordRPC.Message;
+using EchoVRAPI;
 using Spark.Properties;
 using static Logger;
 
@@ -102,7 +103,7 @@ namespace Spark
 				discordClient.Dispose();
 		}
 
-		public static void ProcessDiscordPresence(g_Instance frame)
+		public static void ProcessDiscordPresence(Frame frame)
 		{
 			lastDiscordPresenceTime = DateTime.Now;
 

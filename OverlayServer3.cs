@@ -90,13 +90,13 @@ namespace Spark
 // 							{
 // 								new Dictionary<string, object>
 // 								{
-// 									{"vrml_team_name", selectedMatches.Last().teams[g_Team.TeamColor.blue].vrmlTeamName},
-// 									{"vrml_team_logo", selectedMatches.Last().teams[g_Team.TeamColor.blue].vrmlTeamLogo},
+// 									{"vrml_team_name", selectedMatches.Last().teams[Team.TeamColor.blue].vrmlTeamName},
+// 									{"vrml_team_logo", selectedMatches.Last().teams[Team.TeamColor.blue].vrmlTeamLogo},
 // 								},
 // 								new Dictionary<string, object>
 // 								{
-// 									{"vrml_team_name", selectedMatches.Last().teams[g_Team.TeamColor.orange].vrmlTeamName},
-// 									{"vrml_team_logo", selectedMatches.Last().teams[g_Team.TeamColor.orange].vrmlTeamLogo},
+// 									{"vrml_team_name", selectedMatches.Last().teams[Team.TeamColor.orange].vrmlTeamName},
+// 									{"vrml_team_logo", selectedMatches.Last().teams[Team.TeamColor.orange].vrmlTeamLogo},
 // 								}
 // 							}
 // 						},

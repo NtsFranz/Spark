@@ -1,4 +1,5 @@
 #mathematical_time_box {
+    display: none;
     background: linear-gradient(#222 0%, #444 100%);
     width: 100px;
     color: white;
@@ -6,13 +7,14 @@
     font-family: Consolas, monospace;
     font-size: 17px;
     font-weight: 100;
-    padding: 20px 10px 10px;
+    padding: 20px 10px 5px;
     margin: -18px auto 0;
     /*border-radius: 10px;*/
     border: 1px solid #aaa5;
     position: relative;
     z-index: -1;
     box-shadow: 0 0 20px #000a;
+    top: 132px;
 }
 
 #mathematical_time {

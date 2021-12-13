@@ -27,14 +27,33 @@ const game_clock_display = document.getElementById("game_clock_display");
 const mathematical_time_box = document.getElementById("mathematical_time_box");
 const mathematical_time = document.getElementById("mathematical_time");
 
+// player list
+const player_lists = document.getElementById("player_lists");
+const orange_players = document.getElementById("orange_players");
+const blue_players = document.getElementById("blue_players");
+
 // events
 const orange_joust = document.getElementById("orange_joust");
 const blue_joust = document.getElementById("blue_joust");
+
+const orange_pause = document.getElementById("orange_pause");
+const blue_pause = document.getElementById("blue_pause");
+
+const orange_goal_banner = document.getElementById("orange_goal_banner");
+const blue_goal_banner = document.getElementById("blue_goal_banner");
+
+const orange_goal_banner_text = document.getElementById("orange_goal_banner_text");
+const blue_goal_banner_text = document.getElementById("blue_goal_banner_text");
+const orange_goal_banner_secondary = document.getElementById("orange_goal_banner_secondary");
+const blue_goal_banner_secondary = document.getElementById("blue_goal_banner_secondary");
 
 let lastData = null;
 let lastClock = 0;
 let runningClock = 0;
 let clockRunning = false;
+
+let lastBluePlayerList = "";
+let lastOrangePlayerList = "";
 
 
 let was_not_in_match = false;
@@ -67,32 +86,30 @@ function process_data(data) {
         data["session"] = JSON.parse(data["session"]);
     }
 
-    if (data["visibility"]["minimap"] && data["session"]) {
-        minimap.style.display = "block";
-        UpdateMinimap(data["session"]);
-    } else {
-        minimap.style.display = "none";
-    }
-
-    if (data["visibility"]["main_banner"] && data["session"]) {
-        main_banner.style.display = "block";
-        UpdateMainBanner(data, lastData);
-    } else {
-        main_banner.style.display = "none";
-    }
-
-    UpdateMathematicalTime(data);
+    UpdateMinimap(data, lastData);
+    UpdateMainBanner(data, lastData);
+    UpdateMathematicalTime(data, lastData);
+    UpdatePlayerLists(data, lastData);
+    UpdateEvents(data, lastData);
 
     lastData = data;
 }
 
 
-function UpdateMinimap(data) {
-    set_pos(disc, data['disc']['position'][2], data['disc']['position'][0]);
+function UpdateMinimap(data, lastData) {
+
+    if (data["visibility"]["minimap"] && data["session"]) {
+        minimap.style.display = "block";
+    } else {
+        minimap.style.display = "none";
+        return;
+    }
+
+    set_pos(disc, data["session"]['disc']['position'][2], data["session"]['disc']['position'][0]);
     for (let i = 0; i < 10; i++) {
-        if (data['teams'][Math.floor(i / 5)]['players'] &&
-            data['teams'][Math.floor(i / 5)]['players'].length > i % 5) {
-            const player_data = data['teams'][Math.floor(i / 5)]['players'][Math.floor(i % 5)];
+        if (data["session"]['teams'][Math.floor(i / 5)]['players'] &&
+            data["session"]['teams'][Math.floor(i / 5)]['players'].length > i % 5) {
+            const player_data = data["session"]['teams'][Math.floor(i / 5)]['players'][Math.floor(i % 5)];
             set_pos(players[i], player_data['head']['position'][2], player_data['head']['position'][0]);
             set_number(player_numbers[i], "" + player_data['number']);
             players[i].style.visibility = 'visible';
@@ -101,9 +118,9 @@ function UpdateMinimap(data) {
             players[i].style.visibility = 'hidden';
         }
     }
-    if (data['pause']['paused_state'] === 'paused') {
+    if (data["session"]['pause']['paused_state'] === 'paused') {
         timeout_banner.style.visibility = 'visible';
-        timeout_banner_team.innerText = data['pause']['paused_requested_team']
+        timeout_banner_team.innerText = data["session"]['pause']['paused_requested_team']
     } else {
         timeout_banner.style.visibility = 'hidden';
     }
@@ -111,7 +128,16 @@ function UpdateMinimap(data) {
 
 function UpdateMainBanner(data, lastData) {
 
-    if (lastData != null) {
+
+    if (data["visibility"]["main_banner"] && data["session"]) {
+        main_banner.style.display = "block";
+    } else {
+        main_banner.style.display = "none";
+        return;
+    }
+    if (data == null) return;
+
+    if (lastData != null && lastData["session"] !== undefined) {
         clockRunning = lastData["session"]["game_clock"] > data["session"]["game_clock"];
     }
     lastClock = data["session"]["game_clock"];
@@ -141,23 +167,23 @@ function UpdateMainBanner(data, lastData) {
 
     }
 
-// if the team has changed
+    // if the team has changed
     if (lastData == null || lastData["stats"] == null ||
-        lastData["stats"]["teams"][0]["team_name"] != data["stats"]["teams"][0]["team_name"] ||
-        lastData["stats"]["teams"][0]["team_logo"] != data["stats"]["teams"][0]["team_logo"]) {
+        lastData["stats"]["teams"][0]["team_name"] !== data["stats"]["teams"][0]["team_name"] ||
+        lastData["stats"]["teams"][0]["team_logo"] !== data["stats"]["teams"][0]["team_logo"]) {
         team_name_blue.innerText = data["stats"]["teams"][0]["team_name"];
         team_logo_blue.src = data["stats"]["teams"][0]["team_logo"];
-        if (data["stats"]["teams"][0]["team_logo"] == "") {
+        if (data["stats"]["teams"][0]["team_logo"] === "") {
             team_logo_blue.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
         }
     }
-// if the team has changed
+    // if the team has changed
     if (lastData == null || lastData["stats"] == null ||
-        lastData["stats"]["teams"][1]["team_name"] != data["stats"]["teams"][1]["team_name"] ||
-        lastData["stats"]["teams"][1]["team_logo"] != data["stats"]["teams"][1]["team_logo"]) {
+        lastData["stats"]["teams"][1]["team_name"] !== data["stats"]["teams"][1]["team_name"] ||
+        lastData["stats"]["teams"][1]["team_logo"] !== data["stats"]["teams"][1]["team_logo"]) {
         team_logo_orange.src = data["stats"]["teams"][1]["team_logo"];
         team_name_orange.innerText = data["stats"]["teams"][1]["team_name"];
-        if (data["stats"]["teams"][1]["team_logo"] == "") {
+        if (data["stats"]["teams"][1]["team_logo"] === "") {
             team_logo_orange.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
         }
     }
@@ -166,6 +192,11 @@ function UpdateMainBanner(data, lastData) {
 }
 
 function UpdateMathematicalTime(data, lastData) {
+
+    if (data["session"] === undefined || lastData == null || lastData["session"] === undefined) {
+        mathematical_time_box.style.display = "none";
+        return;
+    }
 
     let orange_score = data["session"]["orange_points"];
     let blue_score = data["session"]["blue_points"];
@@ -188,20 +219,88 @@ function UpdateMathematicalTime(data, lastData) {
     }
 }
 
-function UpdateEvents(data) {
+function UpdatePlayerLists(data, lastData) {
+
+    if (data["session"] === undefined || lastData == null || lastData["session"] === undefined) {
+        player_lists.style.display = "none";
+        return;
+    }
+
+    player_lists.style.display = "block";
+
+
+    let bluePlayers = data["session"]["teams"][0]["players"];
+    let orangePlayers = data["session"]["teams"][1]["players"];
+    if (bluePlayers === undefined) bluePlayers = [];
+    if (orangePlayers === undefined) orangePlayers = [];
+
+    let newBluePlayerList = Array.from(bluePlayers, p => p['name'] + p['possession'] + p['stunned']).join('');
+    let newOrangePlayerList = Array.from(orangePlayers, p => p['name'] + p['possession'] + p['stunned']).join('');
+
+
+    function CreatePlayers(playerList, appendList) {
+        for (let i = 0; i < playerList.length; i++) {
+            let div = document.createElement("div");
+
+            let nameDiv = document.createElement("div");
+            nameDiv.innerText = playerList[i]["name"];
+            div.append(nameDiv);
+
+            let numberDiv = document.createElement("div");
+            numberDiv.innerText = playerList[i]["number"];
+            div.append(numberDiv);
+
+            if (playerList[i]["possession"]) {
+                div.classList.add("possession");
+            }
+            if (playerList[i]["stunned"]) {
+                div.classList.add("stunned");
+            }
+
+            appendList.append(div);
+        }
+    }
+
+    if (newBluePlayerList !== lastBluePlayerList) {
+        removeAllChildNodes(blue_players);
+        CreatePlayers(bluePlayers, blue_players);
+    }
+
+    if (newOrangePlayerList !== lastOrangePlayerList) {
+        removeAllChildNodes(orange_players);
+        CreatePlayers(orangePlayers, orange_players);
+    }
+
+
+    lastBluePlayerList = newBluePlayerList;
+    lastOrangePlayerList = newOrangePlayerList;
+
+}
+
+function UpdateEvents(data, lastData) {
+
+    if (lastData == null) return;
+    if (data == null) return;
+    if (data["stats"] === undefined) return;
+    if (data["stats"]["joust_events"] == null) data["stats"]["joust_events"] = [];
+    if (data["stats"]["goals"] == null) data["stats"]["goals"] = [];
+
+    let lastJousts = lastData["stats"]["joust_events"];
+    if (lastJousts === undefined) lastJousts = [];
+    let lastJoustsLength = lastJousts.length;
 
     // if the number of jousts has changed
-    if (lastStats != null && data["joust_events"].length > lastStats["joust_events"].length) {
-        for (let i = lastStats["joust_events"].length; i < data["joust_events"].length; i++) {
-            let joust = data["joust_events"][i];
-            if (joust["other_player_name"] == "orange") {
+    if (data["stats"]["joust_events"].length > lastJoustsLength) {
+        for (let i = lastJoustsLength; i < data["stats"]["joust_events"].length; i++) {
+            let joust = data["stats"]["joust_events"][i];
+            if (joust["other_player_name"] === "orange") {
                 orange_joust.classList.add("visible");
                 orange_joust.innerText = Math.round(joust["z2"] * 100) / 100 + " s";
                 // hide it after a delay
                 setTimeout(function () {
                     orange_joust.classList.remove("visible");
                 }, 10000);
-            } else if (joust["other_player_name"] == "blue") {
+            } else if (joust["other_player_name"] === "blue") {
                 blue_joust.classList.add("visible");
                 blue_joust.innerText = Math.round(joust["z2"] * 100) / 100 + " s";
                 // hide it after a delay
@@ -209,6 +308,50 @@ function UpdateEvents(data) {
                     blue_joust.classList.remove("visible");
                 }, 10000);
             }
+        }
+    }
+
+
+    let lastGoals = lastData["stats"]["goals"];
+    if (lastGoals === undefined) lastGoals = [];
+    
+    // if the number of goals has changed
+    if (data["stats"]["goals"].length > lastGoals.length) {
+        for (let i = lastGoals.length; i < data["stats"]["goals"].length; i++) {
+            let goal = data["stats"]["goals"][i];
+            if (goal["goal_color"] === "orange") {
+                orange_goal_banner.classList.add("visible");
+                orange_goal_banner_text.innerText = `${goal["point_value"]}\n${goal["goal_type"]}`;
+                orange_goal_banner_secondary.innerText = goal["goal_type"];
+                // hide it after a delay
+                setTimeout(function () {
+                    orange_goal_banner.classList.remove("visible");
+                }, 10000);
+            } else if (goal["goal_color"] === "blue") {
+                blue_goal_banner.classList.add("visible");
+                blue_goal_banner_text.innerText = goal["goal_type"];
+                blue_goal_banner_secondary.innerText = goal["goal_type"];
+                // hide it after a delay
+                setTimeout(function () {
+                    blue_goal_banner.classList.remove("visible");
+                }, 10000);
+            }
+        }
+    }
+
+
+    if (data["session"] !== undefined &&
+        lastData["session"] !== undefined &&
+        data["session"]["pause"]["paused_state"] !== lastData["session"]["pause"]["paused_state"]) {
+        if (data["session"]["pause"]["paused_state"] === "paused") {
+            if (data["session"]["pause"]["paused_requested_team"] === "orange") {
+                orange_pause.classList.add("visible");
+            } else if (data["session"]["pause"]["paused_requested_team"] === "blue") {
+                blue_pause.classList.add("visible");
+            }
+        } else {
+            orange_pause.classList.remove("visible");
+            blue_pause.classList.remove("visible");
         }
     }
 }

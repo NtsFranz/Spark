@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
+using EchoVRAPI;
 using Newtonsoft.Json;
 
 namespace Spark
@@ -11,13 +12,13 @@ namespace Spark
 	{
 		public GoalData(
 			MatchData match,
-			g_Player player,
-			g_Score lastScore,
+			Player player,
+			LastScore lastScore,
 			float gameClock,
 			Vector2 goalPos,
 			float angleIntoGoal,
 			bool backboard,
-			g_Team.TeamColor goalColor,
+			Team.TeamColor goalColor,
 			bool? leftHanded,
 			float? underhandedness,
 			List<Vector3> discTrajectory)
@@ -42,7 +43,7 @@ namespace Spark
 
 		public MatchData matchData;
 		public List<Vector3> DiscTrajectory { get; set; }
-		public g_Player Player { get; set; }
+		public Player Player { get; set; }
 		/// <summary>
 		/// Position of where the disc entered the goal.
 		/// </summary>
@@ -52,8 +53,8 @@ namespace Spark
 		public bool Backboard { get; set; }
 		public bool? LeftHanded { get; set; }
 		public float? underhandedness;
-		public g_Team.TeamColor GoalColor { get; set; }
-		public g_Score LastScore { get; set; }
+		public Team.TeamColor GoalColor { get; set; }
+		public LastScore LastScore { get; set; }
 		public Vector3 Position {
 			get {
 				return (DiscTrajectory != null && DiscTrajectory.Count > 0) ? DiscTrajectory[0] : Vector3.Zero;

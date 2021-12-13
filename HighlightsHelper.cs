@@ -1,8 +1,7 @@
-﻿using Spark.Properties;
-using NVIDIA;
+﻿using NVIDIA;
 using System;
 using System.Linq;
-using static Spark.g_Team;
+using EchoVRAPI;
 
 namespace Spark
 {
@@ -28,7 +27,7 @@ namespace Spark
 			ALL
 		};
 
-		internal static bool SaveHighlightMaybe(g_Player player, g_Instance frame, string id)
+		internal static bool SaveHighlightMaybe(Player player, Frame frame, string id)
 		{
 			string highlightGroupName = IsPlayerHighlightEnabled(player, frame);
 			if (highlightGroupName.Length > 0)
@@ -46,7 +45,7 @@ namespace Spark
 			else return false;
 		}
 
-		internal static bool SaveHighlightMaybe(string player, g_Instance frame, string id)
+		internal static bool SaveHighlightMaybe(string player, Frame frame, string id)
 		{
 			string highlightGroupName = IsPlayerHighlightEnabled(player, frame);
 			if (highlightGroupName.Length <= 0) return false;
@@ -311,13 +310,13 @@ namespace Spark
 		}
 
 
-		private static string IsPlayerHighlightEnabled(g_Player player, g_Instance frame)
+		private static string IsPlayerHighlightEnabled(Player player, Frame frame)
 		{
 			try
 			{
 				if (player == null || frame.teams == null || !didHighlightsInit || !isNVHighlightsEnabled) return "";
 
-				TeamColor clientTeam = frame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
+				Team.TeamColor clientTeam = frame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
 				if (player.name == frame.client_name)
 				{
 					return "PERSONAL_HIGHLIGHT_GROUP";
@@ -326,7 +325,7 @@ namespace Spark
 				{
 					return "PERSONAL_TEAM_HIGHLIGHT_GROUP";
 				}
-				else if (ClientHighlightScope == HighlightLevel.ALL || (clientTeam == TeamColor.spectator &&
+				else if (ClientHighlightScope == HighlightLevel.ALL || (clientTeam == Team.TeamColor.spectator &&
 				                                                        SparkSettings.instance.nvHighlightsSpectatorRecord))
 				{
 					return "OPPOSING_TEAM_HIGHLIGHT_GROUP";
@@ -340,10 +339,10 @@ namespace Spark
 			return "";
 		}
 
-		private static string IsPlayerHighlightEnabled(string playerName, g_Instance frame)
+		private static string IsPlayerHighlightEnabled(string playerName, Frame frame)
 		{
 			if (playerName == "[INVALID]") return "";
-			g_Player highlightPlayer = frame.GetPlayer(playerName);
+			Player highlightPlayer = frame.GetPlayer(playerName);
 			return IsPlayerHighlightEnabled(highlightPlayer, frame);
 		}
 

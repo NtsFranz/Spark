@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using EchoVRAPI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -88,11 +89,11 @@ namespace Spark
 							{"shots_taken", "shots_taken_perc\">"},
 						};
 
-						Dictionary<g_Team.TeamColor, Dictionary<string, float>> teamTotals =
-							new Dictionary<g_Team.TeamColor, Dictionary<string, float>>()
+						Dictionary<Team.TeamColor, Dictionary<string, float>> teamTotals =
+							new Dictionary<Team.TeamColor, Dictionary<string, float>>()
 							{
-								{g_Team.TeamColor.blue, new Dictionary<string, float>()},
-								{g_Team.TeamColor.orange, new Dictionary<string, float>()}
+								{Team.TeamColor.blue, new Dictionary<string, float>()},
+								{Team.TeamColor.orange, new Dictionary<string, float>()}
 							};
 
 
@@ -121,13 +122,13 @@ namespace Spark
 									// add up team totals
 									if (column != "player_name")
 									{
-										if (!teamTotals[(g_Team.TeamColor) i].ContainsKey(column))
+										if (!teamTotals[(Team.TeamColor) i].ContainsKey(column))
 										{
-											teamTotals[(g_Team.TeamColor) i][column] = Convert.ToSingle(player[column]);
+											teamTotals[(Team.TeamColor) i][column] = Convert.ToSingle(player[column]);
 										}
 										else
 										{
-											teamTotals[(g_Team.TeamColor) i][column] +=
+											teamTotals[(Team.TeamColor) i][column] +=
 												Convert.ToSingle(player[column]);
 										}
 									}
@@ -145,11 +146,11 @@ namespace Spark
 						// enter team totals
 						for (int i = 0; i < 2; i++)
 						{
-							foreach (string statName in teamTotals[(g_Team.TeamColor) i].Keys)
+							foreach (string statName in teamTotals[(Team.TeamColor) i].Keys)
 							{
 								string repl = (i == 0 ? "blue_" : "orange_") + totalsReplace[statName];
-								float thisStat = teamTotals[(g_Team.TeamColor) i][statName];
-								float otherStat = teamTotals[(g_Team.TeamColor) ((i + 1) % 2)][statName];
+								float thisStat = teamTotals[(Team.TeamColor) i][statName];
+								float otherStat = teamTotals[(Team.TeamColor) ((i + 1) % 2)][statName];
 								float statValue = 0;
 								if (thisStat + otherStat != 0)
 								{

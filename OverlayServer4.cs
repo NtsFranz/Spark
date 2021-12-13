@@ -10,6 +10,7 @@ using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using EchoVRAPI;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -115,31 +116,38 @@ namespace Spark
 					// TODO in progress. This will have settings for the overlay replacement
 					endpoints.MapGet("/overlay_info", async context =>
 					{
-						context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-						context.Response.Headers.Add("Access-Control-Allow-Headers",
-							"Content-Type, Accept, X-Requested-With");
-
-						Dictionary<string, object> response = new Dictionary<string, object>();
-
-						response["stats"] = GetStatsResponse();
-						response["visibility"] = new Dictionary<string, object>()
+						try
 						{
-							{"minimap", true},
-							{"main_banner", true},
-							{"neutral_jousts", true},
-							{"defensive_jousts", true},
-							{"event_log", true},
-							{"playspace", true},
-							{"player_speed", true},
-							{"disc_speed", true},
-						};
+							context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+							context.Response.Headers.Add("Access-Control-Allow-Headers",
+								"Content-Type, Accept, X-Requested-With");
 
-						if (Program.inGame && Program.matchData != null)
-						{
-							response["session"] = Program.lastJSON;
+							Dictionary<string, object> response = new Dictionary<string, object>();
+
+							response["stats"] = GetStatsResponse();
+							response["visibility"] = new Dictionary<string, object>()
+							{
+								{ "minimap", true },
+								{ "main_banner", true },
+								{ "neutral_jousts", true },
+								{ "defensive_jousts", true },
+								{ "event_log", true },
+								{ "playspace", true },
+								{ "player_speed", true },
+								{ "disc_speed", true },
+							};
+
+							if (Program.inGame && Program.matchData != null)
+							{
+								response["session"] = Program.lastJSON;
+							}
+
+							await context.Response.WriteAsJsonAsync(response);
 						}
-						
-						await context.Response.WriteAsJsonAsync(response);
+						catch (Exception e)
+						{
+							Logger.LogRow(Logger.LogType.Error, e.ToString());
+						}
 					});
 
 					endpoints.MapGet("/midmatch_overlay", async context =>
@@ -176,8 +184,8 @@ namespace Spark
 							case 1:
 								if (Program.matchData != null)
 								{
-									overlayOrangeTeamName = Program.matchData.teams[g_Team.TeamColor.orange].vrmlTeamName;
-									overlayBlueTeamName = Program.matchData.teams[g_Team.TeamColor.blue].vrmlTeamName;
+									overlayOrangeTeamName = Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName;
+									overlayBlueTeamName = Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName;
 								}
 								break;
 						}
@@ -362,7 +370,7 @@ namespace Spark
 
 					// var bluePlayers = selectedMatches
 					// 	.SelectMany(m => m.players)
-					// 	.Where(p => p.Value.teamData.teamColor == g_Team.TeamColor.blue)
+					// 	.Where(p => p.Value.teamData.teamColor == Team.TeamColor.blue)
 					// 	.GroupBy(
 					// 		p => p.Key,
 					// 		(key, values) => new 
@@ -387,8 +395,8 @@ namespace Spark
 						overlayBlueTeamLogo = SparkSettings.instance.overlaysManualTeamLogoBlue;
 						break;
 					case 1:
-						TeamData orangeTeam = selectedMatches?.Last().teams[g_Team.TeamColor.orange];
-						TeamData blueTeam = selectedMatches?.Last().teams[g_Team.TeamColor.blue];
+						TeamData orangeTeam = selectedMatches?.Last().teams[Team.TeamColor.orange];
+						TeamData blueTeam = selectedMatches?.Last().teams[Team.TeamColor.blue];
 						overlayOrangeTeamName = orangeTeam?.vrmlTeamName ?? "";
 						overlayBlueTeamName = blueTeam?.vrmlTeamName ?? "";
 						overlayOrangeTeamLogo = orangeTeam?.vrmlTeamLogo ?? "";
@@ -406,11 +414,11 @@ namespace Spark
 							{
 								{
 									"vrml_team_name",
-									selectedMatches?.Last().teams[g_Team.TeamColor.blue].vrmlTeamName ?? ""
+									selectedMatches?.Last().teams[Team.TeamColor.blue].vrmlTeamName ?? ""
 								},
 								{
 									"vrml_team_logo",
-									selectedMatches?.Last().teams[g_Team.TeamColor.blue].vrmlTeamLogo ?? ""
+									selectedMatches?.Last().teams[Team.TeamColor.blue].vrmlTeamLogo ?? ""
 								},
 								{
 									"team_name",
@@ -429,11 +437,11 @@ namespace Spark
 							{
 								{
 									"vrml_team_name",
-									selectedMatches?.Last().teams[g_Team.TeamColor.orange].vrmlTeamName ?? ""
+									selectedMatches?.Last().teams[Team.TeamColor.orange].vrmlTeamName ?? ""
 								},
 								{
 									"vrml_team_logo",
-									selectedMatches?.Last().teams[g_Team.TeamColor.orange].vrmlTeamLogo ?? ""
+									selectedMatches?.Last().teams[Team.TeamColor.orange].vrmlTeamLogo ?? ""
 								},
 								{
 									"team_name",
@@ -542,7 +550,7 @@ namespace Spark
 			Dictionary<string, MatchPlayer> bluePlayers = new Dictionary<string, MatchPlayer>();
 			IEnumerable<MatchPlayer> blueRoundPlayers = selectedMatches
 				.SelectMany(m => m.players.Values)
-				.Where(p => p.teamData.teamColor == g_Team.TeamColor.blue);
+				.Where(p => p.teamData.teamColor == Team.TeamColor.blue);
 			foreach (MatchPlayer blueRoundPlayer in blueRoundPlayers)
 			{
 				if (bluePlayers.ContainsKey(blueRoundPlayer.Name))
@@ -558,7 +566,7 @@ namespace Spark
 			Dictionary<string, MatchPlayer> orangePlayers = new Dictionary<string, MatchPlayer>();
 			IEnumerable<MatchPlayer> orangeRoundPlayers = selectedMatches
 				.SelectMany(m => m.players.Values)
-				.Where(p => p.teamData.teamColor == g_Team.TeamColor.orange);
+				.Where(p => p.teamData.teamColor == Team.TeamColor.orange);
 			foreach (MatchPlayer orangeRoundPlayer in orangeRoundPlayers)
 			{
 				if (orangePlayers.ContainsKey(orangeRoundPlayer.Name))
@@ -647,7 +655,7 @@ namespace Spark
 						int nframes = replayFile.nframes;
 						for (int i = 0; i < nframes; i += n)
 						{
-							g_Instance frame = replayFile.GetFrame(i);
+							Frame frame = replayFile.GetFrame(i);
 
 							if (frame.game_status != "playing") continue;
 							Vector3 pos = frame.disc.position.ToVector3();

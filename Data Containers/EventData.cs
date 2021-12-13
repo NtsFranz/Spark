@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using EchoVRAPI;
 using Spark;
 
 namespace Spark
@@ -10,7 +11,7 @@ namespace Spark
 	/// </summary>
 	public class EventData : DataContainer
 	{
-		public EventData(MatchData match, EventType eventType, float gameClock, g_Team team, g_Player player, long joustTimeMillis, Vector3 position, Vector3 vec2)
+		public EventData(MatchData match, EventType eventType, float gameClock, Team team, Player player, long joustTimeMillis, Vector3 position, Vector3 vec2)
 		{
 			matchData = match;
 			this.eventType = eventType;
@@ -22,7 +23,7 @@ namespace Spark
 			this.team = team;
 		}
 
-		public EventData(MatchData match, EventType eventType, float gameClock, g_Team team, g_Player player, g_Player otherPlayer, Vector3 position, Vector3 vec2)
+		public EventData(MatchData match, EventType eventType, float gameClock, Team team, Player player, Player otherPlayer, Vector3 position, Vector3 vec2)
 		{
 			matchData = match;
 			this.eventType = eventType;
@@ -67,12 +68,12 @@ namespace Spark
 
 		public EventType eventType;
 		public float gameClock;
-		public g_Player player;
-		public g_Player otherPlayer;
+		public Player player;
+		public Player otherPlayer;
 		public Vector3 position;
 		public Vector3 vec2;
 		public long joustTimeMillis;
-		public g_Team team;
+		public Team team;
 
 		/// <summary>
 		/// Function to transform event data into the desired format for firestore.

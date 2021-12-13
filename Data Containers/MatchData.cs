@@ -2,8 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using SharpDX.Direct3D9;
-using static Spark.g_Team;
+using EchoVRAPI;
 
 namespace Spark
 {
@@ -13,7 +12,7 @@ namespace Spark
 	public class MatchData : DataContainer
 	{
 		public string customId;
-		public readonly Dictionary<TeamColor, TeamData> teams;
+		public readonly Dictionary<Team.TeamColor, TeamData> teams;
 
 		public readonly Dictionary<string, MatchPlayer> players = new Dictionary<string, MatchPlayer>();
 
@@ -23,7 +22,7 @@ namespace Spark
 
 		public List<Vector3> currentDiskTrajectory = new List<Vector3>();
 
-		public readonly g_Instance firstFrame;
+		public readonly Frame firstFrame;
 		public string ServerLocation { get; set; }
 		public float ServerScore { get; set; }
 
@@ -54,7 +53,7 @@ namespace Spark
 		/// Constructor used to initialize match data. 
 		/// </summary>
 		/// <param name="firstFrame"></param>
-		public MatchData(g_Instance firstFrame, string customId)
+		public MatchData(Frame firstFrame, string customId)
 		{
 			this.firstFrame = firstFrame;
 			this.customId = customId;
@@ -64,10 +63,10 @@ namespace Spark
 				matchTime = DateTime.Now;
 			}
 
-			teams = new Dictionary<TeamColor, TeamData> {
-				{ TeamColor.blue, new TeamData(TeamColor.blue, firstFrame.teams[0].team) },
-				{ TeamColor.orange, new TeamData(TeamColor.orange, firstFrame.teams[1].team) },
-				{ TeamColor.spectator, new TeamData(TeamColor.spectator, firstFrame.teams[2].team) },
+			teams = new Dictionary<Team.TeamColor, TeamData> {
+				{ Team.TeamColor.blue, new TeamData(Team.TeamColor.blue, firstFrame.teams[0].team) },
+				{ Team.TeamColor.orange, new TeamData(Team.TeamColor.orange, firstFrame.teams[1].team) },
+				{ Team.TeamColor.spectator, new TeamData(Team.TeamColor.spectator, firstFrame.teams[2].team) },
 			};
 
 			if (firstFrame.client_name != "anonymous")
@@ -89,7 +88,7 @@ namespace Spark
 		/// </summary>
 		/// <param name="player">The player</param>
 		/// <returns>The PlayerData about the requested player from this match.</returns>
-		public MatchPlayer GetPlayerData(g_Player player)
+		public MatchPlayer GetPlayerData(Player player)
 		{
 			if (players.ContainsKey(player.name))
 			{
@@ -115,12 +114,12 @@ namespace Spark
 				{ "hw_id", Logger.MacAddr },
 				{ "version", GetType().Assembly.GetName().Version.ToString() },
 				{ "ip", firstFrame.sessionip },
-				{ "blue_team_name", teams[TeamColor.blue].teamName },
-				{ "orange_team_name", teams[TeamColor.orange].teamName },
+				{ "blue_team_name", teams[Team.TeamColor.blue].teamName },
+				{ "orange_team_name", teams[Team.TeamColor.orange].teamName },
 				{ "game_clock_start", firstFrame.game_clock },
-				{ "blue_team_score", teams[TeamColor.blue].points },
-				{ "orange_team_score", teams[TeamColor.orange].points },
-				{ "winning_team", teams[TeamColor.blue].points > teams[TeamColor.orange].points ? TeamColor.blue.ToString() : TeamColor.orange.ToString() },
+				{ "blue_team_score", teams[Team.TeamColor.blue].points },
+				{ "orange_team_score", teams[Team.TeamColor.orange].points },
+				{ "winning_team", teams[Team.TeamColor.blue].points > teams[Team.TeamColor.orange].points ? Team.TeamColor.blue.ToString() : Team.TeamColor.orange.ToString() },
 				{ "game_clock_end", endTime },	// TODO change value when reset or overtime
 				{ "overtime_count", overtimeCount },
 				{ "finish_reason", finishReason.ToString() },

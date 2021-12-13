@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.3.28</Version>
+    <Version>2.3.29</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -52,6 +52,9 @@
     <EmbeddedResource Include="wwwroot\branding\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\event_banners.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\css\main_banner.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -59,6 +62,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\css\minimap.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\css\player_lists.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot\fonts\Inconsolata.ttf">
@@ -378,6 +384,15 @@
 
   <ItemGroup>
     <Folder Include="SettingsBindings" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ButterReplays, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Butter-Replays\Butter\bin\Debug\net6.0\ButterReplays.dll</HintPath>
+    </Reference>
+    <Reference Include="EchoVRAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\EchoVRAPI\bin\Debug\net5.0\EchoVRAPI.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

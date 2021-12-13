@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using EchoVRAPI;
 using Spark.Properties;
 
 namespace Spark
@@ -26,14 +27,14 @@ namespace Spark
 			};
 		}
 
-		private static void SaveClip(bool setting, string player_name, g_Instance frame, string clip_name)
+		private static void SaveClip(bool setting, string player_name, Frame frame, string clip_name)
 		{
 			if (!setting) return;
 			if (!IsPlayerScopeEnabled(player_name, frame)) return;
 			Task.Delay((int) (SparkSettings.instance.replayClipSecondsAfter * 1000)).ContinueWith(_ => Program.SaveReplayClip(clip_name));
 		}
 
-		private static bool IsPlayerScopeEnabled(string player_name, g_Instance frame)
+		private static bool IsPlayerScopeEnabled(string player_name, Frame frame)
 		{
 			try
 			{

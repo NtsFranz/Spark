@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EchoVRAPI;
 
 namespace Spark
 {
@@ -13,7 +14,7 @@ namespace Spark
 		public MilkFileHeader fileHeader;
 		public List<MilkFrame> frames;
 
-		public Milk(g_Instance frame)
+		public Milk(Frame frame)
 		{
 			AddFrame(frame);
 		}
@@ -36,14 +37,14 @@ namespace Spark
 		/// </summary>
 		public class MilkFileHeader
 		{
-			public g_Instance frame;
+			public Frame frame;
 			public List<string> players;
 			public List<int> numbers;
 			public List<int> levels;
-			public List<long> userids;
+			public List<ulong> userids;
 			public byte headerByte;
 
-			public MilkFileHeader(g_Instance frame)
+			public MilkFileHeader(Frame frame)
 			{
 				this.frame = frame;
 
@@ -67,7 +68,7 @@ namespace Spark
 				players = new List<string>();
 				numbers = new List<int>();
 				levels = new List<int>();
-				userids = new List<long>();
+				userids = new List<ulong>();
 
 				foreach (var team in frame.teams)
 				{
@@ -81,7 +82,7 @@ namespace Spark
 				}
 			}
 
-			public void ConsiderNewFrame(g_Instance frame)
+			public void ConsiderNewFrame(Frame frame)
 			{
 				foreach (var team in frame.teams)
 				{
@@ -125,7 +126,7 @@ namespace Spark
 			public List<byte> data;
 		}
 
-		private static byte[] BuildFrameHeader(g_Instance frame)
+		private static byte[] BuildFrameHeader(Frame frame)
 		{
 			List<byte> bytes = new List<byte> { 254, 253 };
 			bytes.AddRange(BitConverter.GetBytes(frame.blue_points));
@@ -134,7 +135,7 @@ namespace Spark
 
 			// add last score
 			bytes.AddRange(BitConverter.GetBytes(frame.last_score.disc_speed));
-			bytes.Add((byte)Enum.Parse(typeof(g_Team.TeamColor), frame.last_score.team));
+			bytes.Add((byte)Enum.Parse(typeof(Team.TeamColor), frame.last_score.team));
 			bytes.AddRange(Encoding.ASCII.GetBytes(frame.last_score.goal_type));
 			bytes.Add(0);
 			bytes.AddRange(BitConverter.GetBytes(frame.last_score.point_amount));
@@ -179,7 +180,7 @@ namespace Spark
 			return bytes.ToArray();
 		}
 
-		private static byte[] BuildChunk(g_Instance frame)
+		private static byte[] BuildChunk(Frame frame)
 		{
 			List<byte> bytes = new List<byte> { 253, 254 };
 			List<bool> bools = new List<bool>();
@@ -257,7 +258,7 @@ namespace Spark
 			return bytes.ToArray();
 		}
 
-		public void AddFrame(g_Instance frame)
+		public void AddFrame(Frame frame)
 		{
 			// if there is no data yet, add this frame to the file header
 			if (fileHeader == null)
@@ -328,7 +329,7 @@ namespace Spark
 			return bytes.ToArray();
 		}
 
-		public static byte[] GetBytes(this IEnumerable<long> values)
+		public static byte[] GetBytes(this IEnumerable<ulong> values)
 		{
 			List<byte> bytes = new List<byte>();
 			foreach (var val in values)

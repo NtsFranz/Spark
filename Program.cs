@@ -20,11 +20,11 @@ using System.Windows;
 using Spark.Properties;
 using Microsoft.Win32;
 using Newtonsoft.Json;
-using static Spark.g_Team;
 using static Logger;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
+using EchoVRAPI;
 using NetMQ.Sockets;
 using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
@@ -93,13 +93,13 @@ namespace Spark
 		/// Contains the last state so that we can do a diff to determine state changes
 		/// This acts like a set of flags.
 		/// </summary>
-		public static g_Instance lastFrame;
+		public static Frame lastFrame;
 
-		public static g_Instance lastLastFrame;
-		public static g_Instance lastLastLastFrame;
+		public static Frame lastLastFrame;
+		public static Frame lastLastLastFrame;
 
 		private static int lastFrameSumOfStats;
-		private static g_Instance lastValidStatsFrame;
+		private static Frame lastValidStatsFrame;
 		private static int lastValidSumOfStatsAge = 0;
 
 		public static ConcurrentQueue<GoalData> lastGoals = new ConcurrentQueue<GoalData>();
@@ -114,7 +114,7 @@ namespace Spark
 		private class UserAtTime
 		{
 			public float gameClock;
-			public g_Player player;
+			public Player player;
 		}
 
 		// { [stunner, stunnee], [stunner, stunnee] }
@@ -125,7 +125,7 @@ namespace Spark
 		public static string lastJSON;
 		public static ConcurrentQueue<string> lastJSONQueue = new ConcurrentQueue<string>();
 		public static ConcurrentQueue<string> lastDateTimeStringQueue = new ConcurrentQueue<string>();
-		public static ConcurrentStack<g_Instance> milkFramesToSave = new ConcurrentStack<g_Instance>();
+		public static ConcurrentStack<Frame> milkFramesToSave = new ConcurrentStack<Frame>();
 		public static ConcurrentQueue<string> replayBufferJSON = new ConcurrentQueue<string>();
 		public static ConcurrentQueue<DateTime> replayBufferTimestamps = new ConcurrentQueue<DateTime>();
 		public static Milk milkData;
@@ -197,6 +197,7 @@ namespace Spark
 		private static Thread liveReplayThread;
 		public static Thread atlasHostingThread;
 		private static Thread milkThread;
+		private static Thread butterThread;
 		private static Thread IPSearchthread1;
 		private static Thread IPSearchthread2;
 		public static PublisherSocket pubSocket;
@@ -209,65 +210,65 @@ namespace Spark
 
 
 		#region Event Callbacks
-		public static Action<g_Instance> JoinedGame;
-		public static Action<g_Instance> LeftGame;
+		public static Action<Frame> JoinedGame;
+		public static Action<Frame> LeftGame;
 
-		public static Action<g_Instance> JoinedLobby;
-		public static Action<g_Instance> LeftLobby;
+		public static Action<Frame> JoinedLobby;
+		public static Action<Frame> LeftLobby;
 
-		public static Action<g_Instance, g_Team, g_Player> PlayerJoined;
-		public static Action<g_Instance, g_Team, g_Player> PlayerLeft;
+		public static Action<Frame, Team, Player> PlayerJoined;
+		public static Action<Frame, Team, Player> PlayerLeft;
 		/// <summary>
 		/// frame, fromteam, toteam, player
 		/// </summary>
-		public static Action<g_Instance, g_Team, g_Team, g_Player> PlayerSwitchedTeams;
-		public static Action<g_Instance> MatchReset;
-		public static Action<g_Instance> PauseRequest;
-		public static Action<g_Instance> GamePaused;
-		public static Action<g_Instance> GameUnpaused;
-		public static Action<g_Instance> LocalThrow;
+		public static Action<Frame, Team, Team, Player> PlayerSwitchedTeams;
+		public static Action<Frame> MatchReset;
+		public static Action<Frame> PauseRequest;
+		public static Action<Frame> GamePaused;
+		public static Action<Frame> GameUnpaused;
+		public static Action<Frame> LocalThrow;
 		/// <summary>
 		/// frame, team, player, speed, howlongago
 		/// </summary>
-		public static Action<g_Instance, g_Team, g_Player, float, float> BigBoost;
+		public static Action<Frame, Team, Player, float, float> BigBoost;
 		/// <summary>
 		/// frame, team, player, playspacelocation (compare to head.Pos)
 		/// </summary>
-		public static Action<g_Instance, g_Team, g_Player, Vector3> PlayspaceAbuse;
-		public static Action<g_Instance, g_Team, g_Player> Save;
-		public static Action<g_Instance, g_Team, g_Player> Steal;
+		public static Action<Frame, Team, Player, Vector3> PlayspaceAbuse;
+		public static Action<Frame, Team, Player> Save;
+		public static Action<Frame, Team, Player> Steal;
 		/// <summary>
 		/// frame, stunner_team, stunner_player, stunee_player
 		/// </summary>
-		public static Action<g_Instance, g_Team, g_Player, g_Player> Stun;
+		public static Action<Frame, Team, Player, Player> Stun;
 		/// <summary>
 		/// Catch by other team from throw within 7 seconds
 		/// frame, team, throwplayer, catchplayer
 		/// </summary>
-		public static Action<g_Instance, g_Team, g_Player, g_Player> Interception;
+		public static Action<Frame, Team, Player, Player> Interception;
 		/// <summary>
 		/// Catch by same team as throw within 7 seconds
 		/// frame, team, throwplayer, catchplayer
 		/// </summary>
-		public static Action<g_Instance, g_Team, g_Player, g_Player> Pass;
+		public static Action<Frame, Team, Player, Player> Pass;
 		/// <summary>
 		/// Any catch, including interceptions and passes
 		/// frame, team, player
 		/// </summary>
-		public static Action<g_Instance, g_Team, g_Player> Catch;
+		public static Action<Frame, Team, Player> Catch;
 		/// <summary>
 		/// frame, team, player, lefthanded, underhandedness
 		/// </summary>
-		public static Action<g_Instance, g_Team, g_Player, bool, float> Throw;
-		public static Action<g_Instance, g_Team, g_Player> ShotTaken;
-		public static Action<g_Instance, TeamColor> RestartRequest;
+		public static Action<Frame, Team, Player, bool, float> Throw;
+		public static Action<Frame, Team, Player> ShotTaken;
+		public static Action<Frame, Team.TeamColor> RestartRequest;
 		/// <summary>
 		/// frame, team, player, neutral joust?, time, maxSpeed, tubeExitSpeed
 		/// </summary>
-		public static Action<g_Instance, g_Team, g_Player, bool, float, float, float> Joust;
-		public static Action<g_Instance, GoalData> Goal;
-		public static Action<g_Instance, GoalData> Assist;
-		public static Action<g_Instance, g_Team, g_Player> LargePing;
+		public static Action<Frame, Team, Player, bool, float, float, float> Joust;
+		public static Action<Frame, GoalData> Goal;
+		public static Action<Frame, GoalData> Assist;
+		public static Action<Frame, Team, Player> LargePing;
 
 		#endregion
 
@@ -531,6 +532,11 @@ namespace Spark
 				milkThread = new Thread(MilkThread);
 				milkThread.IsBackground = true;
 				//milkThread.Start();
+				
+
+				butterThread = new Thread(ButterThread);
+				butterThread.IsBackground = true;
+				butterThread.Start();
 
 				Thread setLoadingTips = new Thread(() =>
 				{
@@ -865,7 +871,7 @@ namespace Spark
 
 
 						// Convert session contents into game_instance class.
-						g_Instance game_Instance = JsonConvert.DeserializeObject<g_Instance>(json);
+						Frame game_Instance = JsonConvert.DeserializeObject<Frame>(json);
 
 						// add the recorded time
 						if (recordedTime != string.Empty)
@@ -880,13 +886,13 @@ namespace Spark
 						}
 
 						// prepare the raw api conversion for use
-						game_Instance.teams[0].color = TeamColor.blue;
-						game_Instance.teams[1].color = TeamColor.orange;
-						game_Instance.teams[2].color = TeamColor.spectator;
+						game_Instance.teams[0].color = Team.TeamColor.blue;
+						game_Instance.teams[1].color = Team.TeamColor.orange;
+						game_Instance.teams[2].color = Team.TeamColor.spectator;
 
-						game_Instance.teams[0].players ??= new List<g_Player>();
-						game_Instance.teams[1].players ??= new List<g_Player>();
-						game_Instance.teams[2].players ??= new List<g_Player>();
+						game_Instance.teams[0].players ??= new List<Player>();
+						game_Instance.teams[1].players ??= new List<Player>();
+						game_Instance.teams[2].players ??= new List<Player>();
 
 						// for the very first frame, duplicate it to the "previous" frame
 						if (lastFrame == null)
@@ -967,7 +973,7 @@ namespace Spark
 			// Session pull loop.
 			while (running)
 			{
-				if (milkFramesToSave.TryPop(out g_Instance frame))
+				if (milkFramesToSave.TryPop(out Frame frame))
 				{
 					if (milkData == null)
 					{
@@ -987,6 +993,40 @@ namespace Spark
 					frameCount = 0;
 					string filePath = Path.Combine(SparkSettings.instance.saveFolder, fileName + ".milk");
 					File.WriteAllBytes(filePath, milkData.GetBytes());
+				}
+
+				Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
+			}
+		}
+		
+		
+		private static void ButterThread()
+		{
+			Thread.Sleep(2000);
+			int frameCount = 0;
+			// Session pull loop.
+			while (running)
+			{
+				if (butterFramesToSave.TryPop(out Frame frame))
+				{
+					if (butterData == null)
+					{
+						butterData = new Milk(frame);
+					}
+					else
+					{
+						butterData.AddFrame(frame);
+					}
+
+					frameCount++;
+				}
+
+				// only save every once in a while
+				if (frameCount > 200)
+				{
+					frameCount = 0;
+					string filePath = Path.Combine(SparkSettings.instance.saveFolder, fileName + ".butter");
+					File.WriteAllBytes(filePath, butterData.GetBytes());
 				}
 
 				Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
@@ -1029,7 +1069,7 @@ namespace Spark
 								bool log = false;
 								if (SparkSettings.instance.onlyRecordPrivateMatches)
 								{
-									g_InstanceSimple obj = JsonConvert.DeserializeObject<g_InstanceSimple>(json);
+									SimpleFrame obj = JsonConvert.DeserializeObject<SimpleFrame>(json);
 									if (obj.private_match)
 									{
 										log = true;
@@ -1238,7 +1278,8 @@ namespace Spark
 
 		public static void KillEchoVR(string findInArgs = null)
 		{
-			LogRow(LogType.File, "Killing EchoVR...");
+			LogRow(LogType.File, Program.lastFrame.sessionid, "Killing EchoVR...");
+			LogRow(LogType.Error, "Killing EchoVR...");
 			Process[] process = Process.GetProcessesByName("echovr");
 			foreach (Process p in process)
 			{
@@ -1537,7 +1578,7 @@ namespace Spark
 		/// <summary>
 		/// Goes through a "frame" (single JSON object) and generates the relevant events
 		/// </summary>
-		private static void ProcessFrame(g_Instance frame)
+		private static void ProcessFrame(Frame frame)
 		{
 
 			// 'mpl_lobby_b2' may change in the future
@@ -1639,10 +1680,10 @@ namespace Spark
 
 			// is a player from the current frame not in the last frame? (Player Join 🤝)
 			// Loop through teams.
-			foreach (g_Team team in frame.teams)
+			foreach (Team team in frame.teams)
 			{
 				// Loop through players on team.
-				foreach (g_Player player in team.players)
+				foreach (Player player in team.players)
 				{
 					player.team = team;
 
@@ -1656,7 +1697,7 @@ namespace Spark
 							frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
 						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Player Joined: {player.name}");
 
-						if (team.color != TeamColor.spectator)
+						if (team.color != Team.TeamColor.spectator)
 						{
 							// cache this players stats so they aren't overridden if they join again
 							MatchPlayer playerData = matchData.GetPlayerData(player);
@@ -1688,10 +1729,10 @@ namespace Spark
 
 			// Is a player from the last frame not in the current frame? (Player Leave 🚪)
 			// Loop through teams.
-			foreach (g_Team team in lastFrame.teams)
+			foreach (Team team in lastFrame.teams)
 			{
 				// Loop through players on team.
-				foreach (g_Player player in team.players)
+				foreach (Player player in team.players)
 				{
 					if (frame.GetAllPlayers(true).Any(p => p.userid == player.userid)) continue;
 
@@ -1723,12 +1764,12 @@ namespace Spark
 
 			// Did a player switch teams? (Player Switch 🔁)
 			// Loop through current frame teams.
-			foreach (g_Team team in frame.teams)
+			foreach (Team team in frame.teams)
 			{
 				// Loop through players on team.
-				foreach (g_Player player in team.players)
+				foreach (Player player in team.players)
 				{
-					TeamColor lastTeamColor = lastFrame.GetTeamColor(player.userid);
+					Team.TeamColor lastTeamColor = lastFrame.GetTeamColor(player.userid);
 					if (lastTeamColor == team.color) continue;
 
 					matchData.Events.Add(new EventData(
@@ -1746,7 +1787,7 @@ namespace Spark
 
 					UpdateStatsIngame(frame);
 
-					g_Team lastTeam = lastFrame.GetTeam(player.userid);
+					Team lastTeam = lastFrame.GetTeam(player.userid);
 					try
 					{
 						PlayerSwitchedTeams?.Invoke(frame, lastTeam, team, player);
@@ -1799,7 +1840,7 @@ namespace Spark
 							matchData,
 							EventData.EventType.pause_request,
 							frame.game_clock,
-							frame.teams[frame.pause.paused_requested_team == "blue" ? (int) TeamColor.blue : (int) TeamColor.orange],
+							frame.teams[frame.pause.paused_requested_team == "blue" ? (int) Team.TeamColor.blue : (int) Team.TeamColor.orange],
 							null,
 							null,
 							Vector3.Zero,
@@ -1874,9 +1915,9 @@ namespace Spark
 				}
 
 				// Generate "playing" events
-				foreach (g_Team team in frame.teams)
+				foreach (Team team in frame.teams)
 				{
-					foreach (g_Player player in team.players)
+					foreach (Player player in team.players)
 					{
 						var lastPlayer = lastFrame.GetPlayer(player.userid);
 						if (lastPlayer == null) continue;
@@ -1980,7 +2021,7 @@ namespace Spark
 							}
 							playerData.playspaceLocation += offset;
 
-							if (team.color != TeamColor.spectator && Math.Abs(smoothDeltaTime) < .1f &&
+							if (team.color != Team.TeamColor.spectator && Math.Abs(smoothDeltaTime) < .1f &&
 								Math.Abs(deltaTime) < .1f &&
 								Vector3.Distance(player.head.Position, playerData.playspaceLocation) > 1.7f &&
 								DateTime.Now - playerData.lastAbuse > TimeSpan.FromSeconds(3) &&    // create a 3 second buffer between detections
@@ -2112,8 +2153,8 @@ namespace Spark
 									{
 										stunningMatchedPairs.Remove(stunEvent);
 
-										g_Player stunner = player;
-										g_Player stunnee = stunEvent[1].player;
+										Player stunner = player;
+										Player stunnee = stunEvent[1].player;
 
 										matchData.Events.Add(new EventData(matchData, EventData.EventType.stun,
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
@@ -2169,8 +2210,8 @@ namespace Spark
 									{
 										stunningMatchedPairs.Remove(stunEvent);
 
-										g_Player stunner = stunEvent[0].player;
-										g_Player stunnee = player;
+										Player stunner = stunEvent[0].player;
+										Player stunnee = player;
 
 										matchData.Events.Add(new EventData(matchData, EventData.EventType.stun,
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
@@ -2208,17 +2249,17 @@ namespace Spark
 								team, player, null, player.head.Position, Vector3.Zero));
 							playerData.Catches++;
 							bool caughtThrow = false;
-							g_Team throwTeam = null;
-							g_Player throwPlayer = null;
+							Team throwTeam = null;
+							Player throwPlayer = null;
 							bool wasTurnoverCatch = false;
 
 							if (lastThrowPlayerId > 0)
 							{
-								g_Instance lframe = lastFrame;
+								Frame lframe = lastFrame;
 
-								foreach (g_Team lteam in lframe.teams)
+								foreach (Team lteam in lframe.teams)
 								{
-									foreach (g_Player lplayer in lteam.players)
+									foreach (Player lplayer in lteam.players)
 									{
 										if (lplayer.playerid == lastThrowPlayerId && lplayer.possession)
 										{
@@ -2393,7 +2434,7 @@ namespace Spark
 					{
 						try
 						{
-							RestartRequest?.Invoke(frame, TeamColor.blue);
+							RestartRequest?.Invoke(frame, Team.TeamColor.blue);
 						}
 						catch (Exception exp)
 						{
@@ -2401,7 +2442,7 @@ namespace Spark
 						}
 
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
-							lastFrame.game_clock, frame.teams[(int)TeamColor.blue], null, null, Vector3.Zero,
+							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.blue], null, null, Vector3.Zero,
 							Vector3.Zero));
 						LogRow(LogType.File, frame.sessionid,
 							frame.game_clock_display + " - " + "blue team restart request");
@@ -2412,7 +2453,7 @@ namespace Spark
 					{
 						try
 						{
-							RestartRequest?.Invoke(frame, TeamColor.orange);
+							RestartRequest?.Invoke(frame, Team.TeamColor.orange);
 						}
 						catch (Exception exp)
 						{
@@ -2420,7 +2461,7 @@ namespace Spark
 						}
 
 						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
-							lastFrame.game_clock, frame.teams[(int)TeamColor.orange], null, null, Vector3.Zero,
+							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.orange], null, null, Vector3.Zero,
 							Vector3.Zero));
 						LogRow(LogType.File, frame.sessionid,
 							frame.game_clock_display + " - " + "orange team restart request");
@@ -2434,7 +2475,7 @@ namespace Spark
 		}
 
 
-		public static void FindTeamNamesFromPlayerList(MatchData matchDataLocal, g_Team team)
+		public static void FindTeamNamesFromPlayerList(MatchData matchDataLocal, Team team)
 		{
 			//if (frame.private_match)
 			{
@@ -2478,7 +2519,7 @@ namespace Spark
 
 
 		// 💨
-		private static async Task JoustDetection(g_Instance firstFrame, EventData.EventType eventType, TeamColor side)
+		private static async Task JoustDetection(Frame firstFrame, EventData.EventType eventType, Team.TeamColor side)
 		{
 			float startGameClock = firstFrame.game_clock;
 			float maxTubeExitSpeed = 0;
@@ -2489,12 +2530,12 @@ namespace Spark
 			float maxJoustTimeTimeout = 10000; // time before giving up calculating joust time - ms
 			for (int i = 0; i < maxJoustTimeTimeout / interval; i++)
 			{
-				g_Instance frame = lastFrame;
+				Frame frame = lastFrame;
 
 				if (i > 0 && frame.game_status != "playing") return;
 
-				g_Team team = frame.teams[(int)side];
-				foreach (g_Player player in team.players)
+				Team team = frame.teams[(int)side];
+				foreach (Player player in team.players)
 				{
 					float speed = player.velocity.ToVector3().Length();
 					// if the player exited the tube for the first time
@@ -2570,17 +2611,17 @@ namespace Spark
 		}
 
 
-		private static async Task DelayedCatchEvent(g_Instance originalFrame, g_Team originalTeam, g_Player originalPlayer, g_Player throwPlayer)
+		private static async Task DelayedCatchEvent(Frame originalFrame, Team originalTeam, Player originalPlayer, Player throwPlayer)
 		{
 			// TODO look through again
 			// wait some time before checking if a save happened (then it wouldn't be an interception)
 			await Task.Delay(2000);
 
-			g_Instance frame = lastFrame;
+			Frame frame = lastFrame;
 
-			foreach (g_Team team in frame.teams)
+			foreach (Team team in frame.teams)
 			{
-				foreach (g_Player player in team.players)
+				foreach (Player player in team.players)
 				{
 					if (player.playerid != originalPlayer.playerid) continue;
 					if (player.stats.saves != originalPlayer.stats.saves) continue;
@@ -2608,12 +2649,12 @@ namespace Spark
 			}
 		}
 
-		private static async Task DelayedThrowEvent(g_Player originalPlayer, bool leftHanded, float underhandedness, float origSpeed)
+		private static async Task DelayedThrowEvent(Player originalPlayer, bool leftHanded, float underhandedness, float origSpeed)
 		{
 			// wait some time before re-checking the throw velocity
 			await Task.Delay(150);
 
-			g_Instance frame = lastFrame;
+			Frame frame = lastFrame;
 
 			foreach (var team in frame.teams)
 			{
@@ -2668,7 +2709,7 @@ namespace Spark
 		/// </summary>
 		/// <param name="frame"></param>
 		/// <param name="deltaTime"></param>
-		private static void ProcessGameStateChange(g_Instance frame, float deltaTime)
+		private static void ProcessGameStateChange(Frame frame, float deltaTime)
 		{
 			LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - Entered state: " + frame.game_status);
 
@@ -2678,7 +2719,7 @@ namespace Spark
 					// if we just came from a playing state, this was a reset - requires a high enough polling rate
 					if (lastFrame.game_status == "playing" || lastFrame.game_status == "round_start")
 					{
-						g_Instance frameToUse = lastLastFrame;
+						Frame frameToUse = lastLastFrame;
 						if (lastValidSumOfStatsAge < 30)
 						{
 							frameToUse = lastValidStatsFrame;
@@ -2714,7 +2755,7 @@ namespace Spark
 
 						foreach (MatchPlayer player in matchData.players.Values)
 						{
-							g_Player p = new g_Player
+							Player p = new Player
 							{
 								userid = player.Id,
 								name = player.Name
@@ -2779,21 +2820,21 @@ namespace Spark
 						// if the disc is in the center of the arena, neutral joust
 						if (Math.Abs(zDiscPos) < .1f)
 						{
-							_ = JoustDetection(frame, EventData.EventType.joust_speed, TeamColor.blue);
-							_ = JoustDetection(frame, EventData.EventType.joust_speed, TeamColor.orange);
+							_ = JoustDetection(frame, EventData.EventType.joust_speed, Team.TeamColor.blue);
+							_ = JoustDetection(frame, EventData.EventType.joust_speed, Team.TeamColor.orange);
 						}
 
 						// if the disc is on the orange nest
 						else if (Math.Abs(zDiscPos + 27.5f) < 1)
 						{
-							_ = JoustDetection(frame, EventData.EventType.defensive_joust, TeamColor.orange);
+							_ = JoustDetection(frame, EventData.EventType.defensive_joust, Team.TeamColor.orange);
 						}
 
 
 						// if the disc is on the blue nest
 						else if (Math.Abs(zDiscPos - 27.5f) < 1)
 						{
-							_ = JoustDetection(frame, EventData.EventType.defensive_joust, TeamColor.blue);
+							_ = JoustDetection(frame, EventData.EventType.defensive_joust, Team.TeamColor.blue);
 						}
 					}
 
@@ -2878,14 +2919,14 @@ namespace Spark
 			}
 		}
 
-		private static bool WasStealNearGoal(Vector3 disckPos, TeamColor playerTeamColor, g_Instance frame)
+		private static bool WasStealNearGoal(Vector3 disckPos, Team.TeamColor playerTeamColor, Frame frame)
 		{
 			float stealSaveRadius = 2.2f;
 
 			float goalXPos = 0f;
 			float goalYPos = 0f;
 			float goalZPos = 36f;
-			if (playerTeamColor == TeamColor.blue)
+			if (playerTeamColor == Team.TeamColor.blue)
 			{
 				goalZPos *= -1f;
 			}
@@ -2914,9 +2955,9 @@ namespace Spark
 		/// </summary>
 		private static async Task ProcessScore(MatchData matchData)
 		{
-			g_Instance initialFrame = lastLastFrame;
-			TeamColor clientTeam = lastFrame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == lastFrame.client_name)).color;
-			bool shouldPlayHorn = clientTeam == TeamColor.spectator || clientTeam.ToString() == lastFrame.last_score.team;
+			Frame initialFrame = lastLastFrame;
+			Team.TeamColor clientTeam = lastFrame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == lastFrame.client_name)).color;
+			bool shouldPlayHorn = clientTeam == Team.TeamColor.spectator || clientTeam.ToString() == lastFrame.last_score.team;
 
 			MatchEventZMQMessage msg = new MatchEventZMQMessage("GoalScored", "isClientTeam", shouldPlayHorn.ToString());
 			pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
@@ -2924,7 +2965,7 @@ namespace Spark
 			// wait some time before re-checking the throw velocity
 			await Task.Delay(100);
 
-			g_Instance frame = lastFrame;
+			Frame frame = lastFrame;
 
 			Vector3 discVel = initialFrame.disc.velocity.ToVector3();
 			Vector3 discPos = initialFrame.disc.position.ToVector3();
@@ -2970,7 +3011,7 @@ namespace Spark
 			LogRow(LogType.File, frame.sessionid,
 				frame.game_clock_display + " - ORANGE: " + frame.orange_points + "  BLUE: " + frame.blue_points);
 
-			g_Player scorer = frame.GetPlayer(frame.last_score.person_scored);
+			Player scorer = frame.GetPlayer(frame.last_score.person_scored);
 			MatchPlayer scorerPlayerData = matchData.GetPlayerData(scorer);
 			if (scorer != null)
 			{
@@ -3010,7 +3051,7 @@ namespace Spark
 				goalPos,
 				angleIntoGoal,
 				backboard,
-				discPos.Z < 0 ? TeamColor.blue : TeamColor.orange,
+				discPos.Z < 0 ? Team.TeamColor.blue : Team.TeamColor.orange,
 				leftHanded,
 				underhandedness,
 				matchData.currentDiskTrajectory
@@ -3057,7 +3098,7 @@ namespace Spark
 		/// <param name="endOfMatch"></param>
 		/// <param name="allowUpload"></param>
 		/// <param name="manual"></param>
-		public static void UpdateStatsIngame(g_Instance frame, bool endOfMatch = false, bool allowUpload = true, bool manual = false)
+		public static void UpdateStatsIngame(Frame frame, bool endOfMatch = false, bool allowUpload = true, bool manual = false)
 		{
 			if (inPostMatch || matchData == null)
 			{
@@ -3065,18 +3106,18 @@ namespace Spark
 			}
 
 			// team names may have changed
-			matchData.teams[TeamColor.blue].teamName = frame.teams[0].team;
-			matchData.teams[TeamColor.orange].teamName = frame.teams[1].team;
-			matchData.teams[TeamColor.spectator].teamName = frame.teams[2].team;
+			matchData.teams[Team.TeamColor.blue].teamName = frame.teams[0].team;
+			matchData.teams[Team.TeamColor.orange].teamName = frame.teams[1].team;
+			matchData.teams[Team.TeamColor.spectator].teamName = frame.teams[2].team;
 
 			if (frame.teams[0].stats != null)
 			{
-				matchData.teams[TeamColor.blue].points = frame.blue_points;
+				matchData.teams[Team.TeamColor.blue].points = frame.blue_points;
 			}
 
 			if (frame.teams[1].stats != null)
 			{
-				matchData.teams[TeamColor.orange].points = frame.orange_points;
+				matchData.teams[Team.TeamColor.orange].points = frame.orange_points;
 			}
 
 			UpdateAllPlayers(frame);
@@ -3099,7 +3140,7 @@ namespace Spark
 		/// <param name="frame"></param>
 		/// <param name="reason"></param>
 		/// <param name="endTime"></param>
-		private static void EventMatchFinished(g_Instance frame, MatchData.FinishReason reason, float endTime = 0)
+		private static void EventMatchFinished(Frame frame, MatchData.FinishReason reason, float endTime = 0)
 		{
 			matchData.endTime = endTime;
 			matchData.finishReason = reason;
@@ -3353,7 +3394,7 @@ namespace Spark
 		}
 
 		// Update existing player with stats from game.
-		private static void UpdateSinglePlayer(g_Instance frame, g_Team team, g_Player player, int won)
+		private static void UpdateSinglePlayer(Frame frame, Team team, Player player, int won)
 		{
 			if (!matchData.teams.ContainsKey(team.color))
 			{
@@ -3398,15 +3439,15 @@ namespace Spark
 			}
 		}
 
-		static void UpdateAllPlayers(g_Instance frame)
+		static void UpdateAllPlayers(Frame frame)
 		{
 			// Loop through teams.
-			foreach (g_Team team in frame.teams)
+			foreach (Team team in frame.teams)
 			{
 				// Loop through players on team.
-				foreach (g_Player player in team.players)
+				foreach (Player player in team.players)
 				{
-					TeamColor winningTeam = frame.blue_points > frame.orange_points ? TeamColor.blue : TeamColor.orange;
+					Team.TeamColor winningTeam = frame.blue_points > frame.orange_points ? Team.TeamColor.blue : Team.TeamColor.orange;
 					int won = team.color == winningTeam ? 1 : 0;
 
 					UpdateSinglePlayer(frame, team, player, won);
@@ -4050,7 +4091,7 @@ namespace Spark
 			{
 				if (spectateMe)
 				{
-					// g_Team clientPlayerTeam = lastFrame?.GetTeam(lastFrame.client_name);
+					// Team clientPlayerTeam = lastFrame?.GetTeam(lastFrame.client_name);
 					// if (clientPlayerTeam == null) return;
 					// if (clientPlayerTeam.color == TeamColor.spectator) return;
 
@@ -4084,7 +4125,7 @@ namespace Spark
 							return;
 						}
 
-						g_Instance frame = JsonConvert.DeserializeObject<g_Instance>(result);
+						Frame frame = JsonConvert.DeserializeObject<Frame>(result);
 						if (frame == null)
 						{
 							new MessageBox("Failed to process frame from the local PC").Show();
@@ -4433,4 +4474,21 @@ namespace Spark
 			return v1 / v1.Length();
 		}
 	}
+	
+	
+		
+	public static class TeamColorExtensions
+	{
+		public static string ToLocalizedString(this Team.TeamColor color)
+		{
+			return color switch
+			{
+				Team.TeamColor.blue => Resources.blue,
+				Team.TeamColor.orange => Resources.orange,
+				Team.TeamColor.spectator => Resources.spectator,
+				_ => ""
+			};
+		}
+	}
+	
 }
