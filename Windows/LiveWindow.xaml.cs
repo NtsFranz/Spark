@@ -1301,8 +1301,15 @@ namespace Spark
 		private void CopyIgniteJoinLink(object sender, RoutedEventArgs e)
 		{
 			string link = sessionIdTextBox.Text;
-			Clipboard.SetText(link);
-			Task.Run(ShowCopiedText);
+			try
+			{
+				Clipboard.SetText(link);
+				Task.Run(ShowCopiedText);
+			}
+			catch (COMException ex)
+			{
+				LogRow(LogType.Error, "Failed to copy text.\n" + ex);
+			}
 		}
 
 		private async Task ShowCopiedText()

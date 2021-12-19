@@ -30,6 +30,7 @@ using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
 using Grapevine;
 using Newtonsoft.Json.Linq;
+//using ButterReplays;
 
 //using System.Windows.Forms;
 
@@ -123,17 +124,20 @@ namespace Spark
 
 		public static string lastDateTimeString;
 		public static string lastJSON;
+		public static ulong fetchFrameIndex = 0;
 		public static ConcurrentQueue<string> lastJSONQueue = new ConcurrentQueue<string>();
 		public static ConcurrentQueue<string> lastDateTimeStringQueue = new ConcurrentQueue<string>();
 		public static ConcurrentStack<Frame> milkFramesToSave = new ConcurrentStack<Frame>();
 		public static ConcurrentQueue<string> replayBufferJSON = new ConcurrentQueue<string>();
 		public static ConcurrentQueue<DateTime> replayBufferTimestamps = new ConcurrentQueue<DateTime>();
 		public static Milk milkData;
+		//private static ButterFile butter;
 
 		private static bool lastJSONUsed;
 
 		private static readonly object lastJSONLock = new object();
 		private static readonly object fileWritingLock = new object();
+		private static readonly object butterWritingLock = new object();
 
 		public static readonly object logOutputWriteLock = new object();
 
@@ -533,10 +537,10 @@ namespace Spark
 				milkThread.IsBackground = true;
 				//milkThread.Start();
 				
+				//butterThread = new Thread(ButterThread);
+				//butterThread.IsBackground = true;
+				//butterThread.Start();
 
-				butterThread = new Thread(ButterThread);
-				butterThread.IsBackground = true;
-				butterThread.Start();
 
 				Thread setLoadingTips = new Thread(() =>
 				{
@@ -784,6 +788,7 @@ namespace Spark
 						{
 							lastJSON = rawJson;
 							lastJSONUsed = false;
+							fetchFrameIndex++;
 							pubSocket.SendMoreFrame("RawFrame").SendFrame(lastJSON);
 						}
 					}
@@ -883,6 +888,9 @@ namespace Spark
 							}
 
 							game_Instance.recorded_time = dateTime;
+						} else
+						{
+							game_Instance.recorded_time = DateTime.UtcNow;
 						}
 
 						// prepare the raw api conversion for use
@@ -1000,38 +1008,42 @@ namespace Spark
 		}
 		
 		
-		private static void ButterThread()
-		{
-			Thread.Sleep(2000);
-			int frameCount = 0;
-			// Session pull loop.
-			while (running)
-			{
-				if (butterFramesToSave.TryPop(out Frame frame))
-				{
-					if (butterData == null)
-					{
-						butterData = new Milk(frame);
-					}
-					else
-					{
-						butterData.AddFrame(frame);
-					}
+		//private static void ButterThread()
+		//{
+		//	butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
 
-					frameCount++;
-				}
 
-				// only save every once in a while
-				if (frameCount > 200)
-				{
-					frameCount = 0;
-					string filePath = Path.Combine(SparkSettings.instance.saveFolder, fileName + ".butter");
-					File.WriteAllBytes(filePath, butterData.GetBytes());
-				}
+		//	int lastNumChunks = 0;
+		//	ulong lastFetchFrameIndex = 0;
+		//	while (running)
+		//	{
+		//		if (fetchFrameIndex > lastFetchFrameIndex)
+		//		{
+		//			butter.AddFrame(lastFrame);
+		//			if (lastNumChunks != butter.NumChunks())
+		//			{
+		//				WriteOutButterFile();
+		//			}
+		//			lastNumChunks = butter.NumChunks();
 
-				Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
-			}
-		}
+		//			lastFetchFrameIndex = fetchFrameIndex;
+		//		}
+
+		//		Thread.Sleep(5);
+		//	}
+		//}
+
+		//private static void WriteOutButterFile()
+		//{
+		//	lock (butterWritingLock)
+		//	{
+		//		byte[] butterBytes = butter?.GetBytes();
+		//		if (butterBytes != null && butterBytes.Length > 0)
+		//		{
+		//			File.WriteAllBytes(Path.Combine(SparkSettings.instance.saveFolder, fileName + ".butter"), butterBytes);
+		//		}
+		//	}
+		//}
 
 		/// <summary>
 		/// Thread for logging all JSON data
@@ -1082,7 +1094,7 @@ namespace Spark
 
 								if (log)
 								{
-									WriteToFile(DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff") + "\t" + json);
+									WriteToFile(DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.fff") + "\t" + json);
 								}
 							}
 
@@ -3481,6 +3493,12 @@ namespace Spark
 					}
 				}
 			}
+
+			//lock (butterWritingLock)
+			//{
+			//	WriteOutButterFile();
+			//	butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
+			//}
 
 			// reset the replay buffer
 			replayBufferTimestamps.Clear();

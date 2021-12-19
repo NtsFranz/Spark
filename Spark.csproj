@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.3.29</Version>
+    <Version>2.3.30</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -20,11 +20,11 @@
     <RootNamespace>Spark</RootNamespace>
     <AssemblyOriginatorKeyFile>IgniteBotKey.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
-    <LangVersion>10</LangVersion>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -257,12 +257,13 @@
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
     <PackageReference Include="NetMQ" Version="4.0.1.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="obs-websocket-dotnet" Version="4.9.0" />
+    <PackageReference Include="obs-websocket-dotnet" Version="4.9.1" />
     <PackageReference Include="OpenTK.Input" Version="4.6.7" />
     <PackageReference Include="SharpDX.DirectInput" Version="4.2.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="System.Management" Version="5.0.0" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+    <PackageReference Include="ZstdNet" Version="1.4.5" />
   </ItemGroup>
   
   <ItemGroup>
@@ -387,9 +388,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ButterReplays, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Butter-Replays\Butter\bin\Debug\net6.0\ButterReplays.dll</HintPath>
-    </Reference>
     <Reference Include="EchoVRAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\EchoVRAPI\bin\Debug\net5.0\EchoVRAPI.dll</HintPath>
     </Reference>

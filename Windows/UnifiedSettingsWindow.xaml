@@ -199,6 +199,8 @@
 						<GroupBox x:Name="fullLoggingBox" Header="{x:Static p:Resources.Replay_Logging}" Margin="4,4,4,4"
 									  IsEnabled="{Binding ElementName=enableFullLoggingCheckbox, Path=IsChecked}">
 							<StackPanel>
+								<!--<CheckBox Content="Save to .butter format" Margin="4,4,4,4" IsChecked="{l:SettingBinding saveButterFiles}" />-->
+								
 								<CheckBox x:Name="onlyRecordPrivateMatchesCheckBox" Width="588"
 											  Content="{x:Static p:Resources.Only_Record_Private_Matches}" Margin="4,4,4,4"
 											  IsChecked="{l:SettingBinding onlyRecordPrivateMatches}" />

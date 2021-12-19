@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿//using ButterReplays;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,6 +35,8 @@ namespace Spark
 		public int targetDeltaTimeIndexFull { get; set; } = 1;
 		public string saveFolder { get; set; } = "none";
 		public int whenToSplitReplays { get; set; } = 0;
+		//public ButterFile.CompressionFormat butterCompressionFormat { get; set; } = ButterFile.CompressionFormat.gzip;
+		public bool saveButterFiles { get; set; } = false;
 		public bool showConsoleOnStart { get; set; } = false;
 		public bool outputGameStateEvents { get; set; } = true;
 		public bool outputScoreEvents { get; set; } = true;
