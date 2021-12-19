@@ -89,6 +89,8 @@ namespace Spark
 		public bool chooseRegionSpectator { get; set; } = false;
 		public bool chooseRegionNoOVR { get; set; } = false;
 		public bool sparkLinkNoOVR { get; set; } = false;
+		public bool spectatorStreamCombat { get; set; } = false;
+		public bool spectatorStreamNoOVR { get; set; } = false;
 		public string sparkExeLocation { get; set; } = "";
 		public bool allowSpectateMeOnLocalPC { get; set; } = false;
 		public bool useAnonymousSpectateMe { get; set; } = true;

@@ -1,5 +1,4 @@
-﻿using Spark.Properties;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,8 +11,6 @@ using System.Windows.Input;
 using System.Text.RegularExpressions;
 using System.Windows.Navigation;
 using System.Windows.Data;
-using System.Windows.Markup;
-using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OBSWebsocketDotNet;

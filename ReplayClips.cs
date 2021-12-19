@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using EchoVRAPI;
-using Spark.Properties;
 
 namespace Spark
 {

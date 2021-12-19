@@ -28,7 +28,6 @@ using EchoVRAPI;
 using NetMQ.Sockets;
 using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
-using Grapevine;
 using Newtonsoft.Json.Linq;
 //using ButterReplays;
 
@@ -54,25 +53,6 @@ namespace Spark
 		/// Whether to continue reading input right now (for reading files)
 		/// </summary>
 		public static bool paused = false;
-
-		/// <summary>
-		/// whether to read slower when reading file 
-		/// </summary>
-		private const bool realtimeWhenReadingFile = false;
-
-		// Should only use queue when reading from file
-		private const bool readIntoQueue = true;
-		private static bool fileFinishedReading = false;
-
-
-		//private static string readFromFolder = "S:\\git_repo\\EchoVR-Session-Grabber\\bin\\Debug\\full_session_data\\example\\";
-		private const string readFromFolder = "F:\\Documents\\EchoDataStorage\\TitanV Machine";
-		private static List<string> filesInFolder;
-		private static int readFromFolderIndex;
-
-		public const bool uploadOnlyAtEndOfMatch = true;
-
-		public static bool writeToOBSHTMLFile = false;
 
 		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
 		// public const string APIURL = "http://127.0.0.1:5005/";
@@ -206,9 +186,6 @@ namespace Spark
 		private static Thread IPSearchthread2;
 		public static PublisherSocket pubSocket;
 		public static OBS obs;
-		public static IRestServer overlayServer;
-		private static OverlayServer2 overlayServer2;
-		private static OverlayServer3 overlayServer3;
 		private static OverlayServer4 overlayServer4;
 
 
@@ -434,52 +411,6 @@ namespace Spark
 
 				CameraController = new CameraController();
 				
-
-
-				//// web server grapevine
-				//try
-				//{
-				//	//overlayServer = new WebServer2(OverlayServer.HandleRequest, "http://*:6723/");
-				//	overlayServer = RestServerBuilder.From<OverlayServerConfiguration>().Build();
-				//	//if (!Personal)
-				//	{
-				//		overlayServer.Start();
-				//	}
-				//}
-				//catch (Exception e)
-				//{
-				//	Logger.Init();
-				//	Logger.LogRow(LogType.Error, e.ToString());
-				//}
-
-
-
-				//// web server genhttp
-				//try
-				//{
-				//	overlayServer2 = new OverlayServer2();
-				//}
-				//catch (Exception e)
-				//{
-				//	Logger.Init();
-				//	Logger.LogRow(LogType.Error, e.ToString());
-				//}
-
-				
-				
-				
-
-				//// web server httplistener
-				//try
-				//{
-				//	overlayServer3 = new OverlayServer3();
-				//}
-				//catch (Exception e)
-				//{
-				//	Logger.Init();
-				//	Logger.LogRow(LogType.Error, e.ToString());
-				//}
-
 				
 				// web server asp.net
 				try
@@ -612,9 +543,6 @@ namespace Spark
 				liveWindow.Close();
 				liveWindow = null;
 			}
-			overlayServer?.Stop();
-			overlayServer2?.Stop();
-			overlayServer3?.Stop();
 			overlayServer4?.Stop();
 		}
 
@@ -628,9 +556,6 @@ namespace Spark
 
 			running = false;
 
-			overlayServer?.Stop();
-			overlayServer2?.Stop();
-			overlayServer3?.Stop();
 			overlayServer4?.Stop();
 
 			while (atlasHostingThread != null && atlasHostingThread.IsAlive)
@@ -1323,7 +1248,7 @@ namespace Spark
 			Player,
 			Spectator
 		}
-		public static void StartEchoVR(JoinType joinType, int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null)
+		public static void StartEchoVR(JoinType joinType, int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null, bool combat=false)
 		{
 			if (joinType == JoinType.Choose)
 			{
@@ -1341,7 +1266,8 @@ namespace Spark
 					(noovr ? "-noovr " : "") +
 					(port != 6721 ? $"-httpport {port} " : "") +
 					(level == null ? "" : $"-level {level} ") +
-					(region == null ? "" : $"-region {region} ")
+					(region == null ? "" : $"-region {region} ") +
+					(combat ? "echo_combat " : "")
 					);
 			}
 			else

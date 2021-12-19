@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Spark.Properties;
 using System;
 using System.ComponentModel;
 using System.IO;

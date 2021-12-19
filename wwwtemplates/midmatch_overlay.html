@@ -206,7 +206,9 @@
 			}
 
 			// if the number of jousts has changed
-			if (lastStats != null && data["joust_events"].length > lastStats["joust_events"].length) {
+			if (lastStats != null &&
+				data["joust_events"] != null && lastStats["joust_events"] != null &&
+				data["joust_events"].length > lastStats["joust_events"].length) {
 				for (let i = lastStats["joust_events"].length; i < data["joust_events"].length; i++) {
 					let joust = data["joust_events"][i];
 					if (joust["other_player_name"] == "orange") {

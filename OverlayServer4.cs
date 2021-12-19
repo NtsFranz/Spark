@@ -57,7 +57,7 @@ namespace Spark
 				}
 
 				app.UseDefaultFiles();
-				app.UseStaticFiles();
+				//app.UseStaticFiles();
 				app.UseRouting();
 
 				app.UseEndpoints(endpoints =>
@@ -335,6 +335,33 @@ namespace Spark
 							string file = ReadResource("full_overlay.html");
 							await context.Response.WriteAsync(file);
 						});
+
+
+					// add all the stuff in wwwroot
+
+					// Determine path
+					Assembly assembly = Assembly.GetExecutingAssembly();
+					string sparkPath = Path.GetDirectoryName(assembly.Location);
+					// Format: "{Namespace}.{Folder}.{filename}.{Extension}"
+					foreach (string str in assembly.GetManifestResourceNames())
+					{
+						string[] pieces = str.Split('.');
+						if (pieces.Length > 2 && pieces?[1] == "wwwroot")
+						{
+							List<string> folderPieces = pieces.Skip(2).SkipLast(2).Append(string.Join('.', pieces.TakeLast(2))).ToList();
+							//if (folderPieces[^1] == "index.html")
+							//{
+							//	folderPieces = folderPieces.SkipLast(1).ToList();
+							//}
+							string url = "/" + string.Join('/', folderPieces);
+							endpoints.MapGet(url, async context =>
+							{
+								string finalFileNameText = str;
+								await context.Response.SendFileAsync(Path.Combine(sparkPath, "wwwroot", Path.Combine(folderPieces.ToArray())));
+								//await context.Response.WriteAsync(ReadResourceBytes(finalFileNameText));
+							});
+						}
+					}
 				});
 			}
 
@@ -491,13 +518,44 @@ namespace Spark
 			// Determine path
 			Assembly assembly = Assembly.GetExecutingAssembly();
 			// Format: "{Namespace}.{Folder}.{filename}.{Extension}"
-			string resourcePath = assembly.GetManifestResourceNames().Single(str => str.EndsWith(name));
+			string[] resources = assembly.GetManifestResourceNames();
+			string resourcePath = resources.Single(str => str.EndsWith(name));
 
 			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
 			if (stream == null) return "";
 			using StreamReader reader = new StreamReader(stream);
 			return reader.ReadToEnd();
 		}
+		public static byte[] ReadResourceBytes(string name)
+		{
+			// Determine path
+			Assembly assembly = Assembly.GetExecutingAssembly();
+			// Format: "{Namespace}.{Folder}.{filename}.{Extension}"
+			string[] resources = assembly.GetManifestResourceNames();
+			string resourcePath = resources.Single(str => str.EndsWith(name));
+
+			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
+			if (stream == null) return null;
+			using (var memoryStream = new MemoryStream())
+			{
+				stream.CopyTo(memoryStream);
+				return memoryStream.ToArray();
+			}
+		}
+
+		public static string ReadResource(IEnumerable<string> name)
+		{
+			// Determine path
+			Assembly assembly = Assembly.GetExecutingAssembly();
+			// Format: "{Namespace}.{Folder}.{filename}.{Extension}"
+			string resourcePath = assembly.GetManifestResourceNames().Single(str => str.EndsWith(string.Join('.', name)));
+
+			using Stream stream = assembly.GetManifestResourceStream(resourcePath);
+			if (stream == null) return "";
+			using StreamReader reader = new StreamReader(stream);
+			return reader.ReadToEnd();
+		}
+
 
 		public static async Task<Dictionary<string, string>> GetOverlays(string accessCode)
 		{

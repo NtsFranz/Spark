@@ -1,6 +1,4 @@
-﻿using Spark.Properties;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 using System.Timers;
 using System.Windows;

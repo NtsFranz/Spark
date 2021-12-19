@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using Spark.Properties;
 
 namespace Spark
 {

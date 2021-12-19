@@ -420,16 +420,6 @@ namespace Spark
 						//	discSpeedProgressBar.ForeColor = Color.Gray;
 						//}
 
-						string playerSpeedHTML = @"
-				<html>
-				<head>
-				<meta http-equiv=""refresh"" content=""0.2"">
-				<link rel=""stylesheet"" type=""text/css"" href=""styles.css"">
-				</head>
-				<body>
-				<div id = ""player_speeds"">";
-						bool updatedHTML = false;
-
 						StringBuilder blueTextNames = new StringBuilder();
 						StringBuilder orangeTextNames = new StringBuilder();
 						StringBuilder bluePingsTextPings = new StringBuilder();
@@ -464,8 +454,6 @@ namespace Spark
 										//playerSpeedBars[i].Background = speedsLayout.BackColor;
 										i++;
 
-										updatedHTML = true;
-										playerSpeedHTML += "<div style=\"width:" + speed + "px;\" class=\"speed_bar " + (Team.TeamColor)t + "\"></div>\n";
 									}
 
 									if (t == 0)
@@ -600,13 +588,6 @@ namespace Spark
 						}
 						lastJoustsTextBlock.Text = lastJoustsString.ToString();
 
-
-						if (updatedHTML && Program.writeToOBSHTMLFile)
-						{
-							playerSpeedHTML += "</div></body></html>";
-
-							File.WriteAllText("html_output/player_speeds.html", playerSpeedHTML);
-						}
 
 						for (; i < playerSpeedBars.Count; i++)
 						{
@@ -1203,7 +1184,7 @@ namespace Spark
 
 		private void startSpectatorStream_Click(object sender, RoutedEventArgs e)
 		{
-			Program.StartEchoVR(Program.JoinType.Spectator);
+			Program.StartEchoVR(Program.JoinType.Spectator, noovr:SparkSettings.instance.spectatorStreamNoOVR, combat: SparkSettings.instance.spectatorStreamCombat);
 		}
 
 		private void ToggleHidden(object sender, RoutedEventArgs e)

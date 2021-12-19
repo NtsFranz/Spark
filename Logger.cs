@@ -7,7 +7,6 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using Spark;
-using Spark.Properties;
 
 /// <summary>
 /// ✍ Logs any data to a file or remotely

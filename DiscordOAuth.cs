@@ -6,12 +6,9 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
-using System.Windows;
-using Google.Api;
 using Spark.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Windows.Threading;
 
 namespace Spark
 {

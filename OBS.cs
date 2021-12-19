@@ -1,5 +1,4 @@
 ﻿using OBSWebsocketDotNet;
-using Spark.Properties;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;

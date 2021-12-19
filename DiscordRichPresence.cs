@@ -6,7 +6,6 @@ using DiscordRPC;
 using DiscordRPC.Logging;
 using DiscordRPC.Message;
 using EchoVRAPI;
-using Spark.Properties;
 using static Logger;
 
 namespace Spark

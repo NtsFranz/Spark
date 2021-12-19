@@ -8,7 +8,6 @@
 * license agreement from NVIDIA CORPORATION is strictly prohibited.
 */
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 //using UnityEngine;

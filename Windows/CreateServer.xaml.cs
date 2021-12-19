@@ -1,6 +1,4 @@
-﻿using Spark.Properties;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.Windows;
 
 namespace Spark
