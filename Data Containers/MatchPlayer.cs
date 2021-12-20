@@ -98,7 +98,7 @@ namespace Spark
 		private const int MINCLAMP = 0;
 
 		#region Get/Set Methods
-		public ulong Id { get; set; }
+		public long Id { get; set; }
 
 		public string Name { get; set; }
 		public int Level { get; set; }

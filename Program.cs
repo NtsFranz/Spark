@@ -110,7 +110,7 @@ namespace Spark
 		public static ConcurrentStack<Frame> milkFramesToSave = new ConcurrentStack<Frame>();
 		public static ConcurrentQueue<string> replayBufferJSON = new ConcurrentQueue<string>();
 		public static ConcurrentQueue<DateTime> replayBufferTimestamps = new ConcurrentQueue<DateTime>();
-		public static Milk milkData;
+		// public static Milk milkData;
 		//private static ButterFile butter;
 
 		private static bool lastJSONUsed;
@@ -464,8 +464,8 @@ namespace Spark
 				liveReplayThread.IsBackground = true;
 				liveReplayThread.Start();
 
-				milkThread = new Thread(MilkThread);
-				milkThread.IsBackground = true;
+				// milkThread = new Thread(MilkThread);
+				// milkThread.IsBackground = true;
 				//milkThread.Start();
 				
 				//butterThread = new Thread(ButterThread);
@@ -899,38 +899,38 @@ namespace Spark
 			}
 		}
 
-		private static void MilkThread()
-		{
-			Thread.Sleep(2000);
-			int frameCount = 0;
-			// Session pull loop.
-			while (running)
-			{
-				if (milkFramesToSave.TryPop(out Frame frame))
-				{
-					if (milkData == null)
-					{
-						milkData = new Milk(frame);
-					}
-					else
-					{
-						milkData.AddFrame(frame);
-					}
-
-					frameCount++;
-				}
-
-				// only save every once in a while
-				if (frameCount > 200)
-				{
-					frameCount = 0;
-					string filePath = Path.Combine(SparkSettings.instance.saveFolder, fileName + ".milk");
-					File.WriteAllBytes(filePath, milkData.GetBytes());
-				}
-
-				Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
-			}
-		}
+		// private static void MilkThread()
+		// {
+		// 	Thread.Sleep(2000);
+		// 	int frameCount = 0;
+		// 	// Session pull loop.
+		// 	while (running)
+		// 	{
+		// 		if (milkFramesToSave.TryPop(out Frame frame))
+		// 		{
+		// 			if (milkData == null)
+		// 			{
+		// 				milkData = new Milk(frame);
+		// 			}
+		// 			else
+		// 			{
+		// 				milkData.AddFrame(frame);
+		// 			}
+		//
+		// 			frameCount++;
+		// 		}
+		//
+		// 		// only save every once in a while
+		// 		if (frameCount > 200)
+		// 		{
+		// 			frameCount = 0;
+		// 			string filePath = Path.Combine(SparkSettings.instance.saveFolder, fileName + ".milk");
+		// 			File.WriteAllBytes(filePath, milkData.GetBytes());
+		// 		}
+		//
+		// 		Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
+		// 	}
+		// }
 		
 		
 		//private static void ButterThread()
@@ -1261,14 +1261,14 @@ namespace Spark
 				bool spectating = joinType == JoinType.Spectator;
 				Process.Start(echoPath, 
 					(spectating && SparkSettings.instance.capturevp2 ? "-capturevp2 " : " ") + 
-					(spectating ? "-spectatorstream " : " ") + 
+					(spectating ? "-spectatorstream " : " ") +
+					(combat ? "echo_combat " : "") + 
 					(session_id == null ? "" : $"-lobbyid {session_id} ") +  
 					(noovr ? "-noovr " : "") +
 					(port != 6721 ? $"-httpport {port} " : "") +
 					(level == null ? "" : $"-level {level} ") +
-					(region == null ? "" : $"-region {region} ") +
-					(combat ? "echo_combat " : "")
-					);
+					(region == null ? "" : $"-region {region} ")
+				);
 			}
 			else
 			{
