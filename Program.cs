@@ -754,7 +754,7 @@ namespace Spark
 							{
 								try
 								{
-									KillEchoVR();
+									KillEchoVR($"-httpport {SPECTATEME_PORT}");
 									lastSpectatedSessionId = string.Empty;
 								}
 								catch (Exception e)
@@ -1215,7 +1215,10 @@ namespace Spark
 
 		public static void KillEchoVR(string findInArgs = null)
 		{
-			LogRow(LogType.File, Program.lastFrame.sessionid, "Killing EchoVR...");
+			if (lastFrame != null)
+			{
+				LogRow(LogType.File, Program.lastFrame.sessionid, "Killing EchoVR...");
+			}
 			LogRow(LogType.Error, "Killing EchoVR...");
 			Process[] process = Process.GetProcessesByName("echovr");
 			foreach (Process p in process)
@@ -1601,7 +1604,7 @@ namespace Spark
 					}
 				}
 
-				WaitUntilLocalGameLaunched(UseCameraControlKeys, port:Program.SPECTATEME_PORT);
+				WaitUntilLocalGameLaunched(UseCameraControlKeys, port:SPECTATEME_PORT);
 			}
 
 			// The time between the current frame and last frame in seconds based on the game clock

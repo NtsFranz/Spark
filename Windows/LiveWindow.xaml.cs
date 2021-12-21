@@ -184,6 +184,12 @@ namespace Spark
 				mainOutputTextBox.Text = string.Join('\n', fullFileCache);
 			}
 
+			if (SparkSettings.instance.spectateMeOnByDefault)
+			{
+				spectateMeSubtitle.Text = Properties.Resources.Waiting_until_you_join_a_game;
+				spectateMeLabel.Content = Properties.Resources.Stop_Spectating_Me;
+			}
+
 			//_ = CheckForAppUpdate();
 		}
 
@@ -1973,26 +1979,30 @@ namespace Spark
 			AtlasMatchResponse oldAtlasResponse = null;
 			AtlasMatchResponse igniteAtlasResponse = null;
 
-			bool oldAtlasDone = false;
+			bool oldAtlasDone = true;
 			bool igniteAtlasDone = false;
 
-			Program.PostRequestCallback(
-				"https://echovrconnect.appspot.com/api/v1/player/" + SparkSettings.instance.client_name,
-				new Dictionary<string, string> { { "User-Agent", "Atlas/0.5.8" } },
-				string.Empty,
-				(responseJSON) =>
-			{
-				try
-				{
-					oldAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
-					oldAtlasDone = true;
-				}
-				catch (Exception e)
-				{
-					oldAtlasDone = true;
-					Logger.LogRow(Logger.LogType.Error, $"Can't parse Atlas matches response\n{e}");
-				}
-			});
+			// TODO remove old atlas completely
+			//Program.PostRequestCallback(
+			//	"https://echovrconnect.appspot.com/api/v1/player/" + SparkSettings.instance.client_name,
+			//	new Dictionary<string, string> { { "User-Agent", "Atlas/0.5.8" } },
+			//	string.Empty,
+			//	(responseJSON) =>
+			//{
+			//	try
+			//	{
+			//		if (!string.IsNullOrEmpty(responseJSON))
+			//		{
+			//			oldAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
+			//		}
+			//		oldAtlasDone = true;
+			//	}
+			//	catch (Exception e)
+			//	{
+			//		oldAtlasDone = true;
+			//		Logger.LogRow(Logger.LogType.Error, $"Can't parse Atlas matches response\n{e}");
+			//	}
+			//});
 
 
 			string matchesAPIURL = $"{Program.APIURL}atlas_matches_v2/{(SparkSettings.instance.client_name == string.Empty ? "_" : SparkSettings.instance.client_name)}";

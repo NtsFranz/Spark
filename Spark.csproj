@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.3.33</Version>
+    <Version>2.4.0</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -24,20 +24,20 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASE</DefineConstants>
+    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,55 +46,55 @@
     <Resource Include="img\swap-horizontal-bold.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <EmbeddedResource Include="wwwroot\api\index.html">
+    <EmbeddedResource Include="wwwroot_resources\api\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\branding\index.html">
+    <EmbeddedResource Include="wwwroot_resources\branding\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\css\event_banners.css">
+    <EmbeddedResource Include="wwwroot_resources\css\event_banners.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\css\main_banner.css">
+    <EmbeddedResource Include="wwwroot_resources\css\main_banner.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\css\mathematical_time.css">
+    <EmbeddedResource Include="wwwroot_resources\css\mathematical_time.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\css\minimap.css">
+    <EmbeddedResource Include="wwwroot_resources\css\minimap.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\css\player_lists.css">
+    <EmbeddedResource Include="wwwroot_resources\css\player_lists.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\fonts\Inconsolata.ttf">
+    <EmbeddedResource Include="wwwroot_resources\fonts\Inconsolata.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\fonts\Inconsolata.woff">
+    <EmbeddedResource Include="wwwroot_resources\fonts\Inconsolata.woff">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\fonts\Inconsolata.woff2">
+    <EmbeddedResource Include="wwwroot_resources\fonts\Inconsolata.woff2">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\game_data\index.html">
+    <EmbeddedResource Include="wwwroot_resources\game_data\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\img\minimap.png">
+    <EmbeddedResource Include="wwwroot_resources\img\minimap.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\img\minimap_disc.png">
+    <EmbeddedResource Include="wwwroot_resources\img\minimap_disc.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\js\full_overlay.js">
+    <EmbeddedResource Include="wwwroot_resources\js\full_overlay.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\js\minimap.js">
+    <EmbeddedResource Include="wwwroot_resources\js\minimap.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\js\heatmap.min.js">
+    <EmbeddedResource Include="wwwroot_resources\js\heatmap.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot\overlays\index.html">
+    <EmbeddedResource Include="wwwroot_resources\overlays\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwtemplates\full_overlay.html">
@@ -111,7 +111,7 @@
     <None Remove="html\default_scoreboard.html" />
     <None Remove="img\camera-outline.png" />
     <None Remove="img\swap-horizontal-bold.png" />
-    <None Remove="wwwroot\api\index.html" />
+    <None Remove="wwwroot_resources\api\index.html" />
     <None Remove="wwwtemplates\default_minimap - Copy.html" />
     <None Remove="wwwtemplates\midmatch_overlay - Copy.html" />
     <EmbeddedResource Include="wwwtemplates\default_scoreboard.html">
@@ -121,63 +121,63 @@
     <None Remove="html\fonts\Inconsolata.woff" />
     <None Remove="html\fonts\Inconsolata.woff2" />
     <None Remove="html\index.html" />
-    <EmbeddedResource Include="wwwroot\index.html">
+    <EmbeddedResource Include="wwwroot_resources\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\img\ignite_logo.png" />
-    <EmbeddedResource Include="wwwroot\img\ignite_logo.png">
+    <None Remove="wwwroot_resources\img\ignite_logo.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\ignite_logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\img\ignite_logo_128.png" />
-    <EmbeddedResource Include="wwwroot\img\ignite_logo_128.png">
+    <None Remove="wwwroot_resources\img\ignite_logo_128.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\ignite_logo_128.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\fonts\Atmospheric.otf" />
-    <EmbeddedResource Include="wwwroot\fonts\Atmospheric.otf">
+    <None Remove="wwwroot_resources\fonts\Atmospheric.otf" />
+    <EmbeddedResource Include="wwwroot_resources\fonts\Atmospheric.otf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\fonts\big_noodle_titling.ttf" />
-    <EmbeddedResource Include="wwwroot\fonts\big_noodle_titling.ttf">
+    <None Remove="wwwroot_resources\fonts\big_noodle_titling.ttf" />
+    <EmbeddedResource Include="wwwroot_resources\fonts\big_noodle_titling.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\fonts\Furore.otf" />
-    <EmbeddedResource Include="wwwroot\fonts\Furore.otf">
+    <None Remove="wwwroot_resources\fonts\Furore.otf" />
+    <EmbeddedResource Include="wwwroot_resources\fonts\Furore.otf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\fonts\goodtimes.ttf" />
-    <EmbeddedResource Include="wwwroot\fonts\goodtimes.ttf">
+    <None Remove="wwwroot_resources\fonts\goodtimes.ttf" />
+    <EmbeddedResource Include="wwwroot_resources\fonts\goodtimes.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\fonts\Prototype.ttf" />
-    <EmbeddedResource Include="wwwroot\fonts\Prototype.ttf">
+    <None Remove="wwwroot_resources\fonts\Prototype.ttf" />
+    <EmbeddedResource Include="wwwroot_resources\fonts\Prototype.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\fonts\SF_Sports_Night_NS_Upright.ttf" />
-    <EmbeddedResource Include="wwwroot\fonts\SF_Sports_Night_NS_Upright.ttf">
+    <None Remove="wwwroot_resources\fonts\SF_Sports_Night_NS_Upright.ttf" />
+    <EmbeddedResource Include="wwwroot_resources\fonts\SF_Sports_Night_NS_Upright.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\favicon.ico" />
-    <EmbeddedResource Include="wwwroot\favicon.ico">
+    <None Remove="wwwroot_resources\favicon.ico" />
+    <EmbeddedResource Include="wwwroot_resources\favicon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\js\util.js" />
-    <EmbeddedResource Include="wwwroot\js\util.js">
+    <None Remove="wwwroot_resources\js\util.js" />
+    <EmbeddedResource Include="wwwroot_resources\js\util.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\img\combat_head_240px.png" />
-    <EmbeddedResource Include="wwwroot\img\combat_head_240px.png">
+    <None Remove="wwwroot_resources\img\combat_head_240px.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\combat_head_240px.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\img\json_cover.png" />
-    <EmbeddedResource Include="wwwroot\img\json_cover.png">
+    <None Remove="wwwroot_resources\img\json_cover.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\json_cover.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\img\ignite_logo_primary_256.png" />
-    <EmbeddedResource Include="wwwroot\img\ignite_logo_primary_256.png">
+    <None Remove="wwwroot_resources\img\ignite_logo_primary_256.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\ignite_logo_primary_256.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="wwwroot\img\ignite_logo_primary_white_256.png" />
-    <EmbeddedResource Include="wwwroot\img\ignite_logo_primary_white_256.png">
+    <None Remove="wwwroot_resources\img\ignite_logo_primary_white_256.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\ignite_logo_primary_white_256.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

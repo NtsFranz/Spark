@@ -346,18 +346,22 @@ namespace Spark
 					foreach (string str in assembly.GetManifestResourceNames())
 					{
 						string[] pieces = str.Split('.');
-						if (pieces.Length > 2 && pieces?[1] == "wwwroot")
+						if (pieces.Length > 2 && pieces?[1] == "wwwroot_resources")
 						{
 							List<string> folderPieces = pieces.Skip(2).SkipLast(2).Append(string.Join('.', pieces.TakeLast(2))).ToList();
-							//if (folderPieces[^1] == "index.html")
-							//{
-							//	folderPieces = folderPieces.SkipLast(1).ToList();
-							//}
-							string url = "/" + string.Join('/', folderPieces);
+							string url;
+							if (folderPieces[^1] == "index.html")
+							{
+								url = "/" + string.Join('/', folderPieces.SkipLast(1));
+							} else
+							{
+								url = "/" + string.Join('/', folderPieces);
+							}
+							
 							endpoints.MapGet(url, async context =>
 							{
 								string finalFileNameText = str;
-								await context.Response.SendFileAsync(Path.Combine(sparkPath, "wwwroot", Path.Combine(folderPieces.ToArray())));
+								await context.Response.SendFileAsync(Path.Combine(sparkPath, "wwwroot_resources", Path.Combine(folderPieces.ToArray())));
 								//await context.Response.WriteAsync(ReadResourceBytes(finalFileNameText));
 							});
 						}
