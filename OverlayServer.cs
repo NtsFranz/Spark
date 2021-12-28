@@ -21,25 +21,45 @@ using Newtonsoft.Json;
 
 namespace Spark
 {
-	public class OverlayServer4
+	public class OverlayServer
 	{
-		private readonly IWebHost server;
+		private IWebHost server;
 
-		public OverlayServer4()
+		public OverlayServer()
 		{
+			Task.Run(async () => { await RestartServer(); });
+			
+			DiscordOAuth.AccessCodeChanged += (code) =>
+			{
+				Console.WriteLine("Access code changed");
+				Task.Run(async () => { await RestartServer(); });
+			};
+		}
+
+		private async Task RestartServer()
+		{
+			// stop the server
+			if (server != null)
+			{
+				await server.StopAsync();
+			}
+
+			// get new overlay data
+			await OverlaysCustom.FetchOverlayData();
+
+			// restart the server
 			server = WebHost
 				.CreateDefaultBuilder()
 				.UseKestrel(x => { x.ListenAnyIP(6724); })
 				.UseStartup<Routes>()
 				.Build();
 
-
-			Task.Run(() => { server.RunAsync(); });
+			await server.RunAsync();
 		}
 
 		public void Stop()
 		{
-			server.StopAsync();
+			server?.StopAsync();
 		}
 
 		public class Routes
@@ -62,8 +82,10 @@ namespace Spark
 
 				app.UseEndpoints(endpoints =>
 				{
-					OverlaysVRML.MapRoutes(endpoints);
 					SparkAPI.MapRoutes(endpoints);
+
+					// OverlaysVRML.MapRoutes(endpoints);
+					OverlaysCustom.MapRoutes(endpoints);
 
 
 					endpoints.MapGet("/spark_info", async context =>
@@ -75,9 +97,9 @@ namespace Spark
 						await context.Response.WriteAsJsonAsync(
 							new Dictionary<string, object>
 							{
-								{"version", Program.AppVersion()},
-								{"windows_store", Program.IsWindowsStore()},
-								{"ess_version", Program.InstalledSpeakerSystemVersion},
+								{ "version", Program.AppVersion() },
+								{ "windows_store", Program.IsWindowsStore() },
+								{ "ess_version", Program.InstalledSpeakerSystemVersion },
 							});
 					});
 
@@ -109,7 +131,6 @@ namespace Spark
 
 						Dictionary<string, object> response = GetStatsResponse();
 						await context.Response.WriteAsJsonAsync(response);
-						
 					});
 
 
@@ -187,12 +208,15 @@ namespace Spark
 									overlayOrangeTeamName = Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName;
 									overlayBlueTeamName = Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName;
 								}
+
 								break;
 						}
+
 						if (string.IsNullOrWhiteSpace(overlayOrangeTeamName))
 						{
 							overlayOrangeTeamName = "ORANGE TEAM";
 						}
+
 						if (string.IsNullOrWhiteSpace(overlayBlueTeamName))
 						{
 							overlayBlueTeamName = "BLUE TEAM";
@@ -254,8 +278,22 @@ namespace Spark
 					});
 
 
+					endpoints.MapGet("/disc_positions",
+						async context =>
+						{
+							context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+							context.Response.Headers.Add("Access-Control-Allow-Headers",
+								"Content-Type, Accept, X-Requested-With");
+							List<Dictionary<string, float>> positions = await GetDiscPositions();
+							await context.Response.WriteAsJsonAsync(positions);
+						});
+					
 					endpoints.MapGet("/disc_position_heatmap",
-						async context => { await GenerateDiscPositionHeatMap(context, ""); });
+						async context =>
+						{
+							string file = ReadResource("disc_position_heatmap.html");
+							await context.Response.WriteAsync(file);
+						});
 
 
 					endpoints.MapGet("/get_player_speed", async context =>
@@ -327,8 +365,8 @@ namespace Spark
 							string file = ReadResource("default_minimap.html");
 							await context.Response.WriteAsync(file);
 						});
-					
-					
+
+
 					endpoints.MapGet("/full_overlay",
 						async context =>
 						{
@@ -342,28 +380,32 @@ namespace Spark
 					// Determine path
 					Assembly assembly = Assembly.GetExecutingAssembly();
 					string sparkPath = Path.GetDirectoryName(assembly.Location);
-					// Format: "{Namespace}.{Folder}.{filename}.{Extension}"
-					foreach (string str in assembly.GetManifestResourceNames())
+					if (sparkPath != null)
 					{
-						string[] pieces = str.Split('.');
-						if (pieces.Length > 2 && pieces?[1] == "wwwroot_resources")
+						// Format: "{Namespace}.{Folder}.{filename}.{Extension}"
+						foreach (string str in assembly.GetManifestResourceNames())
 						{
-							List<string> folderPieces = pieces.Skip(2).SkipLast(2).Append(string.Join('.', pieces.TakeLast(2))).ToList();
-							string url;
-							if (folderPieces[^1] == "index.html")
+							string[] pieces = str.Split('.');
+							if (pieces.Length > 2 && pieces?[1] == "wwwroot_resources")
 							{
-								url = "/" + string.Join('/', folderPieces.SkipLast(1));
-							} else
-							{
-								url = "/" + string.Join('/', folderPieces);
+								List<string> folderPieces = pieces.Skip(2).SkipLast(2).Append(string.Join('.', pieces.TakeLast(2))).ToList();
+								string url;
+								if (folderPieces[^1] == "index.html")
+								{
+									url = "/" + string.Join('/', folderPieces.SkipLast(1));
+								}
+								else
+								{
+									url = "/" + string.Join('/', folderPieces);
+								}
+
+								endpoints.MapGet(url, async context =>
+								{
+									string finalFileNameText = str;
+									await context.Response.SendFileAsync(Path.Combine(sparkPath, "wwwroot_resources", Path.Combine(folderPieces.ToArray())));
+									//await context.Response.WriteAsync(ReadResourceBytes(finalFileNameText));
+								});
 							}
-							
-							endpoints.MapGet(url, async context =>
-							{
-								string finalFileNameText = str;
-								await context.Response.SendFileAsync(Path.Combine(sparkPath, "wwwroot_resources", Path.Combine(folderPieces.ToArray())));
-								//await context.Response.WriteAsync(ReadResourceBytes(finalFileNameText));
-							});
 						}
 					}
 				});
@@ -505,7 +547,7 @@ namespace Spark
 
 
 		[Serializable]
-		private class xyPos
+		public class xyPos
 		{
 			public float x;
 			public float y;
@@ -530,6 +572,7 @@ namespace Spark
 			using StreamReader reader = new StreamReader(stream);
 			return reader.ReadToEnd();
 		}
+
 		public static byte[] ReadResourceBytes(string name)
 		{
 			// Determine path
@@ -561,14 +604,14 @@ namespace Spark
 		}
 
 
-		public static async Task<Dictionary<string, string>> GetOverlays(string accessCode)
+		public static async Task<Dictionary<string, string>> GetOverlays()
 		{
 			try
 			{
 				Dictionary<string, string> data = new Dictionary<string, string>();
 				using WebClient webClient = new WebClient();
-				byte[] result = webClient.DownloadData(Program.API_URL_2 + "get_overlays/" + accessCode + "/" +
-													   DiscordOAuth.oauthToken);
+				byte[] result = webClient.DownloadData(
+					Program.API_URL_2 + "get_overlays/" + DiscordOAuth.AccessCode.series_name + "/" + DiscordOAuth.oauthToken);
 				// Stream resp = await Program.GetRequestAsyncStream(Program.API_URL_2 + "get_overlays/" + accessCode + "/" + DiscordOAuth.oauthToken, null);
 				// await using MemoryStream file = new MemoryStream();
 				// await resp.CopyToAsync(file);
@@ -577,8 +620,23 @@ namespace Spark
 				foreach (ZipArchiveEntry entry in zip.Entries)
 				{
 					await using Stream stream = entry.Open();
-					using StreamReader reader = new StreamReader(stream);
-					data[entry.Name] = await reader.ReadToEndAsync();
+					
+					if (entry.Name.EndsWith(".png"))
+					{
+						string tempFolder = Path.Combine(Path.GetTempPath(), "Spark", "img");
+						Directory.CreateDirectory(tempFolder);
+						string tempFilePath = Path.Combine(tempFolder, SecretKeys.Hash(entry.Name) + ".png");
+						await using MemoryStream reader = new MemoryStream();
+						await stream.CopyToAsync(reader);
+						byte[] bytes = reader.ToArray();
+						await File.WriteAllBytesAsync(tempFilePath, bytes);
+						data[entry.Name] = tempFilePath;
+					}
+					else
+					{
+						using StreamReader reader = new StreamReader(stream);
+						data[entry.Name] = await reader.ReadToEndAsync();
+					}
 				}
 
 				return data;
@@ -605,7 +663,7 @@ namespace Spark
 			// gets a list of all previous matches in memory that are for the current set
 			List<MatchData> selectedMatches = Program.lastMatches
 				.Where(m => m.customId == Program.matchData.customId &&
-							m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+				            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 				.ToList();
 			if (Program.matchData != null) selectedMatches.Add(Program.matchData);
 
@@ -654,9 +712,16 @@ namespace Spark
 			context.Response.Headers.Add("Access-Control-Allow-Headers",
 				"Content-Type, Accept, X-Requested-With");
 
+			
+					string resp = @"";
+					await context.Response.WriteAsync(resp);
+		}
+
+		public static async Task<List<Dictionary<string, float>>> GetDiscPositions()
+		{
 			if (Program.matchData == null)
 			{
-				await context.Response.WriteAsync("Not in match yet");
+				return new List<Dictionary<string, float>>();
 			}
 			else
 			{
@@ -669,7 +734,7 @@ namespace Spark
 				// gets a list of all the times of previous matches in memory that are for the current set
 				List<DateTime> selectedMatchTimes = Program.lastMatches
 					.Where(m => m.customId == Program.matchData.customId &&
-								m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+					            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 					.Select(m => m.matchTime).ToList();
 				Debug.Assert(Program.matchData != null, "Program.matchData != null");
 				selectedMatchTimes.Add(Program.matchData.matchTime);
@@ -677,8 +742,8 @@ namespace Spark
 				// finds all the files that match one of the matches in memory
 				FileInfo[] selectedFiles = files
 					.Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss",
-									CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
-								&& MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
+						            CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
+					            && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
 					)
 					.ToArray();
 
@@ -700,11 +765,11 @@ namespace Spark
 				//FileInfo[] selectedFiles = files.Where(f => firstFile.LastWriteTime - f.LastWriteTime < TimeSpan.FromMinutes(20)).ToArray();
 				if (selectedFiles.Length == 0)
 				{
-					await context.Response.WriteAsync("No recent replay file found.");
+					return new List<Dictionary<string, float>>();
 				}
 				else
 				{
-					List<xyPos> positions = new List<xyPos>();
+					List<Dictionary<string, float>> positions = new List<Dictionary<string, float>>();
 					foreach (FileInfo file in selectedFiles)
 					{
 						ReplayFileReader reader = new ReplayFileReader();
@@ -721,184 +786,16 @@ namespace Spark
 
 							if (frame.game_status != "playing") continue;
 							Vector3 pos = frame.disc.position.ToVector3();
-							positions.Add(new xyPos((int)(pos.X * 5 + 100), (int)(pos.Z * 5 + 225)));
+							positions.Add(new Dictionary<string, float>()
+							{
+								{"x", pos.X},
+								{"y", pos.Y},
+								{"z", pos.Z},
+							});
 						}
 					}
 
-					string resp = @"<!DOCTYPE html>
-                    <html lang=""en"">
-
-					<head>
-					    <meta charset=""utf-8"">
-									<title>Player Positions Heatmap</title>
-									<style>
-        body,
-        html,
-        h2 {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
-
-        body {
-            animation-name: fade_in;
-            animation-duration: 2s;
-        }
-
-        @keyframes fade_in {
-            from {
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        #heatmapContainer {
-            width: 225px;
-            height: 450px;
-            top: 60px;
-            left: 130px;
-        }
-
-        #backgroundImage {
-            position: absolute;
-            top: 203px;
-            left: -37px;
-            transform: rotate(-90deg);
-            width: 533px;
-        }
-
-        #discPositionHistogram {
-            position: absolute;
-            top: 0px;
-            left: -80px;
-            transform: rotate(180deg);
-            width: 300px;
-            height: 590px;
-            opacity: .5;
-        }
-
-        #backgrounddiv {
-            width: 330px;
-            height: 555px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: #0005;
-            z-index: -1;
-        }
-
-        #title {
-            width: 330px;
-            height: 20px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: #0005;
-            text-align: center;
-            font-size: 20px;
-            font-family: monospace;
-            -webkit-text-stroke: .5px black;
-            color: white;
-            padding: 4px 0;
-        }
-    </style>
-
-	<style>
-		" + additionalCSS + @"
-	</style>
-</head>
-
-<body>
-    <div id='heatmapContainer'></div>
-    <img id='backgroundImage'
-        src='/img/minimap.png' />
-    <div id='discPositionHistogram'>
-        <!-- Plotly chart will be drawn inside this DIV -->
-    </div>
-    <div id='backgrounddiv'></div>
-    <!--<h2 id='title'>Disc Position</h2>-->
-					<script src=""/js/heatmap.min.js"" integrity=""sha512-R35I7hl+fX4IeSVk1c99L/SW0RkDG5dyt2EgU/OY2t0Bx16wC89HGkiXqYykemT0qAYmZOsO5JtxPgv0uzSyKQ=="" crossorigin=""anonymous""></script>
-					<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
-					<script>
-					 window.onload = function () {
-					// helper function
-					function $(id) {
-						return document.getElementById(id);
-					};
-
-					// create a heatmap instance
-					var heatmap = h337.create({
-						container: document.getElementById('heatmapContainer'),
-						maxOpacity: 1,
-						radius: 10,
-						blur: 1,
-					});
-
-					t = "
-								  +
-								  JsonConvert.SerializeObject(positions)
-								  + @";
-
-					// set the generated dataset
-					heatmap.setData({
-						min: 0,
-						max: " + Math.Clamp(positions.Count / 600, 1, 50) + @",
-						data: t
-					});
-
-				};
-
-
-
-			// histogram
-            var zvals = " + JsonConvert.SerializeObject(positions.Select(p => p.y)) + @";
-
-            var trace = {
-                y: zvals,
-                type: 'histogram',
-                marker: {
-                    color: 'rgb(0,0,0)'
-                }
-            };
-            var layout = {
-                showlegend: false,
-                xaxis: {
-                    autorange: true,
-                    showgrid: false,
-                    zeroline: false,
-                    showline: false,
-                    autotick: true,
-                    ticks: '',
-                    showticklabels: false
-                },
-                yaxis: {
-                    autorange: true,
-                    showgrid: false,
-                    zeroline: false,
-                    showline: false,
-                    autotick: true,
-                    ticks: '',
-                    showticklabels: false
-                },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)'
-            };
-            var data = [trace];
-            Plotly.newPlot('discPositionHistogram', data, layout, { staticPlot: true });
-
-
-				</script>
-					</body>
-
-					</html>";
-					await context.Response.WriteAsync(resp);
+					return positions;
 				}
 			}
 		}

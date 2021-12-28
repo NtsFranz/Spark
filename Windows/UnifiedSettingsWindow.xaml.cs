@@ -308,15 +308,9 @@ namespace Spark
 			Program.ToggleWindow(typeof(FirstTimeSetupWindow));
 		}
 
-		public static Visibility FirestoreVisible
-		{
-			get => !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
-		}
+		public static Visibility FirestoreVisible => !DiscordOAuth.Personal ? Visibility.Visible : Visibility.Collapsed;
 
-		public static string ReplayFilename
-		{
-			get => string.IsNullOrEmpty(Program.fileName) ? "---" : Program.fileName;
-		}
+		public static string ReplayFilename => string.IsNullOrEmpty(Program.fileName) ? "---" : Program.fileName;
 
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
 		{
@@ -1425,26 +1419,26 @@ namespace Spark
 		private void HideEchoVRUINow(object sender, RoutedEventArgs e)
 		{
 			if (!Program.inGame) return;
-			CameraController.SetUIVisibility(HideUICheckbox.IsChecked != true);
+			CameraWriteController.SetUIVisibility(HideUICheckbox.IsChecked != true);
 		}
 
 		private void ToggleTeamMuteNow(object sender, RoutedEventArgs e)
 		{
 			if (!Program.inGame) return;
-			CameraController.SetTeamsMuted(MutePlayerCommsCheckbox.IsChecked == true,
+			CameraWriteController.SetTeamsMuted(MutePlayerCommsCheckbox.IsChecked == true,
 				MutePlayerCommsCheckbox.IsChecked == true);
 		}
 
 		private void HideMinimapNow(object sender, RoutedEventArgs e)
 		{
 			if (!Program.inGame) return;
-			CameraController.SetMinimapVisibility(HideMinimapCheckbox.IsChecked != true);
+			CameraWriteController.SetMinimapVisibility(HideMinimapCheckbox.IsChecked != true);
 		}
 
 		private void ToggleNameplatesNow(object sender, RoutedEventArgs e)
 		{
 			if (!Program.inGame) return;
-			CameraController.SetNameplatesVisibility(HideNameplates.IsChecked != true);
+			CameraWriteController.SetNameplatesVisibility(HideNameplates.IsChecked != true);
 		}
 
 		private void UploadTabletStats(object sender, RoutedEventArgs e)

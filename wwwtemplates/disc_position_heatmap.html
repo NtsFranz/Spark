@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Disc Positions Heatmap</title>
+    <style>
+
+
+        @font-face {
+            font-family: 'Inconsolata';
+            src: url('/fonts/Inconsolata.woff2') format('woff2'), url('/fonts/Inconsolata.woff') format('woff'), url('/fonts/Inconsolata.ttf') format('truetype');
+        }
+        
+        body,
+        html,
+        h2 {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+            animation-name: fade_in;
+            animation-duration: 2s;
+        }
+
+        @keyframes fade_in {
+            from {
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        #heatmapContainer {
+            width: 225px;
+            height: 450px;
+            top: 60px;
+            left: 110px;
+        }
+
+        #backgroundImage {
+            position: absolute;
+            top: 203px;
+            left: -57px;
+            transform: rotate(-90deg);
+            width: 533px;
+        }
+
+        #discPositionHistogram {
+            position: absolute;
+            top: 0px;
+            left: -80px;
+            transform: rotate(180deg);
+            width: 300px;
+            height: 590px;
+            opacity: .5;
+        }
+
+        #backgrounddiv {
+            width: 330px;
+            height: 555px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #0005;
+            z-index: -1;
+        }
+
+        #title {
+            width: 330px;
+            height: 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #0005;
+            text-align: center;
+            font-size: 20px;
+            font-family: monospace;
+            -webkit-text-stroke: .5px black;
+            color: white;
+            padding: 4px 0;
+        }
+        
+        #sideways_title {
+            color: #ddd;
+            font-size: 50px;
+            transform: rotate(180deg);
+            position: absolute;
+            top: 0;
+            left: 0;
+            writing-mode: vertical-lr;
+            width: 100px;
+            height: 555px;
+            text-align: center;
+            font-family: Inconsolata, sans-serif;
+            font-weight: 900;
+            text-shadow: -2px 2px 0 #444;
+        }
+    </style>
+    
+    <script src="/js/util.js" type="application/javascript"></script>
+</head>
+
+<body>
+<div id='heatmapContainer'></div>
+<img id='backgroundImage' src='/img/minimap.png'/>
+<!--<div id='discPositionHistogram'>-->
+<!--    &lt;!&ndash; Plotly chart will be drawn inside this DIV &ndash;&gt;-->
+<!--</div>-->
+<div id='backgrounddiv'></div>
+<!--<h2 id='title'>Disc Position</h2>-->
+<h2 id='sideways_title'>Disc Position</h2>
+<script src="/js/heatmap_min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+
+    function clamp(num, min, max) {
+        return num <= min
+            ? min
+            : num >= max
+                ? max
+                : num
+    }
+
+    httpGetAsync("http://127.0.0.1:6724/disc_positions", (positions) => {
+        positions = JSON.parse(positions);
+
+        positions = positions.map((p) => {
+            return {
+                'x': Math.round(p.x * 5 + 100),
+                'y': Math.round(p.z * 5 + 225)
+            }
+        });
+        
+        
+        // create a heatmap instance
+        let heatmap = h337.create({
+            container: document.getElementById('heatmapContainer'),
+            maxOpacity: 1,
+            radius: 10,
+            blur: 1,
+        });
+
+
+        // set the generated dataset
+        heatmap.setData({
+            min: 0,
+            max: clamp(positions.length / 600, 1, 50),
+            data: positions
+        });
+
+
+        // // histogram
+        // let zvals = positions.map((p) => p["y"]);
+        //
+        // let trace = {
+        //     y: zvals,
+        //     type: 'histogram',
+        //     marker: {
+        //         color: 'rgb(0,0,0)'
+        //     }
+        // };
+        // let layout = {
+        //     showlegend: false,
+        //     xaxis: {
+        //         autorange: true,
+        //         showgrid: false,
+        //         zeroline: false,
+        //         showline: false,
+        //         autotick: true,
+        //         ticks: '',
+        //         showticklabels: false
+        //     },
+        //     yaxis: {
+        //         autorange: true,
+        //         showgrid: false,
+        //         zeroline: false,
+        //         showline: false,
+        //         autotick: true,
+        //         ticks: '',
+        //         showticklabels: false
+        //     },
+        //     paper_bgcolor: 'rgba(0,0,0,0)',
+        //     plot_bgcolor: 'rgba(0,0,0,0)'
+        // };
+        // let data = [trace];
+        // Plotly.newPlot('discPositionHistogram', data, layout, {staticPlot: true});
+    });
+
+</script>
+</body>
+
+</html>

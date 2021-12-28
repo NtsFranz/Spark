@@ -91,7 +91,7 @@
     <EmbeddedResource Include="wwwroot_resources\js\minimap.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\js\heatmap.min.js">
+    <EmbeddedResource Include="wwwroot_resources\js\heatmap_min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot_resources\overlays\index.html">
@@ -178,6 +178,10 @@
     </EmbeddedResource>
     <None Remove="wwwroot_resources\img\ignite_logo_primary_white_256.png" />
     <EmbeddedResource Include="wwwroot_resources\img\ignite_logo_primary_white_256.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwtemplates\disc_position_heatmap.html" />
+    <EmbeddedResource Include="wwwtemplates\disc_position_heatmap.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

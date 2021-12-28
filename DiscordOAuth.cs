@@ -18,9 +18,9 @@ namespace Spark
 	public class DiscordOAuth
 	{
 		/// <summary>
-		/// Called when the program get's authenticated with Discord
+		/// Called when the program gets authenticated with Discord
 		/// </summary>
-		public static Action authenticated;
+		public static Action Authenticated;
 
 
 		private const string REDIRECT_URI = "http://localhost:6722/oauth_login";
@@ -39,51 +39,78 @@ namespace Spark
 		public static string igniteUploadKey = string.Empty;
 		public static string firebaseCred;
 
-		public static List<Dictionary<string, string>> availableAccessCodes = new List<Dictionary<string, string>>();
-		private static readonly Dictionary<string, string> personalAccessCode = new Dictionary<string, string>()
+		public static List<AccessCodeKey> availableAccessCodes = new List<AccessCodeKey>();
+		private static readonly AccessCodeKey personalAccessCode = new AccessCodeKey
 		{
-			{ "username","Personal" },
-			{ "series_name","personal" }
+			username = "Personal",
+			series_name = "personal"
 		};
-		public static Dictionary<string, string> CurrentKeys {
-			get {
-				foreach (var key in availableAccessCodes)
+
+		public class AccessCodeKey
+		{
+			public string series_name;
+			public string username;
+		}
+
+		public static AccessCodeKey AccessCode
+		{
+			get => accessCode;
+			set
+			{
+				if (value.series_name != accessCode.series_name)
 				{
-					if (key["username"] == Program.currentAccessCodeUsername)
-					{
-						return key;
-					}
+					SparkSettings.instance.accessCode = SecretKeys.Hash(value.series_name);
+					SparkSettings.instance.Save();
+					accessCode = value;
+					AccessCodeChanged?.Invoke(value);
 				}
-				return personalAccessCode;
+				accessCode = value;
 			}
 		}
 
-		public static string AccessCode => CurrentKeys?["series_name"];
-		public static string SeasonName => CurrentKeys?["series_name"];
+		public static Action<AccessCodeKey> AccessCodeChanged;
+		private static AccessCodeKey accessCode = personalAccessCode;
+		public static bool Personal => AccessCode.series_name == "personal" || AccessCode == null;
 
 		public static bool IsLoggedIn { get => oauthToken != string.Empty; }
 
-		public static int GetAccessCodeIndex(string hash)
+		public static int GetAccessCodeIndexByHash(string hash)
 		{
 			for (int i = 0; i < availableAccessCodes.Count; i++)
 			{
-				if (SecretKeys.Hash(availableAccessCodes[i]["series_name"]) == hash)
+				if (SecretKeys.Hash(availableAccessCodes[i].series_name) == hash)
 				{
 					return i;
 				}
 			}
 			return 0;
 		}
-		public static string GetAccessCodeUsername(string hash)
+
+		public static void SetAccessCodeByUsername(string username)
 		{
-			foreach (var key in availableAccessCodes)
+			foreach (AccessCodeKey key in availableAccessCodes)
 			{
-				if (SecretKeys.Hash(key["series_name"]) == hash)
+				if (key.username == username)
 				{
-					return key["username"];
+					AccessCode = key;
+					return;
 				}
 			}
-			return personalAccessCode["username"];
+			Logger.LogRow(Logger.LogType.Error, "Chosen access code is not available. " + username);
+		}
+
+		public static void SetAccessCodeByHash(string hash)
+		{
+			foreach (AccessCodeKey key in availableAccessCodes)
+			{
+				if (SecretKeys.Hash(key.series_name) == hash)
+				{
+					AccessCode = key;
+					return;
+				}
+			}
+			RevertToPersonal();
+			Logger.LogRow(Logger.LogType.Error, "Chosen access code is not available. " + hash);
 		}
 
 		public static void OAuthLogin(bool force = false)
@@ -195,6 +222,7 @@ namespace Spark
 				RevertToPersonal();
 				SparkSettings.instance.discordOAuthRefreshToken = string.Empty;
 				oauthToken = string.Empty;
+				return;
 			}
 
 			SparkSettings.instance.discordOAuthRefreshToken = response["refresh_token"];
@@ -209,6 +237,11 @@ namespace Spark
 			string responseString = await userResponse.Content.ReadAsStringAsync();
 
 			Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(responseString);
+			if (data == null)
+			{
+				Logger.LogRow(Logger.LogType.Error, "Discord response data is null");
+				return;
+			}
 			if (data.ContainsKey("username"))
 			{
 				discordUserData = data;
@@ -223,11 +256,16 @@ namespace Spark
 			{
 				string accessCodesResponseString = await Program.GetRequestAsync(
 					SecretKeys.accessCodesURL + oauthToken +
-					$"?v={SparkSettings.instance.client_name}_{Program.AppVersion()}", null);
+					$"?u={SparkSettings.instance.client_name}&v={Program.AppVersion()}", null);
 
 				Dictionary<string, JToken> accessCodesResponseData =
 					JsonConvert.DeserializeObject<Dictionary<string, JToken>>(accessCodesResponseString);
-				availableAccessCodes = accessCodesResponseData["keys"].ToObject<List<Dictionary<string, string>>>();
+				if (accessCodesResponseData == null)
+				{
+					Logger.LogRow(Logger.LogType.Error, "Ignite login response data is null");
+					return;
+				}
+				List<AccessCodeKey> newAccessCodes = accessCodesResponseData["keys"].ToObject<List<AccessCodeKey>>();
 				if (accessCodesResponseData.ContainsKey("write"))
 				{
 					igniteUploadKey = accessCodesResponseData["write"].ToObject<string>();
@@ -237,17 +275,22 @@ namespace Spark
 				{
 					firebaseCred = accessCodesResponseData["firebase_cred"].ToObject<string>();
 				}
-
-				availableAccessCodes.Insert(0, new Dictionary<string, string>
+				
+				if (newAccessCodes == null)
 				{
-					{"series_name", "personal"},
-					{"username", "Personal"}
-				});
+					Logger.LogRow(Logger.LogType.Error, "Ignite login response doesn't contain valid data.");
+					return;
+				}
+				newAccessCodes.Insert(0, personalAccessCode);
 
-				Program.currentAccessCodeUsername = GetAccessCodeUsername(SparkSettings.instance.accessCode);
+				if (availableAccessCodes.Count != newAccessCodes.Count)
+				{
+				}
 
+				availableAccessCodes = newAccessCodes;
+				SetAccessCodeByHash(SparkSettings.instance.accessCode);
 
-				authenticated?.Invoke();
+				Authenticated?.Invoke();
 			}
 			catch (Exception e)
 			{
@@ -261,10 +304,7 @@ namespace Spark
 
 		public static void RevertToPersonal()
 		{
-			// revert to personal
-			Program.currentAccessCodeUsername = personalAccessCode["username"];
-			SparkSettings.instance.accessCode = SecretKeys.Hash(personalAccessCode["series_name"]);
-			SparkSettings.instance.Save();
+			AccessCode = personalAccessCode;
 		}
 	}
 }

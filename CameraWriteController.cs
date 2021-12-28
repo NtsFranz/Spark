@@ -9,11 +9,11 @@ using static Logger;
 
 namespace Spark
 {
-	class CameraController
+	class CameraWriteController
 	{
-		public static string BaseUrl => "http://127.0.0.1:" + (Program.spectateMe ? Program.SPECTATEME_PORT : "6721") + "/";
+		private static string BaseUrl => "http://127.0.0.1:" + (Program.spectateMe ? Program.SPECTATEME_PORT : "6721") + "/";
 
-		public CameraController()
+		public CameraWriteController()
 		{
 			Program.Goal += (_, _) =>
 			{
@@ -53,7 +53,7 @@ namespace Spark
 					SetCameraMode(CameraMode.pov);
 
 					await Task.Delay(50);
-					bool found = false;
+					bool found;
 					found = await CheckPovCamIsCorrect(playerName);
 					int foundIndex = 0;
 
@@ -117,8 +117,7 @@ namespace Spark
 			if (string.IsNullOrEmpty(result)) return false;
 			Frame frame = JsonConvert.DeserializeObject<Frame>(result);
 			if (frame == null) return false;
-			List<Player> players = frame.GetAllPlayers(false);
-			Player targetPlayer = frame.GetPlayer(playerName);
+			List<Player> players = frame.GetAllPlayers();
 
 			List<Player> sortedList = players
 				.OrderBy(p => Vector3.Distance(p.head.Position, frame.player.vr_position.ToVector3())).ToList();

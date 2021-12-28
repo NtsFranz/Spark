@@ -42,8 +42,6 @@ namespace Spark
 		private string lastIP;
 
 		private string lastDiscordUsername = string.Empty;
-		private string lastAccessCode = string.Empty;
-		private int lastAccessCodeCount = 0;
 		private bool accessCodeDropdownListenerActive;
 		public bool hidden;
 
@@ -55,9 +53,6 @@ namespace Spark
 
 		string blueLogo = "";
 		string orangeLogo = "";
-
-		List<Label> blueScoreboardItems = new List<Label>();
-		List<Label> orangeScoreboardItems = new List<Label>();
 
 		private string lastTraceroute = "";
 
@@ -115,6 +110,10 @@ namespace Spark
 			InitializeComponent();
 
 			Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+			
+			outputUpdateTimer.Interval = 150;
+			outputUpdateTimer.Elapsed += Update;
+			outputUpdateTimer.Enabled = true;
 
 			Loaded += (_, _) =>
 			{
@@ -126,9 +125,26 @@ namespace Spark
 				}
 			};
 
-			outputUpdateTimer.Interval = 150;
-			outputUpdateTimer.Elapsed += Update;
-			outputUpdateTimer.Enabled = true;
+			DiscordOAuth.AccessCodeChanged += (code) =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					RefreshAccessCodeList();
+					RefreshDiscordLogin();
+				});
+			};
+
+			DiscordOAuth.Authenticated += () =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					RefreshAccessCodeList();
+					RefreshDiscordLogin();
+				});
+			};
+			RefreshAccessCodeList();
+			RefreshDiscordLogin();
+
 
 			JToken gameSettings = EchoVRSettingsManager.ReadEchoVRSettings();
 			if (gameSettings != null)
@@ -155,16 +171,7 @@ namespace Spark
 
 			GenerateNewStatsId();
 
-			for (int i = 0; i < 10; i++)
-			{
-				AddSpeedBar();
-			}
 
-			DiscordOAuth.authenticated += RefreshDiscordLogin;
-
-			RefreshDiscordLogin();
-
-			casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
 			showHighlights.IsEnabled = HighlightsHelper.DoNVClipsExist();
 			showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
 			showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? Properties.Resources.Show + " " + HighlightsHelper.nvHighlightClipCount + " " + Properties.Resources.Highlights : Properties.Resources.No_clips_available;
@@ -770,6 +777,9 @@ namespace Spark
 		}
 
 
+		/// <summary>
+		/// Enables or disables parts of the UI to match the current access code
+		/// </summary>
 		public void RefreshDiscordLogin()
 		{
 			string username = DiscordOAuth.DiscordUsername;
@@ -795,47 +805,45 @@ namespace Spark
 				}
 
 			}
+			
+			lastDiscordUsername = username;
+		}
 
-
-			if (Program.currentAccessCodeUsername != lastAccessCode || username != lastDiscordUsername || DiscordOAuth.availableAccessCodes.Count != lastAccessCodeCount)
+		/// <summary>
+		/// Regenerates the options in the dropdown for access codes.
+		/// </summary>
+		private void RefreshAccessCodeList()
+		{
+			accessCodeDropdownListenerActive = false;
+			string accessCodeLocalized = DiscordOAuth.Personal ? Properties.Resources.Personal : DiscordOAuth.AccessCode.username;
+			if (DiscordOAuth.availableAccessCodes.Count < 2)
 			{
-				accessCodeDropdownListenerActive = false;
-				string accessCodeLocal = Program.currentAccessCodeUsername == "Personal" ? Properties.Resources.Personal : Program.currentAccessCodeUsername;
-				if (DiscordOAuth.availableAccessCodes.Count < 2)
-				{
-					accessCodeLabel.Text = Properties.Resources.Mode + accessCodeLocal;
-				}
-				else
-				{
-					accessCodeLabel.Text = Properties.Resources.Mode;
-				}
-				casterToolsBox.Visibility = !Program.Personal ? Visibility.Visible : Visibility.Collapsed;
-
-
-				AccessCodesComboboxLiveWindow.Items.Clear();
-				foreach (Dictionary<string, string> code in DiscordOAuth.availableAccessCodes)
-				{
-					AccessCodesComboboxLiveWindow.Items.Add(code["username"]);
-				}
-
-				// if not logged in with discord
-				if (!AccessCodesComboboxLiveWindow.Items.Contains("Personal")) AccessCodesComboboxLiveWindow.Items.Add("Personal");
-
-				// set the dropdown value
-				AccessCodesComboboxLiveWindow.SelectedIndex = DiscordOAuth.GetAccessCodeIndex(SparkSettings.instance.accessCode);
-
-				// show or hide the dropdown entirely
-				AccessCodesComboboxLiveWindow.Visibility = DiscordOAuth.availableAccessCodes.Count < 2 ? Visibility.Collapsed : Visibility.Visible;
-
-				accessCodeDropdownListenerActive = true;
-
+				accessCodeLabel.Text = Properties.Resources.Mode + accessCodeLocalized;
+			}
+			else
+			{
+				accessCodeLabel.Text = Properties.Resources.Mode;
 			}
 
 
-			lastAccessCodeCount = DiscordOAuth.availableAccessCodes.Count;
-			lastAccessCode = Program.currentAccessCodeUsername;
-			lastDiscordUsername = username;
+			AccessCodesComboboxLiveWindow.Items.Clear();
+			foreach (DiscordOAuth.AccessCodeKey code in DiscordOAuth.availableAccessCodes)
+			{
+				AccessCodesComboboxLiveWindow.Items.Add(code.username);
+			}
 
+			// if not logged in with discord
+			if (!AccessCodesComboboxLiveWindow.Items.Contains("Personal")) AccessCodesComboboxLiveWindow.Items.Add("Personal");
+
+			// set the dropdown value
+			AccessCodesComboboxLiveWindow.SelectedIndex = DiscordOAuth.GetAccessCodeIndexByHash(SparkSettings.instance.accessCode);
+
+			// show or hide the dropdown entirely
+			AccessCodesComboboxLiveWindow.Visibility = DiscordOAuth.availableAccessCodes.Count < 2 ? Visibility.Collapsed : Visibility.Visible;
+			
+			casterToolsBox.Visibility = !DiscordOAuth.Personal ? Visibility.Visible : Visibility.Collapsed;
+			
+			accessCodeDropdownListenerActive = true;
 		}
 
 		private void AddSpeedBar()
@@ -2010,7 +2018,7 @@ namespace Spark
 				matchesAPIURL,
 				new Dictionary<string, string>() {
 					{ "x-api-key", DiscordOAuth.igniteUploadKey },
-					{ "access_code", DiscordOAuth.AccessCode }
+					{ "access_code", DiscordOAuth.AccessCode.series_name }
 				},
 				(responseJSON) =>
 				{
@@ -2304,9 +2312,8 @@ namespace Spark
 			if (accessCodeDropdownListenerActive)
 			{
 				string username = AccessCodesComboboxLiveWindow.SelectedValue.ToString();
-				Program.currentAccessCodeUsername = username;
-				SparkSettings.instance.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
-				SparkSettings.instance.Save();
+				DiscordOAuth.SetAccessCodeByUsername(username);
+				
 			}
 		}
 	}

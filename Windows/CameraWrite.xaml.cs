@@ -963,7 +963,7 @@ namespace Spark
 			Vector3 lastDiscVel = Vector3.Zero;
 
 
-			CameraController.SetCameraMode(CameraController.CameraMode.api);
+			CameraWriteController.SetCameraMode(CameraWriteController.CameraMode.api);
 
 			while (orbitingDisc)
 			{
@@ -1363,8 +1363,8 @@ namespace Spark
 				lastSetFov = output.fovy ?? 1;
 			}
 
-			CameraController.SetCameraMode(CameraController.CameraMode.api);
-			CameraController.SetCameraTransform(output);
+			CameraWriteController.SetCameraMode(CameraWriteController.CameraMode.api);
+			CameraWriteController.SetCameraTransform(output);
 		}
 
 		private bool xPlaneInputActive;

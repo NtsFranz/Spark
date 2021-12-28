@@ -63,7 +63,7 @@ namespace Spark
 
 		public static readonly HttpClient client = new HttpClient();
 
-		public static string currentAccessCodeUsername = "";
+		// public static string currentAccessCodeUsername = "";
 		public static string InstalledSpeakerSystemVersion = "";
 		public static bool IsSpeakerSystemUpdateAvailable = false;
 
@@ -161,8 +161,6 @@ namespace Spark
 		public const int SPECTATEME_PORT = 6720; 
 		public static bool overrideEchoVRPort;
 
-		public static bool Personal => currentAccessCodeUsername == "Personal" || string.IsNullOrEmpty(currentAccessCodeUsername);
-
 		public static bool spectateMe;
 		private static string lastSpectatedSessionId;
 
@@ -171,7 +169,7 @@ namespace Spark
 
 		public static SpeechSynthesizer synth;
 		public static ReplayClips replayClips;
-		public static CameraController CameraController;
+		public static CameraWriteController CameraWriteController;
 		public static CameraWrite cameraWriteWindow;
 
 		private static Thread statsThread;
@@ -186,7 +184,7 @@ namespace Spark
 		private static Thread IPSearchthread2;
 		public static PublisherSocket pubSocket;
 		public static OBS obs;
-		private static OverlayServer4 overlayServer4;
+		private static OverlayServer overlayServer;
 
 
 
@@ -375,7 +373,7 @@ namespace Spark
 
 				// make an exception for certain users
 				// Note that these usernames are not the access codes. Don't even try.
-				if (currentAccessCodeUsername == "ignitevr")
+				if (DiscordOAuth.AccessCode.series_name == "ignitevr")
 				{
 					ENABLE_LOGGER = false;
 				}
@@ -398,7 +396,7 @@ namespace Spark
 
 				synth = new SpeechSynthesizer();
 				// Initialize a new instance of the SpeechSynthesizer.
-				DiscordOAuth.authenticated += () =>
+				DiscordOAuth.Authenticated += () =>
 				{
 					synth = new SpeechSynthesizer();
 					// Configure the audio output.
@@ -409,13 +407,13 @@ namespace Spark
 				// this sets up the event listeners for replay clips
 				replayClips = new ReplayClips();
 
-				CameraController = new CameraController();
+				CameraWriteController = new CameraWriteController();
 				
 				
 				// web server asp.net
 				try
 				{
-					overlayServer4 = new OverlayServer4();
+					overlayServer = new OverlayServer();
 				}
 				catch (Exception e)
 				{
@@ -543,7 +541,7 @@ namespace Spark
 				liveWindow.Close();
 				liveWindow = null;
 			}
-			overlayServer4?.Stop();
+			overlayServer?.Stop();
 		}
 
 		static async Task GentleClose()
@@ -556,7 +554,7 @@ namespace Spark
 
 			running = false;
 
-			overlayServer4?.Stop();
+			overlayServer?.Stop();
 
 			while (atlasHostingThread != null && atlasHostingThread.IsAlive)
 			{
@@ -3069,7 +3067,7 @@ namespace Spark
 				UploadMatchBatch(true);
 			}
 			// if during-match upload
-			else if (manual || (!Personal && currentAccessCodeUsername != "ignitevr"))
+			else if (manual || (!DiscordOAuth.Personal && DiscordOAuth.AccessCode.series_name != "ignitevr"))
 			{
 				UploadMatchBatch(false);
 			}
@@ -3168,7 +3166,7 @@ namespace Spark
 				hash = sb.ToString().ToLower();
 			}
 
-			if (SparkSettings.instance.uploadToIgniteDB || currentAccessCodeUsername.Contains("VRML"))
+			if (SparkSettings.instance.uploadToIgniteDB || DiscordOAuth.AccessCode.series_name.Contains("vrml"))
 			{
 				_ = DoUploadMatchBatchIgniteDB(dataString, hash, matchData.firstFrame.client_name);
 			}
@@ -3185,7 +3183,7 @@ namespace Spark
 			client.DefaultRequestHeaders.Add("x-api-key", DiscordOAuth.igniteUploadKey);
 
 			client.DefaultRequestHeaders.Remove("access-code");
-			client.DefaultRequestHeaders.Add("access-code", DiscordOAuth.SeasonName);
+			client.DefaultRequestHeaders.Add("access-code", DiscordOAuth.AccessCode.series_name);
 
 			StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
 
@@ -3203,11 +3201,11 @@ namespace Spark
 
 		static async Task DoUploadEventFirebase(MatchData matchData, GoalData goalData)
 		{
-			if (SparkSettings.instance.uploadToFirestore && !Personal)
+			if (SparkSettings.instance.uploadToFirestore && !DiscordOAuth.Personal)
 			{
 				if (!TryCreateFirebaseDB()) return;
 
-				string season = DiscordOAuth.SeasonName;
+				string season = DiscordOAuth.AccessCode.series_name;
 
 				var match_data = matchData.ToDict();
 
@@ -3235,11 +3233,11 @@ namespace Spark
 
 		static async Task DoUploadEventFirebase(MatchData matchData, EventData eventData)
 		{
-			if (SparkSettings.instance.uploadToFirestore && !Personal)
+			if (SparkSettings.instance.uploadToFirestore && !DiscordOAuth.Personal)
 			{
 				if (!TryCreateFirebaseDB()) return;
 
-				string season = DiscordOAuth.SeasonName;
+				string season = DiscordOAuth.AccessCode.series_name;
 
 				Dictionary<string, object> match_data = matchData.ToDict();
 
@@ -3265,13 +3263,13 @@ namespace Spark
 
 		static async Task DoUploadMatchBatchFirebase(BatchOutputFormat data)
 		{
-			if (SparkSettings.instance.uploadToFirestore && !Personal)
+			if (SparkSettings.instance.uploadToFirestore && !DiscordOAuth.Personal)
 			{
 				if (!TryCreateFirebaseDB()) return;
 
 				WriteBatch batch = db.StartBatch();
 
-				string season = DiscordOAuth.SeasonName;
+				string season = DiscordOAuth.AccessCode.series_name;
 
 				// update the cumulative player stats
 				CollectionReference playersRef = db.Collection("series/" + season + "/player_stats");
@@ -4102,10 +4100,10 @@ namespace Spark
 			{
 				if (spectateMe) liveWindow.SetSpectateMeSubtitle("In Game!");
 
-				CameraController.SetNameplatesVisibility(!SparkSettings.instance.hideNameplates);
-				CameraController.SetUIVisibility(!SparkSettings.instance.hideEchoVRUI);
-				CameraController.SetMinimapVisibility(!SparkSettings.instance.alwaysHideMinimap);
-				CameraController.SetTeamsMuted(
+				CameraWriteController.SetNameplatesVisibility(!SparkSettings.instance.hideNameplates);
+				CameraWriteController.SetUIVisibility(!SparkSettings.instance.hideEchoVRUI);
+				CameraWriteController.SetMinimapVisibility(!SparkSettings.instance.alwaysHideMinimap);
+				CameraWriteController.SetTeamsMuted(
 					SparkSettings.instance.mutePlayerComms, 
 					SparkSettings.instance.mutePlayerComms
 				);
@@ -4117,15 +4115,15 @@ namespace Spark
 						break;
 					// sideline
 					case 1:
-						CameraController.SetCameraMode(CameraController.CameraMode.side);
+						CameraWriteController.SetCameraMode(CameraWriteController.CameraMode.side);
 						break;
 					// follow client
 					case 2:
-						if (spectateMe) CameraController.SpectatorCamFindPlayer();
+						if (spectateMe) CameraWriteController.SpectatorCamFindPlayer();
 						break;
 					// follow specific player
 					case 3:
-						CameraController.SpectatorCamFindPlayer(SparkSettings.instance.followPlayerName);
+						CameraWriteController.SpectatorCamFindPlayer(SparkSettings.instance.followPlayerName);
 						break;
 				}
 			}

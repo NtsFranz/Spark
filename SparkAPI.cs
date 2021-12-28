@@ -10,7 +10,7 @@ namespace Spark
 
 		public static void MapRoutes(IEndpointRouteBuilder endpoints)
 		{
-				//string file = OverlayServer4.ReadResource("api_index.html");
+				//string file = OverlayServer.ReadResource("api_index.html");
 				//await context.Response.WriteAsync(file);
 
 			endpoints.MapGet("/api/go_to_waypoint/{index}", async context =>

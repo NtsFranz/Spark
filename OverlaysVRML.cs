@@ -28,9 +28,9 @@ namespace Spark
 
 			overlayData = data;
 
-			//overlayData = await OverlayServer4.GetOverlays("vrml");
+			//overlayData = await OverlayServer.GetOverlays("vrml");
 #else
-			overlayData ??= await OverlayServer4.GetOverlays("vrml");
+			overlayData ??= await OverlayServer.GetOverlays("vrml");
 #endif
 		}
 
@@ -38,7 +38,7 @@ namespace Spark
 		{
 			endpoints.MapGet("/vrml", async context =>
 			{
-				if (DiscordOAuth.AccessCode.Contains("vrml"))
+				if (DiscordOAuth.AccessCode.series_name.Contains("vrml"))
 				{
 					await FetchOverlayData();
 					if (overlayData != null && overlayData.ContainsKey("index.html"))
@@ -59,7 +59,7 @@ namespace Spark
 			});
 			endpoints.MapGet("/vrml/scoreboard", async context =>
 			{
-				if (DiscordOAuth.AccessCode.Contains("vrml"))
+				if (DiscordOAuth.AccessCode.series_name.Contains("vrml"))
 				{
 					await FetchOverlayData();
 					if (overlayData != null && overlayData.ContainsKey("scoreboard.html"))
@@ -97,7 +97,7 @@ namespace Spark
 							};
 
 
-						List<List<Dictionary<string, object>>> matchStats = OverlayServer4.GetMatchStats();
+						List<List<Dictionary<string, object>>> matchStats = OverlayServer.GetMatchStats();
 
 						string[] teamHTMLs = new string[2];
 						for (int i = 0; i < 2; i++)
@@ -182,7 +182,7 @@ namespace Spark
 
 			endpoints.MapGet("/vrml/disc_position_heatmap", async context =>
 			{
-				if (DiscordOAuth.AccessCode.Contains("vrml"))
+				if (DiscordOAuth.AccessCode.series_name.Contains("vrml"))
 				{
 					await FetchOverlayData();
 					string css = "";
@@ -191,7 +191,7 @@ namespace Spark
 						css = overlayData["disc_position_heatmap.css"];
 					}
 
-					await OverlayServer4.GenerateDiscPositionHeatMap(context, css);
+					await OverlayServer.GenerateDiscPositionHeatMap(context, css);
 				}
 				else
 				{
@@ -204,7 +204,7 @@ namespace Spark
 			endpoints.MapGet("/vrml/minimap",
 				async context =>
 				{
-					if (DiscordOAuth.AccessCode.Contains("vrml"))
+					if (DiscordOAuth.AccessCode.series_name.Contains("vrml"))
 					{
 						await FetchOverlayData();
 						if (overlayData.ContainsKey("minimap.html"))
@@ -223,7 +223,7 @@ namespace Spark
 			endpoints.MapGet("/vrml/most_recent_goal",
 				async context =>
 				{
-					if (DiscordOAuth.AccessCode.Contains("vrml"))
+					if (DiscordOAuth.AccessCode.series_name.Contains("vrml"))
 					{
 						await FetchOverlayData();
 						if (overlayData.ContainsKey("most_recent_goal.html"))
@@ -242,7 +242,7 @@ namespace Spark
 			endpoints.MapGet("/vrml/midmatch_events",
 				async context =>
 				{
-					if (DiscordOAuth.AccessCode.Contains("vrml"))
+					if (DiscordOAuth.AccessCode.series_name.Contains("vrml"))
 					{
 						await FetchOverlayData();
 						if (overlayData.ContainsKey("midmatch_events.html"))

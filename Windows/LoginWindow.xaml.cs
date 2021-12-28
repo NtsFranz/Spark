@@ -13,12 +13,12 @@ namespace Spark
 			InitializeComponent();
 
 			Refresh();
-			DiscordOAuth.authenticated += Refresh;
+			DiscordOAuth.Authenticated += Refresh;
 		}
 
 		~LoginWindow()
 		{
-			DiscordOAuth.authenticated -= Refresh;
+			DiscordOAuth.Authenticated -= Refresh;
 		}
 
 		public void Refresh()
@@ -26,15 +26,15 @@ namespace Spark
 			Dispatcher.Invoke(() =>
 			{
 				accessCodeComboBox.Items.Clear();
-				foreach (Dictionary<string, string> code in DiscordOAuth.availableAccessCodes)
+				foreach (DiscordOAuth.AccessCodeKey code in DiscordOAuth.availableAccessCodes)
 				{
-					accessCodeComboBox.Items.Add(code["username"]);
+					accessCodeComboBox.Items.Add(code.username);
 				}
 
 				// if not logged in with discord
 				if (!accessCodeComboBox.Items.Contains("Personal")) accessCodeComboBox.Items.Add("Personal");
 
-				accessCodeComboBox.SelectedIndex = DiscordOAuth.GetAccessCodeIndex(SparkSettings.instance.accessCode);
+				accessCodeComboBox.SelectedIndex = DiscordOAuth.GetAccessCodeIndexByHash(SparkSettings.instance.accessCode);
 
 				if (string.IsNullOrEmpty(DiscordOAuth.DiscordUsername))
 				{
@@ -52,16 +52,7 @@ namespace Spark
 		private void StartButtonClicked(object sender, RoutedEventArgs e)
 		{
 			string username = accessCodeComboBox.SelectedValue.ToString();
-			Program.currentAccessCodeUsername = username;
-			SparkSettings.instance.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
-			SparkSettings.instance.Save();
-
-			if (Program.liveWindow == null)
-			{
-				Program.liveWindow = new LiveWindow();
-				Program.liveWindow.Closed += (sender, args) => Program.liveWindow = null;
-				Program.liveWindow.Show();
-			}
+			DiscordOAuth.SetAccessCodeByUsername(username);
 
 			Close();
 		}
@@ -80,8 +71,7 @@ namespace Spark
 			Refresh();
 
 			string username = accessCodeComboBox.SelectedValue.ToString();
-			Program.currentAccessCodeUsername = username;
-			SparkSettings.instance.accessCode = SecretKeys.Hash(DiscordOAuth.AccessCode);
+			DiscordOAuth.SetAccessCodeByUsername(username);
 		}
 	}
 }
