@@ -389,4 +389,10 @@
     <Folder Include="SettingsBindings" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ButterReplays, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Butter-Replays\Butter\bin\Release\net5.0\ButterReplays.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

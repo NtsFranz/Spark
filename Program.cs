@@ -29,7 +29,7 @@ using NetMQ.Sockets;
 using NetMQ;
 using Spark.Data_Containers.ZMQ_Messages;
 using Newtonsoft.Json.Linq;
-//using ButterReplays;
+using ButterReplays;
 
 //using System.Windows.Forms;
 
@@ -110,8 +110,14 @@ namespace Spark
 		public static ConcurrentStack<Frame> milkFramesToSave = new ConcurrentStack<Frame>();
 		public static ConcurrentQueue<string> replayBufferJSON = new ConcurrentQueue<string>();
 		public static ConcurrentQueue<DateTime> replayBufferTimestamps = new ConcurrentQueue<DateTime>();
+
+		/// <summary>
+		/// Called by the fetch thread when a frame is successfully fetched
+		/// params: timestamp, session string, bones string (or null)
+		/// </summary>
+		public Action<DateTime, string, string> FrameFetched;
 		// public static Milk milkData;
-		//private static ButterFile butter;
+		private static ButterFile butter;
 
 		private static bool lastJSONUsed;
 
@@ -129,10 +135,10 @@ namespace Spark
 		static bool inPostMatch = false;
 
 
-		public static int StatsHz => statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0];
+		public static float StatsHz => statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0];
 
-		private static readonly List<int> statsDeltaTimes = new() { 16, 33 };
-		private static readonly List<int> fullDeltaTimes = new() { 16, 33, 100 };
+		private static readonly List<float> statsDeltaTimes = new List<float> { 16.6666666f, 33.3333333f };
+		private static readonly List<float> fullDeltaTimes = new List<float> { 16.6666666f, 33.3333333f, 100 };
 
 		public static string fileName;
 
@@ -627,6 +633,24 @@ namespace Spark
 			}
 		}
 
+		// public static async Task FetchThreadNew()
+		// {
+		// 	HttpClient fetchClient = new HttpClient();
+		// 	
+		// 	DateTime lastFetch = DateTime.Now;
+		// 	while (running)
+		// 	{
+		// 		string raw = await fetchClient.GetStringAsync($"http://{echoVRIP}:{echoVRPort}/session");
+		// 		lastFetch = DateTime.Now;
+		// 		DateTime next = lastFetch.AddMilliseconds(StatsHz);
+		// 		while (lastFetch > next)
+		// 		{
+		// 			next = next.AddMilliseconds(StatsHz);
+		// 		}
+		// 		await Task.Delay(DateTime.Now - lastFetch.AddMilliseconds(StatsHz));
+		// 	}
+		// }
+
 		/// <summary>
 		/// Thread that actually does the GET requests or reading from file. 
 		/// Once a line has been used, this thread gets a new one.
@@ -655,6 +679,8 @@ namespace Spark
 					}
 					catch (Exception e)
 					{
+						
+						// TODO move this to processing thread
 						if (lastFrame != null && inGame)
 						{
 							MatchEventZMQMessage msg = new MatchEventZMQMessage("LeaveMatch", "sessionid", lastFrame.sessionid);
@@ -888,7 +914,7 @@ namespace Spark
 					}
 
 
-					Thread.Sleep(statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0]);
+					Thread.Sleep((int)statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0]);
 				}
 				else
 				{
@@ -931,42 +957,42 @@ namespace Spark
 		// }
 		
 		
-		//private static void ButterThread()
-		//{
-		//	butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
+		private static void ButterThread()
+		{
+			butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
 
 
-		//	int lastNumChunks = 0;
-		//	ulong lastFetchFrameIndex = 0;
-		//	while (running)
-		//	{
-		//		if (fetchFrameIndex > lastFetchFrameIndex)
-		//		{
-		//			butter.AddFrame(lastFrame);
-		//			if (lastNumChunks != butter.NumChunks())
-		//			{
-		//				WriteOutButterFile();
-		//			}
-		//			lastNumChunks = butter.NumChunks();
+			int lastNumChunks = 0;
+			ulong lastFetchFrameIndex = 0;
+			while (running)
+			{
+				if (fetchFrameIndex > lastFetchFrameIndex)
+				{
+					butter.AddFrame(lastFrame);
+					if (lastNumChunks != butter.NumChunks())
+					{
+						WriteOutButterFile();
+					}
+					lastNumChunks = butter.NumChunks();
 
-		//			lastFetchFrameIndex = fetchFrameIndex;
-		//		}
+					lastFetchFrameIndex = fetchFrameIndex;
+				}
 
-		//		Thread.Sleep(5);
-		//	}
-		//}
+				Thread.Sleep(5);
+			}
+		}
 
-		//private static void WriteOutButterFile()
-		//{
-		//	lock (butterWritingLock)
-		//	{
-		//		byte[] butterBytes = butter?.GetBytes();
-		//		if (butterBytes != null && butterBytes.Length > 0)
-		//		{
-		//			File.WriteAllBytes(Path.Combine(SparkSettings.instance.saveFolder, fileName + ".butter"), butterBytes);
-		//		}
-		//	}
-		//}
+		private static void WriteOutButterFile()
+		{
+			lock (butterWritingLock)
+			{
+				byte[] butterBytes = butter?.GetBytes();
+				if (butterBytes != null && butterBytes.Length > 0)
+				{
+					File.WriteAllBytes(Path.Combine(SparkSettings.instance.saveFolder, fileName + ".butter"), butterBytes);
+				}
+			}
+		}
 
 		/// <summary>
 		/// Thread for logging all JSON data
@@ -1043,7 +1069,7 @@ namespace Spark
 					}
 				}
 
-				Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
+				Thread.Sleep((int)fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
 			}
 
 			// causes a final zip if that's needed
