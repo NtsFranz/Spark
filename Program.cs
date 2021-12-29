@@ -104,6 +104,7 @@ namespace Spark
 
 		public static string lastDateTimeString;
 		public static string lastJSON;
+		public static string lastBonesJSON;
 		public static ulong fetchFrameIndex = 0;
 		public static ConcurrentQueue<string> lastJSONQueue = new ConcurrentQueue<string>();
 		public static ConcurrentQueue<string> lastDateTimeStringQueue = new ConcurrentQueue<string>();
@@ -113,15 +114,21 @@ namespace Spark
 
 		/// <summary>
 		/// Called by the fetch thread when a frame is successfully fetched
+		/// Subscribe to this for raw json data. Only use this in a context that doesn't care about the deserialzed frames.
 		/// params: timestamp, session string, bones string (or null)
 		/// </summary>
-		public Action<DateTime, string, string> FrameFetched;
+		public static Action<DateTime, string, string> FrameFetched;
+		/// <summary>
+		/// Called when a frame is finished with conversion.
+		/// Subscribe to this for Frame objects
+		/// </summary>
+		public static Action<Frame> NewFrame;
+
 		// public static Milk milkData;
 		private static ButterFile butter;
 
-		private static bool lastJSONUsed;
-
 		private static readonly object lastJSONLock = new object();
+		private static readonly object lastFrameLock = new object();
 		private static readonly object fileWritingLock = new object();
 		private static readonly object butterWritingLock = new object();
 
@@ -173,19 +180,16 @@ namespace Spark
 		public static string hostedAtlasSessionId;
 		public static LiveWindow.AtlasWhitelist atlasWhitelist = new();
 
-		public static SpeechSynthesizer synth;
+		public static TTS synth;
 		public static ReplayClips replayClips;
-		public static CameraWriteController CameraWriteController;
+		public static CameraWriteController cameraWriteController;
 		public static CameraWrite cameraWriteWindow;
 
-		private static Thread statsThread;
-		private static Thread fullLogThread;
+		//private static CancellationTokenSource autorestartCancellation;
+		////private static CancellationTokenSource fetchThreadCancellation;
 		private static Thread autorestartThread;
-		private static Thread fetchThread;
 		private static Thread liveReplayThread;
 		public static Thread atlasHostingThread;
-		private static Thread milkThread;
-		private static Thread butterThread;
 		private static Thread IPSearchthread1;
 		private static Thread IPSearchthread2;
 		public static PublisherSocket pubSocket;
@@ -257,12 +261,15 @@ namespace Spark
 
 		#endregion
 
+
 		private static App app;
 
 		public static void Main(string[] args, App app)
 		{
 			try
 			{
+				Logger.Init();
+
 				Program.app = app;
 				if (args.Contains("-port"))
 				{
@@ -301,8 +308,6 @@ namespace Spark
 					//return; // wait for the dialog to quit the program
 				}
 
-				obs = new OBS();
-
 
 
 				try
@@ -325,12 +330,16 @@ namespace Spark
 					IsSpeakerSystemUpdateAvailable = latestSpeakerSystemVer[1] != InstalledSpeakerSystemVersion;
 				}
 
+
 				SparkSettings.instance.sparkExeLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Spark.exe");
 				SparkSettings.instance.Save();
 
-				RegisterUriScheme("ignitebot", "IgniteBot Protocol");
+
 				RegisterUriScheme("atlas", "ATLAS Protocol");
 				RegisterUriScheme("spark", "Spark Protocol");
+
+				obs = new OBS();
+
 
 				// if logged in with discord
 				if (!string.IsNullOrEmpty(SparkSettings.instance.discordOAuthRefreshToken))
@@ -346,19 +355,12 @@ namespace Spark
 				liveWindow.Closed += (_, _) => liveWindow = null;
 				liveWindow.Show();
 
+
 				if (!SparkSettings.instance.firstTimeSetupShown)
 				{
 					ToggleWindow(typeof(FirstTimeSetupWindow));
 					SparkSettings.instance.firstTimeSetupShown = true;
 				}
-				// else if (!SparkSettings.instance.ignitebot_spark_upgrade_message_shown)
-				// {
-				// 	MessageBox box = new MessageBox(Resources.spark_upgrade_message);
-				// 	box.Show();
-				// 	box.Owner = liveWindow;
-				// 	box.Height = 350;
-				// 	SparkSettings.instance.ignitebot_spark_upgrade_message_shown = true;
-				// }
 
 				// Check for command-line flags
 				if (args.Contains("-slowmode"))
@@ -391,6 +393,7 @@ namespace Spark
 
 				client.BaseAddress = new Uri(APIURL);
 
+				// TODO only enable Highlights when game is open
 				if (HighlightsHelper.isNVHighlightsEnabled)
 				{
 					HighlightsHelper.SetupNVHighlights();
@@ -400,22 +403,24 @@ namespace Spark
 					HighlightsHelper.InitHighlightsSDK(true);
 				}
 
-				synth = new SpeechSynthesizer();
-				// Initialize a new instance of the SpeechSynthesizer.
+				// TODO don't initialize twice and get this to work without discord login maybe
+				synth = new TTS();
+
 				DiscordOAuth.Authenticated += () =>
 				{
-					synth = new SpeechSynthesizer();
+					synth = new TTS();
 					// Configure the audio output.
 					synth.SetOutputToDefaultAudioDevice();
 					synth.SetRate(SparkSettings.instance.TTSSpeed);
 				};
 
+
 				// this sets up the event listeners for replay clips
 				replayClips = new ReplayClips();
 
-				CameraWriteController = new CameraWriteController();
-				
-				
+				// Set up listeners for camera-related events
+				cameraWriteController = new CameraWriteController();
+
 				// web server asp.net
 				try
 				{
@@ -423,22 +428,8 @@ namespace Spark
 				}
 				catch (Exception e)
 				{
-					Logger.Init();
 					Logger.LogRow(LogType.Error, e.ToString());
 				}
-
-
-
-
-				// Server Score Tests - this works
-				//float out1 = CalculateServerScore(new List<int> { 34, 78, 50, 53 }, new List<int> { 63, 562, 65, 81 });   // fail too high
-				//float out2 = CalculateServerScore(new List<int> { 29, 60, 59, 30 }, new List<int> { 30, 70, 15, 26 });    // 90.54
-				//float out3 = CalculateServerScore(new List<int> { 61, 59, 69, 67 }, new List<int> { 73, 57, 50, 51 });    // 92.33
-
-				JoinedGame += (_) => { UseCameraControlKeys(); };
-				PlayerJoined += (_, _, _) => { UseCameraControlKeys(); };
-				PlayerLeft += (_, _, _) => { UseCameraControlKeys(); };
-				PlayerSwitchedTeams += (_, _, _, _) => { UseCameraControlKeys(); };
 
 
 				UpdateEchoExeLocation();
@@ -448,21 +439,29 @@ namespace Spark
 				spectateMe = SparkSettings.instance.spectateMeOnByDefault;
 
 
-				statsThread = new Thread(StatsThread);
-				statsThread.IsBackground = true;
-				statsThread.Start();
 
-				fullLogThread = new Thread(ReplayThread);
-				fullLogThread.IsBackground = true;
-				fullLogThread.Start();
+				NewFrame += ProcessFrame;
 
-				autorestartThread = new Thread(AutorestartThread);
-				autorestartThread.IsBackground = true;
-				autorestartThread.Start();
+				//fullLogThread = new Thread(ReplayThread);
+				//fullLogThread.IsBackground = true;
+				//fullLogThread.Start();
 
-				fetchThread = new Thread(FetchThread);
-				fetchThread.IsBackground = true;
-				fetchThread.Start();
+				//autorestartThread = new Thread(AutorestartThread);
+				//autorestartThread.IsBackground = true;
+				//autorestartThread.Start();
+
+				CancellationTokenSource autorestartCancellation = new CancellationTokenSource();
+				CancellationToken autorestartCancellationToken = autorestartCancellation.Token;
+				Task.Run(AutorestartTask, autorestartCancellationToken);
+
+				//fetchThread = new Thread(FetchThread);
+				//fetchThread.IsBackground = true;
+				//fetchThread.Start();
+
+				CancellationTokenSource fetchThreadCancellation= new CancellationTokenSource();
+				CancellationToken fetchThreadCancellationToken = fetchThreadCancellation.Token;
+				Task.Run(FetchThreadNew, fetchThreadCancellationToken);
+
 
 				liveReplayThread = new Thread(LiveReplayHostingThread);
 				liveReplayThread.IsBackground = true;
@@ -477,7 +476,7 @@ namespace Spark
 				//butterThread.Start();
 
 
-				Thread setLoadingTips = new Thread(() =>
+				Task.Run(() =>
 				{
 					try
 					{
@@ -502,21 +501,38 @@ namespace Spark
 					}
 					catch (Exception e)
 					{
-						Logger.Init();
 						Logger.LogRow(LogType.Error, e.ToString());
 					}
 				});
-				setLoadingTips.Start();
-
-				Logger.Init();
 
 				//HighlightsHelper.CloseNVHighlights();
 
 				AutoUploadTabletStats();
 
-			} catch (Exception e)
+
+				#region Add Listeners
+
+				LeftGame += (f) =>
+				{
+					if (spectateMe)
+					{
+						try
+						{
+							KillEchoVR($"-httpport {SPECTATEME_PORT}");
+							lastSpectatedSessionId = string.Empty;
+						}
+						catch (Exception e)
+						{
+							LogRow(LogType.Error, $"Broke something in the spectator follow system.\n{e}");
+						}
+					}
+				};
+
+				#endregion
+
+			}
+			catch (Exception e)
 			{
-				Logger.Init();
 				Logger.LogRow(LogType.Error, e.ToString());
 				Quit();
 			}
@@ -568,16 +584,24 @@ namespace Spark
 				await Task.Delay(10);
 			}
 
-			while (fullLogThread != null && fullLogThread.IsAlive)
-			{
-				closingWindow.label.Content = Resources.Compressing_Replay_File___;
-				await Task.Delay(10);
-			}
-			while (statsThread != null && statsThread.IsAlive)
-			{
-				closingWindow.label.Content = Resources.Closing___;
-				await Task.Delay(10);
-			}
+
+			closingWindow.label.Content = Resources.Closing___;
+
+
+			autorestartCancellation.Cancel();
+			fetchThreadCancellation.Cancel();
+
+			//while (fullLogThread != null && fullLogThread.IsAlive)
+			//{
+			//	closingWindow.label.Content = Resources.Compressing_Replay_File___;
+			//	await Task.Delay(10);
+			//}
+			//while (statsThread != null && statsThread.IsAlive)
+			//{
+			//	closingWindow.label.Content = Resources.Closing___;
+			//	await Task.Delay(10);
+			//}
+
 			closingWindow.label.Content = Resources.Closing_NVIDIA_Highlights___;
 			HighlightsHelper.CloseNVHighlights();
 
@@ -633,28 +657,125 @@ namespace Spark
 			}
 		}
 
-		// public static async Task FetchThreadNew()
-		// {
-		// 	HttpClient fetchClient = new HttpClient();
-		// 	
-		// 	DateTime lastFetch = DateTime.Now;
-		// 	while (running)
-		// 	{
-		// 		string raw = await fetchClient.GetStringAsync($"http://{echoVRIP}:{echoVRPort}/session");
-		// 		lastFetch = DateTime.Now;
-		// 		DateTime next = lastFetch.AddMilliseconds(StatsHz);
-		// 		while (lastFetch > next)
-		// 		{
-		// 			next = next.AddMilliseconds(StatsHz);
-		// 		}
-		// 		await Task.Delay(DateTime.Now - lastFetch.AddMilliseconds(StatsHz));
-		// 	}
-		// }
+		public static async Task FetchThreadNew()
+		{
+			HttpClient fetchClient = new HttpClient();
+
+			DateTime fetchTime = DateTime.UtcNow;
+			while (running)
+			{
+				try
+				{
+					// fetch the session or bones data
+					fetchTime = DateTime.UtcNow;
+					List<Task<string>> tasks = new List<Task<string>>();
+					tasks.Add(fetchClient.GetStringAsync($"http://{echoVRIP}:{echoVRPort}/session"));
+					if (SparkSettings.instance.fetchBones)
+					{
+						tasks.Add(fetchClient.GetStringAsync($"http://{echoVRIP}:{echoVRPort}/player_bones"));
+					}
+
+					string[] results = await Task.WhenAll(tasks);
+					if (results.Length == 1)
+					{
+						results = new string[] {results[0], null};
+					}
+
+					// add this data to the public variable
+					lock (lastJSONLock)
+					{
+						lastJSON = results[0];
+						lastBonesJSON = results[1];
+					}
+
+					DateTime frameTime = DateTime.UtcNow;
+
+					// tell the processing methods that stuff is available
+					_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, results[0], results[1]); });
+
+					// tell the processing methods that stuff is available
+					_ = Task.Run(() => { 
+						Frame f = ConvertRawFrame(frameTime, results[0], results[1]);
+
+						if (f != null)
+						{
+
+							ProcessFrame(f);
+
+							NewFrame?.Invoke(f);
+						} else
+						{
+							LeftGame?.Invoke(f);
+						}
+						lock (lastFrameLock)
+						{
+							// for the very first frame, copy it to the other previous frames
+							lastFrame ??= f;
+
+							lastLastLastFrame = lastLastFrame;
+							lastLastFrame = lastFrame;
+							lastFrame = f;
+						}
+					});
+				}
+				catch (HttpRequestException)
+				{
+					// Not connected to game
+					_ = Task.Run(() => {
+
+						// left game
+						if (!inGame && wasInGame)
+						{
+							try
+							{
+								if (lastFrame != null && lastFrame.inLobby)
+								{
+									LeftLobby?.Invoke(lastFrame);
+								}
+								else
+								{
+									LeftGame?.Invoke(lastFrame);
+								}
+							}
+							catch (Exception exp)
+							{
+								LogRow(LogType.Error, "Error processing action", exp.ToString());
+							}
+						}
+					});
+
+					// add this data to the public variable
+					lock (lastJSONLock)
+					{
+						lastJSON = null;
+						lastBonesJSON = null;
+					}
+				}
+				catch (Exception e)
+				{
+					LogRow(LogType.Error, "Error in fetch request. " + e.ToString());
+				}
+				wasInGame = inGame;
+
+				// set up timing for next fetch
+				DateTime next = fetchTime.AddMilliseconds(StatsHz);
+				int counter = 0;
+				while (fetchTime > next)
+				{
+					counter++;
+					next = next.AddMilliseconds(StatsHz);
+				}
+				LogRow(LogType.Error, $"Skipped {counter:N} frames.");
+
+				await Task.Delay(next - DateTime.UtcNow);
+			}
+		}
 
 		/// <summary>
 		/// Thread that actually does the GET requests or reading from file. 
 		/// Once a line has been used, this thread gets a new one.
 		/// </summary>
+		[Obsolete("Use FetchFrameNew instead")]
 		public static void FetchThread()
 		{
 			while (running)
@@ -749,45 +870,74 @@ namespace Spark
 			}
 		}
 
+
+
+
 		/// <summary>
-		/// Thread for logging only stats
+		/// Called when there is newly fetched API data 
 		/// </summary>
-		public static void StatsThread()
+		private static Frame ConvertRawFrame(DateTime timestamp, string session, string bones)
 		{
-			// TODO these times aren't used, but we could do a difference on before and after times to 
-			// calculate an accurate deltaTime. Right now the execution time isn't taken into account.
+			if (session == null) return null;
 
-			Thread.Sleep(50);
+			// Convert session contents into Frame class.
+			Frame f = JsonConvert.DeserializeObject<Frame>(session);
 
-			// Session pull loop.
-			while (running)
+			if (f == null) return null;
+
+			// add the recorded time
+			f.recorded_time = timestamp;
+
+			// prepare the raw api conversion for use
+			f.teams[0].color = Team.TeamColor.blue;
+			f.teams[1].color = Team.TeamColor.orange;
+			f.teams[2].color = Team.TeamColor.spectator;
+
+			// make sure player lists are not null
+			f.teams[0].players ??= new List<Player>();
+			f.teams[1].players ??= new List<Player>();
+			f.teams[2].players ??= new List<Player>();
+
+			return f;
+		}
+
+
+		private static void ProcessFrame(Frame frame)
+		{
+			try
 			{
-				bool joinedGame = inGame && !wasInGame;
-				if (!inGame && wasInGame)
+				// make sure there is a valid echovr path saved
+				if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
 				{
-					// left game
+					UpdateEchoExeLocation();
+				}
+
+				if (matchData == null)
+				{
+					matchData = new MatchData(frame, CustomId);
+					UpdateStatsIngame(frame);
+				}
+
+				try
+				{
+					GenerateEvents(frame);
+				}
+				catch (Exception ex)
+				{
+					LogRow(LogType.Error, $"Error in ProcessFrame. Please catch inside.\n{ex}");
+				}
+
+				if (!wasInGame)
+				{
 					try
 					{
-						if (lastFrame != null && lastFrame.inLobby)
+						if (frame.inLobby)
 						{
-							LeftLobby?.Invoke(lastFrame);
+							JoinedLobby?.Invoke(frame);
 						}
 						else
 						{
-							if (spectateMe)
-							{
-								try
-								{
-									KillEchoVR($"-httpport {SPECTATEME_PORT}");
-									lastSpectatedSessionId = string.Empty;
-								}
-								catch (Exception e)
-								{
-									LogRow(LogType.Error, $"Broke something in the spectator follow system.\n{e}");
-								}
-							}
-
-							LeftGame?.Invoke(lastFrame);
+							JoinedGame?.Invoke(frame);
 						}
 					}
 					catch (Exception exp)
@@ -795,131 +945,10 @@ namespace Spark
 						LogRow(LogType.Error, "Error processing action", exp.ToString());
 					}
 				}
-				wasInGame = inGame;
-
-				if (inGame)
-				{
-					try
-					{
-						string json, recordedTime;
-						
-
-						lock (lastJSONLock)
-						{
-							// no new frame to read
-							if (lastJSON == null || lastJSONUsed)
-							{
-								continue;
-							}
-
-							lastJSONUsed = true;
-							json = lastJSON;
-							recordedTime = lastDateTimeString;
-						}
-
-						// make sure there is a valid echovr path saved
-						if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
-						{
-							UpdateEchoExeLocation();
-						}
-
-
-						// Convert session contents into game_instance class.
-						Frame game_Instance = JsonConvert.DeserializeObject<Frame>(json);
-
-						// add the recorded time
-						if (recordedTime != string.Empty)
-						{
-							if (!DateTime.TryParse(recordedTime, out DateTime dateTime))
-							{
-								DateTime.TryParseExact(recordedTime, "yyyy-MM-dd_HH-mm-ss",
-									CultureInfo.InvariantCulture, DateTimeStyles.None, out dateTime);
-							}
-
-							game_Instance.recorded_time = dateTime;
-						} else
-						{
-							game_Instance.recorded_time = DateTime.UtcNow;
-						}
-
-						// prepare the raw api conversion for use
-						game_Instance.teams[0].color = Team.TeamColor.blue;
-						game_Instance.teams[1].color = Team.TeamColor.orange;
-						game_Instance.teams[2].color = Team.TeamColor.spectator;
-
-						game_Instance.teams[0].players ??= new List<Player>();
-						game_Instance.teams[1].players ??= new List<Player>();
-						game_Instance.teams[2].players ??= new List<Player>();
-
-						// for the very first frame, duplicate it to the "previous" frame
-						if (lastFrame == null)
-						{
-							DiscordRichPresence.lastDiscordPresenceTime = DateTime.Now;
-						}
-
-						if (matchData == null)
-						{
-							matchData = new MatchData(game_Instance, CustomId);
-							UpdateStatsIngame(game_Instance);
-						}
-
-						// milkFramesToSave.Clear();
-						// milkFramesToSave.Push(game_Instance);
-
-						try
-						{
-							ProcessFrame(game_Instance);
-						}
-						catch (Exception ex)
-						{
-							LogRow(LogType.Error, $"Error in ProcessFrame. Please catch inside.\n{ex}");
-						}
-
-						if (joinedGame)
-						{
-							try
-							{
-								if (game_Instance.inLobby)
-								{
-									JoinedLobby?.Invoke(game_Instance);
-								}
-								else
-								{
-									JoinedGame?.Invoke(game_Instance);
-								}
-							}
-							catch (Exception exp)
-							{
-								LogRow(LogType.Error, "Error processing action", exp.ToString());
-							}
-						}
-
-						// for the very first frame, duplicate it to the "previous" frame
-						if (game_Instance != null && game_Instance.game_status != "")
-						{
-							lastFrame ??= game_Instance;
-							lastLastLastFrame = lastLastFrame;
-							lastLastFrame = lastFrame;
-							lastFrame = game_Instance;
-						}
-
-						//if (DateTime.Now - DiscordRichPresence.lastDiscordPresenceTime > TimeSpan.FromSeconds(1))
-						//{
-						//	DiscordRichPresence.ProcessDiscordPresence(game_Instance);
-						//}
-					}
-					catch (Exception ex)
-					{
-						LogRow(LogType.Error, "Big oopsie. Please catch inside. " + ex);
-					}
-
-
-					Thread.Sleep((int)statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0]);
-				}
-				else
-				{
-					Thread.Sleep(1000);
-				}
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, "Big oopsie. Please catch inside. " + ex);
 			}
 		}
 
@@ -955,8 +984,8 @@ namespace Spark
 		// 		Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
 		// 	}
 		// }
-		
-		
+
+
 		private static void ButterThread()
 		{
 			butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
@@ -1079,7 +1108,7 @@ namespace Spark
 		/// <summary>
 		/// Thread to detect crashes and restart EchoVR
 		/// </summary>
-		public static void AutorestartThread()
+		public static async Task AutorestartTask()
 		{
 			lastDataTime = DateTime.Now;
 
@@ -1088,48 +1117,18 @@ namespace Spark
 			{
 				if (SparkSettings.instance.autoRestart)
 				{
-					// only start worrying once 15 seconds have passed
-					if (DateTime.Compare(lastDataTime.AddMinutes(.25f), DateTime.Now) < 0)
-					{
-						LogRow(LogType.Info, "Time left until restart: " +
-											 (lastDataTime.AddMinutes(minTillAutorestart) - DateTime.Now).Minutes +
-											 " min " +
-											 (lastDataTime.AddMinutes(minTillAutorestart) - DateTime.Now).Seconds +
-											 " sec");
-
 						// If `minTillAutorestart` minutes have passed, restart EchoVR
 						if (DateTime.Compare(lastDataTime.AddMinutes(minTillAutorestart), DateTime.Now) < 0)
 						{
-							// Get process name
-							Process[] process = GetEchoVRProcess();
-							var echoPath = SparkSettings.instance.echoVRPath;
-
-							if (process.Length > 0)
-							{
-								var echo_ = process[0];
-								// Get process path
-								// close client
-								echo_.Kill();
-								// restart client
-								Process.Start(echoPath, "-spectatorstream" + (SparkSettings.instance.capturevp2 ? " -capturevp2" : ""));
-							}
-							else if (echoPath != null && echoPath != "")
-							{
-								// restart client
-								Process.Start(echoPath, "-spectatorstream");
-							}
-							else
-							{
-								LogRow(LogType.Error, "Couldn't restart EchoVR because it isn't running");
-							}
-
+							KillEchoVR();
+						StartEchoVR(JoinType.Spectator, noovr: SparkSettings.instance.spectatorStreamNoOVR, combat: SparkSettings.instance.spectatorStreamCombat);
+							
 							// reset timer
 							lastDataTime = DateTime.Now;
 						}
-					}
 				}
 
-				Thread.Sleep(1000);
+				await Task.Delay(1000);
 			}
 		}
 
@@ -1237,8 +1236,14 @@ namespace Spark
 			}
 		}
 
-		public static void KillEchoVR(string findInArgs = null)
+		/// <summary>
+		/// Kills EchoVR if it is open
+		/// </summary>
+		/// <param name="findInArgs"></param>
+		/// <returns>True if successfully killed something</returns>
+		public static bool KillEchoVR(string findInArgs = null)
 		{
+			bool killed = false;
 			if (lastFrame != null)
 			{
 				LogRow(LogType.File, Program.lastFrame.sessionid, "Killing EchoVR...");
@@ -1252,6 +1257,7 @@ namespace Spark
 					try
 					{
 						p.Kill();
+						killed = true;
 					}
 					catch (Exception ex)
 					{
@@ -1259,6 +1265,7 @@ namespace Spark
 					}
 				}
 			}
+			return killed;
 		}
 		
 		private static string GetCommandLine(Process process)
@@ -1543,7 +1550,7 @@ namespace Spark
 		/// <summary>
 		/// Goes through a "frame" (single JSON object) and generates the relevant events
 		/// </summary>
-		private static void ProcessFrame(Frame frame)
+		private static void GenerateEvents(Frame frame)
 		{
 
 			// 'mpl_lobby_b2' may change in the future
@@ -1628,7 +1635,7 @@ namespace Spark
 					}
 				}
 
-				WaitUntilLocalGameLaunched(UseCameraControlKeys, port:SPECTATEME_PORT);
+				WaitUntilLocalGameLaunched(CameraWriteController.UseCameraControlKeys, port:SPECTATEME_PORT);
 			}
 
 			// The time between the current frame and last frame in seconds based on the game clock
@@ -4120,44 +4127,7 @@ namespace Spark
 
 
 		}
-		public static void UseCameraControlKeys()
-		{
-			try
-			{
-				if (spectateMe) liveWindow.SetSpectateMeSubtitle("In Game!");
-
-				CameraWriteController.SetNameplatesVisibility(!SparkSettings.instance.hideNameplates);
-				CameraWriteController.SetUIVisibility(!SparkSettings.instance.hideEchoVRUI);
-				CameraWriteController.SetMinimapVisibility(!SparkSettings.instance.alwaysHideMinimap);
-				CameraWriteController.SetTeamsMuted(
-					SparkSettings.instance.mutePlayerComms, 
-					SparkSettings.instance.mutePlayerComms
-				);
-				
-				switch (SparkSettings.instance.spectatorCamera)
-				{
-					// auto
-					case 0:
-						break;
-					// sideline
-					case 1:
-						CameraWriteController.SetCameraMode(CameraWriteController.CameraMode.side);
-						break;
-					// follow client
-					case 2:
-						if (spectateMe) CameraWriteController.SpectatorCamFindPlayer();
-						break;
-					// follow specific player
-					case 3:
-						CameraWriteController.SpectatorCamFindPlayer(SparkSettings.instance.followPlayerName);
-						break;
-				}
-			}
-			catch (Exception ex)
-			{
-				LogRow(LogType.Error, $"Error with in setting cameras after started spectating\n{ex}");
-			}
-		}
+		
 
 		/// <summary>
 		/// Shows or hides the requested popup window

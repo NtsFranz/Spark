@@ -13,7 +13,7 @@ namespace Spark
 	/// <summary>
 	/// 📖➡🔊 An abstraction layer for whatever TTS engine is being used
 	/// </summary>
-	class SpeechSynthesizer
+	class TTS
 	{
 		private readonly string[,,] voiceTypes =
 		{
@@ -32,7 +32,7 @@ namespace Spark
 		/// </summary>
 		private readonly ConcurrentQueue<string> ttsQueue = new ConcurrentQueue<string>();
 
-		public SpeechSynthesizer()
+		public TTS()
 		{
 			// TTS won't work without Discord auth
 			if (DiscordOAuth.firebaseCred == null) return;
@@ -154,11 +154,12 @@ namespace Spark
 			#endregion
 		}
 
-		~SpeechSynthesizer() // finalizer
+		~TTS() // finalizer
 		{
 			ttsThread?.Abort();
 		}
 
+		// TODO convert to task with cancellation token
 		private void TTSThread()
 		{
 			MediaPlayer mediaPlayer = new MediaPlayer();

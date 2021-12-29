@@ -29,6 +29,51 @@ namespace Spark
 					});
 				}
 			};
+
+			Program.JoinedGame += (_) => { UseCameraControlKeys(); };
+			Program.PlayerJoined += (_, _, _) => { UseCameraControlKeys(); };
+			Program.PlayerLeft += (_, _, _) => { UseCameraControlKeys(); };
+			Program.PlayerSwitchedTeams += (_, _, _, _) => { UseCameraControlKeys(); };
+		}
+
+		public static void UseCameraControlKeys()
+		{
+			try
+			{
+				// TODO move this to LiveWindow
+				if (Program.spectateMe) Program.liveWindow.SetSpectateMeSubtitle("In Game!");
+
+				SetNameplatesVisibility(!SparkSettings.instance.hideNameplates);
+				SetUIVisibility(!SparkSettings.instance.hideEchoVRUI);
+				SetMinimapVisibility(!SparkSettings.instance.alwaysHideMinimap);
+				SetTeamsMuted(
+					SparkSettings.instance.mutePlayerComms,
+					SparkSettings.instance.mutePlayerComms
+				);
+
+				switch (SparkSettings.instance.spectatorCamera)
+				{
+					// auto
+					case 0:
+						break;
+					// sideline
+					case 1:
+						SetCameraMode(CameraMode.side);
+						break;
+					// follow client
+					case 2:
+						if (Program.spectateMe) SpectatorCamFindPlayer();
+						break;
+					// follow specific player
+					case 3:
+						SpectatorCamFindPlayer(SparkSettings.instance.followPlayerName);
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, $"Error with in setting cameras after started spectating\n{ex}");
+			}
 		}
 
 		public static void SpectatorCamFindPlayer(string playerName = null)

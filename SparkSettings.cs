@@ -29,6 +29,7 @@ namespace Spark
 		public bool uploadToIgniteDB { get; set; } = false;
 		public bool uploadToFirestore { get; set; } = true;
 		public bool saveEventsToCSV { get; set; } = false;
+		public bool fetchBones { get; set; } = false;
 		public bool enableFullLogging { get; set; } = false;
 		public bool onlyRecordPrivateMatches { get; set; } = false;
 		public bool batchWrites { get; set; } = true;

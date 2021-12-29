@@ -104,7 +104,6 @@ namespace Spark
 
 		public static void ProcessDiscordPresence(Frame frame)
 		{
-			lastDiscordPresenceTime = DateTime.Now;
 
 			if (SparkSettings.instance.discordRichPresence)
 			{
