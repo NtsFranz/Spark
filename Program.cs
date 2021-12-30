@@ -4,7 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -25,11 +24,8 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
 using EchoVRAPI;
-using NetMQ.Sockets;
 using NetMQ;
-using Spark.Data_Containers.ZMQ_Messages;
 using Newtonsoft.Json.Linq;
-using ButterReplays;
 
 //using System.Windows.Forms;
 
@@ -49,11 +45,6 @@ namespace Spark
 		public static bool connectedToGame;
 		private static bool wasInGame;
 
-		/// <summary>
-		/// Whether to continue reading input right now (for reading files)
-		/// </summary>
-		public static bool paused = false;
-
 		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
 		// public const string APIURL = "http://127.0.0.1:5005/";
 		public const string API_URL_2 = "https://api.ignitevr.workers.dev/";
@@ -65,7 +56,7 @@ namespace Spark
 
 		// public static string currentAccessCodeUsername = "";
 		public static string InstalledSpeakerSystemVersion = "";
-		public static bool IsSpeakerSystemUpdateAvailable = false;
+		public static bool IsSpeakerSystemUpdateAvailable;
 
 		public static MatchData matchData;
 		static MatchData lastMatchData;
@@ -87,10 +78,6 @@ namespace Spark
 		public static ConcurrentQueue<MatchData> lastMatches = new ConcurrentQueue<MatchData>();
 		public static ConcurrentQueue<EventData> lastJousts = new ConcurrentQueue<EventData>();
 
-		/// <summary>
-		/// For replay file saving in batches
-		/// </summary>
-		private static List<string> dataCache = new List<string>();
 
 		private class UserAtTime
 		{
@@ -106,31 +93,10 @@ namespace Spark
 		public static string lastJSON;
 		public static string lastBonesJSON;
 		public static ulong fetchFrameIndex = 0;
-		public static ConcurrentQueue<string> lastJSONQueue = new ConcurrentQueue<string>();
-		public static ConcurrentQueue<string> lastDateTimeStringQueue = new ConcurrentQueue<string>();
-		public static ConcurrentStack<Frame> milkFramesToSave = new ConcurrentStack<Frame>();
-		public static ConcurrentQueue<string> replayBufferJSON = new ConcurrentQueue<string>();
-		public static ConcurrentQueue<DateTime> replayBufferTimestamps = new ConcurrentQueue<DateTime>();
 
-		/// <summary>
-		/// Called by the fetch thread when a frame is successfully fetched
-		/// Subscribe to this for raw json data. Only use this in a context that doesn't care about the deserialzed frames.
-		/// params: timestamp, session string, bones string (or null)
-		/// </summary>
-		public static Action<DateTime, string, string> FrameFetched;
-		/// <summary>
-		/// Called when a frame is finished with conversion.
-		/// Subscribe to this for Frame objects
-		/// </summary>
-		public static Action<Frame> NewFrame;
-
-		// public static Milk milkData;
-		private static ButterFile butter;
 
 		private static readonly object lastJSONLock = new object();
 		private static readonly object lastFrameLock = new object();
-		private static readonly object fileWritingLock = new object();
-		private static readonly object butterWritingLock = new object();
 
 		public static readonly object logOutputWriteLock = new object();
 
@@ -144,10 +110,9 @@ namespace Spark
 
 		public static float StatsHz => statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0];
 
+		// 60 or 30 hz main fetch speed
 		private static readonly List<float> statsDeltaTimes = new List<float> { 16.6666666f, 33.3333333f };
-		private static readonly List<float> fullDeltaTimes = new List<float> { 16.6666666f, 33.3333333f, 100 };
 
-		public static string fileName;
 
 		public static LiveWindow liveWindow;
 		private static ClosingDialog closingWindow;
@@ -182,23 +147,39 @@ namespace Spark
 
 		public static TTS synth;
 		public static ReplayClips replayClips;
+		public static ReplayFilesManager replayFilesManager;
 		public static CameraWriteController cameraWriteController;
 		public static CameraWrite cameraWriteWindow;
 
-		//private static CancellationTokenSource autorestartCancellation;
-		////private static CancellationTokenSource fetchThreadCancellation;
-		private static Thread autorestartThread;
-		private static Thread liveReplayThread;
+		private static CancellationTokenSource autorestartCancellation;
+		private static CancellationTokenSource fetchThreadCancellation;
+		private static CancellationTokenSource liveReplayCancel;
 		public static Thread atlasHostingThread;
 		private static Thread IPSearchthread1;
 		private static Thread IPSearchthread2;
-		public static PublisherSocket pubSocket;
 		public static OBS obs;
 		private static OverlayServer overlayServer;
-
+		public static NetMQEvents netMQEvents;
 
 
 		#region Event Callbacks
+
+		public static Action SparkClosing;
+		/// <summary>
+		/// Called by the fetch thread when a frame is successfully fetched
+		/// Subscribe to this for raw json data. Only use this in a context that doesn't care about the deserialzed frames.
+		/// params: timestamp, session string, bones string (or null)
+		/// </summary>
+		public static Action<DateTime, string, string> FrameFetched;
+		/// <summary>
+		/// Called when a frame is finished with conversion.
+		/// Subscribe to this for Frame objects
+		/// </summary>
+		public static Action<Frame> NewFrame;
+		/// <summary>
+		/// Called when a frame is finished with conversion and it is an Echo Arena frame
+		/// </summary>
+		public static Action<Frame> NewArenaFrame;
 		public static Action<Frame> JoinedGame;
 		public static Action<Frame> LeftGame;
 
@@ -215,6 +196,7 @@ namespace Spark
 		public static Action<Frame> PauseRequest;
 		public static Action<Frame> GamePaused;
 		public static Action<Frame> GameUnpaused;
+		public static Action<Frame> RoundOver;
 		public static Action<Frame> LocalThrow;
 		/// <summary>
 		/// frame, team, player, speed, howlongago
@@ -256,6 +238,10 @@ namespace Spark
 		/// </summary>
 		public static Action<Frame, Team, Player, bool, float, float, float> Joust;
 		public static Action<Frame, GoalData> Goal;
+		/// <summary>
+		/// This is called on the first frame that the goal happens rather than waiting for stable data
+		/// </summary>
+		public static Action<Frame> GoalImmediate;
 		public static Action<Frame, GoalData> Assist;
 		public static Action<Frame, Team, Player> LargePing;
 
@@ -310,18 +296,7 @@ namespace Spark
 
 
 
-				try
-				{
-					AsyncIO.ForceDotNet.Force();
-					NetMQConfig.Cleanup();
-					pubSocket = new PublisherSocket();
-					pubSocket.Options.SendHighWatermark = 1000;
-					pubSocket.Bind("tcp://*:12345");
-				}
-				catch (Exception e)
-				{
-					LogRow(LogType.Error, $"Error setting up pub/sub system: {e}");
-				}
+				netMQEvents = new NetMQEvents();
 
 				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();
 				if (InstalledSpeakerSystemVersion.Length > 0)
@@ -420,6 +395,9 @@ namespace Spark
 
 				// Set up listeners for camera-related events
 				cameraWriteController = new CameraWriteController();
+				
+				// sets up listeners for replay file saving
+				replayFilesManager = new ReplayFilesManager();
 
 				// web server asp.net
 				try
@@ -438,42 +416,13 @@ namespace Spark
 
 				spectateMe = SparkSettings.instance.spectateMeOnByDefault;
 
+				autorestartCancellation = new CancellationTokenSource();
+				Task.Run(AutorestartTask, autorestartCancellation.Token);
+				fetchThreadCancellation= new CancellationTokenSource();
+				Task.Run(FetchThreadNew, fetchThreadCancellation.Token);
 
-
-				NewFrame += ProcessFrame;
-
-				//fullLogThread = new Thread(ReplayThread);
-				//fullLogThread.IsBackground = true;
-				//fullLogThread.Start();
-
-				//autorestartThread = new Thread(AutorestartThread);
-				//autorestartThread.IsBackground = true;
-				//autorestartThread.Start();
-
-				CancellationTokenSource autorestartCancellation = new CancellationTokenSource();
-				CancellationToken autorestartCancellationToken = autorestartCancellation.Token;
-				Task.Run(AutorestartTask, autorestartCancellationToken);
-
-				//fetchThread = new Thread(FetchThread);
-				//fetchThread.IsBackground = true;
-				//fetchThread.Start();
-
-				CancellationTokenSource fetchThreadCancellation= new CancellationTokenSource();
-				CancellationToken fetchThreadCancellationToken = fetchThreadCancellation.Token;
-				Task.Run(FetchThreadNew, fetchThreadCancellationToken);
-
-
-				liveReplayThread = new Thread(LiveReplayHostingThread);
-				liveReplayThread.IsBackground = true;
-				liveReplayThread.Start();
-
-				// milkThread = new Thread(MilkThread);
-				// milkThread.IsBackground = true;
-				//milkThread.Start();
-				
-				//butterThread = new Thread(ButterThread);
-				//butterThread.IsBackground = true;
-				//butterThread.Start();
+				liveReplayCancel = new CancellationTokenSource();
+				Task.Run(LiveReplayHostingTask, liveReplayCancel.Token);
 
 
 				Task.Run(() =>
@@ -568,13 +517,12 @@ namespace Spark
 
 		static async Task GentleClose()
 		{
-			if (pubSocket != null)
-			{
-				pubSocket.SendMoreFrame("CloseApp").SendFrame("");
-				await Task.Delay(50);
-			}
-
 			running = false;
+			
+			closingWindow.label.Content = Resources.Closing___;
+			
+			netMQEvents.CloseApp();
+			await Task.Delay(50);
 
 			overlayServer?.Stop();
 
@@ -585,22 +533,10 @@ namespace Spark
 			}
 
 
-			closingWindow.label.Content = Resources.Closing___;
-
-
 			autorestartCancellation.Cancel();
 			fetchThreadCancellation.Cancel();
+			liveReplayCancel.Cancel();
 
-			//while (fullLogThread != null && fullLogThread.IsAlive)
-			//{
-			//	closingWindow.label.Content = Resources.Compressing_Replay_File___;
-			//	await Task.Delay(10);
-			//}
-			//while (statsThread != null && statsThread.IsAlive)
-			//{
-			//	closingWindow.label.Content = Resources.Closing___;
-			//	await Task.Delay(10);
-			//}
 
 			closingWindow.label.Content = Resources.Closing_NVIDIA_Highlights___;
 			HighlightsHelper.CloseNVHighlights();
@@ -609,14 +545,17 @@ namespace Spark
 			liveWindow?.KillSpeakerSystem();
 
 			closingWindow.label.Content = "Closing PubSub System...";
+			
 			AsyncIO.ForceDotNet.Force();
 			NetMQConfig.Cleanup(false);
 			closingWindow.label.Content = Resources.Closing___;
+			
 			app.ExitApplication();
 
 			await Task.Delay(100);
 
 			closingWindow.label.Content = "Failed to close gracefully. Using an axe instead...";
+			LogRow(LogType.Error, "Failed to close gracefully. Using an axe instead...");
 			KillAll();
 		}
 
@@ -678,7 +617,7 @@ namespace Spark
 					string[] results = await Task.WhenAll(tasks);
 					if (results.Length == 1)
 					{
-						results = new string[] {results[0], null};
+						results = new string[] { results[0], null };
 					}
 
 					// add this data to the public variable
@@ -689,24 +628,30 @@ namespace Spark
 					}
 
 					DateTime frameTime = DateTime.UtcNow;
+					
+					connectedToGame = true;
 
 					// tell the processing methods that stuff is available
 					_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, results[0], results[1]); });
 
 					// tell the processing methods that stuff is available
-					_ = Task.Run(() => { 
+					_ = Task.Run(() =>
+					{
 						Frame f = ConvertRawFrame(frameTime, results[0], results[1]);
 
 						if (f != null)
 						{
-
+							inGame = true;
+							
 							ProcessFrame(f);
 
 							NewFrame?.Invoke(f);
-						} else
-						{
-							LeftGame?.Invoke(f);
 						}
+						else
+						{
+							LeftGame?.Invoke(lastFrame);
+						}
+
 						lock (lastFrameLock)
 						{
 							// for the very first frame, copy it to the other previous frames
@@ -721,28 +666,31 @@ namespace Spark
 				catch (HttpRequestException)
 				{
 					// Not connected to game
-					_ = Task.Run(() => {
+					connectedToGame = false;
+					inGame = false;
 
-						// left game
-						if (!inGame && wasInGame)
+					// left game
+					if (!inGame && wasInGame)
+					{
+						try
 						{
-							try
+							if (lastFrame != null)
 							{
-								if (lastFrame != null && lastFrame.inLobby)
+								if (lastFrame.InLobby)
 								{
-									LeftLobby?.Invoke(lastFrame);
+									_ = Task.Run(() => { LeftLobby?.Invoke(lastFrame); });
 								}
 								else
 								{
-									LeftGame?.Invoke(lastFrame);
+									_ = Task.Run(() => { LeftGame?.Invoke(lastFrame); });
 								}
 							}
-							catch (Exception exp)
-							{
-								LogRow(LogType.Error, "Error processing action", exp.ToString());
-							}
 						}
-					});
+						catch (Exception exp)
+						{
+							LogRow(LogType.Error, "Error processing action", exp.ToString());
+						}
+					}
 
 					// add this data to the public variable
 					lock (lastJSONLock)
@@ -750,125 +698,28 @@ namespace Spark
 						lastJSON = null;
 						lastBonesJSON = null;
 					}
+					
 				}
 				catch (Exception e)
 				{
 					LogRow(LogType.Error, "Error in fetch request. " + e.ToString());
 				}
+				
 				wasInGame = inGame;
 
 				// set up timing for next fetch
 				DateTime next = fetchTime.AddMilliseconds(StatsHz);
-				int counter = 0;
-				while (fetchTime > next)
+				if (DateTime.UtcNow < next)
 				{
-					counter++;
-					next = next.AddMilliseconds(StatsHz);
+					await Task.Delay(next - DateTime.UtcNow);
 				}
-				LogRow(LogType.Error, $"Skipped {counter:N} frames.");
-
-				await Task.Delay(next - DateTime.UtcNow);
-			}
-		}
-
-		/// <summary>
-		/// Thread that actually does the GET requests or reading from file. 
-		/// Once a line has been used, this thread gets a new one.
-		/// </summary>
-		[Obsolete("Use FetchFrameNew instead")]
-		public static void FetchThread()
-		{
-			while (running)
-			{
-				while (paused && running)
+				else
 				{
-					Thread.Sleep(10);
-				}
-
-
-				{
-					HttpWebResponse response;
-					StreamReader sReader;
-
-
-					// Do we get a response?
-					try
-					{
-						// Create Session.
-						HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"http://{echoVRIP}:{echoVRPort}/session");
-						response = (HttpWebResponse)request.GetResponse();
-					}
-					catch (Exception e)
-					{
-						
-						// TODO move this to processing thread
-						if (lastFrame != null && inGame)
-						{
-							MatchEventZMQMessage msg = new MatchEventZMQMessage("LeaveMatch", "sessionid", lastFrame.sessionid);
-							pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
-						}
-
-						// split file between matches
-						if (SparkSettings.instance.whenToSplitReplays < 3)
-						{
-							NewFilename();
-						}
-
-						LogRow(LogType.Info, "Not in Match");
-						inGame = false;
-
-						if (e is WebException w && w.Status == WebExceptionStatus.ProtocolError)
-						{
-							connectedToGame = true;
-						}
-						else
-						{
-							connectedToGame = false;
-						}
-
-
-						lock (lastJSONLock)
-						{
-							lastJSON = null;
-						}
-
-						// Don't update so quick if we aren't in a match anyway
-						Thread.Sleep(2000);
-
-						continue;
-					}
-
-					lastDataTime = DateTime.Now;
-					inGame = true;
-					connectedToGame = true;
-
-					Stream dataStream = response.GetResponseStream();
-					sReader = new StreamReader(dataStream);
-
-					// Session Contents
-					try
-					{
-						string rawJson = sReader.ReadToEnd();
-
-						// pls close (;-;)
-						sReader.Close();
-						response.Close();
-
-						lock (lastJSONLock)
-						{
-							lastJSON = rawJson;
-							lastJSONUsed = false;
-							fetchFrameIndex++;
-							pubSocket.SendMoreFrame("RawFrame").SendFrame(lastJSON);
-						}
-					}
-					catch (IOException)
-					{
-						
-					}
+					LogRow(LogType.Error, $"Fetch rate too slow. Skipped {(DateTime.UtcNow - next).TotalSeconds:N} seconds");
 				}
 			}
 		}
+
 
 
 
@@ -906,11 +757,6 @@ namespace Spark
 		{
 			try
 			{
-				// make sure there is a valid echovr path saved
-				if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
-				{
-					UpdateEchoExeLocation();
-				}
 
 				if (matchData == null)
 				{
@@ -926,25 +772,6 @@ namespace Spark
 				{
 					LogRow(LogType.Error, $"Error in ProcessFrame. Please catch inside.\n{ex}");
 				}
-
-				if (!wasInGame)
-				{
-					try
-					{
-						if (frame.inLobby)
-						{
-							JoinedLobby?.Invoke(frame);
-						}
-						else
-						{
-							JoinedGame?.Invoke(frame);
-						}
-					}
-					catch (Exception exp)
-					{
-						LogRow(LogType.Error, "Error processing action", exp.ToString());
-					}
-				}
 			}
 			catch (Exception ex)
 			{
@@ -952,163 +779,12 @@ namespace Spark
 			}
 		}
 
-		// private static void MilkThread()
-		// {
-		// 	Thread.Sleep(2000);
-		// 	int frameCount = 0;
-		// 	// Session pull loop.
-		// 	while (running)
-		// 	{
-		// 		if (milkFramesToSave.TryPop(out Frame frame))
-		// 		{
-		// 			if (milkData == null)
-		// 			{
-		// 				milkData = new Milk(frame);
-		// 			}
-		// 			else
-		// 			{
-		// 				milkData.AddFrame(frame);
-		// 			}
-		//
-		// 			frameCount++;
-		// 		}
-		//
-		// 		// only save every once in a while
-		// 		if (frameCount > 200)
-		// 		{
-		// 			frameCount = 0;
-		// 			string filePath = Path.Combine(SparkSettings.instance.saveFolder, fileName + ".milk");
-		// 			File.WriteAllBytes(filePath, milkData.GetBytes());
-		// 		}
-		//
-		// 		Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
-		// 	}
-		// }
-
-
-		private static void ButterThread()
-		{
-			butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
-
-
-			int lastNumChunks = 0;
-			ulong lastFetchFrameIndex = 0;
-			while (running)
-			{
-				if (fetchFrameIndex > lastFetchFrameIndex)
-				{
-					butter.AddFrame(lastFrame);
-					if (lastNumChunks != butter.NumChunks())
-					{
-						WriteOutButterFile();
-					}
-					lastNumChunks = butter.NumChunks();
-
-					lastFetchFrameIndex = fetchFrameIndex;
-				}
-
-				Thread.Sleep(5);
-			}
-		}
-
-		private static void WriteOutButterFile()
-		{
-			lock (butterWritingLock)
-			{
-				byte[] butterBytes = butter?.GetBytes();
-				if (butterBytes != null && butterBytes.Length > 0)
-				{
-					File.WriteAllBytes(Path.Combine(SparkSettings.instance.saveFolder, fileName + ".butter"), butterBytes);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Thread for logging all JSON data
-		/// </summary>
-		private static void ReplayThread()
-		{
-			Thread.Sleep(2000);
-			lastDataTime = DateTime.Now;
-
-			NewFilename();
-
-			// Session pull loop.
-			while (running)
-			{
-				if ((SparkSettings.instance.enableFullLogging || SparkSettings.instance.enableReplayBuffer) &&
-					inGame)
-				{
-					try
-					{
-						string json;
-						lock (lastJSONLock)
-						{
-							if (lastJSON == null) continue;
-
-							lastJSONUsed = true;
-							json = lastJSON;
-						}
-
-						// if this is not a lobby api frame
-						if (json.Length > 800 && inGame)
-						{
-
-							if (SparkSettings.instance.enableFullLogging)
-							{
-								bool log = false;
-								if (SparkSettings.instance.onlyRecordPrivateMatches)
-								{
-									SimpleFrame obj = JsonConvert.DeserializeObject<SimpleFrame>(json);
-									if (obj.private_match)
-									{
-										log = true;
-									}
-								}
-								else
-								{
-									log = true;
-								}
-
-								if (log)
-								{
-									WriteToFile(DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss.fff") + "\t" + json);
-								}
-							}
-
-
-							if (SparkSettings.instance.enableReplayBuffer)
-							{
-								// add to replay buffer
-								replayBufferTimestamps.Enqueue(DateTime.Now);
-								replayBufferJSON.Enqueue(json);
-
-								// shorten the buffer to match the desired length
-								while (DateTime.Now - replayBufferTimestamps.First() > TimeSpan.FromSeconds(SparkSettings.instance.replayBufferLength))
-								{
-									replayBufferTimestamps.TryDequeue(out _);
-									replayBufferJSON.TryDequeue(out _);
-								}
-							}
-						}
-					}
-					catch (Exception ex)
-					{
-						Console.WriteLine("Big oopsie. Please catch inside. " + ex);
-					}
-				}
-
-				Thread.Sleep((int)fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
-			}
-
-			// causes a final zip if that's needed
-			NewFilename();
-		}
+		
 
 		/// <summary>
 		/// Thread to detect crashes and restart EchoVR
 		/// </summary>
-		public static async Task AutorestartTask()
+		private static async Task AutorestartTask()
 		{
 			lastDataTime = DateTime.Now;
 
@@ -1117,22 +793,22 @@ namespace Spark
 			{
 				if (SparkSettings.instance.autoRestart)
 				{
-						// If `minTillAutorestart` minutes have passed, restart EchoVR
-						if (DateTime.Compare(lastDataTime.AddMinutes(minTillAutorestart), DateTime.Now) < 0)
-						{
-							KillEchoVR();
+					// If `minTillAutorestart` minutes have passed, restart EchoVR
+					if (DateTime.Compare(lastDataTime.AddMinutes(minTillAutorestart), DateTime.Now) < 0)
+					{
+						KillEchoVR();
 						StartEchoVR(JoinType.Spectator, noovr: SparkSettings.instance.spectatorStreamNoOVR, combat: SparkSettings.instance.spectatorStreamCombat);
-							
-							// reset timer
-							lastDataTime = DateTime.Now;
-						}
+
+						// reset timer
+						lastDataTime = DateTime.Now;
+					}
 				}
 
 				await Task.Delay(1000);
 			}
 		}
 
-		public static void LiveReplayHostingThread()
+		private static async Task LiveReplayHostingTask()
 		{
 			while (running)
 			{
@@ -1151,7 +827,7 @@ namespace Spark
 					}
 				}
 
-				Thread.Sleep(1000);
+				await Task.Delay(1000);
 			}
 		}
 
@@ -1160,51 +836,13 @@ namespace Spark
 			try
 			{
 				// client_name is just for visibility in the log
-				var response = await client.PostAsync(
+				HttpResponseMessage response = await client.PostAsync(
 					"live_replay/" + lastFrame.sessionid + "?caprate=1&default=true&client_name=" +
 					lastFrame.client_name, content);
 			}
 			catch
 			{
 				LogRow(LogType.Error, "Can't connect to the DB server");
-			}
-		}
-
-		public static void SaveReplayClip(string filename)
-		{
-			string[] frames = replayBufferJSON.ToArray();
-			DateTime[] timestamps = replayBufferTimestamps.ToArray();
-
-			if (frames.Length != timestamps.Length)
-			{
-				LogRow(LogType.Error, "Something went wrong in the replay buffer saving.");
-				return;
-			}
-
-			string fullFileName = $"{DateTime.Now:clip_yyyy-MM-dd_HH-mm-ss}_{filename}";
-			string filePath = Path.Combine(SparkSettings.instance.saveFolder, $"{fullFileName}.echoreplay");
-
-			lock (fileWritingLock)
-			{
-				StreamWriter streamWriter = new StreamWriter(filePath, false);
-
-				for (int i = 0; i < frames.Length; i++)
-				{
-					streamWriter.WriteLine(timestamps[i].ToString("yyyy/MM/dd HH:mm:ss.fff") + "\t" + frames[i]);
-				}
-
-				streamWriter.Close();
-
-				// compress the file
-				if (SparkSettings.instance.useCompression)
-				{
-					string tempDir = Path.Combine(SparkSettings.instance.saveFolder, "temp_zip");
-					Directory.CreateDirectory(tempDir);
-					File.Move(filePath,
-						Path.Combine(tempDir, $"{fullFileName}.echoreplay"));
-					ZipFile.CreateFromDirectory(tempDir, filePath);
-					Directory.Delete(tempDir, true);
-				}
 			}
 		}
 
@@ -1495,63 +1133,37 @@ namespace Spark
 			}
 		}
 
-		/// <summary>
-		/// Writes the data to the file
-		/// </summary>
-		/// <param name="data">The data to write</param>
-		private static void WriteToFile(string data)
-		{
-			if (SparkSettings.instance.batchWrites)
-			{
-				dataCache.Add(data);
-
-				// if the time elapsed since last write is less than cutoff
-				if (dataCache.Count * fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull] < 5000)
-				{
-					return;
-				}
-			}
-
-			// Fail if the folder doesn't even exist
-			if (!Directory.Exists(SparkSettings.instance.saveFolder))
-			{
-				return;
-			}
-
-			string filePath, directoryPath;
-
-			// could combine with some other data path, such as AppData
-			directoryPath = SparkSettings.instance.saveFolder;
-
-			filePath = Path.Combine(directoryPath, fileName + ".echoreplay");
-
-			lock (fileWritingLock)
-			{
-				StreamWriter streamWriter = new StreamWriter(filePath, true);
-
-				if (SparkSettings.instance.batchWrites)
-				{
-					foreach (string row in dataCache)
-					{
-						streamWriter.WriteLine(row);
-					}
-
-					dataCache.Clear();
-				}
-				else
-				{
-					streamWriter.WriteLine(data);
-				}
-
-				streamWriter.Close();
-			}
-		}
+		
 
 		/// <summary>
 		/// Goes through a "frame" (single JSON object) and generates the relevant events
 		/// </summary>
 		private static void GenerateEvents(Frame frame)
 		{
+			if (!wasInGame)
+			{
+				try
+				{
+					if (frame.InLobby)
+					{
+						JoinedLobby?.Invoke(frame);
+					}
+					else
+					{
+						JoinedGame?.Invoke(frame);
+						
+						// make sure there is a valid echovr path saved
+						if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
+						{
+							UpdateEchoExeLocation();
+						}
+					}
+				}
+				catch (Exception exp)
+				{
+					LogRow(LogType.Error, "Error processing action", exp.ToString());
+				}
+			}
 
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null) return;
@@ -1598,13 +1210,15 @@ namespace Spark
 
 
 			if (string.IsNullOrWhiteSpace(frame.game_status)) return;
-			if (frame.inLobby) return;
-			pubSocket.SendMoreFrame("TimeAndScore").SendFrame($"{frame.game_clock:0.00} Orange: {frame.orange_points} Blue: {frame.blue_points}");
+			if (frame.InLobby) return;
+			
+			// this frame is an Arena frame
+			if (frame.InArena) NewArenaFrame?.Invoke(frame);
+			
 			// if we entered a different match
 			if (lastFrame == null || frame.sessionid != lastFrame.sessionid)
 			{
-				MatchEventZMQMessage msg = new MatchEventZMQMessage("NewMatch", "sessionid", frame.sessionid);
-				pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
+				
 				// We just discard the old match and hope it was already submitted
 
 				lastFrame = frame; // don't detect stats changes across matches
@@ -2860,9 +2474,9 @@ namespace Spark
 
 				// Game finished and showing scoreboard
 				case "post_match":
-					if (frame.private_match && SparkSettings.instance.whenToSplitReplays == 1)
+					if (frame.private_match)
 					{
-						NewFilename();
+						RoundOver?.Invoke(frame);
 					}
 
 					//EventMatchFinished(frame, MatchData.FinishReason.not_finished);
@@ -2928,11 +2542,7 @@ namespace Spark
 		private static async Task ProcessScore(MatchData matchData)
 		{
 			Frame initialFrame = lastLastFrame;
-			Team.TeamColor clientTeam = lastFrame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == lastFrame.client_name)).color;
-			bool shouldPlayHorn = clientTeam == Team.TeamColor.spectator || clientTeam.ToString() == lastFrame.last_score.team;
-
-			MatchEventZMQMessage msg = new MatchEventZMQMessage("GoalScored", "isClientTeam", shouldPlayHorn.ToString());
-			pubSocket.SendMoreFrame("MatchEvent").SendFrame(msg.ToJsonString());
+			GoalImmediate?.Invoke(lastFrame);
 
 			// wait some time before re-checking the throw velocity
 			await Task.Delay(100);
@@ -3127,17 +2737,10 @@ namespace Spark
 			LogRow(LogType.File, frame.sessionid, "Match Finished: " + reason);
 			UpdateStatsIngame(frame, true);
 
-			// if we here reset for public matches as well, then there would be super small files at the end of matches
-			if (matchData.firstFrame.private_match && SparkSettings.instance.whenToSplitReplays < 1)
-			{
-				// wait a little bit to actually split, so that the end of the match isn't cut off
-				_ = DelayedNewFilename();
-			}
-
 			lastMatches.Enqueue(matchData);
 			if (lastMatches.Count > 50)
 			{
-				lastMatches.TryDequeue(out var match);
+				lastMatches.TryDequeue(out MatchData match);
 			}
 
 			lastMatchData = matchData;
@@ -3427,51 +3030,6 @@ namespace Spark
 			}
 		}
 
-
-		/// <summary>
-		/// Generates a new filename from the current time.
-		/// </summary>
-		public static void NewFilename()
-		{
-			lock (fileWritingLock)
-			{
-				string lastFilename = fileName;
-				fileName = DateTime.Now.ToString("rec_yyyy-MM-dd_HH-mm-ss");
-
-				// compress the file
-				if (SparkSettings.instance.useCompression)
-				{
-					if (File.Exists(Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay")))
-					{
-						string tempDir = Path.Combine(SparkSettings.instance.saveFolder, "temp_zip");
-						Directory.CreateDirectory(tempDir);
-						File.Move(Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay"),
-							Path.Combine(SparkSettings.instance.saveFolder, "temp_zip",
-								lastFilename + ".echoreplay")); // TODO can fail because in use
-						ZipFile.CreateFromDirectory(tempDir, Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay"));
-						Directory.Delete(tempDir, true);
-					}
-				}
-			}
-
-			//lock (butterWritingLock)
-			//{
-			//	WriteOutButterFile();
-			//	butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
-			//}
-
-			// reset the replay buffer
-			replayBufferTimestamps.Clear();
-			replayBufferJSON.Clear();
-		}
-
-		private static async Task DelayedNewFilename()
-		{
-			// wait some time before calling
-			await Task.Delay(5000);
-
-			NewFilename();
-		}
 
 		/// <summary>
 		/// Generic method for getting data from a web url
@@ -4353,6 +3911,7 @@ namespace Spark
 		internal static void Quit()
 		{
 			running = false;
+			SparkClosing.Invoke();
 			SparkSettings.instance.Save();
 			if (closingWindow != null)
 			{

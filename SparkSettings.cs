@@ -30,6 +30,9 @@ namespace Spark
 		public bool uploadToFirestore { get; set; } = true;
 		public bool saveEventsToCSV { get; set; } = false;
 		public bool fetchBones { get; set; } = false;
+		/// <summary>
+		/// Enable replay files
+		/// </summary>
 		public bool enableFullLogging { get; set; } = false;
 		public bool onlyRecordPrivateMatches { get; set; } = false;
 		public bool batchWrites { get; set; } = true;
@@ -39,6 +42,7 @@ namespace Spark
 		public int whenToSplitReplays { get; set; } = 0;
 		public ButterFile.CompressionFormat butterCompressionFormat { get; set; } = ButterFile.CompressionFormat.gzip;
 		public bool saveButterFiles { get; set; } = false;
+		public bool saveEchoreplayFiles { get; set; } = true;
 		public bool showConsoleOnStart { get; set; } = false;
 		public bool outputGameStateEvents { get; set; } = true;
 		public bool outputScoreEvents { get; set; } = true;

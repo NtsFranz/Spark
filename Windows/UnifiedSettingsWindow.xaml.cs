@@ -310,7 +310,7 @@ namespace Spark
 
 		public static Visibility FirestoreVisible => !DiscordOAuth.Personal ? Visibility.Visible : Visibility.Collapsed;
 
-		public static string ReplayFilename => string.IsNullOrEmpty(Program.fileName) ? "---" : Program.fileName;
+		public static string ReplayFilename => string.IsNullOrEmpty(Program.replayFilesManager.fileName) ? "---" : Program.replayFilesManager.fileName;
 
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
 		{
@@ -456,10 +456,10 @@ namespace Spark
 			storageLocationTextBox.Text = SparkSettings.instance.saveFolder;
 		}
 
-		private void SplitFileEvent(object sender, RoutedEventArgs e)
+		private void SplitFileButtonClicked(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.NewFilename();
+			Program.replayFilesManager.Split();
 		}
 
 		#endregion
@@ -696,7 +696,7 @@ namespace Spark
 
 		private void ClipNow(object sender, RoutedEventArgs e)
 		{
-			Program.SaveReplayClip("manual");
+			Program.replayFilesManager.SaveReplayClip("manual");
 		}
 
 		private void OBSConnect(object sender, RoutedEventArgs e)
@@ -1413,7 +1413,7 @@ namespace Spark
 
 		private void SpectatorCameraFindNow(object sender, RoutedEventArgs e)
 		{
-			Program.UseCameraControlKeys();
+			CameraWriteController.UseCameraControlKeys();
 		}
 
 		private void HideEchoVRUINow(object sender, RoutedEventArgs e)

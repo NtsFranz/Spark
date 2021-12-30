@@ -201,7 +201,10 @@
 						<GroupBox x:Name="fullLoggingBox" Header="{x:Static p:Resources.Replay_Logging}" Margin="4,4,4,4"
 									  IsEnabled="{Binding ElementName=enableFullLoggingCheckbox, Path=IsChecked}">
 							<StackPanel>
-								<!--<CheckBox Content="Save to .butter format" Margin="4,4,4,4" IsChecked="{l:SettingBinding saveButterFiles}" />-->
+								<CheckBox Content="Save to .echoreplay format" Margin="4,4,4,4" IsChecked="{l:SettingBinding saveEchoreplayFiles}" />
+								<CheckBox Content="Save to .butter format" Margin="4,4,4,4" IsChecked="{l:SettingBinding saveButterFiles}" />
+								
+								<CheckBox Content="Save player bones data" Margin="4,4,4,4" IsChecked="{l:SettingBinding fetchBones}" />
 								
 								<CheckBox x:Name="onlyRecordPrivateMatchesCheckBox" Width="588"
 											  Content="{x:Static p:Resources.Only_Record_Private_Matches}" Margin="4,4,4,4"
@@ -243,7 +246,7 @@
 										<ComboBoxItem Content="{x:Static p:Resources.Only_on_IgniteBot_Restart}" />
 									</ComboBox>
 									<Button x:Name="splitFileButton" Content="{x:Static p:Resources.Split_File}" Margin="4,0,4,0"
-												Padding="4,4,4,4" Click="SplitFileEvent" />
+												Padding="4,4,4,4" Click="SplitFileButtonClicked" />
 									<Label x:Name="currentFilenameLabel" Content="{Binding ReplayFilename, Mode=OneWay}" Margin="4,0,4,0" Width="240"
 											   ScrollViewer.VerticalScrollBarVisibility="Disabled" />
 								</StackPanel>

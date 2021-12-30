@@ -20,7 +20,6 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using EchoVRAPI;
-using NetMQ;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static Logger;
@@ -104,6 +103,7 @@ namespace Spark
 		private const int GWL_USERDATA = (-21);
 
 
+		private bool initialized;
 
 		public LiveWindow()
 		{
@@ -182,6 +182,8 @@ namespace Spark
 			SetDashboardItem1Visibility(SparkSettings.instance.dashboardItem1);
 
 			_ = CheckForAppUpdate();
+
+			initialized = true;
 		}
 
 		private void LiveWindow_Load(object sender, EventArgs e)
@@ -1247,7 +1249,7 @@ namespace Spark
 			{
 				if (Program.spectateMe)
 				{
-					if (Program.inGame && Program.lastFrame != null && !Program.lastFrame.inLobby)
+					if (Program.inGame && Program.lastFrame != null && !Program.lastFrame.InLobby)
 					{
 						Program.KillEchoVR($"-httpport {Program.SPECTATEME_PORT}");
 						Program.StartEchoVR(
@@ -1255,7 +1257,7 @@ namespace Spark
 							port: Program.SPECTATEME_PORT,
 							noovr: SparkSettings.instance.useAnonymousSpectateMe,
 							session_id: Program.lastFrame.sessionid);
-						Program.WaitUntilLocalGameLaunched(Program.UseCameraControlKeys, port: Program.SPECTATEME_PORT);
+						Program.WaitUntilLocalGameLaunched(CameraWriteController.UseCameraControlKeys, port: Program.SPECTATEME_PORT);
 						spectateMeSubtitle.Text = Properties.Resources.Waiting_for_EchoVR_to_start;
 					}
 					else
@@ -1358,7 +1360,7 @@ namespace Spark
 		private async void installEchoSpeakerSystem_Click(object sender, RoutedEventArgs e)
 		{
 			speakerSystemInstallLabel.Visibility = Visibility.Hidden;
-			Program.pubSocket.SendMoreFrame("CloseApp").SendFrame("");
+			Program.netMQEvents.CloseApp();
 			Thread.Sleep(800);
 			KillSpeakerSystem();
 			startStopEchoSpeakerSystem.Content = Properties.Resources.Start_Echo_Speaker_System;
@@ -1454,7 +1456,7 @@ namespace Spark
 			else
 			{
 				speakerSystemInstallLabel.Visibility = Visibility.Hidden;
-				Program.pubSocket.SendMoreFrame("CloseApp").SendFrame("");
+				Program.netMQEvents.CloseApp();
 				Thread.Sleep(800);
 				KillSpeakerSystem();
 				startStopEchoSpeakerSystem.Content = Properties.Resources.Start_Echo_Speaker_System;

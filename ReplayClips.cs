@@ -30,7 +30,7 @@ namespace Spark
 		{
 			if (!setting) return;
 			if (!IsPlayerScopeEnabled(player_name, frame)) return;
-			Task.Delay((int) (SparkSettings.instance.replayClipSecondsAfter * 1000)).ContinueWith(_ => Program.SaveReplayClip(clip_name));
+			Task.Delay((int) (SparkSettings.instance.replayClipSecondsAfter * 1000)).ContinueWith(_ => Program.replayFilesManager.SaveReplayClip(clip_name));
 		}
 
 		private static bool IsPlayerScopeEnabled(string player_name, Frame frame)
