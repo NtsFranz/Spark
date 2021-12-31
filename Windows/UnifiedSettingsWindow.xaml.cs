@@ -288,7 +288,7 @@ namespace Spark
 			findQuest.IsEnabled = false;
 			resetIP.IsEnabled = false;
 			Progress<string> progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
-			await Task.Factory.StartNew(() => Program.echoVRIP = Program.FindQuestIP(progress),
+			await Task.Factory.StartNew(() => Program.echoVRIP = QuestIPFetching.FindQuestIP(progress),
 				TaskCreationOptions.None);
 			echoVRIPTextBox.IsEnabled = true;
 			echoVRPortTextBox.IsEnabled = true;

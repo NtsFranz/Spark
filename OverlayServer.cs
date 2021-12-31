@@ -412,135 +412,138 @@ namespace Spark
 
 			private static Dictionary<string, object> GetStatsResponse()
 			{
-				List<MatchData> selectedMatches = null;
-				List<List<Dictionary<string, object>>> matchStats = null;
-				if (Program.inGame && Program.matchData != null)
+				lock (Program.gameStateLock)
 				{
-					// gets a list of all previous matches in memory that are for the current set
-					selectedMatches = Program.lastMatches
-						.Where(m => m.customId == Program.matchData.customId &&
-						            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
-						.ToList();
-					selectedMatches.Add(Program.matchData);
-
-
-					BatchOutputFormat data = new BatchOutputFormat
+					List<MatchData> selectedMatches = null;
+					List<List<Dictionary<string, object>>> matchStats = null;
+					if (Program.inGame && Program.matchData != null)
 					{
-						match_data = Program.matchData.ToDict()
-					};
-
-					selectedMatches.ForEach(m =>
-					{
-						m.players.Values.ToList().ForEach(e => data.match_players.Add(e.ToDict()));
-						m.Events.ForEach(e => data.events.Add(e.ToDict()));
-						m.Goals.ForEach(e => data.goals.Add(e.ToDict()));
-						m.Throws.ForEach(e => data.throws.Add(e.ToDict()));
-					});
+						// gets a list of all previous matches in memory that are for the current set
+						selectedMatches = Program.lastMatches
+							.Where(m => m.customId == Program.matchData.customId &&
+							            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+							.ToList();
+						selectedMatches.Add(Program.matchData);
 
 
-					matchStats = GetMatchStats();
-
-					// var bluePlayers = selectedMatches
-					// 	.SelectMany(m => m.players)
-					// 	.Where(p => p.Value.teamData.teamColor == Team.TeamColor.blue)
-					// 	.GroupBy(
-					// 		p => p.Key,
-					// 		(key, values) => new 
-					// 		{
-					// 			Name = key,
-					// 			Data = values.Sum((x1, x2) => x1.Value+x2.Value)
-					// 		}
-					// 	)
-					// 	;
-				}
-
-				string overlayOrangeTeamName = "";
-				string overlayBlueTeamName = "";
-				string overlayOrangeTeamLogo = "";
-				string overlayBlueTeamLogo = "";
-				switch (SparkSettings.instance.overlaysTeamSource)
-				{
-					case 0:
-						overlayOrangeTeamName = SparkSettings.instance.overlaysManualTeamNameOrange;
-						overlayBlueTeamName = SparkSettings.instance.overlaysManualTeamNameBlue;
-						overlayOrangeTeamLogo = SparkSettings.instance.overlaysManualTeamLogoOrange;
-						overlayBlueTeamLogo = SparkSettings.instance.overlaysManualTeamLogoBlue;
-						break;
-					case 1:
-						TeamData orangeTeam = selectedMatches?.Last().teams[Team.TeamColor.orange];
-						TeamData blueTeam = selectedMatches?.Last().teams[Team.TeamColor.blue];
-						overlayOrangeTeamName = orangeTeam?.vrmlTeamName ?? "";
-						overlayBlueTeamName = blueTeam?.vrmlTeamName ?? "";
-						overlayOrangeTeamLogo = orangeTeam?.vrmlTeamLogo ?? "";
-						overlayBlueTeamLogo = blueTeam?.vrmlTeamLogo ?? "";
-						break;
-				}
-
-
-				Dictionary<string, object> response = new Dictionary<string, object>
-				{
-					{
-						"teams", new[]
+						BatchOutputFormat data = new BatchOutputFormat
 						{
-							new Dictionary<string, object>
+							match_data = Program.matchData.ToDict()
+						};
+
+						selectedMatches.ForEach(m =>
+						{
+							m.players.Values.ToList().ForEach(e => data.match_players.Add(e.ToDict()));
+							m.Events.ForEach(e => data.events.Add(e.ToDict()));
+							m.Goals.ForEach(e => data.goals.Add(e.ToDict()));
+							m.Throws.ForEach(e => data.throws.Add(e.ToDict()));
+						});
+
+
+						matchStats = GetMatchStats();
+
+						// var bluePlayers = selectedMatches
+						// 	.SelectMany(m => m.players)
+						// 	.Where(p => p.Value.teamData.teamColor == Team.TeamColor.blue)
+						// 	.GroupBy(
+						// 		p => p.Key,
+						// 		(key, values) => new 
+						// 		{
+						// 			Name = key,
+						// 			Data = values.Sum((x1, x2) => x1.Value+x2.Value)
+						// 		}
+						// 	)
+						// 	;
+					}
+
+					string overlayOrangeTeamName = "";
+					string overlayBlueTeamName = "";
+					string overlayOrangeTeamLogo = "";
+					string overlayBlueTeamLogo = "";
+					switch (SparkSettings.instance.overlaysTeamSource)
+					{
+						case 0:
+							overlayOrangeTeamName = SparkSettings.instance.overlaysManualTeamNameOrange;
+							overlayBlueTeamName = SparkSettings.instance.overlaysManualTeamNameBlue;
+							overlayOrangeTeamLogo = SparkSettings.instance.overlaysManualTeamLogoOrange;
+							overlayBlueTeamLogo = SparkSettings.instance.overlaysManualTeamLogoBlue;
+							break;
+						case 1:
+							TeamData orangeTeam = selectedMatches?.Last().teams[Team.TeamColor.orange];
+							TeamData blueTeam = selectedMatches?.Last().teams[Team.TeamColor.blue];
+							overlayOrangeTeamName = orangeTeam?.vrmlTeamName ?? "";
+							overlayBlueTeamName = blueTeam?.vrmlTeamName ?? "";
+							overlayOrangeTeamLogo = orangeTeam?.vrmlTeamLogo ?? "";
+							overlayBlueTeamLogo = blueTeam?.vrmlTeamLogo ?? "";
+							break;
+					}
+
+
+					Dictionary<string, object> response = new Dictionary<string, object>
+					{
+						{
+							"teams", new[]
 							{
+								new Dictionary<string, object>
 								{
-									"vrml_team_name",
-									selectedMatches?.Last().teams[Team.TeamColor.blue].vrmlTeamName ?? ""
+									{
+										"vrml_team_name",
+										selectedMatches?.Last().teams[Team.TeamColor.blue].vrmlTeamName ?? ""
+									},
+									{
+										"vrml_team_logo",
+										selectedMatches?.Last().teams[Team.TeamColor.blue].vrmlTeamLogo ?? ""
+									},
+									{
+										"team_name",
+										overlayBlueTeamName
+									},
+									{
+										"team_logo",
+										overlayBlueTeamLogo
+									},
+									{
+										"players",
+										matchStats?[0]
+									}
 								},
+								new Dictionary<string, object>
 								{
-									"vrml_team_logo",
-									selectedMatches?.Last().teams[Team.TeamColor.blue].vrmlTeamLogo ?? ""
-								},
-								{
-									"team_name",
-									overlayBlueTeamName
-								},
-								{
-									"team_logo",
-									overlayBlueTeamLogo
-								},
-								{
-									"players",
-									matchStats?[0]
-								}
-							},
-							new Dictionary<string, object>
-							{
-								{
-									"vrml_team_name",
-									selectedMatches?.Last().teams[Team.TeamColor.orange].vrmlTeamName ?? ""
-								},
-								{
-									"vrml_team_logo",
-									selectedMatches?.Last().teams[Team.TeamColor.orange].vrmlTeamLogo ?? ""
-								},
-								{
-									"team_name",
-									overlayOrangeTeamName
-								},
-								{
-									"team_logo",
-									overlayOrangeTeamLogo
-								},
-								{
-									"players",
-									matchStats?[1]
+									{
+										"vrml_team_name",
+										selectedMatches?.Last().teams[Team.TeamColor.orange].vrmlTeamName ?? ""
+									},
+									{
+										"vrml_team_logo",
+										selectedMatches?.Last().teams[Team.TeamColor.orange].vrmlTeamLogo ?? ""
+									},
+									{
+										"team_name",
+										overlayOrangeTeamName
+									},
+									{
+										"team_logo",
+										overlayOrangeTeamLogo
+									},
+									{
+										"players",
+										matchStats?[1]
+									}
 								}
 							}
-						}
-					},
-					{
-						"joust_events", selectedMatches?
-							.SelectMany(m => m.Events)
-							.Where(e =>
-								e.eventType is EventData.EventType.joust_speed or EventData.EventType
-									.defensive_joust)
-							.Select(e => e.ToDict())
-					},
-					{ "goals", selectedMatches?.SelectMany(m => m.Goals).Select(e => e.ToDict()) }
-				};
-				return response;
+						},
+						{
+							"joust_events", selectedMatches?
+								.SelectMany(m => m.Events)
+								.Where(e =>
+									e.eventType is EventData.EventType.joust_speed or EventData.EventType
+										.defensive_joust)
+								.Select(e => e.ToDict())
+						},
+						{ "goals", selectedMatches?.SelectMany(m => m.Goals).Select(e => e.ToDict()) }
+					};
+					return response;
+				}
 			}
 		}
 
@@ -727,7 +730,7 @@ namespace Spark
 				// get the most recent file in the replay folder
 				DirectoryInfo directory = new DirectoryInfo(SparkSettings.instance.saveFolder);
 				FileInfo[] files = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
-					.Where(f => f.Name.StartsWith("rec")).ToArray();
+					.Where(f => f.Name.StartsWith("rec") && f.Name.EndsWith(".echoreplay")).ToArray();
 
 
 				// gets a list of all the times of previous matches in memory that are for the current set
@@ -739,19 +742,20 @@ namespace Spark
 				selectedMatchTimes.Add(Program.matchData.matchTime);
 
 				// finds all the files that match one of the matches in memory
-				FileInfo[] selectedFiles = files
-					.Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss",
-						            CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime time)
+				FileInfo[] selectedFiles = files.Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss",
+						            CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out DateTime time)
 					            && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
 					)
 					.ToArray();
+
+				// FileInfo[] selectedFiles = files.Take(1).ToArray();
 
 				// function to check if a time matches fuzzily
 				bool MatchesOneTime(DateTime time, List<DateTime> timeList, TimeSpan diff)
 				{
 					foreach (DateTime time2 in timeList)
 					{
-						if ((time - time2).Duration() < diff)
+						if ((time.ToUniversalTime() - time2.ToUniversalTime()).Duration() < diff)
 						{
 							return true;
 						}
@@ -760,8 +764,6 @@ namespace Spark
 					return false;
 				}
 
-				//FileInfo firstFile = files.First();
-				//FileInfo[] selectedFiles = files.Where(f => firstFile.LastWriteTime - f.LastWriteTime < TimeSpan.FromMinutes(20)).ToArray();
 				if (selectedFiles.Length == 0)
 				{
 					return new List<Dictionary<string, float>>();
@@ -777,7 +779,7 @@ namespace Spark
 						if (replayFile == null) continue;
 
 						// loop through every nth frame
-						const int n = 10;
+						const int n = 5;
 						int nframes = replayFile.nframes;
 						for (int i = 0; i < nframes; i += n)
 						{

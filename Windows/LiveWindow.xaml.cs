@@ -582,6 +582,8 @@ namespace Spark
 							for (int j = lastMatches.Length - 1; j >= 0; j--)
 							{
 								MatchData match = lastMatches[j];
+								
+								// TODO match is null
 								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[Team.TeamColor.orange].points + "  BLUE: " + match.teams[Team.TeamColor.blue].points);
 							}
 						}
@@ -2137,9 +2139,8 @@ namespace Spark
 			alternateIPTextBox.IsEnabled = false;
 			findQuest.IsEnabled = false;
 			resetIP.IsEnabled = false;
-			var progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
-			await Task.Factory.StartNew(() => Program.echoVRIP = Program.FindQuestIP(progress),
-										TaskCreationOptions.None);
+			Progress<string> progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
+			await Task.Factory.StartNew(() => Program.echoVRIP = QuestIPFetching.FindQuestIP(progress), TaskCreationOptions.None);
 			alternateIPTextBox.IsEnabled = true;
 			findQuest.IsEnabled = true;
 			resetIP.IsEnabled = true;
@@ -2317,6 +2318,12 @@ namespace Spark
 				DiscordOAuth.SetAccessCodeByUsername(username);
 				
 			}
+		}
+		
+
+		private void FindAllQuests(object sender, RoutedEventArgs e)
+		{
+			Program.ToggleWindow(typeof(QuestIPs));
 		}
 	}
 }

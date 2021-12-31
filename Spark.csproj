@@ -185,6 +185,13 @@
     <EmbeddedResource Include="wwwtemplates\disc_position_heatmap.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Page Update="Windows\QuestIPs.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\QuestIPs.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>QuestIPs.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

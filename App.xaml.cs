@@ -21,8 +21,6 @@ namespace Spark
 				return;
 			}
 			
-			SparkSettings.instance.jsonSettingsCreated = true;
-
 
 			System.Threading.Thread.CurrentThread.CurrentUICulture = SparkSettings.instance.languageIndex switch
 			{

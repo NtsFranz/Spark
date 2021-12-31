@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using ButterReplays;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Spark
 {
@@ -12,7 +13,6 @@ namespace Spark
 	{
 		#region Settings
 
-		public bool jsonSettingsCreated { get; set; } = false;
 		public bool startOnBoot { get; set; } = false;
 		public bool startMinimized { get; set; } = false;
 		public bool autoRestart { get; set; } = false;
@@ -230,11 +230,13 @@ namespace Spark
 		{
 			try
 			{
+				Console.WriteLine("Reading settings file.");
 				string filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "settings.json");
 				if (File.Exists(filename))
 				{
 					string json = File.ReadAllText(filename);
 					instance = JsonConvert.DeserializeObject<SparkSettings>(json);
+					// instance = JsonSerializer.Deserialize<SparkSettings>(json);
 				}
 				else
 				{

@@ -23,7 +23,7 @@ namespace Spark
 			spectatorButton.IsEnabled = false;
 			playerButton.IsEnabled = false;
 			var progress = new Progress<string>(s => setupLabel.Content = s);
-			await Task.Factory.StartNew(() => Program.echoVRIP = Program.FindQuestIP(progress),
+			await Task.Factory.StartNew(() => Program.echoVRIP = QuestIPFetching.FindQuestIP(progress),
 										TaskCreationOptions.None);
 			spectatorButton.IsEnabled = true;
 			playerButton.IsEnabled = true;

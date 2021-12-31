@@ -87,7 +87,7 @@ namespace Spark
 				{
 					{"session_id", matchData.firstFrame.sessionid },
 					{"match_time", matchData.MatchTimeSQL },
-					{"event_time", DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss") },
+					{"event_time", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") },
 					{"game_clock", gameClock },
 					{"player_id", player?.userid },
 					{"player_name", player?.name },

@@ -486,7 +486,7 @@
 		</Grid>
 		<GridSplitter x:Name="gridSplitter_Copy" HorizontalAlignment="Stretch" Margin="1055,242,0,242" Grid.Column="3"/>
 		<StackPanel x:Name="Right_Sidebar" Grid.Column="4" HorizontalAlignment="Stretch" Height="Auto">
-			<GroupBox x:Name="casterToolsBox" Header="Caster Tools" Visibility="Collapsed">
+			<GroupBox x:Name="casterToolsBox" Header="Caster Tools" Visibility="Visible">
 				<StackPanel>
 					<Label x:Name="label" Content="Stats ID:"/>
 					<TextBox x:Name="customIdTextbox" Text="---" MaxLines="1" TextWrapping="NoWrap" Height="16" IsReadOnly="True" FontSize="14" FontFamily="Courier New"/>
@@ -495,6 +495,7 @@
 						<Button x:Name="button5" Content="Upload Now" Margin="4,4,4,4" Width="85" Click="UploadStatsManual"/>
 					</StackPanel>
 					<Button x:Name="button6" Content="Restart as Spectator" Height="35" Margin="4,4,4,4" Click="RestartAsSpectatorClick" ToolTip="Restarts the game in the 2D spectator mode"/>
+					<Button Content="Find All Quests" Height="35" Margin="4,4,4,4" Click="FindAllQuests" ToolTip="Shows a list of all the Quest IPs on the network."/>
 				</StackPanel>
 			</GroupBox>
 			<GroupBox x:Name="toolsBox" Header="{x:Static p:Resources.Tools}" Margin="0,8,0,0" VerticalAlignment="Top">

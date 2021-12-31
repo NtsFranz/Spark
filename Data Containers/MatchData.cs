@@ -59,7 +59,7 @@ namespace Spark
 			matchTime = firstFrame.recorded_time;
 			if (matchTime == DateTime.MinValue)
 			{
-				matchTime = DateTime.Now;
+				matchTime = DateTime.UtcNow;
 			}
 
 			teams = new Dictionary<Team.TeamColor, TeamData> {
