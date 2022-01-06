@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -51,7 +53,7 @@ namespace Spark
 
 				overlayData = data;
 #else
-				overlayData ??= await OverlayServer.GetOverlays();
+				overlayData = await GetOverlays();
 #endif
 			}
 			catch (Exception e)
@@ -60,14 +62,60 @@ namespace Spark
 			}
 			
 			// write out overlayData to a temp folder
-			foreach (KeyValuePair<string, string> file in overlayData)
-			{
+			// foreach (KeyValuePair<string, string> file in overlayData)
+			// {
 				// file.Value
+			// }
+		}
+
+
+
+		public static async Task<Dictionary<string, string>> GetOverlays()
+		{
+			if (DiscordOAuth.Personal) return null;
+
+			try
+			{
+				Dictionary<string, string> data = new Dictionary<string, string>();
+				using HttpClient webClient = new HttpClient();
+				byte[] result = await webClient.GetByteArrayAsync(
+					Program.API_URL_2 + "get_overlays/" + DiscordOAuth.AccessCode.series_name + "/" + DiscordOAuth.oauthToken);
+				await using MemoryStream file = new MemoryStream(result);
+				using ZipArchive zip = new ZipArchive(file, ZipArchiveMode.Read);
+				foreach (ZipArchiveEntry entry in zip.Entries)
+				{
+					await using Stream stream = entry.Open();
+
+					if (entry.Name.EndsWith(".png"))
+					{
+						string tempFolder = Path.Combine(Path.GetTempPath(), "Spark", "img");
+						Directory.CreateDirectory(tempFolder);
+						string tempFilePath = Path.Combine(tempFolder, SecretKeys.Hash(entry.Name) + ".png");
+						await using MemoryStream reader = new MemoryStream();
+						await stream.CopyToAsync(reader);
+						byte[] bytes = reader.ToArray();
+						await File.WriteAllBytesAsync(tempFilePath, bytes);
+						data[entry.Name] = tempFilePath;
+					}
+					else
+					{
+						using StreamReader reader = new StreamReader(stream);
+						data[entry.Name] = await reader.ReadToEndAsync();
+					}
+				}
+
+				return data;
+			}
+			catch (Exception e)
+			{
+				Logger.LogRow(Logger.LogType.Error, e.ToString());
+				return null;
 			}
 		}
 
 		public static void MapRoutes(IEndpointRouteBuilder endpoints)
 		{
+			if (overlayData == null) return;
 			foreach (string str in overlayData.Keys)
 			{
 				string[] ignoreEnds = { "index.html", ".html" };

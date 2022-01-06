@@ -14,15 +14,15 @@ namespace Spark
 {
 	public class ReplayFilesManager
 	{
-		
 		// public Milk milkData;
 		private ButterFile butter;
-		
+
 		public string fileName;
-		
+
 		private readonly object butterWritingLock = new object();
 		private readonly object fileWritingLock = new object();
-		
+		public bool zipping = false;
+
 		public ConcurrentQueue<string> lastJSONQueue = new ConcurrentQueue<string>();
 		public ConcurrentQueue<string> lastDateTimeStringQueue = new ConcurrentQueue<string>();
 		public ConcurrentStack<Frame> milkFramesToSave = new ConcurrentStack<Frame>();
@@ -31,62 +31,58 @@ namespace Spark
 		public ConcurrentQueue<string> replayBufferJSONBones = new ConcurrentQueue<string>();
 
 		private const string echoreplayDateFormat = "yyyy/MM/dd HH:mm:ss.fff";
-		
+		private const string fileNameFormat = "rec_yyyy-MM-dd_HH-mm-ss";
+
 		private int lastButterNumChunks = 0;
 		private ulong lastButterFetchFrameIndex = 0;
-		
+
 		/// <summary>
 		/// For replay file saving in batches
 		/// </summary>
-		private readonly List<DateTime> dataCacheTimestamps = new List<DateTime>();
-		private readonly List<string> dataCacheLines = new List<string>();
-		
-		
+		private readonly ConcurrentQueue<DateTime> dataCacheTimestamps = new ConcurrentQueue<DateTime>();
+		private readonly ConcurrentQueue<string> dataCacheLines = new ConcurrentQueue<string>();
+
+
 		private static readonly List<float> fullDeltaTimes = new List<float> { 16.6666666f, 33.3333333f, 100 };
-		private int FrameInterval => Math.Clamp((int)(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull] / Program.StatsHz), 1, 10000);
+		private static int FrameInterval => Math.Clamp((int)(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull] / Program.StatsHz), 1, 10000);
 		private int frameIndex = 0;
-		
+
 		public ReplayFilesManager()
 		{
 			butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
 
 			Split();
-			
+
 			Program.NewFrame += AddButterFrame;
 			// Program.NewFrame += AddMilkFrame;
 			Program.FrameFetched += AddEchoreplayFrame;
 
 			Program.JoinedGame += frame =>
 			{
-				Split();
+				lock (fileWritingLock)
+				{
+					fileName = DateTime.Now.ToString(fileNameFormat);
+				}
 			};
 			Program.LeftGame += frame =>
 			{
 				Task.Run(async () =>
 				{
-					await Task.Delay(50);
+					await Task.Delay(100);
 					Split();
 				});
 			};
-			Program.RoundOver += frame =>
-			{
-				Split();
-			};
+			Program.RoundOver += frame => { Split(); };
 			Program.SparkClosing += () =>
 			{
-				Task.Run(async () =>
-				{
-					await Task.Delay(50);
-					Split();
-				});
-				Split();
+				Task.Run(Split);
 			};
 		}
-		
+
 		private void AddEchoreplayFrame(DateTime timestamp, string session, string bones)
 		{
 			frameIndex++;
-			
+
 			if (!SparkSettings.instance.enableReplayBuffer)
 			{
 				if (!SparkSettings.instance.enableFullLogging) return;
@@ -99,7 +95,7 @@ namespace Spark
 			{
 				// if this is not a lobby api frame
 				if (session.Length <= 800) return;
-				
+
 				if (SparkSettings.instance.enableFullLogging)
 				{
 					bool log = false;
@@ -120,11 +116,11 @@ namespace Spark
 					{
 						if (bones != null)
 						{
-							WriteToFile(timestamp.ToString(echoreplayDateFormat) + "\t" + session + "\t" + bones);
+							WriteEchoreplayLine(timestamp.ToString(echoreplayDateFormat) + "\t" + session + "\t" + bones);
 						}
 						else
 						{
-							WriteToFile(timestamp.ToString(echoreplayDateFormat) + "\t" + session);	
+							WriteEchoreplayLine(timestamp.ToString(echoreplayDateFormat) + "\t" + session);
 						}
 					}
 				}
@@ -151,7 +147,7 @@ namespace Spark
 				Console.WriteLine("Error in adding .echoreplay frame " + ex);
 			}
 		}
-		
+
 		// private void MilkThread()
 		// {
 		// 	Thread.Sleep(2000);
@@ -190,15 +186,18 @@ namespace Spark
 		{
 			if (!SparkSettings.instance.enableFullLogging) return;
 			if (!SparkSettings.instance.saveButterFiles) return;
-			
+
 			if (frameIndex % FrameInterval != 0) return;
-			
+
 			butter.AddFrame(f);
-			if (lastButterNumChunks != butter.NumChunks())
+
+			// write the whole file every chunk
+			// at 300 frames/chunk this is every 10 seconds
+			if (butter.NumChunks() - lastButterNumChunks > 1)
 			{
 				WriteOutButterFile();
+				lastButterNumChunks = butter.NumChunks();
 			}
-			lastButterNumChunks = butter.NumChunks();
 		}
 
 		private void WriteOutButterFile()
@@ -214,59 +213,49 @@ namespace Spark
 		}
 
 		/// <summary>
-		/// Writes the data to the file
+		/// Writes the echoreplay data to the file
 		/// </summary>
 		/// <param name="data">The data to write</param>
-		private void WriteToFile(string data)
+		private void WriteEchoreplayLine(string data)
+		{
+			// this time is just for when to save batches. It isn't saved to the file.
+			dataCacheTimestamps.Enqueue(DateTime.UtcNow);
+			dataCacheLines.Enqueue(data);
+
+			// if the time elapsed since last write is less than cutoff
+			if (!SparkSettings.instance.batchWrites || DateTime.UtcNow - dataCacheTimestamps.First() >= TimeSpan.FromSeconds(5))
+			{
+				WriteOutEchoreplayFile();
+			}
+		}
+
+		private void WriteOutEchoreplayFile()
 		{
 			lock (fileWritingLock)
 			{
-				if (SparkSettings.instance.batchWrites)
-				{
-					dataCacheTimestamps.Add(DateTime.UtcNow);
-					dataCacheLines.Add(data);
-
-					// if the time elapsed since last write is less than cutoff
-					if (DateTime.UtcNow - dataCacheTimestamps[0] < TimeSpan.FromSeconds(5))
-					{
-						return;
-					}
-				}
-
+				if (dataCacheLines.IsEmpty) return;
+				
 				// Fail if the folder doesn't even exist
 				if (!Directory.Exists(SparkSettings.instance.saveFolder))
 				{
+					LogRow(LogType.Error, "Replay directory doesn't exist.");
 					return;
 				}
 
-				string filePath, directoryPath;
+				string directoryPath = SparkSettings.instance.saveFolder;
+				string filePath = Path.Combine(directoryPath, fileName + ".echoreplay");
 
-				// could combine with some other data path, such as AppData
-				directoryPath = SparkSettings.instance.saveFolder;
+				StreamWriter streamWriter = new StreamWriter(filePath, true);
 
-				filePath = Path.Combine(directoryPath, fileName + ".echoreplay");
-
-				lock (fileWritingLock)
+				foreach (string row in dataCacheLines)
 				{
-					StreamWriter streamWriter = new StreamWriter(filePath, true);
-
-					if (SparkSettings.instance.batchWrites)
-					{
-						foreach (string row in dataCacheLines)
-						{
-							streamWriter.WriteLine(row);
-						}
-
-						dataCacheLines.Clear();
-						dataCacheTimestamps.Clear();
-					}
-					else
-					{
-						streamWriter.WriteLine(data);
-					}
-
-					streamWriter.Close();
+					streamWriter.WriteLine(row);
 				}
+
+				dataCacheLines.Clear();
+				dataCacheTimestamps.Clear();
+
+				streamWriter.Close();
 			}
 		}
 
@@ -298,48 +287,57 @@ namespace Spark
 				// compress the file
 				if (SparkSettings.instance.useCompression)
 				{
+					zipping = true;
 					string tempDir = Path.Combine(SparkSettings.instance.saveFolder, "temp_zip");
 					Directory.CreateDirectory(tempDir);
 					File.Move(filePath,
 						Path.Combine(tempDir, $"{fullFileName}.echoreplay"));
 					ZipFile.CreateFromDirectory(tempDir, filePath);
 					Directory.Delete(tempDir, true);
+					zipping = false;
 				}
 			}
 		}
-		
+
 
 		/// <summary>
 		/// Generates a new filename from the current time.
 		/// </summary>
 		public void Split()
 		{
-			lock (fileWritingLock)
-			{
-				string lastFilename = fileName;
-				fileName = DateTime.Now.ToString("rec_yyyy-MM-dd_HH-mm-ss");
-
-				// compress the file
-				if (SparkSettings.instance.useCompression)
-				{
-					if (File.Exists(Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay")))
-					{
-						string tempDir = Path.Combine(SparkSettings.instance.saveFolder, "temp_zip");
-						Directory.CreateDirectory(tempDir);
-						File.Move(Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay"),
-							Path.Combine(SparkSettings.instance.saveFolder, "temp_zip",
-								lastFilename + ".echoreplay")); // TODO can fail because in use
-						ZipFile.CreateFromDirectory(tempDir, Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay"));
-						Directory.Delete(tempDir, true);
-					}
-				}
-			}
+			WriteOutEchoreplayFile();
 
 			lock (butterWritingLock)
 			{
 				WriteOutButterFile();
 				butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
 			}
+
+
+			lock (fileWritingLock)
+			{
+				string lastFilename = fileName;
+				fileName = DateTime.Now.ToString(fileNameFormat);
+
+				// compress the file
+				if (SparkSettings.instance.useCompression)
+				{
+					if (File.Exists(Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay")))
+					{
+						zipping = true;
+						string tempDir = Path.Combine(SparkSettings.instance.saveFolder, "temp_zip");
+						Directory.CreateDirectory(tempDir);
+						File.Move(
+							Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay"),
+							Path.Combine(SparkSettings.instance.saveFolder, "temp_zip", lastFilename + ".echoreplay")
+						);
+						ZipFile.CreateFromDirectory(tempDir, Path.Combine(SparkSettings.instance.saveFolder, lastFilename + ".echoreplay"));
+						Directory.Delete(tempDir, true);
+						zipping = false;
+					}
+				}
+			}
+
 
 			// reset the replay buffer
 			replayBufferTimestamps.Clear();

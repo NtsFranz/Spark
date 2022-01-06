@@ -17,9 +17,9 @@
 		
 		<TextBox x:Name="QuestIPsBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsReadOnly="True" FontSize="20" Text="TEST"/>
 		
+		<Label x:Name="LoadingLabel" Content="Loading..." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10"></Label>
 		<Button Content="{x:Static p:Resources.Refresh}" HorizontalAlignment="Right" Margin="0,0,100,10" Padding="3,3,3,3" VerticalAlignment="Bottom" Width="70" Click="RefreshClicked"/>
 		<Button Content="{x:Static p:Resources.Close}" HorizontalAlignment="Right" Margin="0,0,30,10" Padding="3,3,3,3" VerticalAlignment="Bottom" Width="56" Click="CloseButtonClicked"/>
 		
-
 	</Grid>
 </Window>

@@ -6,10 +6,12 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ButterReplays;
 using EchoVRAPI;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -27,7 +29,12 @@ namespace Spark
 		public OverlayServer()
 		{
 			Task.Run(async () => { await RestartServer(); });
-			
+
+			//DiscordOAuth.Authenticated += () =>
+			//{
+			//	Task.Run(async () => { await RestartServer(); });
+			//};
+
 			DiscordOAuth.AccessCodeChanged += (code) =>
 			{
 				Console.WriteLine("Access code changed");
@@ -96,7 +103,7 @@ namespace Spark
 						await context.Response.WriteAsJsonAsync(
 							new Dictionary<string, object>
 							{
-								{ "version", Program.AppVersion() },
+								{ "version", Program.AppVersionString() },
 								{ "windows_store", Program.IsWindowsStore() },
 								{ "ess_version", Program.InstalledSpeakerSystemVersion },
 							});
@@ -286,7 +293,7 @@ namespace Spark
 							List<Dictionary<string, float>> positions = await GetDiscPositions();
 							await context.Response.WriteAsJsonAsync(positions);
 						});
-					
+
 					endpoints.MapGet("/disc_position_heatmap",
 						async context =>
 						{
@@ -606,50 +613,6 @@ namespace Spark
 		}
 
 
-		public static async Task<Dictionary<string, string>> GetOverlays()
-		{
-			try
-			{
-				Dictionary<string, string> data = new Dictionary<string, string>();
-				using WebClient webClient = new WebClient();
-				byte[] result = webClient.DownloadData(
-					Program.API_URL_2 + "get_overlays/" + DiscordOAuth.AccessCode.series_name + "/" + DiscordOAuth.oauthToken);
-				// Stream resp = await Program.GetRequestAsyncStream(Program.API_URL_2 + "get_overlays/" + accessCode + "/" + DiscordOAuth.oauthToken, null);
-				// await using MemoryStream file = new MemoryStream();
-				// await resp.CopyToAsync(file);
-				await using MemoryStream file = new MemoryStream(result);
-				using ZipArchive zip = new ZipArchive(file, ZipArchiveMode.Read);
-				foreach (ZipArchiveEntry entry in zip.Entries)
-				{
-					await using Stream stream = entry.Open();
-					
-					if (entry.Name.EndsWith(".png"))
-					{
-						string tempFolder = Path.Combine(Path.GetTempPath(), "Spark", "img");
-						Directory.CreateDirectory(tempFolder);
-						string tempFilePath = Path.Combine(tempFolder, SecretKeys.Hash(entry.Name) + ".png");
-						await using MemoryStream reader = new MemoryStream();
-						await stream.CopyToAsync(reader);
-						byte[] bytes = reader.ToArray();
-						await File.WriteAllBytesAsync(tempFilePath, bytes);
-						data[entry.Name] = tempFilePath;
-					}
-					else
-					{
-						using StreamReader reader = new StreamReader(stream);
-						data[entry.Name] = await reader.ReadToEndAsync();
-					}
-				}
-
-				return data;
-			}
-			catch (Exception e)
-			{
-				Debug.WriteLine(e.ToString());
-				return null;
-			}
-		}
-
 		public static Stream GenerateStreamFromString(string s)
 		{
 			MemoryStream stream = new MemoryStream();
@@ -714,9 +677,9 @@ namespace Spark
 			context.Response.Headers.Add("Access-Control-Allow-Headers",
 				"Content-Type, Accept, X-Requested-With");
 
-			
-					string resp = @"";
-					await context.Response.WriteAsync(resp);
+
+			string resp = @"";
+			await context.Response.WriteAsync(resp);
 		}
 
 		public static async Task<List<Dictionary<string, float>>> GetDiscPositions()
@@ -729,8 +692,14 @@ namespace Spark
 			{
 				// get the most recent file in the replay folder
 				DirectoryInfo directory = new DirectoryInfo(SparkSettings.instance.saveFolder);
-				FileInfo[] files = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
+
+				// get .echoreplay files
+				FileInfo[] echoreplayFiles = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
 					.Where(f => f.Name.StartsWith("rec") && f.Name.EndsWith(".echoreplay")).ToArray();
+
+				// get .butter files
+				FileInfo[] butterFiles = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
+					.Where(f => f.Name.StartsWith("rec") && f.Name.EndsWith(".butter")).ToArray();
 
 
 				// gets a list of all the times of previous matches in memory that are for the current set
@@ -742,16 +711,34 @@ namespace Spark
 				selectedMatchTimes.Add(Program.matchData.matchTime);
 
 				// finds all the files that match one of the matches in memory
-				FileInfo[] selectedFiles = files.Where(f => DateTime.TryParseExact(f.Name.Substring(4, 19), "yyyy-MM-dd_HH-mm-ss",
-						            CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out DateTime time)
-					            && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))
-					)
-					.ToArray();
+				FileInfo[] selectedFiles = butterFiles.Where(
+					f =>
+						DateTime.TryParseExact(
+							f.Name.Substring(4, 19),
+							"yyyy-MM-dd_HH-mm-ss",
+							CultureInfo.InvariantCulture,
+							DateTimeStyles.AssumeLocal,
+							out DateTime time)
+						&& MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))).ToArray();
+
+				// use .echoreplay files if .butter files not found
+				if (selectedFiles.Length == 0)
+				{
+					selectedFiles = echoreplayFiles.Where(
+						f =>
+							DateTime.TryParseExact(
+								f.Name.Substring(4, 19),
+								"yyyy-MM-dd_HH-mm-ss",
+								CultureInfo.InvariantCulture,
+								DateTimeStyles.AssumeLocal,
+								out DateTime time)
+							&& MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))).ToArray();
+				}
 
 				// FileInfo[] selectedFiles = files.Take(1).ToArray();
 
 				// function to check if a time matches fuzzily
-				bool MatchesOneTime(DateTime time, List<DateTime> timeList, TimeSpan diff)
+				static bool MatchesOneTime(DateTime time, List<DateTime> timeList, TimeSpan diff)
 				{
 					foreach (DateTime time2 in timeList)
 					{
@@ -774,24 +761,23 @@ namespace Spark
 					foreach (FileInfo file in selectedFiles)
 					{
 						ReplayFileReader reader = new ReplayFileReader();
-						ReplayFile replayFile =
-							reader.LoadFileAsync(file.FullName, processFrames: true).Result;
+						ReplayFile replayFile = await reader.LoadFileAsync(file.FullName, true);
 						if (replayFile == null) continue;
 
 						// loop through every nth frame
 						const int n = 5;
-						int nframes = replayFile.nframes;
-						for (int i = 0; i < nframes; i += n)
+						int nFrames = replayFile.nframes;
+						for (int i = 0; i < nFrames; i += n)
 						{
 							Frame frame = replayFile.GetFrame(i);
 
 							if (frame.game_status != "playing") continue;
 							Vector3 pos = frame.disc.position.ToVector3();
-							positions.Add(new Dictionary<string, float>()
+							positions.Add(new Dictionary<string, float>
 							{
-								{"x", pos.X},
-								{"y", pos.Y},
-								{"z", pos.Z},
+								{ "x", pos.X },
+								{ "y", pos.Y },
+								{ "z", pos.Z },
 							});
 						}
 					}

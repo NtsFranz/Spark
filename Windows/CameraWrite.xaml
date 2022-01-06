@@ -338,8 +338,8 @@
 
 								<StackPanel Orientation="Horizontal">
 									<Label Content="Multiplier: " Width="110" Margin="10,0,0,0"/>
-									<Slider x:Name="XPlanePosMultiplier" Value="{l:CameraSettingBinding xPlanePosMultiplier}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".0001" SmallChange=".0001"/>
-									<TextBox Text="{Binding ElementName=XPlanePosMultiplier, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+									<Slider x:Name="XPlanePosMultiplierSlider" Value="{l:CameraSettingBinding xPlanePosMultiplier}" Minimum="0" Maximum="1" Width="160" Margin="4,0,4,0" Height="20" TickFrequency=".0001" SmallChange=".0001"/>
+									<TextBox Text="{Binding ElementName=XPlanePosMultiplierSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 								</StackPanel>
 
 							</StackPanel>

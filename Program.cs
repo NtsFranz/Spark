@@ -5,7 +5,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -48,8 +47,8 @@ namespace Spark
 		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
 		// public const string APIURL = "http://127.0.0.1:5005/";
 		public const string API_URL_2 = "https://api.ignitevr.workers.dev/";
+		// public const string API_URL_2 = "http://127.0.0.1:5000/";
 		public const string WRITE_API_URL = "http://127.0.0.1:6723/";
-		// public const string API_URL_2 = "http://127.0.0.1:8787/";
 
 
 		public static readonly HttpClient client = new HttpClient();
@@ -155,6 +154,8 @@ namespace Spark
 		private static CancellationTokenSource fetchThreadCancellation;
 		private static CancellationTokenSource liveReplayCancel;
 		public static Thread atlasHostingThread;
+		private static Thread IPSearchthread1;
+		private static Thread IPSearchthread2;
 		public static OBS obs;
 		private static OverlayServer overlayServer;
 		public static NetMQEvents netMQEvents;
@@ -361,8 +362,8 @@ namespace Spark
 
 				ReadSettings();
 
-				client.DefaultRequestHeaders.Add("version", AppVersion());
-				client.DefaultRequestHeaders.Add("User-Agent", "Spark/" + AppVersion());
+				client.DefaultRequestHeaders.Add("version", AppVersionString());
+				client.DefaultRequestHeaders.Add("User-Agent", "Spark/" + AppVersionString());
 
 				client.BaseAddress = new Uri(APIURL);
 
@@ -485,9 +486,15 @@ namespace Spark
 			}
 		}
 
-		public static string AppVersion()
+
+		public static Version AppVersion()
 		{
-			var version = Application.Current.GetType().Assembly.GetName().Version;
+			return Application.Current.GetType().Assembly.GetName().Version;
+		}
+
+		public static string AppVersionString()
+		{
+			Version version = AppVersion();
 			return $"{version.Major}.{version.Minor}.{version.Build}";
 		}
 		
@@ -513,7 +520,7 @@ namespace Spark
 			overlayServer?.Stop();
 		}
 
-		static async Task GentleClose()
+		private static async Task GentleClose()
 		{
 			running = false;
 			
@@ -535,6 +542,11 @@ namespace Spark
 			fetchThreadCancellation.Cancel();
 			liveReplayCancel.Cancel();
 
+			while (replayFilesManager.zipping)
+			{
+				closingWindow.label.Content = Resources.Compressing_Replay_File___;
+				await Task.Delay(10);
+			}
 
 			closingWindow.label.Content = Resources.Closing_NVIDIA_Highlights___;
 			HighlightsHelper.CloseNVHighlights();
@@ -629,6 +641,9 @@ namespace Spark
 					
 					connectedToGame = true;
 
+					// early quit if the program was quit while fetching
+					if (!running) return;
+
 					// tell the processing methods that stuff is available
 					_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, results[0], results[1]); });
 
@@ -699,7 +714,9 @@ namespace Spark
 						lastJSON = null;
 						lastBonesJSON = null;
 					}
-					
+
+					await Task.Delay(100);
+
 				}
 				catch (Exception e)
 				{
@@ -749,6 +766,8 @@ namespace Spark
 			f.teams[0].players ??= new List<Player>();
 			f.teams[1].players ??= new List<Player>();
 			f.teams[2].players ??= new List<Player>();
+
+			if (bones !=null) f.bones = JsonConvert.DeserializeObject<Bones>(bones);
 
 			return f;
 		}
@@ -1076,42 +1095,6 @@ namespace Spark
 			}
 		}
 
-		private static StreamReader ExtractFile(StreamReader fileReader, string fileName)
-		{
-			string tempDir = Path.Combine(SparkSettings.instance.saveFolder, "temp_zip_read\\");
-
-			if (Directory.Exists(tempDir))
-			{
-				while (running)
-				{
-					try
-					{
-						Directory.Delete(tempDir, true);
-						break;
-					}
-					catch (IOException)
-					{
-						Thread.Sleep(10);
-					}
-				}
-			}
-
-			Directory.CreateDirectory(tempDir);
-
-			using ZipArchive archive = ZipFile.OpenRead(fileName);
-			foreach (ZipArchiveEntry entry in archive.Entries)
-			{
-				// Gets the full path to ensure that relative segments are removed.
-				string destinationPath = Path.GetFullPath(Path.Combine(tempDir, entry.FullName));
-
-				entry.ExtractToFile(destinationPath);
-
-				fileReader = new StreamReader(destinationPath);
-			}
-
-			return fileReader;
-		}
-
 		private static void ReadSettings()
 		{
 			echoVRIP = SparkSettings.instance.echoVRIP;
@@ -1272,7 +1255,7 @@ namespace Spark
 				// Loop through players on team.
 				foreach (Player player in team.players)
 				{
-					player.team = team;
+					player.team_color = team.color;
 
 					// make sure the player wasn't in the last frame
 					if (lastFrame.GetAllPlayers(true).Any(p => p.userid == player.userid)) continue;
@@ -3063,7 +3046,7 @@ namespace Spark
 					}
 				}
 
-				request.UserAgent = $"Spark/{AppVersion()}";
+				request.UserAgent = $"Spark/{AppVersionString()}";
 				using WebResponse response = await request.GetResponseAsync();
 				await using Stream stream = response.GetResponseStream();
 				if (stream != null)
@@ -3098,7 +3081,7 @@ namespace Spark
 					}
 				}
 
-				request.UserAgent = $"Spark/{AppVersion()}";
+				request.UserAgent = $"Spark/{AppVersionString()}";
 				using WebResponse response = await request.GetResponseAsync();
 				return response.GetResponseStream();
 			}
@@ -3279,6 +3262,205 @@ namespace Spark
 			}
 			return ret;
 		}
+		
+		#region IP
+		
+		// The max number of physical addresses.
+		const int MAXLEN_PHYSADDR = 8;
+
+		// Define the MIB_IPNETROW structure.
+		[StructLayout(LayoutKind.Sequential)]
+		struct MIB_IPNETROW
+		{
+			[MarshalAs(UnmanagedType.U4)]
+			public int dwIndex;
+			[MarshalAs(UnmanagedType.U4)]
+			public int dwPhysAddrLen;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac0;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac1;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac2;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac3;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac4;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac5;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac6;
+			[MarshalAs(UnmanagedType.U1)]
+			public byte mac7;
+			[MarshalAs(UnmanagedType.U4)]
+			public int dwAddr;
+			[MarshalAs(UnmanagedType.U4)]
+			public int dwType;
+		}
+		[DllImport("iphlpapi.dll", ExactSpelling = true)]
+		public static extern int SendARP(int DestIP, int SrcIP, [Out] byte[] pMacAddr, ref int PhyAddrLen);
+
+		public static IPAddress QuestIP = null;
+		public static bool IPPingThread1Done = false;
+		public static bool IPPingThread2Done = false;
+
+		public static void GetCurrentIPAndPingNetwork()
+		{
+			foreach (NetworkInterface adapter in NetworkInterface.GetAllNetworkInterfaces().Where(ni => ni.OperationalStatus == OperationalStatus.Up && (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)))
+			{
+				var addr = adapter.GetIPProperties().GatewayAddresses.FirstOrDefault();
+				if (addr != null && !addr.Address.ToString().Equals("0.0.0.0"))
+				{
+					foreach (UnicastIPAddressInformation unicastIPAddressInformation in adapter.GetIPProperties().UnicastAddresses)
+					{
+						if (unicastIPAddressInformation.Address.AddressFamily == AddressFamily.InterNetwork)
+						{
+							Console.WriteLine("PC IP Address: " + unicastIPAddressInformation.Address);
+							Console.Write("PC Subnet Mask: " + unicastIPAddressInformation.IPv4Mask + "\n Searching for Quest on network...");
+							PingNetworkIPs(unicastIPAddressInformation.Address, unicastIPAddressInformation.IPv4Mask);
+						}
+					}
+				}
+			}
+		}
+		
+		public static async void PingIPList(List<IPAddress> IPs, int threadID)
+		{
+			var tasks = IPs.Select(ip => new Ping().SendPingAsync(ip, 4000));
+			var results = await Task.WhenAll(tasks);
+			switch (threadID)
+			{
+				case 1:
+					IPPingThread1Done = true;
+					break;
+				case 2:
+					IPPingThread2Done = true;
+					break;
+				default:
+					break;
+			}
+		}
+		public static void PingNetworkIPs(IPAddress address, IPAddress mask)
+		{
+			uint ipAddress = BitConverter.ToUInt32(address.GetAddressBytes(), 0);
+			uint ipMaskV4 = BitConverter.ToUInt32(mask.GetAddressBytes(), 0);
+			uint broadCastIpAddress = ipAddress | ~ipMaskV4;
+
+			IPAddress start = new IPAddress(BitConverter.GetBytes(broadCastIpAddress));
+
+			var bytes = start.GetAddressBytes();
+			var leastSigByte = address.GetAddressBytes().Last();
+			var range = 255 - leastSigByte;
+
+			var pingReplyTasks = Enumerable.Range(leastSigByte, range)
+				.Select(x =>
+				{
+					var bb = start.GetAddressBytes();
+					bb[3] = (byte)x;
+					var destIp = new IPAddress(bb);
+					return destIp;
+				})
+				.ToList();
+			var pingReplyTasks2 = Enumerable.Range(0, leastSigByte - 1)
+				.Select(x =>
+				{
+
+					var bb = start.GetAddressBytes();
+					bb[3] = (byte)x;
+					var destIp = new IPAddress(bb);
+					return destIp;
+				})
+				.ToList();
+			IPSearchthread1 = new Thread(new ThreadStart(() => PingIPList(pingReplyTasks, 1)));
+			IPSearchthread2 = new Thread(new ThreadStart(() => PingIPList(pingReplyTasks2, 2)));
+			IPPingThread1Done = false;
+			IPPingThread2Done = false;
+			IPSearchthread1.Start();
+			IPSearchthread2.Start();
+		}
+
+		// Declare the GetIpNetTable function.
+		[DllImport("IpHlpApi.dll")]
+		[return: MarshalAs(UnmanagedType.U4)]
+		static extern int GetIpNetTable(
+		   IntPtr pIpNetTable,
+		   [MarshalAs(UnmanagedType.U4)]
+		 ref int pdwSize,
+		   bool bOrder);
+
+		[DllImport("IpHlpApi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		internal static extern int FreeMibTable(IntPtr plpNetTable);
+
+		// The insufficient buffer error.
+		const int ERROR_INSUFFICIENT_BUFFER = 122;
+		static IntPtr buffer;
+
+		static void CheckARPTable()
+		{
+
+			int bytesNeeded = 0;
+
+			// The result from the API call.
+			int result = GetIpNetTable(IntPtr.Zero, ref bytesNeeded, false);
+
+			// Call the function, expecting an insufficient buffer.
+			if (result != ERROR_INSUFFICIENT_BUFFER)
+			{
+				// Throw an exception.
+				throw new Exception();
+			}
+
+			// Allocate the memory, do it in a try/finally block, to ensure
+			// that it is released.
+			buffer = IntPtr.Zero;
+			// Allocate the memory.
+			buffer = Marshal.AllocCoTaskMem(bytesNeeded);
+
+			// Make the call again. If it did not succeed, then
+			// raise an error.
+			result = GetIpNetTable(buffer, ref bytesNeeded, false);
+
+			// If the result is not 0 (no error), then throw an exception.
+			if (result != 0)
+			{
+				// Throw an exception.
+				throw new Exception();
+			}
+
+			// Now we have the buffer, we have to marshal it. We can read
+			// the first 4 bytes to get the length of the buffer.
+			int entries = Marshal.ReadInt32(buffer);
+
+			// Increment the memory pointer by the size of the int.
+			IntPtr currentBuffer = new IntPtr(buffer.ToInt64() +
+				Marshal.SizeOf(typeof(int)));
+
+			// Allocate an array of entries.
+			MIB_IPNETROW[] table = new MIB_IPNETROW[entries];
+
+			// Cycle through the entries.
+			for (int index = 0; index < entries; index++)
+			{
+				// Call PtrToStructure, getting the structure information.
+				table[index] = (MIB_IPNETROW)Marshal.PtrToStructure(new
+					IntPtr(currentBuffer.ToInt64() + (index *
+					Marshal.SizeOf(typeof(MIB_IPNETROW)))), typeof(MIB_IPNETROW));
+			}
+
+			for (int index = 0; index < entries; index++)
+			{
+				MIB_IPNETROW row = table[index];
+
+				if (row.mac0 == 0x2C && row.mac1 == 0x26 && row.mac2 == 0x17)
+				{
+					QuestIP = new IPAddress(BitConverter.GetBytes(row.dwAddr));
+					break;
+				}
+
+			}
+		}
+		#endregion
+		
 
 		public static void InstallSpeakerSystem(IProgress<string> progress)
 		{
@@ -3633,7 +3815,7 @@ namespace Spark
 		internal static void Quit()
 		{
 			running = false;
-			SparkClosing.Invoke();
+			SparkClosing?.Invoke();
 			SparkSettings.instance.Save();
 			if (closingWindow != null)
 			{

@@ -321,7 +321,7 @@ namespace Spark
 				{
 					return "PERSONAL_HIGHLIGHT_GROUP";
 				}
-				else if (ClientHighlightScope != HighlightLevel.CLIENT_ONLY && player.team.color == clientTeam)
+				else if (ClientHighlightScope != HighlightLevel.CLIENT_ONLY && player.team_color == clientTeam)
 				{
 					return "PERSONAL_TEAM_HIGHLIGHT_GROUP";
 				}

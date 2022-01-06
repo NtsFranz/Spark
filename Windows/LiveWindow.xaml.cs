@@ -232,7 +232,7 @@ namespace Spark
 			});
 		}
 
-		public static string AppVersionLabelText => $"v{Program.AppVersion()}  {(Program.IsWindowsStore() ? Properties.Resources.Windows_Store : "")}";
+		public static string AppVersionLabelText => $"v{Program.AppVersionString()}  {(Program.IsWindowsStore() ? Properties.Resources.Windows_Store : "")}";
 		public static Visibility PlayercardsTabVisibility => Program.IsWindowsStore() ? Visibility.Visible : Visibility.Collapsed;
 
 		private void ActivateUnityWindow()
@@ -893,8 +893,10 @@ namespace Spark
 				string version = chosenVersion.tag_name.TrimStart('v');
 				string changelog = chosenVersion.body;
 
+				var remoteVersion = new Version(version);
+
 				// if we need a new version
-				if (version != Program.AppVersion())
+				if (remoteVersion > Program.AppVersion())
 				{
 					updateFilename = downloadUrl;
 					updateButton.Visibility = Visibility.Visible;

@@ -1354,7 +1354,7 @@ namespace Spark
 		#endregion
 
 
-		public static string AppVersionLabelText => $"v{Program.AppVersion()}";
+		public static string AppVersionLabelText => $"v{Program.AppVersionString()}";
 
 		private void InGameSceneChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -1438,7 +1438,7 @@ namespace Spark
 		private void ToggleNameplatesNow(object sender, RoutedEventArgs e)
 		{
 			if (!Program.inGame) return;
-			CameraWriteController.SetNameplatesVisibility(HideNameplates.IsChecked != true);
+			CameraWriteController.SetNameplatesVisibility(HideNameplatesCheckbox.IsChecked != true);
 		}
 
 		private void UploadTabletStats(object sender, RoutedEventArgs e)

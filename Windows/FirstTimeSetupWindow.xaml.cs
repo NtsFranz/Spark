@@ -22,7 +22,7 @@ namespace Spark
 			setupText.Visibility = Visibility.Hidden;
 			spectatorButton.IsEnabled = false;
 			playerButton.IsEnabled = false;
-			var progress = new Progress<string>(s => setupLabel.Content = s);
+			Progress<string> progress = new Progress<string>(s => setupLabel.Content = s);
 			await Task.Factory.StartNew(() => Program.echoVRIP = QuestIPFetching.FindQuestIP(progress),
 										TaskCreationOptions.None);
 			spectatorButton.IsEnabled = true;

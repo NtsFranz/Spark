@@ -135,7 +135,7 @@ namespace Spark
 						return player_name == frame.client_name;
 					// only my team
 					case 1:
-						return frame.GetPlayer(frame.client_name).team.color == frame.GetPlayer(player_name).team.color;
+						return frame.GetPlayer(frame.client_name).team_color == frame.GetPlayer(player_name).team_color;
 					// anyone
 					case 2:
 						return true;

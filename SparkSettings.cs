@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using ButterReplays;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Spark
 {

@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
+using ButterReplays;
 using EchoVRAPI;
 
 namespace Spark
@@ -62,23 +63,40 @@ namespace Spark
 			if (string.IsNullOrEmpty(replayFilePath)) return null;
 
 			Logger.LogRow(Logger.LogType.Info, "Reading file: " + replayFilePath);
-			StreamReader reader = new StreamReader(replayFilePath);
-
-			Thread loadThread = new Thread(() => ReadReplayFile(reader, replayFilePath));
-			loadThread.Start();
-			while (loadThread.IsAlive)
+			
+			
+			
+			if (replayFilePath.EndsWith(".butter"))
 			{
-				// maybe put a progress bar here
-				await Task.Delay(10);
+				List<Frame> butterFile = ButterFile.FromBytes(await File.ReadAllBytesAsync(replayFilePath));
+				return new ReplayFile
+				{
+					filename = replayFilePath,
+					nframes = butterFile.Count,
+					frames = butterFile
+				};
 			}
+			else
+			{
 
-			//if (processFrames)
-			//{
-			//	Thread processTemporalDataThread = new Thread(() => ProcessAllTemporalData(loadedDemo));
-			//	processTemporalDataThread.Start();
-			//}
+				StreamReader reader = new StreamReader(replayFilePath);
 
-			return replayFile;
+				Thread loadThread = new Thread(() => ReadReplayFile(reader, replayFilePath));
+				loadThread.Start();
+				while (loadThread.IsAlive)
+				{
+					// maybe put a progress bar here
+					await Task.Delay(10);
+				}
+
+				//if (processFrames)
+				//{
+				//	Thread processTemporalDataThread = new Thread(() => ProcessAllTemporalData(loadedDemo));
+				//	processTemporalDataThread.Start();
+				//}
+
+				return replayFile;
+			}
 		}
 
 
