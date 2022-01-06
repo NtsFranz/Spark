@@ -187,6 +187,7 @@ namespace Spark
 			if (!SparkSettings.instance.enableFullLogging) return;
 			if (!SparkSettings.instance.saveButterFiles) return;
 
+			LogRow(LogType.Error, frameIndex.ToString());
 			if (frameIndex % FrameInterval != 0) return;
 
 			butter.AddFrame(f);

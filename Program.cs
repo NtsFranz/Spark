@@ -22,6 +22,7 @@ using static Logger;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
+using System.Timers;
 using EchoVRAPI;
 using NetMQ;
 using Newtonsoft.Json.Linq;
@@ -107,7 +108,11 @@ namespace Spark
 		static bool inPostMatch = false;
 
 
+		/// <summary>
+		/// Not actually Hz. 1/Hz.
+		/// </summary>
 		public static float StatsHz => statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0];
+		private static bool? lastLowFreqMode = null;
 
 		// 60 or 30 hz main fetch speed
 		private static readonly List<float> statsDeltaTimes = new List<float> { 16.6666666f, 33.3333333f };
@@ -159,6 +164,9 @@ namespace Spark
 		public static OBS obs;
 		private static OverlayServer overlayServer;
 		public static NetMQEvents netMQEvents;
+		private static readonly HttpClient fetchClient = new HttpClient();
+		private static readonly System.Timers.Timer fetchTimer = new System.Timers.Timer();
+		private static readonly Stopwatch fetchSw = new Stopwatch();
 
 
 		#region Event Callbacks
@@ -179,6 +187,16 @@ namespace Spark
 		/// Called when a frame is finished with conversion and it is an Echo Arena frame
 		/// </summary>
 		public static Action<Frame> NewArenaFrame;
+		/// <summary>
+		/// Called when connectedToGame state changes.
+		/// This could be on loading screen or lobby
+		/// string is the raw /session
+		/// </summary>
+		public static Action<DateTime, string> ConnectedToGame;
+		/// <summary>
+		/// Called when connectedToGame state changes.
+		/// </summary>
+		public static Action DisconnectedFromGame;
 		public static Action<Frame> JoinedGame;
 		public static Action<Frame> LeftGame;
 
@@ -394,7 +412,7 @@ namespace Spark
 
 				// Set up listeners for camera-related events
 				cameraWriteController = new CameraWriteController();
-				
+
 				// sets up listeners for replay file saving
 				replayFilesManager = new ReplayFilesManager();
 
@@ -417,14 +435,28 @@ namespace Spark
 
 				autorestartCancellation = new CancellationTokenSource();
 				Task.Run(AutorestartTask, autorestartCancellation.Token);
-				fetchThreadCancellation= new CancellationTokenSource();
-				Task.Run(FetchThreadNew, fetchThreadCancellation.Token);
+				// fetchThreadCancellation= new CancellationTokenSource();
+				// Task.Run(FetchThreadNew, fetchThreadCancellation.Token);
+
+
+				fetchTimer.Interval = StatsHz;
+				fetchTimer.Elapsed += FetchAPI;
+				fetchTimer.Start();
+
+				ConnectedToGame += (_,_) =>
+				{
+					fetchTimer.Interval = StatsHz;
+				};
+				DisconnectedFromGame += () =>
+				{
+					fetchTimer.Interval = 500;
+				};
 
 				liveReplayCancel = new CancellationTokenSource();
 				Task.Run(LiveReplayHostingTask, liveReplayCancel.Token);
 
 
-				Task.Run(() =>
+				_ = Task.Run(() =>
 				{
 					try
 					{
@@ -537,9 +569,9 @@ namespace Spark
 				await Task.Delay(10);
 			}
 
-
+			fetchTimer?.Stop();
 			autorestartCancellation.Cancel();
-			fetchThreadCancellation.Cancel();
+			fetchThreadCancellation?.Cancel();
 			liveReplayCancel.Cancel();
 
 			while (replayFilesManager.zipping)
@@ -606,53 +638,100 @@ namespace Spark
 			}
 		}
 
+		
 		public static async Task FetchThreadNew()
 		{
-			HttpClient fetchClient = new HttpClient();
-
-			DateTime fetchTime = DateTime.UtcNow;
 			while (running)
-			{
-				try
-				{
-					// fetch the session or bones data
-					fetchTime = DateTime.UtcNow;
-					List<Task<string>> tasks = new List<Task<string>>();
-					tasks.Add(fetchClient.GetStringAsync($"http://{echoVRIP}:{echoVRPort}/session"));
-					if (SparkSettings.instance.fetchBones)
-					{
-						tasks.Add(fetchClient.GetStringAsync($"http://{echoVRIP}:{echoVRPort}/player_bones"));
-					}
+			{	
+				DateTime fetchTime = DateTime.UtcNow;
+				
+				_ = Task.Run(() => { FetchAPI(null,null); });
 
+				// set up timing for next fetch
+				DateTime next = fetchTime.AddMilliseconds(StatsHz);
+				if (DateTime.UtcNow < next)
+				{
+					TimeSpan delay = next - DateTime.UtcNow;
+					await Task.Delay(delay);
+				}
+				else
+				{
+					LogRow(LogType.Error, $"Fetch rate too slow. Skipped {(DateTime.UtcNow - next).TotalSeconds:N} seconds");
+				}
+
+				// don't spam when not in a game
+				if (!connectedToGame)
+				{
+					await Task.Delay(500);
+				}
+				
+				
+				// Debug.WriteLine(fetchSw.Elapsed.TotalSeconds.ToString("N5"));
+				// fetchSw.Restart();
+			}
+		}
+
+		/// <summary>
+		/// Fetches the API once
+		/// </summary>
+		/// <param name="sender">unused</param>
+		/// <param name="e">unused</param>
+		private static void FetchAPI(object sender, EventArgs e)
+		{
+			try
+			{
+				// fetch the session or bones data
+				List<Task<string>> tasks = new List<Task<string>>
+				{
+					fetchClient.GetStringAsync($"http://{echoVRIP}:{echoVRPort}/session")
+				};
+				if (SparkSettings.instance.fetchBones)
+				{
+					tasks.Add(fetchClient.GetStringAsync($"http://{echoVRIP}:{echoVRPort}/player_bones"));
+				}
+
+				_ = Task.Run(async () =>
+				{
 					string[] results = await Task.WhenAll(tasks);
-					if (results.Length == 1)
+
+					string session = results[0];
+					
+					string bones = null;
+					if (results.Length > 1)
 					{
-						results = new string[] { results[0], null };
+						bones = results[1];
 					}
 
 					// add this data to the public variable
 					lock (lastJSONLock)
 					{
-						lastJSON = results[0];
-						lastBonesJSON = results[1];
+						lastJSON = session;
+						lastBonesJSON = bones;
 					}
 
 					DateTime frameTime = DateTime.UtcNow;
-					
+
+					if (connectedToGame == false)
+					{
+						_ = Task.Run(() =>
+						{
+							ConnectedToGame?.Invoke(frameTime, session);
+						});
+					}
 					connectedToGame = true;
 
 					// early quit if the program was quit while fetching
 					if (!running) return;
 
 					// tell the processing methods that stuff is available
-					_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, results[0], results[1]); });
+					_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, session, bones); });
 
 					// tell the processing methods that stuff is available
 					_ = Task.Run(() =>
 					{
 						lock (gameStateLock)
 						{
-							Frame f = ConvertRawFrame(frameTime, results[0], results[1]);
+							Frame f = ConvertRawFrame(frameTime, session, bones);
 
 							if (f != null)
 							{
@@ -678,68 +757,72 @@ namespace Spark
 							}
 						}
 					});
-				}
-				catch (HttpRequestException)
-				{
-					// Not connected to game
-					connectedToGame = false;
-					inGame = false;
 
-					// left game
-					if (!inGame && wasInGame)
+					if (lastLowFreqMode != null && lastLowFreqMode != SparkSettings.instance.lowFrequencyMode)
 					{
-						try
-						{
-							if (lastFrame != null)
-							{
-								if (lastFrame.InLobby)
-								{
-									_ = Task.Run(() => { LeftLobby?.Invoke(lastFrame); });
-								}
-								else
-								{
-									_ = Task.Run(() => { LeftGame?.Invoke(lastFrame); });
-								}
-							}
-						}
-						catch (Exception exp)
-						{
-							LogRow(LogType.Error, "Error processing action", exp.ToString());
-						}
+						fetchTimer.Interval = StatsHz;
+						Debug.WriteLine("Changed fetch interval");
 					}
 
-					// add this data to the public variable
-					lock (lastJSONLock)
-					{
-						lastJSON = null;
-						lastBonesJSON = null;
-					}
+					lastLowFreqMode = SparkSettings.instance.lowFrequencyMode;
+				});
+				
+			}
+			catch (HttpRequestException)
+			{
+				// Not connected to game
 
-					await Task.Delay(100);
-
-				}
-				catch (Exception e)
+				if (connectedToGame)
 				{
-					LogRow(LogType.Error, "Error in fetch request. " + e.ToString());
+					_ = Task.Run(() =>
+					{
+						DisconnectedFromGame?.Invoke();
+					});
 				}
 				
-				wasInGame = inGame;
+				connectedToGame = false;
+				inGame = false;
 
-				// set up timing for next fetch
-				DateTime next = fetchTime.AddMilliseconds(StatsHz);
-				if (DateTime.UtcNow < next)
+				// left game
+				if (!inGame && wasInGame)
 				{
-					await Task.Delay(next - DateTime.UtcNow);
+					try
+					{
+						if (lastFrame != null)
+						{
+							if (lastFrame.InLobby)
+							{
+								_ = Task.Run(() => { LeftLobby?.Invoke(lastFrame); });
+							}
+							else
+							{
+								_ = Task.Run(() => { LeftGame?.Invoke(lastFrame); });
+							}
+						}
+					}
+					catch (Exception exp)
+					{
+						LogRow(LogType.Error, "Error processing action", exp.ToString());
+					}
 				}
-				else
+
+				// add this data to the public variable
+				lock (lastJSONLock)
 				{
-					LogRow(LogType.Error, $"Fetch rate too slow. Skipped {(DateTime.UtcNow - next).TotalSeconds:N} seconds");
+					lastJSON = null;
+					lastBonesJSON = null;
 				}
 			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, $"Error in fetch request.\n{ex}");
+			}
+
+			Debug.WriteLine($"Total: {fetchSw.Elapsed.TotalSeconds:N5}");
+			fetchSw.Restart();
+
+			wasInGame = inGame;
 		}
-
-
-
 
 
 		/// <summary>
@@ -1056,6 +1139,7 @@ namespace Spark
 
 		private static void UpdateEchoExeLocation()
 		{
+			Task.Run(() => { 
 			// skip if we already have a valid path
 			if (File.Exists(SparkSettings.instance.echoVRPath)) return;
 
@@ -1092,7 +1176,7 @@ namespace Spark
 			catch (Exception e)
 			{
 				LogRow(LogType.Error, $"Can't get EchoVR path from registry\n{e}");
-			}
+			}});
 		}
 
 		private static void ReadSettings()
@@ -2223,6 +2307,9 @@ namespace Spark
 		{
 			// wait some time before re-checking the throw velocity
 			await Task.Delay(150);
+
+			// throw expired
+			if (matchData == null) return;
 
 			Frame frame = lastFrame;
 
@@ -3624,9 +3711,9 @@ namespace Spark
 			}
 		}
 
-		public static void AutoUploadTabletStats()
+		private static void AutoUploadTabletStats()
 		{
-			Task.Run(() =>
+			_ = Task.Run(() =>
 			{
 				List<TabletStats> stats = FindTabletStats();
 				stats.ForEach(s =>
@@ -3660,10 +3747,10 @@ namespace Spark
 				List<TabletStats> profiles = new List<TabletStats>();
 				files.Where(f => f.EndsWith("serverprofile.json")).ToList().ForEach(file =>
 				{
-					JToken data = JsonConvert.DeserializeObject<JToken>(File.ReadAllText(file));
-					if (data != null && TabletStats.IsValid(data))
+					TabletStats tabletStats = new TabletStats(File.ReadAllText(file));
+					if (tabletStats.IsValid())
 					{
-						profiles.Add(new TabletStats(data));
+						profiles.Add(tabletStats);
 					}
 				});
 				profiles.Sort((p1, p2) => p1.update_time.CompareTo(p2.update_time));
