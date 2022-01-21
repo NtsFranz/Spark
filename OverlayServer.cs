@@ -674,8 +674,7 @@ namespace Spark
 		public static async Task GenerateDiscPositionHeatMap(HttpContext context, string additionalCSS)
 		{
 			context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-			context.Response.Headers.Add("Access-Control-Allow-Headers",
-				"Content-Type, Accept, X-Requested-With");
+			context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
 
 
 			string resp = @"";

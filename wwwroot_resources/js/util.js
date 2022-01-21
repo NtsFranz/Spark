@@ -1,17 +1,28 @@
-﻿function httpGetAsync(theUrl, callback, failCallback = null) {
+﻿function httpGetAsync(theUrl, callback = null, failCallback = null) {
     let xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4) {
-            if (xmlHttp.status === 200) {
+            if (xmlHttp.status === 200 && callback != null) {
                 callback(xmlHttp.responseText);
-            }
-            else if (failCallback != null) {
+            } else if (failCallback != null) {
                 failCallback();
             }
         }
     }
     xmlHttp.open("GET", theUrl, true); // true for asynchronous 
     xmlHttp.send(null);
+}
+
+function httpPostAsync(theUrl, body, callback = null, failCallback = null) {
+    fetch(theUrl, {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body)
+    }).then(res => {
+        if (callback != null) {
+            callback(res);
+        }
+    });
 }
 
 function toMinutesString(seconds) {
@@ -31,6 +42,23 @@ function write(className, data) {
     const elements = document.getElementsByClassName(className);
     Array.from(elements).forEach(e => {
         e.innerHTML = data;
+        if (data === "") {
+            e.style.opacity = "0";
+        } else {
+            e.style.opacity = 1;
+            e.classList.remove('hide');
+        }
+    });
+}
+
+function writeText(className, data) {
+    if (data === undefined || data == null || data.toString() === 'undefined') {
+        data = "";
+    }
+
+    const elements = document.getElementsByClassName(className);
+    Array.from(elements).forEach(e => {
+        e.innerText = data;
         if (data === "") {
             e.style.opacity = "0";
         } else {
@@ -70,6 +98,24 @@ function writeChecked(className, data) {
         e.checked = data;
         e.style.opacity = 1;
         e.classList.remove('hide');
+    });
+}
+
+function writeSrc(className, src_) {
+    if (src_ === undefined || src_ === "") {
+        src_ = "";
+    }
+
+    const elements = document.getElementsByClassName(className);
+    Array.from(elements).forEach(e => {
+        e.src = src_;
+        if (src_ === "") {
+            e.style.opacity = "0";
+            e.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+        } else {
+            e.style.opacity = 1;
+            e.classList.remove('hide');
+        }
     });
 }
 

@@ -521,7 +521,7 @@
 			</TabItem>-->
 
 			<TabItem Header="Overlays" Visibility="Visible">
-				<l:OverlaysConfigWindow/>
+				<l:OverlaysConfigWindow x:Name="OverlaysConfigWindow"/>
 			</TabItem>
 
 

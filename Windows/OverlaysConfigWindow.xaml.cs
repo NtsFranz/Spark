@@ -33,18 +33,21 @@ namespace Spark
 
 		private void SwapTeamSettings(object sender, RoutedEventArgs e)
 		{
-			string tempName = ManualTeamNameOrange.Text;
-			ManualTeamNameOrange.Text = ManualTeamNameBlue.Text;
-			ManualTeamNameBlue.Text = tempName;
-
-			string tempLogo = ManualTeamLogoOrange.Text;
-			ManualTeamLogoOrange.Text = ManualTeamLogoBlue.Text;
-			ManualTeamLogoBlue.Text = tempLogo;
+			(ManualTeamNameOrange.Text, ManualTeamNameBlue.Text) = (ManualTeamNameBlue.Text, ManualTeamNameOrange.Text);
+			(ManualTeamLogoOrange.Text, ManualTeamLogoBlue.Text) = (ManualTeamLogoBlue.Text, ManualTeamLogoOrange.Text);
 
 			SparkSettings.instance.overlaysManualTeamNameOrange = ManualTeamNameOrange.Text;
 			SparkSettings.instance.overlaysManualTeamNameBlue = ManualTeamNameBlue.Text;
 			SparkSettings.instance.overlaysManualTeamLogoOrange = ManualTeamLogoOrange.Text;
 			SparkSettings.instance.overlaysManualTeamLogoBlue = ManualTeamLogoBlue.Text;
+		}
+
+		public void SetUIToSettings()
+		{
+			ManualTeamNameOrange.Text = SparkSettings.instance.overlaysManualTeamNameOrange;
+			ManualTeamNameBlue.Text = SparkSettings.instance.overlaysManualTeamNameBlue;
+			ManualTeamLogoOrange.Text = SparkSettings.instance.overlaysManualTeamLogoOrange;
+			ManualTeamLogoBlue.Text = SparkSettings.instance.overlaysManualTeamLogoBlue;
 		}
 
 		private void TeamsDataSourceChanged(object sender, SelectionChangedEventArgs e)

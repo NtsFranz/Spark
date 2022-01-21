@@ -385,8 +385,9 @@ namespace Spark
 
 				client.BaseAddress = new Uri(APIURL);
 
-				// TODO only enable Highlights when game is open
-				if (HighlightsHelper.isNVHighlightsEnabled)
+
+				if (SparkSettings.instance.onlyActivateHighlightsWhenGameIsOpen &&
+					HighlightsHelper.isNVHighlightsEnabled)
 				{
 					HighlightsHelper.SetupNVHighlights();
 				}
@@ -394,6 +395,23 @@ namespace Spark
 				{
 					HighlightsHelper.InitHighlightsSDK(true);
 				}
+
+				// only enable Highlights when game is open
+				ConnectedToGame += (_, _) =>
+				{
+					if (HighlightsHelper.isNVHighlightsEnabled)
+					{
+						HighlightsHelper.SetupNVHighlights();
+					}
+				};
+				DisconnectedFromGame += () =>
+				{
+					if (SparkSettings.instance.onlyActivateHighlightsWhenGameIsOpen)
+					{
+						HighlightsHelper.CloseNVHighlights();
+					}
+				};
+				
 
 				// TODO don't initialize twice and get this to work without discord login maybe
 				synth = new TTS();
@@ -439,7 +457,7 @@ namespace Spark
 				// Task.Run(FetchThreadNew, fetchThreadCancellation.Token);
 
 
-				fetchTimer.Interval = StatsHz;
+				fetchTimer.Interval = 2000;
 				fetchTimer.Elapsed += FetchAPI;
 				fetchTimer.Start();
 
@@ -449,7 +467,7 @@ namespace Spark
 				};
 				DisconnectedFromGame += () =>
 				{
-					fetchTimer.Interval = 500;
+					fetchTimer.Interval = 2000;
 				};
 
 				liveReplayCancel = new CancellationTokenSource();
@@ -662,7 +680,7 @@ namespace Spark
 				// don't spam when not in a game
 				if (!connectedToGame)
 				{
-					await Task.Delay(500);
+					await Task.Delay(2000);
 				}
 				
 				
@@ -3709,6 +3727,12 @@ namespace Spark
 				new MessageBox($"Failed to open window: {type}.\nPlease report this to NtsFranz.").Show();
 				return false;
 			}
+		}
+
+		public static Window GetWindowIfOpen(Type type, string windowName = null)
+		{
+			windowName ??= type.ToString();
+			return popupWindows.ContainsKey(windowName) ? popupWindows[windowName] : null;
 		}
 
 		private static void AutoUploadTabletStats()

@@ -160,6 +160,7 @@ namespace Spark
 		public bool replayClipNeutralJoust { get; set; } = false;
 		public bool replayClipDefensiveJoust { get; set; } = false;
 		public int nvHighlightsPlayerScope { get; set; } = 0;
+		public bool onlyActivateHighlightsWhenGameIsOpen { get; set; } = false;
 		public int replayClipPlayerScope { get; set; } = 0;
 		public int obsPlayerScope { get; set; } = 0;
 		public bool replayClipSpectatorRecord { get; set; } = false;
