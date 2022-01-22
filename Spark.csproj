@@ -98,6 +98,9 @@
     <EmbeddedResource Include="wwwroot_resources\overlays\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot_resources\overlays\match_setup.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwtemplates\full_overlay.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -192,6 +195,23 @@
       <SubType>Code</SubType>
       <DependentUpon>QuestIPs.xaml</DependentUpon>
     </Compile>
+    <None Remove="wwwroot_resources\overlays\match_setup.html" />
+    <None Remove="wwwroot_resources\js\fetch_utils.js" />
+    <EmbeddedResource Include="wwwroot_resources\js\fetch_utils.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\css\autocomplete_styles.css" />
+    <EmbeddedResource Include="wwwroot_resources\css\autocomplete_styles.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\img\swap-horizontal-bold.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\swap-horizontal-bold.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\js\autocomplete.js" />
+    <EmbeddedResource Include="wwwroot_resources\js\autocomplete.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

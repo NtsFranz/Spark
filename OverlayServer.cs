@@ -163,6 +163,7 @@ namespace Spark
 								{ "player_speed", true },
 								{ "disc_speed", true },
 							};
+							response["caster_prefs"] = SparkSettings.instance.casterPrefs;
 
 							if (Program.inGame && Program.matchData != null)
 							{
@@ -399,6 +400,10 @@ namespace Spark
 								if (folderPieces[^1] == "index.html")
 								{
 									url = "/" + string.Join('/', folderPieces.SkipLast(1));
+								}
+								else if (folderPieces[^1].EndsWith(".html"))
+								{
+									url = "/" + string.Join('/', folderPieces)[..^5];
 								}
 								else
 								{
