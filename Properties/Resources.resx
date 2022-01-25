@@ -618,8 +618,9 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
   <data name="Downloads and installs the most recent update (recommended)" xml:space="preserve">
     <value>Downloads and installs the most recent update (recommended)</value>
   </data>
-  <data name="Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!" xml:space="preserve">
-    <value>Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!</value>
+  <data name="Enabled API access in the game settings. CLOSE ECHOVR BEFORE PRESSING OK!" xml:space="preserve">
+    <value>Enabled API access in the game settings.
+CLOSE ECHOVR BEFORE PRESSING OK!</value>
   </data>
   <data name="Female" xml:space="preserve">
     <value>Female</value>
@@ -1318,5 +1319,8 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   </data>
   <data name="Speedometer" xml:space="preserve">
     <value>Speedometer</value>
+  </data>
+  <data name="API Setting Disabled" xml:space="preserve">
+    <value>API Setting Disabled</value>
   </data>
 </root>

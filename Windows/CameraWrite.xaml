@@ -9,7 +9,7 @@
 		mc:Ignorable="d"
 		d:DesignHeight="900" 
 		d:DesignWidth="900" 
-		Background="#FF232323" 
+		Background="{DynamicResource BackgroundColour}" 
 		FontSize="16"
 		DataContext="{Binding RelativeSource={RelativeSource Self}}"
 		Loaded="OnControlLoaded"

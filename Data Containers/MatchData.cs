@@ -24,6 +24,7 @@ namespace Spark
 		public readonly Frame firstFrame;
 		public string ServerLocation { get; set; }
 		public float ServerScore { get; set; }
+		public float SmoothedServerScore { get; set; }
 
 		/// <summary>
 		/// enum of all possible ways a game could have ended.

@@ -22,7 +22,6 @@ using static Logger;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
-using System.Timers;
 using EchoVRAPI;
 using NetMQ;
 using Newtonsoft.Json.Linq;
@@ -43,6 +42,7 @@ namespace Spark
 
 		public static bool inGame;
 		public static bool connectedToGame;
+		public static bool apiSettingDisabled;
 		private static bool wasInGame;
 
 		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
@@ -106,6 +106,7 @@ namespace Spark
 		static bool wasThrown;
 		static int lastThrowPlayerId = -1;
 		static bool inPostMatch = false;
+		public static float serverScoreSmoothingFactor = .95f;
 
 
 		/// <summary>
@@ -699,137 +700,116 @@ namespace Spark
 			try
 			{
 				// fetch the session or bones data
-				List<Task<string>> tasks = new List<Task<string>>
+				List<Task<HttpResponseMessage>> tasks = new List<Task<HttpResponseMessage>>
 				{
-					fetchClient.GetStringAsync($"http://{echoVRIP}:{echoVRPort}/session")
+					fetchClient.GetAsync($"http://{echoVRIP}:{echoVRPort}/session")
 				};
 				if (SparkSettings.instance.fetchBones)
 				{
-					tasks.Add(fetchClient.GetStringAsync($"http://{echoVRIP}:{echoVRPort}/player_bones"));
+					tasks.Add(fetchClient.GetAsync($"http://{echoVRIP}:{echoVRPort}/player_bones"));
 				}
 
 				_ = Task.Run(async () =>
 				{
-					string[] results = await Task.WhenAll(tasks);
-
-					string session = results[0];
-					
-					string bones = null;
-					if (results.Length > 1)
-					{
-						bones = results[1];
-					}
-
-					// add this data to the public variable
-					lock (lastJSONLock)
-					{
-						lastJSON = session;
-						lastBonesJSON = bones;
-					}
-
-					DateTime frameTime = DateTime.UtcNow;
-
-					if (connectedToGame == false)
-					{
-						_ = Task.Run(() =>
-						{
-							ConnectedToGame?.Invoke(frameTime, session);
-						});
-					}
-					connectedToGame = true;
-
-					// early quit if the program was quit while fetching
-					if (!running) return;
-
-					// tell the processing methods that stuff is available
-					_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, session, bones); });
-
-					// tell the processing methods that stuff is available
-					_ = Task.Run(() =>
-					{
-						lock (gameStateLock)
-						{
-							Frame f = ConvertRawFrame(frameTime, session, bones);
-
-							if (f != null)
-							{
-								inGame = true;
-
-								ProcessFrame(f);
-
-								NewFrame?.Invoke(f);
-							}
-							else
-							{
-								LeftGame?.Invoke(lastFrame);
-							}
-
-							lock (lastFrameLock)
-							{
-								// for the very first frame, copy it to the other previous frames
-								lastFrame ??= f;
-
-								lastLastLastFrame = lastLastFrame;
-								lastLastFrame = lastFrame;
-								lastFrame = f;
-							}
-						}
-					});
-
-					if (lastLowFreqMode != null && lastLowFreqMode != SparkSettings.instance.lowFrequencyMode)
-					{
-						fetchTimer.Interval = StatsHz;
-						Debug.WriteLine("Changed fetch interval");
-					}
-
-					lastLowFreqMode = SparkSettings.instance.lowFrequencyMode;
-				});
-				
-			}
-			catch (HttpRequestException)
-			{
-				// Not connected to game
-
-				if (connectedToGame)
-				{
-					_ = Task.Run(() =>
-					{
-						DisconnectedFromGame?.Invoke();
-					});
-				}
-				
-				connectedToGame = false;
-				inGame = false;
-
-				// left game
-				if (!inGame && wasInGame)
-				{
 					try
 					{
-						if (lastFrame != null)
-						{
-							if (lastFrame.InLobby)
-							{
-								_ = Task.Run(() => { LeftLobby?.Invoke(lastFrame); });
-							}
-							else
-							{
-								_ = Task.Run(() => { LeftGame?.Invoke(lastFrame); });
-							}
-						}
-					}
-					catch (Exception exp)
-					{
-						LogRow(LogType.Error, "Error processing action", exp.ToString());
-					}
-				}
+						HttpResponseMessage[] results = await Task.WhenAll(tasks);
 
-				// add this data to the public variable
-				lock (lastJSONLock)
-				{
-					lastJSON = null;
-					lastBonesJSON = null;
-				}
+						if (results[0].IsSuccessStatusCode)
+						{
+							string session = await results[0].Content.ReadAsStringAsync();
+
+							string bones = null;
+							if (results.Length > 1 && results[1].IsSuccessStatusCode)
+							{
+								bones = await results[1].Content.ReadAsStringAsync();
+							}
+
+							// add this data to the public variable
+							lock (lastJSONLock)
+							{
+								lastJSON = session;
+								lastBonesJSON = bones;
+							}
+
+							DateTime frameTime = DateTime.UtcNow;
+
+							if (connectedToGame == false)
+							{
+								_ = Task.Run(() => { ConnectedToGame?.Invoke(frameTime, session); });
+							}
+
+							connectedToGame = true;
+							apiSettingDisabled = false;
+
+							// early quit if the program was quit while fetching
+							if (!running) return;
+
+							// tell the processing methods that stuff is available
+							_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, session, bones); });
+
+							// tell the processing methods that stuff is available
+							_ = Task.Run(() =>
+							{
+								lock (gameStateLock)
+								{
+									Frame f = Frame.FromJSON(frameTime, session, bones);
+
+									if (f != null)
+									{
+										if (f.err_code == -3)
+										{
+											inGame = false;
+											apiSettingDisabled = true;
+										}
+										else
+										{
+											inGame = true;
+
+											ProcessFrame(f);
+
+											NewFrame?.Invoke(f);
+										}
+									}
+									else
+									{
+										LeftGame?.Invoke(lastFrame);
+									}
+
+									lock (lastFrameLock)
+									{
+										// for the very first frame, copy it to the other previous frames
+										lastFrame ??= f;
+
+										lastLastLastFrame = lastLastFrame;
+										lastLastFrame = lastFrame;
+										lastFrame = f;
+									}
+								}
+							});
+						}
+						else // not a success status code
+						{
+							await FetchFail(results);
+						}
+
+						if (lastLowFreqMode != null && lastLowFreqMode != SparkSettings.instance.lowFrequencyMode)
+						{
+							fetchTimer.Interval = StatsHz;
+							Debug.WriteLine("Changed fetch interval");
+						}
+
+						lastLowFreqMode = SparkSettings.instance.lowFrequencyMode;
+					}
+					catch (HttpRequestException)
+					{
+						await FetchFail(null);
+					}
+					catch (Exception ex)
+					{
+						LogRow(LogType.Error, $"Error in fetch request.\n{ex}");
+					}
+				});
 			}
 			catch (Exception ex)
 			{
@@ -842,37 +822,63 @@ namespace Spark
 			wasInGame = inGame;
 		}
 
-
-		/// <summary>
-		/// Called when there is newly fetched API data 
-		/// </summary>
-		private static Frame ConvertRawFrame(DateTime timestamp, string session, string bones)
+		private static async Task FetchFail(HttpResponseMessage[] results)
 		{
-			if (session == null) return null;
+			// Not connected to game
 
-			// Convert session contents into Frame class.
-			Frame f = JsonConvert.DeserializeObject<Frame>(session);
+			if (connectedToGame)
+			{
+				_ = Task.Run(() => { DisconnectedFromGame?.Invoke(); });
+			}
 
-			if (f == null) return null;
+			connectedToGame = false;
+			inGame = false;
 
-			// add the recorded time
-			f.recorded_time = timestamp;
+			if (results != null)
+			{
+				string session = await results[0].Content.ReadAsStringAsync();
 
-			// prepare the raw api conversion for use
-			f.teams[0].color = Team.TeamColor.blue;
-			f.teams[1].color = Team.TeamColor.orange;
-			f.teams[2].color = Team.TeamColor.spectator;
+				if (session.Length > 0 && session[0] == '{')
+				{
+					Frame f = Frame.FromJSON(DateTime.UtcNow, session, null);
+					apiSettingDisabled = f.err_code == -2;
+				}
+				else
+				{
+					// in loading screen, where the response is not json
+				}
+			}
 
-			// make sure player lists are not null
-			f.teams[0].players ??= new List<Player>();
-			f.teams[1].players ??= new List<Player>();
-			f.teams[2].players ??= new List<Player>();
+			// left game
+			if (!inGame && wasInGame)
+			{
+				try
+				{
+					if (lastFrame != null)
+					{
+						if (lastFrame.InLobby)
+						{
+							_ = Task.Run(() => { LeftLobby?.Invoke(lastFrame); });
+						}
+						else
+						{
+							_ = Task.Run(() => { LeftGame?.Invoke(lastFrame); });
+						}
+					}
+				}
+				catch (Exception exp)
+				{
+					LogRow(LogType.Error, "Error processing action", exp.ToString());
+				}
+			}
 
-			if (bones !=null) f.bones = JsonConvert.DeserializeObject<Bones>(bones);
-
-			return f;
+			// add this data to the public variable
+			lock (lastJSONLock)
+			{
+				lastJSON = null;
+				lastBonesJSON = null;
+			}
 		}
-
 
 		private static void ProcessFrame(Frame frame)
 		{
@@ -1346,6 +1352,7 @@ namespace Spark
 				const float smoothingFactor = .99f;
 				smoothDeltaTime = smoothDeltaTime * smoothingFactor + deltaTime * (1 - smoothingFactor);
 			}
+			
 
 
 			// Did a player join or leave?
@@ -1357,8 +1364,6 @@ namespace Spark
 				// Loop through players on team.
 				foreach (Player player in team.players)
 				{
-					player.team_color = team.color;
-
 					// make sure the player wasn't in the last frame
 					if (lastFrame.GetAllPlayers(true).Any(p => p.userid == player.userid)) continue;
 
@@ -1568,6 +1573,43 @@ namespace Spark
 			{
 				LogRow(LogType.Error, $"Error with pause request parsing\n{e}");
 			}
+
+
+			if (matchData != null)
+			{
+				// calculate a smoothed server score
+				List<int>[] pings =
+				{
+					frame.teams[0].players.Select(p => p.ping).ToList(),
+					frame.teams[0].players.Select(p => p.ping).ToList()
+				};
+				float newServerScore = CalculateServerScore(pings[0], pings[1]);
+
+				if (pings[0].Count != 4 || pings[1].Count != 4)
+				{
+					matchData.ServerScore = -2;
+					matchData.SmoothedServerScore = matchData.ServerScore;
+				}
+				else if (newServerScore > 0)
+				{
+					// reset the smoothing every time it switches to being valid
+					if (matchData.ServerScore < 0)
+					{
+						matchData.ServerScore = newServerScore;
+						matchData.SmoothedServerScore = matchData.ServerScore;
+					}
+					else
+					{
+						matchData.ServerScore = newServerScore;
+						float t = 1f - MathF.Pow(1 - serverScoreSmoothingFactor, deltaTime);
+						matchData.SmoothedServerScore = Math2.Lerp(matchData.SmoothedServerScore, matchData.ServerScore, t);
+					}
+				}
+			} else
+			{
+				LogRow(LogType.Error, "MatchData is null in event generator.");
+			}
+			
 
 
 			// while playing and frames aren't identical
@@ -3878,7 +3920,7 @@ namespace Spark
 			float team_points = (1 - (mean_var / max_team_var)) * points_distribution[1];
 
 			// calculate points for server variance
-			List<int> bothPings = new(bluePings);
+			List<int> bothPings = new List<int>(bluePings);
 			bothPings.AddRange(orangePings);
 
 			float server_var = Variance(bothPings);

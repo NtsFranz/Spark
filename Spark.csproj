@@ -212,6 +212,13 @@
     <EmbeddedResource Include="wwwroot_resources\js\autocomplete.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Page Update="Windows\ServerInfo.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\ServerInfo.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>ServerInfo.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

@@ -462,7 +462,7 @@
   <data name="Echopedia page" xml:space="preserve">
     <value>Echopediaのページ</value>
   </data>
-  <data name="Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!" xml:space="preserve">
+  <data name="Enabled API access in the game settings. CLOSE ECHOVR BEFORE PRESSING OK!" xml:space="preserve">
     <value>ゲーム設定でAPIアクセスを有効にする。OKを押す前に、ECHOVRを閉じてください。</value>
   </data>
   <data name="Error" xml:space="preserve">

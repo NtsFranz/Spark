@@ -38,17 +38,11 @@ namespace Spark
 		private string updateFilename = "";
 
 		public static readonly object lastSnapshotLock = new object();
-		private string lastIP;
 
 		private string lastDiscordUsername = string.Empty;
 		private bool accessCodeDropdownListenerActive;
 		public bool hidden;
-
 		private bool isExplicitClose = false;
-
-		private float smoothedServerScore = 100;
-		private bool lastFrameWasValidSmoothedScore = false;
-		private float serverScoreSmoothingFactor = .95f;
 
 		string blueLogo = "";
 		string orangeLogo = "";
@@ -144,6 +138,16 @@ namespace Spark
 			};
 			RefreshAccessCodeList();
 			RefreshDiscordLogin();
+
+			Program.JoinedGame += frame =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					// ip stuff
+					serverLocationLabel.Content = "Server IP: " + frame.sessionip;
+					_ = GetServerLocation(frame.sessionip);
+				});
+			};
 
 
 			JToken gameSettings = EchoVRSettingsManager.ReadEchoVRSettings();
@@ -372,7 +376,13 @@ namespace Spark
 
 					DiscordNotLoggedInHosting.Visibility = !DiscordOAuth.IsLoggedIn ? Visibility.Visible : Visibility.Collapsed;
 
-					if (Program.connectedToGame)
+					if (Program.apiSettingDisabled)
+					{
+						statusLabel.Content = Properties.Resources.API_Setting_Disabled;
+						statusCircle.Fill = new SolidColorBrush(Colors.Yellow);
+						NotConnectedHelp.Visibility = Visibility.Collapsed;
+					}
+					else if (Program.connectedToGame)
 					{
 						statusLabel.Content = Properties.Resources.Connected;
 						statusCircle.Fill = new SolidColorBrush(Colors.Green);
@@ -392,15 +402,7 @@ namespace Spark
 						// session ID
 						sessionIdTextBox.Text = CurrentLink(Program.lastFrame.sessionid);
 
-						// ip stuff
-						if (Program.lastFrame.sessionip != lastIP)
-						{
-							serverLocationLabel.Content = "Server IP: " + Program.lastFrame.sessionip;
-							_ = GetServerLocation(Program.lastFrame.sessionip);
-						}
-						lastIP = Program.lastFrame.sessionip;
-
-
+						
 						// last throw stuff
 						LastThrow lt = Program.lastFrame.last_throw;
 						if (lt != null)
@@ -499,43 +501,25 @@ namespace Spark
 						orangePlayerPingsNames.Text = orangeTextNames.ToString();
 						orangePlayerPingsPings.Text = orangePingsTextPings.ToString();
 
-						bluePlayerPingsNamesServerInfoTab.Text = blueTextNames.ToString();
-						bluePlayerPingsPingsServerInfoTab.Text = bluePingsTextPings.ToString();
-						orangePlayerPingsNamesServerInfoTab.Text = orangeTextNames.ToString();
-						orangePlayerPingsPingsServerInfoTab.Text = orangePingsTextPings.ToString();
-
-						float serverScore = Program.CalculateServerScore(pings[0], pings[1]);
-						string playerPingsHeader = "";
-
-						if (pings[0].Count != 4 || pings[1].Count != 4)
-						{
-							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} --";
-						}
-						else if (serverScore < 0)
-						{
-							playerPingsHeader = $"{Properties.Resources.Player_Pings}     >150";
-						}
-						else
-						{
-							// reset the smoothing every time it switches to being valid
-							if (!lastFrameWasValidSmoothedScore)
-							{
-								smoothedServerScore = serverScore;
-								lastFrameWasValidSmoothedScore = true;
-							}
-							else
-							{
-								smoothedServerScore = smoothedServerScore * serverScoreSmoothingFactor + (1 - serverScoreSmoothingFactor) * serverScore;
-							}
-							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {smoothedServerScore:N1}";
-						}
-						playerPingsGroupbox.Header = playerPingsHeader;
-						playerPingsGroupboxServerInfoTab.Header = playerPingsHeader;
 
 						if (Program.matchData != null)
 						{
-							Program.matchData.ServerScore = smoothedServerScore;
+							string playerPingsHeader = "";
 
+							if (Program.matchData.ServerScore > 0)
+							{
+								playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {Program.matchData.SmoothedServerScore:N1}";
+							}
+							else if (Math.Abs(Program.matchData.ServerScore - (-1)) < .1f)
+							{
+								playerPingsHeader = $"{Properties.Resources.Player_Pings}     >150";
+							}
+							else
+							{
+								playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} --";
+							}
+							playerPingsGroupbox.Header = playerPingsHeader;
+							
 							if (blueLogo != Program.matchData.teams[Team.TeamColor.blue].vrmlTeamLogo)
 							{
 								blueLogo = Program.matchData.teams[Team.TeamColor.blue].vrmlTeamLogo;
@@ -933,7 +917,6 @@ namespace Spark
 					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
 					serverLocationLabel.ToolTip = $"{respObj["query"]}\n{respObj["org"]}\n{respObj["as"]}";
 
-					FullServerLocationTextBox.Text = $"City:\t{loc}\nIP:\t{respObj["query"]}\nOrg:\t{respObj["org"]}\nISP:\t{respObj["isp"]}";
 
 					if (SparkSettings.instance.serverLocationTTS)
 					{
@@ -1169,10 +1152,12 @@ namespace Spark
 				JToken settings = EchoVRSettingsManager.ReadEchoVRSettings();
 				if (settings != null)
 				{
-					new MessageBox(Properties.Resources.Enabled_API_access_in_the_game_settings__nCLOSE_ECHOVR_BEFORE_PRESSING_OK_).Show();
+					new MessageBox(Properties.Resources.Enabled_API_access_in_the_game_settings__CLOSE_ECHOVR_BEFORE_PRESSING_OK_, callback: () =>
+					{
+						settings["game"]!["EnableAPIAccess"] = true;
+						EchoVRSettingsManager.WriteEchoVRSettings(settings);
+					}).Show();
 
-					settings["game"]["EnableAPIAccess"] = true;
-					EchoVRSettingsManager.WriteEchoVRSettings(settings);
 					enableAPIButton.Visibility = Visibility.Collapsed;
 
 				}
@@ -2205,112 +2190,7 @@ namespace Spark
 			Program.ToggleWindow(typeof(CameraWrite));
 		}
 
-		private void RefreshTraceroute(object sender, RoutedEventArgs e)
-		{
-			try
-			{
-				if (string.IsNullOrEmpty(lastIP)) return;
-
-				Task.Run(() =>
-				{
-					Tracert(lastIP, OnProgressCallback: (entries, done) =>
-					{
-						Dispatcher.Invoke(() =>
-						{
-							TracerouteTextBox.Text = entries.Aggregate("ID\tPing\tIP\t\tHostname", (current, entry) => current + "\n" + entry);
-							if (done)
-							{
-								TracerouteTextBox.Text += "\nDONE";
-							}
-						});
-					});
-				});
-			}
-			catch (Exception ex)
-			{
-				LogRow(LogType.Error, $"Traceroute failed.{ex}");
-			}
-		}
-
-		public class TracertEntry
-		{
-			public int HopID;
-			public string Address;
-			public string Hostname;
-			public long ReplyTime;
-			public IPStatus ReplyStatus;
-
-			public override string ToString()
-			{
-				return $"{HopID}\t{ReplyTime}\t{Address}\t{Hostname}";
-			}
-		}
-
-		/// <summary>
-		/// Traces the route which data have to travel through in order to reach an IP address.
-		/// </summary>
-		/// <param name="ipAddress">The IP address of the destination.</param>
-		/// <param name="maxHops">Max hops to be returned.</param>
-		public static IEnumerable<TracertEntry> Tracert(string ipAddress, int maxHops = 30, int timeout = 10000, Action<IEnumerable<TracertEntry>, bool> OnProgressCallback = null)
-		{
-			List<TracertEntry> entries = new List<TracertEntry>();
-
-			// Ensure that the argument address is valid.
-			if (!IPAddress.TryParse(ipAddress, out IPAddress address))
-				throw new ArgumentException($"{ipAddress} is not a valid IP address.");
-
-			// Max hops should be at least one or else there won't be any data to return.
-			if (maxHops < 1)
-				throw new ArgumentException("Max hops can't be lower than 1.");
-
-			// Ensure that the timeout is not set to 0 or a negative number.
-			if (timeout < 1) throw new ArgumentException("Timeout value must be higher than 0.");
-			Ping ping = new Ping();
-			PingOptions pingOptions = new PingOptions(1, true);
-			Stopwatch pingReplyTime = new Stopwatch();
-			PingReply reply;
-			do
-			{
-				pingReplyTime.Start();
-				reply = ping.Send(address, timeout, new byte[] { 0 }, pingOptions);
-				pingReplyTime.Stop();
-				string hostname = string.Empty;
-				if (reply.Address != null)
-				{
-					try
-					{
-						IPHostEntry ipHostInfo = Dns.GetHostEntry(reply.Address);
-						hostname = ipHostInfo.HostName;
-						//IPAddress ipA = ipHostInfo.AddressList.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
-						//var ame = Dns.GetHostByAddress(reply.Address);    // Retrieve the hostname for the replied address.
-					}
-					catch (SocketException)
-					{
-						/* No host available for that address. */
-					}
-				}
-
-				// Return out TracertEntry object with all the information about the hop.
-				entries.Add(new TracertEntry
-				{
-					HopID = pingOptions.Ttl,
-					Address = reply.Address.ToString(),
-					Hostname = hostname,
-					ReplyTime = pingReplyTime.ElapsedMilliseconds,
-					ReplyStatus = reply.Status
-				});
-
-				OnProgressCallback?.Invoke(entries, false);
-
-				pingOptions.Ttl++;
-				pingReplyTime.Reset();
-			} while (reply.Status != IPStatus.Success && pingOptions.Ttl <= maxHops);
-
-
-			OnProgressCallback?.Invoke(entries, true);
-
-			return entries;
-		}
+		
 
 		private void AccessCodeChangedLiveWindow(object sender, SelectionChangedEventArgs e)
 		{

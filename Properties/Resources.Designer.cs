@@ -169,6 +169,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to API Setting Disabled.
+        /// </summary>
+        public static string API_Setting_Disabled {
+            get {
+                return ResourceManager.GetString("API Setting Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Append team names.
         /// </summary>
         public static string Append_team_names {
@@ -1017,11 +1026,12 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enabled API access in the game settings.\nCLOSE ECHOVR BEFORE PRESSING OK!.
+        ///   Looks up a localized string similar to Enabled API access in the game settings.
+        ///CLOSE ECHOVR BEFORE PRESSING OK!.
         /// </summary>
-        public static string Enabled_API_access_in_the_game_settings__nCLOSE_ECHOVR_BEFORE_PRESSING_OK_ {
+        public static string Enabled_API_access_in_the_game_settings__CLOSE_ECHOVR_BEFORE_PRESSING_OK_ {
             get {
-                return ResourceManager.GetString("Enabled API access in the game settings.\\nCLOSE ECHOVR BEFORE PRESSING OK!", resourceCulture);
+                return ResourceManager.GetString("Enabled API access in the game settings. CLOSE ECHOVR BEFORE PRESSING OK!", resourceCulture);
             }
         }
         
