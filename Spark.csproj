@@ -219,6 +219,17 @@
       <SubType>Code</SubType>
       <DependentUpon>ServerInfo.xaml</DependentUpon>
     </Compile>
+    <Page Update="Windows\EchoGP.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\EchoGP.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>EchoGP.xaml</DependentUpon>
+    </Compile>
+    <None Remove="img\flag-checkered.png" />
+    <Resource Include="img\flag-checkered.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -284,7 +295,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ButterReplays" Version="1.0.2" />
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+    <PackageReference Include="EchoVRAPI" Version="1.0.9" />
     <PackageReference Include="Google.Cloud.Firestore" Version="2.4.0" />
     <PackageReference Include="Google.Cloud.TextToSpeech.V1" Version="2.4.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
@@ -418,15 +431,6 @@
 
   <ItemGroup>
     <Folder Include="SettingsBindings" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="ButterReplays, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Butter-Replays\Butter\bin\Debug\net5.0\ButterReplays.dll</HintPath>
-    </Reference>
-    <Reference Include="EchoVRAPI, Version=1.0.7.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\EchoVRAPI\bin\Debug\net5.0\EchoVRAPI.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

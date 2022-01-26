@@ -155,6 +155,7 @@ namespace Spark
 		public static ReplayFilesManager replayFilesManager;
 		public static CameraWriteController cameraWriteController;
 		public static CameraWrite cameraWriteWindow;
+		public static EchoGPController echoGPController;
 
 		private static CancellationTokenSource autorestartCancellation;
 		private static CancellationTokenSource fetchThreadCancellation;
@@ -434,6 +435,9 @@ namespace Spark
 
 				// sets up listeners for replay file saving
 				replayFilesManager = new ReplayFilesManager();
+
+				// sets up listeners for Echo GP timer
+				echoGPController = new EchoGPController();
 
 				// web server asp.net
 				try

@@ -442,6 +442,16 @@
 					</TabItem.Header>
 					<l:CameraWrite/>
 				</TabItem>
+				
+				<TabItem x:Name="EchoGPTab" FontSize="14" Padding="10,0,10,0" Visibility="Visible">
+					<TabItem.Header>
+						<StackPanel Orientation="Horizontal">
+							<Label Content="Echo Grand Prix"/>
+							<Image Source="/img/flag-checkered.png" Height="16"/>
+						</StackPanel>
+					</TabItem.Header>
+					<l:EchoGP/>
+				</TabItem>
 
 			</TabControl>
 			<StackPanel Height="48" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,0,4" Grid.Row="1">

@@ -686,7 +686,6 @@ namespace Spark
 					}
 					else
 					{
-						sessionIdTextBox.Text = "---";
 						discSpeedLabel.Text = "---";
 						discSpeedLabel.Foreground = System.Windows.Media.Brushes.LightGray;
 						//discSpeedProgressBar.Value = 0;
