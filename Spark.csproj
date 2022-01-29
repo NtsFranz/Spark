@@ -80,6 +80,12 @@
     <EmbeddedResource Include="wwwroot_resources\game_data\index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot_resources\game_data\websockets.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot_resources\game_data\websocket_example.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot_resources\img\minimap.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -93,6 +99,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot_resources\js\heatmap_min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot_resources\js\spark_websocket.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot_resources\overlays\index.html">
@@ -230,6 +239,30 @@
     <Resource Include="img\flag-checkered.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <None Remove="wwwroot_resources\js\lib\JSMQ.js" />
+    <None Remove="wwwroot_resources\netmqtest.html" />
+    <None Remove="wwwroot_resources\js\lib\reconnecting-websocket.min.js" />
+    <EmbeddedResource Include="wwwroot_resources\js\lib\reconnecting-websocket.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\js\lib\spark_websocket.js" />
+    <None Remove="wwwroot_resources\game_data\websockets.html" />
+    <None Remove="wwwroot_resources\css\lib\bulma.min.css" />
+    <EmbeddedResource Include="wwwroot_resources\css\lib\bulma.min.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\css\lib\prism.css" />
+    <EmbeddedResource Include="wwwroot_resources\css\lib\prism.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\css\styles.css" />
+    <EmbeddedResource Include="wwwroot_resources\css\styles.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\js\lib\prism.js" />
+    <EmbeddedResource Include="wwwroot_resources\js\lib\prism.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -298,11 +331,12 @@
     <PackageReference Include="ButterReplays" Version="1.0.2" />
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
     <PackageReference Include="EchoVRAPI" Version="1.0.9" />
-    <PackageReference Include="Google.Cloud.Firestore" Version="2.4.0" />
+    <PackageReference Include="Fleck" Version="1.2.0" />
+    <PackageReference Include="Google.Cloud.Firestore" Version="2.5.0" />
     <PackageReference Include="Google.Cloud.TextToSpeech.V1" Version="2.4.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
     <PackageReference Include="HidSharpCore" Version="1.2.1.1" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1054.31" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1072.54" />
     <PackageReference Include="NetMQ" Version="4.0.1.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="obs-websocket-dotnet" Version="4.9.1" />

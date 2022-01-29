@@ -46,10 +46,7 @@ namespace Spark
 				SetNameplatesVisibility(!SparkSettings.instance.hideNameplates);
 				SetUIVisibility(!SparkSettings.instance.hideEchoVRUI);
 				SetMinimapVisibility(!SparkSettings.instance.alwaysHideMinimap);
-				SetTeamsMuted(
-					SparkSettings.instance.mutePlayerComms,
-					SparkSettings.instance.mutePlayerComms
-				);
+				SetPlayersMuted();
 
 				switch (SparkSettings.instance.spectatorCamera)
 				{
@@ -176,6 +173,32 @@ namespace Spark
 			LogRow(LogType.File, frame.sessionid, $"Player {i} camera distance: {dist:N3} m.  Name: {minPlayer.name}");
 
 			return minPlayer.name == playerName;
+		}
+
+		public static void SetPlayersMuted()
+		{
+			if (SparkSettings.instance.mutePlayerComms)
+			{
+				SetTeamsMuted(true, true);
+			}
+			else if (SparkSettings.instance.muteEnemyTeam)
+			{
+				if (Program.inGame && Program.lastFrame != null)
+				{
+					switch (Program.lastFrame.ClientTeamColor)
+					{
+						case Team.TeamColor.blue:
+							SetTeamsMuted(false, true);
+							break;
+						case Team.TeamColor.orange:
+							SetTeamsMuted(true, false);
+							break;
+						case Team.TeamColor.spectator:
+							SetTeamsMuted(true, true);
+							break;
+					}
+				}
+			}
 		}
 
 		public static void SetUIVisibility(bool visible)

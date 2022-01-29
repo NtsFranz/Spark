@@ -1,0 +1,35 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <script src="/js/spark_websocket.js"></script>
+    <title>Spark Websocket API Example</title>
+</head>
+
+<body>
+
+<script>
+    let sw = new SparkWebsocket();
+    sw.subscribe("stun", data => {
+       console.log(data); 
+    });
+    sw.subscribe("joust_speed", data => {
+        console.log(data);
+    });
+    sw.subscribe("goal", data => {
+        console.log(data);
+    });
+    sw.subscribe("pause_request", data => {
+        console.log(data);
+    });
+    sw.subscribe("save", data => {
+        console.log(data);
+    });
+    sw.subscribe("steal", data => {
+        console.log(data);
+    });
+
+</script>
+</body>
+</html>

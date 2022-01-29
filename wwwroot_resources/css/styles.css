@@ -1,0 +1,12 @@
+﻿h1 {
+    font-size: 2em;
+}
+
+@font-face {
+    font-family: 'Inconsolata';
+    src: url('/fonts/Inconsolata.woff2') format('woff2'), url('/fonts/Inconsolata.woff') format('woff'), url('/fonts/Inconsolata.ttf') format('truetype');
+}
+
+body {
+    font-family: 'Inconsolata';
+}

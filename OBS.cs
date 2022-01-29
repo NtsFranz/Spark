@@ -61,9 +61,9 @@ namespace Spark
 			instance.SetCurrentScene(scene);
 		}
 
-		private void Save(Frame frame, Team team, Player player)
+		private void Save(Frame frame, EventData eventData)
 		{
-			SaveClip(SparkSettings.instance.obsClipSave, player.name, frame, SparkSettings.instance.obsSaveReplayScene, SparkSettings.instance.obsClipSecondsAfter, SparkSettings.instance.obsSaveSecondsAfter, SparkSettings.instance.obsSaveReplayLength);
+			SaveClip(SparkSettings.instance.obsClipSave, eventData.player.name, frame, SparkSettings.instance.obsSaveReplayScene, SparkSettings.instance.obsClipSecondsAfter, SparkSettings.instance.obsSaveSecondsAfter, SparkSettings.instance.obsSaveReplayLength);
 		}
 
 		private void Goal(Frame frame, GoalData goalData)

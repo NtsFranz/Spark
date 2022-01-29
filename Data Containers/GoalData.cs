@@ -8,7 +8,7 @@ namespace Spark
 	/// <summary>
 	/// Object containing data of a goal.
 	/// </summary>
-	public class GoalData : DataContainer
+	public class GoalData : EventContainer
 	{
 		public GoalData(
 			MatchData match,
@@ -23,6 +23,7 @@ namespace Spark
 			float? underhandedness,
 			List<Vector3> discTrajectory)
 		{
+			eventType = EventType.goal;
 			matchData = match;
 			GameClock = gameClock;
 			Player = player;
@@ -36,10 +37,6 @@ namespace Spark
 			DiscTrajectory = new List<Vector3>(discTrajectory);
 		}
 
-		/// <summary>
-		/// Whether or not this data has been sent to the DB or not
-		/// </summary>
-		public bool inDB = false;
 
 		public MatchData matchData;
 		public List<Vector3> DiscTrajectory { get; set; }
@@ -77,9 +74,9 @@ namespace Spark
 		/// Function to transform goal data into the desired format for firestore.
 		/// </summary>
 		/// <returns></returns>
-		public Dictionary<string, object> ToDict()
+		public override Dictionary<string, object> ToDict()
 		{
-			var values = new Dictionary<string, object>
+			Dictionary<string, object> values = new Dictionary<string, object>
 			{
 				{"session_id", matchData.firstFrame.sessionid },
 				{"match_time", matchData.MatchTimeSQL },
@@ -106,6 +103,11 @@ namespace Spark
 			};
 
 			return values;
+		}
+
+		public override Dictionary<string, object> ToDict(bool useCustomKeyNames)
+		{
+			return ToDict();
 		}
 	}
 

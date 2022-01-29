@@ -23,6 +23,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
 using EchoVRAPI;
+using Fleck;
 using NetMQ;
 using Newtonsoft.Json.Linq;
 
@@ -156,6 +157,7 @@ namespace Spark
 		public static CameraWriteController cameraWriteController;
 		public static CameraWrite cameraWriteWindow;
 		public static EchoGPController echoGPController;
+		public static WebSocketServerManager webSocketMan;
 
 		private static CancellationTokenSource autorestartCancellation;
 		private static CancellationTokenSource fetchThreadCancellation;
@@ -225,12 +227,12 @@ namespace Spark
 		/// frame, team, player, playspacelocation (compare to head.Pos)
 		/// </summary>
 		public static Action<Frame, Team, Player, Vector3> PlayspaceAbuse;
-		public static Action<Frame, Team, Player> Save;
-		public static Action<Frame, Team, Player> Steal;
+		public static Action<Frame, EventData> Save;
+		public static Action<Frame, EventData> Steal;
 		/// <summary>
 		/// frame, stunner_team, stunner_player, stunee_player
 		/// </summary>
-		public static Action<Frame, Team, Player, Player> Stun;
+		public static Action<Frame, EventData> Stun;
 		/// <summary>
 		/// Catch by other team from throw within 7 seconds
 		/// frame, team, throwplayer, catchplayer
@@ -256,6 +258,7 @@ namespace Spark
 		/// frame, team, player, neutral joust?, time, maxSpeed, tubeExitSpeed
 		/// </summary>
 		public static Action<Frame, Team, Player, bool, float, float, float> Joust;
+		public static Action<Frame, EventData> JoustEvent;
 		public static Action<Frame, GoalData> Goal;
 		/// <summary>
 		/// This is called on the first frame that the goal happens rather than waiting for stable data
@@ -263,6 +266,12 @@ namespace Spark
 		public static Action<Frame> GoalImmediate;
 		public static Action<Frame, GoalData> Assist;
 		public static Action<Frame, Team, Player> LargePing;
+
+		#region Spark Settings Changed
+
+		public static Action TeamNameLogoChanged;
+
+		#endregion
 
 		#endregion
 
@@ -438,6 +447,8 @@ namespace Spark
 
 				// sets up listeners for Echo GP timer
 				echoGPController = new EchoGPController();
+
+				webSocketMan = new WebSocketServerManager();
 
 				// web server asp.net
 				try
@@ -1802,17 +1813,18 @@ namespace Spark
 						// check saves 
 						if (lastPlayer.stats.saves != player.stats.saves)
 						{
+							EventData eventData = new EventData(matchData, EventContainer.EventType.save, frame.game_clock,
+								team, player, null, player.head.Position, Vector3.Zero);
 							try
 							{
-								Save?.Invoke(frame, team, player);
+								Save?.Invoke(frame, eventData);
 							}
 							catch (Exception exp)
 							{
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
 
-							matchData.Events.Add(new EventData(matchData, EventData.EventType.save, frame.game_clock,
-								team, player, null, player.head.Position, Vector3.Zero));
+							matchData.Events.Add(eventData);
 							LogRow(LogType.File, frame.sessionid,
 								frame.game_clock_display + " - " + player.name + " made a save");
 							HighlightsHelper.SaveHighlightMaybe(player, frame, "SAVE");
@@ -1821,17 +1833,18 @@ namespace Spark
 						// check steals 🕵️‍
 						if (lastPlayer.stats.steals != player.stats.steals)
 						{
+							EventData eventData = new EventData(matchData, EventContainer.EventType.steal, frame.game_clock,
+								team, player, null, player.head.Position, Vector3.Zero);
 							try
 							{
-								Steal?.Invoke(frame, team, player);
+								Steal?.Invoke(frame, eventData);
 							}
 							catch (Exception exp)
 							{
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
 
-							matchData.Events.Add(new EventData(matchData, EventData.EventType.steal, frame.game_clock,
-								team, player, null, player.head.Position, Vector3.Zero));
+							matchData.Events.Add(eventData);
 
 							if (WasStealNearGoal(frame.disc.position.ToVector3(), team.color, frame))
 							{
@@ -1862,7 +1875,7 @@ namespace Spark
 							});
 
 							bool added = false;
-							foreach (var stunEvent in stunningMatchedPairs)
+							foreach (UserAtTime[] stunEvent in stunningMatchedPairs)
 							{
 								if (stunEvent[0] == null)
 								{
@@ -1874,9 +1887,10 @@ namespace Spark
 										Player stunner = player;
 										Player stunnee = stunEvent[1].player;
 
-										matchData.Events.Add(new EventData(matchData, EventData.EventType.stun,
+										EventData stunEventData = new EventData(matchData, EventData.EventType.stun,
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
-											Vector3.Zero));
+											Vector3.Zero);
+										matchData.Events.Add(stunEventData);
 										LogRow(LogType.File, frame.sessionid,
 											frame.game_clock_display + " - " + stunner.name + " stunned " +
 											stunnee.name);
@@ -1884,7 +1898,7 @@ namespace Spark
 
 										try
 										{
-											Stun?.Invoke(frame, team, player, stunnee);
+											Stun?.Invoke(frame, stunEventData);
 										}
 										catch (Exception exp)
 										{
@@ -1931,9 +1945,10 @@ namespace Spark
 										Player stunner = stunEvent[0].player;
 										Player stunnee = player;
 
-										matchData.Events.Add(new EventData(matchData, EventData.EventType.stun,
+										EventData stunEventData = new EventData(matchData, EventData.EventType.stun,
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
-											Vector3.Zero));
+											Vector3.Zero);
+										matchData.Events.Add(stunEventData);
 										LogRow(LogType.File, frame.sessionid,
 											frame.game_clock_display + " - " + stunner.name + " stunned " +
 											stunnee.name);
@@ -1941,7 +1956,7 @@ namespace Spark
 
 										try
 										{
-											Stun?.Invoke(frame, team, player, stunnee);
+											Stun?.Invoke(frame, stunEventData);
 										}
 										catch (Exception exp)
 										{
@@ -1963,8 +1978,9 @@ namespace Spark
 						// check disk was caught 🥊
 						if (!lastPlayer.possession && player.possession)
 						{
-							matchData.Events.Add(new EventData(matchData, EventData.EventType.@catch, frame.game_clock,
-								team, player, null, player.head.Position, Vector3.Zero));
+							EventData eventData = new EventData(matchData, EventData.EventType.@catch, frame.game_clock,
+								team, player, null, player.head.Position, Vector3.Zero);
+							matchData.Events.Add(eventData);
 							playerData.Catches++;
 							bool caughtThrow = false;
 							Team throwTeam = null;
@@ -2305,7 +2321,8 @@ namespace Spark
 
 						try
 						{
-							Joust?.Invoke(frame, team, player, eventType == EventData.EventType.joust_speed, startGameClock - frame.game_clock, maxSpeed, maxTubeExitSpeed);
+							Joust?.Invoke(frame, team, player, eventType == EventContainer.EventType.joust_speed, startGameClock - frame.game_clock, maxSpeed, maxTubeExitSpeed);
+							JoustEvent?.Invoke(frame, joustEvent);
 						}
 						catch (Exception exp)
 						{
@@ -2344,6 +2361,14 @@ namespace Spark
 					if (player.playerid != originalPlayer.playerid) continue;
 					if (player.stats.saves != originalPlayer.stats.saves) continue;
 
+					EventData eventData = new EventData(
+						matchData, 
+						EventData.EventType.interception, 
+						frame.game_clock, 
+						team, player, null, 
+						player.head.Position, 
+						Vector3.Zero
+						);
 					try
 					{
 						Interception?.Invoke(originalFrame, originalTeam, throwPlayer, originalPlayer);
@@ -2357,7 +2382,7 @@ namespace Spark
 						frame.game_clock_display + " - " + player.name + " intercepted a throw from " +
 						throwPlayer.name);
 					// TODO enable this once the db supports it
-					// matchData.Events.Add(new EventData(matchData, EventData.EventType.interception, frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
+					// matchData.Events.Add(eventData);
 					MatchPlayer otherMatchPlayer = matchData.GetPlayerData(player);
 					if (otherMatchPlayer != null) otherMatchPlayer.Interceptions++;
 					else LogRow(LogType.Error, "Can't find player by name from other team: " + player.name);

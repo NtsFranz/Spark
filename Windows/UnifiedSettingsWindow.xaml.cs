@@ -17,6 +17,7 @@ using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Types;
 using System.Linq;
 using EchoVRAPI;
+using Spark.Properties;
 
 namespace Spark
 {
@@ -133,6 +134,8 @@ namespace Spark
 			thisPCLocalIP.Content = $"This PC's Local IP: {Program.GetLocalIP()} (for PC-PC Spectate Me)";
 
 			CameraModeDropdownChanged(SparkSettings.instance.spectatorCamera);
+
+			MutePlayerCommsDropdownChanged(MutePlayerCommsDropdown, null);
 
 			initialized = true;
 		}
@@ -1422,13 +1425,6 @@ namespace Spark
 			CameraWriteController.SetUIVisibility(HideUICheckbox.IsChecked != true);
 		}
 
-		private void ToggleTeamMuteNow(object sender, RoutedEventArgs e)
-		{
-			if (!Program.inGame) return;
-			CameraWriteController.SetTeamsMuted(MutePlayerCommsCheckbox.IsChecked == true,
-				MutePlayerCommsCheckbox.IsChecked == true);
-		}
-
 		private void HideMinimapNow(object sender, RoutedEventArgs e)
 		{
 			if (!Program.inGame) return;
@@ -1457,7 +1453,33 @@ namespace Spark
 
 			RefreshAllSettings(sender, null);
 		}
+
+		private void MutePlayerCommsDropdownChanged(object sender, SelectionChangedEventArgs e)
+		{
+			int index = ((ComboBox)sender).SelectedIndex;
+			switch (index)
+			{
+				case 0:	// leave default
+					SparkSettings.instance.mutePlayerComms = false;
+					SparkSettings.instance.muteEnemyTeam = false;
+					CameraWriteController.SetTeamsMuted(false,false);
+					break;
+				case 1:	// mute enemy team
+					SparkSettings.instance.mutePlayerComms = false;
+					SparkSettings.instance.muteEnemyTeam = true;
+					break;
+				case 2:	// mute both teams
+					SparkSettings.instance.mutePlayerComms = true;
+					SparkSettings.instance.muteEnemyTeam = false;
+					break;
+			}
+			
+			CameraWriteController.SetPlayersMuted();
+		}
+		
+		
 	}
+	
 
 	public class SettingBindingExtension : Binding
 	{

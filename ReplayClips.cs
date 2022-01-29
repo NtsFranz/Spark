@@ -10,7 +10,7 @@ namespace Spark
 		{
 			Program.PlayspaceAbuse += (frame, _, player, _) => { SaveClip(SparkSettings.instance.replayClipPlayspace, player.name, frame, $"{player.name}_abuse"); };
 			Program.Goal += (frame, _) => { SaveClip(SparkSettings.instance.replayClipGoal, frame.last_score.person_scored, frame, $"{frame.last_score.person_scored}_goal"); };
-			Program.Save += (frame, _, player) => { SaveClip(SparkSettings.instance.replayClipSave, player.name, frame, $"{player.name}_save"); };
+			Program.Save += (frame, eventData) => { SaveClip(SparkSettings.instance.replayClipSave, eventData.player.name, frame, $"{eventData.player.name}_save"); };
 			Program.Assist += (frame, _) => { SaveClip(SparkSettings.instance.replayClipAssist, frame.last_score.assist_scored, frame, $"{frame.last_score.assist_scored}_assist"); };
 			Program.Interception += (frame, _, _, catchPlayer) => { SaveClip(SparkSettings.instance.replayClipInterception, catchPlayer.name, frame, $"{catchPlayer.name}_interception"); };
 			Program.Joust += (frame, _, player, neutral, _, _, _) =>

@@ -397,6 +397,14 @@ namespace Spark
 							{
 								List<string> folderPieces = pieces.Skip(2).SkipLast(2).Append(string.Join('.', pieces.TakeLast(2))).ToList();
 								string url;
+								
+								if (folderPieces.Count > 1 && folderPieces[^1].Contains("min."))
+								{
+									// combine the min into the filename
+									folderPieces[^2] = string.Join('.', folderPieces.TakeLast(2));
+									folderPieces.RemoveAt(folderPieces.Count-1);
+								}
+								
 								if (folderPieces[^1] == "index.html")
 								{
 									url = "/" + string.Join('/', folderPieces.SkipLast(1));

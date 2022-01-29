@@ -51,16 +51,16 @@
 
 						<StackPanel Grid.Row="1" Grid.Column="0">
 							<Label Content="Team Name"/>
-							<TextBox x:Name="ManualTeamNameOrange" Text="{local:SettingBinding overlaysManualTeamNameOrange}"/>
+							<TextBox x:Name="ManualTeamNameOrange" Text="{local:SettingBinding overlaysManualTeamNameOrange}" TextChanged="TeamNameChanged"/>
 							<Label Content="Team Logo (URL)"/>
-							<TextBox x:Name="ManualTeamLogoOrange" Text="{local:SettingBinding overlaysManualTeamLogoOrange}"/>
+							<TextBox x:Name="ManualTeamLogoOrange" Text="{local:SettingBinding overlaysManualTeamLogoOrange}" TextChanged="TeamNameChanged"/>
 						</StackPanel>
 
 						<StackPanel Grid.Row="1" Grid.Column="2">
 							<Label Content="Team Name"/>
-							<TextBox x:Name="ManualTeamNameBlue" Text="{local:SettingBinding overlaysManualTeamNameBlue}"/>
+							<TextBox x:Name="ManualTeamNameBlue" Text="{local:SettingBinding overlaysManualTeamNameBlue}" TextChanged="TeamNameChanged"/>
 							<Label  Content="Team Logo (URL)"/>
-							<TextBox x:Name="ManualTeamLogoBlue" Text="{local:SettingBinding overlaysManualTeamLogoBlue}"/>
+							<TextBox x:Name="ManualTeamLogoBlue" Text="{local:SettingBinding overlaysManualTeamLogoBlue}" TextChanged="TeamNameChanged"/>
 						</StackPanel>
 					</Grid>
 				</StackPanel>

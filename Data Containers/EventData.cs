@@ -9,10 +9,11 @@ namespace Spark
 	/// <summary>
 	/// Object containing data describing certain events like stuns, throws, quits, joins, etc.
 	/// </summary>
-	public class EventData : DataContainer
+	public class EventData : EventContainer
 	{
 		public EventData(MatchData match, EventType eventType, float gameClock, Team team, Player player, long joustTimeMillis, Vector3 position, Vector3 vec2)
 		{
+			eventTime = DateTime.UtcNow;
 			matchData = match;
 			this.eventType = eventType;
 			this.gameClock = gameClock;
@@ -25,6 +26,7 @@ namespace Spark
 
 		public EventData(MatchData match, EventType eventType, float gameClock, Team team, Player player, Player otherPlayer, Vector3 position, Vector3 vec2)
 		{
+			eventTime = DateTime.UtcNow;
 			matchData = match;
 			this.eventType = eventType;
 			this.gameClock = gameClock;
@@ -35,38 +37,9 @@ namespace Spark
 			this.team = team;
 		}
 
+
 		public MatchData matchData;
-		public enum EventType
-		{
-			stun,
-			block,
-			save,
-			@catch,
-			pass,
-			@throw,
-			shot_taken,
-			steal,
-			playspace_abuse,
-			player_joined,
-			player_left,
-			joust_speed,
-			defensive_joust,
-			big_boost,
-			restart_request,
-			pause_request,
-			unpause_request,
-			interception,	// not in db yet
-			player_switched_teams,	// not in db yet
-		}
-
-
-
-		/// <summary>
-		/// Whether or not this data has been sent to the DB or not
-		/// </summary>
-		public bool inDB = false;
-
-		public EventType eventType;
+		private DateTime eventTime;
 		public float gameClock;
 		public Player player;
 		public Player otherPlayer;
@@ -79,28 +52,168 @@ namespace Spark
 		/// Function to transform event data into the desired format for firestore.
 		/// </summary>
 		/// <returns></returns>
-		public Dictionary<string, object> ToDict()
+		public override Dictionary<string, object> ToDict()
 		{
 			try
 			{
-				var values = new Dictionary<string, object>
+				return new Dictionary<string, object>
 				{
-					{"session_id", matchData.firstFrame.sessionid },
-					{"match_time", matchData.MatchTimeSQL },
-					{"event_time", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") },
-					{"game_clock", gameClock },
-					{"player_id", player?.userid },
-					{"player_name", player?.name },
-					{"event_type", eventType.ToString() },
-					{"other_player_id", eventType.IsJoust() ? joustTimeMillis : (otherPlayer != null ? (long?)otherPlayer.userid : null) },
-					{"other_player_name", eventType.IsJoust() ? team.color.ToString() : otherPlayer?.name },
-					{"pos_x", position.X },
-					{"pos_y", position.Y },
-					{"pos_z", position.Z },
-					{"x2", vec2 != Vector3.Zero ? (float?)vec2.X : null },
-					{"y2", vec2 != Vector3.Zero ? (float?)vec2.Y : null },
-					{"z2", vec2 != Vector3.Zero ? (float?)vec2.Z : null }
+					{ "session_id", matchData.firstFrame.sessionid },
+					{ "match_time", matchData.MatchTimeSQL },
+					{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
+					{ "game_clock", gameClock },
+					{ "player_id", player?.userid },
+					{ "player_name", player?.name },
+					{ "event_type", eventType.ToString() },
+					{ "other_player_id", eventType.IsJoust() ? joustTimeMillis : otherPlayer?.userid },
+					{ "other_player_name", eventType.IsJoust() ? team.color.ToString() : otherPlayer?.name },
+					{ "pos_x", position.X },
+					{ "pos_y", position.Y },
+					{ "pos_z", position.Z },
+					{ "x2", vec2 != Vector3.Zero ? (float?)vec2.X : null },
+					{ "y2", vec2 != Vector3.Zero ? (float?)vec2.Y : null },
+					{ "z2", vec2 != Vector3.Zero ? (float?)vec2.Z : null }
 				};
+			}
+			catch (Exception e)
+			{
+				Logger.LogRow(Logger.LogType.Error, "Can't serialize event.\n" + e.Message + "\n" + e.StackTrace);
+				return new Dictionary<string, object>
+				{
+					{ "none", 0 }
+				};
+			}
+		}
+
+		/// <summary>
+		/// Function to transform event data into the desired format for firestore.
+		/// </summary>
+		/// <returns></returns>
+		public override Dictionary<string, object> ToDict(bool useCustomKeyNames)
+		{
+			if (!useCustomKeyNames) return ToDict();
+			try
+			{
+				Dictionary<string, object> values = null;
+				switch (eventType)
+				{
+					case EventType.stun:
+						values = new Dictionary<string, object>
+						{
+							{ "session_id", matchData.firstFrame.sessionid },
+							{ "match_time", matchData.MatchTimeSQL },
+							{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
+							{ "game_clock", gameClock },
+							{ "event_type", eventType.ToString() },
+							{ "stunner_id", player?.userid },
+							{ "stunner_name", player?.name },
+							{ "stunner_team", player?.team_color },
+							{ "victim_id", otherPlayer?.userid },
+							{ "victim_name", otherPlayer?.name },
+							{ "victim_team", otherPlayer?.team_color },
+							{ "pos_x", position.X },
+							{ "pos_y", position.Y },
+							{ "pos_z", position.Z },
+						};
+						break;
+					case EventType.block:
+						break;
+					case EventType.save:
+						values = new Dictionary<string, object>
+						{
+							{ "session_id", matchData.firstFrame.sessionid },
+							{ "match_time", matchData.MatchTimeSQL },
+							{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
+							{ "game_clock", gameClock },
+							{ "event_type", eventType.ToString() },
+							{ "player_id", player?.userid },
+							{ "player_name", player?.name },
+							{ "player_team", player?.team_color },
+							{ "pos_x", position.X },
+							{ "pos_y", position.Y },
+							{ "pos_z", position.Z },
+						};
+						break;
+					case EventType.@catch:
+						break;
+					case EventType.pass:
+						break;
+					case EventType.@throw:
+						break;
+					case EventType.shot_taken:
+						break;
+					case EventType.steal:
+						values = new Dictionary<string, object>
+						{
+							{ "session_id", matchData.firstFrame.sessionid },
+							{ "match_time", matchData.MatchTimeSQL },
+							{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
+							{ "game_clock", gameClock },
+							{ "event_type", eventType.ToString() },
+							{ "player_id", player?.userid },
+							{ "player_name", player?.name },
+							{ "player_team", player?.team_color },
+							{ "pos_x", position.X },
+							{ "pos_y", position.Y },
+							{ "pos_z", position.Z },
+						};
+						break;
+					case EventType.playspace_abuse:
+						break;
+					case EventType.player_joined:
+						break;
+					case EventType.player_left:
+						break;
+					case EventType.joust_speed:
+						values = new Dictionary<string, object>
+						{
+							{ "session_id", matchData.firstFrame.sessionid },
+							{ "match_time", matchData.MatchTimeSQL },
+							{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
+							{ "game_clock", gameClock },
+							{ "player_id", player?.userid },
+							{ "player_name", player?.name },
+							{ "event_type", eventType.ToString() },
+							{ "joust_time_millis", joustTimeMillis },
+							{ "team_color", team.color.ToString() },
+							{ "max_speed", vec2.X },
+							{ "max_tube_exit_speed", vec2.Y },
+							{ "joust_time", vec2.Z }
+						};
+						break;
+					case EventType.defensive_joust:
+						values = new Dictionary<string, object>
+						{
+							{ "session_id", matchData.firstFrame.sessionid },
+							{ "match_time", matchData.MatchTimeSQL },
+							{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
+							{ "game_clock", gameClock },
+							{ "player_id", player?.userid },
+							{ "player_name", player?.name },
+							{ "event_type", eventType.ToString() },
+							{ "joust_time_millis", joustTimeMillis },
+							{ "team_color", team.color.ToString() },
+							{ "max_speed", vec2.X },
+							{ "max_tube_exit_speed", vec2.Y },
+							{ "joust_time", vec2.Z }
+						};
+						break;
+					case EventType.big_boost:
+						break;
+					case EventType.restart_request:
+						break;
+					case EventType.pause_request:
+						break;
+					case EventType.unpause_request:
+						break;
+					case EventType.interception:
+						break;
+					case EventType.player_switched_teams:
+						break;
+				}
+
+				values ??= ToDict();
+
 				return values;
 			}
 			catch (Exception e)
@@ -108,10 +221,9 @@ namespace Spark
 				Logger.LogRow(Logger.LogType.Error, "Can't serialize event.\n" + e.Message + "\n" + e.StackTrace);
 				return new Dictionary<string, object>
 				{
-					{"none", 0 }
+					{ "none", 0 }
 				};
 			}
-
 		}
 	}
 }

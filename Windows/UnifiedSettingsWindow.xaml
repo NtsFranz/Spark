@@ -147,7 +147,11 @@
 								<CheckBox x:Name="HideUICheckbox" Content="{x:Static p:Resources.Hide_EchoVR_UI}" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Click="HideEchoVRUINow"/>
 								<CheckBox Content="{x:Static p:Resources.Toggle_Minimap_after_Goals}" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
 								<CheckBox x:Name="HideMinimapCheckbox" Content="Don't Show Minimap (M)" IsChecked="{l:SettingBinding alwaysHideMinimap}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Click="HideMinimapNow" />
-								<CheckBox x:Name="MutePlayerCommsCheckbox"  Content="Mute Player Comms (F5)" IsChecked="{l:SettingBinding mutePlayerComms}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4"  Click="ToggleTeamMuteNow"/>
+								<ComboBox x:Name="MutePlayerCommsDropdown" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300" SelectionChanged="MutePlayerCommsDropdownChanged">
+									<ComboBoxItem Content="Don't Change"/>
+									<ComboBoxItem Content="Mute enemy team"/>
+									<ComboBoxItem Content="Mute all players"/>
+								</ComboBox>
 								<CheckBox x:Name="HideNameplatesCheckbox" Content="Hide Player Nameplates" IsChecked="{l:SettingBinding hideNameplates}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4"  Click="ToggleNameplatesNow"/>
 								<Label Content="{x:Static p:Resources.Camera_Mode_}"/>
 								<StackPanel Orientation="Horizontal">

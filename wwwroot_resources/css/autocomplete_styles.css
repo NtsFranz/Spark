@@ -29,5 +29,5 @@
 .autocomplete-items div:hover {
   /*when hovering an item:*/
   background-color: #bbb;
-  color: #888;
+  color: #000;
 }
