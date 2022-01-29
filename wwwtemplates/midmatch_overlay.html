@@ -1,237 +1,221 @@
-<html>
-
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>Midmatch Overlay</title>
 
-
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&display=swap" rel="stylesheet">
-
 	<script src="/js/util.js"></script>
+	<script src="/js/spark_websocket.js"></script>
 
 	<style>
 
-		body {
-			margin: 0;
-			font-family: 'Inconsolata', monospace;
-			overflow: hidden;
-		}
+        @font-face {
+            font-family: 'Inconsolata';
+            src: url('/fonts/Inconsolata.woff2') format('woff2'), url('/fonts/Inconsolata.woff') format('woff'), url('/fonts/Inconsolata.ttf') format('truetype');
+        }
 
-		.container {
-			margin: 0;
-			width: 100%;
-		}
+        body {
+            margin: 0;
+            font-family: 'Inconsolata', monospace;
+            overflow: hidden;
+        }
 
-		.top_row {
-			width: 100%;
-		}
+        .container {
+            margin: 0;
+            width: 100%;
+        }
 
-
-		.team_logo {
-			width: 6em;
-			height: 6em;
-			position: absolute;
-			top: -.6em;
-			border: .4em solid blue;
-			border-top-width: 1em;
-			border-radius: .5em;
-		}
-
-			.team_logo.orange {
-				left: -.6em;
-				border-color: #d4791a;
-				border-left-width: 1em;
-				background-color: #936230;
-			}
-
-			.team_logo.blue {
-				right: -.6em;
-				border-color: #2981df;
-				border-right-width: 1em;
-				background-color: #426b97;
-			}
-
-		.team_name {
-			font-size: 2.6em;
-			font-weight: 900;
-			text-align: center;
-			color: #ccc;
-			position: absolute;
-			top: 0;
-			padding: 1.88rem;
-			height: 0.3rem;
-			line-height: 0;
-			text-shadow: .07em .07em #0005;
-			text-transform: uppercase;
-			border-bottom: 3px solid #ccca;
-		}
-
-			.team_name::after,
-			.team_name::before {
-				content: '';
-				display: block;
-				position: absolute;
-				width: 1.5em;
-				height: 1.6em;
-				top: 0;
-			}
-
-			.team_name.orange::after,
-			.team_name.blue::before {
-				background: linear-gradient(90deg, rgba(0, 0, 0, 0.25) 0%, rgba(0,0,0,0) 100%);
-				left: 0;
-			}
-
-			.team_name.blue::after,
-			.team_name.orange::before {
-				background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.25) 100%);
-				right: 0;
-			}
-
-			.team_name.orange {
-				background-color: #d4791a;
-				left: 6.4rem;
-				width: 36.65rem;
-			}
+        .top_row {
+            width: 100%;
+        }
 
 
-			.team_name.blue {
-				background-color: #2981df;
-				right: 6.4rem;
-				width: 36.7rem;
-			}
+        .team_logo {
+            width: 6em;
+            height: 6em;
+            position: absolute;
+            top: -.6em;
+            border: .4em solid blue;
+            border-top-width: 1em;
+            border-radius: .5em;
+        }
+
+        .team_logo.orange {
+            left: -.6em;
+            border-color: #d4791a;
+            border-left-width: 1em;
+            background-color: #936230;
+        }
+
+        .team_logo.blue {
+            right: -.6em;
+            border-color: #2981df;
+            border-right-width: 1em;
+            background-color: #426b97;
+        }
+
+        .team_name {
+            font-size: 2.6em;
+            font-weight: 900;
+            text-align: center;
+            color: #ccc;
+            position: absolute;
+            top: 0;
+            padding: 1.88rem;
+            height: 0.3rem;
+            line-height: 0;
+            text-shadow: .07em .07em #0005;
+            text-transform: uppercase;
+            border-bottom: 3px solid #ccca;
+        }
+
+        .team_name::after,
+        .team_name::before {
+            content: '';
+            display: block;
+            position: absolute;
+            width: 1.5em;
+            height: 1.6em;
+            top: 0;
+        }
+
+        .team_name.orange::after,
+        .team_name.blue::before {
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 100%);
+            left: 0;
+        }
+
+        .team_name.blue::after,
+        .team_name.orange::before {
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .25) 100%);
+            right: 0;
+        }
+
+        .team_name.orange {
+            background-color: #d4791a;
+            left: 6.4rem;
+            width: 36.65rem;
+        }
 
 
-		.joust {
-			border: 0.13rem solid #ccc;
-			background-color: #0004;
-			background: linear-gradient(0deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.5) 100%);
-			opacity: 0;
-			position: absolute;
-			top: 5rem;
-			width: 11rem;
-			height: 3rem;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			font-size: 1.7em;
-			text-shadow: .07em .07em #0005;
-			color: #eee;
-			transition: all .5s;
-		}
+        .team_name.blue {
+            background-color: #2981df;
+            right: 6.4rem;
+            width: 36.7rem;
+        }
 
-			.joust.orange {
-				left: 33rem;
-			}
 
-			.joust.blue {
-				right: 33rem;
-			}
+        .joust {
+            border: 0.13rem solid #ccc;
+            background: #0004 linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.5) 100%);
+            opacity: 0;
+            position: absolute;
+            top: 5rem;
+            width: 11rem;
+            height: 3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.7em;
+            text-shadow: .07em .07em #0005;
+            color: #eee;
+            transition: all .5s;
+        }
 
-			.joust > span {
-				display: inline-block;
-				vertical-align: middle;
-				line-height: normal;
-			}
+        .joust.orange {
+            left: 33rem;
+        }
 
-			.joust.visible {
-				opacity: 1;
-			}
+        .joust.blue {
+            right: 33rem;
+        }
+
+        .joust > span {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: normal;
+        }
+
+        .joust.visible {
+            opacity: 1;
+        }
 	</style>
 </head>
 
 <body>
-	<div class="container">
-		<div class="top_row">
+<div class="container">
+	<div class="top_row">
 
-			<div id="team_name_orange" class="team_name orange"></div>
-			<img id="team_logo_orange" class="team_logo orange" src="" alt="">
-			<div id="orange_joust" class="joust orange"><span></span></div>
+		<div id="team_name_orange" class="team_name orange"></div>
+		<img id="team_logo_orange" class="team_logo orange" src="" alt="">
+		<div id="orange_joust" class="joust orange"><span></span></div>
 
-			<div id="team_name_blue" class="team_name blue"></div>
-			<img id="team_logo_blue" class="team_logo blue" src="" alt="">
-			<div id="blue_joust" class="joust blue"><span></span></div>
+		<div id="team_name_blue" class="team_name blue"></div>
+		<img id="team_logo_blue" class="team_logo blue" src="" alt="">
+		<div id="blue_joust" class="joust blue"><span></span></div>
 
-		</div>
 	</div>
+</div>
 
-	<script>
-		const ip = "127.0.0.1"
-		//const ip = "localhost"
-		const port = "6724"
+<script>
+    const team_logo_orange = document.getElementById("team_logo_orange");
+    const team_name_orange = document.getElementById("team_name_orange");
+    const team_name_blue = document.getElementById("team_name_blue");
+    const team_logo_blue = document.getElementById("team_logo_blue");
 
-		const team_logo_orange = document.getElementById("team_logo_orange");
-		const team_name_orange = document.getElementById("team_name_orange");
-		const team_name_blue = document.getElementById("team_name_blue");
-		const team_logo_blue = document.getElementById("team_logo_blue");
+    const orange_joust = document.getElementById("orange_joust");
+    const blue_joust = document.getElementById("blue_joust");
 
-		const orange_joust = document.getElementById("orange_joust");
-		const blue_joust = document.getElementById("blue_joust");
+    let sw = new SparkWebsocket();
+    sw.subscribe("joust", data => {
+        if (data["team_color"] === "orange") {
+            orange_joust.classList.add("visible");
+            orange_joust.innerText = Math.round(data["joust_time"] * 100) / 100 + " s";
+            // hide it after a delay
+            setTimeout(function () {
+                orange_joust.classList.remove("visible");
+            }, 10000);
+        } else if (data["team_color"] === "blue") {
+            blue_joust.classList.add("visible");
+            blue_joust.innerText = Math.round(data["joust_time"] * 100) / 100 + " s";
+            // hide it after a delay
+            setTimeout(function () {
+                blue_joust.classList.remove("visible");
+            }, 10000);
+        }
+    });
+    sw.subscribe("team_names", data => {
+        team_name_blue.innerText = data["teams"][0]["team_name"];
+        team_logo_blue.src = data["teams"][0]["team_logo"];
+        if (data["teams"][0]["team_logo"] === "") {
+            team_logo_blue.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+        }
 
-		var lastStats = null;
-
-
-		function get_data() {
-			const url = `http://${ip}:${port}/stats`;
-			httpGetAsync(url, process_response);
-		}
-
-		function process_response(resp) {
-			if (resp == "" || resp.length < 10) return;
-			let data = JSON.parse(resp);
-			if (data == null) return;
-
-
-			// if the team has changed
-			if (lastStats == null ||
-				lastStats["teams"][0]["team_name"] != data["teams"][0]["team_name"] ||
-				lastStats["teams"][0]["team_logo"] != data["teams"][0]["team_logo"]) {
-				team_name_blue.innerText = data["teams"][0]["team_name"];
-				team_logo_blue.src = data["teams"][0]["team_logo"];
-				if (data["teams"][0]["team_logo"] == "") {
-					team_logo_blue.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
-				}
-			}
-			// if the team has changed
-			if (lastStats == null ||
-				lastStats["teams"][1]["team_name"] != data["teams"][1]["team_name"] ||
-				lastStats["teams"][1]["team_logo"] != data["teams"][1]["team_logo"]) {
-				team_logo_orange.src = data["teams"][1]["team_logo"];
-				team_name_orange.innerText = data["teams"][1]["team_name"];
-				if (data["teams"][1]["team_logo"] == "") {
-					team_logo_orange.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
-				}
-			}
-
-			// if the number of jousts has changed
-			if (lastStats != null &&
-				data["joust_events"] != null && lastStats["joust_events"] != null &&
-				data["joust_events"].length > lastStats["joust_events"].length) {
-				for (let i = lastStats["joust_events"].length; i < data["joust_events"].length; i++) {
-					let joust = data["joust_events"][i];
-					if (joust["other_player_name"] == "orange") {
-						orange_joust.classList.add("visible");
-						orange_joust.innerText = Math.round(joust["z2"] * 100) / 100 + " s";
-						// hide it after a delay
-						setTimeout(function () { orange_joust.classList.remove("visible"); }, 10000);
-					} else if (joust["other_player_name"] == "blue") {
-						blue_joust.classList.add("visible");
-						blue_joust.innerText = Math.round(joust["z2"] * 100) / 100 + " s";
-						// hide it after a delay
-						setTimeout(function () { blue_joust.classList.remove("visible"); }, 10000);
-					}
-				}
-			}
-
-			lastStats = data;
-		}
-
-		get_data();
-
-		setInterval(get_data, 1000);
-	</script>
+        team_logo_orange.src = data["teams"][1]["team_logo"];
+        team_name_orange.innerText = data["teams"][1]["team_name"];
+        if (data["teams"][1]["team_logo"] === "") {
+            team_logo_orange.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+        }
+    });
+    sw.subscribe("pause", data => {
+        if (data["paused_state"] !== "paused") return;
+        
+        if (data["paused_requested_team"] === "orange") {
+            orange_joust.classList.add("visible");
+            orange_joust.innerText = "PAUSED";
+            // hide it after a delay
+            setTimeout(function () {
+                orange_joust.classList.remove("visible");
+            }, 10000);
+        } else if (data["paused_requested_team"] === "blue") {
+            blue_joust.classList.add("visible");
+            blue_joust.innerText = "PAUSED";
+            // hide it after a delay
+            setTimeout(function () {
+                blue_joust.classList.remove("visible");
+            }, 10000);
+        }
+    });
+</script>
 </body>
 
 </html>

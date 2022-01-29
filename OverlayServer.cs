@@ -731,7 +731,8 @@ namespace Spark
 							CultureInfo.InvariantCulture,
 							DateTimeStyles.AssumeLocal,
 							out DateTime time)
-						&& MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))).ToArray();
+						&& time.ToUniversalTime() > selectedMatchTimes.Min() - TimeSpan.FromSeconds(10)).ToArray();
+						// && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))).ToArray();
 
 				// use .echoreplay files if .butter files not found
 				if (selectedFiles.Length == 0)

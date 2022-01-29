@@ -71,6 +71,9 @@ namespace Spark
 				};
 			});
 
+			DateTime lastSent30Hz = DateTime.UtcNow;
+			DateTime lastSent10Hz = DateTime.UtcNow;
+			DateTime lastSent1Hz = DateTime.UtcNow;
 
 			Program.Stun += (frame, stunEvent) => { SendData(EventContainer.EventType.stun, stunEvent.ToDict(true)); };
 			Program.Goal += (frame, goalData) => { SendData(EventContainer.EventType.goal, goalData.ToDict(true)); };
@@ -78,9 +81,27 @@ namespace Spark
 			Program.Save += (frame, eventData) => { SendData(EventContainer.EventType.save, eventData.ToDict(true)); };
 			Program.JoustEvent += (frame, eventData) => { SendData(EventContainer.EventType.joust, eventData.ToDict(true)); };
 			Program.GamePaused += (frame) => { SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause)); };
-			Program.PauseRequest += (frame) => { SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause)); };
+			// Program.PauseRequest += (frame) => { SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause)); };
 			Program.GameUnpaused += (frame) => { SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause)); };
 			Program.TeamNameLogoChanged += () => { SendData(EventContainer.EventType.team_names, OverlayConfig.ToDict()); };
+			Program.FrameFetched += (_, session, _) =>
+			{
+				if (DateTime.UtcNow - lastSent1Hz > TimeSpan.FromSeconds(1f))
+				{
+					SendData(EventContainer.EventType.frame_1hz, session);
+					lastSent1Hz = DateTime.UtcNow;
+				}
+				if (DateTime.UtcNow - lastSent10Hz > TimeSpan.FromSeconds(.1f))
+				{
+					SendData(EventContainer.EventType.frame_10hz, session);
+					lastSent10Hz = DateTime.UtcNow;
+				}
+				if (DateTime.UtcNow - lastSent30Hz > TimeSpan.FromSeconds(.0333f))
+				{
+					SendData(EventContainer.EventType.frame_30hz, session);
+					lastSent30Hz = DateTime.UtcNow;
+				}
+			};
 		}
 
 		~WebSocketServerManager()

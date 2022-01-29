@@ -29,6 +29,9 @@ namespace Spark
 			interception,	// not in db yet
 			player_switched_teams,	// not in db yet
 			team_names,		// used by websocket for overlays
+			frame_1hz,		// used by websocket for overlays
+			frame_10hz,		// used by websocket for overlays
+			frame_30hz,		// used by websocket for overlays
 		}
 
 		/// <summary>

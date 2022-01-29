@@ -263,6 +263,10 @@
     <EmbeddedResource Include="wwwroot_resources\js\lib\prism.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Remove="wwwroot_resources\js\lib\heatmap.min.js" />
+    <EmbeddedResource Include="wwwroot_resources\js\lib\heatmap.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
