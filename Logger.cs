@@ -29,6 +29,7 @@ public class Logger
 	/// How many lines to wait before actually logging
 	/// </summary>
 	public static int lineLogInterval = 0;
+
 	private static int numLinesLogged;
 
 	public static bool usePerDeviceFolder = true;
@@ -47,10 +48,12 @@ public class Logger
 		/// Just print to terminal and nothing else.
 		/// </summary>
 		Info,
+
 		/// <summary>
 		/// Print to custom file and terminal.
 		/// </summary>
 		File,
+
 		/// <summary>
 		/// Print to terminal and error file.
 		/// </summary>
@@ -61,13 +64,17 @@ public class Logger
 	/// Dictionary of filename and list of lines that haven't been logged yet
 	/// </summary>
 	private static Dictionary<string, List<string>> dataToLog = new Dictionary<string, List<string>>();
+
 	public static readonly object dataToLogLock = new object();
 
 	public static bool initialized;
 
 	private static string macAddrVal;
-	public static string MacAddr {
-		get {
+
+	public static string MacAddr
+	{
+		get
+		{
 			if (macAddrVal == null)
 			{
 				macAddrVal = (
@@ -76,6 +83,7 @@ public class Logger
 					select nic.GetPhysicalAddress().ToString()
 				).FirstOrDefault();
 			}
+
 			return macAddrVal;
 		}
 	}
@@ -103,14 +111,13 @@ public class Logger
 		{
 			ActuallyLog();
 			Thread.Sleep(1000);
-		}
-		while (Program.running);
+		} while (Program.running);
 	}
 
 	/// <summary>
 	/// 🧵 Writes a message to the console, file, or upload
 	/// </summary>
-	/// <param name="overwrite">Whether or not to override the file we are logging to. Only valid for LogType.File</param>
+	/// <param name="logType"></param>
 	/// <param name="elements">The columns in the row</param>
 	public static void LogRow(LogType logType, params string[] elements)
 	{
@@ -128,6 +135,7 @@ public class Logger
 				}
 				else
 					Console.WriteLine("LogType info with more or less than 1 argument.");
+
 				break;
 			case LogType.File:
 				if (elements.Length >= 2)
@@ -150,11 +158,21 @@ public class Logger
 							}
 						}
 					}
+
+					try
+					{
+						Program.EventLog?.Invoke(list[0]);
+					}
+					catch (Exception e)
+					{
+						LogRow(LogType.Error, "Error processing EventLog event\n" + e);
+					}
 				}
 				else
 				{
 					Console.WriteLine("LogType File with fewer than 2 parameters. Must specify a file name and data.");
 				}
+
 				break;
 			case LogType.Error:
 				if (elements.Length > 0)
@@ -162,6 +180,7 @@ public class Logger
 					Console.WriteLine(elements[0]);
 					LogRow("error", elements);
 				}
+
 				break;
 		}
 	}
@@ -195,12 +214,14 @@ public class Logger
 				strBuilder.Append(newElem);
 				strBuilder.Append(delimiter);
 			}
+
 			lock (dataToLogLock)
 			{
 				if (!dataToLog.ContainsKey(fileName))
 				{
 					dataToLog.Add(fileName, new List<string>());
 				}
+
 				dataToLog[fileName].Add(strBuilder.ToString());
 			}
 		}
@@ -210,7 +231,6 @@ public class Logger
 		}
 
 		numLinesLogged++;
-
 	}
 
 	/// <summary>
@@ -280,12 +300,14 @@ public class Logger
 							{
 								fileWriter.WriteLine(row);
 							}
+
 							if (SparkSettings.instance.logToServer)
 							{
 								allOutputData.Append(row);
 								allOutputData.Append(newLineChar);
 							}
 						}
+
 						dataToLog[fileName].Clear();
 
 						if (SparkSettings.instance.logToServer)
@@ -303,6 +325,7 @@ public class Logger
 						fileWriter.Close();
 					}
 				}
+
 				numLinesLogged = 0;
 			}
 		}
@@ -319,10 +342,12 @@ public class Logger
 		return; // TODO This was uploading *super* often for some reason
 
 		var values = new Dictionary<string, string>
-			{{passwordField, SecretKeys.webLogPassword },
-				{ "file", name},
-				{ "data", data},
-				{ "folder", appName} };
+		{
+			{ passwordField, SecretKeys.webLogPassword },
+			{ "file", name },
+			{ "data", data },
+			{ "folder", appName }
+		};
 		try
 		{
 			var content = new FormUrlEncodedContent(values);

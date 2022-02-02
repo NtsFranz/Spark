@@ -103,7 +103,7 @@ namespace Spark
 								await context.Response.WriteAsync("Invalid team color");
 								return;
 						}
-						Program.TeamNameLogoChanged?.Invoke();
+						Program.OverlayConfigChanged?.Invoke();
 					}
 
 					// update the UI to match
@@ -141,7 +141,7 @@ namespace Spark
 								await context.Response.WriteAsync("Invalid team color");
 								return;
 						}
-						Program.TeamNameLogoChanged?.Invoke();
+						Program.OverlayConfigChanged?.Invoke();
 					}
 
 					// update the UI to match
@@ -189,7 +189,7 @@ namespace Spark
 									await context.Response.WriteAsync("Invalid team color");
 									return;
 							}
-							Program.TeamNameLogoChanged?.Invoke();
+							Program.OverlayConfigChanged?.Invoke();
 						}
 					}
 
@@ -211,7 +211,7 @@ namespace Spark
 									await context.Response.WriteAsync("Invalid team color");
 									return;
 							}
-							Program.TeamNameLogoChanged?.Invoke();
+							Program.OverlayConfigChanged?.Invoke();
 						}
 					}
 

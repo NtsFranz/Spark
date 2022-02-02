@@ -40,7 +40,7 @@ namespace Spark
 			SparkSettings.instance.overlaysManualTeamNameBlue = ManualTeamNameBlue.Text;
 			SparkSettings.instance.overlaysManualTeamLogoOrange = ManualTeamLogoOrange.Text;
 			SparkSettings.instance.overlaysManualTeamLogoBlue = ManualTeamLogoBlue.Text;
-			Program.TeamNameLogoChanged?.Invoke();
+			Program.OverlayConfigChanged?.Invoke();
 		}
 
 		public void SetUIToSettings()
@@ -56,12 +56,12 @@ namespace Spark
 			if (!init) return;
 			ComboBox dropdown = (ComboBox)sender;
 			ManualInputSettings.Visibility = dropdown.SelectedIndex == 0 ? Visibility.Visible : Visibility.Collapsed;
-			Program.TeamNameLogoChanged?.Invoke();
+			Program.OverlayConfigChanged?.Invoke();
 		}
 
 		private void TeamNameChanged(object sender, TextChangedEventArgs e)
 		{
-			Program.TeamNameLogoChanged?.Invoke();
+			Program.OverlayConfigChanged?.Invoke();
 		}
 	}
 }

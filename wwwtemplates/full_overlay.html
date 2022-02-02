@@ -2,87 +2,181 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Configurable Overlay</title>
-    <link rel="stylesheet" href="/css/minimap.css">
-    <link rel="stylesheet" href="/css/main_banner.css">
-    <link rel="stylesheet" href="/css/mathematical_time.css">
-    <link rel="stylesheet" href="/css/player_lists.css">
-    <link rel="stylesheet" href="/css/event_banners.css">
-    <script src="/js/util.js"></script>
-    <script defer src="/js/full_overlay.js"></script>
+	<meta charset="utf-8">
+	<title>Configurable Overlay</title>
+
+	<style>
+        @font-face {
+            font-family: 'Inconsolata';
+            src: url('/fonts/Inconsolata.woff2') format('woff2'), url('/fonts/Inconsolata.woff') format('woff'), url('/fonts/Inconsolata.ttf') format('truetype');
+        }
+
+        #event_log_container {
+            display: flex;
+            flex-direction: column-reverse;
+            height: 40em;
+            position: absolute;
+            bottom: 2em;
+            left: 2em;
+        }
+
+        #event_log_container > div {
+            display: inline-block;
+            margin: 0.2em;
+            padding: 0.6em;
+            background-color: #000c;
+            border-radius: 0.5em;
+            color: #fffc;
+            font-weight: 900;
+            font-family: Inconsolata, monospace;
+            width: fit-content;
+            animation: movein .5s;
+            transition: opacity .5s;
+			font-size: 1.1em;
+        }
+
+        @keyframes movein {
+            0% {
+                opacity: 0;
+                height: 0;
+                margin: 0;
+                padding: 0;
+            }
+
+            50% {
+                opacity: 0;
+                height: auto;
+                margin: 0.2em;
+                padding: 0.6em;
+            }
+
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .invisible {
+            opacity: 0;
+        }
+
+	</style>
+
+	<link rel="stylesheet" href="/css/minimap.css">
+	<link rel="stylesheet" href="/css/main_banner.css">
+	<link rel="stylesheet" href="/css/mathematical_time.css">
+	<link rel="stylesheet" href="/css/player_lists.css">
+	<link rel="stylesheet" href="/css/event_banners.css">
+
+	<script src="/js/util.js"></script>
+	<script defer src="/js/full_overlay.js"></script>
+	<script src="/js/spark_websocket.js"></script>
 </head>
 
 <body>
-    <div class="container_1080">
-        <div id="main_banner">
-            <div>
-                <img id="team_logo_orange" class="team_logo"/>
-                <div id="round_score_orange" class="round_scores"></div>
-                <div id="team_name_orange" class="team_name"></div>
-                
-                <div class="center_clock_area">
-                    <div id="game_clock_display"></div>
-                    <div id="points_orange" class="points"></div>
-                    <div id="points_blue" class="points"></div>    
-                </div>
-                
-                <div id="team_name_blue" class="team_name"></div>
-                <div id="round_score_blue" class="round_scores"></div>
-                <img id="team_logo_blue" class="team_logo"/>
-            </div>
-            <div class="underlay"><div class="orange"></div><div class="blue"></div></div>
-        </div>
-        
-        <div id="mathematical_time_box">
-            MATH. TIME<br>
-            <div id="mathematical_time"></div>
-        </div>
-        
-        <div id="player_lists">
-            <div id="orange_players" class="player_list orange"></div>
-            <div id="blue_players" class="player_list blue"></div>
-        </div>
-        
-        <div id="joust_banners" class="banner_box">
-            <div id="orange_joust" class="banner orange"><span></span></div>
-            <div id="blue_joust" class="banner blue"><span></span></div>
-        </div>
+<div class="container_1080">
+	<div id="main_banner">
+		<div>
+			<img id="team_logo_orange" class="team_logo"/>
+			<div id="round_score_orange" class="round_scores"></div>
+			<div id="team_name_orange" class="team_name"></div>
 
-        <div id="pause_banners" class="banner_box">
-            <div id="orange_pause" class="banner orange"><span></span></div>
-            <div id="blue_pause" class="banner blue"><span></span></div>
-        </div>
+			<div class="center_clock_area">
+				<div id="game_clock_display"></div>
+				<div id="points_orange" class="points"></div>
+				<div id="points_blue" class="points"></div>
+			</div>
 
-        <div id="goal_banners" class="banner_box">
-            <div id="orange_goal_banner" class="banner orange">
-                <span id="orange_goal_banner_text"></span>
-                <span id="orange_goal_banner_secondary"></span>
-            </div>
-            <div id="blue_goal_banner" class="banner blue">
-                <span id="blue_goal_banner_text"></span>
-                <span id="blue_goal_banner_secondary"></span>
-            </div>
-        </div>
-        
-        <div class="minimap_container">
+			<div id="team_name_blue" class="team_name"></div>
+			<div id="round_score_blue" class="round_scores"></div>
+			<img id="team_logo_blue" class="team_logo"/>
+		</div>
+		<div class="underlay">
+			<div class="orange"></div>
+			<div class="blue"></div>
+		</div>
+	</div>
 
-            <img class="minimap_image" src="/img/minimap.png">
-            <div class="player blue   positionable_element"><div></div><p class="player_number">00</p></div>
-            <div class="player blue   positionable_element"><div></div><p class="player_number">00</p></div>
-            <div class="player blue   positionable_element"><div></div><p class="player_number">00</p></div>
-            <div class="player blue   positionable_element"><div></div><p class="player_number">00</p></div>
-            <div class="player blue   positionable_element"><div></div><p class="player_number">00</p></div>
-            <div class="player orange positionable_element"><div></div><p class="player_number">00</p></div>
-            <div class="player orange positionable_element"><div></div><p class="player_number">00</p></div>
-            <div class="player orange positionable_element"><div></div><p class="player_number">00</p></div>
-            <div class="player orange positionable_element"><div></div><p class="player_number">00</p></div>
-            <div class="player orange positionable_element"><div></div><p class="player_number">00</p></div>
-            <div id="disc" class="positionable_element"><img class="minimap_disc" src="/img/minimap_disc.png"></div>
+	<div id="mathematical_time_box">
+		MATH. TIME<br>
+		<div id="mathematical_time"></div>
+	</div>
 
-            <div id="timeout_banner">TIMEOUT<div id="timeout_banner_team">orangE</div></div>
-        </div>
-    </div>
+	<div id="player_lists">
+		<div id="orange_players" class="player_list orange"></div>
+		<div id="blue_players" class="player_list blue"></div>
+	</div>
+
+	<div id="joust_banners" class="banner_box">
+		<div id="orange_joust" class="banner orange"><span></span></div>
+		<div id="blue_joust" class="banner blue"><span></span></div>
+	</div>
+
+	<div id="pause_banners" class="banner_box">
+		<div id="orange_pause" class="banner orange"><span></span></div>
+		<div id="blue_pause" class="banner blue"><span></span></div>
+	</div>
+
+	<div id="goal_banners" class="banner_box">
+		<div id="orange_goal_banner" class="banner orange visible">
+			<div>
+				<div id="orange_goal_banner_text">TEST GOAL TYPE</div>
+				<div id="orange_goal_banner_secondary">TEST_USER</div>
+			</div>
+			<div class="point_value" id="orange_goal_banner_point_value">3</div>
+		</div>
+		<div id="blue_goal_banner" class="banner blue">
+			<div>
+				<div id="blue_goal_banner_text"></div>
+				<div id="blue_goal_banner_secondary"></div>
+			</div>
+			<div class="point_value" id="blue_goal_banner_point_value"></div>
+		</div>
+	</div>
+
+	<div class="minimap_container">
+
+		<img class="minimap_image" src="/img/minimap.png">
+		<div class="player blue   positionable_element">
+			<div></div>
+			<p class="player_number">00</p></div>
+		<div class="player blue   positionable_element">
+			<div></div>
+			<p class="player_number">00</p></div>
+		<div class="player blue   positionable_element">
+			<div></div>
+			<p class="player_number">00</p></div>
+		<div class="player blue   positionable_element">
+			<div></div>
+			<p class="player_number">00</p></div>
+		<div class="player blue   positionable_element">
+			<div></div>
+			<p class="player_number">00</p></div>
+		<div class="player orange positionable_element">
+			<div></div>
+			<p class="player_number">00</p></div>
+		<div class="player orange positionable_element">
+			<div></div>
+			<p class="player_number">00</p></div>
+		<div class="player orange positionable_element">
+			<div></div>
+			<p class="player_number">00</p></div>
+		<div class="player orange positionable_element">
+			<div></div>
+			<p class="player_number">00</p></div>
+		<div class="player orange positionable_element">
+			<div></div>
+			<p class="player_number">00</p></div>
+		<div id="disc" class="positionable_element"><img class="minimap_disc" src="/img/minimap_disc.png"></div>
+
+		<div id="timeout_banner">TIMEOUT
+			<div id="timeout_banner_team">orangE</div>
+		</div>
+	</div>
+
+
+	<div id="event_log_container"></div>
+</div>
 </body>
 
 </html>

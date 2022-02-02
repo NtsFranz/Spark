@@ -130,10 +130,6 @@
 											  Margin="4,4,4,4" Visibility="Visible" />
 								<CheckBox x:Name="optInCheckbox" Content="{x:Static p:Resources.optInCheckbox_Content}" Margin="4,4,4,4" Unchecked="OptIn" Checked="OptIn" ToolTip="{x:Static p:Resources.optInCheckbox_ToolTip}"/>
 								<Label x:Name="optInStatusLabel" Content="Fetching opt-in status..." Margin="30,-6,0,0" FontSize="10"/>
-								<CheckBox x:Name="uploadToFirestoreCheckBox" Content="{x:Static p:Resources.Upload_to_Firestore}"
-											  IsChecked="{l:SettingBinding uploadToFirestore}"
-											  Visibility="{Binding FirestoreVisible}"
-											  Margin="4,4,4,4" />
 								<Button Click="UploadTabletStats" Height="30" Margin="10,10,10,10">Upload Tablet Stats</Button>
 								<CheckBox Content="Save Events to Local CSV"
 								          IsChecked="{l:SettingBinding saveEventsToCSV}"

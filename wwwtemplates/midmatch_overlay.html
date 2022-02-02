@@ -183,7 +183,7 @@
             }, 10000);
         }
     });
-    sw.subscribe("team_names", data => {
+    sw.subscribe("overlay_config", data => {
         team_name_blue.innerText = data["teams"][0]["team_name"];
         team_logo_blue.src = data["teams"][0]["team_logo"];
         if (data["teams"][0]["team_logo"] === "") {

@@ -181,7 +181,7 @@
     let teamLogosDict = {}
 	
 	let sw = new SparkWebsocket();
-    sw.subscribe("team_names", data=> {
+    sw.subscribe("overlay_config", data=> {
         // blue team
         writeSrc("team_logo_blue", data["teams"][0]["team_logo"]);
         writeValue("team_logo_input_blue", data["teams"][0]["team_logo"]);

@@ -62,11 +62,11 @@ body {
 	font-size: 20px;
 }
 
-.blue>div {
+.minimap_container .blue>div {
 	background-color: #0199ff;
 }
 
-.orange>div {
+.minimap_container .orange>div {
 	background-color: #ff8d04;
 }
 

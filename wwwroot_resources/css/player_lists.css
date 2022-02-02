@@ -67,7 +67,7 @@
 }
 
 #player_lists>.player_list>div.possession>div:last-child {
-    border: 2px solid #000a;
+    border: 2px solid #fffa;
     background-color: #000a;
 }
 

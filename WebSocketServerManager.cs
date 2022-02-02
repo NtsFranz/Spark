@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Fleck;
 using Newtonsoft.Json;
@@ -9,7 +10,7 @@ namespace Spark
 	{
 		private readonly WebSocketServer server;
 		private readonly List<IWebSocketConnection> allSockets;
-		private readonly Dictionary<EventContainer.EventType, List<IWebSocketConnection>> subscriberMapping = new Dictionary<EventContainer.EventType, List<IWebSocketConnection>>();
+		private readonly ConcurrentDictionary<EventContainer.EventType, List<IWebSocketConnection>> subscriberMapping = new ConcurrentDictionary<EventContainer.EventType, List<IWebSocketConnection>>();
 
 		public WebSocketServerManager()
 		{
@@ -53,11 +54,11 @@ namespace Spark
 									subscriberMapping[type].Add(socket);
 
 									socket.Send(message);
-									
+
 									// send back the current state if it's an event that requires it
-									if (type == EventContainer.EventType.team_names)
+									if (type == EventContainer.EventType.overlay_config)
 									{
-										SendData(EventContainer.EventType.team_names, OverlayConfig.ToDict());
+										SendData(EventContainer.EventType.overlay_config, OverlayConfig.ToDict());
 									}
 								}
 								else
@@ -71,19 +72,24 @@ namespace Spark
 				};
 			});
 
-			DateTime lastSent30Hz = DateTime.UtcNow;
-			DateTime lastSent10Hz = DateTime.UtcNow;
-			DateTime lastSent1Hz = DateTime.UtcNow;
 
-			Program.Stun += (frame, stunEvent) => { SendData(EventContainer.EventType.stun, stunEvent.ToDict(true)); };
 			Program.Goal += (frame, goalData) => { SendData(EventContainer.EventType.goal, goalData.ToDict(true)); };
+			Program.Stun += (frame, stunEvent) => { SendData(EventContainer.EventType.stun, stunEvent.ToDict(true)); };
 			Program.Steal += (frame, eventData) => { SendData(EventContainer.EventType.steal, eventData.ToDict(true)); };
 			Program.Save += (frame, eventData) => { SendData(EventContainer.EventType.save, eventData.ToDict(true)); };
 			Program.JoustEvent += (frame, eventData) => { SendData(EventContainer.EventType.joust, eventData.ToDict(true)); };
 			Program.GamePaused += (frame) => { SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause)); };
 			// Program.PauseRequest += (frame) => { SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause)); };
 			Program.GameUnpaused += (frame) => { SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause)); };
-			Program.TeamNameLogoChanged += () => { SendData(EventContainer.EventType.team_names, OverlayConfig.ToDict()); };
+			Program.OverlayConfigChanged += () => { SendData(EventContainer.EventType.overlay_config, OverlayConfig.ToDict()); };
+			Program.JoinedGame += (frame) => { SendData(EventContainer.EventType.joined_game, JsonConvert.SerializeObject(frame)); };
+			Program.LeftGame += (frame) => { SendData(EventContainer.EventType.left_game, JsonConvert.SerializeObject(frame)); };
+			Program.EventLog += (msg) => { SendData(EventContainer.EventType.event_log, new Dictionary<string, object>() { { "message", msg } }); };
+
+
+			DateTime lastSent30Hz = DateTime.UtcNow;
+			DateTime lastSent10Hz = DateTime.UtcNow;
+			DateTime lastSent1Hz = DateTime.UtcNow;
 			Program.FrameFetched += (_, session, _) =>
 			{
 				if (DateTime.UtcNow - lastSent1Hz > TimeSpan.FromSeconds(1f))
@@ -91,17 +97,44 @@ namespace Spark
 					SendData(EventContainer.EventType.frame_1hz, session);
 					lastSent1Hz = DateTime.UtcNow;
 				}
+
 				if (DateTime.UtcNow - lastSent10Hz > TimeSpan.FromSeconds(.1f))
 				{
 					SendData(EventContainer.EventType.frame_10hz, session);
 					lastSent10Hz = DateTime.UtcNow;
 				}
+
 				if (DateTime.UtcNow - lastSent30Hz > TimeSpan.FromSeconds(.0333f))
 				{
 					SendData(EventContainer.EventType.frame_30hz, session);
 					lastSent30Hz = DateTime.UtcNow;
 				}
 			};
+
+			// DateTime lastSentSimpleFrame30Hz = DateTime.UtcNow;
+			// DateTime lastSentSimpleFrame10Hz = DateTime.UtcNow;
+			// DateTime lastSentSimpleFrame1Hz = DateTime.UtcNow;
+			// Program.NewFrame += (frame) =>
+			// {
+			// 	if (DateTime.UtcNow - lastSentSimpleFrame1Hz > TimeSpan.FromSeconds(1f))
+			// 	{
+			// 		SendData(EventContainer.EventType.frame_1hz, new Dictionary<string, object>()
+			// 		{
+			// 			""
+			// 		});
+			// 		lastSentSimpleFrame1Hz = DateTime.UtcNow;
+			// 	}
+			// 	if (DateTime.UtcNow - lastSentSimpleFrame10Hz > TimeSpan.FromSeconds(.1f))
+			// 	{
+			// 		SendData(EventContainer.EventType.frame_10hz, session);
+			// 		lastSentSimpleFrame10Hz = DateTime.UtcNow;
+			// 	}
+			// 	if (DateTime.UtcNow - lastSentSimpleFrame30Hz > TimeSpan.FromSeconds(.0333f))
+			// 	{
+			// 		SendData(EventContainer.EventType.frame_30hz, session);
+			// 		lastSentSimpleFrame30Hz = DateTime.UtcNow;
+			// 	}
+			// };
 		}
 
 		~WebSocketServerManager()
