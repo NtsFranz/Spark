@@ -69,7 +69,7 @@ function writeText(className, data) {
 }
 
 function writeHREF(className, data) {
-    if (data === undefined || data.includes('undefined')) return;
+    if (data === undefined || data === null || data.includes('undefined')) return;
 
     const elements = document.getElementsByClassName(className);
     Array.from(elements).forEach(e => {
@@ -80,7 +80,7 @@ function writeHREF(className, data) {
 }
 
 function writeValue(className, data) {
-    if (data === undefined || data.includes('undefined')) return;
+    if (data === undefined || data === null || data.includes('undefined')) return;
 
     const elements = document.getElementsByClassName(className);
     Array.from(elements).forEach(e => {
@@ -88,6 +88,15 @@ function writeValue(className, data) {
         e.style.opacity = 1;
         e.classList.remove('hide');
     });
+}
+
+function writeValueId(idName, data) {
+    if (data === undefined || data === null || data.includes('undefined')) return;
+
+    const e = document.getElementById(idName);
+    e.value = data;
+    e.style.opacity = "1";
+    e.classList.remove('hide');
 }
 
 function writeChecked(className, data) {

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using EchoVRAPI;
 
 namespace Spark
@@ -7,6 +9,7 @@ namespace Spark
 	{
 		public static Dictionary<string, object> ToDict()
 		{
+			List<MatchData> previousRounds = OverlayServer.Routes.GetPreviousRounds();
 			return new Dictionary<string, object>()
 			{
 				{
@@ -23,6 +26,15 @@ namespace Spark
 					}
 				},
 				{ "caster_prefs", SparkSettings.instance.casterPrefs },
+				{
+					"round_scores", new Dictionary<string, object>
+					{
+						{ "manual_round_scores", SparkSettings.instance.overlaysRoundScoresManual },
+						{ "round_count", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundCount : Program.matchData?.firstFrame.total_round_count ?? SparkSettings.instance.overlaysManualRoundCount },
+						{ "round_scores_orange", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresOrange : previousRounds?.Select(m => m?.teams[Team.TeamColor.orange].points ?? 0).ToArray() ?? Array.Empty<int>() },
+						{ "round_scores_blue", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresBlue : previousRounds?.Select(m => m?.teams[Team.TeamColor.blue].points ?? 0).ToArray() ?? Array.Empty<int>() },
+					}
+				},
 				{
 					"teams", new[]
 					{

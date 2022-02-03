@@ -438,12 +438,7 @@ namespace Spark
 					List<List<Dictionary<string, object>>> matchStats = null;
 					if (Program.inGame && Program.matchData != null)
 					{
-						// gets a list of all previous matches in memory that are for the current set
-						selectedMatches = Program.lastMatches
-							.Where(m => m.customId == Program.matchData.customId &&
-							            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
-							.ToList();
-						selectedMatches.Add(Program.matchData);
+						selectedMatches = GetPreviousRounds();
 
 
 						BatchOutputFormat data = new BatchOutputFormat
@@ -564,6 +559,19 @@ namespace Spark
 					};
 					return response;
 				}
+			}
+
+			/// <summary>
+			/// Gets a list of all previous matches in memory that are for the current set
+			/// </summary>
+			public static List<MatchData> GetPreviousRounds()
+			{
+				List<MatchData> selectedMatches = Program.lastMatches
+					.Where(m => m.customId == Program.matchData.customId &&
+					            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+					.ToList();
+				selectedMatches.Add(Program.matchData);
+				return selectedMatches;
 			}
 		}
 

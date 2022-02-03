@@ -5,7 +5,8 @@
 }
 
 .autocomplete-items {
-  position: relative;
+  position: absolute;
+  width: 12em;
   border-bottom: none;
   z-index: 99;
   font-size: .8em;;
@@ -20,7 +21,7 @@
   color: #666;
 }
 
-.autocomplete-active div {
+.autocomplete-active {
   /*when navigating through the items using the arrow keys:*/
   background-color: #eee !important;
   color: #666;

@@ -192,8 +192,10 @@ namespace Spark
 		/// <summary>
 		/// 0: automatic, 1: manual
 		/// </summary>
-		public int overlaysRoundScoresSource { get; set; } = 0;
-		public int[] overlaysManualRoundScores { get; set; } = null;
+		public bool overlaysRoundScoresManual { get; set; } = false;
+		public int overlaysManualRoundCount { get; set; } = 3;
+		public int[] overlaysManualRoundScoresOrange { get; set; } = null;
+		public int[] overlaysManualRoundScoresBlue { get; set; } = null;
 		#endregion
 
 		#endregion
