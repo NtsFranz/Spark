@@ -53,10 +53,11 @@
             <StackPanel Grid.Row="1" Grid.Column="4" x:Name="bluePlayerList" />
 
 
+            <Button Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="1" Click="GoToDischolder" Background="#11000000" />
             <Button Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="2" Click="ToggleMap" Background="#11000000" />
         </Grid>
     </Grid>
     <!--<DockPanel>
-		<wv2:WebView2 Name="webView" Source="/Windows/default_minimap.html" />
+		<wv2:WebView2 Name="webView" DefaultBackgroundColor="Transparent"  Source="https://ignitevr-metrics.pages.dev/" />
 	</DockPanel>-->
 </Window>

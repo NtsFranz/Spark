@@ -116,7 +116,7 @@
     <EmbeddedResource Include="wwwtemplates\full_overlay.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwtemplates\vrml\midmatch_events.html">
+    <EmbeddedResource Include="wwwtemplates\playspace.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwtemplates\speedometer.html">
@@ -326,9 +326,6 @@
     <Resource Include="img\camera-outline.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Include="wwwtemplates\vrml\scoreboard.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <EmbeddedResource Include="InstallEchoSpeakerSystem.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

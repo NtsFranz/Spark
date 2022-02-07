@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media;
 using Button = System.Windows.Controls.Button;
 
 namespace Spark
@@ -15,6 +16,8 @@ namespace Spark
 	public partial class GameOverlay : Window
 	{
 		IntPtr targetWindow;
+		bool uiVisible = true;
+		bool minimapVisible = true;
 
 		public GameOverlay()
 		{
@@ -29,7 +32,7 @@ namespace Spark
 
 			for (int i = 1; i <= 4; i++)
 			{
-				Button button = MakeButton(i+5);
+				Button button = MakeButton(i + 5);
 				bluePlayerList.Children.Add(button);
 			}
 
@@ -88,11 +91,13 @@ namespace Spark
 			{
 				Content = $"Player {i}",
 				FontSize = 26,
-				Height = 65
+				Height = 65,
+				Background = new SolidColorBrush(Color.FromArgb(100, 100, 100, 100)),
 			};
 			button.Click += (_, _) =>
 			{
-				Keyboard.SendEchoKey(Keyboard.numbers[i], holdShift: true);
+				CameraWriteController.SetCameraMode(CameraWriteController.CameraMode.pov, i);
+				Program.FocusEchoVR();
 			};
 			return button;
 		}
@@ -119,7 +124,7 @@ namespace Spark
 			//Make sure AccessibleEvents equals to LocationChange and the 
 			//current window is the Target Window.
 			if (accEvent == AccessibleEvents.Destroy && windowHandle.ToInt32() ==
-				targetWindow.ToInt32())
+			    targetWindow.ToInt32())
 			{
 				//Queues a method for execution. The method executes when a thread pool 
 				//thread becomes available.
@@ -145,7 +150,7 @@ namespace Spark
 			//Make sure AccessibleEvents equals to LocationChange and the 
 			//current window is the Target Window.
 			if (accEvent == AccessibleEvents.LocationChange && windowHandle.ToInt32() ==
-				targetWindow.ToInt32())
+			    targetWindow.ToInt32())
 			{
 				//Queues a method for execution. The method executes when a thread pool 
 				//thread becomes available.
@@ -199,12 +204,19 @@ namespace Spark
 
 		private void ToggleMap(object sender, RoutedEventArgs e)
 		{
-			Keyboard.SendEchoKey(Keyboard.DirectXKeyStrokes.DIK_M);
+			CameraWriteController.SetMinimapVisibility(!minimapVisible);
+			minimapVisible = !minimapVisible;
 		}
 
 		private void ToggleUI(object sender, RoutedEventArgs e)
 		{
-			Keyboard.SendEchoKey(Keyboard.DirectXKeyStrokes.DIK_U);
+			CameraWriteController.SetUIVisibility(!uiVisible);
+			uiVisible = !uiVisible;
+		}
+
+		private void GoToDischolder(object sender, RoutedEventArgs e)
+		{
+			CameraWriteController.SpectatorCamFindPlayer(Program.lastFrame?.GetAllPlayers()?.Find(p => p.possession)?.name);
 		}
 	}
 }

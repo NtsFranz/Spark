@@ -51,8 +51,10 @@ namespace Spark
 					}
 
 					PreviousRaces.Text = Program.echoGPController.previousRaces
-						.Select(r => r.mapName + r.finalTime)
+						.Select(r => $"{r.mapName} {r.finalTime:N2}")
 						.Aggregate(string.Empty, (r1, r2) => r1 + "\n" + r2);
+					
+					SplitsText.Text = string.Join('\n', Program.echoGPController.splitTimes.Select(f=>f.ToString("N2")));
 				});
 			}
 		}
@@ -60,7 +62,15 @@ namespace Spark
 		private void ActivateEchoGP(object sender, RoutedEventArgs e)
 		{
 			Program.echoGPController.active = !Program.echoGPController.active;
-			ActivateEchoGPTitle.Content = Program.echoGPController.active ? "Active" : "Not Active";
+			if (Program.echoGPController.active)
+			{
+				ActivateEchoGPTitle.Content = "Active";
+			}
+			else
+			{
+				ActivateEchoGPTitle.Content = "Not Active";
+				Program.echoGPController.Cancel();
+			}
 		}
 	}
 }

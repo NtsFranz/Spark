@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Playspace Overlay</title>
+	<!--    <link rel="stylesheet" href="/css/lib/bulma.min.css">-->
+	<!--    <link rel="stylesheet" href="/css/styles.css">-->
+
+	<link rel="stylesheet" type="text/css" href="/css/autocomplete_styles.css">
+	<script type="text/javascript" src="/js/autocomplete.js"></script>
+	<script src="/js/util.js"></script>
+	<script src="/js/spark_websocket.js"></script>
+
+	<style>
+        .instructions {
+            margin: 2em;
+        }
+
+        .instructions div {
+            float: left;
+            margin: 1em;
+        }
+
+        .overlay {
+            margin: 2em;
+            position: absolute;
+            top: 10em;
+            left: 10em;
+        }
+
+        .circle {
+            border: 0.2em solid #ffcb00;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0);
+            width: 20em;
+            height: 20em;
+        }
+
+        #headset {
+            border: 0.2em solid #ffcb00;
+            border-radius: 50%;
+            background: #fc05;
+            width: 2em;
+            height: 2em;
+            position: absolute;
+            transition: .3s
+        }
+	</style>
+</head>
+
+<body>
+
+<!--<div class="instructions">-->
+<!--    <div class="select  is-medium">-->
+<!--        <select id="player_selection">-->
+<!--            <option>Local Player</option>-->
+<!--            <option></option>-->
+<!--        </select>-->
+<!--    </div>-->
+<!--    <div>Playspace information for players other than yourself can be inaccurate and sensitive to rapid acceleration or-->
+<!--        high ping.-->
+<!--    </div>-->
+<!--</div>-->
+
+<div class="overlay">
+	<div class="circle"></div>
+	<div id="headset"></div>
+</div>
+
+<script>
+    const headset = document.getElementById("headset");
+
+    let sw = new SparkWebsocket();
+    sw.subscribe("frame_10hz", data => {
+        let pos = data["player"]["vr_position"];
+
+        headset.style.left = pos[0] * 5.882 + 9 + "em";
+        headset.style.top = pos[2] * 5.882 + 9 + "em";
+    });
+</script>
+</body>
+
+</html>

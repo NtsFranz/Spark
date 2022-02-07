@@ -30,63 +30,143 @@ namespace Spark
 		public State state = State.NotReady;
 		public int checkpointIndex = -1;
 
-		public readonly Dictionary<string, List<TriggerRegion>> checkpoints = new Dictionary<string, List<TriggerRegion>>()
+		public readonly Dictionary<string, List<TriggerSphere>> checkpoints = new Dictionary<string, List<TriggerSphere>>()
 		{
+			// {
+			// 	"mpl_combat_combustion_boxes", new List<TriggerRegion>()
+			// 	{
+			// 		new TriggerRegion()
+			// 		{
+			// 			position = new Vector3(-69.35f, 0.58f, 18.19f),
+			// 			eulerAngles = new Vector3(0, -45f, 0),
+			// 			scale = new Vector3(8.210141f, 4.250662f, 4.550486f),
+			// 		},
+			// 		new TriggerRegion()
+			// 		{
+			// 			position = new Vector3(-29.556f, 3.3607f, 39.4439f),
+			// 			eulerAngles = new Vector3(0, -45f, 0),
+			// 			scale = new Vector3(19.08612f, 6.611905f, 1f),
+			// 		},
+			// 		new TriggerRegion()
+			// 		{
+			// 			position = new Vector3(42.07f, 1.8442f, 37.98f),
+			// 			eulerAngles = new Vector3(0, -45f, 0),
+			// 			scale = new Vector3(15.05699f, 11.8406f, 1f),
+			// 		},
+			// 		new TriggerRegion()
+			// 		{
+			// 			position = new Vector3(21.05f, -0.952f, -0.26f),
+			// 			eulerAngles = new Vector3(0, 45f, 0),
+			// 			scale = new Vector3(9.4268f, 4.64905f, 1f),
+			// 		},
+			// 		new TriggerRegion()
+			// 		{
+			// 			position = new Vector3(-10.01f, -0.2403f, -11.11f),
+			// 			eulerAngles = new Vector3(0, 135f, 0),
+			// 			scale = new Vector3(9.4268f, 6.072589f, 1f),
+			// 		},
+			// 		new TriggerRegion()
+			// 		{
+			// 			position = new Vector3(-30.19f, 2.96f, 16.55f),
+			// 			eulerAngles = new Vector3(0, 90f, 0),
+			// 			scale = new Vector3(9.4268f, 6.072589f, 1f),
+			// 		},
+			// 		new TriggerRegion()
+			// 		{
+			// 			position = new Vector3(-67.8064f, 0.4292f, 31.4236f),
+			// 			eulerAngles = new Vector3(0, 135f, 0),
+			// 			scale = new Vector3(4.021927f, 4.383803f, 4f),
+			// 		},
+			// 	}
+			// },
 			{
-				"mpl_combat_combustion", new List<TriggerRegion>()
+				"mpl_combat_combustion", new List<TriggerSphere>()
 				{
-					new TriggerRegion()
+					new TriggerSphere()
 					{
 						position = new Vector3(-69.35f, 0.58f, 18.19f),
-						eulerAngles = new Vector3(0, -45f, 0),
-						scale = new Vector3(8.210141f, 4.250662f, 4.550486f),
+						radius = 8.210141f
 					},
-					new TriggerRegion()
+					new TriggerSphere()
 					{
-						position = new Vector3(-29.556f, 3.3607f, 39.4439f),
-						eulerAngles = new Vector3(0, -45f, 0),
-						scale = new Vector3(19.08612f, 6.611905f, 1f),
+						position = new Vector3(-28.4f, 3.36f, 38.3f),
+						radius = 19.08612f
 					},
-					new TriggerRegion()
+					new TriggerSphere()
 					{
-						position = new Vector3(42.07f, 1.8442f, 37.98f),
-						eulerAngles = new Vector3(0, -45f, 0),
-						scale = new Vector3(15.05699f, 11.8406f, 1f),
+						position = new Vector3(43.6f, 1.8442f, 36.45f),
+						radius = 15
 					},
-					new TriggerRegion()
+					new TriggerSphere()
 					{
 						position = new Vector3(21.05f, -0.952f, -0.26f),
-						eulerAngles = new Vector3(0, 45f, 0),
-						scale = new Vector3(9.4268f, 4.64905f, 1f),
+						radius = 9.4268f
 					},
-					new TriggerRegion()
+					new TriggerSphere()
 					{
 						position = new Vector3(-10.01f, -0.2403f, -11.11f),
-						eulerAngles = new Vector3(0, 135f, 0),
-						scale = new Vector3(9.4268f, 6.072589f, 1f),
+						radius = 9.4268f,
 					},
-					new TriggerRegion()
+					new TriggerSphere()
 					{
 						position = new Vector3(-30.19f, 2.96f, 16.55f),
-						eulerAngles = new Vector3(0, 90f, 0),
-						scale = new Vector3(9.4268f, 6.072589f, 1f),
+						radius = 9.4268f,
 					},
-					new TriggerRegion()
+					new TriggerSphere()
 					{
 						position = new Vector3(-67.8064f, 0.4292f, 31.4236f),
-						eulerAngles = new Vector3(0, 135f, 0),
-						scale = new Vector3(4.021927f, 4.383803f, 4f),
+						radius = 4
+					},
+				}
+			},
+			{
+				"mpl_arena_a", new List<TriggerSphere>()
+				{
+					new TriggerSphere()
+					{
+						position = new Vector3(91f, 0, 0),
+						radius = 100f
+					},
+
+					new TriggerSphere()
+					{
+						position = new Vector3(-50f, 0, 0),
+						radius = 25
+					},
+					new TriggerSphere()
+					{
+						position = new Vector3(50f, 0, 0),
+						radius = 25
+					},
+
+					new TriggerSphere()
+					{
+						position = new Vector3(-50f, 0, 0),
+						radius = 25
+					},
+					new TriggerSphere()
+					{
+						position = new Vector3(50f, 0, 0),
+						radius = 25
 					},
 				}
 			}
 		};
 
 		[Serializable]
+		[Obsolete]
 		public class TriggerRegion
 		{
 			public Vector3 position;
 			public Vector3 eulerAngles;
 			public Vector3 scale;
+		}
+
+		[Serializable]
+		public class TriggerSphere
+		{
+			public Vector3 position;
+			public float radius;
 		}
 
 		[Serializable]
@@ -120,6 +200,11 @@ namespace Spark
 		private void LeftGame(Frame obj)
 		{
 			// cancel
+			Cancel();
+		}
+
+		public void Cancel()
+		{
 			state = State.NotReady;
 			stopwatch.Stop();
 			stopwatch.Reset();
@@ -132,8 +217,6 @@ namespace Spark
 				state = State.NotReady;
 				return;
 			}
-
-			if (!f.InCombat) return;
 
 			// if we don't have a checkpoints list for this map
 			if (!checkpoints.ContainsKey(f.map_name))
@@ -180,7 +263,7 @@ namespace Spark
 				}
 				case State.Racing:
 				{
-					List<TriggerRegion> checkpointsList = checkpoints[f.map_name];
+					List<TriggerSphere> checkpointsList = checkpoints[f.map_name];
 
 					// if in the starting area
 					if (InTrigger(f, checkpoints[f.map_name][0]))
@@ -224,9 +307,19 @@ namespace Spark
 			}
 		}
 
+		private static bool InTrigger(Frame f, TriggerSphere region)
+		{
+			(Vector3 pos, _) = f.GetCameraTransform();
+
+			(pos.X, pos.Z) = (pos.Z, pos.X);
+
+			float distance = Vector3.Distance(region.position, pos);
+			return distance < region.radius / 2f;
+		}
+
 		private static bool InTrigger(Frame f, TriggerRegion region)
 		{
-			(Vector3 pos, Quaternion rot) = f.GetCameraTransform();
+			(Vector3 pos, _) = f.GetCameraTransform();
 
 			(pos.X, pos.Z) = (pos.Z, pos.X);
 
@@ -235,16 +328,16 @@ namespace Spark
 
 			return distance < maxRadius;
 		}
-		
+
 		private static bool InTrigger3(Frame f, TriggerRegion region)
 		{
 			// https://stackoverflow.com/a/53559963
 
 			Vector3 I = region.position;
 			(Vector3 P, Quaternion rotation) = f.GetCameraTransform();
-			
+
 			// var xLocal = 
-			
+
 			// b1,b2,b3,b4,t1,t2,t3,t4 = cube3d
 			//
 			// dir1 = (t1-b1)

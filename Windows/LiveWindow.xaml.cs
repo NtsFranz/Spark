@@ -2206,5 +2206,18 @@ namespace Spark
 		{
 			Program.ToggleWindow(typeof(QuestIPs));
 		}
+
+		private void OpenOverlays(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				Process.Start(new ProcessStartInfo("http://localhost:6724/") { UseShellExecute = true });
+				e.Handled = true;
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, ex.ToString());
+			}
+		}
 	}
 }

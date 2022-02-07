@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -13,19 +14,22 @@ namespace Spark
 	/// <summary>
 	/// 📖➡🔊 An abstraction layer for whatever TTS engine is being used
 	/// </summary>
-	class TTS
+	public class TTS
 	{
 		private readonly string[,,] voiceTypes =
 		{
-			{{"en-US-Wavenet-D", "en-US-Wavenet-C"}, {"ja-JP-Wavenet-D", "ja-JP-Wavenet-B"}},
-			{{"en-US-Standard-D", "en-US-Standard-C"}, {"ja-JP-Standard-D", "ja-JP-Standard-B"}}
+			{ { "en-US-Wavenet-D", "en-US-Wavenet-C" }, { "ja-JP-Wavenet-D", "ja-JP-Wavenet-B" } },
+			{ { "en-US-Standard-D", "en-US-Standard-C" }, { "ja-JP-Standard-D", "ja-JP-Standard-B" } }
 		};
 
-		private readonly string[] languages = {"en-US", "ja-JP"}; // 🌎
+		private readonly string[] languages = { "en-US", "ja-JP" }; // 🌎
 
 		private readonly TextToSpeechClient client;
 		private bool playing = true;
 		private readonly Thread ttsThread;
+		private readonly Queue<DateTime> rateLimiterQueue = new Queue<DateTime>();
+		private float rateLimitPerSecond = 10;
+		private bool ttsDisabled = false;
 
 		/// <summary>
 		/// Queue of filenames to read
@@ -219,6 +223,23 @@ namespace Spark
 		private void Speak(string text)
 		{
 			if (client == null) return;
+
+			// rate limiting
+			rateLimiterQueue.Enqueue(DateTime.UtcNow);
+			while ((DateTime.UtcNow - rateLimiterQueue.Peek()).TotalSeconds > 1)
+			{
+				rateLimiterQueue.Dequeue();
+			}
+
+			if (rateLimiterQueue.Count > rateLimitPerSecond)
+			{
+				Speak("Rate Limit hit. TTS disabled. Please report this to NtsFranz.");
+				ttsDisabled = true;
+				Logger.LogRow(Logger.LogType.Error, "Rate Limit hit. " + text);
+			}
+
+			if (ttsDisabled) return;
+
 
 			// Set the text input to be synthesized.
 			SynthesisInput input = new SynthesisInput

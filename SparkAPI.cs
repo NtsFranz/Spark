@@ -68,6 +68,27 @@ namespace Spark
 			});
 
 
+			endpoints.MapGet("/api/go_to_discholder_pov", async context =>
+			{
+				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+
+				try
+				{
+					if (Program.lastFrame != null)
+					{
+						CameraWriteController.SpectatorCamFindPlayer(Program.lastFrame.GetAllPlayers().Find(p => p.possession)?.name);
+					}
+				}
+				catch (Exception)
+				{
+					// ignored
+				}
+
+				await context.Response.WriteAsync($"Done.");
+			});
+
+
 			endpoints.MapGet("/api/reload_camera_settings", async context =>
 			{
 				try
