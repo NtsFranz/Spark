@@ -309,7 +309,15 @@ namespace Spark
 
 		private static bool InTrigger(Frame f, TriggerSphere region)
 		{
-			(Vector3 pos, _) = f.GetCameraTransform();
+			Player clientPlayer = f.GetPlayer(f.client_name);
+			Vector3 pos = clientPlayer.head.Position;
+			#if DEBUG
+			if (clientPlayer.team_color == Team.TeamColor.spectator)
+			{
+				(pos, _) = f.GetCameraTransform();
+			}
+			#endif
+			
 
 			(pos.X, pos.Z) = (pos.Z, pos.X);
 

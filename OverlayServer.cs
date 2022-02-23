@@ -44,14 +44,15 @@ namespace Spark
 
 		private async Task RestartServer()
 		{
+			// get new overlay data
+			await OverlaysCustom.FetchOverlayData();
+			
 			// stop the server
+			// TODO this is race condition because it is started from somewhere else
 			if (server != null)
 			{
 				await server.StopAsync();
 			}
-
-			// get new overlay data
-			await OverlaysCustom.FetchOverlayData();
 
 			// restart the server
 			server = WebHost
@@ -59,7 +60,7 @@ namespace Spark
 				.UseKestrel(x => { x.ListenAnyIP(6724); })
 				.UseStartup<Routes>()
 				.Build();
-
+		
 			await server.RunAsync();
 		}
 
@@ -117,7 +118,7 @@ namespace Spark
 							"Content-Type, Accept, X-Requested-With");
 						context.Response.Headers.Add("Content-Type", "application/json");
 
-						if (Program.inGame)
+						if (Program.InGame)
 						{
 							await context.Response.WriteAsync(Program.lastJSON);
 						}
@@ -165,7 +166,7 @@ namespace Spark
 							};
 							response["caster_prefs"] = SparkSettings.instance.casterPrefs;
 
-							if (Program.inGame && Program.matchData != null)
+							if (Program.InGame && Program.matchData != null)
 							{
 								response["session"] = Program.lastJSON;
 							}
@@ -436,7 +437,7 @@ namespace Spark
 				{
 					List<MatchData> selectedMatches = null;
 					List<List<Dictionary<string, object>>> matchStats = null;
-					if (Program.inGame && Program.matchData != null)
+					if (Program.InGame && Program.matchData != null)
 					{
 						selectedMatches = GetPreviousRounds();
 

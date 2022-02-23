@@ -39,10 +39,16 @@ namespace Spark
 		/// </summary>
 		public static bool running = true;
 
-		public static bool inGame;
-		public static bool connectedToGame;
-		public static bool apiSettingDisabled;
-		private static bool wasInGame;
+		public enum ConnectionState {
+			NotConnected,
+			Menu,		// loading screen or menu - the response is not json
+			NoAPI,		// user has not enabled API access
+			InLobby,	// error code for lobby -6
+			InGame		// in an arena or combat match
+		}
+		public static ConnectionState connectionState;
+		public static ConnectionState lastConnectionState;
+		public static bool InGame => connectionState == ConnectionState.InGame;
 
 		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
 		// public const string APIURL = "http://127.0.0.1:5005/";
@@ -154,6 +160,7 @@ namespace Spark
 		public static CameraWrite cameraWriteWindow;
 		public static EchoGPController echoGPController;
 		public static WebSocketServerManager webSocketMan;
+		public static SpeechRecognition speechRecognizer;
 
 		private static CancellationTokenSource autorestartCancellation;
 		private static CancellationTokenSource fetchThreadCancellation;
@@ -262,6 +269,9 @@ namespace Spark
 		public static Action<Frame> GoalImmediate;
 		public static Action<Frame, GoalData> Assist;
 		public static Action<Frame, Team, Player> LargePing;
+		
+		public static Action ManualClip;
+		public static Action BadWordDetected;
 
 		#region Spark Settings Changed
 
@@ -394,8 +404,8 @@ namespace Spark
 				client.BaseAddress = new Uri(APIURL);
 
 
-				if (SparkSettings.instance.onlyActivateHighlightsWhenGameIsOpen &&
-					HighlightsHelper.isNVHighlightsEnabled)
+				if (!SparkSettings.instance.onlyActivateHighlightsWhenGameIsOpen &&
+					SparkSettings.instance.isNVHighlightsEnabled)
 				{
 					HighlightsHelper.SetupNVHighlights();
 				}
@@ -407,7 +417,7 @@ namespace Spark
 				// only enable Highlights when game is open
 				ConnectedToGame += (_, _) =>
 				{
-					if (HighlightsHelper.isNVHighlightsEnabled)
+					if (!HighlightsHelper.isNVHighlightsEnabled)
 					{
 						HighlightsHelper.SetupNVHighlights();
 					}
@@ -446,6 +456,8 @@ namespace Spark
 				echoGPController = new EchoGPController();
 
 				webSocketMan = new WebSocketServerManager();
+				
+				speechRecognizer = new SpeechRecognition();
 
 				// web server asp.net
 				try
@@ -691,7 +703,7 @@ namespace Spark
 				}
 
 				// don't spam when not in a game
-				if (!connectedToGame)
+				if (connectionState!=ConnectionState.InGame)
 				{
 					await Task.Delay(2000);
 				}
@@ -746,13 +758,12 @@ namespace Spark
 
 							DateTime frameTime = DateTime.UtcNow;
 
-							if (connectedToGame == false)
+							if (connectionState == ConnectionState.NotConnected)
 							{
 								_ = Task.Run(() => { ConnectedToGame?.Invoke(frameTime, session); });
 							}
 
-							connectedToGame = true;
-							apiSettingDisabled = false;
+							connectionState = ConnectionState.InGame;
 
 							// early quit if the program was quit while fetching
 							if (!running) return;
@@ -769,22 +780,13 @@ namespace Spark
 
 									if (f != null)
 									{
-										if (f.err_code == -3)
-										{
-											inGame = false;
-											apiSettingDisabled = true;
-										}
-										else
-										{
-											inGame = true;
+										ProcessFrame(f);
 
-											ProcessFrame(f);
-
-											NewFrame?.Invoke(f);
-										}
+										NewFrame?.Invoke(f);
 									}
 									else
 									{
+										LogRow(LogType.Error, "Converting to Frame failed. Investigate 🕵️‍");
 										LeftGame?.Invoke(lastFrame);
 									}
 
@@ -830,20 +832,13 @@ namespace Spark
 			
 			fetchSw.Restart();
 
-			wasInGame = inGame;
+			lastConnectionState = connectionState;
 		}
 
 		private static async Task FetchFail(HttpResponseMessage[] results)
 		{
-			// Not connected to game
-
-			if (connectedToGame)
-			{
-				_ = Task.Run(() => { DisconnectedFromGame?.Invoke(); });
-			}
-
-			connectedToGame = false;
-			inGame = false;
+			// just revert to not connected to be sure. This will be set properly lower down
+			connectionState = ConnectionState.NotConnected;
 
 			if (results != null)
 			{
@@ -852,30 +847,61 @@ namespace Spark
 				if (session.Length > 0 && session[0] == '{')
 				{
 					Frame f = Frame.FromJSON(DateTime.UtcNow, session, null);
-					apiSettingDisabled = f.err_code == -2;
+
+					if (f == null)
+					{
+						LogRow(LogType.Error, "Error parsing error frame");
+						return;
+					}
+					if (lastConnectionState == ConnectionState.NotConnected)
+					{
+						ConnectedToGame?.Invoke(f.recorded_time, session);
+					}
+					
+					// check error codes
+					switch (f.err_code)
+					{
+						case -2: // api disabled
+							connectionState = ConnectionState.NoAPI;
+							break;
+						case -6: // lobby
+							if (lastConnectionState != ConnectionState.InLobby)
+							{
+								try
+								{
+									JoinedLobby?.Invoke(f);
+								}
+								catch (Exception exp)
+								{
+									LogRow(LogType.Error, "Error processing action", exp.ToString());
+								}
+							}
+
+							connectionState = ConnectionState.InLobby;
+							break;
+					}
 				}
 				else
 				{
+					connectionState = ConnectionState.Menu;
 					// in loading screen, where the response is not json
+				}
+			}
+			else
+			{
+				// Not connected to game
+				if (lastConnectionState != ConnectionState.NotConnected)
+				{
+					_ = Task.Run(() => { DisconnectedFromGame?.Invoke(); });
 				}
 			}
 
 			// left game
-			if (!inGame && wasInGame)
+			if (lastConnectionState == ConnectionState.InGame && lastFrame != null)
 			{
 				try
 				{
-					if (lastFrame != null)
-					{
-						if (lastFrame.InLobby)
-						{
-							_ = Task.Run(() => { LeftLobby?.Invoke(lastFrame); });
-						}
-						else
-						{
-							_ = Task.Run(() => { LeftGame?.Invoke(lastFrame); });
-						}
-					}
+					_ = Task.Run(() => { LeftGame?.Invoke(lastFrame); });
 				}
 				catch (Exception exp)
 				{
@@ -1243,23 +1269,16 @@ namespace Spark
 		/// </summary>
 		private static void GenerateEvents(Frame frame)
 		{
-			if (!wasInGame)
+			if (lastConnectionState != ConnectionState.InGame)
 			{
 				try
 				{
-					if (frame.InLobby)
+					JoinedGame?.Invoke(frame);
+					
+					// make sure there is a valid echovr path saved
+					if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
 					{
-						JoinedLobby?.Invoke(frame);
-					}
-					else
-					{
-						JoinedGame?.Invoke(frame);
-						
-						// make sure there is a valid echovr path saved
-						if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
-						{
-							UpdateEchoExeLocation();
-						}
+						UpdateEchoExeLocation();
 					}
 				}
 				catch (Exception exp)
@@ -1522,16 +1541,40 @@ namespace Spark
 				{
 					if (frame.pause.paused_state == "paused")
 					{
-						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team paused the game");
-						
+						float minDistance = float.MaxValue;
+						Player minPlayer = null;
+
+						foreach (Player p in frame.GetAllPlayers())
+						{
+							Vector3 terminalPos = frame.pause.paused_requested_team == "blue"
+								? new Vector3(0, -3.5f, -73.46f)
+								: new Vector3(0, -3.5f, 73.46f);
+
+							float leftDist = Vector3.Distance(p.lhand.Position, terminalPos);
+							if (leftDist < minDistance)
+							{
+								minPlayer = p;
+								minDistance = leftDist;
+							}
+
+							float rightDist = Vector3.Distance(p.rhand.Position, terminalPos);
+							if (rightDist < minDistance)
+							{
+								minPlayer = p;
+								minDistance = rightDist;
+							}
+						}
+
+						LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {frame.pause.paused_requested_team} team paused the game ({minPlayer?.name}, {minDistance:N2} m)");
+
 						EventData pauseEvent = new EventData(
 							matchData,
-							EventData.EventType.pause_request,
+							EventContainer.EventType.pause_request,
 							frame.game_clock,
-							frame.teams[frame.pause.paused_requested_team == "blue" ? (int) Team.TeamColor.blue : (int) Team.TeamColor.orange],
+							frame.teams[frame.pause.paused_requested_team == "blue" ? (int)Team.TeamColor.blue : (int)Team.TeamColor.orange],
+							minPlayer,
 							null,
-							null,
-							Vector3.Zero,
+							minPlayer?.head.Position ?? Vector3.Zero,
 							Vector3.Zero);
 						
 						matchData.Events.Add(pauseEvent);
@@ -1684,7 +1727,7 @@ namespace Spark
 									LogRow(LogType.Error, "Error processing action", exp.ToString());
 								}
 
-								HighlightsHelper.SaveHighlightMaybe(player, frame, "BIG_BOOST");
+								HighlightsHelper.SaveHighlightMaybe(player.name, frame, "BIG_BOOST");
 
 								matchData.Events.Add(
 									new EventData(
@@ -1820,7 +1863,7 @@ namespace Spark
 							matchData.Events.Add(eventData);
 							LogRow(LogType.File, frame.sessionid,
 								frame.game_clock_display + " - " + player.name + " made a save");
-							HighlightsHelper.SaveHighlightMaybe(player, frame, "SAVE");
+							HighlightsHelper.SaveHighlightMaybe(player.name, frame, "SAVE");
 						}
 
 						// check steals 🕵️‍
@@ -1841,7 +1884,7 @@ namespace Spark
 
 							if (WasStealNearGoal(frame.disc.position.ToVector3(), team.color, frame))
 							{
-								HighlightsHelper.SaveHighlightMaybe(player, frame, "STEAL_SAVE");
+								HighlightsHelper.SaveHighlightMaybe(player.name, frame, "STEAL_SAVE");
 								LogRow(LogType.File, frame.sessionid,
 									frame.game_clock_display + " - " + player.name + " stole the disk near goal!");
 							}
@@ -2380,7 +2423,7 @@ namespace Spark
 					if (otherMatchPlayer != null) otherMatchPlayer.Interceptions++;
 					else LogRow(LogType.Error, "Can't find player by name from other team: " + player.name);
 
-					HighlightsHelper.SaveHighlightMaybe(player, frame, "INTERCEPTION");
+					HighlightsHelper.SaveHighlightMaybe(player.name, frame, "INTERCEPTION");
 				}
 			}
 		}

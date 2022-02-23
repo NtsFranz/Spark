@@ -179,6 +179,10 @@ namespace Spark
 			showHighlights.IsEnabled = HighlightsHelper.DoNVClipsExist();
 			showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
 			showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? Properties.Resources.Show + " " + HighlightsHelper.nvHighlightClipCount + " " + Properties.Resources.Highlights : Properties.Resources.No_clips_available;
+			
+			#if DEBUG
+			EchoGPTab.Visibility = Visibility.Visible;
+			#endif
 
 
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
@@ -376,25 +380,35 @@ namespace Spark
 
 					DiscordNotLoggedInHosting.Visibility = !DiscordOAuth.IsLoggedIn ? Visibility.Visible : Visibility.Collapsed;
 
-					if (Program.apiSettingDisabled)
+					switch (Program.connectionState)
 					{
-						statusLabel.Content = Properties.Resources.API_Setting_Disabled;
-						statusCircle.Fill = new SolidColorBrush(Colors.Yellow);
-						NotConnectedHelp.Visibility = Visibility.Collapsed;
+						case Program.ConnectionState.NotConnected:
+							statusLabel.Content = Properties.Resources.Not_Connected;
+							statusCircle.Fill = new SolidColorBrush(Colors.Red);
+							NotConnectedHelp.Visibility = Visibility.Visible;
+							break;
+						case Program.ConnectionState.Menu:
+							statusLabel.Content = "In Loading Screen";
+							statusCircle.Fill = new SolidColorBrush(Colors.Yellow);
+							NotConnectedHelp.Visibility = Visibility.Collapsed;
+							break;
+						case Program.ConnectionState.NoAPI:
+							statusLabel.Content = Properties.Resources.API_Setting_Disabled;
+							statusCircle.Fill = new SolidColorBrush(Colors.Yellow);
+							NotConnectedHelp.Visibility = Visibility.Collapsed;
+							break;
+						case Program.ConnectionState.InLobby:
+							statusLabel.Content = Properties.Resources.In_Lobby;
+							statusCircle.Fill = new SolidColorBrush(Colors.Yellow);
+							NotConnectedHelp.Visibility = Visibility.Collapsed;
+							break;
+						case Program.ConnectionState.InGame:
+							statusLabel.Content = Properties.Resources.Connected;
+							statusCircle.Fill = new SolidColorBrush(Colors.Green);
+							NotConnectedHelp.Visibility = Visibility.Collapsed;
+							break;
 					}
-					else if (Program.connectedToGame)
-					{
-						statusLabel.Content = Properties.Resources.Connected;
-						statusCircle.Fill = new SolidColorBrush(Colors.Green);
-						NotConnectedHelp.Visibility = Visibility.Collapsed;
-					}
-					else
-					{
-						statusLabel.Content = Properties.Resources.Not_Connected;
-						statusCircle.Fill = new SolidColorBrush(Colors.Red);
-						NotConnectedHelp.Visibility = Visibility.Visible;
-					}
-
+					
 
 					// update the other labels in the stats box
 					if (Program.lastFrame != null)  // 'mpl_lobby_b2' may change in the future
@@ -829,6 +843,7 @@ namespace Spark
 			AccessCodesComboboxLiveWindow.Visibility = DiscordOAuth.availableAccessCodes.Count < 2 ? Visibility.Collapsed : Visibility.Visible;
 			
 			casterToolsBox.Visibility = !DiscordOAuth.Personal ? Visibility.Visible : Visibility.Collapsed;
+			PasteLinkInLiveButton.Visibility = DiscordOAuth.AccessCode?.series_name.Contains("vrml") ?? false ? Visibility.Visible : Visibility.Collapsed;
 			
 			accessCodeDropdownListenerActive = true;
 		}
@@ -1237,7 +1252,7 @@ namespace Spark
 			{
 				if (Program.spectateMe)
 				{
-					if (Program.inGame && Program.lastFrame != null && !Program.lastFrame.InLobby)
+					if (Program.InGame && Program.lastFrame != null && !Program.lastFrame.InLobby)
 					{
 						Program.KillEchoVR($"-httpport {Program.SPECTATEME_PORT}");
 						Program.StartEchoVR(
@@ -1910,7 +1925,7 @@ namespace Spark
 			bool firstHost = true;
 
 			while (Program.running &&
-				   Program.inGame &&
+				   Program.InGame &&
 				   Program.lastFrame != null &&
 				   Program.lastFrame.teams != null &&
 				   Program.hostedAtlasSessionId == Program.lastFrame.sessionid)
@@ -2209,15 +2224,51 @@ namespace Spark
 
 		private void OpenOverlays(object sender, RoutedEventArgs e)
 		{
+			OpenWebpage("http://localhost:6724/");
+		}
+
+		private static void OpenWebpage(string url)
+		{
 			try
 			{
-				Process.Start(new ProcessStartInfo("http://localhost:6724/") { UseShellExecute = true });
-				e.Handled = true;
+				Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
 			}
 			catch (Exception ex)
 			{
 				LogRow(LogType.Error, ex.ToString());
 			}
+		}
+
+		private async void PasteLinkInLive(object sender, RoutedEventArgs e)
+		{
+			if (Program.lastFrame == null) return;
+			try
+			{
+				Process.Start(new ProcessStartInfo("discord://discordapp.com/channels/706393774804303924/706393776918364211") { UseShellExecute = true });
+				Clipboard.SetText(CurrentLink(Program.lastFrame.sessionid));
+				await Task.Delay(1000);
+				Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_LCONTROL, false, Keyboard.InputType.Keyboard);
+				await Task.Delay(10);
+				Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_V, false, Keyboard.InputType.Keyboard);
+				await Task.Delay(10);
+				Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_V, true, Keyboard.InputType.Keyboard);
+				await Task.Delay(10);
+				Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_LCONTROL, true, Keyboard.InputType.Keyboard);
+			}
+			catch (Exception ex)
+			{
+				LogRow(LogType.Error, ex.ToString());
+			}
+		}
+
+		private void MatchSetupClick(object sender, RoutedEventArgs e)
+		{
+			OpenWebpage("http://localhost:6724/" + DiscordOAuth.AccessCode.series_name.Split('_')[0] + "/match_setup");
+		}
+
+		private void LeagueOverlaysClick(object sender, RoutedEventArgs e)
+		{
+			OpenWebpage("http://localhost:6724/" + DiscordOAuth.AccessCode.series_name.Split('_')[0]);
 		}
 	}
 }

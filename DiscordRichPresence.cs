@@ -45,7 +45,7 @@ namespace Spark
 
 			while (Program.running)
 			{
-				ProcessDiscordPresence(Program.inGame ? Program.lastFrame : null);
+				ProcessDiscordPresence(Program.InGame ? Program.lastFrame : null);
 
 				Thread.Sleep(1000);
 			}

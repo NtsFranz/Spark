@@ -695,8 +695,8 @@ namespace Spark
 
 		public bool HighlightsSupported => HighlightsHelper.isNVHighlightsSupported;
 		public bool DoNVClipsExist => HighlightsHelper.DoNVClipsExist();
-
-
+		
+		
 		private void ClipNow(object sender, RoutedEventArgs e)
 		{
 			Program.replayFilesManager.SaveReplayClip("manual");
@@ -753,7 +753,8 @@ namespace Spark
 		{
 			NVHighlights,
 			echoreplay,
-			OBS
+			OBS,
+			Voice
 		}
 
 		private ClipsTab clipsTab;
@@ -780,6 +781,7 @@ namespace Spark
 			// if obs
 			if (clipsTab == ClipsTab.OBS)
 			{
+				clipsEventsBox.Visibility = Visibility.Visible;
 				labelBefore.Visibility = Visibility.Collapsed;
 				secondsBefore.Visibility = Visibility.Collapsed;
 				labelTotal.Visibility = Visibility.Collapsed;
@@ -787,8 +789,13 @@ namespace Spark
 				goalReplaySceneBox.Visibility = Visibility.Visible;
 				saveReplaySceneBox.Visibility = Visibility.Visible;
 			}
+			else if (clipsTab == ClipsTab.Voice)
+			{
+				clipsEventsBox.Visibility = Visibility.Collapsed;
+			}
 			else
 			{
+				clipsEventsBox.Visibility = Visibility.Visible;
 				labelBefore.Visibility = Visibility.Visible;
 				secondsBefore.Visibility = Visibility.Visible;
 				labelTotal.Visibility = Visibility.Visible;
@@ -1421,19 +1428,19 @@ namespace Spark
 
 		private void HideEchoVRUINow(object sender, RoutedEventArgs e)
 		{
-			if (!Program.inGame) return;
+			if (!Program.InGame) return;
 			CameraWriteController.SetUIVisibility(HideUICheckbox.IsChecked != true);
 		}
 
 		private void HideMinimapNow(object sender, RoutedEventArgs e)
 		{
-			if (!Program.inGame) return;
+			if (!Program.InGame) return;
 			CameraWriteController.SetMinimapVisibility(HideMinimapCheckbox.IsChecked != true);
 		}
 
 		private void ToggleNameplatesNow(object sender, RoutedEventArgs e)
 		{
-			if (!Program.inGame) return;
+			if (!Program.InGame) return;
 			CameraWriteController.SetNameplatesVisibility(HideNameplatesCheckbox.IsChecked != true);
 		}
 
@@ -1476,8 +1483,42 @@ namespace Spark
 			
 			CameraWriteController.SetPlayersMuted();
 		}
-		
-		
+
+
+		private void VoiceRecognitionUnchecked(object sender, RoutedEventArgs e)
+		{
+			Program.speechRecognizer.Enabled = false;
+		}
+
+		private void VoiceRecognitionChecked(object sender, RoutedEventArgs e)
+		{
+			Program.speechRecognizer.Enabled = true;
+		}
+
+		private void MicrophoneChanged(object sender, SelectionChangedEventArgs e)
+		{
+			// Program.speechRecognizer.RefreshMicrophoneSetting();
+		}
+
+		/// <summary>
+		/// Open the Speech, Inking and Typing page under Settings -> Privacy, enabling a user to accept the 
+		/// Microsoft Privacy Policy, and enable personalization.
+		/// </summary>
+		private void OpenPrivacySettings(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = "ms-settings:privacy-speech",
+					UseShellExecute = true
+				});
+			}
+			catch (Exception ex)
+			{
+				Logger.LogRow(Logger.LogType.Error, "Failed to launch speech settings\n"+ex);
+			}
+		}
 	}
 	
 

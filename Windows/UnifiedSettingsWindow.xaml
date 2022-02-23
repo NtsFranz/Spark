@@ -438,6 +438,29 @@
 									</GroupBox>
 								</StackPanel>
 							</TabItem>
+							<TabItem Header="Voice Recognition" Padding="8,6,8,6" Foreground="{DynamicResource ControlPrimaryDefaultBackground}">
+								<StackPanel Margin="10,0,10,10">
+									<Label Content="{x:Static p:Resources.NVIDIA_Highlights_Settings}" FontSize="16" Margin="5,5,5,5" Visibility="Collapsed"/>
+
+									<TextBlock Text="Voice recognition uses Microsoft's online voice recognition software. This is the same system that powers Cortana in Windows 10+ and is subject to Microsoft's privacy policy. Voice recognition uses your default Windows microphone for this application." TextWrapping="Wrap" Margin="5,5,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+
+									<CheckBox Content="Enable Voice Recognition" Margin="5,5,5,5" IsChecked="{l:SettingBinding enableVoiceRecognition}" Checked="VoiceRecognitionChecked" Unchecked="VoiceRecognitionUnchecked" />
+									<GroupBox Header="Settings" Margin="5,5,5,5">
+										<StackPanel>
+											<TextBlock Text="Say Clip That at any point to save a clip" 
+											           TextWrapping="Wrap" Margin="5,10,5,0" />
+											<CheckBox Content="Clip That detection" IsChecked="{l:SettingBinding clearHighlightsOnExit}" Margin="5,5,5,5"  />
+											<CheckBox Content="Bad word detection (for reporting)" IsChecked="{l:SettingBinding badWordDetection}" Margin="5,5,5,5"/>
+
+											<TextBlock Margin="10,20,10,10" TextWrapping="Wrap">Make sure you have the Windows speech recognition setting enabled for this feature to work!</TextBlock>
+											<Button Click="OpenPrivacySettings" Margin="5,5,5,5">Open Speech Privacy Settings</Button>
+											
+											<!-- <ComboBox x:Name="MicrophoneOptions" Visibility="Collapsed" SelectionChanged="MicrophoneChanged" SelectedIndex="{l:SettingBinding microphone}"> -->
+											<!-- </ComboBox> -->
+										</StackPanel>
+									</GroupBox>
+								</StackPanel>
+							</TabItem>
 						</TabControl>
 
 

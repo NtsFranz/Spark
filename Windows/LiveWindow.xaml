@@ -443,7 +443,7 @@
 					<l:CameraWrite/>
 				</TabItem>
 				
-				<TabItem x:Name="EchoGPTab" FontSize="14" Padding="10,0,10,0" Visibility="Visible">
+				<TabItem x:Name="EchoGPTab" FontSize="14" Padding="10,0,10,0" Visibility="Collapsed">
 					<TabItem.Header>
 						<StackPanel Orientation="Horizontal">
 							<Label Content="Echo Grand Prix"/>
@@ -473,6 +473,9 @@
 					</StackPanel>
 					<Button x:Name="button6" Content="Restart as Spectator" Height="35" Margin="4,4,4,4" Click="RestartAsSpectatorClick" ToolTip="Restarts the game in the 2D spectator mode"/>
 					<Button Content="Find All Quests" Height="35" Margin="4,4,4,4" Click="FindAllQuests" ToolTip="Shows a list of all the Quest IPs on the network."/>
+					<Button x:Name="PasteLinkInLiveButton" Height="35" Margin="4,4,4,4" Click="PasteLinkInLive">Paste link in #live</Button>
+					<Button x:Name="LeagueOverlaysButton" Height="35" Margin="4,4,4,4" Click="LeagueOverlaysClick">League Overlays</Button>
+					<Button x:Name="MatchSetupButton" Height="35" Margin="4,4,4,4" Click="MatchSetupClick">Match Setup Page</Button>
 				</StackPanel>
 			</GroupBox>
 			<GroupBox x:Name="toolsBox" Header="{x:Static p:Resources.Tools}" Margin="0,8,0,0" VerticalAlignment="Top">
@@ -482,9 +485,9 @@
 					<Button x:Name="enableAPIButton"  Visibility="Collapsed" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
 					<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="{x:Static p:Resources.Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing}"/>
 					<Button x:Name="chooseServerRegion" Content="{x:Static p:Resources.Choose_Server_Region}" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="This creates a private match in a region of your choice."/>
-					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Visible"/>
+					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Collapsed"/>
 					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
-					<Button x:Name="SpeedometerButton" Content="{x:Static p:Resources.Speedometer}" Height="40" Margin="4,4,4,4" Click="OpenSpeedometer" Visibility="Visible"/>
+					<Button x:Name="SpeedometerButton" Content="{x:Static p:Resources.Speedometer}" Height="40" Margin="4,4,4,4" Click="OpenSpeedometer" Visibility="Collapsed" />
 					<Button x:Name="OverlaysButton" Content="Overlays" Height="40" Margin="4,4,4,4" Click="OpenOverlays" Visibility="Visible"/>
 					<Button x:Name="showHighlights" Content="{x:Static p:Resources.NVIDIAHighlights}" Height="40" Click="showHighlights_Click" Margin="4,4,4,4"/>
 					<Button x:Name="spectateMeButton" Height="40" Click="SpectateMeClicked" Margin="4,4,4,4">
@@ -493,7 +496,7 @@
 							<TextBlock x:Name="spectateMeSubtitle" Text="{x:Static p:Resources.Not_active}" Margin="0,-8,0,0" FontSize="11" Foreground="{DynamicResource ControlDisabledGlythColour}" HorizontalAlignment="Center"/>
 						</StackPanel>
 					</Button>
-					<Button x:Name="showOverlay" Visibility="Visible" Content="{x:Static p:Resources.Show_Overlay}" Height="40" Click="showOverlay_Click" Margin="4,4,4,4"/>
+					<Button x:Name="ShowClickableOverlayButton" Visibility="Collapsed" Content="{x:Static p:Resources.Show_Overlay}" Height="40" Click="showOverlay_Click" Margin="4,4,4,4"/>
 				</StackPanel>
 			</GroupBox>
 			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap" Text="{x:Static p:Resources.If_you_need_help_}" />

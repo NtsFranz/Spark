@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Windows;
 using EchoVRAPI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Spark
 {
 	public static class SparkAPI
 	{
+		private static readonly object vrmlClientLock = new object();
+		private static HttpClient vrmlAPIClient = null;
+		private static Dictionary<string, (DateTime, string)> vrmlAPICache = new Dictionary<string, (DateTime, string)>();
+		
 		public static void MapRoutes(IEndpointRouteBuilder endpoints)
 		{
 			//string file = OverlayServer.ReadResource("api_index.html");
@@ -24,7 +29,7 @@ namespace Spark
 			{
 				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
-				if (int.TryParse(context.Request.RouteValues["index"].ToString(), out int index))
+				if (int.TryParse(context.Request.RouteValues["index"]?.ToString(), out int index))
 				{
 					CameraWrite.TryGoToWaypoint(index);
 					await context.Response.WriteAsync($"Going to waypoint {index}");
@@ -40,7 +45,7 @@ namespace Spark
 			{
 				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
-				if (int.TryParse(context.Request.RouteValues["index"].ToString(), out int index))
+				if (int.TryParse(context.Request.RouteValues["index"]?.ToString(), out int index))
 				{
 					Program.cameraWriteWindow.TryPlayAnim(index);
 					await context.Response.WriteAsync($"Playing animation {index}");
@@ -56,7 +61,7 @@ namespace Spark
 			{
 				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
-				if (bool.TryParse(context.Request.RouteValues["enabled"].ToString(), out bool enabled))
+				if (bool.TryParse(context.Request.RouteValues["enabled"]?.ToString(), out bool enabled))
 				{
 					Program.cameraWriteWindow.OrbitDisc(enabled);
 					await context.Response.WriteAsync(enabled ? "Enabled disc orbit" : "Disabled disc orbit");
@@ -285,6 +290,30 @@ namespace Spark
 				}
 			});
 
+			endpoints.MapPost("/api/set_team_names_source/{source}", async context =>
+			{
+				try
+				{
+					context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+
+					if (int.TryParse(context.Request.RouteValues["source"]?.ToString(), out int source))
+					{
+						SparkSettings.instance.overlaysTeamSource = source;
+						await context.Response.WriteAsync("Set team names source");
+						Program.OverlayConfigChanged?.Invoke();
+					}
+					else
+					{
+						await context.Response.WriteAsync("Failed to set team names source");
+					}
+				}
+				catch (Exception e)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"{e}");
+				}
+			});
+
 			endpoints.MapPost("/api/set_round_scores", async context =>
 			{
 				try
@@ -342,6 +371,49 @@ namespace Spark
 					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
 
 					await context.Response.WriteAsJsonAsync(OverlayConfig.ToDict());
+				}
+				catch (Exception e)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"{e}");
+				}
+			});
+			
+			
+
+			endpoints.MapGet("/api/vrml_api/{**route}", async context =>
+			{
+				try
+				{
+					context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+
+					// initialize
+					if (vrmlAPIClient == null)
+					{
+						lock (vrmlClientLock)
+						{
+							vrmlAPIClient = new HttpClient();
+							vrmlAPIClient.DefaultRequestHeaders.Add("version", Program.AppVersionString());
+							vrmlAPIClient.DefaultRequestHeaders.Add("User-Agent", "Spark/" + Program.AppVersionString());
+							vrmlAPIClient.BaseAddress = new Uri("https://apiignite.vrmasterleague.com/");
+						}
+					}
+
+					string request = context.Request.GetEncodedUrl();
+					request = request[(request.IndexOf("vrml_api", StringComparison.Ordinal) + "vrml_api".Length)..];
+					if (request == null) return;
+					if (!vrmlAPICache.ContainsKey(request) || DateTime.UtcNow - vrmlAPICache[request].Item1 >= TimeSpan.FromMinutes(30))
+					{
+						string ret = await vrmlAPIClient.GetStringAsync(request);
+						vrmlAPICache[request] = (DateTime.UtcNow, ret);
+					}
+
+					string val = vrmlAPICache[request].Item2;
+					if (val.StartsWith("{") || val.StartsWith("["))
+					{
+						context.Response.Headers.Add("Content-Type", "application/json");
+					}
+					await context.Response.WriteAsync(val);
 				}
 				catch (Exception e)
 				{

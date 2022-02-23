@@ -1323,4 +1323,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   <data name="API Setting Disabled" xml:space="preserve">
     <value>API Setting Disabled</value>
   </data>
+  <data name="In_Lobby" xml:space="preserve">
+    <value>In Lobby</value>
+  </data>
 </root>

@@ -1,6 +1,5 @@
 ﻿using NVIDIA;
 using System;
-using System.Linq;
 using EchoVRAPI;
 
 namespace Spark
@@ -26,40 +25,34 @@ namespace Spark
 			CLIENT_TEAM,
 			ALL
 		};
-
-		internal static bool SaveHighlightMaybe(Player player, Frame frame, string id)
-		{
-			string highlightGroupName = IsPlayerHighlightEnabled(player, frame);
-			if (highlightGroupName.Length > 0)
-			{
-				Highlights.VideoHighlightParams vhp = new Highlights.VideoHighlightParams
-				{
-					groupId = highlightGroupName,
-					highlightId = id,
-					startDelta = -(int)(SparkSettings.instance.nvHighlightsSecondsBefore * 1000),
-					endDelta = (int)(SparkSettings.instance.nvHighlightsSecondsAfter * 1000)
-				};
-				Highlights.SetVideoHighlight(vhp, videoCallback);
-				return true;
-			}
-			else return false;
-		}
-
 		internal static bool SaveHighlightMaybe(string player, Frame frame, string id)
 		{
 			string highlightGroupName = IsPlayerHighlightEnabled(player, frame);
 			if (highlightGroupName.Length <= 0) return false;
 			
-			Highlights.VideoHighlightParams vhp = new()
-			{
-				groupId = highlightGroupName,
-				highlightId = id,
-				startDelta = -(int)(SparkSettings.instance.nvHighlightsSecondsBefore * 1000),
-				endDelta = (int)(SparkSettings.instance.nvHighlightsSecondsAfter * 1000)
-			};
-			Highlights.SetVideoHighlight(vhp, videoCallback);
+			SaveHighlight(highlightGroupName, id);
 			return true;
 
+		}
+
+		public static void SaveHighlight(string highlightGroupName, string id, bool onlyAfter = false)
+		{
+			Highlights.VideoHighlightParams vhp = new Highlights.VideoHighlightParams();
+			vhp.groupId = highlightGroupName;
+			vhp.highlightId = id;
+
+			if (onlyAfter)
+			{
+				vhp.startDelta = -(int)((SparkSettings.instance.nvHighlightsSecondsBefore + SparkSettings.instance.nvHighlightsSecondsAfter) * 1000);
+				vhp.endDelta = 0;	
+			}
+			else
+			{
+				vhp.startDelta = -(int)(SparkSettings.instance.nvHighlightsSecondsBefore * 1000);
+				vhp.endDelta = (int)(SparkSettings.instance.nvHighlightsSecondsAfter * 1000);
+			}
+			
+			Highlights.SetVideoHighlight(vhp, videoCallback);
 		}
 
 		public static void CloseNVHighlights(bool wasDisableNVHCall = false)
@@ -91,12 +84,18 @@ namespace Spark
 					Highlights.HighlightScope.HighlightsRecordVideo,
 					Highlights.HighlightScope.HighlightsRecordScreenshot
 				};
-				if (Highlights.CreateHighlightsSDK("EchoVR", RequiredScopes) != Highlights.ReturnCode.SUCCESS)
+				Highlights.ReturnCode create = Highlights.CreateHighlightsSDK("Echo VR", RequiredScopes);
+				if (create != Highlights.ReturnCode.SUCCESS)
 				{
-					Logger.LogRow(Logger.LogType.Error, "Failed to initialize Highlights");
-					didHighlightsInit = false;
-					isNVHighlightsSupported = false;
-					return -1;
+					Logger.LogRow(Logger.LogType.Error, "Failed to initialize Highlights on first try: " + create);
+					create = Highlights.CreateHighlightsSDK("Echo VR", RequiredScopes);
+					if (create != Highlights.ReturnCode.SUCCESS)
+					{
+						Logger.LogRow(Logger.LogType.Error, "Failed to initialize Highlights: " + create);
+						didHighlightsInit = false;
+						isNVHighlightsSupported = false;
+						return -1;
+					}
 				}
 
 				if (isCheck)
@@ -176,6 +175,14 @@ namespace Spark
 					Significance = Highlights.HighlightSignificance.Good,
 					UserDefaultInterest = false,
 					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Big boost!"),}
+				},
+				new()
+				{
+					Id = "MANUAL",
+					HighlightTags = Highlights.HighlightType.Achievement,
+					Significance = Highlights.HighlightSignificance.Good,
+					UserDefaultInterest = false,
+					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Manual clip"),}
 				},
 			};
 
@@ -309,23 +316,36 @@ namespace Spark
 			}
 		}
 
-
-		private static string IsPlayerHighlightEnabled(Player player, Frame frame)
+		private static string IsPlayerHighlightEnabled(string playerName, Frame frame)
 		{
+			if (playerName == "[INVALID]") return "";
+			Player targetPlayer = frame.GetPlayer(playerName);
+			Player clientPlayer = frame.GetPlayer(frame.client_name);
+			
 			try
 			{
-				if (player == null || frame.teams == null || !didHighlightsInit || !isNVHighlightsEnabled) return "";
+				if (targetPlayer == null)
+				{
+					Logger.LogRow(Logger.LogType.Error, "HIGHLIGHTS: Target player not found");
+					return "";
+				}
+				if (clientPlayer == null)
+				{
+					Logger.LogRow(Logger.LogType.Error, "HIGHLIGHTS: Client player not found");
+					return "";
+				}
+				
+				if (frame.teams == null || !didHighlightsInit || !isNVHighlightsEnabled) return "";
 
-				Team.TeamColor clientTeam = frame.teams.FirstOrDefault(t => t.players.Exists(p => p.name == frame.client_name)).color;
-				if (player.name == frame.client_name)
+				if (targetPlayer.name == frame.client_name)
 				{
 					return "PERSONAL_HIGHLIGHT_GROUP";
 				}
-				else if (ClientHighlightScope != HighlightLevel.CLIENT_ONLY && player.team_color == clientTeam)
+				else if (ClientHighlightScope != HighlightLevel.CLIENT_ONLY && targetPlayer.team_color == clientPlayer.team_color)
 				{
 					return "PERSONAL_TEAM_HIGHLIGHT_GROUP";
 				}
-				else if (ClientHighlightScope == HighlightLevel.ALL || (clientTeam == Team.TeamColor.spectator &&
+				else if (ClientHighlightScope == HighlightLevel.ALL || (clientPlayer.team_color == Team.TeamColor.spectator &&
 				                                                        SparkSettings.instance.nvHighlightsSpectatorRecord))
 				{
 					return "OPPOSING_TEAM_HIGHLIGHT_GROUP";
@@ -339,13 +359,6 @@ namespace Spark
 			return "";
 		}
 
-		private static string IsPlayerHighlightEnabled(string playerName, Frame frame)
-		{
-			if (playerName == "[INVALID]") return "";
-			Player highlightPlayer = frame.GetPlayer(playerName);
-			return IsPlayerHighlightEnabled(highlightPlayer, frame);
-		}
-
 		/// <summary>
 		/// Clears ALL NVidia Highlight clips that were not saved by the user via the NVidia UI.
 		/// </summary>
@@ -353,24 +366,47 @@ namespace Spark
 		{
 			if (!didHighlightsInit) return;
 			
-			Highlights.CloseGroupParams cgp = new() { id = "PERSONAL_HIGHLIGHT_GROUP", destroyHighlights = true };
+			Highlights.CloseGroupParams cgp = new Highlights.CloseGroupParams
+			{
+				id = "PERSONAL_HIGHLIGHT_GROUP", 
+				destroyHighlights = true
+			};
 			Highlights.CloseGroup(cgp, closeGroupCallback);
-			cgp = new Highlights.CloseGroupParams { id = "PERSONAL_TEAM_HIGHLIGHT_GROUP", destroyHighlights = true };
+			cgp = new Highlights.CloseGroupParams
+			{
+				id = "PERSONAL_TEAM_HIGHLIGHT_GROUP", 
+				destroyHighlights = true
+			};
 			Highlights.CloseGroup(cgp, closeGroupCallback);
-			cgp = new Highlights.CloseGroupParams { id = "OPPOSING_TEAM_HIGHLIGHT_GROUP", destroyHighlights = true };
+			cgp = new Highlights.CloseGroupParams
+			{
+				id = "OPPOSING_TEAM_HIGHLIGHT_GROUP", 
+				destroyHighlights = true
+			};
 			Highlights.CloseGroup(cgp, closeGroupCallback);
 			
 			if (!reopenGroup) return;
 			
-			Highlights.OpenGroupParams ogp1 = new();
-			ogp1.Id = "PERSONAL_HIGHLIGHT_GROUP";
-			ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Personal Highlight Group"), };
+			Highlights.OpenGroupParams ogp1 = new Highlights.OpenGroupParams
+			{
+				Id = "PERSONAL_HIGHLIGHT_GROUP",
+				GroupDescriptionTable = new[]
+				{
+					new Highlights.TranslationEntry("en-US", "Personal Highlight Group"),
+				}
+			};
 			Highlights.OpenGroup(ogp1, configStepCallback);
 			ogp1.Id = "PERSONAL_TEAM_HIGHLIGHT_GROUP";
-			ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Personal Team Highlight Group"), };
+			ogp1.GroupDescriptionTable = new[]
+			{
+				new Highlights.TranslationEntry("en-US", "Personal Team Highlight Group"),
+			};
 			Highlights.OpenGroup(ogp1, configStepCallback);
 			ogp1.Id = "OPPOSING_TEAM_HIGHLIGHT_GROUP";
-			ogp1.GroupDescriptionTable = new[] { new Highlights.TranslationEntry("en-US", "Opposing Team Highlight Group"), };
+			ogp1.GroupDescriptionTable = new[]
+			{
+				new Highlights.TranslationEntry("en-US", "Opposing Team Highlight Group"),
+			};
 			Highlights.OpenGroup(ogp1, configStepCallback);
 		}
 	}

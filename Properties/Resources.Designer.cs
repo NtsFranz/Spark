@@ -1445,6 +1445,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In Lobby.
+        /// </summary>
+        public static string In_Lobby {
+            get {
+                return ResourceManager.GetString("In_Lobby", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incorrect join type..
         /// </summary>
         public static string Incorrect_join_type_ {

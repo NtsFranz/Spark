@@ -35,6 +35,7 @@ namespace Spark
 						{ "round_scores_blue", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresBlue : previousRounds?.Select(m => m?.teams[Team.TeamColor.blue].points ?? 0).ToArray() ?? Array.Empty<int>() },
 					}
 				},
+				{ "team_names_source", SparkSettings.instance.overlaysTeamSource },
 				{
 					"teams", new[]
 					{

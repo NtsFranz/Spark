@@ -170,6 +170,10 @@ namespace Spark
 		public string obsBetweenGameScene { get; set; } = "";
 		public string obsGoalReplayScene { get; set; } = "";
 		public string obsSaveReplayScene { get; set; } = "";
+		public bool enableVoiceRecognition { get; set; } = false;
+		public bool clipThatDetection { get; set; } = false;
+		public bool badWordDetection { get; set; } = false;
+		public string microphone { get; set; } = "";
 
 
 		#endregion

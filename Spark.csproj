@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
     <UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.4.2</Version>
+    <Version>2.4.4</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -39,6 +39,10 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <TargetPlatformVersion>10.0</TargetPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -270,6 +274,14 @@
     <EmbeddedResource Include="wwwroot_resources\js\lib\heatmap.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Remove="wwwroot_resources\fonts\Oxanium.ttf" />
+    <EmbeddedResource Include="wwwroot_resources\fonts\Oxanium.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\js\lib\fitty.min.js" />
+    <EmbeddedResource Include="wwwroot_resources\js\lib\fitty.min.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -332,9 +344,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ButterReplays" Version="1.0.2" />
+    <PackageReference Include="ButterReplays" Version="1.0.3" />
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
-    <PackageReference Include="EchoVRAPI" Version="1.0.9" />
+    <PackageReference Include="EchoVRAPI" Version="1.0.10" />
     <PackageReference Include="Fleck" Version="1.2.0" />
     <PackageReference Include="Google.Cloud.TextToSpeech.V1" Version="2.4.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
@@ -468,6 +480,11 @@
 
   <ItemGroup>
     <Folder Include="SettingsBindings" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Runtime.InteropServices.WindowsRuntime" />
+    <Reference Include="System.Runtime.WindowsRuntime" />
   </ItemGroup>
 
 </Project>

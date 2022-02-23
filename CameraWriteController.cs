@@ -183,7 +183,7 @@ namespace Spark
 			}
 			else if (SparkSettings.instance.muteEnemyTeam)
 			{
-				if (Program.inGame && Program.lastFrame != null)
+				if (Program.connectionState == Program.ConnectionState.InGame && Program.lastFrame != null)
 				{
 					switch (Program.lastFrame.ClientTeamColor)
 					{

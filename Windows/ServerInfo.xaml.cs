@@ -49,7 +49,7 @@ namespace Spark
 			{
 				Dispatcher.Invoke(() =>
 				{
-					if (Program.inGame && Program.lastFrame != null)
+					if (Program.InGame && Program.lastFrame != null)
 					{
 						Dictionary<Team.TeamColor, StringBuilder> playerNames = new Dictionary<Team.TeamColor, StringBuilder>()
 						{

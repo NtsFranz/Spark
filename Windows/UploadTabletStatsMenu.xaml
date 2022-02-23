@@ -12,9 +12,11 @@
         FontSize="16" 
         SizeToContent="Height" 
         WindowStartupLocation="CenterOwner" 
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
         Icon="/img/ignite_logo.ico"
         >
+    
+    <ScrollViewer VerticalScrollBarVisibility="Visible">
     <StackPanel Margin="10,10,10,10">
         <Label Content="{x:Static properties:Resources.Upload_Tablet_Stats}" HorizontalAlignment="Center" FontSize="16"/>
         <TextBlock Text="{x:Static properties:Resources.Only_the_selected_profiles_will_be_uploaded__Your_alternate_accounts_will_not_be_linked_to_each_other_in_any_way_}" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
@@ -63,6 +65,8 @@
 
             
         </StackPanel>
+            
         <TextBlock x:Name="uploadStatus" Text="" HorizontalAlignment="Center" Foreground="{DynamicResource ControlDisabledGlythColour}" />
     </StackPanel>
+    </ScrollViewer>
 </Window>

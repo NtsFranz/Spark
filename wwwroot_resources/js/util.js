@@ -90,6 +90,19 @@ function writeValue(className, data) {
     });
 }
 
+function writeTextValue(className, data) {
+    if (data === undefined || data === null || data.includes('undefined')) {
+        data = "";
+    }
+
+    const elements = document.getElementsByClassName(className);
+    Array.from(elements).forEach(e => {
+        e.value = data;
+        e.style.opacity = 1;
+        e.classList.remove('hide');
+    });
+}
+
 function writeValueId(idName, data) {
     if (data === undefined || data === null || data.includes('undefined')) return;
 
@@ -111,7 +124,7 @@ function writeChecked(className, data) {
 }
 
 function writeSrc(className, src_) {
-    if (src_ === undefined || src_ === "") {
+    if (src_ === undefined || src_ === "" || src_ === null) {
         src_ = "";
     }
 
@@ -129,7 +142,7 @@ function writeSrc(className, src_) {
 }
 
 function setImage(className, src_) {
-    if (src_ === undefined || src_ === "") {
+    if (src_ === undefined || src_ === "" || src_ === null) {
         src_ = "";
     }
 

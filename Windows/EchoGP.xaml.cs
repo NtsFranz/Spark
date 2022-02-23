@@ -29,7 +29,7 @@ namespace Spark
 			{
 				Dispatcher.Invoke(() =>
 				{
-					if (Program.inGame && Program.lastFrame != null)
+					if (Program.InGame && Program.lastFrame != null)
 					{
 						switch (Program.echoGPController.state)
 						{
