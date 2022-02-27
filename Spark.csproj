@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.4.4</Version>
+    <Version>2.4.5</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -21,7 +21,7 @@
     <AssemblyOriginatorKeyFile>IgniteBotKey.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <LangVersion>9</LangVersion>
-    <PackageVersion>2.4.1</PackageVersion>
+    <PackageVersion>2.4.5</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -33,16 +33,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS_STORE_RELEASEbak</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DefineConstants>TRACE;INCLUDE_FIRESTORE;WINDOWS_STORE_RELEASEbak</DefineConstants>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <TargetPlatformVersion>10.0</TargetPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -282,6 +278,65 @@
     <EmbeddedResource Include="wwwroot_resources\js\lib\fitty.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.dubm" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.dubm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.ie" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.ie">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.mat" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.mat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\global_cmvn.stats" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\global_cmvn.stats">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\online_cmvn.conf" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\online_cmvn.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\splice.conf" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\splice.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\conf\mfcc.conf" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\conf\mfcc.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\graph\disambig_tid.int" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\graph\disambig_tid.int">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\graph\HCLr.fst" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\graph\HCLr.fst">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\conf\model.conf" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\conf\model.conf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\am\final.mdl" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\am\final.mdl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\graph\Gr.fst" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\graph\Gr.fst">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\graph\phones\word_boundary.int" />
+    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\graph\phones\word_boundary.int">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <Page Update="Windows\ClipsSettings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\ClipsSettings.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>ClipsSettings.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -352,11 +407,13 @@
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
     <PackageReference Include="HidSharpCore" Version="1.2.1.1" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1072.54" />
+    <PackageReference Include="NAudio" Version="2.0.1" />
     <PackageReference Include="NetMQ" Version="4.0.1.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="obs-websocket-dotnet" Version="4.9.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
     <PackageReference Include="System.Management" Version="6.0.0" />
+    <PackageReference Include="Vosk" Version="0.3.32" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     <PackageReference Include="ZstdNet" Version="1.4.5" />
   </ItemGroup>

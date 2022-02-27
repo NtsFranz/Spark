@@ -23,18 +23,18 @@ namespace Spark
 		{
 			InitializeComponent();
 
-			// add buttons for each player
-			for (int i = 1; i <= 4; i++)
-			{
-				Button button = MakeButton(i);
-				orangePlayerList.Children.Add(button);
-			}
-
-			for (int i = 1; i <= 4; i++)
-			{
-				Button button = MakeButton(i + 5);
-				bluePlayerList.Children.Add(button);
-			}
+			// // add buttons for each player
+			// for (int i = 1; i <= 4; i++)
+			// {
+			// 	Button button = MakeButton(i);
+			// 	orangePlayerList.Children.Add(button);
+			// }
+			//
+			// for (int i = 1; i <= 4; i++)
+			// {
+			// 	Button button = MakeButton(i + 5);
+			// 	bluePlayerList.Children.Add(button);
+			// }
 
 			Process[] processes = Process.GetProcessesByName("echovr");
 			// Process[] processes = Process.GetProcessesByName("Unity Hub");
@@ -75,14 +75,13 @@ namespace Spark
 				, 0, 0, NativeMethods.SetWinEventHookParameter.WINEVENT_OUTOFCONTEXT);
 
 			//Hook window close event - close our HoverContorl on Target window close.
-			eventHandler = new NativeMethods.WinEventProc
-				(events[AccessibleEvents.Destroy].Invoke);
-
-			gch = GCHandle.Alloc(eventHandler);
-
-			g_hook = NativeMethods.SetWinEventHook(AccessibleEvents.Destroy,
-				AccessibleEvents.Destroy, IntPtr.Zero, eventHandler
-				, 0, 0, NativeMethods.SetWinEventHookParameter.WINEVENT_OUTOFCONTEXT);
+			// eventHandler = events[AccessibleEvents.Destroy].Invoke;
+			//
+			// gch = GCHandle.Alloc(eventHandler);
+			//
+			// g_hook = NativeMethods.SetWinEventHook(AccessibleEvents.Destroy,
+			// 	AccessibleEvents.Destroy, IntPtr.Zero, eventHandler
+			// 	, 0, 0, NativeMethods.SetWinEventHookParameter.WINEVENT_OUTOFCONTEXT);
 		}
 
 		private static Button MakeButton(int i)

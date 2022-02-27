@@ -1,0 +1,259 @@
+﻿<UserControl x:Class="Spark.ClipsSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:p="clr-namespace:Spark.Properties"
+             xmlns:l="clr-namespace:Spark"
+             xmlns:w="clr-namespace:Spark.Windows"
+             mc:Ignorable="d"
+             d:DesignHeight="900"
+             d:DesignWidth="900"
+             Background="{DynamicResource BackgroundColour}"
+             FontSize="16"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="4,0,4,10">
+            <Label Content="{x:Static p:Resources.ClipsTitle_Content}" FontSize="16" Margin="5,5,5,5" />
+
+            <TabControl SelectionChanged="ClipTypeTabChanged">
+                <TabItem Header="{x:Static p:Resources.NVIDIA_Highlights}" Padding="8,6,8,6"
+                         Foreground="{DynamicResource ControlPrimaryDefaultBackground}">
+                    <StackPanel Margin="10,0,10,10">
+                        <Label Content="{x:Static p:Resources.NVIDIA_Highlights_Settings}" FontSize="16"
+                               Margin="5,5,5,5" Visibility="Collapsed" />
+
+                        <TextBlock x:Name="instructionsLabel" Text="{x:Static p:Resources.nvhighlights_description_1}"
+                                   TextWrapping="Wrap" Margin="5,5,5,5"
+                                   Foreground="{DynamicResource ControlDisabledGlythColour}" />
+                        <TextBlock x:Name="instructionsLabel_Copy"
+                                   Text="{x:Static p:Resources.nvhighlights_description_2}" TextWrapping="Wrap"
+                                   Margin="5,5,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}" />
+
+                        <CheckBox x:Name="enableNVHighlightsCheckbox" Content="{Binding EnableHighlightsContent}"
+                                  Margin="5,5,5,5" IsChecked="{Binding NVHighlightsEnabled}"
+                                  IsEnabled="{Binding HighlightsSupported}" />
+                        <GroupBox x:Name="nvHighlightsBox" Header="{x:Static p:Resources.NVIDIA_Highlights}"
+                                  Margin="5,5,5,5">
+                            <StackPanel>
+                                <TextBlock x:Name="textBlock"
+                                           Text="Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder"
+                                           TextWrapping="Wrap" Margin="5,10,5,0" />
+                                <CheckBox x:Name="clearHighlightsOnExitCheckbox" Content="Clear Highlights On Exit"
+                                          Margin="5,5,5,5" IsChecked="{l:SettingBinding clearHighlightsOnExit}" />
+                                <Button x:Name="clearHighlightsButton" Content="{Binding ClearHighlightsButtonContent}"
+                                        Width="230" IsEnabled="{Binding DoNVClipsExist}"
+                                        HorizontalAlignment="Left" Margin="5,5,5,5" Height="32"
+                                        Click="ClearHighlightsEvent" />
+
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="{x:Static p:Resources._echoreplay_Clips}" Padding="8,6,8,6">
+                    <StackPanel>
+                        <CheckBox x:Name="enableReplayCheckbox"
+                                  Content="{x:Static p:Resources.enableReplayCheckbox_Content}" Margin="5,5,5,5"
+                                  IsChecked="{l:SettingBinding enableReplayBuffer}" />
+                        <Button Content="{x:Static p:Resources.Save_Clip_Now}" Click="ClipNow"
+                                IsEnabled="{Binding ElementName=enableReplayCheckbox, Path=IsChecked}"
+                                HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5,5,5,5" Padding="5,5,5,5"
+                                Width="200" />
+
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="{x:Static p:Resources.OBS}" Padding="8,6,8,6">
+
+                    <StackPanel>
+                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">
+                            <Run Text="{x:Static p:Resources.OBS_integration_requires_the_OBS_Websocket_plugin_}" />
+                            <LineBreak />
+                            <Hyperlink
+                                NavigateUri="https://github.com/Palakis/obs-websocket/releases/download/4.9.1/obs-websocket-4.9.1-Windows-Installer.exe"
+                                RequestNavigate="Hyperlink_RequestNavigate">
+                                Download Installer
+                            </Hyperlink>
+                            <Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases"
+                                       RequestNavigate="Hyperlink_RequestNavigate">
+                                (GitHub)
+                            </Hyperlink>
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{x:Static p:Resources.IP_Address_}" Margin="4,4,0,4" Padding="4,4,4,4" />
+                            <TextBox Text="{l:SettingBinding obsIP}" Width="160" Margin="4,4,4,4" Padding="4,4,4,4" />
+                            <Label Content="{x:Static p:Resources.Password_}" Margin="4,4,0,4" Padding="4,4,4,4" />
+                            <PasswordBox x:Name="obsPasswordBox" Password="" Width="140" Margin="4,4,4,4"
+                                         Padding="4,4,4,4" PasswordChanged="OBSPasswordChanged" />
+                            <Button x:Name="obsConnectButton" Content="{x:Static p:Resources.Connect}"
+                                    Click="OBSConnect" Margin="4,4,4,4" Padding="4,4,4,4" />
+                        </StackPanel>
+                        <CheckBox Content="{x:Static p:Resources.Auto_connect}"
+                                  IsChecked="{l:SettingBinding obsAutoconnect}" Margin="5,5,5,5" />
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox Content="{x:Static p:Resources.Auto_start_Replay_Buffer}"
+                                      IsChecked="{l:SettingBinding obsAutostartReplayBuffer}" Margin="5,5,5,5" />
+                            <Button x:Name="obsStartReplayBufferButton"
+                                    Content="{x:Static p:Resources.Start_Replay_Buffer}" Click="OBSStartReplayBuffer"
+                                    Margin="4,4,4,4" Padding="4,4,4,4" />
+                            <Button x:Name="obsStopReplayBufferButton"
+                                    Content="{x:Static p:Resources.Stop_Replay_Buffer}" Click="OBSStopReplayBuffer"
+                                    Margin="4,4,4,4" Padding="4,4,4,4" />
+                        </StackPanel>
+                        <GroupBox Header="Automatic Scene Switching" Margin="0,0,0,5">
+                            <StackPanel Margin="5,5,5,5">
+                                <Label Content="In-game Scene:" />
+                                <ComboBox x:Name="inGameScene" Width="300" HorizontalAlignment="Left" SelectedIndex="0">
+                                    <ComboBoxItem Content="Do Not Switch" />
+                                </ComboBox>
+                                <Label Content="Between-game Scene:" />
+                                <ComboBox x:Name="betweenGameScene" Width="300" HorizontalAlignment="Left"
+                                          SelectedIndex="0">
+                                    <ComboBoxItem Content="Do Not Switch" />
+                                </ComboBox>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="Voice Recognition" Padding="8,6,8,6"
+                         Foreground="{DynamicResource ControlPrimaryDefaultBackground}">
+                    <StackPanel Margin="10,0,10,10">
+                        <Label Content="{x:Static p:Resources.NVIDIA_Highlights_Settings}" FontSize="16"
+                               Margin="5,5,5,5"
+                               Visibility="Collapsed" />
+
+                        <TextBlock
+                            Text="Voice recognition uses Microsoft's online voice recognition software. This is the same system that powers Cortana in Windows 10+ and is subject to Microsoft's privacy policy. Voice recognition uses your default Windows microphone for this application."
+                            TextWrapping="Wrap" Margin="5,5,5,5"
+                            Foreground="{DynamicResource ControlDisabledGlythColour}" />
+
+                        <CheckBox Content="Enable Voice Recognition" Margin="5,5,5,5"
+                                  IsChecked="{l:SettingBinding enableVoiceRecognition}"
+                                  Checked="VoiceRecognitionChecked"
+                                  Unchecked="VoiceRecognitionUnchecked" />
+                        <GroupBox Header="Settings" Margin="5,5,5,5">
+                            <StackPanel>
+                                <Label>Audio Source</Label>
+                                <CheckBox IsChecked="{l:SettingBinding enableVoiceRecognitionMic}" Margin="10,10,10,5">Microphone</CheckBox>
+                                <ComboBox x:Name="MicSelection" SelectionChanged="MicrophoneSelectionChanged"
+                                          Margin="10,0,10,2">
+                                </ComboBox>
+                                <ProgressBar x:Name="MicLevel"  Minimum="0" Maximum="1" Height="10" Margin="10,0,10,10"></ProgressBar>
+                                <CheckBox IsChecked="{l:SettingBinding enableVoiceRecognitionSpeaker}"
+                                          Margin="10,10,10,5">
+                                    Desktop Audio
+                                </CheckBox>
+                                <ComboBox x:Name="SpeakerSelection" SelectionChanged="SpeakerSelectionChanged"
+                                          Margin="10,0,10,2">
+                                </ComboBox>
+                                <ProgressBar x:Name="SpeakerLevel" Minimum="0" Maximum="1" Height="10" Margin="10,0,10,10"></ProgressBar>
+                                <TextBlock Text="Say Clip That at any point to save a clip"
+                                           TextWrapping="Wrap" Margin="5,10,5,0" />
+                                <CheckBox Content="Clip That detection"
+                                          IsChecked="{l:SettingBinding clearHighlightsOnExit}"
+                                          Margin="5,5,5,5" />
+                                <CheckBox Content="Bad word detection (for reporting)"
+                                          IsChecked="{l:SettingBinding badWordDetection}"
+                                          Margin="5,5,5,5" />
+
+                                <TextBlock Margin="10,20,10,10" TextWrapping="Wrap">Make sure you have the Windows speech recognition setting enabled for this feature to work!</TextBlock>
+                                <Button Click="OpenPrivacySettings" Margin="5,5,5,5">Open Speech Privacy Settings</Button>
+
+                                <!-- <ComboBox x:Name="MicrophoneOptions" Visibility="Collapsed" SelectionChanged="MicrophoneChanged" SelectedIndex="{l:SettingBinding microphone}"> -->
+                                <!-- </ComboBox> -->
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+
+
+            <GroupBox x:Name="clipsEventsBox" Header="{x:Static p:Resources.Clip_Settings}">
+                <StackPanel>
+
+                    <Label Content="{x:Static p:Resources.Highlight_Scope}" Margin="5,5,5,0" />
+                    <ComboBox x:Name="highlightScope" Width="197" HorizontalAlignment="Left" Margin="5,5,5,5"
+                              SelectedIndex="{Binding ClipsPlayerScope}">
+                        <ComboBoxItem Content="{x:Static p:Resources.Me_Only}" />
+                        <ComboBoxItem Content="{x:Static p:Resources.My_Team_Only}" />
+                        <ComboBoxItem Content="{x:Static p:Resources.All_Players__both_teams_}" />
+                    </ComboBox>
+                    <CheckBox x:Name="recordAllInSpectator"
+                              Content="{x:Static p:Resources.Record_all_events_in_Spectator}" Margin="10,5,10,10"
+                              IsChecked="{Binding ClipsSpectatorRecord}" />
+
+
+                    <Label x:Name="timeLabel" Content="{x:Static p:Resources.Clip_Duration_}" Margin="0,10,0,0" />
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Label x:Name="labelBefore" Content="{x:Static p:Resources.Seconds_Before_}" />
+                        <TextBox x:Name="secondsBefore" Text="{Binding SecondsBefore}" TextWrapping="Wrap" Width="64"
+                                 FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox" />
+                        <Label x:Name="labelAfter" Content="{x:Static p:Resources.Seconds_After_}" />
+                        <TextBox x:Name="secondsAfter" Text="{Binding SecondsAfter}" TextWrapping="Wrap" Width="64"
+                                 FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox" />
+                        <Label x:Name="labelTotal" Content="{x:Static p:Resources.Length_}" Margin="8,0,0,0" />
+                        <TextBox x:Name="totalSeconds" Text="0" TextWrapping="Wrap" Width="40"
+                                 FontSize="16" Height="25" IsReadOnly="True" IsEnabled="False" />
+                    </StackPanel>
+
+                    <TextBlock x:Name="nvHighlightsChooseEventsInOverlayLabel"
+                               Text="{x:Static p:Resources.Choose_the_events_you_want_to_clip_in_the_NVIDIA_overlay__ALT_Z_}"
+                               Margin="5,5,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}" />
+                    <StackPanel x:Name="eventsToChoose">
+                        <CheckBox Content="{x:Static p:Resources.Playspace_Abuse}" Margin="5,5,5,5"
+                                  IsChecked="{Binding ClipPlayspaceSetting}" />
+                        <CheckBox Content="{x:Static p:Resources.Goal}" Margin="5,5,5,5"
+                                  IsChecked="{Binding ClipGoalSetting}" />
+                        <StackPanel x:Name="goalReplaySceneBox">
+                            <StackPanel Orientation="Horizontal" Margin="15,5,5,5">
+                                <Label Content="{x:Static p:Resources.Replay_Scene}" />
+                                <ComboBox x:Name="goalReplayScene" Width="300" HorizontalAlignment="Left"
+                                          SelectedIndex="0">
+                                    <ComboBoxItem Content="Do Not Switch" />
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="15,5,5,5">
+                                <Label x:Name="labelGoalAfter" Content="{x:Static p:Resources.Replay_Delay}" />
+                                <TextBox x:Name="secondsAfterGoal" Text="{Binding GoalSecondsAfter}"
+                                         TextWrapping="Wrap" Width="64"
+                                         FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox" />
+                                <Label x:Name="labelGoalLength" Content="{x:Static p:Resources.Replay_Length}" />
+                                <TextBox x:Name="replayGoalLength" Text="{Binding GoalReplayLength}"
+                                         TextWrapping="Wrap" Width="64"
+                                         FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox" />
+                            </StackPanel>
+                        </StackPanel>
+                        <CheckBox Content="{x:Static p:Resources.Score_Assist}" Margin="5,5,5,5"
+                                  IsChecked="{Binding ClipAssistSetting}" />
+                        <CheckBox Content="{x:Static p:Resources.Save}" Margin="5,5,5,5"
+                                  IsChecked="{Binding ClipSaveSetting}" />
+                        <StackPanel x:Name="saveReplaySceneBox">
+                            <StackPanel Orientation="Horizontal" Margin="15,5,5,5">
+                                <Label Content="{x:Static p:Resources.Replay_Scene}" />
+                                <ComboBox x:Name="saveReplayScene" Width="300" HorizontalAlignment="Left"
+                                          SelectedIndex="0">
+                                    <ComboBoxItem Content="Do Not Switch" />
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="15,5,5,5">
+                                <Label x:Name="labelSaveAfter" Content="{x:Static p:Resources.Replay_Delay}" />
+                                <TextBox x:Name="secondsAfterSave" Text="{Binding SaveSecondsAfter}"
+                                         TextWrapping="Wrap" Width="64"
+                                         FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox" />
+                                <Label x:Name="labelSaveLength" Content="{x:Static p:Resources.Replay_Length}" />
+                                <TextBox x:Name="replaySaveLength" Text="{Binding SaveReplayLength}"
+                                         TextWrapping="Wrap" Width="64"
+                                         FontSize="16" Height="25" PreviewTextInput="NumberValidationTextBox" />
+                            </StackPanel>
+                        </StackPanel>
+                        <CheckBox Content="{x:Static p:Resources.Interception}" Margin="5,5,5,5"
+                                  IsChecked="{Binding ClipInterceptionSetting}" />
+                        <CheckBox Content="Neutral Joust" Margin="5,5,5,5"
+                                  IsChecked="{Binding ClipNeutralJoustSetting}" />
+                        <CheckBox Content="Defensive Joust" Margin="5,5,5,5"
+                                  IsChecked="{Binding ClipDefensiveJoustSetting}" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

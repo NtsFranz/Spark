@@ -489,6 +489,12 @@
 					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
 					<Button x:Name="SpeedometerButton" Content="{x:Static p:Resources.Speedometer}" Height="40" Margin="4,4,4,4" Click="OpenSpeedometer" Visibility="Collapsed" />
 					<Button x:Name="OverlaysButton" Content="Overlays" Height="40" Margin="4,4,4,4" Click="OpenOverlays" Visibility="Visible"/>
+					<Button x:Name="ShowClickableOverlayButton" Visibility="Visible" Height="40" Click="showOverlay_Click" Margin="4,4,4,4">
+						<StackPanel>
+							<Label x:Name="ClickableOverlayLabel" Content="Spectator Overlay" Margin="0,-6,0,0"/>
+							<TextBlock x:Name="ClickableOverlaySubtitle" Text="{x:Static p:Resources.Not_active}" Margin="0,-8,0,0" FontSize="11" Foreground="{DynamicResource ControlDisabledGlythColour}" HorizontalAlignment="Center"/>
+						</StackPanel>
+					</Button>
 					<Button x:Name="showHighlights" Content="{x:Static p:Resources.NVIDIAHighlights}" Height="40" Click="showHighlights_Click" Margin="4,4,4,4"/>
 					<Button x:Name="spectateMeButton" Height="40" Click="SpectateMeClicked" Margin="4,4,4,4">
 						<StackPanel>
@@ -496,7 +502,6 @@
 							<TextBlock x:Name="spectateMeSubtitle" Text="{x:Static p:Resources.Not_active}" Margin="0,-8,0,0" FontSize="11" Foreground="{DynamicResource ControlDisabledGlythColour}" HorizontalAlignment="Center"/>
 						</StackPanel>
 					</Button>
-					<Button x:Name="ShowClickableOverlayButton" Visibility="Collapsed" Content="{x:Static p:Resources.Show_Overlay}" Height="40" Click="showOverlay_Click" Margin="4,4,4,4"/>
 				</StackPanel>
 			</GroupBox>
 			<TextBlock HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap" Text="{x:Static p:Resources.If_you_need_help_}" />

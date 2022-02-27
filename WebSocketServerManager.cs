@@ -73,18 +73,51 @@ namespace Spark
 			});
 
 
-			Program.Goal += (frame, goalData) => { SendData(EventContainer.EventType.goal, goalData.ToDict(true)); };
-			Program.Stun += (frame, stunEvent) => { SendData(EventContainer.EventType.stun, stunEvent.ToDict(true)); };
-			Program.Steal += (frame, eventData) => { SendData(EventContainer.EventType.steal, eventData.ToDict(true)); };
-			Program.Save += (frame, eventData) => { SendData(EventContainer.EventType.save, eventData.ToDict(true)); };
-			Program.JoustEvent += (frame, eventData) => { SendData(EventContainer.EventType.joust, eventData.ToDict(true)); };
-			Program.GamePaused += (frame) => { SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause)); };
+			Program.Goal += (frame, goalData) =>
+			{
+				SendData(EventContainer.EventType.goal, goalData.ToDict(true));
+			};
+			Program.Stun += (frame, stunEvent) =>
+			{
+				SendData(EventContainer.EventType.stun, stunEvent.ToDict(true));
+			};
+			Program.Steal += (frame, eventData) =>
+			{
+				SendData(EventContainer.EventType.steal, eventData.ToDict(true));
+			};
+			Program.Save += (frame, eventData) =>
+			{
+				SendData(EventContainer.EventType.save, eventData.ToDict(true));
+			};
+			Program.JoustEvent += (frame, eventData) =>
+			{
+				SendData(EventContainer.EventType.joust, eventData.ToDict(true));
+			};
+			Program.GamePaused += (frame, player, distance) =>
+			{
+				SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause));
+			};
 			// Program.PauseRequest += (frame) => { SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause)); };
-			Program.GameUnpaused += (frame) => { SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause)); };
-			Program.OverlayConfigChanged += () => { SendData(EventContainer.EventType.overlay_config, OverlayConfig.ToDict()); };
-			Program.JoinedGame += (frame) => { SendData(EventContainer.EventType.joined_game, JsonConvert.SerializeObject(frame)); };
-			Program.LeftGame += (frame) => { SendData(EventContainer.EventType.left_game, JsonConvert.SerializeObject(frame)); };
-			Program.EventLog += (msg) => { SendData(EventContainer.EventType.event_log, new Dictionary<string, object>() { { "message", msg } }); };
+			Program.GameUnpaused += (frame, player, distance) =>
+			{
+				SendData(EventContainer.EventType.pause, JsonConvert.SerializeObject(frame.pause));
+			};
+			Program.OverlayConfigChanged += () =>
+			{
+				SendData(EventContainer.EventType.overlay_config, OverlayConfig.ToDict());
+			};
+			Program.JoinedGame += (frame) =>
+			{
+				SendData(EventContainer.EventType.joined_game, JsonConvert.SerializeObject(frame));
+			};
+			Program.LeftGame += (frame) =>
+			{
+				SendData(EventContainer.EventType.left_game, JsonConvert.SerializeObject(frame));
+			};
+			Program.EventLog += (msg) =>
+			{
+				SendData(EventContainer.EventType.event_log, new Dictionary<string, object>() { { "message", msg } });
+			};
 
 
 			DateTime lastSent30Hz = DateTime.UtcNow;
@@ -139,7 +172,10 @@ namespace Spark
 
 		~WebSocketServerManager()
 		{
-			allSockets.ForEach(s => { s.Close(); });
+			allSockets.ForEach(s =>
+			{
+				s.Close();
+			});
 			server.Dispose();
 		}
 
@@ -153,13 +189,19 @@ namespace Spark
 			if (subscriberGroup == null)
 			{
 				// just send it to all
-				allSockets.ForEach(s => { s.Send(":" + message); });
+				allSockets.ForEach(s =>
+				{
+					s.Send(":" + message);
+				});
 			}
 			else
 			{
 				if (subscriberMapping.ContainsKey((EventContainer.EventType)subscriberGroup))
 				{
-					subscriberMapping[(EventContainer.EventType)subscriberGroup].ForEach(s => { s.Send((EventContainer.EventType)subscriberGroup + ":" + message); });
+					subscriberMapping[(EventContainer.EventType)subscriberGroup].ForEach(s =>
+					{
+						s.Send((EventContainer.EventType)subscriberGroup + ":" + message);
+					});
 				}
 			}
 		}

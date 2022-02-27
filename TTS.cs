@@ -82,21 +82,21 @@ namespace Spark
 					Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_alt_1} {toTeam.color} {Resources.tts_switch_alt_2}");
 				}
 			};
-			Program.PauseRequest += (frame) =>
+			Program.PauseRequest += (frame, player, distance) =>
 			{
 				if (SparkSettings.instance.pausedTTS)
 				{
 					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_pause_req}");
 				}
 			};
-			Program.GamePaused += (frame) =>
+			Program.GamePaused += (frame, player, distance) =>
 			{
 				if (SparkSettings.instance.pausedTTS)
 				{
 					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_paused}");
 				}
 			};
-			Program.GameUnpaused += (frame) =>
+			Program.GameUnpaused += (frame, player, distance) =>
 			{
 				if (SparkSettings.instance.pausedTTS)
 				{

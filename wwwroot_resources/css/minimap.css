@@ -15,10 +15,10 @@ body {
 
 .minimap_container {
 	position: absolute;
-	width: 565px;
-	height: 190px;
-	bottom: 9px;
-	right: 10px;
+	width: 35.3125em;
+	height: 11.875em;
+	bottom: 0.5625em;
+	right: 0.625em;
 	overflow: hidden;
 }
 
@@ -30,10 +30,10 @@ body {
 }
 
 .minimap_disc {
-	width: 25px;
+	width: 1.5625em;
 	position: absolute;
-	top: -12.5px;
-	left: -12.5px;
+	top: -0.78125em;
+	left: -0.78125em;
 }
 
 .player {
@@ -42,12 +42,12 @@ body {
 }
 
 .player>div {
-	border-radius: 100px;
-	width: 30px;
-	height: 30px;
+	border-radius: 6.25em;
+	width: 1.875em;
+	height: 1.875em;
 	position: absolute;
-	top: -15px;
-	left: -15px;
+	top: -0.9375em;
+	left: -0.9375em;
 }
 
 .player>p {
@@ -56,10 +56,11 @@ body {
 	font-weight: bold;
 	text-align: center;
 	position: absolute;
-	top: -11px;
-	left: -12px;
+	top: -0.6em;
+	left: -0.58em;
 	margin: 0;
-	font-size: 20px;
+	font-size: 1.25em;
+	text-shadow: 0 0 0.1em #0005;
 }
 
 .minimap_container .blue>div {
@@ -72,14 +73,14 @@ body {
 
 .positionable_element {
 	position: absolute;
-	top: 86.5px;
-	left: 281.5px;
+	top: 5.40625em;
+	left: 17.59375em;
 	transition: all .2s;
 }
 
 #timeout_banner {
-	padding: 20px 0;
-	font-size: 40px;
+	padding: 1.25em 0;
+	font-size: 2.5em;
 	font-weight: bold;
 	color: #fffa;
 	text-align: center;
@@ -88,12 +89,12 @@ body {
 	position: absolute;
 	width: 100%;
 	margin: 0;
-	top: 32px;
+	top: 2em;
 	background: #000a linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .75) 25%, rgba(0, 0, 0, .75) 75%, rgba(0, 0, 0, 0) 100%);
 	visibility: hidden;
 }
 
 #timeout_banner_team {
-	font-size: 23px;
+	font-size: 1.4375em;
 	text-transform: uppercase;
 }

@@ -47,6 +47,9 @@ namespace Spark
 		string blueLogo = "";
 		string orangeLogo = "";
 
+		private bool tryingToShowGameOverlay;
+		private bool lastTryingToShowGameOverlay;
+
 		private string lastTraceroute = "";
 
 		[DllImport("User32.dll")]
@@ -95,6 +98,20 @@ namespace Spark
 		private const int GWL_STYLE = (-16);
 		private const int WS_VISIBLE = 0x10000000;
 		private const int GWL_USERDATA = (-21);
+		
+		[DllImport("user32.dll")]
+		public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint ProcessId);
+
+		[DllImport("user32.dll")]
+		private static extern IntPtr GetForegroundWindow();
+
+		private Process GetActiveProcessFileName()
+		{
+			IntPtr hwnd = GetForegroundWindow();
+			uint pid;
+			GetWindowThreadProcessId(hwnd, out pid);
+			return Process.GetProcessById((int)pid);
+		}
 
 
 		private bool initialized;
@@ -182,6 +199,7 @@ namespace Spark
 			
 			#if DEBUG
 			EchoGPTab.Visibility = Visibility.Visible;
+			ShowClickableOverlayButton.Visibility = Visibility.Visible;
 			#endif
 
 
@@ -414,7 +432,7 @@ namespace Spark
 					if (Program.lastFrame != null)  // 'mpl_lobby_b2' may change in the future
 					{
 						// session ID
-						sessionIdTextBox.Text = CurrentLink(Program.lastFrame.sessionid);
+						sessionIdTextBox.Text = Program.CurrentSparkLink(Program.lastFrame.sessionid);
 
 						
 						// last throw stuff
@@ -751,8 +769,43 @@ namespace Spark
 
 					if (Program.lastFrame != null)
 					{
-						joinLink.Text = CurrentLink(Program.lastFrame.sessionid);
+						joinLink.Text = Program.CurrentSparkLink(Program.lastFrame.sessionid);
 					}
+
+					// if we're trying to show the window
+					if (tryingToShowGameOverlay)
+					{
+						// if the window is closed
+						if (Program.GetWindowIfOpen(typeof(GameOverlay)) == null)
+						{
+							// if echovr is focused
+							if (GetActiveProcessFileName().ProcessName == "echovr")
+							{
+								Program.ToggleWindow(typeof(GameOverlay));
+							}
+							else
+							{
+								ClickableOverlaySubtitle.Text = "Echo VR not active";
+							}
+						}
+						else
+						{
+							// close the overlay
+							if (GetActiveProcessFileName().ProcessName != "echovr")
+							{
+								Program.ToggleWindow(typeof(GameOverlay));
+							}
+							
+							ClickableOverlaySubtitle.Text = "Active";
+						}
+					}
+					else
+					{
+						ClickableOverlaySubtitle.Text = Properties.Resources.Not_active;
+					}
+					
+					
+					
 
 
 					if (!Program.running)
@@ -1487,54 +1540,6 @@ namespace Spark
 
 		#region Atlas Links Tab
 
-		private static string CurrentLink(string sessionid)
-		{
-			string link = "";
-			if (SparkSettings.instance.atlasLinkUseAngleBrackets)
-			{
-				switch (SparkSettings.instance.atlasLinkStyle)
-				{
-					case 0:
-						link = "<spark://c/" + sessionid + ">";
-						break;
-					case 1:
-						link = "<spark://j/" + sessionid + ">";
-						break;
-					case 2:
-						link = "<spark://s/" + sessionid + ">";
-						break;
-				}
-			}
-			else
-			{
-				switch (SparkSettings.instance.atlasLinkStyle)
-				{
-					case 0:
-						link = "spark://c/" + sessionid;
-						break;
-					case 1:
-						link = "spark://j/" + sessionid;
-						break;
-					case 2:
-						link = "spark://s/" + sessionid;
-						break;
-				}
-			}
-
-			if (SparkSettings.instance.atlasLinkAppendTeamNames)
-			{
-				if (Program.matchData != null &&
-					Program.matchData.teams[Team.TeamColor.blue] != null &&
-					Program.matchData.teams[Team.TeamColor.orange] != null &&
-					!string.IsNullOrEmpty(Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName) &&
-					!string.IsNullOrEmpty(Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName))
-				{
-					link += $" {Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName} vs {Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName}";
-				}
-			}
-
-			return link;
-		}
 
 		private void GetLinks(object sender, RoutedEventArgs e)
 		{
@@ -1549,7 +1554,7 @@ namespace Spark
 					{
 						Dispatcher.Invoke(() =>
 						{
-							joinLink.Text = CurrentLink(obj.sessionid);
+							joinLink.Text = Program.CurrentSparkLink(obj.sessionid);
 
 							SparkSettings.instance.alternateEchoVRIP = alternateIPTextBox.Text;
 							SparkSettings.instance.Save();
@@ -1773,7 +1778,7 @@ namespace Spark
 						};
 						copyLinkButton.Click += (_, _) =>
 						{
-							Clipboard.SetText(CurrentLink(match.matchid));
+							Clipboard.SetText(Program.CurrentSparkLink(match.matchid));
 						};
 						header.Children.Add(copyLinkButton);
 						Button joinButton = new Button
@@ -2079,7 +2084,7 @@ namespace Spark
 		{
 			if (Program.lastFrame != null)
 			{
-				joinLink.Text = CurrentLink(Program.lastFrame.sessionid);
+				joinLink.Text = Program.CurrentSparkLink(Program.lastFrame.sessionid);
 			}
 		}
 
@@ -2196,7 +2201,13 @@ namespace Spark
 
 		private void showOverlay_Click(object sender, RoutedEventArgs e)
 		{
-			Program.ToggleWindow(typeof(GameOverlay));
+			tryingToShowGameOverlay = !tryingToShowGameOverlay;
+
+			// close the overlay if it's open
+			if (Program.GetWindowIfOpen(typeof(GameOverlay)) != null)
+			{
+				Program.ToggleWindow(typeof(GameOverlay));
+			}
 		}
 
 		private void CameraWriteClick(object sender, RoutedEventArgs e)
@@ -2245,7 +2256,7 @@ namespace Spark
 			try
 			{
 				Process.Start(new ProcessStartInfo("discord://discordapp.com/channels/706393774804303924/706393776918364211") { UseShellExecute = true });
-				Clipboard.SetText(CurrentLink(Program.lastFrame.sessionid));
+				Clipboard.SetText(Program.CurrentSparkLink(Program.lastFrame.sessionid));
 				await Task.Delay(1000);
 				Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_LCONTROL, false, Keyboard.InputType.Keyboard);
 				await Task.Delay(10);

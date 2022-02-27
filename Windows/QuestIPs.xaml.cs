@@ -51,8 +51,8 @@ namespace Spark
 			string output = string.Join('\n', frames.Select(ip =>
 			{
 				(IPAddress ipAddress, Frame f) = ip;
-				string status = f != null ? f.err_code == -6 ? "Lobby" : f?.sessionid + "\t" + f?.game_status : "";
-				return ipAddress + "\t" + f?.client_name + "\t" + status;
+				string status = f != null ? f.err_code == -6 ? "Lobby" : Program.CurrentSparkLink(f?.sessionid) + "\t" + f?.game_status  + "\t" + "Players: " + f?.GetAllPlayers().Count: "";
+				return ipAddress + "\t" + f?.client_name + " \t" + status;
 			}));
 			QuestIPsBox.Text = output;
 			LoadingLabel.Content = "";

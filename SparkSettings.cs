@@ -171,12 +171,45 @@ namespace Spark
 		public string obsGoalReplayScene { get; set; } = "";
 		public string obsSaveReplayScene { get; set; } = "";
 		public bool enableVoiceRecognition { get; set; } = false;
+		public bool enableVoiceRecognitionMic { get; set; } = true;
+		public bool enableVoiceRecognitionSpeaker { get; set; } = true;
 		public bool clipThatDetection { get; set; } = false;
 		public bool badWordDetection { get; set; } = false;
 		public string microphone { get; set; } = "";
+		public string speaker { get; set; } = "";
 
 
 		#endregion
+
+		public LoggingSettings eventLog = new LoggingSettings();
+		
+		[Serializable]
+		public class LoggingSettings
+		{
+			public bool goals = true;
+			public bool stuns = true;
+			public bool steals = true;
+			public bool saves = true;
+			public bool turnovers = true;
+			public bool restartRequests = true;
+			public bool pauseRequests = true;
+			public bool pauseEvents = true;
+			public bool unPauseRequests = true;
+			public bool playspaceAbuses = false;
+			public bool localThrows = true;
+			public bool throws = true;
+			public bool neutralJousts = true;
+			public bool defensiveJousts = true;
+			public bool shotAttempts = true;
+			public bool passes = true;
+			public bool bigBoosts = true;
+			public bool playerJoins = true;
+			public bool playerLeaves = true;
+			public bool playerSwitchedTeams = true;
+			public bool largePings = true;
+			public bool interceptions = true;
+			public bool catches = true;
+		}
 
 		#region Overlays
 		/// <summary>

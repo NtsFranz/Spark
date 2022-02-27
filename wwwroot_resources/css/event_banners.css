@@ -1,18 +1,16 @@
 .banner_box {
     z-index: 1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    position: relative;
+    width: 60em;
+    margin: auto;
 }
 
 .banner {
     background: linear-gradient(rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.5) 100%);
     position: absolute;
-    top: 85px;
-    /*top: 130px;*/
-    width: 120px;
-    height: 40px;
+    top: 3.1em;
+    width: 4.4em;
+    height: 1.5em;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,32 +25,32 @@
 }
 
 #joust_banners > .banner.orange {
-    left: 465px;
-    border-bottom: 4px solid #e59433;
+    left: 0;
+    border-bottom: .15em solid #e59433;
 }
 
 #joust_banners > .banner.blue {
-    right: 465px;
-    border-bottom: 4px solid #4f98cb;
+    right: 0;
+    border-bottom: .15em solid #4f98cb;
 }
 
 
 #pause_banners > .banner {
-    width: 300px;
+    width: 11em;
 }
 
 #pause_banners > .banner.orange {
-    left: 590px;
+    left: 2em;
 }
 
 #pause_banners > .banner.blue {
-    right: 590px;
+    right: 2em;
 }
 
 #pause_banners >.banner:after {
     content: '';
     width: 100%;
-    height: 2px;
+    height: .07em;
     background: linear-gradient(#4890dd 0%, #4f5462 100%);
     position: absolute;
     bottom:0;
@@ -60,9 +58,9 @@
 
 
 #goal_banners > .banner {
-    width: 300px;
-    height: 100px;
-    top: 30px;
+    width: 11em;
+    height: 3.7em;
+    top: 1em;
     font-weight: 900;
     overflow: hidden;
     text-align: center;
@@ -70,12 +68,12 @@
 }
 
 #goal_banners > .banner.orange {
-    left: 590px;
+    left: 4.4em;
     background: #df8423;
 }
 
 #goal_banners > .banner.blue {
-    right: 590px;
+    right: 4.4em;
     background: #3983b1;
 }
 
@@ -87,10 +85,10 @@
 #goal_banners > .banner .point_value {
     position: absolute;
     left: 0;
-    top: -90px;
-    font-size: 200px;
+    top: -.44em;
+    font-size: 7.4em;
     z-index: -1;
-    max-width: 70px;
+    max-width: 2.6em;
 }
 
 #goal_banners > .banner.orange .point_value {
@@ -108,7 +106,7 @@
 }
 
 .banner.visible {
-    top: 130px !important;
+    top: 4.7em !important;
     opacity: 1;
 }
 

@@ -21,7 +21,7 @@ const points_blue = document.getElementById("points_blue");
 const game_clock_display = document.getElementById("game_clock_display");
 
 // math time
-const mathematical_time_box = document.getElementById("mathematical_time_box");
+const mathematical_time_box = document.getElementById("mathematical_time_content");
 const mathematical_time = document.getElementById("mathematical_time");
 
 // player list
@@ -334,8 +334,8 @@ function set_clock() {
 //      min: 68
 //      max: 495
 function set_pos(elem, z, x) {
-    elem.style.left = (-z / 80 + .5) * 427 + 68 + "px";
-    elem.style.top = (x / 32 + .5) * 165 + 5 + "px";
+    elem.style.left = (-z / 80 + .5) * 26.6875 + 4.25 + "em";
+    elem.style.top = (x / 32 + .5) * 10.3125 + 0.3125 + "em";
 }
 
 function set_number(elem, text) {
