@@ -12,12 +12,13 @@
         ResizeMode="CanResize" 
         Icon="/img/ignite_logo.ico" 
         Background="#FF232323" 
-        FontSize="16">
+        FontSize="16"
+        Closed="ChooseJoinTypeDialog_OnClosed"
+        >
 	<Grid>
 		<Button x:Name="playerButton" Width="170" Height="50" Margin="10,0,0,10" Content="{x:Static p:Resources.Player}" Click="JoinAsPlayerClicked" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 		<Button x:Name="spectatorButton" Margin="0,0,10,10" Width="170" Height="50" Content="{x:Static p:Resources.join_as_spectator}" Click="JoinAsSpectatorClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.RowSpan="1"/>
 		<CheckBox x:Name="noovrCheckbox" Width="170" Content="{x:Static p:Resources.noovrCheckbox_Content}" IsChecked="{l:SettingBinding sparkLinkNoOVR}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,65" FontSize="13"></CheckBox>
 		<Label x:Name="label" Content="{x:Static p:Resources.Join_as_a_Player_or_as_a_Spectator_}" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
-
 	</Grid>
 </Window>

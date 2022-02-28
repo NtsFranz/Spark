@@ -618,48 +618,56 @@ namespace Spark
 		private static async Task GentleClose()
 		{
 			running = false;
-			
-			closingWindow.label.Content = Resources.Closing___;
-			
-			netMQEvents.CloseApp();
+
+			if (closingWindow != null)
+			{
+				closingWindow.label.Content = Resources.Closing___;
+			}
+
+			netMQEvents?.CloseApp();
 			await Task.Delay(50);
 
 			overlayServer?.Stop();
 
 			while (atlasHostingThread != null && atlasHostingThread.IsAlive)
 			{
-				closingWindow.label.Content = Resources.Shutting_down_Atlas___;
+				if (closingWindow != null) closingWindow.label.Content = Resources.Shutting_down_Atlas___;
 				await Task.Delay(10);
 			}
 
 			fetchTimer?.Stop();
-			autorestartCancellation.Cancel();
+			autorestartCancellation?.Cancel();
 			fetchThreadCancellation?.Cancel();
-			liveReplayCancel.Cancel();
+			liveReplayCancel?.Cancel();
 
-			while (replayFilesManager.zipping)
+			if (replayFilesManager != null)
 			{
-				closingWindow.label.Content = Resources.Compressing_Replay_File___;
-				await Task.Delay(10);
+				while (replayFilesManager.zipping)
+				{
+					if (closingWindow != null) closingWindow.label.Content = Resources.Compressing_Replay_File___;
+					await Task.Delay(10);
+				}
 			}
 
-			closingWindow.label.Content = Resources.Closing_NVIDIA_Highlights___;
+			if (closingWindow != null) closingWindow.label.Content = Resources.Closing_NVIDIA_Highlights___;
 			HighlightsHelper.CloseNVHighlights();
 
-			closingWindow.label.Content = Resources.Closing_Speaker_System___;
+			if (closingWindow != null) closingWindow.label.Content = Resources.Closing_Speaker_System___;
 			liveWindow?.KillSpeakerSystem();
 
-			closingWindow.label.Content = "Closing PubSub System...";
-			
+			if (closingWindow != null) closingWindow.label.Content = "Closing PubSub System...";
+
 			AsyncIO.ForceDotNet.Force();
 			NetMQConfig.Cleanup(false);
-			closingWindow.label.Content = Resources.Closing___;
-			
+			if (closingWindow != null) closingWindow.label.Content = Resources.Closing___;
+
 			app.ExitApplication();
 
 			await Task.Delay(100);
 
-			closingWindow.label.Content = "Failed to close gracefully. Using an axe instead...";
+			if (closingWindow != null) closingWindow.label.Content = "Failed to close gracefully. Using an axe instead...";
+
+
 			LogRow(LogType.Error, "Failed to close gracefully. Using an axe instead...");
 			KillAll();
 		}
@@ -3927,19 +3935,24 @@ namespace Spark
 		internal static void Quit()
 		{
 			running = false;
+			
 			SparkClosing?.Invoke();
 			SparkSettings.instance.Save();
+			
 			if (closingWindow != null)
 			{
 				// already trying to close
 				return;
 			}
 
-			liveWindow.trayIcon.Visibility = Visibility.Collapsed;
+			if (liveWindow != null)
+			{
+				liveWindow.trayIcon.Visibility = Visibility.Collapsed;
+			}
 
 			closingWindow = new ClosingDialog();
 			closingWindow.Show();
-
+			
 			_ = GentleClose();
 		}
 	}

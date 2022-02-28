@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace Spark
 {
@@ -30,6 +31,11 @@ namespace Spark
 			Program.StartEchoVR(Program.JoinType.Spectator, session_id: sessionid, noovr: SparkSettings.instance.sparkLinkNoOVR);
 			SparkSettings.instance.Save();
 			Close();
+			Program.Quit();
+		}
+
+		private void ChooseJoinTypeDialog_OnClosed(object? sender, EventArgs e)
+		{
 			Program.Quit();
 		}
 	}
