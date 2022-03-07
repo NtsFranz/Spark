@@ -60,12 +60,23 @@ namespace Spark
 
 			CameraModeDropdownChanged(SparkSettings.instance.spectatorCamera);
 
-			MutePlayerCommsDropdownChanged(MutePlayerCommsDropdown, null);
+			if (SparkSettings.instance.mutePlayerComms)
+			{
+				MutePlayerCommsDropdown.SelectedIndex = 2;
+			}
+			else if (SparkSettings.instance.muteEnemyTeam)
+			{
+				MutePlayerCommsDropdown.SelectedIndex = 1;
+			}
+			else
+			{
+				MutePlayerCommsDropdown.SelectedIndex = 0;
+			}
 
 			initialized = true;
 		}
-		
-		
+
+
 		#region General
 
 		public static bool StartWithWindows
@@ -696,6 +707,8 @@ namespace Spark
 
 		private void MutePlayerCommsDropdownChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (!initialized) return;
+			
 			int index = ((ComboBox)sender).SelectedIndex;
 			switch (index)
 			{

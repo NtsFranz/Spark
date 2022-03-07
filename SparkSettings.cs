@@ -173,7 +173,7 @@ namespace Spark
 		public bool enableVoiceRecognition { get; set; } = false;
 		public bool enableVoiceRecognitionMic { get; set; } = true;
 		public bool enableVoiceRecognitionSpeaker { get; set; } = true;
-		public bool clipThatDetection { get; set; } = false;
+		public bool clipThatDetection { get; set; } = true;
 		public bool badWordDetection { get; set; } = false;
 		public string microphone { get; set; } = "";
 		public string speaker { get; set; } = "";

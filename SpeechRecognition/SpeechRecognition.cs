@@ -56,24 +56,24 @@ namespace Spark
 			{
 				Vosk.Vosk.SetLogLevel(0);
 				Model model = new Model("SpeechRecognition/vosk-model-small-en-us-0.15");
+				
 				voskRecMic = new VoskRecognizer(model, 16000f);
 				voskRecMic.SetMaxAlternatives(10);
 				voskRecMic.SetWords(true);
-
-				voskRecSpeaker = new VoskRecognizer(model, 16000f);
-				voskRecSpeaker.SetMaxAlternatives(10);
-				voskRecSpeaker.SetWords(true);
-
 
 				micCapture = new WaveIn();
 				micCapture.WaveFormat = new WaveFormat(16000, 1);
 				micCapture.DeviceNumber = GetMicByName(SparkSettings.instance.microphone);
 				micCapture.DataAvailable += MicDataAvailable;
 				micCapture.StartRecording();
+				
+				// voskRecSpeaker = new VoskRecognizer(model, 16000f);
+				// voskRecSpeaker.SetMaxAlternatives(10);
+				// voskRecSpeaker.SetWords(true);
 
-				speakerCapture = new WasapiLoopbackCapture(GetSpeakerByName(SparkSettings.instance.speaker));
-				speakerCapture.DataAvailable += SpeakerDataAvailable;
-				speakerCapture.StartRecording();
+				// speakerCapture = new WasapiLoopbackCapture(GetSpeakerByName(SparkSettings.instance.speaker));
+				// speakerCapture.DataAvailable += SpeakerDataAvailable;
+				// speakerCapture.StartRecording();
 			}
 			catch (Exception e)
 			{
@@ -85,7 +85,7 @@ namespace Spark
 		{
 			speakerLevel = 0;
 
-			List<float> floats = new List<float>();
+			float[] floats = new float[e.BytesRecorded/4];
 
 			MemoryStream mem = new MemoryStream(e.Buffer);
 			BinaryReader reader = new BinaryReader(mem);
@@ -98,10 +98,10 @@ namespace Spark
 				// is this the max value?
 				if (sample > speakerLevel) speakerLevel = sample;
 
-				floats.Add(sample);
+				floats[index/4] = sample;
 			}
 
-			if (voskRecSpeaker.AcceptWaveform(floats.ToArray(), floats.Count))
+			if (voskRecSpeaker.AcceptWaveform(floats, floats.Length))
 			{
 				HandleResult(voskRecSpeaker.Result());
 			}
@@ -113,8 +113,7 @@ namespace Spark
 			// interpret as 16 bit audio
 			for (int index = 0; index < e.BytesRecorded; index += 2)
 			{
-				short sample = (short)((e.Buffer[index + 1] << 8) |
-				                       e.Buffer[index + 0]);
+				short sample = (short)((e.Buffer[index + 1] << 8) | e.Buffer[index + 0]);
 				// to floating point
 				float sample32 = sample / 32768f;
 				// absolute value 
@@ -156,9 +155,9 @@ namespace Spark
 						{
 							Program.ManualClip?.Invoke();
 							HighlightsHelper.SaveHighlight("PERSONAL_HIGHLIGHT_GROUP", "MANUAL", true);
-							// Program.synth.SpeakAsync("Clip Saved!");
+							Program.synth.SpeakAsync("Clip Saved!");
 							return;
-						}						
+						}
 					}
 				}
 			}

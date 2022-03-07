@@ -799,6 +799,7 @@ namespace Spark
 							// tell the processing methods that stuff is available
 							_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, session, bones); });
 
+							ConnectionState lastConnectionStateThisFrame = lastConnectionState;
 							// tell the processing methods that stuff is available
 							_ = Task.Run(() =>
 							{
@@ -808,7 +809,7 @@ namespace Spark
 
 									if (f != null)
 									{
-										ProcessFrame(f);
+										ProcessFrame(f, lastConnectionStateThisFrame);
 
 										NewFrame?.Invoke(f);
 									}
@@ -950,7 +951,7 @@ namespace Spark
 			}
 		}
 
-		private static void ProcessFrame(Frame frame)
+		private static void ProcessFrame(Frame frame, ConnectionState lastConnectionStateThisFrame)
 		{
 			try
 			{
@@ -963,7 +964,7 @@ namespace Spark
 
 				try
 				{
-					GenerateEvents(frame);
+					GenerateEvents(frame, lastConnectionStateThisFrame);
 				}
 				catch (Exception ex)
 				{
@@ -1300,9 +1301,9 @@ namespace Spark
 		/// <summary>
 		/// Goes through a "frame" (single JSON object) and generates the relevant events
 		/// </summary>
-		private static void GenerateEvents(Frame frame)
+		private static void GenerateEvents(Frame frame, ConnectionState lastConnectionStateThisFrame)
 		{
-			if (lastConnectionState != ConnectionState.InGame)
+			if (lastConnectionStateThisFrame != ConnectionState.InGame)
 			{
 				try
 				{
@@ -3100,7 +3101,7 @@ namespace Spark
 		{
 			try
 			{
-				HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
+				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
 				if (headers != null)
 				{
 					foreach ((string key, string value) in headers)
@@ -3117,6 +3118,10 @@ namespace Spark
 					using StreamReader reader = new StreamReader(stream);
 					return await reader.ReadToEndAsync();
 				}
+			}
+			catch (WebException e)
+			{
+				Console.WriteLine($"Not in match yet\n{e}");
 			}
 			catch (Exception e)
 			{

@@ -17,13 +17,13 @@
 			<!-- Shortcut to main application -->
 			<Component Id="MainAppShortcut" Guid="{0995664D-AE63-4DD6-B894-708A99611370}">
 
-				<Shortcut Id="MainAppShortcut"
-                  Name="!(loc.ProductName)"
-                  Target="[INSTALLFOLDER]Spark.exe"
-                  Directory="InstallProgramMenuFolder"
-                  WorkingDirectory="INSTALLFOLDER"
-                  Icon="icon.ico"
-                  />
+				<Shortcut	Id="MainAppShortcut"
+							Name="!(loc.ProductName)"
+							Target="[INSTALLFOLDER]Spark.exe"
+							Directory="InstallProgramMenuFolder"
+							WorkingDirectory="INSTALLFOLDER"
+							Icon="icon.ico"
+				/>
 
 				<!-- Our unique key for this component/shortcut -->
 				<RegistryValue Id="RegShortcutKey" Root="HKCU" Key="SOFTWARE\$(loc.ProductNameFolder)" Name="Shortcut" Value="1" Type="integer" KeyPath="yes" />

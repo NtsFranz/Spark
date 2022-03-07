@@ -28,9 +28,7 @@
 		<MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="!(loc.DowngradeErrorMessage)" />
 
 		<!-- Include .cab file into .msi file -->
-		<MediaTemplate
-      EmbedCab="yes"
-      />
+		<MediaTemplate EmbedCab="yes" />
 
 		<!-- Define main app icon -->
 		<Icon Id="icon.ico" SourceFile="..\img\ignite_logo.ico"/>
@@ -58,7 +56,9 @@
 			<Publish Dialog="ExitDialog"
 							 Control="Finish"
 							 Event="DoAction"
-							 Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+							 Value="LaunchApplication">
+				WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
+			</Publish>
 			
 		</UI>
 		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Spark"  />
