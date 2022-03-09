@@ -48,6 +48,7 @@ namespace Spark
 		}
 		public static ConnectionState connectionState;
 		public static ConnectionState lastConnectionState;
+		public static ConnectionState lastConnectionStateEvent;
 		public static bool InGame => connectionState == ConnectionState.InGame;
 
 		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
@@ -799,7 +800,6 @@ namespace Spark
 							// tell the processing methods that stuff is available
 							_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, session, bones); });
 
-							ConnectionState lastConnectionStateThisFrame = lastConnectionState;
 							// tell the processing methods that stuff is available
 							_ = Task.Run(() =>
 							{
@@ -809,13 +809,13 @@ namespace Spark
 
 									if (f != null)
 									{
-										ProcessFrame(f, lastConnectionStateThisFrame);
+										ProcessFrame(f);
 
 										NewFrame?.Invoke(f);
 									}
 									else
 									{
-										LogRow(LogType.Error, "Converting to Frame failed. Investigate 🕵️‍");
+										LogRow(LogType.Error, "Converting to Frame failed. Investigate 🕵");
 										LeftGame?.Invoke(lastFrame);
 									}
 
@@ -852,6 +852,8 @@ namespace Spark
 					{
 						LogRow(LogType.Error, $"Error in fetch request.\n{ex}");
 					}
+
+					lastConnectionState = connectionState;
 				});
 			}
 			catch (Exception ex)
@@ -860,8 +862,6 @@ namespace Spark
 			}
 			
 			fetchSw.Restart();
-
-			lastConnectionState = connectionState;
 		}
 
 		private static async Task FetchFail(HttpResponseMessage[] results)
@@ -943,6 +943,9 @@ namespace Spark
 				}
 			}
 
+			// make sure this gets set back to nonconnected to send rejoin events
+			lastConnectionStateEvent = connectionState;
+
 			// add this data to the public variable
 			lock (lastJSONLock)
 			{
@@ -951,7 +954,7 @@ namespace Spark
 			}
 		}
 
-		private static void ProcessFrame(Frame frame, ConnectionState lastConnectionStateThisFrame)
+		private static void ProcessFrame(Frame frame)
 		{
 			try
 			{
@@ -964,7 +967,7 @@ namespace Spark
 
 				try
 				{
-					GenerateEvents(frame, lastConnectionStateThisFrame);
+					GenerateEvents(frame);
 				}
 				catch (Exception ex)
 				{
@@ -1301,25 +1304,21 @@ namespace Spark
 		/// <summary>
 		/// Goes through a "frame" (single JSON object) and generates the relevant events
 		/// </summary>
-		private static void GenerateEvents(Frame frame, ConnectionState lastConnectionStateThisFrame)
+		private static void GenerateEvents(Frame frame)
 		{
-			if (lastConnectionStateThisFrame != ConnectionState.InGame)
+			if (lastConnectionStateEvent != ConnectionState.InGame)
 			{
 				try
 				{
 					JoinedGame?.Invoke(frame);
-					
-					// make sure there is a valid echovr path saved
-					if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
-					{
-						UpdateEchoExeLocation();
-					}
+
 				}
 				catch (Exception exp)
 				{
 					LogRow(LogType.Error, "Error processing action", exp.ToString());
 				}
 			}
+			lastConnectionStateEvent = connectionState;
 
 			// 'mpl_lobby_b2' may change in the future
 			if (frame == null) return;
@@ -1327,6 +1326,13 @@ namespace Spark
 			if (frame.client_name != "anonymous")
 			{
 				SparkSettings.instance.client_name = frame.client_name;
+			}
+
+
+			// make sure there is a valid echovr path saved
+			if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
+			{
+				UpdateEchoExeLocation();
 			}
 
 			// lobby stuff

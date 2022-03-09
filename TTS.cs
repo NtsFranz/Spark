@@ -233,7 +233,7 @@ namespace Spark
 
 			if (rateLimiterQueue.Count > rateLimitPerSecond)
 			{
-				Speak("Rate Limit hit. TTS disabled. Please report this to NtsFranz.");
+				//Speak("Rate Limit hit. TTS disabled. Please report this to NtsFranz.");
 				ttsDisabled = true;
 				Logger.LogRow(Logger.LogType.Error, "Rate Limit hit. " + text);
 			}

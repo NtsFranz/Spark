@@ -278,58 +278,6 @@
     <EmbeddedResource Include="wwwroot_resources\js\lib\fitty.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.dubm" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.dubm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.ie" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.ie">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.mat" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\final.mat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\global_cmvn.stats" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\global_cmvn.stats">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\online_cmvn.conf" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\online_cmvn.conf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\splice.conf" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\ivector\splice.conf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\conf\mfcc.conf" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\conf\mfcc.conf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\graph\disambig_tid.int" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\graph\disambig_tid.int">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\graph\HCLr.fst" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\graph\HCLr.fst">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\conf\model.conf" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\conf\model.conf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\am\final.mdl" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\am\final.mdl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\graph\Gr.fst" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\graph\Gr.fst">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SpeechRecognition\vosk-model-small-en-us-0.15\graph\phones\word_boundary.int" />
-    <EmbeddedResource Include="SpeechRecognition\vosk-model-small-en-us-0.15\graph\phones\word_boundary.int">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
     <Page Update="Windows\ClipsSettings.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -537,11 +485,6 @@
 
   <ItemGroup>
     <Folder Include="SettingsBindings" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.Runtime.InteropServices.WindowsRuntime" />
-    <Reference Include="System.Runtime.WindowsRuntime" />
   </ItemGroup>
 
 </Project>

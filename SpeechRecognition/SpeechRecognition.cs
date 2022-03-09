@@ -8,17 +8,20 @@ using NAudio.CoreAudioApi;
 using Vosk;
 using NAudio.Wave;
 using Newtonsoft.Json;
+using System.Net;
+using System.IO.Compression;
 
 namespace Spark
 {
 	public class SpeechRecognition
 	{
-		private bool capturing;
 
-		private WaveIn micCapture;
-		private WasapiLoopbackCapture speakerCapture;
 		public float micLevel = 0;
 		public float speakerLevel = 0;
+
+		private bool capturing;
+		private WaveIn micCapture;
+		private WasapiLoopbackCapture speakerCapture;
 		private VoskRecognizer voskRecMic;
 		private VoskRecognizer voskRecSpeaker;
 
@@ -55,25 +58,8 @@ namespace Spark
 			try
 			{
 				Vosk.Vosk.SetLogLevel(0);
-				Model model = new Model("SpeechRecognition/vosk-model-small-en-us-0.15");
-				
-				voskRecMic = new VoskRecognizer(model, 16000f);
-				voskRecMic.SetMaxAlternatives(10);
-				voskRecMic.SetWords(true);
 
-				micCapture = new WaveIn();
-				micCapture.WaveFormat = new WaveFormat(16000, 1);
-				micCapture.DeviceNumber = GetMicByName(SparkSettings.instance.microphone);
-				micCapture.DataAvailable += MicDataAvailable;
-				micCapture.StartRecording();
-				
-				// voskRecSpeaker = new VoskRecognizer(model, 16000f);
-				// voskRecSpeaker.SetMaxAlternatives(10);
-				// voskRecSpeaker.SetWords(true);
-
-				// speakerCapture = new WasapiLoopbackCapture(GetSpeakerByName(SparkSettings.instance.speaker));
-				// speakerCapture.DataAvailable += SpeakerDataAvailable;
-				// speakerCapture.StartRecording();
+				_ = Task.Run(DownloadVoskModel);
 			}
 			catch (Exception e)
 			{
@@ -81,11 +67,63 @@ namespace Spark
 			}
 		}
 
+		private async Task DownloadVoskModel()
+		{
+			string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "vosk-model-small-en-us-0.15");
+			if (Directory.Exists(path))
+			{
+				AfterDownload(path);
+			}
+			else
+			{
+				Logger.LogRow(Logger.LogType.Error, "Vosk model not found. Downloading.");
+				WebClient webClient = new WebClient();
+				webClient.Headers.Add("Accept: text/html, application/xhtml+xml, */*");
+				webClient.Headers.Add("User-Agent: Spark");
+				string zipFile = Path.Combine(Path.GetTempPath(), "vosk_model.zip");
+				await webClient.DownloadFileTaskAsync(new Uri("https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip"), zipFile);
+				ZipFile.ExtractToDirectory(zipFile, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark"));
+				if (Directory.Exists(path))
+				{
+					AfterDownload(path);
+				}
+				else
+				{
+					Logger.LogRow(Logger.LogType.Error, "Vosk model failed to download.");
+				}
+			}
+
+
+		}
+
+		private void AfterDownload(string path)
+		{
+			Model model = new Model(path);
+
+			voskRecMic = new VoskRecognizer(model, 16000f);
+			voskRecMic.SetMaxAlternatives(10);
+			voskRecMic.SetWords(true);
+
+			micCapture = new WaveIn();
+			micCapture.WaveFormat = new WaveFormat(16000, 1);
+			micCapture.DeviceNumber = GetMicByName(SparkSettings.instance.microphone);
+			micCapture.DataAvailable += MicDataAvailable;
+			micCapture.StartRecording();
+
+			// voskRecSpeaker = new VoskRecognizer(model, 16000f);
+			// voskRecSpeaker.SetMaxAlternatives(10);
+			// voskRecSpeaker.SetWords(true);
+
+			// speakerCapture = new WasapiLoopbackCapture(GetSpeakerByName(SparkSettings.instance.speaker));
+			// speakerCapture.DataAvailable += SpeakerDataAvailable;
+			// speakerCapture.StartRecording();
+		}
+
 		private void SpeakerDataAvailable(object sender, WaveInEventArgs e)
 		{
 			speakerLevel = 0;
 
-			float[] floats = new float[e.BytesRecorded/4];
+			float[] floats = new float[e.BytesRecorded / 4];
 
 			MemoryStream mem = new MemoryStream(e.Buffer);
 			BinaryReader reader = new BinaryReader(mem);
@@ -98,7 +136,7 @@ namespace Spark
 				// is this the max value?
 				if (sample > speakerLevel) speakerLevel = sample;
 
-				floats[index/4] = sample;
+				floats[index / 4] = sample;
 			}
 
 			if (voskRecSpeaker.AcceptWaveform(floats, floats.Length))
@@ -146,9 +184,9 @@ namespace Spark
 				foreach (Dictionary<string, object> alt in r["alternatives"])
 				{
 					if (string.IsNullOrWhiteSpace(alt["text"].ToString())) continue;
-					
+
 					Debug.WriteLine(alt["text"].ToString());
-					
+
 					foreach (string clipTerm in clipTerms)
 					{
 						if (alt["text"].ToString()?.Contains(clipTerm) ?? false)
