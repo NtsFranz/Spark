@@ -20,6 +20,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using EchoVRAPI;
+using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static Logger;
@@ -212,8 +213,9 @@ namespace Spark
 			initialized = true;
 		}
 
-		private void LiveWindow_Load(object sender, EventArgs e)
+		private async void LiveWindow_Load(object sender, EventArgs e)
 		{
+
 			lock (Program.logOutputWriteLock)
 			{
 				mainOutputTextBox.Text = string.Join('\n', fullFileCache);
@@ -224,6 +226,12 @@ namespace Spark
 				spectateMeSubtitle.Text = Properties.Resources.Waiting_until_you_join_a_game;
 				spectateMeLabel.Content = Properties.Resources.Stop_Spectating_Me;
 			}
+
+			string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
+			var webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
+			await PlayercardWebView.EnsureCoreWebView2Async(webView2Environment);
+			PlayercardWebView.Source = new UriBuilder("https://ignitevr.gg/cgi-bin/EchoStats.cgi/playercard_embed").Uri;
+			Debug.WriteLine("ESURED");
 
 			//_ = CheckForAppUpdate();
 		}
@@ -259,7 +267,7 @@ namespace Spark
 		}
 
 		public static string AppVersionLabelText => $"v{Program.AppVersionString()}  {(Program.IsWindowsStore() ? Properties.Resources.Windows_Store : "")}";
-		public static Visibility PlayercardsTabVisibility => Program.IsWindowsStore() ? Visibility.Visible : Visibility.Collapsed;
+		public static Visibility PlayercardsTabVisibility => Visibility.Visible; //Program.IsWindowsStore() ? Visibility.Visible : Visibility.Collapsed;
 
 		private void ActivateUnityWindow()
 		{

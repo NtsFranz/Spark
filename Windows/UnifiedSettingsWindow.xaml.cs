@@ -731,6 +731,10 @@ namespace Spark
 		}
 
 
+		private void ClearTTSCacheButton(object sender, RoutedEventArgs e)
+		{
+			TTS.ClearCacheFolder();
+		}
 	}
 	
 

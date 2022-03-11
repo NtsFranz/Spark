@@ -24,6 +24,7 @@ using EchoVRAPI;
 using Fleck;
 using NetMQ;
 using Newtonsoft.Json.Linq;
+using Microsoft.Web.WebView2.Core;
 
 //using System.Windows.Forms;
 
@@ -176,6 +177,8 @@ namespace Spark
 		private static readonly HttpClient fetchClient = new HttpClient();
 		private static readonly System.Timers.Timer fetchTimer = new System.Timers.Timer();
 		private static readonly Stopwatch fetchSw = new Stopwatch();
+
+		public static CoreWebView2Environment webView2Environment;
 
 
 		#region Event Callbacks
@@ -380,6 +383,17 @@ namespace Spark
 					DiscordOAuth.RevertToPersonal();
 				}
 
+				_ = Task.Run(async () =>
+				{
+					string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
+					if (!Directory.Exists(path))
+					{
+						Directory.CreateDirectory(path);
+					}
+					//webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
+					Debug.WriteLine(Directory.Exists(path));
+				});
+
 				liveWindow = new LiveWindow();
 				liveWindow.Closed += (_, _) => liveWindow = null;
 				liveWindow.Show();
@@ -517,7 +531,7 @@ namespace Spark
 				};
 
 				liveReplayCancel = new CancellationTokenSource();
-				Task.Run(LiveReplayHostingTask, liveReplayCancel.Token);
+				_ = Task.Run(LiveReplayHostingTask, liveReplayCancel.Token);
 
 
 				_ = Task.Run(() =>

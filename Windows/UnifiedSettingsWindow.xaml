@@ -281,6 +281,7 @@
 								<Grid.RowDefinitions>
 									<RowDefinition Height="*"/>
 									<RowDefinition Height="*"/>
+									<RowDefinition Height="*"/>
 								</Grid.RowDefinitions>
 								<Label x:Name="label1" Content="{x:Static p:Resources.Speech_Speed}" />
 								<ComboBox Width="146" HorizontalAlignment="Left"
@@ -306,6 +307,8 @@
 								<!-- 	<ComboBoxItem Content="English" /> -->
 								<!-- 	<ComboBoxItem Content="日本語" /> -->
 								<!-- </ComboBox> -->
+								
+								<Button Grid.Row="2" Grid.Column="0" Margin="0, 2" Click="ClearTTSCacheButton">Clear TTS Cache</Button>
 							</Grid>
 							<CheckBox x:Name="serverLocationCheckbox" Content="{x:Static p:Resources.Server_Location}" Margin="4,10,4,0"
 										  IsChecked="{Binding ServerLocation}" />

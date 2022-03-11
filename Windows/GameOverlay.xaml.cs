@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.Web.WebView2.Core;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -84,6 +87,15 @@ namespace Spark
 			// 	, 0, 0, NativeMethods.SetWinEventHookParameter.WINEVENT_OUTOFCONTEXT);
 		}
 
+		private async void OnLoaded(object sender, RoutedEventArgs e)
+		{
+
+			string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
+			var webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
+			await WebView.EnsureCoreWebView2Async(webView2Environment);
+			WebView.Source = new Uri("http://localhost:6724/full_overlay");
+		}
+
 		private static Button MakeButton(int i)
 		{
 			Button button = new Button()
@@ -123,7 +135,7 @@ namespace Spark
 			//Make sure AccessibleEvents equals to LocationChange and the 
 			//current window is the Target Window.
 			if (accEvent == AccessibleEvents.Destroy && windowHandle.ToInt32() ==
-			    targetWindow.ToInt32())
+				targetWindow.ToInt32())
 			{
 				//Queues a method for execution. The method executes when a thread pool 
 				//thread becomes available.
@@ -149,7 +161,7 @@ namespace Spark
 			//Make sure AccessibleEvents equals to LocationChange and the 
 			//current window is the Target Window.
 			if (accEvent == AccessibleEvents.LocationChange && windowHandle.ToInt32() ==
-			    targetWindow.ToInt32())
+				targetWindow.ToInt32())
 			{
 				//Queues a method for execution. The method executes when a thread pool 
 				//thread becomes available.

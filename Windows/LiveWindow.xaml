@@ -419,7 +419,7 @@
 					</TabItem.Header>
 					<DockPanel>
 						<!-- <wv2:WebView2 Name="webView" Source="http://localhost:6724/scoreboard" OpacityMask="{DynamicResource BackgroundColour}"/> -->
-						<wv2:WebView2 Name="webView" Source="https://ignitevr.gg/cgi-bin/EchoStats.cgi/playercard_embed" />
+						<wv2:WebView2 Name="PlayercardWebView" />
 					</DockPanel>
 				</TabItem>
 				

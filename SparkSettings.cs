@@ -122,6 +122,7 @@ namespace Spark
 		public bool useWavenetVoices { get; set; } = false;
 		public bool playspaceTTS { get; set; } = false;
 		public int ttsVoice { get; set; } = 0;
+		public int ttsCacheSizeBytes = 100000000;
 
 		#endregion
 

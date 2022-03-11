@@ -15,12 +15,11 @@ namespace Spark
 {
 	public class SpeechRecognition
 	{
-
 		public float micLevel = 0;
 		public float speakerLevel = 0;
 
 		private bool capturing;
-		private WaveIn micCapture;
+		private WaveInEvent micCapture;
 		private WasapiLoopbackCapture speakerCapture;
 		private VoskRecognizer voskRecMic;
 		private VoskRecognizer voskRecSpeaker;
@@ -92,8 +91,6 @@ namespace Spark
 					Logger.LogRow(Logger.LogType.Error, "Vosk model failed to download.");
 				}
 			}
-
-
 		}
 
 		private void AfterDownload(string path)
@@ -104,7 +101,7 @@ namespace Spark
 			voskRecMic.SetMaxAlternatives(10);
 			voskRecMic.SetWords(true);
 
-			micCapture = new WaveIn();
+			micCapture = new WaveInEvent();
 			micCapture.WaveFormat = new WaveFormat(16000, 1);
 			micCapture.DeviceNumber = GetMicByName(SparkSettings.instance.microphone);
 			micCapture.DataAvailable += MicDataAvailable;
@@ -121,6 +118,8 @@ namespace Spark
 
 		private void SpeakerDataAvailable(object sender, WaveInEventArgs e)
 		{
+			if (!SparkSettings.instance.enableVoiceRecognition) return;
+
 			speakerLevel = 0;
 
 			float[] floats = new float[e.BytesRecorded / 4];
@@ -147,6 +146,8 @@ namespace Spark
 
 		private void MicDataAvailable(object sender, WaveInEventArgs e)
 		{
+			if (!SparkSettings.instance.enableVoiceRecognition) return;
+
 			micLevel = 0;
 			// interpret as 16 bit audio
 			for (int index = 0; index < e.BytesRecorded; index += 2)
@@ -170,14 +171,24 @@ namespace Spark
 		{
 			try
 			{
-				string[] clipTerms =
+				List<string> clipTerms = new List<string>();
+
+				if (SparkSettings.instance.clipThatDetection)
 				{
-					"clip that",
-					"quebec",
-					"hope that",
-					"could that",
-					"cop that"
-				};
+					clipTerms.AddRange(new string[] {
+						"clip that",
+						"quebec",
+						"hope that",
+						"could that",
+						"cop that"
+					});
+				}
+				if (SparkSettings.instance.badWordDetection)
+				{
+					clipTerms.AddRange(new string[] {
+						// downloaded bad words 
+					});
+				}
 
 				Dictionary<string, List<Dictionary<string, object>>> r = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, object>>>>(result);
 				if (r == null) return;
@@ -187,7 +198,8 @@ namespace Spark
 
 					Debug.WriteLine(alt["text"].ToString());
 
-					foreach (string clipTerm in clipTerms)
+
+						foreach (string clipTerm in clipTerms)
 					{
 						if (alt["text"].ToString()?.Contains(clipTerm) ?? false)
 						{
@@ -255,6 +267,5 @@ namespace Spark
 			speakerCapture.DataAvailable += SpeakerDataAvailable;
 			speakerCapture.StartRecording();
 		}
-
 	}
 }

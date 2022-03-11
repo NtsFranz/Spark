@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -36,6 +37,8 @@ namespace Spark
 		/// </summary>
 		private readonly ConcurrentQueue<string> ttsQueue = new ConcurrentQueue<string>();
 
+		private static string CacheFolder => Path.Combine(Path.GetTempPath(), "SparkTTSCache");
+
 		public TTS()
 		{
 			// TTS won't work without Discord auth
@@ -59,14 +62,14 @@ namespace Spark
 			{
 				if (SparkSettings.instance.playerJoinTTS)
 				{
-					Program.synth.SpeakAsync($"{player.name} {Resources.tts_join_1} {team.color} {Resources.tts_join_2}");
+					SpeakAsync($"{player.name} {Resources.tts_join_1} {team.color} {Resources.tts_join_2}");
 				}
 			};
 			Program.PlayerLeft += (frame, team, player) =>
 			{
 				if (SparkSettings.instance.playerLeaveTTS)
 				{
-					Program.synth.SpeakAsync($"{player.name} {Resources.tts_leave_1} {team.color} {Resources.tts_leave_2}");
+					SpeakAsync($"{player.name} {Resources.tts_leave_1} {team.color} {Resources.tts_leave_2}");
 				}
 			};
 			Program.PlayerSwitchedTeams += (frame, fromTeam, toTeam, player) =>
@@ -75,53 +78,53 @@ namespace Spark
 
 				if (fromTeam != null)
 				{
-					Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_1} {fromTeam.color} {Resources.tts_switch_2} {toTeam.color} {Resources.tts_switch_3}");
+					SpeakAsync($"{player.name} {Resources.tts_switch_1} {fromTeam.color} {Resources.tts_switch_2} {toTeam.color} {Resources.tts_switch_3}");
 				}
 				else
 				{
-					Program.synth.SpeakAsync($"{player.name} {Resources.tts_switch_alt_1} {toTeam.color} {Resources.tts_switch_alt_2}");
+					SpeakAsync($"{player.name} {Resources.tts_switch_alt_1} {toTeam.color} {Resources.tts_switch_alt_2}");
 				}
 			};
 			Program.PauseRequest += (frame, player, distance) =>
 			{
 				if (SparkSettings.instance.pausedTTS)
 				{
-					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_pause_req}");
+					SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_pause_req}");
 				}
 			};
 			Program.GamePaused += (frame, player, distance) =>
 			{
 				if (SparkSettings.instance.pausedTTS)
 				{
-					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_paused}");
+					SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_paused}");
 				}
 			};
 			Program.GameUnpaused += (frame, player, distance) =>
 			{
 				if (SparkSettings.instance.pausedTTS)
 				{
-					Program.synth.SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_unpause}");
+					SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_unpause}");
 				}
 			};
 			Program.LocalThrow += (frame) =>
 			{
 				if (SparkSettings.instance.throwSpeedTTS && frame.last_throw.total_speed > 10)
 				{
-					Program.synth.SpeakAsync($"{frame.last_throw.total_speed:N1}");
+					SpeakAsync($"{frame.last_throw.total_speed:N1}");
 				}
 			};
 			Program.BigBoost += (frame, team, player, speed, howLongAgo) =>
 			{
 				if (SparkSettings.instance.maxBoostSpeedTTS && player.name == frame.client_name)
 				{
-					Program.synth.SpeakAsync($"{speed:N0} {Resources.tts_meters_per_second}");
+					SpeakAsync($"{speed:N0} {Resources.tts_meters_per_second}");
 				}
 			};
 			Program.PlayspaceAbuse += (frame, team, player, playspacePos) =>
 			{
 				if (SparkSettings.instance.playspaceTTS)
 				{
-					Program.synth.SpeakAsync($"{player.name} {Resources.tts_abused}");
+					SpeakAsync($"{player.name} {Resources.tts_abused}");
 				}
 			};
 			Program.Joust += (frame, team, player, isNeutral, joustTime, maxSpeed, maxTubeExitSpeed) =>
@@ -129,29 +132,29 @@ namespace Spark
 				// only joust time
 				if (SparkSettings.instance.joustTimeTTS && !SparkSettings.instance.joustSpeedTTS)
 				{
-					Program.synth.SpeakAsync($"{team.color} {joustTime:N1}");
+					SpeakAsync($"{team.color} {joustTime:N1}");
 				}
 				// only joust speed
 				else if (!SparkSettings.instance.joustTimeTTS && SparkSettings.instance.joustSpeedTTS)
 				{
-					Program.synth.SpeakAsync($"{team.color} {maxSpeed:N0} {Resources.tts_meters_per_second}");
+					SpeakAsync($"{team.color} {maxSpeed:N0} {Resources.tts_meters_per_second}");
 				}
 				// both
 				else if (SparkSettings.instance.joustTimeTTS && SparkSettings.instance.joustSpeedTTS)
 				{
-					Program.synth.SpeakAsync($"{team.color} {joustTime:N1} {maxSpeed:N0} {Resources.tts_meters_per_second}");
+					SpeakAsync($"{team.color} {joustTime:N1} {maxSpeed:N0} {Resources.tts_meters_per_second}");
 				}
 			};
 			Program.Goal += (frame, goalEvent) =>
 			{
 				if (SparkSettings.instance.goalDistanceTTS)
 				{
-					Program.synth.SpeakAsync($"{frame.last_score.distance_thrown:N1} {Resources.tts_meters}");
+					SpeakAsync($"{frame.last_score.distance_thrown:N1} {Resources.tts_meters}");
 				}
 
 				if (SparkSettings.instance.goalSpeedTTS)
 				{
-					Program.synth.SpeakAsync($"{frame.last_score.disc_speed:N1} {Resources.tts_meters_per_second}");
+					SpeakAsync($"{frame.last_score.disc_speed:N1} {Resources.tts_meters_per_second}");
 				}
 			};
 
@@ -185,17 +188,8 @@ namespace Spark
 					// wait until it's done playing
 					Thread.Sleep(100);
 
-					// TODO actually wait until the previous one is finished
-					//while (!mediaPlayer.NaturalDuration.HasTimeSpan)
-					//{
-					//	Thread.Sleep(10);
-					//}
-					//Thread.Sleep((int)mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds);
-					//while (playing)
-					//{
-					//	Thread.Sleep(10);
-					//}
-					Task.Run(() => File.Delete(result));
+					Task.Run(TrimCacheFolder);
+					// Task.Run(() => File.Delete(result));
 				}
 				else
 				{
@@ -241,6 +235,17 @@ namespace Spark
 			if (ttsDisabled) return;
 
 
+			string filePath = Path.Combine(CacheFolder, $"{Rate}_{SparkSettings.instance.languageIndex}_{SparkSettings.instance.useWavenetVoices}_{SparkSettings.instance.ttsVoice}_{text.Replace(" ", "_")}.mp3");
+
+			// play from cache
+			if (File.Exists(filePath))
+			{
+				// play the file
+				ttsQueue.Enqueue(filePath);
+				return;
+			}
+
+
 			// Set the text input to be synthesized.
 			SynthesisInput input = new SynthesisInput
 			{
@@ -271,11 +276,58 @@ namespace Spark
 
 			// Write the AudioContent of the response to an MP3 file.
 			string s64 = response.AudioContent.ToBase64();
-			string filePath = Path.Combine(Path.GetTempPath(), "ttsoutput64_" + DateTime.Now.ToFileTime() + ".mp3");
+			if (!Directory.Exists(CacheFolder)) Directory.CreateDirectory(CacheFolder);
 			File.WriteAllBytes(filePath, Convert.FromBase64String(s64));
 
 			// play the file
 			ttsQueue.Enqueue(filePath);
+		}
+
+		public static void ClearCacheFolder()
+		{
+			try
+			{
+				if (Directory.Exists(CacheFolder))
+				{
+					DirectoryInfo di = new DirectoryInfo(CacheFolder);
+
+					foreach (FileInfo file in di.GetFiles())
+					{
+						file.Delete();
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Logger.LogRow(Logger.LogType.Error, "Failed clearing TTS cache\n" + e);
+			}
+		}
+
+		public static void TrimCacheFolder()
+		{
+			try
+			{
+				if (Directory.Exists(CacheFolder))
+				{
+					DirectoryInfo di = new DirectoryInfo(CacheFolder);
+
+					List<FileInfo> files = di.GetFiles().ToList();
+					files.Sort((f1, f2) => f1.LastAccessTime.CompareTo(f2.LastAccessTime));
+					long size = files.Sum(file => file.Length);
+
+					while (size > SparkSettings.instance.ttsCacheSizeBytes)
+					{
+						FileInfo removed = files[0];
+						files.RemoveAt(0);
+						size -= removed.Length;
+						removed.Delete();
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Logger.LogRow(Logger.LogType.Error, "Failed deleting files from cache\n" + e);
+			}
 		}
 	}
 }

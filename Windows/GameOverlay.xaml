@@ -14,7 +14,9 @@
         ShowInTaskbar="False"
         Topmost="True"
         ShowActivated="False"
-        Background="Transparent">
+        Background="Transparent"
+		Loaded="OnLoaded"
+		>
     <!-- <Grid Background="Transparent"> -->
     <!--     <Grid.RowDefinitions> -->
     <!--         <RowDefinition Height="*" /> -->
@@ -58,6 +60,6 @@
     <!--     </Grid> -->
     <!-- </Grid> -->
     <DockPanel Background="Transparent">
-		<wv2:WebView2 Name="webView" DefaultBackgroundColor="Transparent" Source="http://localhost:6724/full_overlay" />
+		<wv2:WebView2 Name="WebView" DefaultBackgroundColor="Transparent" />
 	</DockPanel>
 </Window>
