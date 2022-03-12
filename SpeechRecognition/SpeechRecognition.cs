@@ -180,7 +180,8 @@ namespace Spark
 						"quebec",
 						"hope that",
 						"could that",
-						"cop that"
+						"cop that",
+						"say cheese",
 					});
 				}
 				if (SparkSettings.instance.badWordDetection)
@@ -199,7 +200,7 @@ namespace Spark
 					Debug.WriteLine(alt["text"].ToString());
 
 
-						foreach (string clipTerm in clipTerms)
+					foreach (string clipTerm in clipTerms)
 					{
 						if (alt["text"].ToString()?.Contains(clipTerm) ?? false)
 						{

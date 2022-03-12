@@ -465,9 +465,9 @@
 		<StackPanel x:Name="Right_Sidebar" Grid.Column="4" HorizontalAlignment="Stretch" Height="Auto">
 			<GroupBox x:Name="casterToolsBox" Header="Caster Tools" Visibility="Visible">
 				<StackPanel>
-					<Label x:Name="label" Content="Stats ID:"/>
-					<TextBox x:Name="customIdTextbox" Text="---" MaxLines="1" TextWrapping="NoWrap" Height="16" IsReadOnly="True" FontSize="14" FontFamily="Courier New"/>
-					<StackPanel Height="40" Orientation="Horizontal">
+					<Label Visibility="Collapsed" x:Name="label" Content="Stats ID:"/>
+					<TextBox Visibility="Collapsed" x:Name="customIdTextbox" Text="---" MaxLines="1" TextWrapping="NoWrap" Height="16" IsReadOnly="True" FontSize="14" FontFamily="Courier New"/>
+					<StackPanel Visibility="Collapsed" Height="40" Orientation="Horizontal">
 						<Button x:Name="button4" Content="Split Stats" Margin="4,4,4,4" Width="85" Click="splitStatsButtonClick"/>
 						<Button x:Name="button5" Content="Upload Now" Margin="4,4,4,4" Width="85" Click="UploadStatsManual"/>
 					</StackPanel>

@@ -227,11 +227,24 @@ namespace Spark
 				spectateMeLabel.Content = Properties.Resources.Stop_Spectating_Me;
 			}
 
-			string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
-			var webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
-			await PlayercardWebView.EnsureCoreWebView2Async(webView2Environment);
-			PlayercardWebView.Source = new UriBuilder("https://ignitevr.gg/cgi-bin/EchoStats.cgi/playercard_embed").Uri;
-			Debug.WriteLine("ESURED");
+			try
+			{
+				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
+				var webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
+				await PlayercardWebView.EnsureCoreWebView2Async(webView2Environment);
+				PlayercardWebView.Source = new UriBuilder("https://ignitevr.gg/cgi-bin/EchoStats.cgi/playercard_embed").Uri;
+				Debug.WriteLine("ESURED");
+			}
+			catch (FileNotFoundException ex)
+			{
+				Logger.LogRow(Logger.LogType.Error, "4538: Failed to load WebView.\n" + ex);
+				new MessageBox("Failed to load. Please report this to NtsFranz or else ┗|｀O′|┛").Show();
+			}
+			catch (Exception ex)
+			{
+				Logger.LogRow(Logger.LogType.Error, "9530: Failed to load WebView for an unknown reason.\n" + ex);
+				new MessageBox("Failed to load. Please report this to NtsFranz. ( ╯□╰ )").Show();
+			}
 
 			//_ = CheckForAppUpdate();
 		}
@@ -905,6 +918,7 @@ namespace Spark
 			
 			casterToolsBox.Visibility = !DiscordOAuth.Personal ? Visibility.Visible : Visibility.Collapsed;
 			PasteLinkInLiveButton.Visibility = DiscordOAuth.AccessCode?.series_name.Contains("vrml") ?? false ? Visibility.Visible : Visibility.Collapsed;
+			MatchSetupButton.Visibility = DiscordOAuth.AccessCode?.series_name.Contains("vrml") ?? false ? Visibility.Visible : Visibility.Collapsed;
 			
 			accessCodeDropdownListenerActive = true;
 		}
@@ -1190,7 +1204,10 @@ namespace Spark
 		private void RestartAsSpectatorClick(object sender, RoutedEventArgs e)
 		{
 			Program.KillEchoVR();
-			Program.StartEchoVR(Program.JoinType.Spectator, session_id: Program.lastFrame.sessionid);
+			if (Program.lastFrame != null)
+			{
+				Program.StartEchoVR(Program.JoinType.Spectator, session_id: Program.lastFrame.sessionid);
+			}
 		}
 
 		private void showEventLogFileButton_Click(object sender, RoutedEventArgs e)
@@ -2263,7 +2280,7 @@ namespace Spark
 			if (Program.lastFrame == null) return;
 			try
 			{
-				Process.Start(new ProcessStartInfo("discord://discordapp.com/channels/706393774804303924/706393776918364211") { UseShellExecute = true });
+				Process.Start(new ProcessStartInfo("discord://discordapp.com/channels/776209623857889361/794763716645355560") { UseShellExecute = true });
 				Clipboard.SetText(Program.CurrentSparkLink(Program.lastFrame.sessionid));
 				await Task.Delay(1000);
 				Keyboard.SendKey(Keyboard.DirectXKeyStrokes.DIK_LCONTROL, false, Keyboard.InputType.Keyboard);

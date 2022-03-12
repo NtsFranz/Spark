@@ -108,7 +108,7 @@ sw.subscribe("pause", data => {
 });
 
 sw.subscribe("goal", goal => {
-    if (goal["goal_color"] === "orange") {
+    if (goal["team_scored"] === "orange") {
         orange_goal_banner.classList.add("visible");
         orange_goal_banner_text.innerText = goal["goal_type"];
         orange_goal_banner_secondary.innerText = goal["player_name"];
@@ -117,7 +117,7 @@ sw.subscribe("goal", goal => {
         setTimeout(function () {
             orange_goal_banner.classList.remove("visible");
         }, 10000);
-    } else if (goal["goal_color"] === "blue") {
+    } else if (goal["team_scored"] === "blue") {
         blue_goal_banner.classList.add("visible");
         blue_goal_banner_text.innerText = goal["goal_type"];
         blue_goal_banner_secondary.innerText = goal["player_name"];

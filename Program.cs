@@ -3677,7 +3677,7 @@ namespace Spark
 
 
 		}
-		
+
 
 		/// <summary>
 		/// Shows or hides the requested popup window
@@ -3705,8 +3705,10 @@ namespace Spark
 					popupWindows[windowName].Close();
 					return false;
 				}
-			}catch (Exception)
+			}
+			catch (Exception e)
 			{
+				LogRow(LogType.Error, e.ToString());
 				new MessageBox($"Failed to open window: {type}.\nPlease report this to NtsFranz.").Show();
 				return false;
 			}

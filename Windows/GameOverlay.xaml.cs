@@ -89,11 +89,23 @@ namespace Spark
 
 		private async void OnLoaded(object sender, RoutedEventArgs e)
 		{
-
-			string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
-			var webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
-			await WebView.EnsureCoreWebView2Async(webView2Environment);
-			WebView.Source = new Uri("http://localhost:6724/full_overlay");
+			try
+			{
+				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
+				var webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
+				await WebView.EnsureCoreWebView2Async(webView2Environment);
+				WebView.Source = new Uri("http://localhost:6724/full_overlay");
+			}
+			catch (FileNotFoundException ex)
+			{
+				Logger.LogRow(Logger.LogType.Error, "1895: Failed to load WebView.\n" + ex);
+				new MessageBox("Failed to load. Please report this to NtsFranz or else ┗|｀O′|┛").Show();
+			}
+			catch (Exception ex)
+			{
+				Logger.LogRow(Logger.LogType.Error, "1239: Failed to load WebView for an unknown reason.\n" + ex);
+				new MessageBox("Failed to load. Please report this to NtsFranz. ( ╯□╰ )").Show();
+			}
 		}
 
 		private static Button MakeButton(int i)

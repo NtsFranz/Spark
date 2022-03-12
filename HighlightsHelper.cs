@@ -181,7 +181,7 @@ namespace Spark
 					Id = "MANUAL",
 					HighlightTags = Highlights.HighlightType.Achievement,
 					Significance = Highlights.HighlightSignificance.Good,
-					UserDefaultInterest = false,
+					UserDefaultInterest = true,
 					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Manual clip"),}
 				},
 			};
