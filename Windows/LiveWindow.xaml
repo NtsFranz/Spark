@@ -465,13 +465,7 @@
 		<StackPanel x:Name="Right_Sidebar" Grid.Column="4" HorizontalAlignment="Stretch" Height="Auto">
 			<GroupBox x:Name="casterToolsBox" Header="Caster Tools" Visibility="Visible">
 				<StackPanel>
-					<Label Visibility="Collapsed" x:Name="label" Content="Stats ID:"/>
-					<TextBox Visibility="Collapsed" x:Name="customIdTextbox" Text="---" MaxLines="1" TextWrapping="NoWrap" Height="16" IsReadOnly="True" FontSize="14" FontFamily="Courier New"/>
-					<StackPanel Visibility="Collapsed" Height="40" Orientation="Horizontal">
-						<Button x:Name="button4" Content="Split Stats" Margin="4,4,4,4" Width="85" Click="splitStatsButtonClick"/>
-						<Button x:Name="button5" Content="Upload Now" Margin="4,4,4,4" Width="85" Click="UploadStatsManual"/>
-					</StackPanel>
-					<Button x:Name="button6" Content="Restart as Spectator" Height="35" Margin="4,4,4,4" Click="RestartAsSpectatorClick" ToolTip="Restarts the game in the 2D spectator mode"/>
+					<Button Content="Restart as Spectator" Height="35" Margin="4,4,4,4" Click="RestartAsSpectatorClick" ToolTip="Restarts the game in the 2D spectator mode"/>
 					<Button Content="Find All Quests" Height="35" Margin="4,4,4,4" Click="FindAllQuests" ToolTip="Shows a list of all the Quest IPs on the network."/>
 					<Button x:Name="PasteLinkInLiveButton" Height="35" Margin="4,4,4,4" Click="PasteLinkInLive">Paste link in #live</Button>
 					<Button x:Name="LeagueOverlaysButton" Height="35" Margin="4,4,4,4" Click="LeagueOverlaysClick">League Overlays</Button>

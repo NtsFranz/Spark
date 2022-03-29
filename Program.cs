@@ -133,15 +133,6 @@ namespace Spark
 
 		private static float smoothDeltaTime = -1;
 
-		private static string customId;
-		public static string CustomId {
-			get => customId;
-			set {
-				customId = value;
-				if (matchData != null) matchData.customId = value;
-			}
-		}
-
 		public static bool hostingLiveReplay = false;
 
 		public static string echoVRIP = "";
@@ -975,7 +966,7 @@ namespace Spark
 
 				if (matchData == null)
 				{
-					matchData = new MatchData(frame, CustomId);
+					matchData = new MatchData(frame, null);
 					UpdateStatsIngame(frame);
 				}
 
@@ -1400,7 +1391,7 @@ namespace Spark
 								   // TODO discard old players
 
 				inPostMatch = false;
-				matchData = new MatchData(frame, CustomId);
+				matchData = new MatchData(frame, null);
 				UpdateStatsIngame(frame);
 
 				if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath))
@@ -2942,11 +2933,11 @@ namespace Spark
 			lastMatches.Enqueue(matchData);
 			if (lastMatches.Count > 50)
 			{
-				lastMatches.TryDequeue(out MatchData match);
+				lastMatches.TryDequeue(out MatchData _);
 			}
 
 			lastMatchData = matchData;
-			matchData = null;
+			matchData = new MatchData(lastFrame, lastMatchData);
 
 			inPostMatch = true;
 

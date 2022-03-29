@@ -191,9 +191,6 @@ namespace Spark
 			}
 			//hostLiveReplayButton.Visible = !Program.Personal;
 
-			GenerateNewStatsId();
-
-
 			showHighlights.IsEnabled = HighlightsHelper.DoNVClipsExist();
 			showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
 			showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? Properties.Resources.Show + " " + HighlightsHelper.nvHighlightClipCount + " " + Properties.Resources.Highlights : Properties.Resources.No_clips_available;
@@ -1114,31 +1111,6 @@ namespace Spark
 				fullFileCache.Clear();
 				mainOutputTextBox.Text = FilterLines(fullFileCache);
 			}
-		}
-
-		private void customIdChanged(object sender, RoutedEventArgs e)
-		{
-			Program.CustomId = ((TextBox)sender).Text;
-		}
-
-		private void splitStatsButtonClick(object sender, RoutedEventArgs e)
-		{
-			GenerateNewStatsId();
-		}
-
-		private void GenerateNewStatsId()
-		{
-			using SHA256 sha = SHA256.Create();
-
-			byte[] hash = sha.ComputeHash(BitConverter.GetBytes(DateTime.Now.Ticks));
-			// Convert the byte array to hexadecimal string
-			StringBuilder sb = new StringBuilder();
-			foreach (byte b in hash)
-			{
-				sb.Append(b.ToString("X2"));
-			}
-			Program.CustomId = sb.ToString();
-			customIdTextbox.Text = Program.CustomId;
 		}
 
 		private void updateButton_Click(object sender, RoutedEventArgs e)

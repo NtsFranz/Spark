@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using EchoVRAPI;
 
@@ -10,7 +11,6 @@ namespace Spark
 	/// </summary>
 	public class MatchData : DataContainer
 	{
-		public string customId;
 		public readonly Dictionary<Team.TeamColor, TeamData> teams;
 
 		public readonly Dictionary<string, MatchPlayer> players = new Dictionary<string, MatchPlayer>();
@@ -44,6 +44,7 @@ namespace Spark
 		public int overtimeCount = 0;
 		public int round = 1;
 		public FinishReason finishReason = FinishReason.not_finished;
+
 		/// <summary>
 		/// Get match time in UTC format for SQL usage.
 		/// </summary>
@@ -53,17 +54,18 @@ namespace Spark
 		/// Constructor used to initialize match data. 
 		/// </summary>
 		/// <param name="firstFrame"></param>
-		public MatchData(Frame firstFrame, string customId)
+		/// <param name="lastMatchData">Used for calculating he oldRoundStats</param>
+		public MatchData(Frame firstFrame, MatchData lastMatchData)
 		{
 			this.firstFrame = firstFrame;
-			this.customId = customId;
 			matchTime = firstFrame.recorded_time;
 			if (matchTime == DateTime.MinValue)
 			{
 				matchTime = DateTime.UtcNow;
 			}
 
-			teams = new Dictionary<Team.TeamColor, TeamData> {
+			teams = new Dictionary<Team.TeamColor, TeamData>
+			{
 				{ Team.TeamColor.blue, new TeamData(Team.TeamColor.blue, firstFrame.teams[0].team) },
 				{ Team.TeamColor.orange, new TeamData(Team.TeamColor.orange, firstFrame.teams[1].team) },
 				{ Team.TeamColor.spectator, new TeamData(Team.TeamColor.spectator, firstFrame.teams[2].team) },
@@ -78,6 +80,36 @@ namespace Spark
 			{
 				Program.FindTeamNamesFromPlayerList(this, firstFrame.teams[0]);
 				Program.FindTeamNamesFromPlayerList(this, firstFrame.teams[1]);
+			}
+
+			if (lastMatchData != null)
+			{
+				// Loop through teams.
+				foreach (Team team in firstFrame.teams)
+				{
+					// Loop through players on team.
+					foreach (Player player in team.players)
+					{
+						MatchPlayer oldPlayer = lastMatchData.GetPlayerData(player);
+						if (oldPlayer != null)
+						{
+							TeamData teamData = teams[team.color];
+							MatchPlayer newPlayer = new MatchPlayer(this, teamData, player);
+							// if stats didn't get reset
+							if (SumOfStats(player.stats) >= SumOfStats(oldPlayer.currentStats))
+							{
+								newPlayer.oldRoundStats += player.stats;
+							}
+							else
+							{
+								Debug.WriteLine("Skipped assigning old round stats");
+							}
+
+							newPlayer.currentStats = player.stats;
+							players.Add(player.name, newPlayer);
+						}
+					}
+				}
 			}
 
 			//_ = InitializeInDatabase();
@@ -95,9 +127,10 @@ namespace Spark
 				return players[player.name];
 			}
 
-			Console.WriteLine("Player not found");  // TODO this happens a lot
+			Console.WriteLine("Player not found"); // TODO this happens a lot
 			return null;
 		}
+
 		/// <summary>
 		/// Function to transform match data into the desired format for firestore.
 		/// </summary>
@@ -108,7 +141,7 @@ namespace Spark
 			{
 				{ "session_id", firstFrame.sessionid },
 				{ "match_time", MatchTimeSQL },
-				{ "round", round },	// TODO some way of discovering this?
+				{ "round", round }, // TODO some way of discovering this?
 				{ "private", firstFrame.private_match },
 				{ "client_name", firstFrame.client_name },
 				{ "hw_id", Logger.MacAddr },
@@ -120,15 +153,31 @@ namespace Spark
 				{ "blue_team_score", teams[Team.TeamColor.blue].points },
 				{ "orange_team_score", teams[Team.TeamColor.orange].points },
 				{ "winning_team", teams[Team.TeamColor.blue].points > teams[Team.TeamColor.orange].points ? Team.TeamColor.blue.ToString() : Team.TeamColor.orange.ToString() },
-				{ "game_clock_end", endTime },	// TODO change value when reset or overtime
+				{ "game_clock_end", endTime }, // TODO change value when reset or overtime
 				{ "overtime_count", overtimeCount },
 				{ "finish_reason", finishReason.ToString() },
-				{ "custom_id", customId },
 				{ "disabled", false },
 				{ "discord_userid", DiscordOAuth.DiscordUserID },
 			};
 
 			return values;
+		}
+
+		private static float SumOfStats(Stats stats)
+		{
+			return
+				stats.possession_time +
+				stats.points +
+				stats.passes +
+				stats.catches +
+				stats.steals +
+				stats.stuns +
+				stats.blocks +
+				stats.interceptions +
+				stats.assists +
+				stats.saves +
+				stats.goals +
+				stats.shots_taken;
 		}
 
 		public int SumOfStats()
@@ -138,9 +187,8 @@ namespace Spark
 			{
 				sum = player.Stuns + player.ShotsTaken + player.Points + (int)player.PossessionTime;
 			}
+
 			return sum;
 		}
-
 	}
-
 }

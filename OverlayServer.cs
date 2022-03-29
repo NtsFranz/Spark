@@ -568,8 +568,7 @@ namespace Spark
 			public static List<MatchData> GetPreviousRounds()
 			{
 				List<MatchData> selectedMatches = Program.lastMatches
-					.Where(m => m.customId == Program.matchData.customId &&
-					            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+					.Where(m => m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 					.ToList();
 				selectedMatches.Add(Program.matchData);
 				return selectedMatches;
@@ -649,10 +648,12 @@ namespace Spark
 		{
 			// gets a list of all previous matches in memory that are for the current set
 			List<MatchData> selectedMatches = Program.lastMatches
-				.Where(m => m.customId == Program.matchData.customId &&
-				            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+				.Where(m => m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 				.ToList();
+			
+			// BAD ☹
 			if (Program.matchData != null) selectedMatches.Add(Program.matchData);
+			// if (Program.matchData != null && Program.lastFrame.game_status != "round_start") selectedMatches.Add(Program.matchData);
 
 			Dictionary<string, MatchPlayer> bluePlayers = new Dictionary<string, MatchPlayer>();
 			IEnumerable<MatchPlayer> blueRoundPlayers = selectedMatches
@@ -725,8 +726,7 @@ namespace Spark
 
 				// gets a list of all the times of previous matches in memory that are for the current set
 				List<DateTime> selectedMatchTimes = Program.lastMatches
-					.Where(m => m.customId == Program.matchData.customId &&
-					            m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+					.Where(m => m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 					.Select(m => m.matchTime).ToList();
 				Debug.Assert(Program.matchData != null, "Program.matchData != null");
 				selectedMatchTimes.Add(Program.matchData.matchTime);

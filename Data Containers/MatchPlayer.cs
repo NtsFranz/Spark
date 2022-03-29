@@ -14,8 +14,10 @@ namespace Spark
 	/// </summary>
 	public class MatchPlayer : DataContainer
 	{
-		public MatchPlayer() {}
-		
+		public MatchPlayer()
+		{
+		}
+
 		public MatchPlayer(MatchData match, TeamData team, Player player)
 		{
 			matchData = match;
@@ -60,36 +62,36 @@ namespace Spark
 		{
 			Dictionary<string, object> values = new Dictionary<string, object>
 			{
-				{"session_id", matchData.firstFrame.sessionid},
-				{"match_time", matchData.MatchTimeSQL },
-				{"player_id", Id },
-				{"player_name", Name },
-				{"level", Level },
-				{"player_number", Number },
-				{"team_color", teamData.teamColor.ToString() },
-				{"possession_time", PossessionTime},
-				{"play_time", PlayTime},
-				{"inverted_time", InvertedTime},
-				{"points", Points},
-				{"2_pointers", TwoPointers },
-				{"3_pointers", ThreePointers },
-				{"shots_taken", ShotsTaken },
-				{"saves", Saves },
-				{"goals", GoalsNum },
-				{"stuns", Stuns },
-				{"passes", Passes },
-				{"catches", Catches },
-				{"steals", Steals },
-				{"blocks", Blocks },
-				{"interceptions", Interceptions },
-				{"assists", Assists },
+				{ "session_id", matchData.firstFrame.sessionid },
+				{ "match_time", matchData.MatchTimeSQL },
+				{ "player_id", Id },
+				{ "player_name", Name },
+				{ "level", Level },
+				{ "player_number", Number },
+				{ "team_color", teamData.teamColor.ToString() },
+				{ "possession_time", PossessionTime },
+				{ "play_time", PlayTime },
+				{ "inverted_time", InvertedTime },
+				{ "points", Points },
+				{ "2_pointers", TwoPointers },
+				{ "3_pointers", ThreePointers },
+				{ "shots_taken", ShotsTaken },
+				{ "saves", Saves },
+				{ "goals", GoalsNum },
+				{ "stuns", Stuns },
+				{ "passes", Passes },
+				{ "catches", Catches },
+				{ "steals", Steals },
+				{ "blocks", Blocks },
+				{ "interceptions", Interceptions },
+				{ "assists", Assists },
 				// {"turnovers", Turnovers },	// TODO enable once the db supports it
-				{"average_speed", averageSpeed[0] },
-				{"average_speed_lhand", averageSpeed[1] },
-				{"average_speed_rhand", averageSpeed[2] },
-				{"wingspan", DistanceBetweenHands },
-				{"playspace_abuses", PlayspaceAbuses },
-				{"wins", Won }
+				{ "average_speed", averageSpeed[0] },
+				{ "average_speed_lhand", averageSpeed[1] },
+				{ "average_speed_rhand", averageSpeed[2] },
+				{ "wingspan", DistanceBetweenHands },
+				{ "playspace_abuses", PlayspaceAbuses },
+				{ "wins", Won }
 			};
 
 			return values;
@@ -98,6 +100,7 @@ namespace Spark
 		private const int MINCLAMP = 0;
 
 		#region Get/Set Methods
+
 		public long Id { get; set; }
 
 		public string Name { get; set; }
@@ -108,7 +111,8 @@ namespace Spark
 		public Stats cachedStats = new Stats();
 		public Stats oldRoundStats = new Stats();
 
-		public float PossessionTime {
+		public float PossessionTime
+		{
 			get => Math.Clamp(cachedStats.possession_time + currentStats.possession_time - oldRoundStats.possession_time, MINCLAMP, int.MaxValue);
 			set => currentStats.possession_time = value;
 		}
@@ -116,17 +120,20 @@ namespace Spark
 		public float PlayTime { get; set; }
 		public float InvertedTime { get; set; }
 
-		public int Points {
+		public int Points
+		{
 			get => Math.Clamp(cachedStats.points + currentStats.points - oldRoundStats.points, MINCLAMP, int.MaxValue);
 			set => currentStats.points = value;
 		}
 
-		public int ShotsTaken {
+		public int ShotsTaken
+		{
 			get => Math.Clamp(cachedStats.shots_taken + currentStats.shots_taken - oldRoundStats.shots_taken, MINCLAMP, int.MaxValue);
 			set => currentStats.shots_taken = value;
 		}
 
-		public int Saves {
+		public int Saves
+		{
 			get => Math.Clamp(cachedStats.saves + currentStats.saves - oldRoundStats.saves, MINCLAMP, int.MaxValue);
 			set => currentStats.saves = value;
 		}
@@ -139,33 +146,40 @@ namespace Spark
 
 		public int Catches { get; set; }
 
-		public int Steals {
+		public int Steals
+		{
 			get => Math.Clamp(cachedStats.steals + currentStats.steals - oldRoundStats.steals, MINCLAMP, int.MaxValue);
 			set => currentStats.steals = value;
 		}
 
-		public int Stuns {
+		public int Stuns
+		{
 			get => Math.Clamp(cachedStats.stuns + currentStats.stuns - oldRoundStats.stuns, MINCLAMP, int.MaxValue);
 			set => currentStats.stuns = value;
 		}
 
-		public int Blocks {
+		public int Blocks
+		{
 			get => Math.Clamp(cachedStats.blocks + currentStats.blocks - oldRoundStats.blocks, MINCLAMP, int.MaxValue);
 			set => currentStats.blocks = value;
 		}
 
-		public int Interceptions {
+		public int Interceptions
+		{
 			get => Math.Clamp(cachedStats.interceptions + currentStats.interceptions - oldRoundStats.interceptions, MINCLAMP, int.MaxValue);
 			set => currentStats.interceptions = value;
 		}
 
-		public int Assists {
+		public int Assists
+		{
 			get => Math.Clamp(cachedStats.assists + currentStats.assists - oldRoundStats.assists, MINCLAMP, int.MaxValue);
 			set => currentStats.assists = value;
 		}
 
-		public float DistanceBetweenHands {
-			get {
+		public float DistanceBetweenHands
+		{
+			get
+			{
 				distanceBetweenHands.Sort();
 				if (distanceBetweenHands.Count > 100)
 				{
@@ -180,14 +194,17 @@ namespace Spark
 				return 0;
 			}
 		}
+
 		public int Won { get; set; }
 		public int Turnovers { get; set; }
 		public MatchData matchData;
 		public TeamData teamData;
+
 		/// <summary>
 		/// The location of the playspace within the arena. This is not the position of the player within the playspace
 		/// </summary>
 		public Vector3 playspaceLocation;
+
 		public DateTime lastAbuse = DateTime.Now;
 		public TimeSpan playspaceInvincibility = TimeSpan.Zero;
 		public readonly TimeSpan joinPlayspaceInvincibility = TimeSpan.FromSeconds(5);
@@ -230,6 +247,7 @@ namespace Spark
 		public static float boostVelCutoff = 20;
 		public static float boostVelStopCutoff = 10;
 		public List<float> recentVelocities = new List<float>();
+
 		public void AddRecentVelocity(float vel)
 		{
 			recentVelocities.Add(vel);
@@ -239,6 +257,7 @@ namespace Spark
 				recentVelocities.RemoveAt(0);
 			}
 		}
+
 		public (float, float) GetMaxRecentVelocity(bool reset = false)
 		{
 			int index = (int)(.99f * (recentVelocities.Count - 1));
@@ -250,12 +269,15 @@ namespace Spark
 			{
 				var asdf = 1;
 			}
+
 			if (reset)
 			{
 				recentVelocities.Clear();
 			}
+
 			return (maxVel, (float)(recentVelocities.Count - maxVelIndex) / Program.StatsHz);
 		}
+
 		public float GetSmoothedVelocity(float smoothTime = 1)
 		{
 			int N = (int)(smoothTime * Program.StatsHz);
@@ -263,8 +285,10 @@ namespace Spark
 			{
 				return recentVelocities.Average();
 			}
-			return recentVelocities.Skip(recentVelocities.Count() - N).Take(N-1).Average();
+
+			return recentVelocities.Skip(recentVelocities.Count() - N).Take(N - 1).Average();
 		}
+
 		public bool boosting = false;
 
 		#endregion
@@ -276,20 +300,21 @@ namespace Spark
 		public void CacheStats(Stats newPlayerStats)
 		{
 			// if player joined back from spectator
-			if ((newPlayerStats.possession_time + 
-				newPlayerStats.points + 
-				newPlayerStats.shots_taken + 
-				newPlayerStats.saves + 
-				newPlayerStats.passes + 
-				newPlayerStats.catches + 
-				newPlayerStats.steals + 
-				newPlayerStats.stuns + 
-				newPlayerStats.blocks + 
-				newPlayerStats.interceptions + 
-				newPlayerStats.assists) != 0)
+			if ((newPlayerStats.possession_time +
+			     newPlayerStats.points +
+			     newPlayerStats.shots_taken +
+			     newPlayerStats.saves +
+			     newPlayerStats.passes +
+			     newPlayerStats.catches +
+			     newPlayerStats.steals +
+			     newPlayerStats.stuns +
+			     newPlayerStats.blocks +
+			     newPlayerStats.interceptions +
+			     newPlayerStats.assists) != 0)
 			{
 				return;
 			}
+
 			cachedStats += currentStats;
 		}
 
@@ -303,7 +328,7 @@ namespace Spark
 
 			oldRoundStats = cachedStats + currentStats;
 		}
-		
+
 		public static MatchPlayer operator +(MatchPlayer a, MatchPlayer b)
 		{
 			return new MatchPlayer
@@ -312,18 +337,18 @@ namespace Spark
 				Name = a.Name,
 				Level = b.Level,
 				Number = a.Number,
-				currentStats = a.currentStats+b.currentStats,
-				cachedStats = a.cachedStats+b.cachedStats,
-				oldRoundStats = a.oldRoundStats+b.oldRoundStats,
-				PlayTime = a.PlayTime+b.PlayTime,
-				InvertedTime = a.InvertedTime+b.InvertedTime,
-				GoalsNum = a.GoalsNum+b.GoalsNum,
-				TwoPointers = a.TwoPointers+b.TwoPointers,
-				ThreePointers = a.ThreePointers+b.ThreePointers,
-				Passes = a.Passes+b.Passes,
-				Catches = a.Catches+b.Catches,
-				Won = a.Won+b.Won,
-				Turnovers = a.Turnovers+b.Turnovers,
+				currentStats = a.currentStats + b.currentStats,
+				cachedStats = a.cachedStats + b.cachedStats,
+				oldRoundStats = a.oldRoundStats + b.oldRoundStats,
+				PlayTime = a.PlayTime + b.PlayTime,
+				InvertedTime = a.InvertedTime + b.InvertedTime,
+				GoalsNum = a.GoalsNum + b.GoalsNum,
+				TwoPointers = a.TwoPointers + b.TwoPointers,
+				ThreePointers = a.ThreePointers + b.ThreePointers,
+				Passes = a.Passes + b.Passes,
+				Catches = a.Catches + b.Catches,
+				Won = a.Won + b.Won,
+				Turnovers = a.Turnovers + b.Turnovers,
 				matchData = a.matchData,
 				teamData = a.teamData,
 				playspaceLocation = b.playspaceLocation,
