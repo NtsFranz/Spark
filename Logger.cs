@@ -351,11 +351,11 @@ public class Logger
 		try
 		{
 			var content = new FormUrlEncodedContent(values);
-			var response = await client.PostAsync(SecretKeys.webLogURL, content);
-			if (!response.IsSuccessStatusCode)
-			{
-				Console.WriteLine(response.Content.ToString());
-			}
+			// var response = await client.PostAsync(SecretKeys.webLogURL, content);
+			// if (!response.IsSuccessStatusCode)
+			// {
+			// 	Console.WriteLine(response.Content.ToString());
+			// }
 		}
 		catch (Exception e)
 		{

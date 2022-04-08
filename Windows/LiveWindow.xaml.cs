@@ -1155,11 +1155,6 @@ namespace Spark
 			}
 		}
 
-		private void UploadStatsManual(object sender, RoutedEventArgs e)
-		{
-			Program.UpdateStatsIngame(Program.lastFrame, manual: true);
-		}
-
 		private void RejoinClicked(object sender, RoutedEventArgs e)
 		{
 			Program.KillEchoVR();
@@ -1903,8 +1898,8 @@ namespace Spark
 
 		private void AtlasHostingThread()
 		{
-			const string hostURL = Program.APIURL + "host_atlas_match_v2";
-			const string unhostURL = Program.APIURL + "unhost_atlas_match_v2";
+			const string hostURL = Program.APIURL + "host_match";
+			const string unhostURL = Program.APIURL + "unhost_match";
 
 			// TODO show error message instead of just quitting
 			if (Program.lastFrame == null || Program.lastFrame.teams == null) return;
@@ -1991,36 +1986,7 @@ namespace Spark
 
 		private void GetAtlasMatches()
 		{
-			AtlasMatchResponse oldAtlasResponse = null;
-			AtlasMatchResponse igniteAtlasResponse = null;
-
-			bool oldAtlasDone = true;
-			bool igniteAtlasDone = false;
-
-			// TODO remove old atlas completely
-			//Program.PostRequestCallback(
-			//	"https://echovrconnect.appspot.com/api/v1/player/" + SparkSettings.instance.client_name,
-			//	new Dictionary<string, string> { { "User-Agent", "Atlas/0.5.8" } },
-			//	string.Empty,
-			//	(responseJSON) =>
-			//{
-			//	try
-			//	{
-			//		if (!string.IsNullOrEmpty(responseJSON))
-			//		{
-			//			oldAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
-			//		}
-			//		oldAtlasDone = true;
-			//	}
-			//	catch (Exception e)
-			//	{
-			//		oldAtlasDone = true;
-			//		Logger.LogRow(Logger.LogType.Error, $"Can't parse Atlas matches response\n{e}");
-			//	}
-			//});
-
-
-			string matchesAPIURL = $"{Program.APIURL}atlas_matches_v2/{(SparkSettings.instance.client_name == string.Empty ? "_" : SparkSettings.instance.client_name)}";
+			string matchesAPIURL = $"{Program.APIURL}/hosted_matches/{(SparkSettings.instance.client_name == string.Empty ? "_" : SparkSettings.instance.client_name)}";
 			Program.GetRequestCallback(
 				matchesAPIURL,
 				new Dictionary<string, string>() {
@@ -2031,45 +1997,15 @@ namespace Spark
 				{
 					try
 					{
-						igniteAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
-						igniteAtlasDone = true;
-
+						AtlasMatchResponse igniteAtlasResponse = JsonConvert.DeserializeObject<AtlasMatchResponse>(responseJSON);
+						if (igniteAtlasResponse != null) UpdateUIWithAtlasMatches(igniteAtlasResponse.matches);
 					}
 					catch (Exception e)
 					{
-						igniteAtlasDone = true;
-						Logger.LogRow(Logger.LogType.Error, $"Can't parse Atlas matches response\n{e}");
+						LogRow(LogType.Error, $"Can't parse Atlas matches response\n{e}");
 					}
 				}
 			 );
-
-			// once both requests are done....
-			Task.Run(() =>
-			{
-				// wait until both requests are done
-				while (!oldAtlasDone || !igniteAtlasDone) Task.Delay(100);
-
-				// if the old atlas request worked
-				if (oldAtlasResponse != null && oldAtlasResponse.matches != null)
-				{
-					// if both worked, add the ignite matches to the old list
-					if (igniteAtlasResponse != null && igniteAtlasResponse.matches != null)
-					{
-						oldAtlasResponse.matches.AddRange(igniteAtlasResponse.matches);
-					}
-					UpdateUIWithAtlasMatches(oldAtlasResponse.matches);
-				}
-				// if only the ignite atlas request worked
-				else if (igniteAtlasResponse != null && igniteAtlasResponse.matches != null)
-				{
-					UpdateUIWithAtlasMatches(igniteAtlasResponse.matches);
-				}
-				// if none worked
-				else
-				{
-					UpdateUIWithAtlasMatches(Array.Empty<AtlasMatch>());
-				}
-			});
 		}
 
 		private void RefreshMatchesClicked(object sender, RoutedEventArgs e)

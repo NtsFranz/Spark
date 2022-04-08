@@ -9,7 +9,7 @@ namespace Spark
 	{
 		public static Dictionary<string, object> ToDict()
 		{
-			List<MatchData> previousRounds = OverlayServer.Routes.GetPreviousRounds();
+			List<MatchData> previousRounds = OverlayServer.GetPreviousRounds();
 			return new Dictionary<string, object>()
 			{
 				{

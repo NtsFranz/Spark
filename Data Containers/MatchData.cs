@@ -145,7 +145,7 @@ namespace Spark
 				{ "private", firstFrame.private_match },
 				{ "client_name", firstFrame.client_name },
 				{ "hw_id", Logger.MacAddr },
-				{ "version", GetType().Assembly.GetName().Version.ToString() },
+				{ "version", GetType().Assembly.GetName().Version?.ToString() },
 				{ "ip", firstFrame.sessionip },
 				{ "blue_team_name", teams[Team.TeamColor.blue].teamName },
 				{ "orange_team_name", teams[Team.TeamColor.orange].teamName },

@@ -78,8 +78,7 @@ namespace Spark
 			{
 				Dictionary<string, string> data = new Dictionary<string, string>();
 				using HttpClient webClient = new HttpClient();
-				byte[] result = await webClient.GetByteArrayAsync(
-					Program.API_URL_2 + "get_overlays/" + DiscordOAuth.AccessCode.series_name + "/" + DiscordOAuth.oauthToken);
+				byte[] result = await webClient.GetByteArrayAsync($"{Program.APIURL}/get_overlays/{DiscordOAuth.AccessCode.series_name}/{DiscordOAuth.oauthToken}");
 				await using MemoryStream file = new MemoryStream(result);
 				using ZipArchive zip = new ZipArchive(file, ZipArchiveMode.Read);
 				foreach (ZipArchiveEntry entry in zip.Entries)

@@ -21,12 +21,9 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
 using EchoVRAPI;
-using Fleck;
 using NetMQ;
 using Newtonsoft.Json.Linq;
 using Microsoft.Web.WebView2.Core;
-
-//using System.Windows.Forms;
 
 namespace Spark
 {
@@ -52,10 +49,8 @@ namespace Spark
 		public static ConnectionState lastConnectionStateEvent;
 		public static bool InGame => connectionState == ConnectionState.InGame;
 
-		public const string APIURL = "https://ignitevr.gg/cgi-bin/EchoStats.cgi/";
-		// public const string APIURL = "http://127.0.0.1:5005/";
-		public const string API_URL_2 = "https://api.ignitevr.workers.dev/";
-		// public const string API_URL_2 = "http://127.0.0.1:5000/";
+		// public const string APIURL = "https://api.ignitevr.gg";
+		public const string APIURL = "http://127.0.0.1:8000";
 		public const string WRITE_API_URL = "http://127.0.0.1:6723/";
 
 
@@ -374,7 +369,7 @@ namespace Spark
 					DiscordOAuth.RevertToPersonal();
 				}
 
-				_ = Task.Run(async () =>
+				_ = Task.Run(() =>
 				{
 					string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
 					if (!Directory.Exists(path))
@@ -531,20 +526,23 @@ namespace Spark
 					{
 						EchoVRSettingsManager.ReloadLoadingTips();
 						JToken toolsAll = EchoVRSettingsManager.loadingTips["tools-all"];
-						JArray tips = (JArray) EchoVRSettingsManager.loadingTips["tools-all"]["tips"];
+						JArray tips = (JArray) EchoVRSettingsManager.loadingTips["tools-all"]?["tips"];
 
 						// keep only those without SPARK in the title
-						tips = new JArray(tips.Where(t => (string) t[1] != "SPARK"));
-
-						foreach (string tip in LoadingTips.newTips)
+						if (tips != null)
 						{
-							if (!tips.Any(existingTip => (string) existingTip[2] == tip))
-							{
-								tips.Add(new JArray("", "SPARK", tip));
-							}
-						}
+							tips = new JArray(tips.Where(t => (string)t[1] != "SPARK"));
 
-						toolsAll["tips"] = tips;
+							foreach (string tip in LoadingTips.newTips)
+							{
+								if (!tips.Any(existingTip => (string)existingTip[2] == tip))
+								{
+									tips.Add(new JArray("", "SPARK", tip));
+								}
+							}
+
+							if (toolsAll != null) toolsAll["tips"] = tips;
+						}
 
 						EchoVRSettingsManager.WriteEchoVRLoadingTips(EchoVRSettingsManager.loadingTips);
 					}
@@ -611,7 +609,7 @@ namespace Spark
 		/// <summary>
 		/// This is just a failsafe so that the program doesn't leave a dangling thread.
 		/// </summary>
-		static void KillAll()
+		private static void KillAll()
 		{
 			if (liveWindow != null)
 			{
@@ -678,7 +676,11 @@ namespace Spark
 			KillAll();
 		}
 
-		public static bool IsSparkOpen()
+		/// <summary>
+		/// Checks if another instance of Spark is open
+		/// </summary>
+		/// <returns>True if another is open, false if not.</returns>
+		private static bool IsSparkOpen()
 		{
 			try
 			{
@@ -692,61 +694,7 @@ namespace Spark
 			}
 			return false;
 		}
-
-		public static void KillAllOtherSparkInstances()
-		{
-			try
-			{
-				Process[] processes = Process.GetProcessesByName("IgniteBot");
-				Process[] processesSpark = Process.GetProcessesByName("Spark");
-				foreach (Process process in processes)
-				{
-					process.Kill();
-
-				}
-				foreach (Process process in processesSpark)
-				{
-					process.Kill();
-				}
-			}
-			catch (Exception e)
-			{
-				LogRow(LogType.Error, "Error killing other Spark windows\n" + e.ToString());
-			}
-		}
-
 		
-		public static async Task FetchThreadNew()
-		{
-			while (running)
-			{	
-				DateTime fetchTime = DateTime.UtcNow;
-				
-				_ = Task.Run(() => { FetchAPI(null,null); });
-
-				// set up timing for next fetch
-				DateTime next = fetchTime.AddMilliseconds(StatsHz);
-				if (DateTime.UtcNow < next)
-				{
-					TimeSpan delay = next - DateTime.UtcNow;
-					await Task.Delay(delay);
-				}
-				else
-				{
-					LogRow(LogType.Error, $"Fetch rate too slow. Skipped {(DateTime.UtcNow - next).TotalSeconds:N} seconds");
-				}
-
-				// don't spam when not in a game
-				if (connectionState!=ConnectionState.InGame)
-				{
-					await Task.Delay(2000);
-				}
-				
-				
-				// Debug.WriteLine(fetchSw.Elapsed.TotalSeconds.ToString("N5"));
-				// fetchSw.Restart();
-			}
-		}
 
 		/// <summary>
 		/// Fetches the API once
@@ -1043,7 +991,7 @@ namespace Spark
 			{
 				// client_name is just for visibility in the log
 				HttpResponseMessage response = await client.PostAsync(
-					"live_replay/" + lastFrame.sessionid + "?caprate=1&default=true&client_name=" +
+					"/live_replay/" + lastFrame.sessionid + "?caprate=1&default=true&client_name=" +
 					lastFrame.client_name, content);
 			}
 			catch
@@ -1548,10 +1496,10 @@ namespace Spark
 
 
 			int currentFrameStats = 0;
-			foreach (var team in frame.teams)
+			foreach (Team team in frame.teams)
 			{
 				// Loop through players on team.
-				foreach (var player in team.players)
+				foreach (Player player in team.players)
 				{
 					currentFrameStats += player.stats.stuns + player.stats.points;
 				}
@@ -1561,6 +1509,7 @@ namespace Spark
 			{
 				lastValidStatsFrame = lastFrame;
 				lastValidSumOfStatsAge = 0;
+				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Stats reset by game");
 			}
 
 			lastValidSumOfStatsAge++;
@@ -1571,6 +1520,15 @@ namespace Spark
 			if (frame.game_status != lastFrame.game_status)
 			{
 				ProcessGameStateChange(frame, deltaTime);
+			}
+
+			if (frame.orange_round_score != lastFrame.orange_round_score)
+			{
+				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Orange round score: {lastFrame.orange_round_score} -> {frame.orange_round_score}");
+			}
+			if (frame.blue_round_score != lastFrame.blue_round_score)
+			{
+				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Blue round score: {lastFrame.blue_round_score} -> {frame.blue_round_score}");
 			}
 
 
@@ -2216,7 +2174,7 @@ namespace Spark
 							LogRow(LogType.Error, "Error processing action", exp.ToString());
 						}
 
-						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
+						matchData.Events.Add(new EventData(matchData, EventContainer.EventType.restart_request,
 							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.blue], null, null, Vector3.Zero,
 							Vector3.Zero));
 					}
@@ -2283,8 +2241,7 @@ namespace Spark
 			{
 				if (team.players.Count > 0 && matchDataLocal != null)
 				{
-					GetRequestCallback(
-						$"{API_URL_2}get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
+					GetRequestCallback($"{APIURL}/vrml/get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
 						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						returnJSON =>
 						{
@@ -2501,13 +2458,14 @@ namespace Spark
 		}
 
 		/// <summary>
-		/// Function used to excute certain behavior based on frame given and previous frame(s).
+		/// Function used to execute certain behavior based on frame given and previous frame(s).
 		/// </summary>
 		/// <param name="frame"></param>
 		/// <param name="deltaTime"></param>
 		private static void ProcessGameStateChange(Frame frame, float deltaTime)
 		{
-			LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - Entered state: " + frame.game_status);
+			LogRow(LogType.File, frame.sessionid, $"{lastFrame.game_clock_display} - Left state: {lastFrame.game_status} ({lastFrame.orange_round_score}+{lastFrame.blue_round_score})/{lastFrame.total_round_count}");
+			LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Entered state: {frame.game_status} ({frame.orange_round_score}+{frame.blue_round_score})/{frame.total_round_count}");
 
 			switch (frame.game_status)
 			{
@@ -2547,7 +2505,7 @@ namespace Spark
 					// if we just started a new 'round' (so stats haven't been reset)
 					if (lastFrame.game_status == "round_over")
 					{
-						UpdateStatsIngame(frame, false, false);
+						UpdateStatsIngame(frame);
 
 						foreach (MatchPlayer player in matchData.players.Values)
 						{
@@ -2669,9 +2627,6 @@ namespace Spark
 					else if (lastFrame.game_clock < deltaTime * 10 || lastFrame.game_status == "post_sudden_death" ||
 							 deltaTime < 0)
 					{
-						// TODO add the score that ends an overtime
-						// ProcessScore(frame); 
-
 						// TODO find why finished and set reason
 						EventMatchFinished(frame, MatchData.FinishReason.not_finished, lastFrame.game_clock);
 					}
@@ -2684,10 +2639,10 @@ namespace Spark
 
 				// Game finished and showing scoreboard
 				case "post_match":
-					if (frame.private_match)
-					{
-						RoundOver?.Invoke(frame);
-					}
+					// if (frame.private_match)
+					// {
+					// 	RoundOver?.Invoke(frame);
+					// }
 
 					//EventMatchFinished(frame, MatchData.FinishReason.not_finished);
 					break;
@@ -2863,7 +2818,7 @@ namespace Spark
 				LogRow(LogType.Error, "Error processing action", exp.ToString());
 			}
 
-			UpdateStatsIngame(frame, allowUpload: false);
+			UpdateStatsIngame(frame);
 		}
 
 		/// <summary>
@@ -2873,7 +2828,7 @@ namespace Spark
 		/// <param name="endOfMatch"></param>
 		/// <param name="allowUpload"></param>
 		/// <param name="manual"></param>
-		public static void UpdateStatsIngame(Frame frame, bool endOfMatch = false, bool allowUpload = true, bool manual = false)
+		public static void UpdateStatsIngame(Frame frame, bool endOfMatch = false)
 		{
 			if (inPostMatch || matchData == null)
 			{
@@ -2903,7 +2858,7 @@ namespace Spark
 				UploadMatchBatch(true);
 			}
 			// if during-match upload
-			else if (manual || (!DiscordOAuth.Personal && DiscordOAuth.AccessCode.series_name != "ignitevr"))
+			else if (!DiscordOAuth.Personal && DiscordOAuth.AccessCode.series_name != "ignitevr")
 			{
 				UploadMatchBatch(false);
 			}
@@ -2938,12 +2893,15 @@ namespace Spark
 
 			lastMatchData = matchData;
 			matchData = new MatchData(lastFrame, lastMatchData);
+			UpdateStatsIngame(frame);
 
 			inPostMatch = true;
 
 			// show the scores in the log
 			LogRow(LogType.File, frame.sessionid,
 				frame.game_clock_display + " - ORANGE: " + frame.orange_points + "  BLUE: " + frame.blue_points);
+
+			RoundOver?.Invoke(frame);
 		}
 
 		public static void UploadMatchBatch(bool final = false)
@@ -3016,8 +2974,7 @@ namespace Spark
 
 			try
 			{
-				HttpResponseMessage response =
-					await client.PostAsync("add_data?hashkey=" + hash + "&client_name=" + client_name, content);
+				HttpResponseMessage response = await client.PostAsync("/add_data?hashkey=" + hash + "&client_name=" + client_name, content);
 				LogRow(LogType.Info, "[DB][Response] " + response.Content.ReadAsStringAsync().Result);
 			}
 			catch
@@ -3402,11 +3359,11 @@ namespace Spark
 				}
 			}
 		}
-		
-		public static async void PingIPList(List<IPAddress> IPs, int threadID)
+
+		private static async void PingIPList(IEnumerable<IPAddress> IPs, int threadID)
 		{
-			var tasks = IPs.Select(ip => new Ping().SendPingAsync(ip, 4000));
-			var results = await Task.WhenAll(tasks);
+			IEnumerable<Task<PingReply>> tasks = IPs.Select(ip => new Ping().SendPingAsync(ip, 4000));
+			PingReply[] results = await Task.WhenAll(tasks);
 			switch (threadID)
 			{
 				case 1:
@@ -3419,7 +3376,8 @@ namespace Spark
 					break;
 			}
 		}
-		public static void PingNetworkIPs(IPAddress address, IPAddress mask)
+
+		private static void PingNetworkIPs(IPAddress address, IPAddress mask)
 		{
 			uint ipAddress = BitConverter.ToUInt32(address.GetAddressBytes(), 0);
 			uint ipMaskV4 = BitConverter.ToUInt32(mask.GetAddressBytes(), 0);
@@ -3427,31 +3385,31 @@ namespace Spark
 
 			IPAddress start = new IPAddress(BitConverter.GetBytes(broadCastIpAddress));
 
-			var bytes = start.GetAddressBytes();
-			var leastSigByte = address.GetAddressBytes().Last();
-			var range = 255 - leastSigByte;
+			byte[] bytes = start.GetAddressBytes();
+			byte leastSigByte = address.GetAddressBytes().Last();
+			int range = 255 - leastSigByte;
 
-			var pingReplyTasks = Enumerable.Range(leastSigByte, range)
+			List<IPAddress> pingReplyTasks = Enumerable.Range(leastSigByte, range)
 				.Select(x =>
 				{
-					var bb = start.GetAddressBytes();
+					byte[] bb = start.GetAddressBytes();
 					bb[3] = (byte)x;
-					var destIp = new IPAddress(bb);
+					IPAddress destIp = new IPAddress(bb);
 					return destIp;
 				})
 				.ToList();
-			var pingReplyTasks2 = Enumerable.Range(0, leastSigByte - 1)
+			List<IPAddress> pingReplyTasks2 = Enumerable.Range(0, leastSigByte - 1)
 				.Select(x =>
 				{
 
-					var bb = start.GetAddressBytes();
+					byte[] bb = start.GetAddressBytes();
 					bb[3] = (byte)x;
-					var destIp = new IPAddress(bb);
+					IPAddress destIp = new IPAddress(bb);
 					return destIp;
 				})
 				.ToList();
-			IPSearchthread1 = new Thread(new ThreadStart(() => PingIPList(pingReplyTasks, 1)));
-			IPSearchthread2 = new Thread(new ThreadStart(() => PingIPList(pingReplyTasks2, 2)));
+			IPSearchthread1 = new Thread(() => PingIPList(pingReplyTasks, 1));
+			IPSearchthread2 = new Thread(() => PingIPList(pingReplyTasks2, 2));
 			IPPingThread1Done = false;
 			IPPingThread2Done = false;
 			IPSearchthread1.Start();
@@ -3521,9 +3479,7 @@ namespace Spark
 			for (int index = 0; index < entries; index++)
 			{
 				// Call PtrToStructure, getting the structure information.
-				table[index] = (MIB_IPNETROW)Marshal.PtrToStructure(new
-					IntPtr(currentBuffer.ToInt64() + (index *
-					Marshal.SizeOf(typeof(MIB_IPNETROW)))), typeof(MIB_IPNETROW));
+				table[index] = (MIB_IPNETROW)Marshal.PtrToStructure(new IntPtr(currentBuffer.ToInt64() + (index * Marshal.SizeOf(typeof(MIB_IPNETROW)))), typeof(MIB_IPNETROW));
 			}
 
 			for (int index = 0; index < entries; index++)
@@ -3781,7 +3737,7 @@ namespace Spark
 
 					try
 					{
-						HttpResponseMessage response = await client.PostAsync("update_tablet_stats?hashkey=" + hash + "&player_name=" + p.player_name, content);
+						HttpResponseMessage response = await client.PostAsync("/update_tablet_stats?hashkey=" + hash + "&player_name=" + p.player_name, content);
 						LogRow(LogType.Info, "[DB][Response] " + response.Content.ReadAsStringAsync().Result);
 						finishedCallback?.Invoke(response.IsSuccessStatusCode);
 					}

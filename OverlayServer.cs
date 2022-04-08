@@ -493,10 +493,12 @@ namespace Spark
 							overlayBlueTeamLogo = blueTeam?.vrmlTeamLogo ?? "";
 							break;
 					}
-
-
+					
 					Dictionary<string, object> response = new Dictionary<string, object>
 					{
+						{
+							"all", selectedMatches?.Select(m=>m.players["NtsFranz"]?.Points)
+						},
 						{
 							"teams", new[]
 							{
@@ -562,17 +564,7 @@ namespace Spark
 				}
 			}
 
-			/// <summary>
-			/// Gets a list of all previous matches in memory that are for the current set
-			/// </summary>
-			public static List<MatchData> GetPreviousRounds()
-			{
-				List<MatchData> selectedMatches = Program.lastMatches
-					.Where(m => m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
-					.ToList();
-				selectedMatches.Add(Program.matchData);
-				return selectedMatches;
-			}
+			
 		}
 
 
@@ -587,6 +579,18 @@ namespace Spark
 				this.x = x;
 				this.y = y;
 			}
+		}
+		
+		/// <summary>
+		/// Gets a list of all previous matches in memory that are for the current set
+		/// </summary>
+		public static List<MatchData> GetPreviousRounds()
+		{
+			List<MatchData> selectedMatches = Program.lastMatches
+				.Where(m => m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+				.ToList();
+			selectedMatches.Add(Program.matchData);
+			return selectedMatches;
 		}
 
 		public static string ReadResource(string name)
@@ -646,14 +650,7 @@ namespace Spark
 
 		public static List<List<Dictionary<string, object>>> GetMatchStats()
 		{
-			// gets a list of all previous matches in memory that are for the current set
-			List<MatchData> selectedMatches = Program.lastMatches
-				.Where(m => m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
-				.ToList();
-			
-			// BAD ☹
-			if (Program.matchData != null) selectedMatches.Add(Program.matchData);
-			// if (Program.matchData != null && Program.lastFrame.game_status != "round_start") selectedMatches.Add(Program.matchData);
+			List<MatchData> selectedMatches = GetPreviousRounds();
 
 			Dictionary<string, MatchPlayer> bluePlayers = new Dictionary<string, MatchPlayer>();
 			IEnumerable<MatchPlayer> blueRoundPlayers = selectedMatches

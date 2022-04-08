@@ -255,7 +255,7 @@ namespace Spark
 			try
 			{
 				string accessCodesResponseString = await Program.GetRequestAsync(
-					SecretKeys.accessCodesURL + oauthToken +
+					Program.APIURL + "/auth/token/" + oauthToken +
 					$"?u={SparkSettings.instance.client_name}&v={Program.AppVersionString()}", null);
 
 				Dictionary<string, JToken> accessCodesResponseData =

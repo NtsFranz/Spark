@@ -59,7 +59,7 @@ namespace Spark
 			Program.atlasWhitelist.teams.Add(team);
 
 			Program.GetRequestCallback(
-				$"{Program.API_URL_2}get_players_on_vrml_team?team_name=" + teamName,
+				$"{Program.APIURL}/vrml/get_players_on_team/" + teamName,
 				new Dictionary<string, string>(),
 				(response) =>
 				{
