@@ -590,6 +590,7 @@ namespace Spark
 				.Where(m => m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
 				.ToList();
 			selectedMatches.Add(Program.matchData);
+			selectedMatches.RemoveAll(m => m == null);
 			return selectedMatches;
 		}
 

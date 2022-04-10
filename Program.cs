@@ -520,7 +520,7 @@ namespace Spark
 				_ = Task.Run(LiveReplayHostingTask, liveReplayCancel.Token);
 
 
-				_ = Task.Run(() =>
+				_ = Task.Run(async () =>
 				{
 					try
 					{
@@ -550,11 +550,14 @@ namespace Spark
 					{
 						Logger.LogRow(LogType.Error, e.ToString());
 					}
+
+					// wait 5 seconds for login to happen
+					await Task.Delay(5000);
+					AutoUploadTabletStats();
 				});
 
 				//HighlightsHelper.CloseNVHighlights();
 
-				AutoUploadTabletStats();
 
 
 				#region Add Listeners
@@ -912,11 +915,9 @@ namespace Spark
 			try
 			{
 
-				if (matchData == null)
-				{
-					matchData = new MatchData(frame, null);
-					UpdateStatsIngame(frame);
-				}
+				matchData ??= new MatchData(frame, null);
+				
+				UpdateStatsIngame(frame);
 
 				try
 				{
@@ -1336,7 +1337,8 @@ namespace Spark
 				// We just discard the old match and hope it was already submitted
 
 				lastFrame = frame; // don't detect stats changes across matches
-								   // TODO discard old players
+				
+				// TODO discard old players
 
 				inPostMatch = false;
 				matchData = new MatchData(frame, null);
@@ -2768,7 +2770,7 @@ namespace Spark
 			float? underhandedness = null;
 			if (matchData.Throws.Count > 0)
 			{
-				var lastThrow = matchData.Throws.Last();
+				ThrowData lastThrow = matchData.Throws.Last();
 				if (lastThrow != null)
 				{
 					leftHanded = lastThrow.isLeftHanded;
@@ -2825,13 +2827,11 @@ namespace Spark
 		/// Can be called often to update the ingame player stats
 		/// </summary>
 		/// <param name="frame">The current frame</param>
-		/// <param name="endOfMatch"></param>
-		/// <param name="allowUpload"></param>
-		/// <param name="manual"></param>
-		public static void UpdateStatsIngame(Frame frame, bool endOfMatch = false)
+		public static void UpdateStatsIngame(Frame frame)
 		{
 			if (inPostMatch || matchData == null)
 			{
+				Debug.WriteLine("In post match or matchData null");
 				return;
 			}
 
@@ -2844,6 +2844,10 @@ namespace Spark
 			{
 				matchData.teams[Team.TeamColor.blue].points = frame.blue_points;
 			}
+			else
+			{
+				LogRow(LogType.Error, "Stats are null. This is pretty bad. 👎");
+			}
 
 			if (frame.teams[1].stats != null)
 			{
@@ -2851,17 +2855,6 @@ namespace Spark
 			}
 
 			UpdateAllPlayers(frame);
-
-			// if end of match upload
-			if (endOfMatch)
-			{
-				UploadMatchBatch(true);
-			}
-			// if during-match upload
-			else if (!DiscordOAuth.Personal && DiscordOAuth.AccessCode.series_name != "ignitevr")
-			{
-				UploadMatchBatch(false);
-			}
 		}
 
 		/// <summary>
@@ -2883,7 +2876,6 @@ namespace Spark
 			}
 
 			LogRow(LogType.File, frame.sessionid, "Match Finished: " + reason);
-			UpdateStatsIngame(frame, true);
 
 			lastMatches.Enqueue(matchData);
 			if (lastMatches.Count > 50)
@@ -2902,6 +2894,18 @@ namespace Spark
 				frame.game_clock_display + " - ORANGE: " + frame.orange_points + "  BLUE: " + frame.blue_points);
 
 			RoundOver?.Invoke(frame);
+			
+			
+			// if end of match upload
+			if (frame.game_status == "post_match")
+			{
+				UploadMatchBatch(true);
+			}
+			// if during-match upload
+			else if (!DiscordOAuth.Personal && DiscordOAuth.AccessCode.series_name != "ignitevr")
+			{
+				UploadMatchBatch(false);
+			}
 		}
 
 		public static void UploadMatchBatch(bool final = false)
@@ -2944,7 +2948,7 @@ namespace Spark
 				byte[] rawHash = sha.ComputeHash(Encoding.ASCII.GetBytes(dataString + matchData.firstFrame.client_name));
 
 				// Convert the byte array to hexadecimal string
-				StringBuilder sb = new();
+				StringBuilder sb = new StringBuilder();
 				foreach (byte b in rawHash)
 				{
 					sb.Append(b.ToString("X2"));
@@ -2959,7 +2963,7 @@ namespace Spark
 			}
 			
 			// upload tablet stats as well
-			AutoUploadTabletStats();
+			if (matchData?.firstFrame?.private_match == false) AutoUploadTabletStats();
 		}
 
 		static async Task DoUploadMatchBatchIgniteDB(string data, string hash, string client_name)
@@ -2984,8 +2988,13 @@ namespace Spark
 		}
 
 
-		// Update existing player with stats from game.
-		private static void UpdateSinglePlayer(Frame frame, Team team, Player player, int won)
+		/// <summary>
+		/// Update existing player with stats from game.
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <param name="team"></param>
+		/// <param name="player"></param>
+		private static void UpdateSinglePlayer(Frame frame, Team team, Player player)
 		{
 			if (!matchData.teams.ContainsKey(team.color))
 			{
@@ -2998,6 +3007,9 @@ namespace Spark
 				LogRow(LogType.Error, "Player stats are null. Maybe in lobby?");
 				return;
 			}
+			
+			Team.TeamColor winningTeam = frame.blue_points > frame.orange_points ? Team.TeamColor.blue : Team.TeamColor.orange;
+			int won = team.color == winningTeam ? 1 : 0;
 
 			TeamData teamData = matchData.teams[team.color];
 
@@ -3010,6 +3022,8 @@ namespace Spark
 			if (player.name != "anonymous")
 			{
 				MatchPlayer playerData = matchData.players[player.name];
+				
+				// back reference
 				playerData.teamData = teamData;
 
 				playerData.Level = player.level;
@@ -3024,13 +3038,13 @@ namespace Spark
 				playerData.Steals = player.stats.steals;
 				playerData.Stuns = player.stats.stuns;
 				playerData.Blocks = player.stats.blocks; // api reports 0
-														 // playerData.Interceptions = player.stats.interceptions;	// api reports 0
+				// playerData.Interceptions = player.stats.interceptions;	// api reports 0
 				playerData.Assists = player.stats.assists;
 				playerData.Won = won;
 			}
 		}
 
-		static void UpdateAllPlayers(Frame frame)
+		private static void UpdateAllPlayers(Frame frame)
 		{
 			// Loop through teams.
 			foreach (Team team in frame.teams)
@@ -3038,9 +3052,6 @@ namespace Spark
 				// Loop through players on team.
 				foreach (Player player in team.players)
 				{
-					Team.TeamColor winningTeam = frame.blue_points > frame.orange_points ? Team.TeamColor.blue : Team.TeamColor.orange;
-					int won = team.color == winningTeam ? 1 : 0;
-
 					UpdateSinglePlayer(frame, team, player, won);
 				}
 			}
@@ -3669,8 +3680,11 @@ namespace Spark
 
 		private static void AutoUploadTabletStats()
 		{
-			_ = Task.Run(() =>
+			_ = Task.Run(async () =>
 			{
+				// wait 5 seconds for write to happen
+				await Task.Delay(1000);
+				
 				List<TabletStats> stats = FindTabletStats();
 				stats.ForEach(s =>
 				{

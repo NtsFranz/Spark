@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Mime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using Google.Cloud.TextToSpeech.V1;
+using Newtonsoft.Json;
 using Spark.Properties;
 
 namespace Spark
@@ -25,7 +28,6 @@ namespace Spark
 
 		private readonly string[] languages = { "en-US", "ja-JP" }; // 🌎
 
-		private readonly TextToSpeechClient client;
 		private bool playing = true;
 		private readonly Thread ttsThread;
 		private readonly Queue<DateTime> rateLimiterQueue = new Queue<DateTime>();
@@ -43,13 +45,6 @@ namespace Spark
 		{
 			// TTS won't work without Discord auth
 			if (DiscordOAuth.firebaseCred == null) return;
-
-			// Instantiate a client
-			TextToSpeechClientBuilder builder = new TextToSpeechClientBuilder
-			{
-				JsonCredentials = DiscordOAuth.firebaseCred
-			};
-			client = builder.Build();
 
 			ttsThread = new Thread(TTSThread);
 			ttsThread.IsBackground = true;
@@ -216,8 +211,6 @@ namespace Spark
 
 		private void Speak(string text)
 		{
-			if (client == null) return;
-
 			// rate limiting
 			rateLimiterQueue.Enqueue(DateTime.UtcNow);
 			while ((DateTime.UtcNow - rateLimiterQueue.Peek()).TotalSeconds > 1)
@@ -244,43 +237,31 @@ namespace Spark
 				ttsQueue.Enqueue(filePath);
 				return;
 			}
-
-
-			// Set the text input to be synthesized.
-			SynthesisInput input = new SynthesisInput
+			
+			_ = Task.Run(async () =>
 			{
-				Text = text
-			};
-
-
-			// Select the type of audio file you want returned.
-			AudioConfig config = new AudioConfig
-			{
-				AudioEncoding = AudioEncoding.Mp3,
-				// Pitch = -5,
-				SpeakingRate = Rate
-			};
-
-			// Perform the Text-to-Speech request, passing the text input
-			// with the selected voice parameters and audio file type
-			SynthesizeSpeechResponse response = client.SynthesizeSpeech(new SynthesizeSpeechRequest
-			{
-				Input = input,
-				Voice = new VoiceSelectionParams
+				string json = JsonConvert.SerializeObject(new Dictionary<string, object>
 				{
-					LanguageCode = languages[SparkSettings.instance.languageIndex],
-					Name = voiceTypes[SparkSettings.instance.useWavenetVoices ? 0 : 1, SparkSettings.instance.languageIndex, SparkSettings.instance.ttsVoice]
-				},
-				AudioConfig = config
+					{"text", text},
+					{"language_code", voiceTypes[SparkSettings.instance.useWavenetVoices ? 0 : 1, SparkSettings.instance.languageIndex, SparkSettings.instance.ttsVoice]},
+					{"voice_name", voiceTypes[SparkSettings.instance.useWavenetVoices ? 0 : 1, SparkSettings.instance.languageIndex, SparkSettings.instance.ttsVoice]},
+					{"speaking_rate", Rate},
+				});
+				HttpRequestMessage request = new HttpRequestMessage
+				{
+					Method = HttpMethod.Post,
+					RequestUri = new Uri($"{Program.APIURL}/tts"),
+					Content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json),
+				};
+				HttpResponseMessage response = await Program.client.SendAsync(request);
+				byte[] bytes = await response.Content.ReadAsByteArrayAsync();
+			
+				// Write the audio content of the response to an MP3 file.
+				await File.WriteAllBytesAsync(filePath, bytes);
+			
+				// play the file
+				ttsQueue.Enqueue(filePath);
 			});
-
-			// Write the AudioContent of the response to an MP3 file.
-			string s64 = response.AudioContent.ToBase64();
-			if (!Directory.Exists(CacheFolder)) Directory.CreateDirectory(CacheFolder);
-			File.WriteAllBytes(filePath, Convert.FromBase64String(s64));
-
-			// play the file
-			ttsQueue.Enqueue(filePath);
 		}
 
 		public static void ClearCacheFolder()

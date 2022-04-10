@@ -115,6 +115,11 @@ namespace Spark
 			//_ = InitializeInDatabase();
 		}
 
+		public void AccumulateFrame(Frame frame)
+		{
+			
+		}
+
 		/// <summary>
 		/// Fetches a player from this match
 		/// </summary>
