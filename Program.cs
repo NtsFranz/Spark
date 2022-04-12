@@ -62,6 +62,7 @@ namespace Spark
 
 		public static MatchData matchData;
 		static MatchData lastMatchData;
+		public static ConcurrentQueue<AccumulatedFrame> rounds = new ConcurrentQueue<AccumulatedFrame>();
 
 		/// <summary>
 		/// Contains the last state so that we can do a diff to determine state changes
@@ -916,6 +917,8 @@ namespace Spark
 			{
 
 				matchData ??= new MatchData(frame, null);
+				if (rounds.IsEmpty) rounds.Enqueue(new AccumulatedFrame());
+				rounds.Last().Accumulate(frame);
 				
 				UpdateStatsIngame(frame);
 
@@ -1394,7 +1397,7 @@ namespace Spark
 					// TODO find why this is crashing
 					try
 					{
-						matchData.Events.Add(new EventData(matchData, EventData.EventType.player_joined,
+						matchData.Events.Add(new EventData(matchData, EventContainer.EventType.player_joined,
 							frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
 
 						if (team.color != Team.TeamColor.spectator)
