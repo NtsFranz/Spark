@@ -11,7 +11,7 @@ namespace Spark
 {
 	class CameraWriteController
 	{
-		private static string BaseUrl => "http://127.0.0.1:" + (Program.spectateMe ? Program.SPECTATEME_PORT : "6721") + "/";
+		private static string BaseUrl => "http://127.0.0.1:" + (Program.spectateMeController.spectateMe ? SpectateMeController.SPECTATEME_PORT : "6721") + "/";
 
 		public CameraWriteController()
 		{
@@ -40,9 +40,6 @@ namespace Spark
 		{
 			try
 			{
-				// TODO move this to LiveWindow
-				if (Program.spectateMe) Program.liveWindow.SetSpectateMeSubtitle("In Game!");
-
 				SetNameplatesVisibility(!SparkSettings.instance.hideNameplates);
 				SetUIVisibility(!SparkSettings.instance.hideEchoVRUI);
 				SetMinimapVisibility(!SparkSettings.instance.alwaysHideMinimap);
@@ -59,7 +56,7 @@ namespace Spark
 						break;
 					// follow client
 					case 2:
-						if (Program.spectateMe) SpectatorCamFindPlayer();
+						if (Program.spectateMeController.spectateMe) SpectatorCamFindPlayer();
 						break;
 					// follow specific player
 					case 3:

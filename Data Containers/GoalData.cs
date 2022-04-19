@@ -11,7 +11,7 @@ namespace Spark
 	public class GoalData : EventContainer
 	{
 		public GoalData(
-			MatchData match,
+			AccumulatedFrame match,
 			Player player,
 			LastScore lastScore,
 			float gameClock,
@@ -38,7 +38,7 @@ namespace Spark
 		}
 
 
-		public MatchData matchData;
+		public AccumulatedFrame matchData;
 		public List<Vector3> DiscTrajectory { get; set; }
 		public Player Player { get; set; }
 		/// <summary>
@@ -78,7 +78,7 @@ namespace Spark
 		{
 			Dictionary<string, object> values = new Dictionary<string, object>
 			{
-				{"session_id", matchData.firstFrame.sessionid },
+				{"session_id", matchData.frame.sessionid },
 				{"match_time", matchData.MatchTimeSQL },
 				{"game_clock", GameClock },
 				{"player_id", Player.userid },

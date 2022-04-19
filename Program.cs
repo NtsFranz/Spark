@@ -8,7 +8,6 @@ using System.Net;
 using System.Net.Http;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,8 +48,8 @@ namespace Spark
 		public static ConnectionState lastConnectionStateEvent;
 		public static bool InGame => connectionState == ConnectionState.InGame;
 
-		// public const string APIURL = "https://api.ignitevr.gg";
-		public const string APIURL = "http://127.0.0.1:8000";
+		public const string APIURL = "https://api.ignitevr.gg";
+		// public const string APIURL = "http://127.0.0.1:8000";
 		public const string WRITE_API_URL = "http://127.0.0.1:6723/";
 
 
@@ -60,9 +59,13 @@ namespace Spark
 		public static string InstalledSpeakerSystemVersion = "";
 		public static bool IsSpeakerSystemUpdateAvailable;
 
-		public static MatchData matchData;
-		static MatchData lastMatchData;
 		public static ConcurrentQueue<AccumulatedFrame> rounds = new ConcurrentQueue<AccumulatedFrame>();
+		public static AccumulatedFrame CurrentRound => rounds.Last() ?? emptyRound;
+		public static AccumulatedFrame LastRound => rounds.TakeLast(2).First() ?? emptyRound;
+		private static readonly AccumulatedFrame emptyRound = new AccumulatedFrame(Frame.CreateEmptyFrame());
+
+		public static IEnumerable<GoalData> LastGoals => rounds.SelectMany(r => r.goals);
+		public static IEnumerable<EventData> LastJousts => rounds.SelectMany(r => r.events.Where(e=>e.eventType.IsJoust()));
 
 		/// <summary>
 		/// Contains the last state so that we can do a diff to determine state changes
@@ -77,9 +80,7 @@ namespace Spark
 		private static Frame lastValidStatsFrame;
 		private static int lastValidSumOfStatsAge = 0;
 
-		public static ConcurrentQueue<GoalData> lastGoals = new ConcurrentQueue<GoalData>();
-		public static ConcurrentQueue<MatchData> lastMatches = new ConcurrentQueue<MatchData>();
-		public static ConcurrentQueue<EventData> lastJousts = new ConcurrentQueue<EventData>();
+		private static long frameIndex = 0;
 
 
 		private class UserAtTime
@@ -108,7 +109,6 @@ namespace Spark
 
 		static bool wasThrown;
 		static int lastThrowPlayerId = -1;
-		static bool inPostMatch = false;
 		public static float serverScoreSmoothingFactor = .95f;
 
 
@@ -125,24 +125,21 @@ namespace Spark
 		public static LiveWindow liveWindow;
 		private static ClosingDialog closingWindow;
 
-		private static readonly Dictionary<string, Window> popupWindows = new();
+		private static readonly Dictionary<string, Window> popupWindows = new Dictionary<string, Window>();
 
 		private static float smoothDeltaTime = -1;
 
 		public static bool hostingLiveReplay = false;
 
 		public static string echoVRIP = "";
-		public static int echoVRPort = 6721;
-		public const int SPECTATEME_PORT = 6720; 
+		public static int echoVRPort = 6721; 
 		public static bool overrideEchoVRPort;
 
-		public static bool spectateMe;
-		private static string lastSpectatedSessionId;
 
 		public static string hostedAtlasSessionId;
 		public static LiveWindow.AtlasWhitelist atlasWhitelist = new LiveWindow.AtlasWhitelist();
 
-		public static TTS synth;
+		public static TTSController synth;
 		public static ReplayClips replayClips;
 		public static ReplayFilesManager replayFilesManager;
 		public static CameraWriteController cameraWriteController;
@@ -151,15 +148,16 @@ namespace Spark
 		public static WebSocketServerManager webSocketMan;
 		public static SpeechRecognition speechRecognizer;
 		public static LoggerEvents loggerEvents;
-
 		private static CancellationTokenSource autorestartCancellation;
 		private static CancellationTokenSource fetchThreadCancellation;
 		private static CancellationTokenSource liveReplayCancel;
 		public static Thread atlasHostingThread;
-		private static Thread IPSearchthread1;
-		private static Thread IPSearchthread2;
+		private static Thread IPSearchThread1;
+		private static Thread IPSearchThread2;
 		public static OBS obs;
 		private static OverlayServer overlayServer;
+		public static SpectateMeController spectateMeController;
+		public static UploadController uploadController;
 		public static NetMQEvents netMQEvents;
 		private static readonly HttpClient fetchClient = new HttpClient();
 		private static readonly System.Timers.Timer fetchTimer = new System.Timers.Timer();
@@ -187,17 +185,31 @@ namespace Spark
 		/// </summary>
 		public static Action<Frame> NewArenaFrame;
 		/// <summary>
+		/// Called when a frame is finished with conversion and it is an Echo Combat frame
+		/// </summary>
+		public static Action<Frame> NewCombatFrame;
+		/// <summary>
 		/// Called when connectedToGame state changes.
 		/// This could be on loading screen or lobby
 		/// string is the raw /session, but this may be from html from a menu
 		/// </summary>
 		public static Action<DateTime, string> ConnectedToGame;
 		/// <summary>
-		/// Called when connectedToGame state changes.
+		/// Called when connectedToGame state changes to Not_Connected.
 		/// </summary>
 		public static Action DisconnectedFromGame;
+		
+		/// <summary>
+		/// When the connectedToGame state changes to InGame 
+		/// </summary>
 		public static Action<Frame> JoinedGame;
+		/// <summary>
+		/// When the connectedToGame state changes to Not_Connected and the previous state was InGame 
+		/// </summary>
 		public static Action<Frame> LeftGame;
+
+		public static Action<Frame> NewRound;
+		public static Action<Frame, AccumulatedFrame.FinishReason> RoundOver;
 
 		public static Action<Frame> JoinedLobby;
 		public static Action<Frame> LeftLobby;
@@ -208,6 +220,11 @@ namespace Spark
 		/// frame, fromteam, toteam, player
 		/// </summary>
 		public static Action<Frame, Team, Team, Player> PlayerSwitchedTeams;
+		
+		// TODO add player/team who requested the reset
+		/// <summary>
+		/// Frame is the last frame of the last match
+		/// </summary>
 		public static Action<Frame> MatchReset;
 		/// <summary>
 		/// Frame, nearest player, distance to podium
@@ -221,7 +238,6 @@ namespace Spark
 		/// Frame, nearest player, distance to podium
 		/// </summary>
 		public static Action<Frame, Player, float> GameUnpaused;
-		public static Action<Frame> RoundOver;
 		public static Action<Frame> LocalThrow;
 		/// <summary>
 		/// frame, team, player, speed, howlongago
@@ -327,12 +343,24 @@ namespace Spark
 				// allow multiple instances if the port is overriden
 				if (IsSparkOpen() && !overrideEchoVRPort)
 				{
-					MessageBox box = new MessageBox(Resources.instance_already_running_message, Resources.Error);
-					box.Show();
-					//while(box!= null)
+					Task.Run(async () =>
 					{
-						Thread.Sleep(10);
-					}
+						HttpClient localClient = new HttpClient();
+						string responseBody = await localClient.GetStringAsync("http://localhost:6724/api/focus_spark");
+
+						Console.WriteLine(responseBody);
+
+						Quit();
+					});
+
+					return;
+
+					// MessageBox box = new MessageBox(Resources.instance_already_running_message, Resources.Error);
+					// box.Show();
+					// //while(box!= null)
+					// {
+					// 	Thread.Sleep(10);
+					// }
 
 
 					//return; // wait for the dialog to quit the program
@@ -452,11 +480,11 @@ namespace Spark
 				
 
 				// TODO don't initialize twice and get this to work without discord login maybe
-				synth = new TTS();
+				synth = new TTSController();
 
 				DiscordOAuth.Authenticated += () =>
 				{
-					synth = new TTS();
+					synth = new TTSController();
 					// Configure the audio output.
 					synth.SetOutputToDefaultAudioDevice();
 					synth.SetRate(SparkSettings.instance.TTSSpeed);
@@ -476,10 +504,10 @@ namespace Spark
 				echoGPController = new EchoGPController();
 
 				webSocketMan = new WebSocketServerManager();
-				
 				speechRecognizer = new SpeechRecognition();
-				
 				loggerEvents = new LoggerEvents();
+				spectateMeController = new SpectateMeController();
+				uploadController = new UploadController();
 
 				// web server asp.net
 				try
@@ -488,7 +516,7 @@ namespace Spark
 				}
 				catch (Exception e)
 				{
-					Logger.LogRow(LogType.Error, e.ToString());
+					LogRow(LogType.Error, e.ToString());
 				}
 
 
@@ -496,7 +524,7 @@ namespace Spark
 
 				DiscordRichPresence.Start();
 
-				spectateMe = SparkSettings.instance.spectateMeOnByDefault;
+				spectateMeController.spectateMe = SparkSettings.instance.spectateMeOnByDefault;
 
 				autorestartCancellation = new CancellationTokenSource();
 				Task.Run(AutorestartTask, autorestartCancellation.Token);
@@ -536,7 +564,7 @@ namespace Spark
 
 							foreach (string tip in LoadingTips.newTips)
 							{
-								if (!tips.Any(existingTip => (string)existingTip[2] == tip))
+								if (tips.All(existingTip => (string)existingTip[2] != tip))
 								{
 									tips.Add(new JArray("", "SPARK", tip));
 								}
@@ -563,21 +591,8 @@ namespace Spark
 
 				#region Add Listeners
 
-				LeftGame += (f) =>
-				{
-					if (spectateMe)
-					{
-						try
-						{
-							KillEchoVR($"-httpport {SPECTATEME_PORT}");
-							lastSpectatedSessionId = string.Empty;
-						}
-						catch (Exception e)
-						{
-							LogRow(LogType.Error, $"Broke something in the spectator follow system.\n{e}");
-						}
-					}
-				};
+				JoinedGame += OnJoinedGame;
+				LeftGame += OnLeftGame;
 
 				#endregion
 
@@ -587,6 +602,11 @@ namespace Spark
 				Logger.LogRow(LogType.Error, e.ToString());
 				Quit();
 			}
+		}
+
+		private static void OnLeftGame(Frame obj)
+		{
+			//
 		}
 
 
@@ -734,6 +754,10 @@ namespace Spark
 							{
 								bones = await results[1].Content.ReadAsStringAsync();
 							}
+							
+							frameIndex++;
+
+							long localFrameIndex = frameIndex;
 
 							// add this data to the public variable
 							lock (lastJSONLock)
@@ -753,6 +777,7 @@ namespace Spark
 
 							// early quit if the program was quit while fetching
 							if (!running) return;
+							
 
 							// tell the processing methods that stuff is available
 							_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, session, bones); });
@@ -766,7 +791,7 @@ namespace Spark
 
 									if (f != null)
 									{
-										ProcessFrame(f);
+										ProcessFrame(f, lastFrame);
 
 										NewFrame?.Invoke(f);
 									}
@@ -911,25 +936,25 @@ namespace Spark
 			}
 		}
 
-		private static void ProcessFrame(Frame frame)
+		private static void ProcessFrame(Frame frame, Frame lastFrame)
 		{
 			try
 			{
-
-				matchData ??= new MatchData(frame, null);
-				if (rounds.IsEmpty) rounds.Enqueue(new AccumulatedFrame());
-				rounds.Last().Accumulate(frame);
+				// add a new round for the first frame
+				if (rounds.IsEmpty) rounds.Enqueue(new AccumulatedFrame(frame));
 				
-				UpdateStatsIngame(frame);
-
+				// process events. This may include splitting to a new round
 				try
 				{
-					GenerateEvents(frame);
+					GenerateEvents(frame, lastFrame);
 				}
 				catch (Exception ex)
 				{
-					LogRow(LogType.Error, $"Error in ProcessFrame. Please catch inside.\n{ex}");
+					LogRow(LogType.Error, $"Error in GenerateEvents. Please catch inside.\n{ex}");
 				}
+				
+				// add the stats to the current round data
+				rounds.Last().Accumulate(frame);
 			}
 			catch (Exception ex)
 			{
@@ -1016,10 +1041,14 @@ namespace Spark
 				if (process.Length > 0)
 				{
 					// Get process path
-					var newEchoPath = process[0].MainModule.FileName;
-					if (!string.IsNullOrEmpty(newEchoPath))
+					ProcessModule processModule = process[0].MainModule;
+					if (processModule != null)
 					{
-						SparkSettings.instance.echoVRPath = newEchoPath;
+						string newEchoPath = processModule.FileName;
+						if (!string.IsNullOrEmpty(newEchoPath))
+						{
+							SparkSettings.instance.echoVRPath = newEchoPath;
+						}
 					}
 				}
 
@@ -1261,10 +1290,14 @@ namespace Spark
 		/// <summary>
 		/// Goes through a "frame" (single JSON object) and generates the relevant events
 		/// </summary>
-		private static void GenerateEvents(Frame frame)
+		private static void GenerateEvents(Frame frame, Frame lastFrame)
 		{
 			if (lastConnectionStateEvent != ConnectionState.InGame)
 			{
+				if (connectionState != ConnectionState.InGame)
+				{
+					LogRow(LogType.Error, "1982: Can't be in this state.");
+				}
 				try
 				{
 					JoinedGame?.Invoke(frame);
@@ -1277,110 +1310,120 @@ namespace Spark
 			}
 			lastConnectionStateEvent = connectionState;
 
-			// 'mpl_lobby_b2' may change in the future
-			if (frame == null) return;
-
-			if (frame.client_name != "anonymous")
+			if (frame == null)
 			{
-				SparkSettings.instance.client_name = frame.client_name;
-			}
-
-
-			// make sure there is a valid echovr path saved
-			if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
-			{
-				UpdateEchoExeLocation();
+				LogRow(LogType.Error, "7193: Frame is null when generating events.");
+				return;
 			}
 
 			// lobby stuff
 
-			// last throw state changed
-			try
-			{
-				if (frame.last_throw != null && lastFrame != null && frame.last_throw.total_speed != 0 && Math.Abs(frame.last_throw.total_speed - lastFrame.last_throw.total_speed) > .001f)
-				{
-					//matchData.Events.Add(
-					//	new EventData(
-					//		matchData,
-					//		EventData.EventType.@throw,
-					//		frame.game_clock,
-					//		frame.teams[frame.pause.paused_requested_team == "blue" ? (int)TeamColor.blue : (int)TeamColor.orange],
-					//		null,
-					//		null,
-					//		Vector3.Zero,
-					//		Vector3.Zero)
-					//	);
-
-					try
-					{
-						LocalThrow?.Invoke(frame);
-					}
-					catch (Exception exp)
-					{
-						LogRow(LogType.Error, "Error processing action", exp.ToString());
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				LogRow(LogType.Error, $"Error with last throw parsing\n{e}");
-			}
-
-
 			if (string.IsNullOrWhiteSpace(frame.game_status)) return;
 			if (frame.InLobby) return;
 			
+			
 			// this frame is an Arena frame
-			if (frame.InArena) NewArenaFrame?.Invoke(frame);
+			if (frame.InArena)
+			{
+				try
+				{
+					NewArenaFrame?.Invoke(frame);
+				}
+				catch (Exception exp)
+				{
+					LogRow(LogType.Error, "Error processing action", exp.ToString());
+				}
+			}
+			else if (frame.InCombat)
+			{
+				try
+				{
+					NewCombatFrame?.Invoke(frame);
+				}
+				catch (Exception exp)
+				{
+					LogRow(LogType.Error, "Error processing action", exp.ToString());
+				}
+			}
+			else
+			{
+				LogRow(LogType.Error, "2698: Can't be in this state.");
+			}
 			
 			// if we entered a different match
 			if (lastFrame == null || frame.sessionid != lastFrame.sessionid)
 			{
 				
-				// We just discard the old match and hope it was already submitted
-
+				
 				lastFrame = frame; // don't detect stats changes across matches
 				
-				// TODO discard old players
-
-				inPostMatch = false;
-				matchData = new MatchData(frame, null);
-				UpdateStatsIngame(frame);
-
-				if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath))
+				try
 				{
-					GetEchoVRProcess();
+					NewRound?.Invoke(frame);
 				}
-
-				if (spectateMe)
+				catch (Exception exp)
 				{
-					try
-					{
-						KillEchoVR($"-httpport {SPECTATEME_PORT}");
-						StartEchoVR(JoinType.Spectator, SPECTATEME_PORT, SparkSettings.instance.useAnonymousSpectateMe, lastFrame.sessionid);
-						lastSpectatedSessionId = lastFrame.sessionid;
-
-						liveWindow.SetSpectateMeSubtitle(Resources.Waiting_for_EchoVR_to_start);
-					}
-					catch (Exception e)
-					{
-						LogRow(LogType.Error, $"Broke something in the spectator follow system.\n{e}");
-					}
+					LogRow(LogType.Error, "Error processing action", exp.ToString());
 				}
+				
+				rounds.Enqueue(new AccumulatedFrame(frame, rounds.Last()));
 
-				WaitUntilLocalGameLaunched(CameraWriteController.UseCameraControlKeys, port:SPECTATEME_PORT);
 			}
 
 			// The time between the current frame and last frame in seconds based on the game clock
 			float deltaTime = lastFrame.game_clock - frame.game_clock;
 			if (deltaTime != 0)
 			{
-				if (smoothDeltaTime == -1) smoothDeltaTime = deltaTime;
+				if (Math.Abs(smoothDeltaTime - (-1)) < .001f) smoothDeltaTime = deltaTime;
 				const float smoothingFactor = .99f;
 				smoothDeltaTime = smoothDeltaTime * smoothingFactor + deltaTime * (1 - smoothingFactor);
 			}
 			
 
+			int currentFrameStats = 0;
+			foreach (Team team in frame.teams)
+			{
+				// Loop through players on team.
+				foreach (Player player in team.players)
+				{
+					currentFrameStats += player.stats.stuns + player.stats.points;
+				}
+			}
+
+			if (currentFrameStats < lastFrameSumOfStats)
+			{
+				lastValidStatsFrame = lastFrame;
+				lastValidSumOfStatsAge = 0;
+				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Stats reset by game - {lastFrame.game_status}->{frame.game_status}");
+			}
+
+			lastValidSumOfStatsAge++;
+			lastFrameSumOfStats = currentFrameStats;
+
+
+			// Did the game state change?
+			if (frame.game_status != lastFrame.game_status)
+			{
+				ProcessGameStateChange(frame, lastFrame, deltaTime);
+				
+				// Autofocus
+				if (SparkSettings.instance.isAutofocusEnabled)
+				{
+					FocusEchoVR();
+				}
+			}
+
+			if (frame.orange_round_score != lastFrame.orange_round_score)
+			{
+				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Orange round score: {lastFrame.orange_round_score} -> {frame.orange_round_score}");
+				
+			}
+			if (frame.blue_round_score != lastFrame.blue_round_score)
+			{
+				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Blue round score: {lastFrame.blue_round_score} -> {frame.blue_round_score}");
+			}
+			
+			
 
 			// Did a player join or leave?
 
@@ -1397,21 +1440,26 @@ namespace Spark
 					// TODO find why this is crashing
 					try
 					{
-						matchData.Events.Add(new EventData(matchData, EventContainer.EventType.player_joined,
-							frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
+						CurrentRound.events.Add(new EventData(
+							CurrentRound, 
+							EventContainer.EventType.player_joined,
+							frame.game_clock, 
+							team, 
+							player, 
+							null, 
+							player.head.Position, 
+							Vector3.Zero)
+						);
 
 						if (team.color != Team.TeamColor.spectator)
 						{
 							// cache this players stats so they aren't overridden if they join again
-							MatchPlayer playerData = matchData.GetPlayerData(player);
 							// if player was in this match before
-							playerData?.CacheStats(player.stats);
+							CurrentRound.GetPlayerData(player)?.CacheStats(player.stats);
 
 							// find the vrml team names
-							FindTeamNamesFromPlayerList(matchData, team);
+							CurrentRound.teams[team.color].FindTeamNamesFromPlayerList(team);
 						}
-
-						UpdateStatsIngame(frame);
 
 						try
 						{
@@ -1439,9 +1487,9 @@ namespace Spark
 				{
 					if (frame.GetAllPlayers(true).Any(p => p.userid == player.userid)) continue;
 
-					matchData.Events.Add(new EventData(
-						matchData,
-						EventData.EventType.player_left,
+					CurrentRound.events.Add(new EventData(
+						CurrentRound,
+						EventContainer.EventType.player_left,
 						frame.game_clock,
 						team,
 						player,
@@ -1449,9 +1497,6 @@ namespace Spark
 						player.head.Position,
 						player.velocity.ToVector3())
 					);
-
-
-					UpdateStatsIngame(frame);
 
 					try
 					{
@@ -1471,12 +1516,12 @@ namespace Spark
 				// Loop through players on team.
 				foreach (Player player in team.players)
 				{
-					Team.TeamColor lastTeamColor = lastFrame.GetTeamColor(player.userid);
-					if (lastTeamColor == team.color) continue;
+					Team lastTeam = lastFrame.GetTeam(player.userid);
+					if (lastTeam.color == team.color) continue;
 
-					matchData.Events.Add(new EventData(
-						matchData,
-						EventData.EventType.player_switched_teams,
+					CurrentRound.events.Add(new EventData(
+						CurrentRound,
+						EventContainer.EventType.player_switched_teams,
 						frame.game_clock,
 						team,
 						player,
@@ -1485,9 +1530,6 @@ namespace Spark
 						player.velocity.ToVector3())
 					);
 
-					UpdateStatsIngame(frame);
-
-					Team lastTeam = lastFrame.GetTeam(player.userid);
 					try
 					{
 						PlayerSwitchedTeams?.Invoke(frame, lastTeam, team, player);
@@ -1500,41 +1542,7 @@ namespace Spark
 			}
 
 
-			int currentFrameStats = 0;
-			foreach (Team team in frame.teams)
-			{
-				// Loop through players on team.
-				foreach (Player player in team.players)
-				{
-					currentFrameStats += player.stats.stuns + player.stats.points;
-				}
-			}
-
-			if (currentFrameStats < lastFrameSumOfStats)
-			{
-				lastValidStatsFrame = lastFrame;
-				lastValidSumOfStatsAge = 0;
-				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Stats reset by game");
-			}
-
-			lastValidSumOfStatsAge++;
-			lastFrameSumOfStats = currentFrameStats;
-
-
-			// Did the game state change?
-			if (frame.game_status != lastFrame.game_status)
-			{
-				ProcessGameStateChange(frame, deltaTime);
-			}
-
-			if (frame.orange_round_score != lastFrame.orange_round_score)
-			{
-				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Orange round score: {lastFrame.orange_round_score} -> {frame.orange_round_score}");
-			}
-			if (frame.blue_round_score != lastFrame.blue_round_score)
-			{
-				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Blue round score: {lastFrame.blue_round_score} -> {frame.blue_round_score}");
-			}
+			
 
 
 			// pause state changed
@@ -1547,7 +1555,7 @@ namespace Spark
 						(Player minPlayer, float minDistance) = ClosestPlayerToPodium(frame, frame.pause.paused_requested_team);
 
 						EventData pauseEvent = new EventData(
-							matchData,
+							CurrentRound,
 							EventContainer.EventType.pause_request,
 							frame.game_clock,
 							frame.teams[frame.pause.paused_requested_team == "blue" ? (int)Team.TeamColor.blue : (int)Team.TeamColor.orange],
@@ -1556,7 +1564,7 @@ namespace Spark
 							minPlayer?.head.Position ?? Vector3.Zero,
 							Vector3.Zero);
 						
-						matchData.Events.Add(pauseEvent);
+						CurrentRound.events.Add(pauseEvent);
 
 						try
 						{
@@ -1605,39 +1613,35 @@ namespace Spark
 			}
 
 
-			if (matchData != null)
+			// calculate a smoothed server score
+			List<int>[] pings =
 			{
-				// calculate a smoothed server score
-				List<int>[] pings =
-				{
-					frame.teams[0].players.Select(p => p.ping).ToList(),
-					frame.teams[0].players.Select(p => p.ping).ToList()
-				};
-				float newServerScore = CalculateServerScore(pings[0], pings[1]);
+				frame.teams[0].players.Select(p => p.ping).ToList(),
+				frame.teams[0].players.Select(p => p.ping).ToList()
+			};
+			float newServerScore = CalculateServerScore(pings[0], pings[1]);
 
-				if (pings[0].Count != 4 || pings[1].Count != 4)
-				{
-					matchData.ServerScore = -2;
-					matchData.SmoothedServerScore = matchData.ServerScore;
-				}
-				else if (newServerScore > 0)
-				{
-					// reset the smoothing every time it switches to being valid
-					if (matchData.ServerScore < 0)
-					{
-						matchData.ServerScore = newServerScore;
-						matchData.SmoothedServerScore = matchData.ServerScore;
-					}
-					else
-					{
-						matchData.ServerScore = newServerScore;
-						float t = 1f - MathF.Pow(1 - serverScoreSmoothingFactor, deltaTime);
-						matchData.SmoothedServerScore = Math2.Lerp(matchData.SmoothedServerScore, matchData.ServerScore, t);
-					}
-				}
-			} else
+			// wrong number of players
+			if (pings[0].Count != 4 || pings[1].Count != 4)
 			{
-				LogRow(LogType.Error, "MatchData is null in event generator.");
+				CurrentRound.serverScore = -2;
+				CurrentRound.smoothedServerScore = CurrentRound.serverScore;
+			}
+			// if we have a valid server score
+			else if (newServerScore > 0)
+			{
+				// reset the smoothing every time it switches to being valid
+				if (CurrentRound.serverScore < 0)
+				{
+					CurrentRound.serverScore = newServerScore;
+					CurrentRound.smoothedServerScore = CurrentRound.serverScore;
+				}
+				else
+				{
+					CurrentRound.serverScore = newServerScore;
+					float t = 1f - MathF.Pow(1 - serverScoreSmoothingFactor, deltaTime);
+					CurrentRound.smoothedServerScore = Math2.Lerp(CurrentRound.smoothedServerScore, CurrentRound.serverScore, t);
+				}
 			}
 			
 
@@ -1645,13 +1649,12 @@ namespace Spark
 			// while playing and frames aren't identical
 			if (frame.game_status == "playing" && deltaTime != 0)
 			{
-				inPostMatch = false;
 				if (SparkSettings.instance.isAutofocusEnabled && (Math.Round(frame.game_clock, 2, MidpointRounding.AwayFromZero) % 10 == 0))
 				{
 					FocusEchoVR();
 				}
 
-				matchData.currentDiskTrajectory.Add(frame.disc.position.ToVector3());
+				CurrentRound.currentDiskTrajectory.Add(frame.disc.position.ToVector3());
 
 				if (frame.disc.velocity.ToVector3().Equals(Vector3.Zero))
 				{
@@ -1663,10 +1666,10 @@ namespace Spark
 				{
 					foreach (Player player in team.players)
 					{
-						var lastPlayer = lastFrame.GetPlayer(player.userid);
+						Player lastPlayer = lastFrame.GetPlayer(player.userid);
 						if (lastPlayer == null) continue;
 
-						MatchPlayer playerData = matchData.GetPlayerData(player);
+						MatchPlayer playerData = CurrentRound.GetPlayerData(player);
 						if (playerData != null)
 						{
 							// update player velocity
@@ -1693,9 +1696,7 @@ namespace Spark
 							{
 								playerData.boosting = false;
 
-								(float, float) boost = playerData.GetMaxRecentVelocity(reset: true);
-								float boostSpeed = boost.Item1;
-								float howLongAgoBoost = boost.Item2;
+								(float boostSpeed, float howLongAgoBoost) = playerData.GetMaxRecentVelocity(reset: true);
 
 								try
 								{
@@ -1708,10 +1709,10 @@ namespace Spark
 
 								HighlightsHelper.SaveHighlightMaybe(player.name, frame, "BIG_BOOST");
 
-								matchData.Events.Add(
+								CurrentRound.events.Add(
 									new EventData(
-										matchData,
-										EventData.EventType.big_boost,
+										CurrentRound,
+										EventContainer.EventType.big_boost,
 										frame.game_clock + howLongAgoBoost,
 										team,
 										player,
@@ -1762,6 +1763,7 @@ namespace Spark
 							}
 							playerData.playspaceLocation += offset;
 
+							// conditions to allow playspace abuse checking
 							if (team.color != Team.TeamColor.spectator && Math.Abs(smoothDeltaTime) < .1f &&
 								Math.Abs(deltaTime) < .1f &&
 								Vector3.Distance(player.head.Position, playerData.playspaceLocation) > 1.7f &&
@@ -1779,10 +1781,10 @@ namespace Spark
 									LogRow(LogType.Error, "Error processing action", exp.ToString());
 								}
 
-								matchData.Events.Add(
+								CurrentRound.events.Add(
 									new EventData(
-										matchData,
-										EventData.EventType.playspace_abuse,
+										CurrentRound,
+										EventContainer.EventType.playspace_abuse,
 										frame.game_clock,
 										team,
 										player,
@@ -1797,10 +1799,7 @@ namespace Spark
 							}
 							else if (Math.Abs(smoothDeltaTime) > .1f)
 							{
-								if (ENABLE_LOGGER)
-								{
-									//Console.WriteLine("Update rate too slow to calculate playspace abuses.");
-								}
+								Debug.WriteLine("Update rate too slow to calculate playspace abuses.");
 							}
 							playerData.playspaceInvincibility -= TimeSpan.FromSeconds(deltaTime);
 
@@ -1824,8 +1823,16 @@ namespace Spark
 						// check saves 
 						if (lastPlayer.stats.saves != player.stats.saves)
 						{
-							EventData eventData = new EventData(matchData, EventContainer.EventType.save, frame.game_clock,
-								team, player, null, player.head.Position, Vector3.Zero);
+							EventData eventData = new EventData(
+								CurrentRound,
+								EventContainer.EventType.save,
+								frame.game_clock,
+								team,
+								player,
+								null,
+								player.head.Position,
+								Vector3.Zero
+							);
 							try
 							{
 								Save?.Invoke(frame, eventData);
@@ -1835,14 +1842,14 @@ namespace Spark
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
 
-							matchData.Events.Add(eventData);
+							CurrentRound.events.Add(eventData);
 							HighlightsHelper.SaveHighlightMaybe(player.name, frame, "SAVE");
 						}
 
 						// check steals 🕵️‍
 						if (lastPlayer.stats.steals != player.stats.steals)
 						{
-							EventData eventData = new EventData(matchData, EventContainer.EventType.steal, frame.game_clock,
+							EventData eventData = new EventData(CurrentRound, EventContainer.EventType.steal, frame.game_clock,
 								team, player, null, player.head.Position, Vector3.Zero);
 							try
 							{
@@ -1853,7 +1860,7 @@ namespace Spark
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
 
-							matchData.Events.Add(eventData);
+							CurrentRound.events.Add(eventData);
 
 							if (WasStealNearGoal(frame.disc.position.ToVector3(), team.color, frame))
 							{
@@ -1896,10 +1903,10 @@ namespace Spark
 										Player stunner = player;
 										Player stunnee = stunEvent[1].player;
 
-										EventData stunEventData = new EventData(matchData, EventContainer.EventType.stun,
+										EventData stunEventData = new EventData(CurrentRound, EventContainer.EventType.stun,
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
 											Vector3.Zero);
-										matchData.Events.Add(stunEventData);
+										CurrentRound.events.Add(stunEventData);
 										added = true;
 
 										try
@@ -1951,10 +1958,10 @@ namespace Spark
 										Player stunner = stunEvent[0].player;
 										Player stunnee = player;
 
-										EventData stunEventData = new EventData(matchData, EventContainer.EventType.stun,
+										EventData stunEventData = new EventData(CurrentRound, EventContainer.EventType.stun,
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
 											Vector3.Zero);
-										matchData.Events.Add(stunEventData);
+										CurrentRound.events.Add(stunEventData);
 										added = true;
 
 										try
@@ -1981,9 +1988,9 @@ namespace Spark
 						// check disk was caught 🥊
 						if (!lastPlayer.possession && player.possession)
 						{
-							EventData eventData = new EventData(matchData, EventData.EventType.@catch, frame.game_clock,
+							EventData eventData = new EventData(CurrentRound, EventContainer.EventType.@catch, frame.game_clock,
 								team, player, null, player.head.Position, Vector3.Zero);
-							matchData.Events.Add(eventData);
+							CurrentRound.events.Add(eventData);
 							playerData.Catches++;
 							bool caughtThrow = false;
 							Team throwTeam = null;
@@ -2028,8 +2035,8 @@ namespace Spark
 									}
 									
 									// TODO enable once the db can handle it
-									// matchData.Events.Add(new EventData(matchData, EventData.EventType.turnover, frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position, player.head.Position));
-									matchData.GetPlayerData(throwPlayer).Turnovers++;
+									CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.turnover, frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position, player.head.Position));
+									CurrentRound.GetPlayerData(throwPlayer).Turnovers++;
 								}
 								else
 								{
@@ -2042,10 +2049,10 @@ namespace Spark
 										LogRow(LogType.Error, "Error processing action", exp.ToString());
 									}
 
-									matchData.Events.Add(new EventData(matchData, EventData.EventType.pass,
+									CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.pass,
 										frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position,
 										player.head.Position));
-									matchData.GetPlayerData(throwPlayer).Passes++;
+									CurrentRound.GetPlayerData(throwPlayer).Passes++;
 								}
 							}
 							else
@@ -2074,7 +2081,7 @@ namespace Spark
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
 
-							matchData.Events.Add(new EventData(matchData, EventData.EventType.shot_taken,
+							CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.shot_taken,
 								frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
 							if (lastThrowPlayerId == player.playerid)
 							{
@@ -2104,9 +2111,9 @@ namespace Spark
 						    (
 							    // local throw
 							    (
-								    frame.client_name == player.name && 
-								    frame.last_throw != null && 
-								    frame.last_throw.total_speed != 0 && 
+								    frame.client_name == player.name &&
+								    frame.last_throw != null &&
+								    frame.last_throw.total_speed != 0 &&
 								    Math.Abs(frame.last_throw.total_speed - lastFrame.last_throw.total_speed) > .001f
 							    )
 							    ||
@@ -2125,8 +2132,8 @@ namespace Spark
 
 							// find out which hand it was thrown by
 							bool leftHanded = false;
-							var leftHandVelocity = (lastPlayer.lhand.Position - player.lhand.Position) / deltaTime;
-							var rightHandVelocity = (lastPlayer.rhand.Position - player.rhand.Position) / deltaTime;
+							Vector3 leftHandVelocity = (lastPlayer.lhand.Position - player.lhand.Position) / deltaTime;
+							Vector3 rightHandVelocity = (lastPlayer.rhand.Position - player.rhand.Position) / deltaTime;
 
 							// based on position of hands
 							if (Vector3.Distance(lastPlayer.lhand.Position, lastFrame.disc.position.ToVector3()) <
@@ -2152,7 +2159,7 @@ namespace Spark
 						// TODO check if a pass was made
 						if (false)
 						{
-							matchData.Events.Add(new EventData(matchData, EventData.EventType.pass, frame.game_clock,
+							CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.pass, frame.game_clock,
 								team, player, null, player.head.Position, Vector3.Zero));
 							LogRow(LogType.File, frame.sessionid,
 								frame.game_clock_display + " - " + player.name + " made a pass");
@@ -2179,7 +2186,7 @@ namespace Spark
 							LogRow(LogType.Error, "Error processing action", exp.ToString());
 						}
 
-						matchData.Events.Add(new EventData(matchData, EventContainer.EventType.restart_request,
+						CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.restart_request,
 							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.blue], null, null, Vector3.Zero,
 							Vector3.Zero));
 					}
@@ -2198,7 +2205,7 @@ namespace Spark
 							LogRow(LogType.Error, "Error processing action", exp.ToString());
 						}
 
-						matchData.Events.Add(new EventData(matchData, EventData.EventType.restart_request,
+						CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.restart_request,
 							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.orange], null, null, Vector3.Zero,
 							Vector3.Zero));
 					}
@@ -2207,6 +2214,21 @@ namespace Spark
 				{
 					LogRow(LogType.Error, "Error with restart request parsing");
 				}
+			}
+		}
+
+		private static void OnJoinedGame(Frame frame)
+		{
+			if (frame.client_name != "anonymous")
+			{
+				SparkSettings.instance.client_name = frame.client_name;
+			}
+
+
+			// make sure there is a valid echovr path saved
+			if (SparkSettings.instance.echoVRPath == "" || SparkSettings.instance.echoVRPath.Contains("win7"))
+			{
+				UpdateEchoExeLocation();
 			}
 		}
 
@@ -2240,50 +2262,11 @@ namespace Spark
 		}
 
 
-		public static void FindTeamNamesFromPlayerList(MatchData matchDataLocal, Team team)
-		{
-			//if (frame.private_match)
-			{
-				if (team.players.Count > 0 && matchDataLocal != null)
-				{
-					GetRequestCallback($"{APIURL}/vrml/get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
-						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
-						returnJSON =>
-						{
-							try
-							{
-								if (!string.IsNullOrEmpty(returnJSON))
-								{
-									Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(returnJSON);
-									if (data != null)
-									{
-										// if there are at least 2 players from that team
-										if (data.ContainsKey("count") && int.Parse(data["count"]) >= 2)
-										{
-											matchDataLocal.teams[team.color].vrmlTeamName = data["team_name"];
-											matchDataLocal.teams[team.color].vrmlTeamLogo = data["team_logo"];
-										}
-										else // reset the names if people leave
-										{
-											matchDataLocal.teams[team.color].vrmlTeamName = string.Empty;
-											matchDataLocal.teams[team.color].vrmlTeamLogo = string.Empty;
-										}
-									}
-								}
-							}
-							catch (Exception ex)
-							{
-								LogRow(LogType.Error, $"Can't parse get_team_name_from_list response: {ex}");
-							}
-						}
-					);
-				}
-			}
-		}
+		
 
 
 		// 💨
-		private static async Task JoustDetection(Frame firstFrame, EventData.EventType eventType, Team.TeamColor side)
+		private static async Task JoustDetection(Frame firstFrame, EventContainer.EventType eventType, Team.TeamColor side)
 		{
 			float startGameClock = firstFrame.game_clock;
 			float maxTubeExitSpeed = 0;
@@ -2322,7 +2305,7 @@ namespace Spark
 					{
 
 						EventData joustEvent = new EventData(
-							matchData,
+							CurrentRound,
 							eventType,
 							frame.game_clock,
 							team,
@@ -2336,7 +2319,7 @@ namespace Spark
 						);
 
 
-						matchData.Events.Add(joustEvent);
+						CurrentRound.events.Add(joustEvent);
 
 						try
 						{
@@ -2346,12 +2329,6 @@ namespace Spark
 						catch (Exception exp)
 						{
 							LogRow(LogType.Error, "Error processing action", exp.ToString());
-						}
-
-						lastJousts.Enqueue(joustEvent);
-						if (lastJousts.Count > 100)
-						{
-							lastJousts.TryDequeue(out EventData joust);
 						}
 
 						return;
@@ -2371,7 +2348,11 @@ namespace Spark
 			Frame frame = lastFrame;
 			
 			// we may have gone past the end of the match
-			if (matchData == null) return;
+			if (CurrentRound == null)
+			{
+				LogRow(LogType.Error, "6859: Past end of the match?");
+				return;
+			}
 
 			foreach (Team team in frame.teams)
 			{
@@ -2381,7 +2362,7 @@ namespace Spark
 					if (player.stats.saves != originalPlayer.stats.saves) continue;
 
 					EventData eventData = new EventData(
-						matchData, 
+						CurrentRound, 
 						EventContainer.EventType.interception, 
 						frame.game_clock, 
 						team, player, null, 
@@ -2398,8 +2379,8 @@ namespace Spark
 					}
 
 					// TODO enable this once the db supports it
-					// matchData.Events.Add(eventData);
-					MatchPlayer otherMatchPlayer = matchData.GetPlayerData(player);
+					CurrentRound.events.Add(eventData);
+					MatchPlayer otherMatchPlayer = CurrentRound.GetPlayerData(player);
 					if (otherMatchPlayer != null) otherMatchPlayer.Interceptions++;
 					else LogRow(LogType.Error, "Can't find player by name from other team: " + player.name);
 
@@ -2414,13 +2395,17 @@ namespace Spark
 			await Task.Delay(150);
 
 			// throw expired
-			if (matchData == null) return;
+			if (CurrentRound == null)
+			{
+				LogRow(LogType.Error, "8593: Past end of the match?");
+				return;
+			}
 
 			Frame frame = lastFrame;
 
-			foreach (var team in frame.teams)
+			foreach (Team team in frame.teams)
 			{
-				foreach (var player in team.players)
+				foreach (Player player in team.players)
 				{
 					if (player.playerid == originalPlayer.playerid)
 					{
@@ -2435,23 +2420,23 @@ namespace Spark
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
 
-							matchData.Events.Add(new EventData(matchData, EventData.EventType.@throw, frame.game_clock,
+							CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.@throw, frame.game_clock,
 								team, player, null, player.head.Position, frame.disc.velocity.ToVector3()));
-							
-							matchData.currentDiskTrajectory.Clear();
+
+							CurrentRound.currentDiskTrajectory.Clear();
 
 							// add throw data type
-							matchData.Throws.Add(new ThrowData(matchData, frame.game_clock, player,
-								frame.disc.position.ToVector3(), frame.disc.velocity.ToVector3(), leftHanded,
-								underhandedness));
-
-							//if (SparkSettings.instance.throwSpeedTTS)
-							//{
-							//	if (player.name == frame.client_name)
-							//	{
-							//		synth.SpeakAsync("" + player.velocity.ToVector3().Length().ToString("N1"));
-							//	}
-							//}
+							CurrentRound.throws.Add(
+								new ThrowData(
+									CurrentRound,
+									frame.game_clock,
+									player,
+									frame.disc.position.ToVector3(),
+									frame.disc.velocity.ToVector3(),
+									leftHanded,
+									underhandedness
+								)
+							);
 						}
 						else
 						{
@@ -2467,7 +2452,7 @@ namespace Spark
 		/// </summary>
 		/// <param name="frame"></param>
 		/// <param name="deltaTime"></param>
-		private static void ProcessGameStateChange(Frame frame, float deltaTime)
+		private static void ProcessGameStateChange(Frame frame, Frame lastFrame, float deltaTime)
 		{
 			LogRow(LogType.File, frame.sessionid, $"{lastFrame.game_clock_display} - Left state: {lastFrame.game_status} ({lastFrame.orange_round_score}+{lastFrame.blue_round_score})/{lastFrame.total_round_count}");
 			LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Entered state: {frame.game_status} ({frame.orange_round_score}+{frame.blue_round_score})/{frame.total_round_count}");
@@ -2478,50 +2463,29 @@ namespace Spark
 					// if we just came from a playing state, this was a reset - requires a high enough polling rate
 					if (lastFrame.game_status == "playing" || lastFrame.game_status == "round_start")
 					{
-						Frame frameToUse = lastLastFrame;
-						if (lastValidSumOfStatsAge < 30)
-						{
-							frameToUse = lastValidStatsFrame;
-						}
-
-						EventMatchFinished(frameToUse, MatchData.FinishReason.reset, lastFrame.game_clock);
+						EventMatchFinished(lastFrame, frame, AccumulatedFrame.FinishReason.reset);
 
 						try
 						{
-							MatchReset?.Invoke(frameToUse);
+							MatchReset?.Invoke(lastFrame);
 						}
 						catch (Exception exp)
 						{
 							LogRow(LogType.Error, "Error processing action", exp.ToString());
 						}
 					}
-
-					// Autofocus
-					if (SparkSettings.instance.isAutofocusEnabled)
-					{
-						FocusEchoVR();
-					}
 					break;
 
 				// round began
 				case "round_start":
-					inPostMatch = false;
 
 					// if we just started a new 'round' (so stats haven't been reset)
 					if (lastFrame.game_status == "round_over")
 					{
-						UpdateStatsIngame(frame);
-
-						foreach (MatchPlayer player in matchData.players.Values)
+						foreach (MatchPlayer player in CurrentRound.players.Values)
 						{
-							Player p = new Player
-							{
-								userid = player.Id,
-								name = player.Name
-							};
-
 							// TODO isn't this just a shallow copy anyway and won't do anything? How is this working?
-							MatchPlayer lastPlayer = lastMatchData.GetPlayerData(p);
+							MatchPlayer lastPlayer = LastRound.GetPlayerData(player.Id);
 
 							if (lastPlayer != null)
 							{
@@ -2532,15 +2496,7 @@ namespace Spark
 								LogRow(LogType.Error, "Player exists in this round but not in last. Y");
 							}
 						}
-						matchData.round++;
 					}
-					// Autofocus
-					if (SparkSettings.instance.isAutofocusEnabled)
-					{
-						FocusEchoVR();
-					}
-
-					UpdateStatsIngame(frame);
 
 					break;
 
@@ -2548,23 +2504,15 @@ namespace Spark
 				case "playing":
 
 					#region Started Playing
-
-					UpdateStatsIngame(frame);
-
-					// Autofocus
-					if (SparkSettings.instance.isAutofocusEnabled)
-					{
-						FocusEchoVR();
-					}
-
+					
 					// Loop through teams.
-					foreach (var team in frame.teams)
+					foreach (Team team in frame.teams)
 					{
 						// Loop through players on team.
-						foreach (var player in team.players)
+						foreach (Player player in team.players)
 						{
 							// reset playspace
-							MatchPlayer playerData = matchData.GetPlayerData(player);
+							MatchPlayer playerData = CurrentRound.GetPlayerData(player);
 							if (playerData != null)
 							{
 								playerData.playspaceLocation = player.head.Position;
@@ -2579,21 +2527,18 @@ namespace Spark
 						// if the disc is in the center of the arena, neutral joust
 						if (Math.Abs(zDiscPos) < .1f)
 						{
-							_ = JoustDetection(frame, EventData.EventType.joust_speed, Team.TeamColor.blue);
-							_ = JoustDetection(frame, EventData.EventType.joust_speed, Team.TeamColor.orange);
+							_ = JoustDetection(frame, EventContainer.EventType.joust_speed, Team.TeamColor.blue);
+							_ = JoustDetection(frame, EventContainer.EventType.joust_speed, Team.TeamColor.orange);
 						}
-
 						// if the disc is on the orange nest
 						else if (Math.Abs(zDiscPos + 27.5f) < 1)
 						{
-							_ = JoustDetection(frame, EventData.EventType.defensive_joust, Team.TeamColor.orange);
+							_ = JoustDetection(frame, EventContainer.EventType.defensive_joust, Team.TeamColor.orange);
 						}
-
-
 						// if the disc is on the blue nest
 						else if (Math.Abs(zDiscPos - 27.5f) < 1)
 						{
-							_ = JoustDetection(frame, EventData.EventType.defensive_joust, Team.TeamColor.blue);
+							_ = JoustDetection(frame, EventContainer.EventType.defensive_joust, Team.TeamColor.blue);
 						}
 					}
 
@@ -2606,7 +2551,7 @@ namespace Spark
 
 					#region Process Score
 
-					_ = ProcessScore(matchData);
+					_ = ProcessScore(CurrentRound);
 					#endregion
 
 					break;
@@ -2621,23 +2566,23 @@ namespace Spark
 					else if (!frame.last_score.Equals(lastFrame.last_score))
 					{
 						// TODO check if the score actually changes the same frame the game ends
-						_ = ProcessScore(matchData);
+						_ = ProcessScore(CurrentRound);
 
-						EventMatchFinished(frame, MatchData.FinishReason.mercy, lastFrame.game_clock);
+						EventMatchFinished(lastFrame, frame, AccumulatedFrame.FinishReason.mercy);
 					}
 					else if (frame.game_clock == 0 || lastFrame.game_clock < deltaTime * 10 || deltaTime < 0)
 					{
-						EventMatchFinished(frame, MatchData.FinishReason.game_time, 0);
+						EventMatchFinished(lastFrame, frame, AccumulatedFrame.FinishReason.game_time);
 					}
 					else if (lastFrame.game_clock < deltaTime * 10 || lastFrame.game_status == "post_sudden_death" ||
 							 deltaTime < 0)
 					{
 						// TODO find why finished and set reason
-						EventMatchFinished(frame, MatchData.FinishReason.not_finished, lastFrame.game_clock);
+						EventMatchFinished(lastFrame, frame, AccumulatedFrame.FinishReason.not_finished);
 					}
 					else
 					{
-						EventMatchFinished(frame, MatchData.FinishReason.not_finished, lastFrame.game_clock);
+						EventMatchFinished(lastFrame, frame, AccumulatedFrame.FinishReason.not_finished);
 					}
 
 					break;
@@ -2653,31 +2598,22 @@ namespace Spark
 					break;
 
 				case "pre_sudden_death":
-					// Autofocus
-					if (SparkSettings.instance.isAutofocusEnabled)
-					{
-						FocusEchoVR();
-					}
 					LogRow(LogType.Error, "pre_sudden_death");
 					break;
 				case "sudden_death":
-					// Autofocus
-					if (SparkSettings.instance.isAutofocusEnabled)
-					{
-						FocusEchoVR();
-					}
 					// this happens right as the match finishes in a tie
-					matchData.overtimeCount++;
+					CurrentRound.overtimeCount++;
 					break;
 				case "post_sudden_death":
 					LogRow(LogType.Error, "post_sudden_death");
 					break;
 			}
+			
 		}
 
 		private static bool WasStealNearGoal(Vector3 disckPos, Team.TeamColor playerTeamColor, Frame frame)
 		{
-			float stealSaveRadius = 2.2f;
+			const float stealSaveRadius = 2.2f;
 
 			float goalXPos = 0f;
 			float goalYPos = 0f;
@@ -2709,7 +2645,7 @@ namespace Spark
 		/// Function used to extracted data from frame given
 		/// Delays a bit to avoid disk extrapolation
 		/// </summary>
-		private static async Task ProcessScore(MatchData matchData)
+		private static async Task ProcessScore(AccumulatedFrame matchData)
 		{
 			Frame initialFrame = lastLastFrame;
 			GoalImmediate?.Invoke(lastFrame);
@@ -2771,9 +2707,9 @@ namespace Spark
 			// these are nullable types
 			bool? leftHanded = null;
 			float? underhandedness = null;
-			if (matchData.Throws.Count > 0)
+			if (matchData.throws.Count > 0)
 			{
-				ThrowData lastThrow = matchData.Throws.Last();
+				ThrowData lastThrow = matchData.throws.Last();
 				if (lastThrow != null)
 				{
 					leftHanded = lastThrow.isLeftHanded;
@@ -2794,13 +2730,8 @@ namespace Spark
 				underhandedness,
 				matchData.currentDiskTrajectory
 			);
-			matchData.Goals.Add(goalEvent);
-			lastGoals.Enqueue(goalEvent);
-			if (lastGoals.Count > 30)
-			{
-				lastGoals.TryDequeue(out GoalData goal);
-			}
-
+			matchData.goals.Add(goalEvent);
+			
 			try
 			{
 				Goal?.Invoke(frame, goalEvent);
@@ -2822,241 +2753,37 @@ namespace Spark
 			{
 				LogRow(LogType.Error, "Error processing action", exp.ToString());
 			}
-
-			UpdateStatsIngame(frame);
-		}
-
-		/// <summary>
-		/// Can be called often to update the ingame player stats
-		/// </summary>
-		/// <param name="frame">The current frame</param>
-		public static void UpdateStatsIngame(Frame frame)
-		{
-			if (inPostMatch || matchData == null)
-			{
-				Debug.WriteLine("In post match or matchData null");
-				return;
-			}
-
-			// team names may have changed
-			matchData.teams[Team.TeamColor.blue].teamName = frame.teams[0].team;
-			matchData.teams[Team.TeamColor.orange].teamName = frame.teams[1].team;
-			matchData.teams[Team.TeamColor.spectator].teamName = frame.teams[2].team;
-
-			if (frame.teams[0].stats != null)
-			{
-				matchData.teams[Team.TeamColor.blue].points = frame.blue_points;
-			}
-			else
-			{
-				LogRow(LogType.Error, "Stats are null. This is pretty bad. 👎");
-			}
-
-			if (frame.teams[1].stats != null)
-			{
-				matchData.teams[Team.TeamColor.orange].points = frame.orange_points;
-			}
-
-			UpdateAllPlayers(frame);
 		}
 
 		/// <summary>
 		/// Function to wrap up the match once we've entered post_match, restarted, or left spectate unexpectedly (crash)
 		/// </summary>
-		/// <param name="frame"></param>
+		/// <param name="lastRoundFrame"></param>
+		/// <param name="nextRoundFrame"></param>
 		/// <param name="reason"></param>
-		/// <param name="endTime"></param>
-		private static void EventMatchFinished(Frame frame, MatchData.FinishReason reason, float endTime = 0)
+		private static void EventMatchFinished(Frame lastRoundFrame, Frame nextRoundFrame, AccumulatedFrame.FinishReason reason)
 		{
-			matchData.endTime = endTime;
-			matchData.finishReason = reason;
+			CurrentRound.finishReason = reason;
 
-			if (frame == null)
+			if (lastRoundFrame == null)
 			{
 				// this happened on a restart right in the beginning once
 				LogRow(LogType.Error, "frame is null on match finished event. INVESTIGATE");
 				return;
 			}
 
-			LogRow(LogType.File, frame.sessionid, "Match Finished: " + reason);
-
-			lastMatches.Enqueue(matchData);
-			if (lastMatches.Count > 50)
-			{
-				lastMatches.TryDequeue(out MatchData _);
-			}
-
-			lastMatchData = matchData;
-			matchData = new MatchData(lastFrame, lastMatchData);
-			UpdateStatsIngame(frame);
-
-			inPostMatch = true;
+			LogRow(LogType.File, lastRoundFrame.sessionid, "Match Finished: " + reason);
 
 			// show the scores in the log
-			LogRow(LogType.File, frame.sessionid,
-				frame.game_clock_display + " - ORANGE: " + frame.orange_points + "  BLUE: " + frame.blue_points);
+			LogRow(LogType.File, lastRoundFrame.sessionid, 
+				lastRoundFrame.game_clock_display + " - ORANGE: " + lastRoundFrame.orange_points + "  BLUE: " + lastRoundFrame.blue_points);
 
-			RoundOver?.Invoke(frame);
+			RoundOver?.Invoke(lastRoundFrame, reason);
 			
-			
-			// if end of match upload
-			if (frame.game_status == "post_match")
+			rounds.Enqueue(new AccumulatedFrame(nextRoundFrame, rounds.Last()));
+			if (rounds.Count > 50)
 			{
-				UploadMatchBatch(true);
-			}
-			// if during-match upload
-			else if (!DiscordOAuth.Personal && DiscordOAuth.AccessCode.series_name != "ignitevr")
-			{
-				UploadMatchBatch(false);
-			}
-		}
-
-		public static void UploadMatchBatch(bool final = false)
-		{
-			if (!SparkSettings.instance.uploadToIgniteDB)
-			{
-				Console.WriteLine("Won't upload right now.");
-			}
-
-			BatchOutputFormat data = new BatchOutputFormat
-			{
-				final = final,
-				match_data = matchData.ToDict()
-			};
-			matchData.players.Values.ToList().ForEach(e =>
-			{
-				if (e.Name != "anonymous") data.match_players.Add(e.ToDict());
-			});
-
-			matchData.Events.ForEach(e =>
-			{
-				if (!e.inDB) data.events.Add(e.ToDict());
-				e.inDB = true;
-			});
-			matchData.Goals.ForEach(e =>
-			{
-				if (!e.inDB) data.goals.Add(e.ToDict());
-				e.inDB = true;
-			});
-			matchData.Throws.ForEach(e =>
-			{
-				if (!e.inDB) data.throws.Add(e.ToDict());
-				e.inDB = true;
-			});
-
-			string dataString = JsonConvert.SerializeObject(data);
-			string hash;
-			using (SHA256 sha = SHA256.Create())
-			{
-				byte[] rawHash = sha.ComputeHash(Encoding.ASCII.GetBytes(dataString + matchData.firstFrame.client_name));
-
-				// Convert the byte array to hexadecimal string
-				StringBuilder sb = new StringBuilder();
-				foreach (byte b in rawHash)
-				{
-					sb.Append(b.ToString("X2"));
-				}
-
-				hash = sb.ToString().ToLower();
-			}
-
-			if (SparkSettings.instance.uploadToIgniteDB || DiscordOAuth.AccessCode.series_name.Contains("vrml"))
-			{
-				_ = DoUploadMatchBatchIgniteDB(dataString, hash, matchData.firstFrame.client_name);
-			}
-			
-			// upload tablet stats as well
-			if (matchData?.firstFrame?.private_match == false) AutoUploadTabletStats();
-		}
-
-		static async Task DoUploadMatchBatchIgniteDB(string data, string hash, string client_name)
-		{
-			client.DefaultRequestHeaders.Remove("x-api-key");
-			client.DefaultRequestHeaders.Add("x-api-key", DiscordOAuth.igniteUploadKey);
-
-			client.DefaultRequestHeaders.Remove("access-code");
-			client.DefaultRequestHeaders.Add("access-code", DiscordOAuth.AccessCode.series_name);
-
-			StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-
-			try
-			{
-				HttpResponseMessage response = await client.PostAsync("/add_data?hashkey=" + hash + "&client_name=" + client_name, content);
-				LogRow(LogType.Info, "[DB][Response] " + response.Content.ReadAsStringAsync().Result);
-			}
-			catch
-			{
-				LogRow(LogType.Error, "Can't connect to the DB server");
-			}
-		}
-
-
-		/// <summary>
-		/// Update existing player with stats from game.
-		/// </summary>
-		/// <param name="frame"></param>
-		/// <param name="team"></param>
-		/// <param name="player"></param>
-		private static void UpdateSinglePlayer(Frame frame, Team team, Player player)
-		{
-			if (!matchData.teams.ContainsKey(team.color))
-			{
-				LogRow(LogType.Error, "No team. Wat.");
-				return;
-			}
-
-			if (player.stats == null)
-			{
-				LogRow(LogType.Error, "Player stats are null. Maybe in lobby?");
-				return;
-			}
-			
-			Team.TeamColor winningTeam = frame.blue_points > frame.orange_points ? Team.TeamColor.blue : Team.TeamColor.orange;
-			int won = team.color == winningTeam ? 1 : 0;
-
-			TeamData teamData = matchData.teams[team.color];
-
-			// add a new match player if they didn't exist before
-			if (!matchData.players.ContainsKey(player.name))
-			{
-				matchData.players.Add(player.name, new MatchPlayer(matchData, teamData, player));
-			}
-
-			if (player.name != "anonymous")
-			{
-				MatchPlayer playerData = matchData.players[player.name];
-				
-				// back reference
-				playerData.teamData = teamData;
-
-				playerData.Level = player.level;
-				playerData.Number = player.number;
-				playerData.PossessionTime = player.stats.possession_time;
-				playerData.Points = player.stats.points;
-				playerData.ShotsTaken = player.stats.shots_taken;
-				playerData.Saves = player.stats.saves;
-				// playerData.GoalsNum = player.stats.goals;	// disabled in favor of manual increment because the api is broken here
-				// playerData.Passes = player.stats.passes;		// api reports 0
-				// playerData.Catches = player.stats.catches;  	// api reports 0
-				playerData.Steals = player.stats.steals;
-				playerData.Stuns = player.stats.stuns;
-				playerData.Blocks = player.stats.blocks; // api reports 0
-				// playerData.Interceptions = player.stats.interceptions;	// api reports 0
-				playerData.Assists = player.stats.assists;
-				playerData.Won = won;
-			}
-		}
-
-		private static void UpdateAllPlayers(Frame frame)
-		{
-			// Loop through teams.
-			foreach (Team team in frame.teams)
-			{
-				// Loop through players on team.
-				foreach (Player player in team.players)
-				{
-					UpdateSinglePlayer(frame, team, player, won);
-				}
+				rounds.TryDequeue(out AccumulatedFrame _);
 			}
 		}
 
@@ -3422,12 +3149,12 @@ namespace Spark
 					return destIp;
 				})
 				.ToList();
-			IPSearchthread1 = new Thread(() => PingIPList(pingReplyTasks, 1));
-			IPSearchthread2 = new Thread(() => PingIPList(pingReplyTasks2, 2));
+			IPSearchThread1 = new Thread(() => PingIPList(pingReplyTasks, 1));
+			IPSearchThread2 = new Thread(() => PingIPList(pingReplyTasks2, 2));
 			IPPingThread1Done = false;
 			IPPingThread2Done = false;
-			IPSearchthread1.Start();
-			IPSearchthread2.Start();
+			IPSearchThread1.Start();
+			IPSearchThread2.Start();
 		}
 
 		// Declare the GetIpNetTable function.
@@ -3578,7 +3305,7 @@ namespace Spark
 		{
 			try
 			{
-				if (spectateMe)
+				if (spectateMeController.spectateMe)
 				{
 					// Team clientPlayerTeam = lastFrame?.GetTeam(lastFrame.client_name);
 					// if (clientPlayerTeam == null) return;
@@ -3594,7 +3321,7 @@ namespace Spark
 						while (!inPCSpectator && pcSpectatorStartupTime > TimeSpan.Zero)
 						{
 							// if we stopped trying to spectate, cancel
-							if (!spectateMe) return;
+							if (!spectateMeController.spectateMe) return;
 
 							// TODO this crashes on local pc
 							result = await GetRequestAsync($"http://{ip}:{port}/session", null);
@@ -3681,7 +3408,7 @@ namespace Spark
 			return popupWindows.ContainsKey(windowName) ? popupWindows[windowName] : null;
 		}
 
-		private static void AutoUploadTabletStats()
+		public static void AutoUploadTabletStats()
 		{
 			_ = Task.Run(async () =>
 			{
@@ -3910,13 +3637,12 @@ namespace Spark
 
 			if (SparkSettings.instance.atlasLinkAppendTeamNames)
 			{
-				if (Program.matchData != null &&
-				    Program.matchData.teams[Team.TeamColor.blue] != null &&
-				    Program.matchData.teams[Team.TeamColor.orange] != null &&
-				    !string.IsNullOrEmpty(Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName) &&
-				    !string.IsNullOrEmpty(Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName))
+				if (CurrentRound?.teams[Team.TeamColor.blue] != null && 
+				    CurrentRound?.teams[Team.TeamColor.orange] != null && 
+				    !string.IsNullOrEmpty(CurrentRound.teams[Team.TeamColor.blue].vrmlTeamName) && 
+				    !string.IsNullOrEmpty(CurrentRound.teams[Team.TeamColor.orange].vrmlTeamName))
 				{
-					link += $" {Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName} vs {Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName}";
+					link += $" {CurrentRound.teams[Team.TeamColor.orange].vrmlTeamName} vs {CurrentRound.teams[Team.TeamColor.blue].vrmlTeamName}";
 				}
 			}
 

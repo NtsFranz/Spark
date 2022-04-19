@@ -72,26 +72,21 @@ namespace Spark
 						orangePlayerPingsNamesServerInfoTab.Text = playerNames[Team.TeamColor.orange].ToString();
 						orangePlayerPingsPingsServerInfoTab.Text = playerPings[Team.TeamColor.orange].ToString();
 
+						string playerPingsHeader;
 
-						if (Program.matchData != null)
+						if (Program.CurrentRound.serverScore > 0)
 						{
-							
-							string playerPingsHeader = "";
-
-							if (Program.matchData.ServerScore > 0)
-							{
-								playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {Program.matchData.SmoothedServerScore:N1}";
-							}
-							else if (Math.Abs(Program.matchData.ServerScore - (-1)) < .1f)
-							{
-								playerPingsHeader = $"{Properties.Resources.Player_Pings}     >150";
-							}
-							else
-							{
-								playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} --";
-							}
-							playerPingsGroupboxServerInfoTab.Header = playerPingsHeader;
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {Program.CurrentRound.smoothedServerScore:N1}";
 						}
+						else if (Math.Abs(Program.CurrentRound.serverScore - (-1)) < .1f)
+						{
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}     >150";
+						}
+						else
+						{
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} --";
+						}
+						playerPingsGroupboxServerInfoTab.Header = playerPingsHeader;
 						
 					}
 				});

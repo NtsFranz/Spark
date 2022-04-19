@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using ButterReplays;
 using EchoVRAPI;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -28,7 +23,10 @@ namespace Spark
 
 		public OverlayServer()
 		{
-			Task.Run(async () => { await RestartServer(); });
+			Task.Run(async () =>
+			{
+				await RestartServer();
+			});
 
 			//DiscordOAuth.Authenticated += () =>
 			//{
@@ -38,7 +36,10 @@ namespace Spark
 			DiscordOAuth.AccessCodeChanged += (code) =>
 			{
 				Console.WriteLine("Access code changed");
-				Task.Run(async () => { await RestartServer(); });
+				Task.Run(async () =>
+				{
+					await RestartServer();
+				});
 			};
 		}
 
@@ -46,7 +47,7 @@ namespace Spark
 		{
 			// get new overlay data
 			await OverlaysCustom.FetchOverlayData();
-			
+
 			// stop the server
 			// TODO this is race condition because it is started from somewhere else
 			if (server != null)
@@ -57,10 +58,13 @@ namespace Spark
 			// restart the server
 			server = WebHost
 				.CreateDefaultBuilder()
-				.UseKestrel(x => { x.ListenAnyIP(6724); })
+				.UseKestrel(x =>
+				{
+					x.ListenAnyIP(6724);
+				})
 				.UseStartup<Routes>()
 				.Build();
-		
+
 			await server.RunAsync();
 		}
 
@@ -166,7 +170,7 @@ namespace Spark
 							};
 							response["caster_prefs"] = SparkSettings.instance.casterPrefs;
 
-							if (Program.InGame && Program.matchData != null)
+							if (Program.InGame)
 							{
 								response["session"] = Program.lastJSON;
 							}
@@ -211,12 +215,8 @@ namespace Spark
 								overlayBlueTeamName = SparkSettings.instance.overlaysManualTeamNameBlue;
 								break;
 							case 1:
-								if (Program.matchData != null)
-								{
-									overlayOrangeTeamName = Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName;
-									overlayBlueTeamName = Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName;
-								}
-
+								overlayOrangeTeamName = Program.CurrentRound.teams[Team.TeamColor.orange].vrmlTeamName;
+								overlayBlueTeamName = Program.CurrentRound.teams[Team.TeamColor.blue].vrmlTeamName;
 								break;
 						}
 
@@ -398,14 +398,14 @@ namespace Spark
 							{
 								List<string> folderPieces = pieces.Skip(2).SkipLast(2).Append(string.Join('.', pieces.TakeLast(2))).ToList();
 								string url;
-								
+
 								if (folderPieces.Count > 1 && folderPieces[^1].Contains("min."))
 								{
 									// combine the min into the filename
 									folderPieces[^2] = string.Join('.', folderPieces.TakeLast(2));
-									folderPieces.RemoveAt(folderPieces.Count-1);
+									folderPieces.RemoveAt(folderPieces.Count - 1);
 								}
-								
+
 								if (folderPieces[^1] == "index.html")
 								{
 									url = "/" + string.Join('/', folderPieces.SkipLast(1));
@@ -435,24 +435,24 @@ namespace Spark
 			{
 				lock (Program.gameStateLock)
 				{
-					List<MatchData> selectedMatches = null;
+					List<AccumulatedFrame> selectedMatches = null;
 					List<List<Dictionary<string, object>>> matchStats = null;
-					if (Program.InGame && Program.matchData != null)
+					if (Program.InGame)
 					{
 						selectedMatches = GetPreviousRounds();
 
 
 						BatchOutputFormat data = new BatchOutputFormat
 						{
-							match_data = Program.matchData.ToDict()
+							match_data = Program.CurrentRound.ToDict()
 						};
 
 						selectedMatches.ForEach(m =>
 						{
 							m.players.Values.ToList().ForEach(e => data.match_players.Add(e.ToDict()));
-							m.Events.ForEach(e => data.events.Add(e.ToDict()));
-							m.Goals.ForEach(e => data.goals.Add(e.ToDict()));
-							m.Throws.ForEach(e => data.throws.Add(e.ToDict()));
+							m.events.ForEach(e => data.events.Add(e.ToDict()));
+							m.goals.ForEach(e => data.goals.Add(e.ToDict()));
+							m.throws.ForEach(e => data.throws.Add(e.ToDict()));
 						});
 
 
@@ -493,12 +493,9 @@ namespace Spark
 							overlayBlueTeamLogo = blueTeam?.vrmlTeamLogo ?? "";
 							break;
 					}
-					
+
 					Dictionary<string, object> response = new Dictionary<string, object>
 					{
-						{
-							"all", selectedMatches?.Select(m=>m.players["NtsFranz"]?.Points)
-						},
 						{
 							"teams", new[]
 							{
@@ -552,19 +549,17 @@ namespace Spark
 						},
 						{
 							"joust_events", selectedMatches?
-								.SelectMany(m => m.Events)
+								.SelectMany(m => m.events)
 								.Where(e =>
-									e.eventType is EventData.EventType.joust_speed or EventData.EventType
+									e.eventType is EventContainer.EventType.joust_speed or EventContainer.EventType
 										.defensive_joust)
 								.Select(e => e.ToDict())
 						},
-						{ "goals", selectedMatches?.SelectMany(m => m.Goals).Select(e => e.ToDict()) }
+						{ "goals", selectedMatches?.SelectMany(m => m.goals).Select(e => e.ToDict()) }
 					};
 					return response;
 				}
 			}
-
-			
 		}
 
 
@@ -580,16 +575,15 @@ namespace Spark
 				this.y = y;
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets a list of all previous matches in memory that are for the current set
 		/// </summary>
-		public static List<MatchData> GetPreviousRounds()
+		public static List<AccumulatedFrame> GetPreviousRounds()
 		{
-			List<MatchData> selectedMatches = Program.lastMatches
-				.Where(m => m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
+			List<AccumulatedFrame> selectedMatches = Program.rounds
+				.Where(m => m.frame.sessionid == Program.CurrentRound.frame.sessionid)
 				.ToList();
-			selectedMatches.Add(Program.matchData);
 			selectedMatches.RemoveAll(m => m == null);
 			return selectedMatches;
 		}
@@ -651,12 +645,13 @@ namespace Spark
 
 		public static List<List<Dictionary<string, object>>> GetMatchStats()
 		{
-			List<MatchData> selectedMatches = GetPreviousRounds();
+			// Get the rounds for this match
+			List<AccumulatedFrame> selectedMatches = GetPreviousRounds();
 
 			Dictionary<string, MatchPlayer> bluePlayers = new Dictionary<string, MatchPlayer>();
 			IEnumerable<MatchPlayer> blueRoundPlayers = selectedMatches
 				.SelectMany(m => m.players.Values)
-				.Where(p => p.teamData.teamColor == Team.TeamColor.blue);
+				.Where(p => p.TeamColor == Team.TeamColor.blue);
 			foreach (MatchPlayer blueRoundPlayer in blueRoundPlayers)
 			{
 				if (bluePlayers.ContainsKey(blueRoundPlayer.Name))
@@ -672,7 +667,7 @@ namespace Spark
 			Dictionary<string, MatchPlayer> orangePlayers = new Dictionary<string, MatchPlayer>();
 			IEnumerable<MatchPlayer> orangeRoundPlayers = selectedMatches
 				.SelectMany(m => m.players.Values)
-				.Where(p => p.teamData.teamColor == Team.TeamColor.orange);
+				.Where(p => p.TeamColor == Team.TeamColor.orange);
 			foreach (MatchPlayer orangeRoundPlayer in orangeRoundPlayers)
 			{
 				if (orangePlayers.ContainsKey(orangeRoundPlayer.Name))
@@ -704,33 +699,37 @@ namespace Spark
 
 		public static async Task<List<Dictionary<string, float>>> GetDiscPositions()
 		{
-			if (Program.matchData == null)
+			// get the most recent file in the replay folder
+			DirectoryInfo directory = new DirectoryInfo(SparkSettings.instance.saveFolder);
+
+			// get .echoreplay files
+			FileInfo[] echoreplayFiles = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
+				.Where(f => f.Name.StartsWith("rec") && f.Name.EndsWith(".echoreplay")).ToArray();
+
+			// get .butter files
+			FileInfo[] butterFiles = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
+				.Where(f => f.Name.StartsWith("rec") && f.Name.EndsWith(".butter")).ToArray();
+
+
+			// gets a list of all the times of previous matches in memory that are for the current set
+			List<DateTime> selectedMatchTimes = GetPreviousRounds().Select(m => m.matchTime).ToList();
+
+			// finds all the files that match one of the matches in memory
+			FileInfo[] selectedFiles = butterFiles.Where(
+				f =>
+					DateTime.TryParseExact(
+						f.Name.Substring(4, 19),
+						"yyyy-MM-dd_HH-mm-ss",
+						CultureInfo.InvariantCulture,
+						DateTimeStyles.AssumeLocal,
+						out DateTime time)
+					&& time.ToUniversalTime() > selectedMatchTimes.Min() - TimeSpan.FromSeconds(10)).ToArray();
+			// && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))).ToArray();
+
+			// use .echoreplay files if .butter files not found
+			if (selectedFiles.Length == 0)
 			{
-				return new List<Dictionary<string, float>>();
-			}
-			else
-			{
-				// get the most recent file in the replay folder
-				DirectoryInfo directory = new DirectoryInfo(SparkSettings.instance.saveFolder);
-
-				// get .echoreplay files
-				FileInfo[] echoreplayFiles = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
-					.Where(f => f.Name.StartsWith("rec") && f.Name.EndsWith(".echoreplay")).ToArray();
-
-				// get .butter files
-				FileInfo[] butterFiles = directory.GetFiles().OrderByDescending(f => f.LastWriteTime)
-					.Where(f => f.Name.StartsWith("rec") && f.Name.EndsWith(".butter")).ToArray();
-
-
-				// gets a list of all the times of previous matches in memory that are for the current set
-				List<DateTime> selectedMatchTimes = Program.lastMatches
-					.Where(m => m.firstFrame.sessionid == Program.matchData.firstFrame.sessionid)
-					.Select(m => m.matchTime).ToList();
-				Debug.Assert(Program.matchData != null, "Program.matchData != null");
-				selectedMatchTimes.Add(Program.matchData.matchTime);
-
-				// finds all the files that match one of the matches in memory
-				FileInfo[] selectedFiles = butterFiles.Where(
+				selectedFiles = echoreplayFiles.Where(
 					f =>
 						DateTime.TryParseExact(
 							f.Name.Substring(4, 19),
@@ -738,72 +737,57 @@ namespace Spark
 							CultureInfo.InvariantCulture,
 							DateTimeStyles.AssumeLocal,
 							out DateTime time)
-						&& time.ToUniversalTime() > selectedMatchTimes.Min() - TimeSpan.FromSeconds(10)).ToArray();
-						// && MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))).ToArray();
+						&& MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))).ToArray();
+			}
 
-				// use .echoreplay files if .butter files not found
-				if (selectedFiles.Length == 0)
+			// FileInfo[] selectedFiles = files.Take(1).ToArray();
+
+			// function to check if a time matches fuzzily
+			static bool MatchesOneTime(DateTime time, List<DateTime> timeList, TimeSpan diff)
+			{
+				foreach (DateTime time2 in timeList)
 				{
-					selectedFiles = echoreplayFiles.Where(
-						f =>
-							DateTime.TryParseExact(
-								f.Name.Substring(4, 19),
-								"yyyy-MM-dd_HH-mm-ss",
-								CultureInfo.InvariantCulture,
-								DateTimeStyles.AssumeLocal,
-								out DateTime time)
-							&& MatchesOneTime(time, selectedMatchTimes, TimeSpan.FromSeconds(10))).ToArray();
-				}
-
-				// FileInfo[] selectedFiles = files.Take(1).ToArray();
-
-				// function to check if a time matches fuzzily
-				static bool MatchesOneTime(DateTime time, List<DateTime> timeList, TimeSpan diff)
-				{
-					foreach (DateTime time2 in timeList)
+					if ((time.ToUniversalTime() - time2.ToUniversalTime()).Duration() < diff)
 					{
-						if ((time.ToUniversalTime() - time2.ToUniversalTime()).Duration() < diff)
-						{
-							return true;
-						}
+						return true;
 					}
-
-					return false;
 				}
 
-				if (selectedFiles.Length == 0)
+				return false;
+			}
+
+			if (selectedFiles.Length == 0)
+			{
+				return new List<Dictionary<string, float>>();
+			}
+			else
+			{
+				List<Dictionary<string, float>> positions = new List<Dictionary<string, float>>();
+				foreach (FileInfo file in selectedFiles)
 				{
-					return new List<Dictionary<string, float>>();
-				}
-				else
-				{
-					List<Dictionary<string, float>> positions = new List<Dictionary<string, float>>();
-					foreach (FileInfo file in selectedFiles)
+					ReplayFileReader reader = new ReplayFileReader();
+					ReplayFile replayFile = await reader.LoadFileAsync(file.FullName, true);
+					if (replayFile == null) continue;
+
+					// loop through every nth frame
+					const int n = 5;
+					int nFrames = replayFile.nframes;
+					for (int i = 0; i < nFrames; i += n)
 					{
-						ReplayFileReader reader = new ReplayFileReader();
-						ReplayFile replayFile = await reader.LoadFileAsync(file.FullName, true);
-						if (replayFile == null) continue;
+						Frame frame = replayFile.GetFrame(i);
 
-						// loop through every nth frame
-						const int n = 5;
-						int nFrames = replayFile.nframes;
-						for (int i = 0; i < nFrames; i += n)
+						if (frame.game_status != "playing") continue;
+						Vector3 pos = frame.disc.position.ToVector3();
+						positions.Add(new Dictionary<string, float>
 						{
-							Frame frame = replayFile.GetFrame(i);
-
-							if (frame.game_status != "playing") continue;
-							Vector3 pos = frame.disc.position.ToVector3();
-							positions.Add(new Dictionary<string, float>
-							{
-								{ "x", pos.X },
-								{ "y", pos.Y },
-								{ "z", pos.Z },
-							});
-						}
+							{ "x", pos.X },
+							{ "y", pos.Y },
+							{ "z", pos.Z },
+						});
 					}
-
-					return positions;
 				}
+
+				return positions;
 			}
 		}
 	}

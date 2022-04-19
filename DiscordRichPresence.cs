@@ -200,8 +200,9 @@ namespace Spark
 				rp.Assets = new Assets
 				{
 					LargeImageKey = "echo_arena_store_icon",
-					LargeImageText = SparkSettings.instance.discordRichPresenceServerLocation && Program.matchData != null && !string.IsNullOrEmpty(Program.matchData.ServerLocation) 
-						? Program.matchData.ServerLocation 
+					LargeImageText = SparkSettings.instance.discordRichPresenceServerLocation && 
+					                 !string.IsNullOrEmpty(Program.CurrentRound?.serverLocation) 
+						? Program.CurrentRound.serverLocation 
 						: "Rich presence from Spark"
 				};
 

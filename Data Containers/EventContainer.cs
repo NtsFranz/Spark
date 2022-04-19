@@ -13,6 +13,7 @@ namespace Spark
 			@catch,
 			pass,
 			@throw,
+			local_throw,
 			shot_taken,
 			steal,
 			playspace_abuse,
@@ -35,6 +36,7 @@ namespace Spark
 			joined_game,	// used by websocket for overlays
 			left_game,		// used by websocket for overlays
 			event_log,		// used by websocket for overlays
+			turnover,
 		}
 
 		/// <summary>
@@ -45,5 +47,7 @@ namespace Spark
 		
 		public abstract Dictionary<string, object> ToDict();
 		public abstract Dictionary<string, object> ToDict(bool useCustomKeyNames);
+		// public abstract string ToShortString();
+		// public abstract string ToLongString();
 	}
 }

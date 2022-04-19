@@ -15,7 +15,7 @@ namespace Spark
 		/// </summary>
 		public bool inDB = false;
 
-		public MatchData matchData;
+		public AccumulatedFrame matchData;
 		public Player player;
 		public float gameClock;
 		public Vector3 position;
@@ -28,7 +28,7 @@ namespace Spark
 		}
 		public bool scored;
 
-		public ThrowData(MatchData matchData, float gameClock, Player player, Vector3 position, Vector3 velocity, bool isLeftHanded, float underhandedness)
+		public ThrowData(AccumulatedFrame matchData, float gameClock, Player player, Vector3 position, Vector3 velocity, bool isLeftHanded, float underhandedness)
 		{
 			this.matchData = matchData;
 			this.player = player;
@@ -47,7 +47,7 @@ namespace Spark
 		{
 			var values = new Dictionary<string, object>
 			{
-				{"session_id", matchData.firstFrame.sessionid },
+				{"session_id", matchData.frame.sessionid },
 				{"match_time", matchData.MatchTimeSQL },
 				{"game_clock", gameClock },
 				{"player_id", player.userid },

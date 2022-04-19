@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Windows;
+using System.Windows.Threading;
 using EchoVRAPI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +20,7 @@ namespace Spark
 		private static readonly object vrmlClientLock = new object();
 		private static HttpClient vrmlAPIClient = null;
 		private static Dictionary<string, (DateTime, string)> vrmlAPICache = new Dictionary<string, (DateTime, string)>();
-		
+
 		public static void MapRoutes(IEndpointRouteBuilder endpoints)
 		{
 			//string file = OverlayServer.ReadResource("api_index.html");
@@ -377,8 +378,7 @@ namespace Spark
 					Logger.LogRow(Logger.LogType.Error, $"{e}");
 				}
 			});
-			
-			
+
 
 			endpoints.MapGet("/api/vrml_api/{**route}", async context =>
 			{
@@ -413,7 +413,33 @@ namespace Spark
 					{
 						context.Response.Headers.Add("Content-Type", "application/json");
 					}
+
 					await context.Response.WriteAsync(val);
+				}
+				catch (Exception e)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"{e}");
+				}
+			});
+
+
+			endpoints.MapGet("/api/focus_spark", async context =>
+			{
+				try
+				{
+					Application.Current.Dispatcher.Invoke(() =>
+					{
+						Program.liveWindow.Show();
+						Program.liveWindow.Activate();
+					});
+					
+					context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+
+					await context.Response.WriteAsJsonAsync(new Dictionary<string, string>()
+					{
+						{ "message", "Focused this window." }
+					});
 				}
 				catch (Exception e)
 				{

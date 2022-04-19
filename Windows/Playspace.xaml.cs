@@ -53,7 +53,7 @@ namespace Spark
 								string playerName = choosePlayerDropdown.SelectedValue.ToString();
 								Player player = Program.lastFrame.GetPlayer(playerName);
 								if (player == null) return;
-								MatchPlayer playerData = Program.matchData.GetPlayerData(player);
+								MatchPlayer playerData = Program.CurrentRound.GetPlayerData(player);
 								if (playerData == null) return;
 								Vector3 pos = player.head.Position - playerData.playspaceLocation;
 								SetPosition(pos.X, pos.Y);

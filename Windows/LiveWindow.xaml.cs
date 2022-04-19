@@ -551,37 +551,33 @@ namespace Spark
 						orangePlayerPingsNames.Text = orangeTextNames.ToString();
 						orangePlayerPingsPings.Text = orangePingsTextPings.ToString();
 
+						string playerPingsHeader = "";
 
-						if (Program.matchData != null)
+						if (Program.CurrentRound.serverScore > 0)
 						{
-							string playerPingsHeader = "";
-
-							if (Program.matchData.ServerScore > 0)
-							{
-								playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {Program.matchData.SmoothedServerScore:N1}";
-							}
-							else if (Math.Abs(Program.matchData.ServerScore - (-1)) < .1f)
-							{
-								playerPingsHeader = $"{Properties.Resources.Player_Pings}     >150";
-							}
-							else
-							{
-								playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} --";
-							}
-							playerPingsGroupbox.Header = playerPingsHeader;
-							
-							if (blueLogo != Program.matchData.teams[Team.TeamColor.blue].vrmlTeamLogo)
-							{
-								blueLogo = Program.matchData.teams[Team.TeamColor.blue].vrmlTeamLogo;
-								blueTeamLogo.Source = string.IsNullOrEmpty(blueLogo) ? null : new BitmapImage(new Uri(blueLogo));
-								blueTeamLogo.ToolTip = Program.matchData.teams[Team.TeamColor.blue].vrmlTeamName;
-							}
-							if (orangeLogo != Program.matchData.teams[Team.TeamColor.orange].vrmlTeamLogo)
-							{
-								orangeLogo = Program.matchData.teams[Team.TeamColor.orange].vrmlTeamLogo;
-								orangeTeamLogo.Source = string.IsNullOrEmpty(orangeLogo) ? null : new BitmapImage(new Uri(orangeLogo));
-								orangeTeamLogo.ToolTip = Program.matchData.teams[Team.TeamColor.orange].vrmlTeamName;
-							}
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {Program.CurrentRound.smoothedServerScore:N1}";
+						}
+						else if (Math.Abs(Program.CurrentRound.serverScore - (-1)) < .1f)
+						{
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}     >150";
+						}
+						else
+						{
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} --";
+						}
+						playerPingsGroupbox.Header = playerPingsHeader;
+						
+						if (blueLogo != Program.CurrentRound.teams[Team.TeamColor.blue].vrmlTeamLogo)
+						{
+							blueLogo = Program.CurrentRound.teams[Team.TeamColor.blue].vrmlTeamLogo;
+							blueTeamLogo.Source = string.IsNullOrEmpty(blueLogo) ? null : new BitmapImage(new Uri(blueLogo));
+							blueTeamLogo.ToolTip = Program.CurrentRound.teams[Team.TeamColor.blue].vrmlTeamName;
+						}
+						if (orangeLogo != Program.CurrentRound.teams[Team.TeamColor.orange].vrmlTeamLogo)
+						{
+							orangeLogo = Program.CurrentRound.teams[Team.TeamColor.orange].vrmlTeamLogo;
+							orangeTeamLogo.Source = string.IsNullOrEmpty(orangeLogo) ? null : new BitmapImage(new Uri(orangeLogo));
+							orangeTeamLogo.ToolTip = Program.CurrentRound.teams[Team.TeamColor.orange].vrmlTeamName;
 						}
 
 
@@ -598,7 +594,7 @@ namespace Spark
 
 						// last goals and last matches
 						StringBuilder lastGoalsString = new StringBuilder();
-						GoalData[] lastGoals = Program.lastGoals.ToArray();
+						GoalData[] lastGoals = Program.LastGoals.ToArray();
 						if (lastGoals.Length > 0)
 						{
 							for (int j = lastGoals.Length - 1; j >= 0; j--)
@@ -610,21 +606,21 @@ namespace Spark
 						lastGoalsTextBlock.Text = lastGoalsString.ToString();
 
 						StringBuilder lastMatchesString = new StringBuilder();
-						MatchData[] lastMatches = Program.lastMatches.ToArray();
+						AccumulatedFrame[] lastMatches = Program.rounds.ToArray();
 						if (lastMatches.Length > 0)
 						{
 							for (int j = lastMatches.Length - 1; j >= 0; j--)
 							{
-								MatchData match = lastMatches[j];
+								AccumulatedFrame match = lastMatches[j];
 								
 								// TODO match is null
-								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == MatchData.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.teams[Team.TeamColor.orange].points + "  BLUE: " + match.teams[Team.TeamColor.blue].points);
+								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == AccumulatedFrame.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.frame.orange_points + "  BLUE: " + match.frame.blue_points);
 							}
 						}
 						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
 
 						StringBuilder lastJoustsString = new StringBuilder();
-						List<EventData> lastJousts = Program.lastJousts.ToList();
+						List<EventData> lastJousts = Program.LastJousts.ToList();
 						if (lastJousts.Count > 0)
 						{
 							if (SparkSettings.instance.dashboardJoustTimeOrder == 1)
@@ -634,7 +630,7 @@ namespace Spark
 							for (int j = lastJousts.Count - 1; j >= 0; j--)
 							{
 								EventData joust = lastJousts[j];
-								lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventData.EventType.joust_speed ? " N" : ""));
+								lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventContainer.EventType.joust_speed ? " N" : ""));
 							}
 						}
 						lastJoustsTextBlock.Text = lastJoustsString.ToString();
@@ -999,7 +995,7 @@ namespace Spark
 					HttpResponseMessage response = await updateClient.GetAsync(ip);
 					JObject respObj = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 					string loc = (string)respObj["city"] + ", " + (string)respObj["regionName"];
-					Program.matchData.ServerLocation = loc;
+					Program.CurrentRound.serverLocation = loc;
 					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
 					serverLocationLabel.ToolTip = $"{respObj["query"]}\n{respObj["org"]}\n{respObj["as"]}";
 
@@ -1292,39 +1288,10 @@ namespace Spark
 
 		private void SpectateMeClicked(object sender, RoutedEventArgs e)
 		{
-			Program.spectateMe = !Program.spectateMe;
-			try
-			{
-				if (Program.spectateMe)
-				{
-					if (Program.InGame && Program.lastFrame != null && !Program.lastFrame.InLobby)
-					{
-						Program.KillEchoVR($"-httpport {Program.SPECTATEME_PORT}");
-						Program.StartEchoVR(
-							Program.JoinType.Spectator,
-							port: Program.SPECTATEME_PORT,
-							noovr: SparkSettings.instance.useAnonymousSpectateMe,
-							session_id: Program.lastFrame.sessionid);
-						Program.WaitUntilLocalGameLaunched(CameraWriteController.UseCameraControlKeys, port: Program.SPECTATEME_PORT);
-						spectateMeSubtitle.Text = Properties.Resources.Waiting_for_EchoVR_to_start;
-					}
-					else
-					{
-						spectateMeSubtitle.Text = Properties.Resources.Waiting_until_you_join_a_game;
-					}
-					spectateMeLabel.Content = Properties.Resources.Stop_Spectating_Me;
-				}
-				else
-				{
-					Program.KillEchoVR($"-httpport {Program.SPECTATEME_PORT}");
-					spectateMeLabel.Content = Properties.Resources.Spectate_Me;
-					spectateMeSubtitle.Text = Properties.Resources.Not_active;
-				}
-			}
-			catch (Exception ex)
-			{
-				LogRow(LogType.Error, $"Broke something in the spectator follow system.\n{ex}");
-			}
+			(string labelText, string subtitleText) = Program.spectateMeController.ToggleSpectateMe();
+			
+			Program.liveWindow.spectateMeLabel.Content = labelText;
+			Program.liveWindow.spectateMeSubtitle.Text = subtitleText;
 		}
 
 		private void EventLogTabClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -1913,8 +1880,8 @@ namespace Spark
 				orange_team = Program.lastFrame.teams[1].player_names.ToArray(),
 				is_protected = (SparkSettings.instance.atlasHostingVisibility > 0),
 				visible_to_casters = (SparkSettings.instance.atlasHostingVisibility == 1),
-				server_location = Program.matchData.ServerLocation,
-				server_score = Program.matchData.ServerScore,
+				server_location = Program.CurrentRound.serverLocation,
+				server_score = Program.CurrentRound.serverScore,
 				private_match = Program.lastFrame.private_match,
 				username = Program.lastFrame.client_name,
 				whitelist = Program.atlasWhitelist.AllPlayers.ToArray(),
@@ -1946,7 +1913,7 @@ namespace Spark
 					match.orange_points = Program.lastFrame.teams[1].stats != null ? Program.lastFrame.teams[1].stats.points : 0;
 					match.is_protected = (SparkSettings.instance.atlasHostingVisibility > 0);
 					// match.visible_to_casters = (SparkSettings.instance.atlasHostingVisibility == 1);
-					match.server_score = Program.matchData.ServerScore;
+					match.server_score = Program.CurrentRound.serverScore;
 					match.username = Program.lastFrame.client_name;
 					match.whitelist = Program.atlasWhitelist.AllPlayers.ToArray();
 					match.slots = Program.lastFrame.GetAllPlayers().Count;

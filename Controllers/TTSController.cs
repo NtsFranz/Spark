@@ -18,7 +18,7 @@ namespace Spark
 	/// <summary>
 	/// 📖➡🔊 An abstraction layer for whatever TTS engine is being used
 	/// </summary>
-	public class TTS
+	public class TTSController
 	{
 		private readonly string[,,] voiceTypes =
 		{
@@ -41,7 +41,7 @@ namespace Spark
 
 		private static string CacheFolder => Path.Combine(Path.GetTempPath(), "SparkTTSCache");
 
-		public TTS()
+		public TTSController()
 		{
 			// TTS won't work without Discord auth
 			if (DiscordOAuth.firebaseCred == null) return;
@@ -156,7 +156,7 @@ namespace Spark
 			#endregion
 		}
 
-		~TTS() // finalizer
+		~TTSController() // finalizer
 		{
 			ttsThread?.Abort();
 		}

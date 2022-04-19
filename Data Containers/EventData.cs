@@ -11,10 +11,10 @@ namespace Spark
 	/// </summary>
 	public class EventData : EventContainer
 	{
-		public EventData(MatchData match, EventType eventType, float gameClock, Team team, Player player, long joustTimeMillis, Vector3 position, Vector3 vec2)
+		public EventData(AccumulatedFrame round, EventType eventType, float gameClock, Team team, Player player, long joustTimeMillis, Vector3 position, Vector3 vec2)
 		{
 			eventTime = DateTime.UtcNow;
-			matchData = match;
+			this.round = round;
 			this.eventType = eventType;
 			this.gameClock = gameClock;
 			this.player = player;
@@ -24,10 +24,10 @@ namespace Spark
 			this.team = team;
 		}
 
-		public EventData(MatchData match, EventType eventType, float gameClock, Team team, Player player, Player otherPlayer, Vector3 position, Vector3 vec2)
+		public EventData(AccumulatedFrame round, EventType eventType, float gameClock, Team team, Player player, Player otherPlayer, Vector3 position, Vector3 vec2)
 		{
 			eventTime = DateTime.UtcNow;
-			matchData = match;
+			this.round = round;
 			this.eventType = eventType;
 			this.gameClock = gameClock;
 			this.player = player;
@@ -36,9 +36,24 @@ namespace Spark
 			this.vec2 = vec2;
 			this.team = team;
 		}
+		
+
+		public EventData(AccumulatedFrame round, EventType eventType, float gameClock, Team team, Player player, LastThrow lastThrow)
+		{
+			eventTime = DateTime.UtcNow;
+			this.round = round;
+			this.eventType = eventType;
+			this.gameClock = gameClock;
+			this.player = player;
+			this.team = team;
+
+			position = new Vector3(lastThrow.total_speed, lastThrow.speed_from_arm, lastThrow.speed_from_wrist);
+			vec2 = new Vector3(lastThrow.speed_from_movement, lastThrow.arm_speed, lastThrow.rot_per_sec);
+		}
 
 
-		public MatchData matchData;
+
+		public AccumulatedFrame round;
 		private DateTime eventTime;
 		public float gameClock;
 		public Player player;
@@ -58,8 +73,8 @@ namespace Spark
 			{
 				return new Dictionary<string, object>
 				{
-					{ "session_id", matchData.firstFrame.sessionid },
-					{ "match_time", matchData.MatchTimeSQL },
+					{ "session_id", round.frame.sessionid },
+					{ "match_time", round.MatchTimeSQL },
 					{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
 					{ "game_clock", gameClock },
 					{ "player_id", player?.userid },
@@ -100,8 +115,8 @@ namespace Spark
 					case EventType.stun:
 						values = new Dictionary<string, object>
 						{
-							{ "session_id", matchData.firstFrame.sessionid },
-							{ "match_time", matchData.MatchTimeSQL },
+							{ "session_id", round.frame.sessionid },
+							{ "match_time", round.MatchTimeSQL },
 							{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
 							{ "game_clock", gameClock },
 							{ "event_type", eventType.ToString() },
@@ -121,8 +136,8 @@ namespace Spark
 					case EventType.save:
 						values = new Dictionary<string, object>
 						{
-							{ "session_id", matchData.firstFrame.sessionid },
-							{ "match_time", matchData.MatchTimeSQL },
+							{ "session_id", round.frame.sessionid },
+							{ "match_time", round.MatchTimeSQL },
 							{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
 							{ "game_clock", gameClock },
 							{ "event_type", eventType.ToString() },
@@ -145,8 +160,8 @@ namespace Spark
 					case EventType.steal:
 						values = new Dictionary<string, object>
 						{
-							{ "session_id", matchData.firstFrame.sessionid },
-							{ "match_time", matchData.MatchTimeSQL },
+							{ "session_id", round.frame.sessionid },
+							{ "match_time", round.MatchTimeSQL },
 							{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
 							{ "game_clock", gameClock },
 							{ "event_type", eventType.ToString() },
@@ -167,8 +182,8 @@ namespace Spark
 					case EventType.joust_speed:
 						values = new Dictionary<string, object>
 						{
-							{ "session_id", matchData.firstFrame.sessionid },
-							{ "match_time", matchData.MatchTimeSQL },
+							{ "session_id", round.frame.sessionid },
+							{ "match_time", round.MatchTimeSQL },
 							{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
 							{ "game_clock", gameClock },
 							{ "player_id", player?.userid },
@@ -184,8 +199,8 @@ namespace Spark
 					case EventType.defensive_joust:
 						values = new Dictionary<string, object>
 						{
-							{ "session_id", matchData.firstFrame.sessionid },
-							{ "match_time", matchData.MatchTimeSQL },
+							{ "session_id", round.frame.sessionid },
+							{ "match_time", round.MatchTimeSQL },
 							{ "event_time", eventTime.ToString("yyyy-MM-dd HH:mm:ss") },
 							{ "game_clock", gameClock },
 							{ "player_id", player?.userid },
@@ -230,13 +245,8 @@ namespace Spark
 
 static class EventTypeExtensions
 {
-	public static bool IsJoust(this EventData.EventType eventType)
+	public static bool IsJoust(this EventContainer.EventType eventType)
 	{
-		if (eventType == EventData.EventType.joust_speed || eventType == EventData.EventType.defensive_joust)
-		{
-			return true;
-		}
-
-		return false;
+		return eventType is EventContainer.EventType.joust_speed or EventContainer.EventType.defensive_joust;
 	}
 }

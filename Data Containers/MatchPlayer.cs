@@ -17,41 +17,65 @@ namespace Spark
 		public MatchPlayer()
 		{
 		}
-
-		public MatchPlayer(MatchData match, TeamData team, Player player)
+		
+		//
+		// public MatchPlayer(MatchData match, Player player)
+		// {
+		// 	matchData = match;
+		// 	Id = player.userid;
+		// 	Name = player.name;
+		// 	playspaceLocation = player.head.Position;
+		// 	PlayspaceAbuses = 0;
+		// }
+		
+		/// <summary>
+		/// Copy constructor
+		/// </summary>
+		public MatchPlayer(AccumulatedFrame round, Player player)
 		{
-			matchData = match;
-			teamData = team;
+			matchData = round;
 			Id = player.userid;
 			Name = player.name;
+			Level = player.level;
+			Number = player.number;
+			currentStats = player.stats;
+			cachedStats = new Stats();
+			oldRoundStats = new Stats();
+			PlayTime = 0;
+			InvertedTime = 0;
+			GoalsNum = 0;
+			TwoPointers = 0;
+			ThreePointers = 0;
+			Passes = 0;
+			Catches = 0;
+			Won = 0;
+			Turnovers = 0;
 			playspaceLocation = player.head.Position;
-			PlayspaceAbuses = 0;
 		}
 
 		/// <summary>
 		/// Copy constructor
 		/// </summary>
-		public MatchPlayer(MatchPlayer player)
+		public MatchPlayer(MatchPlayer matchPlayer)
 		{
-			Id = player.Id;
-			Name = player.Name;
-			Level = player.Level;
-			Number = player.Number;
-			currentStats = player.currentStats;
-			cachedStats = player.cachedStats;
-			oldRoundStats = player.oldRoundStats;
-			PlayTime = player.PlayTime;
-			InvertedTime = player.InvertedTime;
-			GoalsNum = player.GoalsNum;
-			TwoPointers = player.TwoPointers;
-			ThreePointers = player.ThreePointers;
-			Passes = player.Passes;
-			Catches = player.Catches;
-			Won = player.Won;
-			Turnovers = player.Turnovers;
-			matchData = player.matchData;
-			teamData = player.teamData;
-			playspaceLocation = player.playspaceLocation;
+			matchData = matchPlayer.matchData;
+			Id = matchPlayer.Id;
+			Name = matchPlayer.Name;
+			Level = matchPlayer.Level;
+			Number = matchPlayer.Number;
+			currentStats = matchPlayer.currentStats;
+			cachedStats = matchPlayer.cachedStats;
+			oldRoundStats = matchPlayer.oldRoundStats;
+			PlayTime = matchPlayer.PlayTime;
+			InvertedTime = matchPlayer.InvertedTime;
+			GoalsNum = matchPlayer.GoalsNum;
+			TwoPointers = matchPlayer.TwoPointers;
+			ThreePointers = matchPlayer.ThreePointers;
+			Passes = matchPlayer.Passes;
+			Catches = matchPlayer.Catches;
+			Won = matchPlayer.Won;
+			Turnovers = matchPlayer.Turnovers;
+			playspaceLocation = matchPlayer.playspaceLocation;
 		}
 
 		/// <summary>
@@ -62,13 +86,13 @@ namespace Spark
 		{
 			Dictionary<string, object> values = new Dictionary<string, object>
 			{
-				{ "session_id", matchData.firstFrame.sessionid },
+				{ "session_id", matchData.frame.sessionid },
 				{ "match_time", matchData.MatchTimeSQL },
 				{ "player_id", Id },
 				{ "player_name", Name },
 				{ "level", Level },
 				{ "player_number", Number },
-				{ "team_color", teamData.teamColor.ToString() },
+				{ "team_color", TeamColor.ToString() },
 				{ "possession_time", PossessionTime },
 				{ "play_time", PlayTime },
 				{ "inverted_time", InvertedTime },
@@ -85,7 +109,7 @@ namespace Spark
 				{ "blocks", Blocks },
 				{ "interceptions", Interceptions },
 				{ "assists", Assists },
-				// {"turnovers", Turnovers },	// TODO enable once the db supports it
+				// { "turnovers", Turnovers }, // TODO enable once the db supports it
 				{ "average_speed", averageSpeed[0] },
 				{ "average_speed_lhand", averageSpeed[1] },
 				{ "average_speed_rhand", averageSpeed[2] },
@@ -101,11 +125,12 @@ namespace Spark
 
 		#region Get/Set Methods
 
-		public long Id { get; set; }
+		public long Id { get; private set; }
 
-		public string Name { get; set; }
-		public int Level { get; set; }
-		public int Number { get; set; }
+		public string Name { get; private set; }
+		public int Level { get; private set; }
+		public int Number { get; private set; }
+		public Team.TeamColor TeamColor { get; private set; }
 
 		public Stats currentStats = new Stats();
 		public Stats cachedStats = new Stats();
@@ -197,8 +222,7 @@ namespace Spark
 
 		public int Won { get; set; }
 		public int Turnovers { get; set; }
-		public MatchData matchData;
-		public TeamData teamData;
+		public AccumulatedFrame matchData;
 
 		/// <summary>
 		/// The location of the playspace within the arena. This is not the position of the player within the playspace
@@ -252,7 +276,7 @@ namespace Spark
 		{
 			recentVelocities.Add(vel);
 			// anything older than 10s at 60hz
-			if (recentVelocities.Count > Program.StatsHz * 10)
+			while (recentVelocities.Count > Program.StatsHz * 10)
 			{
 				recentVelocities.RemoveAt(0);
 			}
@@ -324,8 +348,8 @@ namespace Spark
 		/// <param name="lastPlayer"></param>
 		public void StoreLastRoundStats(MatchPlayer lastPlayer)
 		{
+			// TODO this looks wrong
 			oldRoundStats = lastPlayer.oldRoundStats;
-
 			oldRoundStats = cachedStats + currentStats;
 		}
 
@@ -337,6 +361,7 @@ namespace Spark
 				Name = a.Name,
 				Level = b.Level,
 				Number = a.Number,
+				TeamColor = a.TeamColor,
 				currentStats = a.currentStats + b.currentStats,
 				cachedStats = a.cachedStats + b.cachedStats,
 				oldRoundStats = a.oldRoundStats + b.oldRoundStats,
@@ -350,9 +375,16 @@ namespace Spark
 				Won = a.Won + b.Won,
 				Turnovers = a.Turnovers + b.Turnovers,
 				matchData = a.matchData,
-				teamData = a.teamData,
 				playspaceLocation = b.playspaceLocation,
 			};
+		}
+
+		public void Accumulate(Frame frame, Player player)
+		{
+			Team.TeamColor winningTeam = frame.blue_points > frame.orange_points ? Team.TeamColor.blue : Team.TeamColor.orange;
+			Won = TeamColor == winningTeam ? 1 : 0;
+
+			currentStats = player.stats;
 		}
 	}
 }

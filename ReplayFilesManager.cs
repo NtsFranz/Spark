@@ -72,7 +72,7 @@ namespace Spark
 					Split();
 				});
 			};
-			Program.RoundOver += frame => { Split(); };
+			Program.RoundOver += (_,_) => { Split(); };
 			Program.SparkClosing += () =>
 			{
 				Task.Run(Split);

@@ -9,7 +9,7 @@ namespace Spark
 	{
 		public static Dictionary<string, object> ToDict()
 		{
-			List<MatchData> previousRounds = OverlayServer.GetPreviousRounds();
+			List<AccumulatedFrame> previousRounds = OverlayServer.GetPreviousRounds();
 			return new Dictionary<string, object>()
 			{
 				{
@@ -30,9 +30,9 @@ namespace Spark
 					"round_scores", new Dictionary<string, object>
 					{
 						{ "manual_round_scores", SparkSettings.instance.overlaysRoundScoresManual },
-						{ "round_count", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundCount : Program.matchData?.firstFrame.total_round_count ?? SparkSettings.instance.overlaysManualRoundCount },
-						{ "round_scores_orange", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresOrange : previousRounds?.Select(m => m?.teams[Team.TeamColor.orange].points ?? 0).ToArray() ?? Array.Empty<int>() },
-						{ "round_scores_blue", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresBlue : previousRounds?.Select(m => m?.teams[Team.TeamColor.blue].points ?? 0).ToArray() ?? Array.Empty<int>() },
+						{ "round_count", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundCount : Program.CurrentRound.frame.total_round_count },
+						{ "round_scores_orange", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresOrange : previousRounds?.Select(m => m.frame.orange_points).ToArray() ?? Array.Empty<int>() },
+						{ "round_scores_blue", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresBlue : previousRounds?.Select(m => m.frame.blue_points).ToArray() ?? Array.Empty<int>() },
 					}
 				},
 				{ "team_names_source", SparkSettings.instance.overlaysTeamSource },
@@ -43,11 +43,11 @@ namespace Spark
 						{
 							{
 								"vrml_team_name",
-								Program.matchData?.teams[Team.TeamColor.blue].vrmlTeamName ?? ""
+								Program.CurrentRound.teams[Team.TeamColor.blue].vrmlTeamName ?? ""
 							},
 							{
 								"vrml_team_logo",
-								Program.matchData?.teams[Team.TeamColor.blue].vrmlTeamLogo ?? ""
+								Program.CurrentRound.teams[Team.TeamColor.blue].vrmlTeamLogo ?? ""
 							},
 							{
 								"team_name",
@@ -62,11 +62,11 @@ namespace Spark
 						{
 							{
 								"vrml_team_name",
-								Program.matchData?.teams[Team.TeamColor.orange].vrmlTeamName ?? ""
+								Program.CurrentRound.teams[Team.TeamColor.orange].vrmlTeamName ?? ""
 							},
 							{
 								"vrml_team_logo",
-								Program.matchData?.teams[Team.TeamColor.orange].vrmlTeamLogo ?? ""
+								Program.CurrentRound.teams[Team.TeamColor.orange].vrmlTeamLogo ?? ""
 							},
 							{
 								"team_name",
@@ -92,7 +92,7 @@ namespace Spark
 						case 0:
 							return SparkSettings.instance.overlaysManualTeamNameBlue;
 						case 1:
-							return Program.matchData?.teams[Team.TeamColor.blue]?.vrmlTeamName;
+							return Program.CurrentRound.teams[Team.TeamColor.blue]?.vrmlTeamName;
 					}
 
 					break;
@@ -102,7 +102,7 @@ namespace Spark
 						case 0:
 							return SparkSettings.instance.overlaysManualTeamNameOrange;
 						case 1:
-							return Program.matchData?.teams[Team.TeamColor.orange]?.vrmlTeamName;
+							return Program.CurrentRound.teams[Team.TeamColor.orange]?.vrmlTeamName;
 					}
 
 					break;
@@ -125,7 +125,7 @@ namespace Spark
 						case 0:
 							return SparkSettings.instance.overlaysManualTeamLogoBlue;
 						case 1:
-							return Program.matchData?.teams[Team.TeamColor.blue]?.vrmlTeamLogo;
+							return Program.CurrentRound.teams[Team.TeamColor.blue]?.vrmlTeamLogo;
 					}
 
 					break;
@@ -135,7 +135,7 @@ namespace Spark
 						case 0:
 							return SparkSettings.instance.overlaysManualTeamLogoOrange;
 						case 1:
-							return Program.matchData?.teams[Team.TeamColor.orange]?.vrmlTeamLogo;
+							return Program.CurrentRound.teams[Team.TeamColor.orange]?.vrmlTeamLogo;
 					}
 
 					break;
