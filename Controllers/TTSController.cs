@@ -31,7 +31,7 @@ namespace Spark
 		private bool playing = true;
 		private readonly Thread ttsThread;
 		private readonly Queue<DateTime> rateLimiterQueue = new Queue<DateTime>();
-		private float rateLimitPerSecond = 10;
+		private const float rateLimitPerSecond = 15;
 		private bool ttsDisabled = false;
 
 		/// <summary>

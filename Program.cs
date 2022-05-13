@@ -60,8 +60,8 @@ namespace Spark
 		public static bool IsSpeakerSystemUpdateAvailable;
 
 		public static ConcurrentQueue<AccumulatedFrame> rounds = new ConcurrentQueue<AccumulatedFrame>();
-		public static AccumulatedFrame CurrentRound => rounds.Last() ?? emptyRound;
-		public static AccumulatedFrame LastRound => rounds.TakeLast(2).First() ?? emptyRound;
+		public static AccumulatedFrame CurrentRound => rounds.LastOrDefault() ?? emptyRound;
+		public static AccumulatedFrame LastRound => rounds.TakeLast(2).FirstOrDefault() ?? emptyRound;
 		private static readonly AccumulatedFrame emptyRound = new AccumulatedFrame(Frame.CreateEmptyFrame());
 
 		public static IEnumerable<GoalData> LastGoals => rounds.SelectMany(r => r.goals);
@@ -155,6 +155,7 @@ namespace Spark
 		private static Thread IPSearchThread1;
 		private static Thread IPSearchThread2;
 		public static OBS obs;
+		public static Medal medal;
 		private static OverlayServer overlayServer;
 		public static SpectateMeController spectateMeController;
 		public static UploadController uploadController;
@@ -386,6 +387,7 @@ namespace Spark
 				RegisterUriScheme("spark", "Spark Protocol");
 
 				obs = new OBS();
+				medal = new Medal();
 
 
 				// if logged in with discord
@@ -1517,6 +1519,7 @@ namespace Spark
 				foreach (Player player in team.players)
 				{
 					Team lastTeam = lastFrame.GetTeam(player.userid);
+					if (lastTeam == null) continue;
 					if (lastTeam.color == team.color) continue;
 
 					CurrentRound.events.Add(new EventData(

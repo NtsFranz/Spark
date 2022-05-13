@@ -72,8 +72,8 @@
 
 #main_banner .team_name {
     flex-grow: 1;
-    line-height: 0;
-    height: 0;
+    line-height: 1;
+    height: 100%;
     margin: auto;
     width: 12.5em;
     text-transform: uppercase;

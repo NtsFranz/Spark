@@ -114,6 +114,26 @@
                         </GroupBox>
                     </StackPanel>
                 </TabItem>
+                <TabItem Header="Medal.tv" Padding="8,6,8,6">
+
+                    <StackPanel>
+                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">
+                            <Run Text="Install Medal.tv here: " />
+                            <Hyperlink
+                                NavigateUri="https://medal.tv/download"
+                                RequestNavigate="Hyperlink_RequestNavigate">
+                                https://medal.tv/download
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">Customize your hotkey in Medal by going to Settins (bottom left) -> Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default.</TextBlock>
+                        <ComboBox Margin="8,8,8,8" HorizontalAlignment="Left" Width="200">
+                            <ComboBoxItem>F8</ComboBoxItem>
+                            <ComboBoxItem>F12</ComboBoxItem>
+                        </ComboBox>
+                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">Change clip length in the medal settings window. (Settings->Recorder)</TextBlock>
+
+                    </StackPanel>
+                </TabItem>
                 <TabItem Header="Voice Recognition" Padding="8,6,8,6"
                          Foreground="{DynamicResource ControlPrimaryDefaultBackground}">
                     <StackPanel Margin="10,0,10,10">
@@ -148,8 +168,11 @@
                                 <ProgressBar Visibility="Collapsed" x:Name="SpeakerLevel" Minimum="0" Maximum="1" Height="10" Margin="10,0,10,10"></ProgressBar>
                                 <TextBlock Text="Say 'Clip That' at any point to save a clip"
                                            TextWrapping="Wrap" Margin="5,10,5,0" />
-                                <CheckBox Content="Clip That detection"
-                                          IsChecked="{l:SettingBinding clearHighlightsOnExit}"
+                                <CheckBox Content="'Clip That' detection (NVIDIA Highlights)"
+                                          IsChecked="{l:SettingBinding clipThatDetectionNVHighlights}"
+                                          Margin="5,5,5,5" />
+                                <CheckBox Content="'Clip That' detection (Medal.tv)"
+                                          IsChecked="{l:SettingBinding clipThatDetectionMedal}"
                                           Margin="5,5,5,5" />
                                 <CheckBox Visibility="Collapsed" Content="Bad word detection (for reporting)"
                                           IsChecked="{l:SettingBinding badWordDetection}"

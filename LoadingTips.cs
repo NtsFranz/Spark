@@ -11,7 +11,6 @@
 			"Use the EchoVR Speaker System to make any audio on your PC sound like an arena.",
 			".echoreplay files can be used to play back and analyze matches in the Replay Viewer.",
 			"Spark is available in both English and Japanese!",
-			"IGNITE. Wow.",
 			"The server location provided by Spark is not 100% reliable as it is based on the IP address of the server.",
 			"Spark's OBS integration allows you to make replay buffer clips and automatically change scenes.",
 			"You can change many of EchoVR's ingame settings from within Spark's settings.",
@@ -26,12 +25,16 @@
 			"You can use the event logs in Spark to see exactly when players joined or left in every match.",
 			"Spark makes sure you never forget the scores in league matches.",
 			"League casters love it when you send them a spark:// link instead of an invite.",
+			"You can set Spark up to save clips when you say \"Clip that!\"",
+			"The Replay Viewer is pretty cool. Check it out.",
+			"echopedia.gg has an interactive block callout map. Vote on your preferred block names!",
 			"Lone Echo 2 releases tomorrow!",
-			"R E G G I E   W O O D S",
 			"Same Disc, Different Day",
 			"Respect the save!",
 			"ignitevr.gg/stats",
 			"ignitevr.gg/playercards",
+			"God is my copilot, and RAD_Natalie is my boss.",
+			"Get Bigmand!",
 		};
 	}
 }

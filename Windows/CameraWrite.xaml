@@ -115,50 +115,90 @@
 						<Label Content="Position"/>
 						<!-- <l:SliderWithLabel Label="X:" Value="{Binding xPos}" Minimum="-24" Maximum="24"/> -->
 
-						<StackPanel Orientation="Horizontal">
-							<Label Content="X: " Width="30" Margin="10,0,0,0"/>
-							<Slider x:Name="xSlider" Value="{Binding xPos}" Minimum="-24" Maximum="24" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
-							<TextBox Text="{Binding ElementName=xSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-						</StackPanel>
-						<StackPanel Orientation="Horizontal">
-							<Label Content="Y: " Width="30" Margin="10,0,0,0"/>
-							<Slider x:Name="ySlider" Value="{Binding yPos}" Minimum="-15" Maximum="15" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
-							<TextBox Text="{Binding ElementName=ySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-						</StackPanel>
-						<StackPanel Orientation="Horizontal">
-							<Label Content="Z: " Width="30" Margin="10,0,0,0"/>
-							<Slider x:Name="zSlider" Value="{Binding zPos}" Minimum="-80" Maximum="80" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
-							<TextBox Text="{Binding ElementName=zSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-						</StackPanel>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="30"></ColumnDefinition>
+								<ColumnDefinition Width="*"></ColumnDefinition>
+								<ColumnDefinition Width="40"></ColumnDefinition>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0"  Content="X: " Width="30" Margin="10,0,0,0"/>
+							<Slider Grid.Column="1"  x:Name="xSlider" Value="{Binding xPos}" Minimum="-24" Maximum="24"  Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+							<TextBox Grid.Column="2"  Text="{Binding ElementName=xSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+						</Grid>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="30"></ColumnDefinition>
+								<ColumnDefinition Width="*"></ColumnDefinition>
+								<ColumnDefinition Width="40"></ColumnDefinition>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0"  Content="Y: " Width="30" Margin="10,0,0,0"/>
+							<Slider Grid.Column="1"  x:Name="ySlider" Value="{Binding yPos}" Minimum="-15" Maximum="15"  Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+							<TextBox Grid.Column="2"  Text="{Binding ElementName=ySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+						</Grid>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="30"></ColumnDefinition>
+								<ColumnDefinition Width="*"></ColumnDefinition>
+								<ColumnDefinition Width="40"></ColumnDefinition>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0"  Content="Z: " Width="30" Margin="10,0,0,0"/>
+							<Slider Grid.Column="1"  x:Name="zSlider" Value="{Binding zPos}" Minimum="-80" Maximum="80"  Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+							<TextBox Grid.Column="2"  Text="{Binding ElementName=zSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+						</Grid>
 
 						<Label Content="Rotation (Quaternion)"/>
-						<StackPanel Orientation="Horizontal">
-							<Label Content="X: " Width="30" Margin="10,0,0,0"/>
-							<Slider x:Name="xRotSlider" Value="{Binding xRot}" Minimum="-1" Maximum="1" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
-							<TextBox Text="{Binding ElementName=xRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-						</StackPanel>
-						<StackPanel Orientation="Horizontal">
-							<Label Content="Y: " Width="30" Margin="10,0,0,0"/>
-							<Slider x:Name="yRotSlider" Value="{Binding yRot}" Minimum="-1" Maximum="1" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
-							<TextBox Text="{Binding ElementName=yRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-						</StackPanel>
-						<StackPanel Orientation="Horizontal">
-							<Label Content="Z: " Width="30" Margin="10,0,0,0"/>
-							<Slider x:Name="zRotSlider" Value="{Binding zRot}" Minimum="-1" Maximum="1" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
-							<TextBox Text="{Binding ElementName=zRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-						</StackPanel>
-						<StackPanel Orientation="Horizontal">
-							<Label Content="W: " Width="30" Margin="10,0,0,0"/>
-							<Slider x:Name="wRotSlider" Value="{Binding wRot}" Minimum="-1" Maximum="1" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
-							<TextBox Text="{Binding ElementName=wRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-						</StackPanel>
+						<Grid >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="30"></ColumnDefinition>
+								<ColumnDefinition Width="*"></ColumnDefinition>
+								<ColumnDefinition Width="40"></ColumnDefinition>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0" Content="X: " Width="30" Margin="10,0,0,0"/>
+							<Slider Grid.Column="1" x:Name="xRotSlider" Value="{Binding xRot}" Minimum="-1" Maximum="1"  Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+							<TextBox Grid.Column="2" Text="{Binding ElementName=xRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+						</Grid>
+						<Grid >
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="30"></ColumnDefinition>
+								<ColumnDefinition Width="*"></ColumnDefinition>
+								<ColumnDefinition Width="40"></ColumnDefinition>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0" Content="Y: " Width="30" Margin="10,0,0,0"/>
+							<Slider Grid.Column="1" x:Name="yRotSlider" Value="{Binding yRot}" Minimum="-1" Maximum="1"  Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+							<TextBox Grid.Column="2" Text="{Binding ElementName=yRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+						</Grid>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="30"></ColumnDefinition>
+								<ColumnDefinition Width="*"></ColumnDefinition>
+								<ColumnDefinition Width="40"></ColumnDefinition>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0"  Content="Z: " Width="30" Margin="10,0,0,0"/>
+							<Slider Grid.Column="1" x:Name="zRotSlider" Value="{Binding zRot}" Minimum="-1" Maximum="1" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+							<TextBox Grid.Column="2" Text="{Binding ElementName=zRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+						</Grid>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="30"></ColumnDefinition>
+								<ColumnDefinition Width="*"></ColumnDefinition>
+								<ColumnDefinition Width="40"></ColumnDefinition>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0"  Content="W: " Width="30" Margin="10,0,0,0"/>
+							<Slider Grid.Column="1"  x:Name="wRotSlider" Value="{Binding wRot}" Minimum="-1" Maximum="1" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+							<TextBox Grid.Column="2"  Text="{Binding ElementName=wRotSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
+						</Grid>
 						
 						
-						<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-							<Label Content="FOV:" Width="44" Margin="0,0,0,0"/>
-							<Slider x:Name="fovSlider" Value="{Binding fov}" Minimum="0" Maximum="1.6" Width="290" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
-							<TextBox Text="{Binding ElementName=fovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-						</StackPanel>
+						<Grid Margin="0,10,0,0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="44"></ColumnDefinition>
+								<ColumnDefinition Width="*"></ColumnDefinition>
+								<ColumnDefinition Width="40"></ColumnDefinition>
+							</Grid.ColumnDefinitions>
+							<Label Grid.Column="0" Content="FOV:" Margin="0,0,0,0"/>
+							<Slider Grid.Column="1"  x:Name="fovSlider" Value="{Binding fov}" Minimum="0" Maximum="1.6" Margin="4,0,4,0" Height="20" TickFrequency=".01" SmallChange=".01"/>
+							<TextBox  Grid.Column="2" Text="{Binding ElementName=fovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"/>
+						</Grid>
 
 						<!--<StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,5,0,5">
 						<Label Width="50" HorizontalContentAlignment="Right">X:</Label>

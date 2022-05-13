@@ -300,6 +300,7 @@ namespace Spark
 			NVHighlights,
 			echoreplay,
 			OBS,
+			Medal,
 			Voice
 		}
 
@@ -334,6 +335,16 @@ namespace Spark
 				totalSeconds.Visibility = Visibility.Collapsed;
 				goalReplaySceneBox.Visibility = Visibility.Visible;
 				saveReplaySceneBox.Visibility = Visibility.Visible;
+			}
+			if (clipsTab == ClipsTab.Medal)
+			{
+				clipsEventsBox.Visibility = Visibility.Visible;
+				labelBefore.Visibility = Visibility.Collapsed;
+				secondsBefore.Visibility = Visibility.Collapsed;
+				labelTotal.Visibility = Visibility.Collapsed;
+				totalSeconds.Visibility = Visibility.Collapsed;
+				goalReplaySceneBox.Visibility = Visibility.Collapsed;
+				saveReplaySceneBox.Visibility = Visibility.Collapsed;
 			}
 			else if (clipsTab == ClipsTab.Voice)
 			{
@@ -398,6 +409,7 @@ namespace Spark
 					ClipsTab.NVHighlights => SparkSettings.instance.nvHighlightsPlayerScope,
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipPlayerScope,
 					ClipsTab.OBS => SparkSettings.instance.obsPlayerScope,
+					ClipsTab.Medal => SparkSettings.instance.medalClipPlayerScope,
 					_ => 0,
 				};
 			}
@@ -414,6 +426,9 @@ namespace Spark
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsPlayerScope = value;
 						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipPlayerScope = value;
+						break;
 				}
 			}
 		}
@@ -427,6 +442,7 @@ namespace Spark
 					ClipsTab.NVHighlights => SparkSettings.instance.nvHighlightsSpectatorRecord,
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipSpectatorRecord,
 					ClipsTab.OBS => SparkSettings.instance.obsSpectatorRecord,
+					ClipsTab.Medal => SparkSettings.instance.medalClipSpectatorRecord,
 					_ => false,
 				};
 			}
@@ -442,6 +458,9 @@ namespace Spark
 						break;
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsSpectatorRecord = value;
+						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipSpectatorRecord = value;
 						break;
 				}
 			}
@@ -461,6 +480,7 @@ namespace Spark
 					ClipsTab.NVHighlights => SparkSettings.instance.nvHighlightsSecondsBefore.ToString(),
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipSecondsBefore.ToString(),
 					ClipsTab.OBS => SparkSettings.instance.obsClipSecondsBefore.ToString(),
+					ClipsTab.Medal => SparkSettings.instance.medalClipSecondsBefore.ToString(),
 					_ => "0",
 				};
 			}
@@ -477,6 +497,9 @@ namespace Spark
 						break;
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipSecondsBefore = sec;
+						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipSecondsBefore = sec;
 						break;
 				}
 
@@ -537,6 +560,7 @@ namespace Spark
 					ClipsTab.NVHighlights => SparkSettings.instance.nvHighlightsSecondsAfter.ToString(),
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipSecondsAfter.ToString(),
 					ClipsTab.OBS => SparkSettings.instance.obsClipSecondsAfter.ToString(),
+					ClipsTab.Medal => SparkSettings.instance.medalClipSecondsAfter.ToString(),
 					_ => "0",
 				};
 			}
@@ -553,6 +577,9 @@ namespace Spark
 						break;
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipSecondsAfter = sec;
+						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipSecondsAfter = sec;
 						break;
 				}
 
@@ -618,6 +645,7 @@ namespace Spark
 				{
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipPlayspace,
 					ClipsTab.OBS => SparkSettings.instance.obsClipPlayspace,
+					ClipsTab.Medal => SparkSettings.instance.medalClipPlayspace,
 					_ => false,
 				};
 			}
@@ -631,6 +659,9 @@ namespace Spark
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipPlayspace = value;
 						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipPlayspace = value;
+						break;
 				}
 			}
 		}
@@ -643,6 +674,7 @@ namespace Spark
 				{
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipGoal,
 					ClipsTab.OBS => SparkSettings.instance.obsClipGoal,
+					ClipsTab.Medal => SparkSettings.instance.medalClipGoal,
 					_ => false,
 				};
 			}
@@ -656,6 +688,9 @@ namespace Spark
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipGoal = value;
 						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipGoal = value;
+						break;
 				}
 			}
 		}
@@ -668,6 +703,7 @@ namespace Spark
 				{
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipSave,
 					ClipsTab.OBS => SparkSettings.instance.obsClipSave,
+					ClipsTab.Medal => SparkSettings.instance.medalClipSave,
 					_ => false,
 				};
 			}
@@ -681,6 +717,9 @@ namespace Spark
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipSave = value;
 						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipSave = value;
+						break;
 				}
 			}
 		}
@@ -693,6 +732,7 @@ namespace Spark
 				{
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipAssist,
 					ClipsTab.OBS => SparkSettings.instance.obsClipAssist,
+					ClipsTab.Medal => SparkSettings.instance.medalClipAssist,
 					_ => false,
 				};
 			}
@@ -706,6 +746,9 @@ namespace Spark
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipAssist = value;
 						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipAssist = value;
+						break;
 				}
 			}
 		}
@@ -718,6 +761,7 @@ namespace Spark
 				{
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipInterception,
 					ClipsTab.OBS => SparkSettings.instance.obsClipInterception,
+					ClipsTab.Medal => SparkSettings.instance.medalClipInterception,
 					_ => false,
 				};
 			}
@@ -731,6 +775,9 @@ namespace Spark
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipInterception = value;
 						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipInterception = value;
+						break;
 				}
 			}
 		}
@@ -743,6 +790,7 @@ namespace Spark
 				{
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipNeutralJoust,
 					ClipsTab.OBS => SparkSettings.instance.obsClipNeutralJoust,
+					ClipsTab.Medal => SparkSettings.instance.medalClipNeutralJoust,
 					_ => false,
 				};
 			}
@@ -756,6 +804,9 @@ namespace Spark
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipNeutralJoust = value;
 						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipNeutralJoust = value;
+						break;
 				}
 			}
 		}
@@ -768,6 +819,7 @@ namespace Spark
 				{
 					ClipsTab.echoreplay => SparkSettings.instance.replayClipDefensiveJoust,
 					ClipsTab.OBS => SparkSettings.instance.obsClipDefensiveJoust,
+					ClipsTab.Medal => SparkSettings.instance.medalClipDefensiveJoust,
 					_ => false,
 				};
 			}
@@ -780,6 +832,9 @@ namespace Spark
 						break;
 					case ClipsTab.OBS:
 						SparkSettings.instance.obsClipDefensiveJoust = value;
+						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipDefensiveJoust = value;
 						break;
 				}
 			}

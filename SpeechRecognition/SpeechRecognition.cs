@@ -173,7 +173,7 @@ namespace Spark
 			{
 				List<string> clipTerms = new List<string>();
 
-				if (SparkSettings.instance.clipThatDetection)
+				if (SparkSettings.instance.clipThatDetectionNVHighlights || SparkSettings.instance.clipThatDetectionMedal)
 				{
 					clipTerms.AddRange(new string[] {
 						"clip that",
@@ -184,7 +184,7 @@ namespace Spark
 						"say cheese",
 					});
 				}
-				if (SparkSettings.instance.badWordDetection)
+				if (SparkSettings.instance.badWordDetectionNVHighlights || SparkSettings.instance.badWordDetectionMedal)
 				{
 					clipTerms.AddRange(new string[] {
 						// downloaded bad words 
@@ -205,7 +205,16 @@ namespace Spark
 						if (alt["text"].ToString()?.Contains(clipTerm) ?? false)
 						{
 							Program.ManualClip?.Invoke();
-							HighlightsHelper.SaveHighlight("PERSONAL_HIGHLIGHT_GROUP", "MANUAL", true);
+
+							if (SparkSettings.instance.clipThatDetectionMedal)
+							{
+								Medal.ClipNow();
+							}
+							if (SparkSettings.instance.clipThatDetectionNVHighlights)
+							{
+								HighlightsHelper.SaveHighlight("PERSONAL_HIGHLIGHT_GROUP", "MANUAL", true);
+							}
+
 							Program.synth.SpeakAsync("Clip Saved!");
 							return;
 						}

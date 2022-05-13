@@ -203,9 +203,9 @@ namespace Spark
 			DirectXKeyStrokes.DIK_9,
 		};
 
-		public static void SendEchoKey(DirectXKeyStrokes key, bool holdShift = false)
+		public static void SendEchoKey(DirectXKeyStrokes key, bool holdShift = false, bool focusEchoVR = true)
 		{
-			Program.FocusEchoVR();
+			if (focusEchoVR) Program.FocusEchoVR();
 			if (holdShift) SendKey(DirectXKeyStrokes.DIK_LSHIFT, false, InputType.Keyboard);
 			SendKey(key, false, InputType.Keyboard);
 			Task.Delay(50).ContinueWith((_) =>

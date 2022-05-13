@@ -128,16 +128,34 @@ namespace Spark
 
 		#region Clips
 
+		// .echoreplay
+		public bool enableReplayBuffer { get; set; } = false;
+		public float replayBufferLength { get; set; } = 15;
+		
+		public float replayClipSecondsBefore { get; set; } = 7;
+		public float replayClipSecondsAfter { get; set; } = 3;
+		public int replayClipPlayerScope { get; set; } = 0;
+		public bool replayClipSpectatorRecord { get; set; } = false;
+		
+		public bool replayClipPlayspace { get; set; } = false;
+		public bool replayClipGoal { get; set; } = false;
+		public bool replayClipAssist { get; set; } = false;
+		public bool replayClipSave { get; set; } = false;
+		public bool replayClipInterception { get; set; } = false;
+		public bool replayClipNeutralJoust { get; set; } = false;
+		public bool replayClipDefensiveJoust { get; set; } = false;
+		
+		
+		// nv highlights
 		public int clientHighlightScope { get; set; } = 0;
 		public bool clearHighlightsOnExit { get; set; } = false;
 		public bool isNVHighlightsEnabled { get; set; } = false;
 		public float nvHighlightsSecondsBefore { get; set; } = 7;
 		public float nvHighlightsSecondsAfter { get; set; } = 3;
-		public float replayBufferLength { get; set; } = 15;
-		public bool enableReplayBuffer { get; set; } = false;
-		public bool replayClipPlayspace { get; set; } = false;
-		public bool replayClipGoal { get; set; } = false;
-		public bool replayClipSave { get; set; } = false;
+		public int nvHighlightsPlayerScope { get; set; } = 0;
+		public bool onlyActivateHighlightsWhenGameIsOpen { get; set; } = false;
+		
+		// obs
 		public string obsIP { get; set; } = "ws://127.0.0.1:4444";
 		public string obsPassword { get; set; } = "";
 		public bool obsAutoconnect { get; set; } = false;
@@ -145,37 +163,46 @@ namespace Spark
 		public bool obsClipGoal { get; set; } = false;
 		public bool obsClipAssist { get; set; } = false;
 		public bool obsClipSave { get; set; } = false;
-		public bool replayClipAssist { get; set; } = false;
-		public float replayClipSecondsAfter { get; set; } = 3;
 		public float obsClipSecondsAfter { get; set; } = 3;
 		public float obsGoalSecondsAfter { get; set; } = 3;
 		public float obsSaveSecondsAfter { get; set; } = 3;
 		public float obsGoalReplayLength { get; set; } = 5;
 		public float obsSaveReplayLength { get; set; } = 5;
-		public float replayClipSecondsBefore { get; set; } = 7;
 		public float obsClipSecondsBefore { get; set; } = 7;
 		public bool obsAutostartReplayBuffer { get; set; } = false;
 		public bool obsClipInterception { get; set; } = false;
 		public bool obsClipNeutralJoust { get; set; } = false;
 		public bool obsClipDefensiveJoust { get; set; } = false;
-		public bool replayClipInterception { get; set; } = false;
-		public bool replayClipNeutralJoust { get; set; } = false;
-		public bool replayClipDefensiveJoust { get; set; } = false;
-		public int nvHighlightsPlayerScope { get; set; } = 0;
-		public bool onlyActivateHighlightsWhenGameIsOpen { get; set; } = false;
-		public int replayClipPlayerScope { get; set; } = 0;
 		public int obsPlayerScope { get; set; } = 0;
-		public bool replayClipSpectatorRecord { get; set; } = false;
 		public bool obsSpectatorRecord { get; set; } = false;
 		public string obsInGameScene { get; set; } = "";
 		public string obsBetweenGameScene { get; set; } = "";
 		public string obsGoalReplayScene { get; set; } = "";
 		public string obsSaveReplayScene { get; set; } = "";
+		
+		// medal
+		
+		public float medalClipSecondsBefore { get; set; } = 7;
+		public float medalClipSecondsAfter { get; set; } = 3;
+		public int medalClipPlayerScope { get; set; } = 0;
+		public bool medalClipSpectatorRecord { get; set; } = false;
+		
+		public bool medalClipPlayspace { get; set; } = false;
+		public bool medalClipGoal { get; set; } = false;
+		public bool medalClipAssist { get; set; } = false;
+		public bool medalClipSave { get; set; } = false;
+		public bool medalClipInterception { get; set; } = false;
+		public bool medalClipNeutralJoust { get; set; } = false;
+		public bool medalClipDefensiveJoust { get; set; } = false;
+		
+		// voice
 		public bool enableVoiceRecognition { get; set; } = false;
 		public bool enableVoiceRecognitionMic { get; set; } = true;
 		public bool enableVoiceRecognitionSpeaker { get; set; } = true;
-		public bool clipThatDetection { get; set; } = true;
-		public bool badWordDetection { get; set; } = false;
+		public bool clipThatDetectionNVHighlights { get; set; } = true;
+		public bool clipThatDetectionMedal { get; set; } = true;
+		public bool badWordDetectionNVHighlights { get; set; } = false;
+		public bool badWordDetectionMedal { get; set; } = false;
 		public string microphone { get; set; } = "";
 		public string speaker { get; set; } = "";
 

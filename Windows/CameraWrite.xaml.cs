@@ -51,6 +51,8 @@ namespace Spark
 		public static float lastSetFov = 1;
 		public CameraTransform manualTransform = new CameraTransform();
 
+		#region Properties
+
 		public float xPos
 		{
 			get => manualTransform.px ?? 0;
@@ -231,6 +233,8 @@ namespace Spark
 			}
 		}
 
+		#endregion
+
 
 		public CameraTransform start;
 		public CameraTransform end;
@@ -327,6 +331,40 @@ namespace Spark
 			RefreshAnimationsComboBoxFromSettings();
 			RegenerateWaypointButtons();
 			RegenerateKeyframeButtons();
+
+			Program.JoinedGame += frame =>
+			{
+				SetSliderLimits(frame);
+			};
+		}
+
+		private void SetSliderLimits(Frame frame)
+		{
+			Dispatcher.Invoke(() =>
+			{
+				if (frame.InArena)
+				{
+					xSlider.Minimum = -24;
+					xSlider.Maximum = 24;
+
+					ySlider.Minimum = -15;
+					ySlider.Maximum = 15;
+
+					zSlider.Minimum = -80;
+					zSlider.Maximum = 80;
+				}
+				else
+				{
+					xSlider.Minimum = -200;
+					xSlider.Maximum = 200;
+
+					ySlider.Minimum = -200;
+					ySlider.Maximum = 200;
+
+					zSlider.Minimum = -200;
+					zSlider.Maximum = 200;
+				}
+			});
 		}
 
 		private void EnableHotKeys(bool enable)
@@ -335,15 +373,42 @@ namespace Spark
 			{
 				numPadHotKeys = new GlobalHotKey[]
 				{
-					new GlobalHotKey(Key.NumPad1, KeyModifier.None, (_) => { TryGoToWaypoint(0); }),
-					new GlobalHotKey(Key.NumPad2, KeyModifier.None, (_) => { TryGoToWaypoint(1); }),
-					new GlobalHotKey(Key.NumPad3, KeyModifier.None, (_) => { TryGoToWaypoint(2); }),
-					new GlobalHotKey(Key.NumPad4, KeyModifier.None, (_) => { TryPlayAnim(0); }),
-					new GlobalHotKey(Key.NumPad5, KeyModifier.None, (_) => { TryPlayAnim(1); }),
-					new GlobalHotKey(Key.NumPad6, KeyModifier.None, (_) => { TryPlayAnim(2); }),
-					new GlobalHotKey(Key.NumPad7, KeyModifier.None, (_) => { TryPlayAnim(3); }),
-					new GlobalHotKey(Key.NumPad8, KeyModifier.None, (_) => { TryPlayAnim(4); }),
-					new GlobalHotKey(Key.NumPad9, KeyModifier.None, (_) => { TryPlayAnim(5); })
+					new GlobalHotKey(Key.NumPad1, KeyModifier.None, (_) =>
+					{
+						TryGoToWaypoint(0);
+					}),
+					new GlobalHotKey(Key.NumPad2, KeyModifier.None, (_) =>
+					{
+						TryGoToWaypoint(1);
+					}),
+					new GlobalHotKey(Key.NumPad3, KeyModifier.None, (_) =>
+					{
+						TryGoToWaypoint(2);
+					}),
+					new GlobalHotKey(Key.NumPad4, KeyModifier.None, (_) =>
+					{
+						TryPlayAnim(0);
+					}),
+					new GlobalHotKey(Key.NumPad5, KeyModifier.None, (_) =>
+					{
+						TryPlayAnim(1);
+					}),
+					new GlobalHotKey(Key.NumPad6, KeyModifier.None, (_) =>
+					{
+						TryPlayAnim(2);
+					}),
+					new GlobalHotKey(Key.NumPad7, KeyModifier.None, (_) =>
+					{
+						TryPlayAnim(3);
+					}),
+					new GlobalHotKey(Key.NumPad8, KeyModifier.None, (_) =>
+					{
+						TryPlayAnim(4);
+					}),
+					new GlobalHotKey(Key.NumPad9, KeyModifier.None, (_) =>
+					{
+						TryPlayAnim(5);
+					})
 				};
 			}
 			else
@@ -400,7 +465,10 @@ namespace Spark
 		{
 			if (Program.running)
 			{
-				Dispatcher.Invoke(() => { animationProgressBar.Value = animationProgress; });
+				Dispatcher.Invoke(() =>
+				{
+					animationProgressBar.Value = animationProgress;
+				});
 			}
 		}
 
@@ -491,7 +559,7 @@ namespace Spark
 				CameraTransform newTransform = new CameraTransform(newPos, newRot, newFov);
 
 				string distance = Vector3.Distance(newPos, lastTransform.Position) / sw.Elapsed.TotalSeconds + "\t" +
-								  spline.GetCurve(t).Item1?.keyframes[0].px;
+				                  spline.GetCurve(t).Item1?.keyframes[0].px;
 				sw.Restart();
 				// Debug.WriteLine(distance);
 
@@ -509,7 +577,10 @@ namespace Spark
 				SetCamera(CurrentAnimation.keyframes.Last());
 			}
 
-			Dispatcher.Invoke(() => { startButton.Content = "Start"; });
+			Dispatcher.Invoke(() =>
+			{
+				startButton.Content = "Start";
+			});
 			animationProgress = 0;
 			isAnimating = false;
 		}
@@ -550,7 +621,10 @@ namespace Spark
 
 			SetCamera(end);
 
-			Dispatcher.Invoke(() => { startButton.Content = "Start"; });
+			Dispatcher.Invoke(() =>
+			{
+				startButton.Content = "Start";
+			});
 			animationProgress = 0;
 			isAnimating = false;
 		}
@@ -590,7 +664,7 @@ namespace Spark
 		private void ReadXYZ(object sender, RoutedEventArgs e)
 		{
 			if (Program.lastFrame == null) return;
-			
+
 			(Vector3 p, Quaternion q) = Program.lastFrame.GetCameraTransform();
 			manualTransform = new CameraTransform(p, q, lastSetFov);
 			SetSliderPositions(manualTransform);
@@ -798,7 +872,7 @@ namespace Spark
 				replace.Click += (_, _) =>
 				{
 					if (Program.lastFrame == null) return;
-					
+
 					(Vector3 p, Quaternion q) = Program.lastFrame.GetCameraTransform();
 					CurrentAnimation.keyframes[CurrentAnimation.keyframes.FindIndex(val => val == wp)] =
 						new CameraTransform(p, q, lastSetFov);
@@ -850,7 +924,7 @@ namespace Spark
 			}
 
 			if (Program.lastFrame == null) return;
-			
+
 			(Vector3 p, Quaternion q) = Program.lastFrame.GetCameraTransform();
 			CameraWriteSettings.instance.waypoints[keyName] = new CameraTransform(p, q, lastSetFov);
 
@@ -874,7 +948,7 @@ namespace Spark
 		private void AddKeyframe(object sender, RoutedEventArgs e)
 		{
 			if (Program.lastFrame == null) return;
-			
+
 			(Vector3 p, Quaternion q) = Program.lastFrame.GetCameraTransform();
 			CurrentAnimation.keyframes.Add(new CameraTransform(p, q, lastSetFov));
 
@@ -946,7 +1020,10 @@ namespace Spark
 				Thread.Sleep(2);
 			}
 
-			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
+			Dispatcher.Invoke(() =>
+			{
+				IsOrbitingCheckbox.IsChecked = false;
+			});
 		}
 
 		private void OrbitDiscThread()
@@ -1046,7 +1123,10 @@ namespace Spark
 				Thread.Sleep(8);
 			}
 
-			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
+			Dispatcher.Invoke(() =>
+			{
+				IsOrbitingCheckbox.IsChecked = false;
+			});
 		}
 
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
