@@ -35,7 +35,43 @@
 
 			<TabItem Header="{x:Static p:Resources.General}" Padding="8,6,8,6">
 				<ScrollViewer  VerticalScrollBarVisibility="Auto">
-					<StackPanel Margin="10,0,10,10">
+					<StackPanel Margin="10,10,10,10">
+						
+						<StackPanel Orientation="Horizontal">
+							<Button Content="{x:Static p:Resources.Show_first_time_setup_window}"
+							        Margin="10,4,10,4" HorizontalAlignment="Left" Width="207" Padding="4,4,4,4"
+							        Click="ShowFirstTimeSetupWindowClicked" />
+							<Button Content="Open settings file folder" Margin="10,4,10,4" HorizontalAlignment="Left" Width="207" Padding="4,4,4,4"
+							        Click="OpenSettingsFileFolder" />
+						</StackPanel>
+						
+						<TextBlock x:Name="thisPCLocalIP" Margin="10,4,4,0" Foreground="Gray">---</TextBlock>
+						<StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,-8">
+							<Label x:Name="echoVRIPLabel" Content="{x:Static p:Resources.EchoVR_IP__for_Quest_}" Margin="4,4,4,4" />
+							<TextBox x:Name="echoVRIPTextBox" Text="{l:SettingLoad echoVRIP}" TextWrapping="Wrap" Width="130"
+							         Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
+							         Padding="4,4,4,4" TextChanged="EchoVRIPChanged" />
+							<TextBox x:Name="echoVRPortTextBox" Text="{l:SettingLoad echoVRPort}" TextWrapping="Wrap" Width="60"
+							         Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
+							         Padding="4,4,4,4" TextChanged="EchoVRPortChanged" />
+							<Button x:Name="resetIP" Content="{x:Static p:Resources.Local_PC}" Margin="4,4,4,4" Padding="4,4,4,4"
+							        Click="resetIP_Click" />
+							<Button x:Name="findQuest" Content="{x:Static p:Resources.Find_Quest_IP}" Margin="4,4,4,4" Padding="4,4,4,4"
+							        Click="FindQuestClick" />
+						</StackPanel>
+						<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="{x:Static p:Resources.Searching_for_Quest}"
+						       Margin="30,0,0,0" FontSize="10" FontStyle="Italic" />
+						
+						
+						<Label x:Name="exeLocationLabel" Content="{x:Static p:Resources.EchoVR_Executable_Location_}" Margin="10,0,10,0" />
+						<TextBox x:Name="exeLocationTextBox"
+						         Text="{l:SettingLoad echoVRPath}" TextWrapping="NoWrap"
+						         HorizontalAlignment="Stretch"
+						         Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged"
+						         MaxLines="1" />
+						
+						
+						
 						<StackPanel Orientation="Horizontal">
 							<Label Content="{x:Static p:Resources.Language}" Margin="10,10,4,4" />
 							<ComboBox Margin="4,10,10,4" HorizontalAlignment="Left" Width="148" SelectedIndex="{l:SettingBinding languageIndex}" >
@@ -44,42 +80,12 @@
 							</ComboBox>
 							<Label Content="{x:Static p:Resources._Requires_Restart_}" Margin="10,10,4,4"/>
 						</StackPanel>
-						<Button x:Name="firstTimeSetupButton" Content="{x:Static p:Resources.Show_first_time_setup_window}"
-									Margin="10,4,10,4" HorizontalAlignment="Left" Width="207" Padding="4,4,4,4"
-									Click="ShowFirstTimeSetupWindowClicked" />
 						<CheckBox x:Name="startWithWindowsCheckbox" Content="{x:Static p:Resources.Start_with_Windows}"
 									  IsChecked="{Binding StartWithWindows}" HorizontalAlignment="Left"
 									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						<CheckBox x:Name="startMinimizedCheckbox" Content="{x:Static p:Resources.Start_Minimized}"
 									  IsChecked="{l:SettingBinding startMinimized}" HorizontalAlignment="Left"
 									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
-						<CheckBox x:Name="autorestartCheckbox" Content="{x:Static p:Resources.Autorestart_EchoVR_into_autospectator}"
-									  IsChecked="{l:SettingBinding autoRestart}" HorizontalAlignment="Left"
-									  VerticalAlignment="Stretch" Margin="10,4,10,4"
-									  ToolTip="Automatically restarts spectatorstream when it crashes" />
-						<CheckBox x:Name="capturevp2Checkbox" Content="{x:Static p:Resources.Enable__capturevp2_when_launching_spectator}"
-									  IsChecked="{l:SettingBinding capturevp2}" HorizontalAlignment="Left"
-									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
-						<CheckBox x:Name="discordRichPresenceCheckbox" Content="{x:Static p:Resources.Discord_Rich_Presence}"
-									  IsChecked="{l:SettingBinding discordRichPresence}" HorizontalAlignment="Left"
-									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
-						<CheckBox x:Name="discordRichPresenceServerLocationCheckbox" Content="Show Server Location in Discord RP status"
-									  IsChecked="{l:SettingBinding discordRichPresenceServerLocation}" HorizontalAlignment="Left"
-									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
-						<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite"
-									  IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
-									  VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
-						<CheckBox x:Name="LowFrequencyModeCheckBox" Content="Low Frequency Mode" ToolTip="Queries the API less frequently if you are having performance problems."
-						          IsChecked="{l:SettingBinding lowFrequencyMode}" HorizontalAlignment="Left"
-						          VerticalAlignment="Stretch" Margin="10,4,10,4" />
-						<CheckBox x:Name="enableAutoFocusCheckbox" Content="{x:Static p:Resources.Autofocus_EchoVR}" Margin="10,4,10,4" IsChecked="{l:SettingBinding isAutofocusEnabled}" ToolTip="{x:Static p:Resources.enableAutoFocusCheckbox_ToolTip}"/>
-						<CheckBox Content="Spectatorstream opens Echo Combat" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamCombat}" ToolTip="The Open Spectatatorstream button opens Echo Combat instead."/>
-						<CheckBox Content="Use anonymous mode for Spectatorstream" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamNoOVR}" ToolTip="Your username will show up as anonymous when launching the spectatorstream. This also allows you to have two instances of EchoVR open at once."/>
-						<CheckBox Content="Allow Spectate Me on local PC" Margin="10,4,10,4" IsChecked="{l:SettingBinding allowSpectateMeOnLocalPC}" ToolTip="Enables the Spectate Me function when your IP is 127.0.0.1. This is not recommended and is still experimental."/>
-						<CheckBox Content="Use anonymous mode in Spectate Me" Margin="10,4,10,4" IsChecked="{l:SettingBinding useAnonymousSpectateMe}" ToolTip="Enables the anonymous mode for the Spectate Me function. Uncheck this to use a second Oculus account for your spectator."/>
-						<CheckBox Content="Spectate Me on by default" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectateMeOnByDefault}" ToolTip="Automatically enables the Spectate Me feature when Spark starts."/>
-						<CheckBox x:Name="enableBetasCheckbox" Content="{x:Static p:Resources.Get_Beta_Updates_to_Spark}" Margin="10,4,10,4" IsChecked="{l:SettingBinding betaUpdates}" ToolTip="{x:Static p:Resources.betaUpdates_ToolTip}"/>
-
 						<StackPanel Orientation="Horizontal" Margin="10,4,10,4">
 							<Label Content="Interface Theme"/>
 							<ComboBox SelectedIndex="{Binding SetTheme}" Width="50">
@@ -94,29 +100,48 @@
 								</ComboBoxItem>
 							</ComboBox>
 						</StackPanel>
-						<Label x:Name="exeLocationLabel" Content="{x:Static p:Resources.EchoVR_Executable_Location_}" Margin="10,4,10,0" />
-						<TextBox x:Name="exeLocationTextBox"
-									 Text="{l:SettingLoad echoVRPath}" TextWrapping="NoWrap"
-									 HorizontalAlignment="Stretch"
-									 Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged"
-									 MaxLines="1" />
+						<CheckBox x:Name="enableBetasCheckbox" Content="{x:Static p:Resources.Get_Beta_Updates_to_Spark}" Margin="10,4,10,4" IsChecked="{l:SettingBinding betaUpdates}" ToolTip="{x:Static p:Resources.betaUpdates_ToolTip}"/>
+						<CheckBox x:Name="capturevp2Checkbox" Content="{x:Static p:Resources.Enable__capturevp2_when_launching_spectator}"
+						          IsChecked="{l:SettingBinding capturevp2}" HorizontalAlignment="Left"
+						          VerticalAlignment="Stretch" Margin="10,4,10,4" />
+						<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite"
+						          IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
+						          VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
+						<CheckBox x:Name="LowFrequencyModeCheckBox" Content="Low Frequency Mode" ToolTip="Queries the API less frequently if you are having performance problems."
+						          IsChecked="{l:SettingBinding lowFrequencyMode}" HorizontalAlignment="Left"
+						          VerticalAlignment="Stretch" Margin="10,4,10,4" />
+						<CheckBox x:Name="enableAutoFocusCheckbox" Content="{x:Static p:Resources.Autofocus_EchoVR}" Margin="10,4,10,4" IsChecked="{l:SettingBinding isAutofocusEnabled}" ToolTip="{x:Static p:Resources.enableAutoFocusCheckbox_ToolTip}"/>
+						
+						<TextBlock Margin="0,10,0,0">Spectatorstream (Spectates highest level public match)</TextBlock>
+						<Separator/>
+						<CheckBox Content="Spectatorstream opens Echo Combat" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamCombat}" ToolTip="The Open Spectatatorstream button opens Echo Combat instead."/>
+						<CheckBox Content="Use anonymous mode for Spectatorstream" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamNoOVR}" ToolTip="Your username will show up as anonymous when launching the spectatorstream. This also allows you to have two instances of EchoVR open at once."/>
+						<CheckBox x:Name="autorestartCheckbox" Content="{x:Static p:Resources.Autorestart_EchoVR_into_autospectator}"
+									  IsChecked="{l:SettingBinding autoRestart}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4"
+									  ToolTip="Automatically restarts spectatorstream when it crashes" />
+						
+						<TextBlock Margin="0,10,0,0">Spectate Me (Opens the spectator for your current match)</TextBlock>
+						<Separator/>
+						<CheckBox Content="Allow Spectate Me on local PC" Margin="10,4,10,4" IsChecked="{l:SettingBinding allowSpectateMeOnLocalPC}" ToolTip="Enables the Spectate Me function when your IP is 127.0.0.1. This is not recommended and is still experimental."/>
+						<CheckBox Content="Use anonymous mode in Spectate Me" Margin="10,4,10,4" IsChecked="{l:SettingBinding useAnonymousSpectateMe}" ToolTip="Enables the anonymous mode for the Spectate Me function. Uncheck this to use a second Oculus account for your spectator."/>
+						<CheckBox Content="Spectate Me on by default" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectateMeOnByDefault}" ToolTip="Automatically enables the Spectate Me feature when Spark starts."/>
+						
+						<TextBlock Margin="0,10,0,0">Discord Rich Presence</TextBlock>
+						<Separator/>
+						
+						<CheckBox x:Name="discordRichPresenceCheckbox" Content="{x:Static p:Resources.Discord_Rich_Presence}"
+									  IsChecked="{l:SettingBinding discordRichPresence}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
+						<CheckBox x:Name="discordRichPresenceServerLocationCheckbox" Content="Show Server Location in Discord RP status"
+									  IsChecked="{l:SettingBinding discordRichPresenceServerLocation}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
+						
+						
+						
 
-						<Label x:Name="thisPCLocalIP"/>
-						<StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,-8">
-							<Label x:Name="echoVRIPLabel" Content="{x:Static p:Resources.EchoVR_IP__for_Quest_}" Margin="4,4,4,4" />
-							<TextBox x:Name="echoVRIPTextBox" Text="{l:SettingLoad echoVRIP}" TextWrapping="Wrap" Width="130"
-										 Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
-										 Padding="4,4,4,4" TextChanged="EchoVRIPChanged" />
-							<TextBox x:Name="echoVRPortTextBox" Text="{l:SettingLoad echoVRPort}" TextWrapping="Wrap" Width="60"
-										 Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
-										 Padding="4,4,4,4" TextChanged="EchoVRPortChanged" />
-							<Button x:Name="resetIP" Content="{x:Static p:Resources.Local_PC}" Margin="4,4,4,4" Padding="4,4,4,4"
-										Click="resetIP_Click" />
-							<Button x:Name="findQuest" Content="{x:Static p:Resources.Find_Quest_IP}" Margin="4,4,4,4" Padding="4,4,4,4"
-										Click="FindQuestClick" />
-						</StackPanel>
-						<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="{x:Static p:Resources.Searching_for_Quest}"
-								   Margin="30,0,0,0" FontSize="10" FontStyle="Italic" />
+
+						
 						<CheckBox x:Name="enableStatsLoggingCheckBox" Content="Enable API Processing"
 									  IsChecked="{l:SettingBinding enableStatsLogging}" Margin="10,20,4,4"
 									  Visibility="Collapsed" />

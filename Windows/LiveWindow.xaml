@@ -174,24 +174,24 @@
 						<StackPanel>
 							<GroupBox Header="{x:Static p:Resources.Settings}" Margin="10,10,10,10">
 								<StackPanel Orientation="Horizontal" Margin="10,5,0,0">
-									<StackPanel>
-										<StackPanel Orientation="Horizontal" Margin="5,0,0,-10">
-											<Button x:Name="resetIP" Content="{x:Static p:Resources.Local_PC}" Margin="5,5,5,5" Padding="7,3,7,3" Click="SetToLocalIP" ToolTip="Resets the IP to 127.0.0.1"/>
-											<Button x:Name="findQuest" Content="{x:Static p:Resources.Find_Quest_IP}" Margin="5,5,5,5" Padding="5,3,5,3" Click="FindQuestIP" ToolTip="Tries to find a Quest on your network. Make sure your Quest is turned on (not sleeping) and connected to WiFi."/>
-										</StackPanel>
-										<ComboBox x:Name="ipSourceDropdown" Width="175" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,15,10,0" SelectionChanged="IPSourceDropdownChanged" Visibility="Collapsed">
-											<ComboBoxItem Content="{x:Static p:Resources.Local_PC}"/>
-											<ComboBoxItem Content="{x:Static p:Resources.Quest}"/>
-										</ComboBox>
-										<TextBox x:Name="alternateIPTextBox" Text="{l:SettingLoad echoVRIP}" TextChanged="EchoVRIPChanged" TextWrapping="Wrap" Width="175" Margin="10,10,10,10" FontFamily="Consolas"/>
-										<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="{x:Static p:Resources.Searching_for_Quest}" Margin="30,-10,0,-20" FontSize="12" FontStyle="Italic"/>
-									</StackPanel>
-									<Button x:Name="getButton" Margin="10,15,20,20" Padding="4,4,4,4" Width="130" Click="GetLinks" Height="40" Visibility="Collapsed">
-										<StackPanel Orientation="Horizontal">
-											<Label Content="{x:Static p:Resources.Refresh}"/>
-											<Image Source="/img/baseline_replay_white_48dp.png" Width="20"/>
-										</StackPanel>
-									</Button>
+									<!-- <StackPanel> -->
+									<!-- 	<StackPanel Orientation="Horizontal" Margin="5,0,0,-10"> -->
+									<!-- 		<Button x:Name="resetIP" Content="{x:Static p:Resources.Local_PC}" Margin="5,5,5,5" Padding="7,3,7,3" Click="SetToLocalIP" ToolTip="Resets the IP to 127.0.0.1"/> -->
+									<!-- 		<Button x:Name="findQuest" Content="{x:Static p:Resources.Find_Quest_IP}" Margin="5,5,5,5" Padding="5,3,5,3" Click="FindQuestIP" ToolTip="Tries to find a Quest on your network. Make sure your Quest is turned on (not sleeping) and connected to WiFi."/> -->
+									<!-- 	</StackPanel> -->
+									<!-- 	<ComboBox x:Name="ipSourceDropdown" Width="175" SelectedIndex="0" HorizontalAlignment="Left" Margin="10,15,10,0" SelectionChanged="IPSourceDropdownChanged" Visibility="Collapsed"> -->
+									<!-- 		<ComboBoxItem Content="{x:Static p:Resources.Local_PC}"/> -->
+									<!-- 		<ComboBoxItem Content="{x:Static p:Resources.Quest}"/> -->
+									<!-- 	</ComboBox> -->
+									<!-- 	<TextBox x:Name="alternateIPTextBox" Text="{l:SettingLoad echoVRIP}" TextChanged="EchoVRIPChanged" TextWrapping="Wrap" Width="175" Margin="10,10,10,10" FontFamily="Consolas"/> -->
+									<!-- 	<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="{x:Static p:Resources.Searching_for_Quest}" Margin="30,-10,0,-20" FontSize="12" FontStyle="Italic"/> -->
+									<!-- </StackPanel> -->
+									<!-- <Button x:Name="getButton" Margin="10,15,20,20" Padding="4,4,4,4" Width="130" Click="GetLinks" Height="40" Visibility="Collapsed"> -->
+									<!-- 	<StackPanel Orientation="Horizontal"> -->
+									<!-- 		<Label Content="{x:Static p:Resources.Refresh}"/> -->
+									<!-- 		<Image Source="/img/baseline_replay_white_48dp.png" Width="20"/> -->
+									<!-- 	</StackPanel> -->
+									<!-- </Button> -->
 
 									<StackPanel>
 										<Label Content="{x:Static p:Resources.Link_Type_}" Margin="10,-5,10,0"/>

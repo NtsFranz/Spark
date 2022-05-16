@@ -136,7 +136,7 @@
     <value>Shows copy-pastable links to let others join your match</value>
   </data>
   <data name="Autorestart EchoVR into autospectator" xml:space="preserve">
-    <value>Autorestart EchoVR into autospectator</value>
+    <value>Autorestart EchoVR into Spectatorstream</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="baseline_replay_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -995,7 +995,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
     <value>EchoVR is not found on this PC. Make sure you have EchoVR installed if you want to be able to change these settings, or set the path to the EchoVR executable manually in the General tab.</value>
   </data>
   <data name="Autofocus EchoVR" xml:space="preserve">
-    <value>Autofocus EchoVR</value>
+    <value>Autofocus EchoVR window</value>
   </data>
   <data name="Get Beta Updates to Spark" xml:space="preserve">
     <value>Get Beta Updates to Spark</value>

@@ -22,8 +22,18 @@ namespace Spark
 		private bool initialized;
 		private readonly Timer outputUpdateTimer = new Timer();
 
+		private readonly List<Keyboard.DirectXKeyStrokes> medalTVInputs = new List<Keyboard.DirectXKeyStrokes>
+		{
+			Keyboard.DirectXKeyStrokes.DIK_F8,
+			Keyboard.DirectXKeyStrokes.DIK_F12,
+			Keyboard.DirectXKeyStrokes.DIK_BACKSLASH,
+			Keyboard.DirectXKeyStrokes.DIK_HOME,
+			Keyboard.DirectXKeyStrokes.DIK_SCROLL,
+		};
+
 		public ClipsSettings()
 		{
+			
 			InitializeComponent();
 
 			Program.obs.instance.Connected += OBSConnected;
@@ -100,6 +110,15 @@ namespace Spark
 			betweenGameScene.SelectionChanged += BetweenGameSceneChanged;
 			goalReplayScene.SelectionChanged += GoalReplaySceneChanged;
 			saveReplayScene.SelectionChanged += SaveReplaySceneChanged;
+
+			// if (MedalTVInputs.Contains((Keyboard.DirectXKeyStrokes)SparkSettings.instance.medalClipKey))
+			// {
+				medalClipHotkeyDropdown.SelectedIndex = medalTVInputs.IndexOf((Keyboard.DirectXKeyStrokes)SparkSettings.instance.medalClipKey);	
+			// }
+			// else
+			// {
+			// 	medalClipHotkeyDropdown.SelectedIndex = -1;
+			// }
 
 			// passwordbox can't use binding
 			obsPasswordBox.Password = SparkSettings.instance.obsPassword;
@@ -960,6 +979,11 @@ namespace Spark
 		{
 			SparkSettings.instance.speaker = SpeakerSelection.SelectedItem.ToString();
 			if (initialized) Task.Run(Program.speechRecognizer.ReloadSpeaker);
+		}
+
+		private void MedalClipHotkeyDropdownOnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			SparkSettings.instance.medalClipKey = (int)medalTVInputs[((ComboBox)sender).SelectedIndex];
 		}
 	}
 }

@@ -55,7 +55,7 @@ namespace Spark
 
 		public static void ClipNow()
 		{
-			Keyboard.SendEchoKey(Keyboard.DirectXKeyStrokes.DIK_F8, focusEchoVR: false);
+			Keyboard.SendEchoKey((Keyboard.DirectXKeyStrokes)SparkSettings.instance.medalClipKey, focusEchoVR: false);
 		}
 
 		private static bool IsPlayerScopeEnabled(string player_name, Frame frame)

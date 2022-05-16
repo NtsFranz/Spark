@@ -56,7 +56,7 @@ namespace Spark
 #endif
 
 
-			thisPCLocalIP.Content = $"This PC's Local IP: {Program.GetLocalIP()} (for PC-PC Spectate Me)";
+			thisPCLocalIP.Text = $"This PC's Local IP: {Program.GetLocalIP()} (for PC-PC Spectate Me)";
 
 			CameraModeDropdownChanged(SparkSettings.instance.spectatorCamera);
 
@@ -734,6 +734,24 @@ namespace Spark
 		private void ClearTTSCacheButton(object sender, RoutedEventArgs e)
 		{
 			TTSController.ClearCacheFolder();
+		}
+
+		private void OpenSettingsFileFolder(object sender, RoutedEventArgs e)
+		{
+			string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark");
+			if (!Directory.Exists(Path.GetDirectoryName(folder)))
+			{
+				Directory.CreateDirectory(folder);
+			}
+			
+			if (Directory.Exists(folder))
+			{
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = folder,
+					UseShellExecute = true
+				});
+			}
 		}
 	}
 	

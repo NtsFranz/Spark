@@ -125,11 +125,15 @@
                                 https://medal.tv/download
                             </Hyperlink>
                         </TextBlock>
-                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">Customize your hotkey in Medal by going to Settins (bottom left) -> Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default.</TextBlock>
-                        <ComboBox Margin="8,8,8,8" HorizontalAlignment="Left" Width="200">
+                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">Customize your hotkey in Medal by going to Settings (bottom left) -> Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default. F12 should be good for most people.</TextBlock>
+                        <ComboBox x:Name="medalClipHotkeyDropdown" Margin="8,8,8,8" HorizontalAlignment="Left" Width="200" SelectionChanged="MedalClipHotkeyDropdownOnSelectionChanged">
                             <ComboBoxItem>F8</ComboBoxItem>
                             <ComboBoxItem>F12</ComboBoxItem>
+                            <ComboBoxItem>\</ComboBoxItem>
+                            <ComboBoxItem>Home</ComboBoxItem>
+                            <ComboBoxItem>ScrollLock</ComboBoxItem>
                         </ComboBox>
+                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">You can use Medal to record your entire session, and have Spark make bookmarks instead of saving clips. Enable this feature in Medal's Settings->Recorder->Special Features->Full Session Recording. Set "Seconds After" to 0s to have the correct event timing in this case.</TextBlock>
                         <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">Change clip length in the medal settings window. (Settings->Recorder)</TextBlock>
 
                     </StackPanel>

@@ -368,7 +368,6 @@ namespace Spark
 				}
 
 
-
 				netMQEvents = new NetMQEvents();
 
 				InstalledSpeakerSystemVersion = FindEchoSpeakerSystemInstallVersion();

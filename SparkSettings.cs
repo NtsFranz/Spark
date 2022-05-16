@@ -195,6 +195,8 @@ namespace Spark
 		public bool medalClipNeutralJoust { get; set; } = false;
 		public bool medalClipDefensiveJoust { get; set; } = false;
 		
+		public int medalClipKey { get; set; } = 0x42;
+		
 		// voice
 		public bool enableVoiceRecognition { get; set; } = false;
 		public bool enableVoiceRecognitionMic { get; set; } = true;

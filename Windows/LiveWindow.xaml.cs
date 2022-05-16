@@ -1500,33 +1500,33 @@ namespace Spark
 		#region Atlas Links Tab
 
 
-		private void GetLinks(object sender, RoutedEventArgs e)
-		{
-			string ip = alternateIPTextBox.Text;
-			Program.GetRequestCallback($"http://{ip}:6721/session", null, (responseJSON) =>
-			{
-				try
-				{
-					SimpleFrame obj = JsonConvert.DeserializeObject<SimpleFrame>(responseJSON);
-
-					if (obj != null && !string.IsNullOrEmpty(obj.sessionid))
-					{
-						Dispatcher.Invoke(() =>
-						{
-							joinLink.Text = Program.CurrentSparkLink(obj.sessionid);
-
-							SparkSettings.instance.alternateEchoVRIP = alternateIPTextBox.Text;
-							SparkSettings.instance.Save();
-						});
-					}
-
-				}
-				catch (Exception ex)
-				{
-					Logger.LogRow(Logger.LogType.Error, $"Can't parse response\n{ex}");
-				}
-			});
-		}
+		// private void GetLinks(object sender, RoutedEventArgs e)
+		// {
+		// 	string ip = alternateIPTextBox.Text;
+		// 	Program.GetRequestCallback($"http://{ip}:6721/session", null, (responseJSON) =>
+		// 	{
+		// 		try
+		// 		{
+		// 			SimpleFrame obj = JsonConvert.DeserializeObject<SimpleFrame>(responseJSON);
+		//
+		// 			if (obj != null && !string.IsNullOrEmpty(obj.sessionid))
+		// 			{
+		// 				Dispatcher.Invoke(() =>
+		// 				{
+		// 					joinLink.Text = Program.CurrentSparkLink(obj.sessionid);
+		//
+		// 					SparkSettings.instance.alternateEchoVRIP = alternateIPTextBox.Text;
+		// 					SparkSettings.instance.Save();
+		// 				});
+		// 			}
+		//
+		// 		}
+		// 		catch (Exception ex)
+		// 		{
+		// 			Logger.LogRow(Logger.LogType.Error, $"Can't parse response\n{ex}");
+		// 		}
+		// 	});
+		// }
 
 		//public int HostingVisibilityDropdown {
 		//	get => SparkSettings.instance.atlasHostingVisibility;
@@ -2038,37 +2038,37 @@ namespace Spark
 			}
 		}
 
-		private async void FindQuestIP(object sender, RoutedEventArgs e)
-		{
-			findQuestStatusLabel.Content = Properties.Resources.Searching_for_Quest_on_network;
-			findQuestStatusLabel.Visibility = Visibility.Visible;
-			alternateIPTextBox.IsEnabled = false;
-			findQuest.IsEnabled = false;
-			resetIP.IsEnabled = false;
-			Progress<string> progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
-			await Task.Factory.StartNew(() => Program.echoVRIP = QuestIPFetching.FindQuestIP(progress), TaskCreationOptions.None);
-			alternateIPTextBox.IsEnabled = true;
-			findQuest.IsEnabled = true;
-			resetIP.IsEnabled = true;
-			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
-			alternateIPTextBox.Text = Program.echoVRIP;
-			SparkSettings.instance.echoVRIP = Program.echoVRIP;
-			if (!Program.overrideEchoVRPort) SparkSettings.instance.echoVRPort = Program.echoVRPort;
-		}
+		// private async void FindQuestIP(object sender, RoutedEventArgs e)
+		// {
+		// 	findQuestStatusLabel.Content = Properties.Resources.Searching_for_Quest_on_network;
+		// 	findQuestStatusLabel.Visibility = Visibility.Visible;
+		// 	alternateIPTextBox.IsEnabled = false;
+		// 	findQuest.IsEnabled = false;
+		// 	resetIP.IsEnabled = false;
+		// 	Progress<string> progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
+		// 	await Task.Factory.StartNew(() => Program.echoVRIP = QuestIPFetching.FindQuestIP(progress), TaskCreationOptions.None);
+		// 	alternateIPTextBox.IsEnabled = true;
+		// 	findQuest.IsEnabled = true;
+		// 	resetIP.IsEnabled = true;
+		// 	if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
+		// 	alternateIPTextBox.Text = Program.echoVRIP;
+		// 	SparkSettings.instance.echoVRIP = Program.echoVRIP;
+		// 	if (!Program.overrideEchoVRPort) SparkSettings.instance.echoVRPort = Program.echoVRPort;
+		// }
 
-		private void SetToLocalIP(object sender, RoutedEventArgs e)
-		{
-			Program.echoVRIP = "127.0.0.1";
-			alternateIPTextBox.Text = Program.echoVRIP;
-			SparkSettings.instance.echoVRIP = Program.echoVRIP;
-		}
-
-		private void EchoVRIPChanged(object sender, TextChangedEventArgs e)
-		{
-			if (!initialized) return;
-			Program.echoVRIP = ((TextBox)sender).Text;
-			SparkSettings.instance.echoVRIP = Program.echoVRIP;
-		}
+		// private void SetToLocalIP(object sender, RoutedEventArgs e)
+		// {
+		// 	Program.echoVRIP = "127.0.0.1";
+		// 	alternateIPTextBox.Text = Program.echoVRIP;
+		// 	SparkSettings.instance.echoVRIP = Program.echoVRIP;
+		// }
+		//
+		// private void EchoVRIPChanged(object sender, TextChangedEventArgs e)
+		// {
+		// 	if (!initialized) return;
+		// 	Program.echoVRIP = ((TextBox)sender).Text;
+		// 	SparkSettings.instance.echoVRIP = Program.echoVRIP;
+		// }
 
 		#endregion
 

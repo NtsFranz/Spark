@@ -20,6 +20,7 @@ namespace Spark
 	public class OverlayServer
 	{
 		private IWebHost server;
+		private bool serverRestarting = false;
 
 		public OverlayServer()
 		{
@@ -48,7 +49,14 @@ namespace Spark
 			// get new overlay data
 			await OverlaysCustom.FetchOverlayData();
 
+			if (serverRestarting)
+			{
+				Logger.LogRow(Logger.LogType.Error, "Already restarting server. Cancelling this restart.");
+				return;
+			}
+
 			// stop the server
+			serverRestarting = true;
 			// TODO this is race condition because it is started from somewhere else
 			if (server != null)
 			{
@@ -66,6 +74,7 @@ namespace Spark
 				.Build();
 
 			await server.RunAsync();
+			serverRestarting = false;
 		}
 
 		public void Stop()
