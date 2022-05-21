@@ -76,8 +76,11 @@ namespace Spark
 		public void ExitApplication()
 		{
 			Program.running = false;
-			Current.Shutdown();
-			Environment.Exit(Environment.ExitCode);
+			Dispatcher.Invoke(() =>
+			{
+				Current.Shutdown();
+				Environment.Exit(Environment.ExitCode);
+			});
 		}
 	}
 }

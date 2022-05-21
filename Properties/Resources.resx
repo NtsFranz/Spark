@@ -213,7 +213,7 @@
     <comment>an option in the dropdown refers to the speed of the TTS</comment>
   </data>
   <data name="Fast (60 Hz)" xml:space="preserve">
-    <value>Fast (60 Hz)</value>
+    <value>Fast (30 Hz)</value>
     <comment>an option in the dropdown that refers to the speed of replay recording</comment>
   </data>
   <data name="Find Quest IP" xml:space="preserve">
@@ -278,7 +278,7 @@
     <comment>button on right side of main window</comment>
   </data>
   <data name="Med (30 Hz)" xml:space="preserve">
-    <value>Med (30 Hz)</value>
+    <value>Med (15 Hz)</value>
     <comment>an option in the dropdown that refers to the speed of replay recording</comment>
   </data>
   <data name="Mode" xml:space="preserve">

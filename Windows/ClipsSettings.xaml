@@ -146,7 +146,7 @@
                                Visibility="Collapsed" />
 
                         <TextBlock
-                            Text="Voice recognition uses Microsoft's online voice recognition software. This is the same system that powers Cortana in Windows 10+ and is subject to Microsoft's privacy policy. Voice recognition uses your default Windows microphone for this application."
+                            Text="Voice recognition is powered by Vosk. All audio data is processed locally on your device and not uploaded to a server."
                             TextWrapping="Wrap" Margin="5,5,5,5"
                             Foreground="{DynamicResource ControlDisabledGlythColour}" />
 

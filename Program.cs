@@ -116,11 +116,11 @@ namespace Spark
 		/// <summary>
 		/// Not actually Hz. 1/Hz.
 		/// </summary>
-		public static float StatsHz => statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0];
+		public static float StatsIntervalMs => statsDeltaTimes[SparkSettings.instance.lowFrequencyMode ? 1 : 0];
 		private static bool? lastLowFreqMode = null;
 
-		// 60 or 30 hz main fetch speed
-		private static readonly List<float> statsDeltaTimes = new List<float> { 16.6666666f, 33.3333333f };
+		// 30 or 15 hz main fetch speed
+		private static readonly List<float> statsDeltaTimes = new List<float> { 33.3333333f, 66.6666666f };
 
 
 		public static LiveWindow liveWindow;
@@ -162,7 +162,7 @@ namespace Spark
 		public static UploadController uploadController;
 		public static NetMQEvents netMQEvents;
 		private static readonly HttpClient fetchClient = new HttpClient();
-		private static readonly System.Timers.Timer fetchTimer = new System.Timers.Timer();
+		// private static readonly System.Timers.Timer fetchTimer = new System.Timers.Timer();
 		private static readonly Stopwatch fetchSw = new Stopwatch();
 
 		public static CoreWebView2Environment webView2Environment;
@@ -538,22 +538,9 @@ namespace Spark
 
 				autorestartCancellation = new CancellationTokenSource();
 				Task.Run(AutorestartTask, autorestartCancellation.Token);
-				// fetchThreadCancellation= new CancellationTokenSource();
-				// Task.Run(FetchThreadNew, fetchThreadCancellation.Token);
 
-
-				fetchTimer.Interval = 2000;
-				fetchTimer.Elapsed += FetchAPI;
-				fetchTimer.Start();
-
-				ConnectedToGame += (_,_) =>
-				{
-					fetchTimer.Interval = StatsHz;
-				};
-				DisconnectedFromGame += () =>
-				{
-					fetchTimer.Interval = 2000;
-				};
+				fetchThreadCancellation = new CancellationTokenSource();
+				Task.Run(MainLoop, fetchThreadCancellation.Token);
 
 				liveReplayCancel = new CancellationTokenSource();
 				_ = Task.Run(LiveReplayHostingTask, liveReplayCancel.Token);
@@ -673,7 +660,6 @@ namespace Spark
 				await Task.Delay(10);
 			}
 
-			fetchTimer?.Stop();
 			autorestartCancellation?.Cancel();
 			fetchThreadCancellation?.Cancel();
 			liveReplayCancel?.Cancel();
@@ -726,19 +712,20 @@ namespace Spark
 			{
 				LogRow(LogType.Error, "Error getting other Spark windows\n" + e.ToString());
 			}
+
 			return false;
 		}
-		
 
-		/// <summary>
-		/// Fetches the API once
-		/// </summary>
-		/// <param name="sender">unused</param>
-		/// <param name="e">unused</param>
-		private static void FetchAPI(object sender, EventArgs e)
+
+		private static async Task MainLoop()
 		{
-			try
+			while (running)
 			{
+				fetchSw.Restart();
+
+				frameIndex++;
+				long localFrameIndex = frameIndex;
+
 				// fetch the session or bones data
 				List<Task<HttpResponseMessage>> tasks = new List<Task<HttpResponseMessage>>
 				{
@@ -749,117 +736,102 @@ namespace Spark
 					tasks.Add(fetchClient.GetAsync($"http://{echoVRIP}:{echoVRPort}/player_bones"));
 				}
 
-				frameIndex++;
-				long localFrameIndex = frameIndex;
-
-				_ = Task.Run(async () =>
+				try
 				{
-					try
+					HttpResponseMessage[] results = await Task.WhenAll(tasks);
+
+
+					if (results[0].IsSuccessStatusCode)
 					{
-						HttpResponseMessage[] results = await Task.WhenAll(tasks);
+						string session = await results[0].Content.ReadAsStringAsync();
 
-						if (results[0].IsSuccessStatusCode)
+						string bones = null;
+						if (results.Length > 1 && results[1].IsSuccessStatusCode)
 						{
-							string session = await results[0].Content.ReadAsStringAsync();
+							bones = await results[1].Content.ReadAsStringAsync();
+						}
 
-							string bones = null;
-							if (results.Length > 1 && results[1].IsSuccessStatusCode)
-							{
-								bones = await results[1].Content.ReadAsStringAsync();
-							}
-							
-							// add this data to the public variable
-							lock (lastJSONLock)
-							{
-								lastJSON = session;
-								lastBonesJSON = bones;
-							}
+						// add this data to the public variable
+						lock (lastJSONLock)
+						{
+							lastJSON = session;
+							lastBonesJSON = bones;
+						}
 
-							DateTime frameTime = DateTime.UtcNow;
+						DateTime frameTime = DateTime.UtcNow;
 
-							if (connectionState == ConnectionState.NotConnected)
-							{
-								_ = Task.Run(() =>
-								{
-									ConnectedToGame?.Invoke(frameTime, session);
-								});
-							}
-
-							connectionState = ConnectionState.InGame;
-
-							// early quit if the program was quit while fetching
-							if (!running) return;
-
-
-							// tell the processing methods that stuff is available
+						if (connectionState == ConnectionState.NotConnected)
+						{
 							_ = Task.Run(() =>
 							{
-								FrameFetched?.Invoke(frameTime, session, bones);
+								ConnectedToGame?.Invoke(frameTime, session);
 							});
+						}
 
+						connectionState = ConnectionState.InGame;
+
+						// early quit if the program was quit while fetching
+						if (!running) return;
+
+
+						// tell the processing methods that stuff is available
+						_ = Task.Run(() =>
+						{
+							FrameFetched?.Invoke(frameTime, session, bones);
+						});
+
+						// parse the API data
+						Frame f = Frame.FromJSON(frameTime, session, bones);
+
+						if (f != null)
+						{
 							// tell the processing methods that stuff is available
-							_ = Task.Run(() =>
-							{
-								lock (gameStateLock)
-								{
-									Frame f = Frame.FromJSON(frameTime, session, bones);
+							ProcessFrame(f, lastFrame, localFrameIndex);
 
-									if (f != null)
-									{
-										ProcessFrame(f, lastFrame, localFrameIndex);
-
-										NewFrame?.Invoke(f);
-									}
-									else
-									{
-										LogRow(LogType.Error, "Converting to Frame failed. Investigate 🕵");
-										LeftGame?.Invoke(lastFrame);
-									}
-
-									lock (lastFrameLock)
-									{
-										// for the very first frame, copy it to the other previous frames
-										lastFrame ??= f;
-
-										lastLastLastFrame = lastLastFrame;
-										lastLastFrame = lastFrame;
-										lastFrame = f;
-									}
-								}
-							});
+							NewFrame?.Invoke(f);
 						}
-						else // not a success status code
+						else
 						{
-							await FetchFail(results);
+							LogRow(LogType.Error, "Converting to Frame failed. Investigate 🕵");
+							LeftGame?.Invoke(lastFrame);
 						}
 
-						if (lastLowFreqMode != null && lastLowFreqMode != SparkSettings.instance.lowFrequencyMode)
+						lock (lastFrameLock)
 						{
-							fetchTimer.Interval = StatsHz;
-							Debug.WriteLine("Changed fetch interval");
+							// for the very first frame, copy it to the other previous frames
+							lastFrame ??= f;
+
+							lastLastLastFrame = lastLastFrame;
+							lastLastFrame = lastFrame;
+							lastFrame = f;
 						}
-
-						lastLowFreqMode = SparkSettings.instance.lowFrequencyMode;
 					}
-					catch (HttpRequestException)
+					else // not a success status code
 					{
-						await FetchFail(null);
+						await FetchFail(results);
 					}
-					catch (Exception ex)
-					{
-						LogRow(LogType.Error, $"Error in fetch request.\n{ex}");
-					}
+				}
+				catch (HttpRequestException)
+				{
+					await FetchFail(null);
+				}
+				catch (Exception ex)
+				{
+					LogRow(LogType.Error, $"Error in fetch request.\n{ex}");
+				}
 
-					lastConnectionState = connectionState;
-				});
+				lastConnectionState = connectionState;
+
+
+				// wait for next frame time based on time last frame was actually fetched
+				int delay = Math.Clamp((int)(StatsIntervalMs - fetchSw.ElapsedMilliseconds - 3), 0, 1000);
+				if (delay > 0)
+				{
+					Thread.Sleep(delay);
+				}
 			}
-			catch (Exception ex)
-			{
-				LogRow(LogType.Error, $"Error in fetch request.\n{ex}");
-			}
-			
-			fetchSw.Restart();
 		}
+
 
 		private static async Task FetchFail(HttpResponseMessage[] results)
 		{
@@ -949,18 +921,13 @@ namespace Spark
 				lastJSON = null;
 				lastBonesJSON = null;
 			}
+
+			// add additional delay to prevent spamming the request when idle
+			await Task.Delay(1000);
 		}
 
 		private static void ProcessFrame(Frame frame, Frame lastFrame, long localFrameIndex)
 		{
-			Debug.WriteLine($"{localFrameIndex} \t {lastProcessedFrameIndex}");
-			if (localFrameIndex < frameIndex)
-			{
-				Debug.WriteLine($"Frames are out of order. {localFrameIndex} < {frameIndex}");
-				LogRow(LogType.Error, "Frames are out of order.");
-				return;
-			}
-			
 			try
 			{
 				// add a new round for the first frame
@@ -3691,11 +3658,15 @@ namespace Spark
 			if (liveWindow != null)
 			{
 				liveWindow.trayIcon.Visibility = Visibility.Collapsed;
+
+				liveWindow.Dispatcher.Invoke(() =>
+				{
+					closingWindow = new ClosingDialog();
+					closingWindow.Show();
+				});
 			}
 
-			closingWindow = new ClosingDialog();
-			closingWindow.Show();
-			
+
 			_ = GentleClose();
 		}
 	}

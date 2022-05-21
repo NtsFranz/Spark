@@ -43,8 +43,8 @@ namespace Spark
 		private readonly ConcurrentQueue<string> dataCacheLines = new ConcurrentQueue<string>();
 
 
-		private static readonly List<float> fullDeltaTimes = new List<float> { 16.6666666f, 33.3333333f, 100 };
-		private static int FrameInterval => Math.Clamp((int)(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull] / Program.StatsHz), 1, 10000);
+		private static readonly List<float> fullDeltaTimes = new List<float> { 33.3333333f, 66.666666f, 100 };
+		private static int FrameInterval => Math.Clamp((int)(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull] / Program.StatsIntervalMs), 1, 10000);
 		private int frameIndex = 0;
 
 		public ReplayFilesManager()
@@ -93,7 +93,7 @@ namespace Spark
 
 			try
 			{
-				// if this is not a lobby api frame
+				// if this is not an error api frame
 				if (session.Length <= 800) return;
 
 				if (SparkSettings.instance.enableFullLogging)

@@ -276,7 +276,7 @@ namespace Spark
 		{
 			recentVelocities.Add(vel);
 			// anything older than 10s at 60hz
-			while (recentVelocities.Count > Program.StatsHz * 10)
+			while (recentVelocities.Count > Program.StatsIntervalMs * 10)
 			{
 				recentVelocities.RemoveAt(0);
 			}
@@ -299,12 +299,12 @@ namespace Spark
 				recentVelocities.Clear();
 			}
 
-			return (maxVel, (float)(recentVelocities.Count - maxVelIndex) / Program.StatsHz);
+			return (maxVel, (float)(recentVelocities.Count - maxVelIndex) / Program.StatsIntervalMs);
 		}
 
 		public float GetSmoothedVelocity(float smoothTime = 1)
 		{
-			int N = (int)(smoothTime * Program.StatsHz);
+			int N = (int)(smoothTime * Program.StatsIntervalMs);
 			if (N > recentVelocities.Count - 1)
 			{
 				return recentVelocities.Average();

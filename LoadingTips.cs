@@ -28,6 +28,7 @@
 			"You can set Spark up to save clips when you say \"Clip that!\"",
 			"The Replay Viewer is pretty cool. Check it out.",
 			"echopedia.gg has an interactive block callout map. Vote on your preferred block names!",
+			"Spark can automatically clip your goals or saves using Medal.tv integration.",
 			"Lone Echo 2 releases tomorrow!",
 			"Same Disc, Different Day",
 			"Respect the save!",

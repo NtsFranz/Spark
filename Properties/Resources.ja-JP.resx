@@ -475,7 +475,7 @@
     <value>速</value>
   </data>
   <data name="Fast (60 Hz)" xml:space="preserve">
-    <value>速 (60 Hz)</value>
+    <value>速 (30 Hz)</value>
   </data>
   <data name="Female" xml:space="preserve">
     <value>女性の声</value>
@@ -523,7 +523,7 @@
     <value>20m/sを超えた時に達した最高速度</value>
   </data>
   <data name="Med (30 Hz)" xml:space="preserve">
-    <value>中 (30 Hz)</value>
+    <value>中 (15 Hz)</value>
   </data>
   <data name="No clips available" xml:space="preserve">
     <value>利用可能なクリップはありません</value>
