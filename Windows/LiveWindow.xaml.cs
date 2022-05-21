@@ -620,7 +620,7 @@ namespace Spark
 						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
 
 						StringBuilder lastJoustsString = new StringBuilder();
-						List<EventData> lastJousts = Program.LastJousts.ToList();
+						List<EventData> lastJousts = Program.LastJousts.ToList();	// TODO list was modified
 						if (lastJousts.Count > 0)
 						{
 							if (SparkSettings.instance.dashboardJoustTimeOrder == 1)
@@ -2180,6 +2180,11 @@ namespace Spark
 		private void LeagueOverlaysClick(object sender, RoutedEventArgs e)
 		{
 			OpenWebpage("http://localhost:6724/" + DiscordOAuth.AccessCode.series_name.Split('_')[0]);
+		}
+
+		private void ServerLocationButtonClicked(object sender, RoutedEventArgs e)
+		{
+			tabControl.SelectedItem = ServerInfoTab;
 		}
 	}
 }

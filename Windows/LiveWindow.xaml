@@ -51,7 +51,9 @@
 						<Button x:Name="copySessionIdButton" Content="{x:Static p:Resources.Copy}" Margin="40,0,0,0" VerticalAlignment="Center" Padding="1,1,1,1" HorizontalAlignment="Stretch" Click="CopyIgniteJoinLink" Width="75" ToolTip="{x:Static p:Resources.copy_link_tooltip}"></Button>
 					</StackPanel>
 					<TextBox x:Name="sessionIdTextBox" Text="********-****-****-****-************" TextWrapping="NoWrap" MaxLines="1" FontSize="14" FontFamily="Courier New" IsReadOnly="True" Height="16" ToolTip="{x:Static p:Resources.join_link_tooltip}"/>
-					<Label x:Name="serverLocationLabel" Content="{x:Static p:Resources.Server_IP_}" ToolTip="{x:Static p:Resources.server_location_tooltip}"/>
+					<Button Click="ServerLocationButtonClicked" Margin="0,4,0,0" Padding="0,0,0,0" HorizontalContentAlignment="Left">
+						<Label x:Name="serverLocationLabel" Content="{x:Static p:Resources.Server_IP_}" ToolTip="{x:Static p:Resources.server_location_tooltip}" Margin="0,0,0,0" Padding="1,1,1,1"/>
+					</Button>
 				</StackPanel>
 			</GroupBox>
 			<GroupBox x:Name="blueTeamBox" BorderBrush="#FF2A384B">

@@ -81,6 +81,7 @@ namespace Spark
 		private static int lastValidSumOfStatsAge = 0;
 
 		private static long frameIndex = 0;
+		private static long lastProcessedFrameIndex = 0;
 
 
 		private class UserAtTime
@@ -347,10 +348,18 @@ namespace Spark
 					Task.Run(async () =>
 					{
 						HttpClient localClient = new HttpClient();
-						string responseBody = await localClient.GetStringAsync("http://localhost:6724/api/focus_spark");
+						localClient.Timeout = TimeSpan.FromSeconds(1);
+						try
+						{
+							string responseBody = await localClient.GetStringAsync("http://localhost:6724/api/focus_spark");
 
-						Console.WriteLine(responseBody);
-
+							Console.WriteLine(responseBody);
+						}
+						catch (Exception)
+						{
+							// ignored
+						}
+						
 						Quit();
 					});
 
@@ -740,6 +749,9 @@ namespace Spark
 					tasks.Add(fetchClient.GetAsync($"http://{echoVRIP}:{echoVRPort}/player_bones"));
 				}
 
+				frameIndex++;
+				long localFrameIndex = frameIndex;
+
 				_ = Task.Run(async () =>
 				{
 					try
@@ -756,10 +768,6 @@ namespace Spark
 								bones = await results[1].Content.ReadAsStringAsync();
 							}
 							
-							frameIndex++;
-
-							long localFrameIndex = frameIndex;
-
 							// add this data to the public variable
 							lock (lastJSONLock)
 							{
@@ -771,17 +779,23 @@ namespace Spark
 
 							if (connectionState == ConnectionState.NotConnected)
 							{
-								_ = Task.Run(() => { ConnectedToGame?.Invoke(frameTime, session); });
+								_ = Task.Run(() =>
+								{
+									ConnectedToGame?.Invoke(frameTime, session);
+								});
 							}
 
 							connectionState = ConnectionState.InGame;
 
 							// early quit if the program was quit while fetching
 							if (!running) return;
-							
+
 
 							// tell the processing methods that stuff is available
-							_ = Task.Run(() => { FrameFetched?.Invoke(frameTime, session, bones); });
+							_ = Task.Run(() =>
+							{
+								FrameFetched?.Invoke(frameTime, session, bones);
+							});
 
 							// tell the processing methods that stuff is available
 							_ = Task.Run(() =>
@@ -792,7 +806,7 @@ namespace Spark
 
 									if (f != null)
 									{
-										ProcessFrame(f, lastFrame);
+										ProcessFrame(f, lastFrame, localFrameIndex);
 
 										NewFrame?.Invoke(f);
 									}
@@ -937,8 +951,16 @@ namespace Spark
 			}
 		}
 
-		private static void ProcessFrame(Frame frame, Frame lastFrame)
+		private static void ProcessFrame(Frame frame, Frame lastFrame, long localFrameIndex)
 		{
+			Debug.WriteLine($"{localFrameIndex} \t {lastProcessedFrameIndex}");
+			if (localFrameIndex < frameIndex)
+			{
+				Debug.WriteLine($"Frames are out of order. {localFrameIndex} < {frameIndex}");
+				LogRow(LogType.Error, "Frames are out of order.");
+				return;
+			}
+			
 			try
 			{
 				// add a new round for the first frame
@@ -961,6 +983,8 @@ namespace Spark
 			{
 				LogRow(LogType.Error, "Big oopsie. Please catch inside. " + ex);
 			}
+
+			lastProcessedFrameIndex = localFrameIndex;
 		}
 
 		
