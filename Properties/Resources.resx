@@ -637,7 +637,7 @@ CLOSE ECHOVR BEFORE PRESSING OK!</value>
     <value>Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event.</value>
   </data>
   <data name="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing" xml:space="preserve">
-    <value>Runs EchoVR with the -spectatorstream option enabled. This is useful for testing</value>
+    <value>Runs EchoVR with the -spectatorstream option enabled. This spectates the highest level public match at any given time.</value>
   </data>
   <data name="Score:" xml:space="preserve">
     <value>Score:</value>
@@ -1297,7 +1297,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
     <value>Uploaded</value>
   </data>
   <data name="Windows Store" xml:space="preserve">
-    <value>Microsoft Store</value>
+    <value>Windows Store</value>
   </data>
   <data name="Waiting for EchoVR to start" xml:space="preserve">
     <value>Waiting for EchoVR to start</value>

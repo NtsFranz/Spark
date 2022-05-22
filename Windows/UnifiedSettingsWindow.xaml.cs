@@ -1,8 +1,10 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Types;
 using System.Linq;
+using System.Net;
 using EchoVRAPI;
 using Spark.Properties;
 
@@ -751,6 +754,85 @@ namespace Spark
 					FileName = folder,
 					UseShellExecute = true
 				});
+			}
+		}
+
+		private void InstallReshade(object sender, RoutedEventArgs e)
+		{
+			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
+			if (!File.Exists(SparkSettings.instance.echoVRPath)) return;
+			
+			ReshadeProgress.Visibility = Visibility.Visible;
+			
+			// delete the old temp file
+			if (File.Exists(Path.Combine(Path.GetTempPath(), "reshade.zip")))
+			{
+				File.Delete(Path.Combine(Path.GetTempPath(), "reshade.zip"));
+			}
+
+			// download reshade
+			try
+			{
+				WebClient webClient = new WebClient();
+				webClient.DownloadFileCompleted += ReshadeDownloadCompleted;
+				webClient.DownloadProgressChanged += ReshadeDownloadProgressChanged;
+				webClient.DownloadFileAsync(new Uri("https://raw.githubusercontent.com/NtsFranz/Spark/main/resources/reshade.zip"), Path.Combine(Path.GetTempPath(), "reshade.zip"));
+			}
+			catch (Exception)
+			{
+				new MessageBox("Something broke while trying to download update", Properties.Resources.Error).Show();
+			}
+		}
+
+		private void ReshadeDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+		{
+			ReshadeProgress.Visibility = Visibility.Visible;
+			ReshadeProgress.Value = e.ProgressPercentage;
+		}
+
+		private void ReshadeDownloadCompleted(object sender, AsyncCompletedEventArgs e)
+		{
+
+			try
+			{
+				// install reshade from the zip
+				string dir = Path.GetDirectoryName(SparkSettings.instance.echoVRPath);
+				if (dir != null)
+				{
+					ZipFile.ExtractToDirectory(Path.Combine(Path.GetTempPath(), "reshade.zip"), dir, true);
+				}
+			}
+			catch (Exception)
+			{
+				new MessageBox("Something broke while trying to install Reshade. Report this to NtsFranz", Properties.Resources.Error).Show();
+			}
+			
+			ReshadeProgress.Visibility = Visibility.Collapsed;
+		}
+
+		private void RemoveReshade(object sender, RoutedEventArgs e)
+		{
+			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
+			if (!File.Exists(SparkSettings.instance.echoVRPath)) return;
+			string dir = Path.GetDirectoryName(SparkSettings.instance.echoVRPath);
+			if (dir == null) return;
+
+			try
+			{
+				File.Delete(Path.Combine(dir, "DefaultPreset.ini"));
+				File.Delete(Path.Combine(dir, "dxgi.dll"));
+				File.Delete(Path.Combine(dir, "dxgi.log"));
+				File.Delete(Path.Combine(dir, "ReShade.ini"));
+				File.Delete(Path.Combine(dir, "Reshade.log"));
+				File.Delete(Path.Combine(dir, "ReshadePreset.ini"));
+				if (Directory.Exists(Path.Combine(dir, "reshade-shaders")))
+				{
+					Directory.Delete(Path.Combine(dir, "reshade-shaders"), true);
+				}
+			}
+			catch (UnauthorizedAccessException)
+			{
+				new MessageBox("Can't uninstall Reshade. Try closing EchoVR and trying again.", Properties.Resources.Error).Show();
 			}
 		}
 	}

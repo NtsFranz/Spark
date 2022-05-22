@@ -483,6 +483,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="resources" />
     <Folder Include="SettingsBindings" />
   </ItemGroup>
 

@@ -304,6 +304,7 @@ namespace Spark
 
 		public static Action OverlayConfigChanged;
 		public static Action<string> EventLog;
+		public static Action<string> IPGeolocated;
 
 		#endregion
 
@@ -931,7 +932,7 @@ namespace Spark
 			try
 			{
 				// add a new round for the first frame
-				if (rounds.IsEmpty) rounds.Enqueue(new AccumulatedFrame(frame));
+				// if (rounds.IsEmpty) rounds.Enqueue(new AccumulatedFrame(frame));
 				
 				// process events. This may include splitting to a new round
 				try
@@ -944,7 +945,7 @@ namespace Spark
 				}
 				
 				// add the stats to the current round data
-				rounds.Last().Accumulate(frame);
+				rounds.Last().Accumulate(frame, lastFrame);
 			}
 			catch (Exception ex)
 			{
@@ -1358,7 +1359,7 @@ namespace Spark
 					LogRow(LogType.Error, "Error processing action", exp.ToString());
 				}
 				
-				rounds.Enqueue(new AccumulatedFrame(frame, rounds.Last()));
+				rounds.Enqueue(new AccumulatedFrame(frame, LastRound));
 
 			}
 
@@ -1614,28 +1615,19 @@ namespace Spark
 			};
 			float newServerScore = CalculateServerScore(pings[0], pings[1]);
 
-			// wrong number of players
-			if (pings[0].Count != 4 || pings[1].Count != 4)
+			// reset the smoothing every time it switches to being valid
+			if (CurrentRound.serverScore < 0)
 			{
-				CurrentRound.serverScore = -2;
+				CurrentRound.serverScore = newServerScore;
 				CurrentRound.smoothedServerScore = CurrentRound.serverScore;
 			}
-			// if we have a valid server score
-			else if (newServerScore > 0)
+			else
 			{
-				// reset the smoothing every time it switches to being valid
-				if (CurrentRound.serverScore < 0)
-				{
-					CurrentRound.serverScore = newServerScore;
-					CurrentRound.smoothedServerScore = CurrentRound.serverScore;
-				}
-				else
-				{
-					CurrentRound.serverScore = newServerScore;
-					float t = 1f - MathF.Pow(1 - serverScoreSmoothingFactor, deltaTime);
-					CurrentRound.smoothedServerScore = Math2.Lerp(CurrentRound.smoothedServerScore, CurrentRound.serverScore, t);
-				}
+				CurrentRound.serverScore = newServerScore;
+				float t = 1f - MathF.Pow(1 - serverScoreSmoothingFactor, deltaTime);
+				CurrentRound.smoothedServerScore = Math2.Lerp(CurrentRound.smoothedServerScore, CurrentRound.serverScore, t);
 			}
+			
 			
 
 
@@ -3496,10 +3488,24 @@ namespace Spark
 		/// <summary>
 		/// This method is based on the python code that is used in the VRML Discord bot for calculating server score.
 		/// </summary>
-		/// <returns>The server score</returns>
+		/// <returns>
+		/// The server score
+		/// -1: Ping over 150
+		/// -2: Too few players
+		/// -3: Too many players
+		/// -4: Teams have different number of players
+		/// </returns>
 		public static float CalculateServerScore(List<int> bluePings, List<int> orangePings)
 		{
+			
+			if (bluePings == null || orangePings == null)
+			{
+				// Console.WriteLine("No player's ping can be over 150.");
+				return -100;
+			}
+			
 			// configurable parameters for tuning
+			int ppt = bluePings.Count; // players per team - can be set to 5 for NEPA
 			int min_ping = 10; // you don't lose points for being higher than this value
 			int max_ping = 150; // won't compute if someone is over this number
 			int ping_threshold = 100; // you lose extra points for being higher than this
@@ -3509,54 +3515,60 @@ namespace Spark
 			//   1 - within-team variance
 			//   2 - overall server variance
 			//   3 - overall high/low pings for server
-			int[] points_distribution = new int[] { 30, 30, 30, 10 };
+			int[] points_distribution = { 30, 30, 30, 10 };
+
 
 			// determine max possible server/team variance and max possible sum diff,
 			// given the min/max allowable ping
-			float max_server_var = Variance(new float[]
-				{min_ping, min_ping, min_ping, min_ping, max_ping, max_ping, max_ping, max_ping});
-			float max_team_var = Variance(new float[] { min_ping, min_ping, max_ping, max_ping });
-			float max_sum_diff = (4 * max_ping) - (4 * min_ping);
+			float max_server_var = Variance(Enumerable.Repeat(min_ping, ppt).Concat(Enumerable.Repeat(max_ping, ppt)).ToArray());
+			float max_team_var = Variance(Enumerable.Repeat(min_ping, (int)Math.Floor(ppt / 2f)).Concat(Enumerable.Repeat(max_ping, (int)Math.Ceiling(ppt / 2f))).ToArray());
+			float max_sum_diff = (ppt * max_ping) - (ppt * min_ping);
+
 
 			// sanity check for ping values
-			if (bluePings == null || bluePings.Count == 0 || orangePings == null || orangePings.Count == 0)
+			switch (bluePings.Count)
 			{
-				// Console.WriteLine("No player's ping can be over 150.");
-				return -1;
+				case < 4:
+					return -2;
+				case > 5:
+					return -3;
 			}
+
+			if (bluePings.Count != orangePings.Count)
+			{
+				return -4;
+			}
+
 			if (bluePings.Max() > max_ping || orangePings.Max() > max_ping)
 			{
 				// Console.WriteLine("No player's ping can be over 150.");
-				return -1;
+				return -2;
 			}
-
-
 
 			// calculate points for sum diff
 			float blueSum = bluePings.Sum();
 			float orangeSum = orangePings.Sum();
 			float sum_diff = MathF.Abs(blueSum - orangeSum);
-
 			float sum_points = (1 - (sum_diff / max_sum_diff)) * points_distribution[0];
 
+			
+			
 			// calculate points for team variances
 			float blueVariance = Variance(bluePings);
 			float orangeVariance = Variance(orangePings);
 
 			float mean_var = new[] { blueVariance, orangeVariance }.Average();
 			float team_points = (1 - (mean_var / max_team_var)) * points_distribution[1];
-
-			// calculate points for server variance
+		
 			List<int> bothPings = new List<int>(bluePings);
 			bothPings.AddRange(orangePings);
 
+			// calculate points for server variance
 			float server_var = Variance(bothPings);
-
 			float server_points = (1 - (server_var / max_server_var)) * points_distribution[2];
 
 			// calculate points for high/low ping across server
-			float hilo = ((blueSum + orangeSum) - (min_ping * 8)) / ((ping_threshold * 8) - (min_ping * 8));
-
+			float hilo = ((blueSum + orangeSum) - (min_ping * ppt * 2)) / ((ping_threshold * ppt * 2) - (min_ping * ppt * 2));
 			float hilo_points = (1 - hilo) * points_distribution[3];
 
 			// add up points
@@ -3568,14 +3580,16 @@ namespace Spark
 
 		public static float Variance(IEnumerable<float> values)
 		{
-			float avg = values.Average();
-			return values.Average(v => MathF.Pow(v - avg, 2));
+			IEnumerable<float> enumerable = values as float[] ?? values.ToArray();
+			float avg = enumerable.Average();
+			return enumerable.Average(v => MathF.Pow(v - avg, 2));
 		}
 
 		public static float Variance(IEnumerable<int> values)
 		{
-			float avg = (float)values.Average();
-			return values.Average(v => MathF.Pow(v - avg, 2));
+			IEnumerable<int> enumerable = values as int[] ?? values.ToArray();
+			float avg = (float)enumerable.Average();
+			return enumerable.Average(v => MathF.Pow(v - avg, 2));
 		}
 
 		// TODO
@@ -3599,33 +3613,23 @@ namespace Spark
 			string link = "";
 			if (SparkSettings.instance.atlasLinkUseAngleBrackets)
 			{
-				switch (SparkSettings.instance.atlasLinkStyle)
+				link = SparkSettings.instance.atlasLinkStyle switch
 				{
-					case 0:
-						link = "<spark://c/" + sessionid + ">";
-						break;
-					case 1:
-						link = "<spark://j/" + sessionid + ">";
-						break;
-					case 2:
-						link = "<spark://s/" + sessionid + ">";
-						break;
-				}
+					0 => $"<spark://c/{sessionid}>",
+					1 => $"<spark://j/{sessionid}>",
+					2 => $"<spark://s/{sessionid}>",
+					_ => link
+				};
 			}
 			else
 			{
-				switch (SparkSettings.instance.atlasLinkStyle)
+				link = SparkSettings.instance.atlasLinkStyle switch
 				{
-					case 0:
-						link = "spark://c/" + sessionid;
-						break;
-					case 1:
-						link = "spark://j/" + sessionid;
-						break;
-					case 2:
-						link = "spark://s/" + sessionid;
-						break;
-				}
+					0 => $"spark://c/{sessionid}",
+					1 => $"spark://j/{sessionid}",
+					2 => $"spark://s/{sessionid}",
+					_ => link
+				};
 			}
 
 			if (SparkSettings.instance.atlasLinkAppendTeamNames)

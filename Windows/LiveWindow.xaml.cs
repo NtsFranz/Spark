@@ -227,10 +227,9 @@ namespace Spark
 			try
 			{
 				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
-				var webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
+				CoreWebView2Environment webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
 				await PlayercardWebView.EnsureCoreWebView2Async(webView2Environment);
-				PlayercardWebView.Source = new UriBuilder("https://ignitevr.gg/cgi-bin/EchoStats.cgi/playercard_embed").Uri;
-				Debug.WriteLine("ESURED");
+				PlayercardWebView.Source = new UriBuilder("https://metrics.ignitevr.gg/playercard_embed").Uri;
 			}
 			catch (FileNotFoundException ex)
 			{
@@ -461,10 +460,6 @@ namespace Spark
 							lastThrowStats.Text = stats;
 						}
 					}
-					else
-					{
-						serverLocationLabel.Content = $"{Properties.Resources.Server_IP_} ---";
-					}
 
 					if (Program.lastFrame != null && Program.lastFrame.map_name == "mpl_arena_a")  // only the arena has a disc
 					{
@@ -557,9 +552,13 @@ namespace Spark
 						{
 							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {Program.CurrentRound.smoothedServerScore:N1}";
 						}
-						else if (Math.Abs(Program.CurrentRound.serverScore - (-1)) < .1f)
+						else if (Math.Abs(Program.CurrentRound.serverScore - -1) < .1f)
 						{
 							playerPingsHeader = $"{Properties.Resources.Player_Pings}     >150";
+						}
+						else if (Program.CurrentRound.serverScore < -1.5f)
+						{
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}     Player Count";
 						}
 						else
 						{
@@ -984,21 +983,28 @@ namespace Spark
 
 		private async Task GetServerLocation(string ip)
 		{
-			if (ip != "")
+			if (!string.IsNullOrEmpty(ip))
 			{
 				try
 				{
-					HttpClient updateClient = new HttpClient
-					{
-						BaseAddress = new Uri("http://ip-api.com/json/")
-					};
-					HttpResponseMessage response = await updateClient.GetAsync(ip);
-					JObject respObj = JObject.Parse(response.Content.ReadAsStringAsync().Result);
-					string loc = (string)respObj["city"] + ", " + (string)respObj["regionName"];
+					// string resp = await Program.client.GetStringAsync(new Uri($"{Program.APIURL}/ip_geolocation/{ip}"));
+					string resp = await Program.client.GetStringAsync(new Uri($"{Program.APIURL}/ip_geolocation/{ip}"));
+					Program.CurrentRound.serverLocationResponse = resp;
+					Dictionary<string, dynamic> obj = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(resp);
+					if (obj == null) return;
+					string loc = (string)obj["ip-api"]["city"] + ", " + (string)obj["ip-api"]["regionName"];
 					Program.CurrentRound.serverLocation = loc;
 					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
-					serverLocationLabel.ToolTip = $"{respObj["query"]}\n{respObj["org"]}\n{respObj["as"]}";
+					serverLocationLabel.ToolTip = $"{obj["ip-api"]["query"]}\n{obj["ip-api"]["org"]}\n{obj["ip-api"]["as"]}";
 
+					try
+					{
+						Program.IPGeolocated?.Invoke(resp);
+					}
+					catch (Exception)
+					{
+						LogRow(LogType.Error, "Error processing event for IP Geolocation");
+					}
 
 					if (SparkSettings.instance.serverLocationTTS)
 					{
@@ -1265,24 +1271,27 @@ namespace Spark
 		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			// if switched to atlas tab
-			if (((TabControl)sender).SelectedIndex == 1)
+			if (Equals(((TabControl)sender).SelectedItem, LinksTab))
 			{
 				RefreshCurrentLink();
 				GetAtlasMatches();
 			}
 			// switched to event log tab
-			else if (((TabControl)sender).SelectedIndex == 2)
+			else if (Equals(((TabControl)sender).SelectedItem, EventLogTab))
 			{
 				mainOutputTextBox.ScrollToEnd();
 			}
-			if (((TabControl)sender).SelectedIndex != 4 && SpeakerSystemProcess != null)
-			{
 
-				ShowWindow(unityHWND, 0);
-			}
-			else if (SpeakerSystemProcess != null)
+			if (SpeakerSystemProcess != null)
 			{
-				ShowWindow(unityHWND, 1);
+				if (!Equals(((TabControl)sender).SelectedItem, SpeakerSystemTab))
+				{
+					ShowWindow(unityHWND, 0);
+				}
+				else
+				{
+					ShowWindow(unityHWND, 1);
+				}
 			}
 		}
 

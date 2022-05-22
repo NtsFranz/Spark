@@ -379,10 +379,19 @@ namespace Spark
 			};
 		}
 
-		public void Accumulate(Frame frame, Player player)
+		public void Accumulate(Frame frame, Player player, Frame lastFrame)
 		{
 			Team.TeamColor winningTeam = frame.blue_points > frame.orange_points ? Team.TeamColor.blue : Team.TeamColor.orange;
 			Won = TeamColor == winningTeam ? 1 : 0;
+
+			TeamColor = player.team_color;
+			
+			// TODO stuff like PlayTime
+			// float deltaTime = (float)(frame.recorded_time - lastFrame.recorded_time).TotalSeconds;
+			// if (frame.game_status == "playing")
+			// {
+			// 	PlayTime += deltaTime;
+			// }
 
 			currentStats = player.stats;
 		}

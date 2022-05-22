@@ -64,11 +64,17 @@
 						
 						
 						<Label x:Name="exeLocationLabel" Content="{x:Static p:Resources.EchoVR_Executable_Location_}" Margin="10,0,10,0" />
-						<TextBox x:Name="exeLocationTextBox"
-						         Text="{l:SettingLoad echoVRPath}" TextWrapping="NoWrap"
-						         HorizontalAlignment="Stretch"
-						         Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged"
-						         MaxLines="1" />
+						
+							<TextBox x:Name="exeLocationTextBox"
+							                 Text="{l:SettingLoad echoVRPath}" TextWrapping="NoWrap"
+							                 HorizontalAlignment="Stretch"
+							                 Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged"
+							                 MaxLines="1" />
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+							<ProgressBar x:Name="ReshadeProgress" Visibility="Collapsed" Width="200" Margin="0,0,10,0"></ProgressBar>
+							<Button Click="InstallReshade" Margin="0,0,10,0" Padding="4,4,4,4">Install ReShade</Button>
+							<Button Click="RemoveReshade" Margin="0,0,10,0" Padding="4,4,4,4">Remove ReShade</Button>
+						</StackPanel>
 						
 						
 						
@@ -414,16 +420,18 @@
 					<StackPanel Margin="10,0,10,10">
 						<Label Content="{x:Static p:Resources.EchoVR_Settings}" FontSize="16" Margin="5,5,5,5" />
 
+						
+						<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
+						           Background="#FF492727" TextWrapping="Wrap"
+						           Visibility="{Binding EchoVRNotInstalled, Mode=OneWay}"
+						           Text="{x:Static p:Resources.EchoVR_not_installed_game_settings}" />
+						
 						<StackPanel Visibility="{Binding EchoVRInstalled}">
 							<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
 								   Background="#FF492727" TextWrapping="Wrap"
 								   Visibility="{Binding EchoVRSettingsProgramOpenWarning, Mode=OneWay}"
 								   Text="{x:Static p:Resources.EchoVROpen_settings_warning}" />
 
-							<TextBlock Margin="16,16,16,16" Padding="10,10,10,10"
-								   Background="#FF492727" TextWrapping="Wrap"
-								   Visibility="{Binding EchoVRNotInstalled, Mode=OneWay}"
-								   Text="{x:Static p:Resources.EchoVR_not_installed_game_settings}" />
 							
 							<StackPanel>
 								<!--DataContext="{Binding Source={x:Static l:EchoVRSettingsManager}">-->

@@ -22,6 +22,7 @@ namespace Spark
 		public readonly List<EventData> events = new List<EventData>();
 		public readonly List<ThrowData> throws = new List<ThrowData>();
 
+		public string serverLocationResponse;
 		public string serverLocation;
 		public float serverScore;
 		public float smoothedServerScore;
@@ -115,7 +116,7 @@ namespace Spark
 		/// Call this once per frame to add new data
 		/// </summary>
 		/// <param name="newFrame">The new frame to add</param>
-		public void Accumulate(Frame newFrame)
+		public void Accumulate(Frame newFrame, Frame lastFrame)
 		{
 			// these things shouldn't change during a round
 			// frame.sessionid = newFrame.sessionid;
@@ -151,7 +152,7 @@ namespace Spark
 						return;
 					}
 
-					players[player.userid].Accumulate(newFrame, player);
+					players[player.userid].Accumulate(newFrame, player, lastFrame);
 				}
 			}
 		}

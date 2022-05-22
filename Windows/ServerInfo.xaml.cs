@@ -12,6 +12,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using EchoVRAPI;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Spark
@@ -31,12 +32,11 @@ namespace Spark
 			outputUpdateTimer.Elapsed += Update;
 			outputUpdateTimer.Enabled = true;
 			
-			Program.JoinedGame += frame =>
+			Program.IPGeolocated += resp =>
 			{
 				Dispatcher.Invoke(() =>
 				{
-					// ip stuff
-					_ = GetServerLocations(frame.sessionip);
+					UpdateServerLocations(resp);
 				});
 			};
 			
@@ -92,43 +92,27 @@ namespace Spark
 				});
 			}
 		}
-		
-		private async Task GetServerLocations(string ip)
+
+		private void UpdateServerLocations(string resp)
 		{
-			if (ip != "")
-			{
-				try
-				{
-					HttpClient client = new HttpClient();
-					List<Task<HttpResponseMessage>> tasks = new List<Task<HttpResponseMessage>>
-					{
-						client.GetAsync($"http://ip-api.com/json/{ip}"),
-						// it's a free key, don't take mine
-						client.GetAsync($"https://api.ipdata.co/{ip}?api-key=8c846028401a41778bfaba36d9e8cb4ae81ba56bfc24147454359b3c"), 
-					};
-					
-					HttpResponseMessage[] results = await Task.WhenAll(tasks);
-					JObject respObj1 = JObject.Parse(await results[0].Content.ReadAsStringAsync());
-					JObject respObj2 = JObject.Parse(await results[1].Content.ReadAsStringAsync());
-					
-					FullServerLocationTextBox.Text = @$"IP:	{respObj1["query"]}
+			Dictionary<string, dynamic> obj = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(resp);
+			if (obj == null) return;
+			string txt = @$"IP:	{obj["ip-api"]["query"]}
 
 ip-api.com
-City:	{respObj1["city"]}, {respObj1["regionName"]}, {respObj1["country"]}
-Org:	{respObj1["org"]}
-ISP:	{respObj1["isp"]}
+City:	{obj["ip-api"]["city"]}, {obj["ip-api"]["regionName"]}, {obj["ip-api"]["country"]}
+Org:	{obj["ip-api"]["org"]}
+ISP:	{obj["ip-api"]["isp"]}
 
 ipdata.co
-City:	{respObj2["city"] ?? "?"}, {respObj2["region"] ?? "?"}, {respObj2["country_name"]}
-Org:	{respObj2["asn"]?["name"]}
-Domain:	{respObj2["asn"]?["domain"]}";
+City:	{obj["ipdata"]["city"] ?? "?"}, {obj["ipdata"]["region"] ?? "?"}, {obj["ipdata"]["country_name"]}
+Org:	{obj["ipdata"]["asn"]?["name"]}
+Domain:	{obj["ipdata"]["asn"]?["domain"]}
 
-				}
-				catch (HttpRequestException)
-				{
-					Logger.LogRow(Logger.LogType.Error, "Couldn't get city of ip address.");
-				}
-			}
+{JsonConvert.SerializeObject(obj, Formatting.Indented)}
+";
+
+			FullServerLocationTextBox.Text = txt;
 		}
 
 		private void RefreshTraceroute(object sender, RoutedEventArgs e)
