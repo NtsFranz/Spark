@@ -195,18 +195,18 @@
 									<!-- 	</StackPanel> -->
 									<!-- </Button> -->
 
-									<StackPanel>
-										<Label Content="{x:Static p:Resources.Link_Type_}" Margin="10,-5,10,0"/>
-										<ComboBox x:Name="linkTypeComboBox" Width="120" HorizontalAlignment="Left" Margin="10,0,10,10" SelectedIndex="{Binding LinkType}">
+									<!-- <StackPanel> -->
+										<Label Content="{x:Static p:Resources.Link_Type_}" Margin="10,0,10,0"/>
+										<ComboBox x:Name="linkTypeComboBox" Width="120" HorizontalAlignment="Left" Margin="10,0,10,0" SelectedIndex="{Binding LinkType}">
 											<ComboBoxItem Content="{x:Static p:Resources.Choose}" ToolTip="{x:Static p:Resources.The_Choose_type_shows_a_popup_when_you_click_the_link_to_either_join_as_a_player_or_spectator_}"/>
 											<ComboBoxItem Content="{x:Static p:Resources.Player}" ToolTip="{x:Static p:Resources.Join_directly_as_a_player_}"/>
 											<ComboBoxItem Content="{x:Static p:Resources.join_as_spectator}" ToolTip="{x:Static p:Resources.Join_directly_as_a_spectator_}"/>
 										</ComboBox>
-									</StackPanel>
-									<StackPanel>
-										<CheckBox x:Name="surroundWithAngleBracketsCheckbox" Content="{x:Static p:Resources.Surround_with__lt__gt_}" Margin="10,0,0,10" IsChecked="{l:SettingBinding atlasLinkUseAngleBrackets}" ToolTip="{x:Static p:Resources.Angle_brackes_allow_you_to_click_on_the_link_when_it_s_pasted_in_Discord_}"/>
-										<CheckBox Content="{x:Static p:Resources.Append_team_names}" Margin="10,0,0,10" IsChecked="{l:SettingBinding atlasLinkAppendTeamNames}" ToolTip="{x:Static p:Resources.Appends_the_team_names_of_the_participating_teams_if_enough_players_from_the_same_VRML_team_are_in_the_match_}"/>
-									</StackPanel>
+									<!-- </StackPanel> -->
+									<!-- <StackPanel> -->
+										<CheckBox x:Name="surroundWithAngleBracketsCheckbox" Content="{x:Static p:Resources.Surround_with__lt__gt_}" Margin="10,0,10,5" IsChecked="{l:SettingBinding atlasLinkUseAngleBrackets}" ToolTip="{x:Static p:Resources.Angle_brackes_allow_you_to_click_on_the_link_when_it_s_pasted_in_Discord_}"/>
+										<CheckBox Content="{x:Static p:Resources.Append_team_names}" Margin="10,0,0,0" IsChecked="{l:SettingBinding atlasLinkAppendTeamNames}" ToolTip="{x:Static p:Resources.Appends_the_team_names_of_the_participating_teams_if_enough_players_from_the_same_VRML_team_are_in_the_match_}"/>
+									<!-- </StackPanel> -->
 								</StackPanel>
 
 							</GroupBox>

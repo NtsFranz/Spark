@@ -763,6 +763,7 @@ namespace Spark
 			if (!File.Exists(SparkSettings.instance.echoVRPath)) return;
 			
 			ReshadeProgress.Visibility = Visibility.Visible;
+			ReshadeProgress.Value = 0;
 			
 			// delete the old temp file
 			if (File.Exists(Path.Combine(Path.GetTempPath(), "reshade.zip")))
@@ -776,7 +777,7 @@ namespace Spark
 				WebClient webClient = new WebClient();
 				webClient.DownloadFileCompleted += ReshadeDownloadCompleted;
 				webClient.DownloadProgressChanged += ReshadeDownloadProgressChanged;
-				webClient.DownloadFileAsync(new Uri("https://raw.githubusercontent.com/NtsFranz/Spark/main/resources/reshade.zip"), Path.Combine(Path.GetTempPath(), "reshade.zip"));
+				webClient.DownloadFileAsync(new Uri("https://github.com/NtsFranz/Spark/raw/main/resources/reshade.zip"), Path.Combine(Path.GetTempPath(), "reshade.zip"));
 			}
 			catch (Exception)
 			{
@@ -792,7 +793,6 @@ namespace Spark
 
 		private void ReshadeDownloadCompleted(object sender, AsyncCompletedEventArgs e)
 		{
-
 			try
 			{
 				// install reshade from the zip

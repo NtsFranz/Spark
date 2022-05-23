@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Fleck;
 using Newtonsoft.Json;
 
@@ -11,6 +12,7 @@ namespace Spark
 		private readonly WebSocketServer server;
 		private readonly List<IWebSocketConnection> allSockets;
 		private readonly ConcurrentDictionary<EventContainer.EventType, List<IWebSocketConnection>> subscriberMapping = new ConcurrentDictionary<EventContainer.EventType, List<IWebSocketConnection>>();
+		private readonly object subscriberLock = new object();
 
 		public WebSocketServerManager()
 		{
@@ -31,7 +33,10 @@ namespace Spark
 					allSockets.Remove(socket);
 					foreach ((EventContainer.EventType key, List<IWebSocketConnection> value) in subscriberMapping)
 					{
-						value.RemoveAll(v => v == socket);
+						lock (subscriberLock)
+						{
+							value.RemoveAll(v => v == socket);
+						}
 					}
 				};
 
@@ -51,7 +56,10 @@ namespace Spark
 										subscriberMapping[type] = new List<IWebSocketConnection>();
 									}
 
-									subscriberMapping[type].Add(socket);
+									lock (subscriberLock)
+									{
+										subscriberMapping[type].Add(socket);
+									}
 
 									socket.Send(message);
 
@@ -198,7 +206,13 @@ namespace Spark
 			{
 				if (subscriberMapping.ContainsKey((EventContainer.EventType)subscriberGroup))
 				{
-					subscriberMapping[(EventContainer.EventType)subscriberGroup].ForEach(s =>
+					List<IWebSocketConnection> copy;
+					lock (subscriberLock)
+					{
+						copy = subscriberMapping[(EventContainer.EventType)subscriberGroup].ToList();
+					}
+
+					copy.ForEach(s =>
 					{
 						s.Send((EventContainer.EventType)subscriberGroup + ":" + message);
 					});

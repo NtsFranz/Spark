@@ -3518,12 +3518,6 @@ namespace Spark
 			int[] points_distribution = { 30, 30, 30, 10 };
 
 
-			// determine max possible server/team variance and max possible sum diff,
-			// given the min/max allowable ping
-			float max_server_var = Variance(Enumerable.Repeat(min_ping, ppt).Concat(Enumerable.Repeat(max_ping, ppt)).ToArray());
-			float max_team_var = Variance(Enumerable.Repeat(min_ping, (int)Math.Floor(ppt / 2f)).Concat(Enumerable.Repeat(max_ping, (int)Math.Ceiling(ppt / 2f))).ToArray());
-			float max_sum_diff = (ppt * max_ping) - (ppt * min_ping);
-
 
 			// sanity check for ping values
 			switch (bluePings.Count)
@@ -3544,6 +3538,13 @@ namespace Spark
 				// Console.WriteLine("No player's ping can be over 150.");
 				return -2;
 			}
+			
+			
+			// determine max possible server/team variance and max possible sum diff,
+			// given the min/max allowable ping
+			float max_server_var = Variance(Enumerable.Repeat(min_ping, ppt).Concat(Enumerable.Repeat(max_ping, ppt)).ToArray());
+			float max_team_var = Variance(Enumerable.Repeat(min_ping, (int)Math.Floor(ppt / 2f)).Concat(Enumerable.Repeat(max_ping, (int)Math.Ceiling(ppt / 2f))).ToArray());
+			float max_sum_diff = (ppt * max_ping) - (ppt * min_ping);
 
 			// calculate points for sum diff
 			float blueSum = bluePings.Sum();
