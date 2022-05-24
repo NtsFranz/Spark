@@ -15,14 +15,14 @@ namespace Spark
 				{
 					"visibility", new Dictionary<string, bool>
 					{
-						{ "minimap", true },
-						{ "main_banner", true },
-						{ "neutral_jousts", true },
-						{ "defensive_jousts", true },
-						{ "event_log", true },
-						{ "playspace", true },
-						{ "player_speed", true },
-						{ "disc_speed", true },
+						{ "minimap", SparkSettings.instance.configurableOverlaySettings.minimap },
+						{ "main_banner", SparkSettings.instance.configurableOverlaySettings.main_banner },
+						{ "neutral_jousts", SparkSettings.instance.configurableOverlaySettings.neutral_jousts },
+						{ "defensive_jousts", SparkSettings.instance.configurableOverlaySettings.defensive_jousts },
+						{ "event_log", SparkSettings.instance.configurableOverlaySettings.event_log },
+						{ "playspace", SparkSettings.instance.configurableOverlaySettings.playspace },
+						{ "player_speed", SparkSettings.instance.configurableOverlaySettings.player_speed },
+						{ "disc_speed", SparkSettings.instance.configurableOverlaySettings.disc_speed },
 					}
 				},
 				{ "caster_prefs", SparkSettings.instance.casterPrefs },

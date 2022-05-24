@@ -1,4 +1,5 @@
 ﻿//using ButterReplays;
+
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -29,10 +30,12 @@ namespace Spark
 		public bool uploadToFirestore { get; set; } = true;
 		public bool saveEventsToCSV { get; set; } = false;
 		public bool fetchBones { get; set; } = false;
+
 		/// <summary>
 		/// Enable replay files
 		/// </summary>
 		public bool enableFullLogging { get; set; } = false;
+
 		public bool onlyRecordPrivateMatches { get; set; } = false;
 		public bool batchWrites { get; set; } = true;
 		public bool useCompression { get; set; } = true;
@@ -104,7 +107,7 @@ namespace Spark
 
 		public Dictionary<string, bool> autoUploadProfiles { get; } = new Dictionary<string, bool>();
 
-		#region TTS 
+		#region TTS
 
 		public bool throwSpeedTTS { get; set; } = false;
 		public bool goalSpeedTTS { get; set; } = false;
@@ -122,7 +125,7 @@ namespace Spark
 		public bool useWavenetVoices { get; set; } = false;
 		public bool playspaceTTS { get; set; } = false;
 		public int ttsVoice { get; set; } = 0;
-		public int ttsCacheSizeBytes = 100000000;
+		public int ttsCacheSizeBytes { get; set; } = 100000000;
 
 		#endregion
 
@@ -131,12 +134,12 @@ namespace Spark
 		// .echoreplay
 		public bool enableReplayBuffer { get; set; } = false;
 		public float replayBufferLength { get; set; } = 15;
-		
+
 		public float replayClipSecondsBefore { get; set; } = 7;
 		public float replayClipSecondsAfter { get; set; } = 3;
 		public int replayClipPlayerScope { get; set; } = 0;
 		public bool replayClipSpectatorRecord { get; set; } = false;
-		
+
 		public bool replayClipPlayspace { get; set; } = false;
 		public bool replayClipGoal { get; set; } = false;
 		public bool replayClipAssist { get; set; } = false;
@@ -144,8 +147,8 @@ namespace Spark
 		public bool replayClipInterception { get; set; } = false;
 		public bool replayClipNeutralJoust { get; set; } = false;
 		public bool replayClipDefensiveJoust { get; set; } = false;
-		
-		
+
+
 		// nv highlights
 		public int clientHighlightScope { get; set; } = 0;
 		public bool clearHighlightsOnExit { get; set; } = false;
@@ -154,7 +157,7 @@ namespace Spark
 		public float nvHighlightsSecondsAfter { get; set; } = 3;
 		public int nvHighlightsPlayerScope { get; set; } = 0;
 		public bool onlyActivateHighlightsWhenGameIsOpen { get; set; } = false;
-		
+
 		// obs
 		public string obsIP { get; set; } = "ws://127.0.0.1:4444";
 		public string obsPassword { get; set; } = "";
@@ -179,14 +182,14 @@ namespace Spark
 		public string obsBetweenGameScene { get; set; } = "";
 		public string obsGoalReplayScene { get; set; } = "";
 		public string obsSaveReplayScene { get; set; } = "";
-		
+
 		// medal
-		
+
 		public float medalClipSecondsBefore { get; set; } = 7;
 		public float medalClipSecondsAfter { get; set; } = 3;
 		public int medalClipPlayerScope { get; set; } = 0;
 		public bool medalClipSpectatorRecord { get; set; } = false;
-		
+
 		public bool medalClipPlayspace { get; set; } = false;
 		public bool medalClipGoal { get; set; } = false;
 		public bool medalClipAssist { get; set; } = false;
@@ -194,9 +197,9 @@ namespace Spark
 		public bool medalClipInterception { get; set; } = false;
 		public bool medalClipNeutralJoust { get; set; } = false;
 		public bool medalClipDefensiveJoust { get; set; } = false;
-		
+
 		public int medalClipKey { get; set; } = 0x42;
-		
+
 		// voice
 		public bool enableVoiceRecognition { get; set; } = false;
 		public bool enableVoiceRecognitionMic { get; set; } = true;
@@ -208,48 +211,50 @@ namespace Spark
 		public string microphone { get; set; } = "";
 		public string speaker { get; set; } = "";
 
-
 		#endregion
 
-		public LoggingSettings eventLog = new LoggingSettings();
-		
+		public LoggingSettings eventLog { get; set; } = new LoggingSettings();
+
 		[Serializable]
 		public class LoggingSettings
 		{
-			public bool goals = true;
-			public bool stuns = true;
-			public bool steals = true;
-			public bool saves = true;
-			public bool turnovers = true;
-			public bool restartRequests = true;
-			public bool pauseRequests = true;
-			public bool pauseEvents = true;
-			public bool unPauseRequests = true;
-			public bool playspaceAbuses = false;
-			public bool localThrows = true;
-			public bool throws = true;
-			public bool neutralJousts = true;
-			public bool defensiveJousts = true;
-			public bool shotAttempts = true;
-			public bool passes = true;
-			public bool bigBoosts = true;
-			public bool playerJoins = true;
-			public bool playerLeaves = true;
-			public bool playerSwitchedTeams = true;
-			public bool largePings = true;
-			public bool interceptions = true;
-			public bool catches = true;
+			public bool goals { get; set; } = true;
+			public bool stuns { get; set; } = true;
+			public bool steals { get; set; } = true;
+			public bool saves { get; set; } = true;
+			public bool turnovers { get; set; } = true;
+			public bool restartRequests { get; set; } = true;
+			public bool pauseRequests { get; set; } = true;
+			public bool pauseEvents { get; set; } = true;
+			public bool unPauseRequests { get; set; } = true;
+			public bool playspaceAbuses { get; set; } = false;
+			public bool localThrows { get; set; } = true;
+			public bool throws { get; set; } = true;
+			public bool neutralJousts { get; set; } = true;
+			public bool defensiveJousts { get; set; } = true;
+			public bool shotAttempts { get; set; } = true;
+			public bool passes { get; set; } = true;
+			public bool bigBoosts { get; set; } = true;
+			public bool playerJoins { get; set; } = true;
+			public bool playerLeaves { get; set; } = true;
+			public bool playerSwitchedTeams { get; set; } = true;
+			public bool largePings { get; set; } = true;
+			public bool interceptions { get; set; } = true;
+			public bool catches { get; set; } = true;
 		}
 
 		#region Overlays
+
 		/// <summary>
 		/// 0 for manual, 1 for vrml api
 		/// </summary>
 		public int overlaysTeamSource { get; set; } = 1;
+
 		public string overlaysManualTeamNameOrange { get; set; } = "";
 		public string overlaysManualTeamNameBlue { get; set; } = "";
 		public string overlaysManualTeamLogoOrange { get; set; } = "";
 		public string overlaysManualTeamLogoBlue { get; set; } = "";
+
 		/// <summary>
 		/// Can be used to store generic data without schema changes to Spark.
 		/// Used for caster names/urls...
@@ -260,9 +265,26 @@ namespace Spark
 		/// 0: automatic, 1: manual
 		/// </summary>
 		public bool overlaysRoundScoresManual { get; set; } = false;
+
 		public int overlaysManualRoundCount { get; set; } = 3;
 		public int[] overlaysManualRoundScoresOrange { get; set; } = null;
 		public int[] overlaysManualRoundScoresBlue { get; set; } = null;
+
+		[Serializable]
+		public class ConfigurableOverlaySettings
+		{
+			public bool minimap { get; set; } = true;
+			public bool main_banner { get; set; } = true;
+			public bool neutral_jousts { get; set; } = true;
+			public bool defensive_jousts { get; set; } = true;
+			public bool event_log { get; set; } = true;
+			public bool playspace { get; set; } = true;
+			public bool player_speed { get; set; } = true;
+			public bool disc_speed { get; set; } = true;
+		}
+
+		public ConfigurableOverlaySettings configurableOverlaySettings { get; set; } = new ConfigurableOverlaySettings();
+
 		#endregion
 
 		#endregion

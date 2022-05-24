@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using EchoVRAPI;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Spark
 {
@@ -446,8 +448,142 @@ namespace Spark
 					Logger.LogRow(Logger.LogType.Error, $"{e}");
 				}
 			});
+			
+			endpoints.MapPost("/api/settings/set", async context =>
+			{
+				try
+				{
+					context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+					string body = await new StreamReader(context.Request.Body).ReadToEndAsync();
+					Dictionary<string, object> data = JsonConvert.DeserializeObject<Dictionary<string, object>>(body);
+
+					if (data == null)
+					{
+						await context.Response.WriteAsync("No data");
+						return;
+					}
+
+					data.OverwriteObject(SparkSettings.instance);
+
+					// update the UI to match
+					Window window = Program.GetWindowIfOpen(typeof(UnifiedSettingsWindow));
+					((UnifiedSettingsWindow)window)?.OverlaysConfigWindow.SetUIToSettings();
+
+					await context.Response.WriteAsync("Applied new settings.");
+				}
+				catch (Exception e)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"{e}");
+				}
+			});
+			
+			endpoints.MapGet("/api/settings/get/{**setting_name}", async context =>
+			{
+				try
+				{
+					context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+
+					string request = context.Request.GetEncodedUrl();
+					request = request[(request.IndexOf("settings/get/", StringComparison.Ordinal) + "settings/get/".Length)..];
+					if (request == null) return;
+
+					// IDictionary<string, object> settings = SparkSettings.instance.AsDictionary();
+					string settingsStr = JsonConvert.SerializeObject(SparkSettings.instance);
+					JObject settings = JsonConvert.DeserializeObject<JObject>(settingsStr);
+
+					string[] parms = request.Split('/');
+
+					// disgusting 🤢
+					JToken result = settings;
+					foreach (string parm in parms)
+					{
+						result = ((JObject)result)?[parm];
+						if (result == null)
+						{
+							await context.Response.WriteAsync($"Setting not found. {parm}");
+							return;
+						}
+					}
+
+					string str = result?.ToString();
+
+					// PropertyInfo prop = typeof(SparkSettings).GetProperty(request);
+					// object val = prop?.GetValue(SparkSettings.instance);
+					// string str = val?.ToString();
+
+					if (str != null)
+					{
+						await context.Response.WriteAsync(str);
+					}
+					else
+					{
+						await context.Response.WriteAsync("Setting not found.");
+					}
+				}
+				catch (Exception e)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"{e}");
+				}
+			});
 
 			// resources
+		}
+	}
+
+	/// <summary>
+	/// https://stackoverflow.com/a/4944547
+	/// </summary>
+	public static class ObjectExtensions
+	{
+		public static T ToObject<T>(this IDictionary<string, object> source)
+			where T : class, new()
+		{
+			T someObject = new T();
+			Type someObjectType = someObject.GetType();
+
+			foreach (KeyValuePair<string, object> item in source)
+			{
+				someObjectType.GetProperty(item.Key)?.SetValue(someObject, item.Value, null);
+			}
+
+			return someObject;
+		}
+
+		public static void OverwriteObject<T>(this IDictionary<string, object> source, T destination)
+			where T : class, new()
+		{
+			Type someObjectType = destination.GetType();
+
+			foreach (KeyValuePair<string, object> item in source)
+			{
+				if (item.Value is JObject)
+				{
+					Type subType = someObjectType.GetProperty(item.Key)?.GetValue(destination)?.GetType();
+					Dictionary<string, object> subDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(item.Value.ToString() ?? string.Empty);
+					if (subDict != null)
+					{
+						foreach (KeyValuePair<string, object> subItem in subDict)
+						{
+							subType?.GetProperty(subItem.Key)?.SetValue(someObjectType.GetProperty(item.Key)?.GetValue(destination), subItem.Value, null);
+						}
+					}
+				}
+				else
+				{
+					someObjectType.GetProperty(item.Key)?.SetValue(destination, item.Value, null);
+				}
+			}
+		}
+
+		public static IDictionary<string, object> AsDictionary(this object source, BindingFlags bindingAttr = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
+		{
+			return source.GetType().GetProperties(bindingAttr).ToDictionary
+			(
+				propInfo => propInfo.Name,
+				propInfo => propInfo.GetValue(source, null)
+			);
 		}
 	}
 }

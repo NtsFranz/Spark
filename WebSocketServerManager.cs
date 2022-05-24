@@ -25,15 +25,18 @@ namespace Spark
 				socket.OnOpen = () =>
 				{
 					Console.WriteLine("Websocket Open!");
-					allSockets.Add(socket);
+					lock (subscriberLock)
+					{
+						allSockets.Add(socket);
+					}
 				};
 				socket.OnClose = () =>
 				{
 					Console.WriteLine("Websocket Close!");
-					allSockets.Remove(socket);
-					foreach ((EventContainer.EventType key, List<IWebSocketConnection> value) in subscriberMapping)
+					lock (subscriberLock)
 					{
-						lock (subscriberLock)
+						allSockets.Remove(socket);
+						foreach ((EventContainer.EventType key, List<IWebSocketConnection> value) in subscriberMapping)
 						{
 							value.RemoveAll(v => v == socket);
 						}

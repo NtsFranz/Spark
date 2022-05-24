@@ -73,8 +73,8 @@ namespace Spark
 				.UseStartup<Routes>()
 				.Build();
 
-			await server.RunAsync();
 			serverRestarting = false;
+			await server.RunAsync();
 		}
 
 		public void Stop()

@@ -951,28 +951,31 @@ namespace Spark
 				List<VersionJson> versions = JsonConvert.DeserializeObject<List<VersionJson>>(respString);
 
 				// find the appropriate version
-				VersionJson chosenVersion = versions.First(v => !v.prerelease || v.prerelease == SparkSettings.instance.betaUpdates);
+				VersionJson chosenVersion = versions?.First(v => !v.prerelease || v.prerelease == SparkSettings.instance.betaUpdates);
 
 				// get the details from the version
-				string downloadUrl = chosenVersion.assets.First(url => url.browser_download_url.EndsWith(".msi")).browser_download_url;
-				string version = chosenVersion.tag_name.TrimStart('v');
-				string changelog = chosenVersion.body;
-
-				var remoteVersion = new Version(version);
-
-				// if we need a new version
-				if (remoteVersion > Program.AppVersion())
+				if (chosenVersion != null)
 				{
-					updateFilename = downloadUrl;
-					updateButton.Visibility = Visibility.Visible;
+					string downloadUrl = chosenVersion.assets.First(url => url.browser_download_url.EndsWith(".msi")).browser_download_url;
+					string version = chosenVersion.tag_name.TrimStart('v');
+					string changelog = chosenVersion.body;
 
-					MessageBox box = new MessageBox(changelog, "Update Available");
-					box.Topmost = true;
-					box.Show();
-				}
-				else
-				{
-					updateButton.Visibility = Visibility.Collapsed;
+					Version remoteVersion = new Version(version);
+
+					// if we need a new version
+					if (remoteVersion > Program.AppVersion())
+					{
+						updateFilename = downloadUrl;
+						updateButton.Visibility = Visibility.Visible;
+
+						MessageBox box = new MessageBox(changelog, "Update Available");
+						box.Topmost = true;
+						box.Show();
+					}
+					else
+					{
+						updateButton.Visibility = Visibility.Collapsed;
+					}
 				}
 			}
 			catch (Exception e)

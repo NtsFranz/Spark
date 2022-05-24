@@ -41,12 +41,20 @@ namespace Spark
 							string tempFolder = Path.Combine(Path.GetTempPath(), "Spark", "img");
 							Directory.CreateDirectory(tempFolder);
 							string tempFilePath = Path.Combine(tempFolder, SecretKeys.Hash(file) + ".png");
-							File.Copy(file, tempFilePath, true);
-							data[file.Substring(folder.Length + 1)] = tempFilePath;
+							try
+							{
+								File.Copy(file, tempFilePath, true);
+							}
+							catch (IOException e)
+							{
+								Logger.LogRow(Logger.LogType.Error, $"IO Exception: {e}");
+							}
+
+							data[file[(folder.Length + 1)..]] = tempFilePath;
 						}
 						else
 						{
-							data[file.Substring(folder.Length + 1)] = await File.ReadAllTextAsync(file);
+							data[file[(folder.Length + 1)..]] = await File.ReadAllTextAsync(file);
 						}
 					}
 				}
