@@ -1433,7 +1433,7 @@ namespace Spark
 					// TODO find why this is crashing
 					try
 					{
-						CurrentRound.events.Add(new EventData(
+						CurrentRound.events.Enqueue(new EventData(
 							CurrentRound, 
 							EventContainer.EventType.player_joined,
 							frame.game_clock, 
@@ -1480,7 +1480,7 @@ namespace Spark
 				{
 					if (frame.GetAllPlayers(true).Any(p => p.userid == player.userid)) continue;
 
-					CurrentRound.events.Add(new EventData(
+					CurrentRound.events.Enqueue(new EventData(
 						CurrentRound,
 						EventContainer.EventType.player_left,
 						frame.game_clock,
@@ -1513,7 +1513,7 @@ namespace Spark
 					if (lastTeam == null) continue;
 					if (lastTeam.color == team.color) continue;
 
-					CurrentRound.events.Add(new EventData(
+					CurrentRound.events.Enqueue(new EventData(
 						CurrentRound,
 						EventContainer.EventType.player_switched_teams,
 						frame.game_clock,
@@ -1558,7 +1558,7 @@ namespace Spark
 							minPlayer?.head.Position ?? Vector3.Zero,
 							Vector3.Zero);
 						
-						CurrentRound.events.Add(pauseEvent);
+						CurrentRound.events.Enqueue(pauseEvent);
 
 						try
 						{
@@ -1694,7 +1694,7 @@ namespace Spark
 
 								HighlightsHelper.SaveHighlightMaybe(player.name, frame, "BIG_BOOST");
 
-								CurrentRound.events.Add(
+								CurrentRound.events.Enqueue(
 									new EventData(
 										CurrentRound,
 										EventContainer.EventType.big_boost,
@@ -1766,7 +1766,7 @@ namespace Spark
 									LogRow(LogType.Error, "Error processing action", exp.ToString());
 								}
 
-								CurrentRound.events.Add(
+								CurrentRound.events.Enqueue(
 									new EventData(
 										CurrentRound,
 										EventContainer.EventType.playspace_abuse,
@@ -1827,7 +1827,7 @@ namespace Spark
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
 
-							CurrentRound.events.Add(eventData);
+							CurrentRound.events.Enqueue(eventData);
 							HighlightsHelper.SaveHighlightMaybe(player.name, frame, "SAVE");
 						}
 
@@ -1845,7 +1845,7 @@ namespace Spark
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
 
-							CurrentRound.events.Add(eventData);
+							CurrentRound.events.Enqueue(eventData);
 
 							if (WasStealNearGoal(frame.disc.position.ToVector3(), team.color, frame))
 							{
@@ -1891,7 +1891,7 @@ namespace Spark
 										EventData stunEventData = new EventData(CurrentRound, EventContainer.EventType.stun,
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
 											Vector3.Zero);
-										CurrentRound.events.Add(stunEventData);
+										CurrentRound.events.Enqueue(stunEventData);
 										added = true;
 
 										try
@@ -1946,7 +1946,7 @@ namespace Spark
 										EventData stunEventData = new EventData(CurrentRound, EventContainer.EventType.stun,
 											frame.game_clock, team, stunner, stunnee, stunnee.head.Position,
 											Vector3.Zero);
-										CurrentRound.events.Add(stunEventData);
+										CurrentRound.events.Enqueue(stunEventData);
 										added = true;
 
 										try
@@ -1975,7 +1975,7 @@ namespace Spark
 						{
 							EventData eventData = new EventData(CurrentRound, EventContainer.EventType.@catch, frame.game_clock,
 								team, player, null, player.head.Position, Vector3.Zero);
-							CurrentRound.events.Add(eventData);
+							CurrentRound.events.Enqueue(eventData);
 							playerData.Catches++;
 							bool caughtThrow = false;
 							Team throwTeam = null;
@@ -2020,7 +2020,7 @@ namespace Spark
 									}
 									
 									// TODO enable once the db can handle it
-									CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.turnover, frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position, player.head.Position));
+									CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.turnover, frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position, player.head.Position));
 									CurrentRound.GetPlayerData(throwPlayer).Turnovers++;
 								}
 								else
@@ -2034,7 +2034,7 @@ namespace Spark
 										LogRow(LogType.Error, "Error processing action", exp.ToString());
 									}
 
-									CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.pass,
+									CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.pass,
 										frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position,
 										player.head.Position));
 									CurrentRound.GetPlayerData(throwPlayer).Passes++;
@@ -2066,7 +2066,7 @@ namespace Spark
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
 
-							CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.shot_taken,
+							CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.shot_taken,
 								frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
 							if (lastThrowPlayerId == player.playerid)
 							{
@@ -2144,7 +2144,7 @@ namespace Spark
 						// TODO check if a pass was made
 						if (false)
 						{
-							CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.pass, frame.game_clock,
+							CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.pass, frame.game_clock,
 								team, player, null, player.head.Position, Vector3.Zero));
 							LogRow(LogType.File, frame.sessionid,
 								frame.game_clock_display + " - " + player.name + " made a pass");
@@ -2171,7 +2171,7 @@ namespace Spark
 							LogRow(LogType.Error, "Error processing action", exp.ToString());
 						}
 
-						CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.restart_request,
+						CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.restart_request,
 							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.blue], null, null, Vector3.Zero,
 							Vector3.Zero));
 					}
@@ -2190,7 +2190,7 @@ namespace Spark
 							LogRow(LogType.Error, "Error processing action", exp.ToString());
 						}
 
-						CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.restart_request,
+						CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.restart_request,
 							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.orange], null, null, Vector3.Zero,
 							Vector3.Zero));
 					}
@@ -2304,7 +2304,7 @@ namespace Spark
 						);
 
 
-						CurrentRound.events.Add(joustEvent);
+						CurrentRound.events.Enqueue(joustEvent);
 
 						try
 						{
@@ -2364,7 +2364,7 @@ namespace Spark
 					}
 
 					// TODO enable this once the db supports it
-					CurrentRound.events.Add(eventData);
+					CurrentRound.events.Enqueue(eventData);
 					MatchPlayer otherMatchPlayer = CurrentRound.GetPlayerData(player);
 					if (otherMatchPlayer != null) otherMatchPlayer.Interceptions++;
 					else LogRow(LogType.Error, "Can't find player by name from other team: " + player.name);
@@ -2405,13 +2405,13 @@ namespace Spark
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
 
-							CurrentRound.events.Add(new EventData(CurrentRound, EventContainer.EventType.@throw, frame.game_clock,
+							CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.@throw, frame.game_clock,
 								team, player, null, player.head.Position, frame.disc.velocity.ToVector3()));
 
 							CurrentRound.currentDiskTrajectory.Clear();
 
 							// add throw data type
-							CurrentRound.throws.Add(
+							CurrentRound.throws.Enqueue(
 								new ThrowData(
 									CurrentRound,
 									frame.game_clock,
@@ -2715,7 +2715,7 @@ namespace Spark
 				underhandedness,
 				matchData.currentDiskTrajectory
 			);
-			matchData.goals.Add(goalEvent);
+			matchData.goals.Enqueue(goalEvent);
 			
 			try
 			{

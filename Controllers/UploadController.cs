@@ -44,17 +44,17 @@ namespace Spark
 				if (e.Name != "anonymous") data.match_players.Add(e.ToDict());
 			});
 
-			round.events.ForEach(e =>
+			round.events.ToList().ForEach(e =>
 			{
 				if (!e.inDB) data.events.Add(e.ToDict());
 				e.inDB = true;
 			});
-			round.goals.ForEach(e =>
+			round.goals.ToList().ForEach(e =>
 			{
 				if (!e.inDB) data.goals.Add(e.ToDict());
 				e.inDB = true;
 			});
-			round.throws.ForEach(e =>
+			round.throws.ToList().ForEach(e =>
 			{
 				if (!e.inDB) data.throws.Add(e.ToDict());
 				e.inDB = true;

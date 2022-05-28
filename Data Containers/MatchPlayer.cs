@@ -29,7 +29,7 @@ namespace Spark
 		// }
 		
 		/// <summary>
-		/// Copy constructor
+		/// Based on a previous round.
 		/// </summary>
 		public MatchPlayer(AccumulatedFrame round, Player player)
 		{

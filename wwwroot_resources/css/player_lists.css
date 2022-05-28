@@ -5,8 +5,8 @@
     width: 100%;
 }
 
-#player_lists>.player_list {
-    width: 16em;
+#player_lists > .player_list {
+    width: 17em;
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -19,47 +19,49 @@
     z-index: 11;
 }
 
-#player_lists>.player_list.orange {
+#player_lists > .player_list.orange {
     left: 1em;
 }
 
-#player_lists>.player_list.blue {
+#player_lists > .player_list.blue {
     right: 1em;
     text-align: right;
 }
-#player_lists>.player_list.orange>div {
+
+#player_lists > .player_list.orange > div {
     background: none;
     flex-direction: row-reverse;
 }
-#player_lists>.player_list.blue>div {
+
+#player_lists > .player_list.blue > div {
     background: none;
 }
 
 
-#player_lists>.player_list>div {
+#player_lists > .player_list > div {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    
+
 }
 
-#player_lists>.player_list>div>div {
+#player_lists > .player_list > div > div {
     padding: .4em 1em;
 }
 
 
 /* name */
-#player_lists>.player_list>div>div:first-child {
+#player_lists > .player_list > div > div:first-child {
     flex-grow: 1;
 }
 
 
-#player_lists>.player_list>div.stunned>div:first-child {
+#player_lists > .player_list > div.stunned > div:first-child {
     opacity: .5;
 }
 
 /* number */
-#player_lists>.player_list>div>div:last-child {
+#player_lists > .player_list > div > div:last-child {
     width: 1.5em;
     border: .1em solid #0004;
     background-color: #0002;
@@ -68,20 +70,21 @@
     text-align: center;
 }
 
-#player_lists>.player_list>div.possession>div:last-child {
+#player_lists > .player_list > div.possession > div:last-child {
     border: .1em solid #fffa;
     background-color: #000a;
 }
 
-#player_lists>.player_list.orange>div>div:first-child {
+#player_lists > .player_list.orange > div > div:first-child {
     background: linear-gradient(90deg, #ff9627aa 0%, #bd7a2400 100%);
     border-bottom: .1em solid #ff9627;
 }
-#player_lists>.player_list.blue>div>div:first-child {
+
+#player_lists > .player_list.blue > div > div:first-child {
     background: linear-gradient(-90deg, #4890ddaa 0%, #3f6ae100 100%);
     border-bottom: .1em solid #2478d0;
 }
 
-#player_lists>.player_list>div {
+#player_lists > .player_list > div {
     margin: .1em;
 }

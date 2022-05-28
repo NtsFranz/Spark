@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -18,9 +19,9 @@ namespace Spark
 
 		public readonly Dictionary<Team.TeamColor, TeamData> teams;
 
-		public readonly List<GoalData> goals = new List<GoalData>();
-		public readonly List<EventData> events = new List<EventData>();
-		public readonly List<ThrowData> throws = new List<ThrowData>();
+		public readonly ConcurrentQueue<GoalData> goals = new ConcurrentQueue<GoalData>();
+		public readonly ConcurrentQueue<EventData> events = new ConcurrentQueue<EventData>();
+		public readonly ConcurrentQueue<ThrowData> throws = new ConcurrentQueue<ThrowData>();
 
 		public string serverLocationResponse;
 		public string serverLocation;
@@ -88,11 +89,9 @@ namespace Spark
 						MatchPlayer oldPlayer = lastRound.GetPlayerData(player);
 						if (oldPlayer != null)
 						{
-							// copy the old player for now
-							MatchPlayer newPlayer = new MatchPlayer(oldPlayer)
-							{
-								matchData = this
-							};
+							// make a fresh player
+							MatchPlayer newPlayer = new MatchPlayer(this, player);
+							
 							// if stats didn't get reset
 							if (player.stats.Sum() >= oldPlayer.currentStats.Sum())
 							{

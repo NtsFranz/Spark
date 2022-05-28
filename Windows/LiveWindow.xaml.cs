@@ -589,6 +589,9 @@ namespace Spark
 						orangeTeamPlayersLabel.Content = teamNames[1].ToString().Trim();
 						spectatorsLabel.Content = teamNames[2].ToString().Trim();
 
+						OrangePoints.Text = Program.lastFrame.orange_points.ToString();
+						BluePoints.Text = Program.lastFrame.blue_points.ToString();
+						GameClock.Text = Program.lastFrame.game_clock_display;
 
 
 						// last goals and last matches

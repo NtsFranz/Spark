@@ -30,55 +30,89 @@
 			<ColumnDefinition Width="4"/>
 			<ColumnDefinition Width="200"/>
 		</Grid.ColumnDefinitions>
-		<StackPanel x:Name="Left_Sidebar" HorizontalAlignment="Stretch" Height="Auto">
-			<Button x:Name="loginButton" Height="40" Width="200" Click="LoginWindowButtonClicked" Padding="0,0,0,0" HorizontalContentAlignment="Left" ToolTip="{x:Static p:Resources.login_button_tooltip}">
-				<StackPanel Orientation="Horizontal" Width="200" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-					<Image x:Name="discordPFPImage" Height="40" Width="40" Source="https://cdn.discordapp.com/avatars/174743468004868097/f15fadcd0b3c236ebaf4744227f68086" Visibility="Collapsed"/>
-					<Label x:Name="discordUsernameLabel" Content="{x:Static p:Resources.Discord_Login}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="200" HorizontalAlignment="Center"/>
-				</StackPanel>
-			</Button>
-			<GroupBox x:Name="statusBox">
-				<GroupBox.Header>
-					<StackPanel Orientation="Horizontal">
-						<Ellipse x:Name="statusCircle" Width="10" Height="10" Fill="Red" Stroke="Black" StrokeThickness="1" Margin="10,10,10,10"/>
-						<Label x:Name="statusLabel" Content="{x:Static p:Resources.Not_Connected}"/>
-						<TextBlock x:Name="NotConnectedHelp" HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap"><Hyperlink NavigateUri="https://echopedia.gg/wiki/Spark#Spark_says_Not_Connected_in_the_top_left_corner" RequestNavigate="Hyperlink_RequestNavigate"><Run Text="Help"/></Hyperlink></TextBlock>
+		<Grid>
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="50" />
+			</Grid.RowDefinitions>
+			<StackPanel HorizontalAlignment="Stretch" Height="Auto">
+				<Button x:Name="loginButton" Height="40" Width="200" Click="LoginWindowButtonClicked" Padding="0,0,0,0"
+				        HorizontalContentAlignment="Left" ToolTip="{x:Static p:Resources.login_button_tooltip}">
+					<StackPanel Orientation="Horizontal" Width="200" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+						<Image x:Name="discordPFPImage" Height="40" Width="40"
+						       Source="https://cdn.discordapp.com/avatars/174743468004868097/f15fadcd0b3c236ebaf4744227f68086"
+						       Visibility="Collapsed" />
+						<Label x:Name="discordUsernameLabel" Content="{x:Static p:Resources.Discord_Login}"
+						       VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="200"
+						       HorizontalAlignment="Center" />
 					</StackPanel>
-				</GroupBox.Header>
-				<StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<Label x:Name="sessionIdLabel" Content="{x:Static p:Resources.Join_Link_}"/>
-						<Button x:Name="copySessionIdButton" Content="{x:Static p:Resources.Copy}" Margin="40,0,0,0" VerticalAlignment="Center" Padding="1,1,1,1" HorizontalAlignment="Stretch" Click="CopyIgniteJoinLink" Width="75" ToolTip="{x:Static p:Resources.copy_link_tooltip}"></Button>
+				</Button>
+				<GroupBox x:Name="statusBox">
+					<GroupBox.Header>
+						<StackPanel Orientation="Horizontal">
+							<Ellipse x:Name="statusCircle" Width="10" Height="10" Fill="Red" Stroke="Black" StrokeThickness="1"
+							         Margin="10,10,10,10" />
+							<Label x:Name="statusLabel" Content="{x:Static p:Resources.Not_Connected}" />
+							<TextBlock x:Name="NotConnectedHelp" HorizontalAlignment="Center" Margin="5,5,5,5" TextWrapping="Wrap">
+								<Hyperlink NavigateUri="https://echopedia.gg/wiki/Spark#Spark_says_Not_Connected_in_the_top_left_corner"
+								           RequestNavigate="Hyperlink_RequestNavigate">
+									<Run Text="Help" />
+								</Hyperlink>
+							</TextBlock>
+						</StackPanel>
+					</GroupBox.Header>
+					<StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<Label x:Name="sessionIdLabel" Content="{x:Static p:Resources.Join_Link_}" />
+							<Button x:Name="copySessionIdButton" Content="{x:Static p:Resources.Copy}" Margin="40,0,0,0"
+							        VerticalAlignment="Center" Padding="1,1,1,1" HorizontalAlignment="Stretch" Click="CopyIgniteJoinLink"
+							        Width="75" ToolTip="{x:Static p:Resources.copy_link_tooltip}">
+							</Button>
+						</StackPanel>
+						<TextBox x:Name="sessionIdTextBox" Text="********-****-****-****-************" TextWrapping="NoWrap" MaxLines="1"
+						         FontSize="14" FontFamily="Courier New" IsReadOnly="True" Height="16"
+						         ToolTip="{x:Static p:Resources.join_link_tooltip}" />
+						<Button Click="ServerLocationButtonClicked" Margin="0,4,0,0" Padding="0,0,0,0" HorizontalContentAlignment="Left">
+							<Label x:Name="serverLocationLabel" Content="{x:Static p:Resources.Server_IP_}"
+							       ToolTip="{x:Static p:Resources.server_location_tooltip}" Margin="0,0,0,0" Padding="1,1,1,1" />
+						</Button>
 					</StackPanel>
-					<TextBox x:Name="sessionIdTextBox" Text="********-****-****-****-************" TextWrapping="NoWrap" MaxLines="1" FontSize="14" FontFamily="Courier New" IsReadOnly="True" Height="16" ToolTip="{x:Static p:Resources.join_link_tooltip}"/>
-					<Button Click="ServerLocationButtonClicked" Margin="0,4,0,0" Padding="0,0,0,0" HorizontalContentAlignment="Left">
-						<Label x:Name="serverLocationLabel" Content="{x:Static p:Resources.Server_IP_}" ToolTip="{x:Static p:Resources.server_location_tooltip}" Margin="0,0,0,0" Padding="1,1,1,1"/>
-					</Button>
-				</StackPanel>
-			</GroupBox>
-			<GroupBox x:Name="blueTeamBox" BorderBrush="#FF2A384B">
-				<GroupBox.Header>
-					<StackPanel Orientation="Horizontal">
-						<Label Content="{x:Static p:Resources.Blue_Team}"/>
-						<Image x:Name="blueTeamLogo" Height="26" DockPanel.Dock="Right" Margin="84,0,0,0"/>
-					</StackPanel>
-				</GroupBox.Header>
-				<Label x:Name="blueTeamPlayersLabel" Content=""/>
-			</GroupBox>
-			<GroupBox x:Name="orangeTeamBox" Width="Auto" VerticalAlignment="Top" BorderBrush="#FF6C5339">
-				<GroupBox.Header>
-					<StackPanel Orientation="Horizontal">
-						<Label Content="{x:Static p:Resources.Orange_Team}"/>
-						<Image x:Name="orangeTeamLogo" Height="26" DockPanel.Dock="Right" Margin="65,0,0,0"/>
-					</StackPanel>
-				</GroupBox.Header>
-				<Label x:Name="orangeTeamPlayersLabel" Content=""/>
-			</GroupBox>
-			<GroupBox x:Name="spectatorsBox" Header="{x:Static p:Resources.Spectators}" BorderBrush="#FF515151">
-				<Label x:Name="spectatorsLabel" Content=""/>
-			</GroupBox>
-		</StackPanel>
-		<GridSplitter x:Name="gridSplitter" Grid.Column="1" HorizontalAlignment="Stretch"/>
+				</GroupBox>
+				<GroupBox x:Name="blueTeamBox" BorderBrush="#FF2A384B">
+					<GroupBox.Header>
+						<StackPanel Orientation="Horizontal">
+							<Label Content="{x:Static p:Resources.Blue_Team}" />
+							<Image x:Name="blueTeamLogo" Height="26" DockPanel.Dock="Right" Margin="84,0,0,0" />
+						</StackPanel>
+					</GroupBox.Header>
+					<Label x:Name="blueTeamPlayersLabel" Content="" />
+				</GroupBox>
+				<GroupBox x:Name="orangeTeamBox" Width="Auto" VerticalAlignment="Top" BorderBrush="#FF6C5339">
+					<GroupBox.Header>
+						<StackPanel Orientation="Horizontal">
+							<Label Content="{x:Static p:Resources.Orange_Team}" />
+							<Image x:Name="orangeTeamLogo" Height="26" DockPanel.Dock="Right" Margin="65,0,0,0" />
+						</StackPanel>
+					</GroupBox.Header>
+					<Label x:Name="orangeTeamPlayersLabel" Content="" />
+				</GroupBox>
+				<GroupBox x:Name="spectatorsBox" Header="{x:Static p:Resources.Spectators}" BorderBrush="#FF515151">
+					<Label x:Name="spectatorsLabel" Content="" />
+				</GroupBox>
+			</StackPanel>
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="2*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<TextBlock x:Name="OrangePoints" Grid.Column="0" Background="#FF6C5339" TextAlignment="Center" VerticalAlignment="Stretch" Padding="0,10,0,0" FontSize="26" FontFamily="Consolas" FontWeight="Black">0</TextBlock>
+				<TextBlock x:Name="GameClock" Grid.Column="1" Background="#FF515151" TextAlignment="Center" VerticalAlignment="Stretch" Padding="0,14,0,0" FontSize="20" FontFamily="Consolas">00:00.00</TextBlock>
+				<TextBlock x:Name="BluePoints" Grid.Column="2" Background="#FF2A384B" TextAlignment="Center" VerticalAlignment="Stretch" Padding="0,10,0,0" FontSize="26" FontFamily="Consolas" FontWeight="Black">0</TextBlock>
+			</Grid>
+		</Grid>
+		
 		<Grid x:Name="Center_Panel" Grid.Column="2">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="1*"/>

@@ -85,6 +85,17 @@
         .hide {
             display: none !important;
         }
+
+        .checkbox_grid {
+            display: flex;
+            flex-direction: column;
+			flex-wrap: wrap;
+        }
+
+        .checkbox_grid > label {
+			flex-grow: 1;
+			
+        }
 	</style>
 </head>
 
@@ -174,31 +185,35 @@
 					</tbody>
 				</table>
 
+				<!--
 				<h3>Overlay Configuration</h3>
-				<label class="checkbox" style="margin-left: 3em;">
-					<input type="checkbox" id="show_minimap_checkbox"/>
-					Show minimap
-				</label>
-				<label class="checkbox" style="margin-left: 3em;">
-					<input type="checkbox" id="use_minimal_minimap_checkbox"/>
-					Use minimal minimap
-				</label>
-				<label class="checkbox" style="margin-left: 3em;">
-					<input type="checkbox" id="show_player_rosters_checkbox"/>
-					Show player rosters
-				</label>
-				<label class="checkbox" style="margin-left: 3em;">
-					<input type="checkbox" id="show_main_banner_checkbox"/>
-					Show main banner
-				</label>
-				<label class="checkbox" style="margin-left: 3em;">
-					<input type="checkbox" id="show_neutral_jousts_checkbox"/>
-					Show neutral joust bannners
-				</label>
-				<label class="checkbox" style="margin-left: 3em;">
-					<input type="checkbox" id="show_defensive_jousts_checkbox"/>
-					Show defensive joust bannners
-				</label>				
+				<div class="checkbox_grid">
+					<label class="checkbox" style="margin-left: 3em;">
+						<input type="checkbox" id="show_minimap_checkbox"/>
+						Show minimap
+					</label>
+					<label class="checkbox" style="margin-left: 3em;">
+						<input type="checkbox" id="use_minimal_minimap_checkbox"/>
+						Use minimal minimap
+					</label>
+					<label class="checkbox" style="margin-left: 3em;">
+						<input type="checkbox" id="show_player_rosters_checkbox"/>
+						Show player rosters
+					</label>
+					<label class="checkbox" style="margin-left: 3em;">
+						<input type="checkbox" id="show_main_banner_checkbox"/>
+						Show main banner
+					</label>
+					<label class="checkbox" style="margin-left: 3em;">
+						<input type="checkbox" id="show_neutral_jousts_checkbox"/>
+						Show neutral joust bannners
+					</label>
+					<label class="checkbox" style="margin-left: 3em;">
+						<input type="checkbox" id="show_defensive_jousts_checkbox"/>
+						Show defensive joust bannners
+					</label>
+				</div>
+			-->
 			</div>
 
 
@@ -216,15 +231,15 @@
 
 <script>
     let teamLogosDict = {}
-	
-	let sw = new SparkWebsocket();
-    sw.subscribe("overlay_config", data=> {
+
+    let sw = new SparkWebsocket();
+    sw.subscribe("overlay_config", data => {
         // blue team
         writeSrc("team_logo_blue", data["teams"][0]["team_logo"]);
         writeValue("team_logo_input_blue", data["teams"][0]["team_logo"]);
         writeText("team_name_blue", data["teams"][0]["team_name"]);
         writeValue("team_name_input_blue", data["teams"][0]["team_name"]);
-        
+
         // orange team
         writeSrc("team_logo_orange", data["teams"][1]["team_logo"]);
         writeValue("team_logo_input_orange", data["teams"][1]["team_logo"]);
@@ -232,9 +247,9 @@
         writeValue("team_name_input_orange", data["teams"][1]["team_name"]);
 
         document.getElementById("swap_sides_button").classList.remove("is-loading");
-        
+
         document.getElementById("automatic_team_names_checkbox").checked = data["team_names_source"] === 1;
-	});
+    });
 
     // set up listeners
     document.getElementById("swap_sides_button").addEventListener("click", () => {

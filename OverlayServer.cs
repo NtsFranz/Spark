@@ -459,9 +459,9 @@ namespace Spark
 						selectedMatches.ForEach(m =>
 						{
 							m.players.Values.ToList().ForEach(e => data.match_players.Add(e.ToDict()));
-							m.events.ForEach(e => data.events.Add(e.ToDict()));
-							m.goals.ForEach(e => data.goals.Add(e.ToDict()));
-							m.throws.ForEach(e => data.throws.Add(e.ToDict()));
+							m.events.ToList().ForEach(e => data.events.Add(e.ToDict()));
+							m.goals.ToList().ForEach(e => data.goals.Add(e.ToDict()));
+							m.throws.ToList().ForEach(e => data.throws.Add(e.ToDict()));
 						});
 
 

@@ -43,6 +43,10 @@ namespace Spark
 											vrmlTeamLogo = string.Empty;
 										}
 									}
+									else
+									{
+										Logger.LogRow(Logger.LogType.Error, $"Null team detection response.");
+									}
 								}
 							}
 							catch (Exception ex)
