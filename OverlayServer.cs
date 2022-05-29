@@ -46,35 +46,51 @@ namespace Spark
 
 		private async Task RestartServer()
 		{
-			// get new overlay data
-			await OverlaysCustom.FetchOverlayData();
-
-			if (serverRestarting)
+			try
 			{
-				Logger.LogRow(Logger.LogType.Error, "Already restarting server. Cancelling this restart.");
-				return;
-			}
+				// get new overlay data
+				await OverlaysCustom.FetchOverlayData();
 
-			// stop the server
-			serverRestarting = true;
-			// TODO this is race condition because it is started from somewhere else
-			if (server != null)
-			{
-				await server.StopAsync();
-			}
-
-			// restart the server
-			server = WebHost
-				.CreateDefaultBuilder()
-				.UseKestrel(x =>
+				int counter = 0;
+				while (serverRestarting && counter < 10)
 				{
-					x.ListenAnyIP(6724);
-				})
-				.UseStartup<Routes>()
-				.Build();
+					counter++;
+					Logger.LogRow(Logger.LogType.Error, "Already restarting server. Waiting to try again.");
+					await Task.Delay(100);
+				}
 
+				if (serverRestarting)
+				{
+					Logger.LogRow(Logger.LogType.Error, "Already restarting server. Cancelling this restart.");
+					return;
+				}
+
+				// stop the server
+				serverRestarting = true;
+				// TODO this is race condition because it is started from somewhere else
+				if (server != null)
+				{
+					await server.StopAsync();
+				}
+
+				// restart the server
+				server = WebHost
+					.CreateDefaultBuilder()
+					.UseKestrel(x =>
+					{
+						x.ListenAnyIP(6724);
+					})
+					.UseStartup<Routes>()
+					.Build();
+
+				_ = server.RunAsync();
+				Logger.LogRow(Logger.LogType.Error, $"Done restarting server.");
+			}
+			catch (Exception e)
+			{
+				Logger.LogRow(Logger.LogType.Error, $"Error when restarting server\n{e}");
+			}
 			serverRestarting = false;
-			await server.RunAsync();
 		}
 
 		public void Stop()
@@ -722,6 +738,11 @@ namespace Spark
 
 			// gets a list of all the times of previous matches in memory that are for the current set
 			List<DateTime> selectedMatchTimes = GetPreviousRounds().Select(m => m.matchTime).ToList();
+
+			if (selectedMatchTimes.Count == 0)
+			{
+				return new List<Dictionary<string, float>>();
+			}
 
 			// finds all the files that match one of the matches in memory
 			FileInfo[] selectedFiles = butterFiles.Where(

@@ -16,6 +16,8 @@ namespace Spark
 					"visibility", new Dictionary<string, bool>
 					{
 						{ "minimap", SparkSettings.instance.configurableOverlaySettings.minimap },
+						{ "compact_minimap", SparkSettings.instance.configurableOverlaySettings.compact_minimap },
+						{ "player_rosters", SparkSettings.instance.configurableOverlaySettings.player_rosters },
 						{ "main_banner", SparkSettings.instance.configurableOverlaySettings.main_banner },
 						{ "neutral_jousts", SparkSettings.instance.configurableOverlaySettings.neutral_jousts },
 						{ "defensive_jousts", SparkSettings.instance.configurableOverlaySettings.defensive_jousts },
@@ -23,6 +25,8 @@ namespace Spark
 						{ "playspace", SparkSettings.instance.configurableOverlaySettings.playspace },
 						{ "player_speed", SparkSettings.instance.configurableOverlaySettings.player_speed },
 						{ "disc_speed", SparkSettings.instance.configurableOverlaySettings.disc_speed },
+						{ "show_team_logos", SparkSettings.instance.configurableOverlaySettings.show_team_logos },
+						{ "show_team_names", SparkSettings.instance.configurableOverlaySettings.show_team_names },
 					}
 				},
 				{ "caster_prefs", SparkSettings.instance.casterPrefs },

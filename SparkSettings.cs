@@ -274,6 +274,8 @@ namespace Spark
 		public class ConfigurableOverlaySettings
 		{
 			public bool minimap { get; set; } = true;
+			public bool compact_minimap { get; set; } = false;
+			public bool player_rosters { get; set; } = true;
 			public bool main_banner { get; set; } = true;
 			public bool neutral_jousts { get; set; } = true;
 			public bool defensive_jousts { get; set; } = true;
@@ -281,6 +283,8 @@ namespace Spark
 			public bool playspace { get; set; } = true;
 			public bool player_speed { get; set; } = true;
 			public bool disc_speed { get; set; } = true;
+			public bool show_team_logos { get; set; } = true;
+			public bool show_team_names { get; set; } = true;
 		}
 
 		public ConfigurableOverlaySettings configurableOverlaySettings { get; set; } = new ConfigurableOverlaySettings();

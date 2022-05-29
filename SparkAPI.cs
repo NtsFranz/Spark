@@ -463,8 +463,13 @@ namespace Spark
 						await context.Response.WriteAsync("No data");
 						return;
 					}
-
 					data.OverwriteObject(SparkSettings.instance);
+
+					if (data.ContainsKey("configurableOverlaySettings"))
+					{
+						Program.OverlayConfigChanged?.Invoke();
+					}
+
 
 					// update the UI to match
 					Window window = Program.GetWindowIfOpen(typeof(UnifiedSettingsWindow));
