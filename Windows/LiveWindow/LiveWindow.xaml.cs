@@ -6,10 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,11 +28,10 @@ namespace Spark
 	/// Interaction logic for LiveWindow.xaml
 	/// </summary>
 	/// 
-	public partial class LiveWindow : Window
+	public partial class LiveWindow
 	{
 		private readonly System.Timers.Timer outputUpdateTimer = new System.Timers.Timer();
-
-		List<ProgressBar> playerSpeedBars = new List<ProgressBar>();
+		
 		private string updateFilename = "";
 
 		public static readonly object lastSnapshotLock = new object();
@@ -43,15 +39,12 @@ namespace Spark
 		private string lastDiscordUsername = string.Empty;
 		private bool accessCodeDropdownListenerActive;
 		public bool hidden;
-		private bool isExplicitClose = false;
+		private bool isExplicitClose;
 
 		string blueLogo = "";
 		string orangeLogo = "";
 
 		private bool tryingToShowGameOverlay;
-		private bool lastTryingToShowGameOverlay;
-
-		private string lastTraceroute = "";
 
 		[DllImport("User32.dll")]
 		static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
@@ -75,9 +68,6 @@ namespace Spark
 		[DllImport("user32.dll")]
 		private static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
 
-		[DllImport("user32.dll")]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RECT
@@ -95,7 +85,6 @@ namespace Spark
 		const int UNITY_READY = 0x00000003;
 		private const int WM_ACTIVATE = 0x0006;
 		private readonly IntPtr WA_ACTIVE = new IntPtr(1);
-		private readonly IntPtr WA_INACTIVE = new IntPtr(0);
 		private const int GWL_STYLE = (-16);
 		private const int WS_VISIBLE = 0x10000000;
 		private const int GWL_USERDATA = (-21);
@@ -137,7 +126,7 @@ namespace Spark
 				}
 			};
 
-			DiscordOAuth.AccessCodeChanged += (code) =>
+			DiscordOAuth.AccessCodeChanged += _ =>
 			{
 				Dispatcher.Invoke(() =>
 				{
@@ -233,12 +222,12 @@ namespace Spark
 			}
 			catch (FileNotFoundException ex)
 			{
-				Logger.LogRow(Logger.LogType.Error, "4538: Failed to load WebView.\n" + ex);
+				LogRow(LogType.Error, "4538: Failed to load WebView.\n" + ex);
 				new MessageBox("Failed to load. Please report this to NtsFranz or else ┗|｀O′|┛").Show();
 			}
 			catch (Exception ex)
 			{
-				Logger.LogRow(Logger.LogType.Error, "9530: Failed to load WebView for an unknown reason.\n" + ex);
+				LogRow(LogType.Error, "9530: Failed to load WebView for an unknown reason.\n" + ex);
 				new MessageBox("Failed to load. Please report this to NtsFranz. ( ╯□╰ )").Show();
 			}
 
@@ -283,11 +272,6 @@ namespace Spark
 			SendMessage(unityHWND, WM_ACTIVATE, WA_ACTIVE, IntPtr.Zero);
 		}
 
-		private void DeactivateUnityWindow()
-		{
-			SendMessage(unityHWND, WM_ACTIVATE, WA_INACTIVE, IntPtr.Zero);
-		}
-
 		private int WindowEnum(IntPtr hwnd, IntPtr lparam)
 		{
 			unityHWND = hwnd;
@@ -300,7 +284,7 @@ namespace Spark
 		{
 			if (!speakerSystemPanel.IsVisible || SpeakerSystemProcess == null || SpeakerSystemProcess.Handle.ToInt32() <= 0) return;
 
-			System.Windows.Point relativePoint = speakerSystemPanel.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+			Point relativePoint = speakerSystemPanel.TransformToAncestor(this).Transform(new Point(0, 0));
 			MoveWindow(unityHWND, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
 			ActivateUnityWindow();
 		}
@@ -316,8 +300,8 @@ namespace Spark
 			}
 			ActivateUnityWindow();
 			startStopEchoSpeakerSystem.IsEnabled = true;
-			System.Windows.Point relativePoint = speakerSystemPanel.TransformToAncestor(this)
-						  .Transform(new System.Windows.Point(0, 0));
+			Point relativePoint = speakerSystemPanel.TransformToAncestor(this)
+						  .Transform(new Point(0, 0));
 
 			MoveWindow(unityHWND, Convert.ToInt32(relativePoint.X), Convert.ToInt32(relativePoint.Y), Convert.ToInt32(speakerSystemPanel.ActualWidth), Convert.ToInt32(speakerSystemPanel.ActualHeight), true);
 		}
@@ -354,15 +338,8 @@ namespace Spark
 				LogRow(LogType.Error, $"Error killing speaker system\n{e}");
 			}
 		}
-		private void Form1_Activated(object sender, EventArgs e)
-		{
-			ActivateUnityWindow();
-		}
-
-		private void Form1_Deactivate(object sender, EventArgs e)
-		{
-			DeactivateUnityWindow();
-		}
+		
+		
 		private void Update(object source, ElapsedEventArgs e)
 		{
 			if (Program.running)
@@ -423,7 +400,7 @@ namespace Spark
 							NotConnectedHelp.Visibility = Visibility.Visible;
 							break;
 						case Program.ConnectionState.Menu:
-							statusLabel.Content = "In Loading Screen";
+							statusLabel.Content = Properties.Resources.In_Loading_Screen;
 							statusCircle.Fill = new SolidColorBrush(Colors.Yellow);
 							NotConnectedHelp.Visibility = Visibility.Collapsed;
 							break;
@@ -496,28 +473,12 @@ namespace Spark
 						List<List<int>> pings = new List<List<int>> { new List<int>(), new List<int>() };
 
 						// loop through all the players and set their speed progress bars and pings
-						int i = 0;
 						for (int t = 0; t < 3; t++)
 						{
 							foreach (var player in Program.lastFrame.teams[t].players)
 							{
 								if (t < 2)
 								{
-									if (playerSpeedBars.Count > i)
-									{
-										playerSpeedBars[i].Visibility = Visibility.Visible;
-										double speed = (player.velocity.ToVector3().Length() * 10);
-										if (speed > playerSpeedBars[i].Maximum) speed = playerSpeedBars[i].Maximum;
-										playerSpeedBars[i].Value = speed;
-										System.Drawing.Color color = t == 0 ? System.Drawing.Color.DodgerBlue : System.Drawing.Color.Orange;
-
-										// TODO convert to WPF
-										//playerSpeedBars[i].Foreground = color;
-										//playerSpeedBars[i].Background = speedsLayout.BackColor;
-										i++;
-
-									}
-
 									if (t == 0)
 									{
 										blueTextNames.AppendLine(player.name);
@@ -546,7 +507,7 @@ namespace Spark
 						orangePlayerPingsNames.Text = orangeTextNames.ToString();
 						orangePlayerPingsPings.Text = orangePingsTextPings.ToString();
 
-						string playerPingsHeader = "";
+						string playerPingsHeader;
 
 						if (Program.CurrentRound.serverScore > 0)
 						{
@@ -638,118 +599,12 @@ namespace Spark
 						lastJoustsTextBlock.Text = lastJoustsString.ToString();
 
 
-						for (; i < playerSpeedBars.Count; i++)
-						{
-							playerSpeedBars[i].Visibility = Visibility.Visible;
-							// TODO convert to WPF
-							//playerSpeedBars[i].Background = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
-						}
-
-
-						// scoreboard
-						//orangeScoreboardItems.ForEach((i) => orangeScoreboardGrid.Children.Remove(i));
-						//blueScoreboardItems.ForEach((i) => blueScoreboardGrid.Children.Remove(i));
-						//orangeScoreboardItems.Clear();
-						//blueScoreboardItems.Clear();
-						//int orangeRow = 0;
-						//int blueRow = 0;
-						//foreach (KeyValuePair<long, MatchPlayer> player in Program.matchData.players)
-						//{
-						//	Grid board = null;
-						//	int currentRow = 0;
-						//	List<Label> currentItems = null;
-						//	if (player.Value.teamData.teamColor == Team.TeamColor.orange)
-						//	{
-						//		board = orangeScoreboardGrid;
-						//		orangeRow++;
-						//		currentRow = orangeRow;
-						//		currentItems = orangeScoreboardItems;
-						//	}
-						//	else if (player.Value.teamData.teamColor == Team.TeamColor.blue)
-						//	{
-						//		board = blueScoreboardGrid;
-						//		blueRow++;
-						//		currentRow = blueRow;
-						//		currentItems = blueScoreboardItems;
-						//	}
-						//	if (board == null) continue;
-
-						//	Label label = new Label();
-						//	label.Content = player.Value.Name;
-						//	board.Children.Add(label);
-						//	Grid.SetRow(label, currentRow);
-						//	Grid.SetColumn(label, 0);
-						//	currentItems.Add(label);
-
-						//	label = new Label();
-						//	label.Content = player.Value.Points;
-						//	board.Children.Add(label);
-						//	Grid.SetRow(label, currentRow);
-						//	Grid.SetColumn(label, 1);
-						//	currentItems.Add(label);
-
-						//	label = new Label();
-						//	label.Content = player.Value.Assists;
-						//	board.Children.Add(label);
-						//	Grid.SetRow(label, currentRow);
-						//	Grid.SetColumn(label, 2);
-						//	currentItems.Add(label);
-
-						//	label = new Label();
-						//	label.Content = player.Value.Saves;
-						//	board.Children.Add(label);
-						//	Grid.SetRow(label, currentRow);
-						//	Grid.SetColumn(label, 3);
-						//	currentItems.Add(label);
-
-						//	label = new Label();
-						//	label.Content = player.Value.Steals;
-						//	board.Children.Add(label);
-						//	Grid.SetRow(label, currentRow);
-						//	Grid.SetColumn(label, 4);
-						//	currentItems.Add(label);
-
-						//	label = new Label();
-						//	label.Content = player.Value.Stuns;
-						//	board.Children.Add(label);
-						//	Grid.SetRow(label, currentRow);
-						//	Grid.SetColumn(label, 5);
-						//	currentItems.Add(label);
-
-						//	label = new Label();
-						//	label.Content = player.Value.PossessionTime.ToString("N1");
-						//	board.Children.Add(label);
-						//	Grid.SetRow(label, currentRow);
-						//	Grid.SetColumn(label, 6);
-						//	currentItems.Add(label);
-
-						//	label = new Label();
-						//	label.Content = player.Value.averageSpeed[0].ToString("N1");
-						//	board.Children.Add(label);
-						//	Grid.SetRow(label, currentRow);
-						//	Grid.SetColumn(label, 7);
-						//	currentItems.Add(label);
-						//}
-
 					}
 					else
 					{
 						discSpeedLabel.Text = "---";
-						discSpeedLabel.Foreground = System.Windows.Media.Brushes.LightGray;
-						//discSpeedProgressBar.Value = 0;
-						//discSpeedProgressBar.ForeColor = Color.Gray;
-						foreach (ProgressBar bar in playerSpeedBars)
-						{
-							bar.Value = 0;
-							// TODO convert to WPF
-							//bar.BackColor = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
-						}
+						discSpeedLabel.Foreground = Brushes.LightGray;
 					}
-
-					// TODO convert to WPF
-					//speedsLayout.BackColor = speedsHovering ? Color.FromArgb(60, 60, 60) : Color.FromArgb(45, 45, 45);
-
-
 
 					#region Rejoiner
 
@@ -801,7 +656,7 @@ namespace Spark
 							}
 							else
 							{
-								ClickableOverlaySubtitle.Text = "Echo VR not active";
+								ClickableOverlaySubtitle.Text = Properties.Resources.Echo_VR_not_active;
 							}
 						}
 						else
@@ -812,7 +667,7 @@ namespace Spark
 								Program.ToggleWindow(typeof(GameOverlay));
 							}
 							
-							ClickableOverlaySubtitle.Text = "Active";
+							ClickableOverlaySubtitle.Text = Properties.Resources.Active;
 						}
 					}
 					else
@@ -918,29 +773,6 @@ namespace Spark
 			accessCodeDropdownListenerActive = true;
 		}
 
-		private void AddSpeedBar()
-		{
-			// TODO convert to WPF
-			//ColoredProgressBar bar = new ColoredProgressBar();
-			//playerSpeedBars.Add(bar);
-			//bar.Height = 10;
-			//Padding margins = bar.Margin;
-			//margins.Top = 0;
-			//margins.Bottom = 0;
-			//margins.Left = 0;
-			//margins.Right = 0;
-			//bar.Margin = margins;
-			//bar.Width = 200;
-			//bar.Maximum = 200;
-
-			//bar.Click += new EventHandler(openSpeedometer);
-			//bar.MouseLeave += new EventHandler(speedsUnHover);
-			//bar.MouseEnter += new EventHandler(speedsHover);
-			//bar.Cursor = Cursors.Hand;
-
-			//speedsFlowLayout.Controls.Add(bar);
-
-		}
 
 		private async Task CheckForAppUpdate()
 		{
@@ -971,7 +803,7 @@ namespace Spark
 						updateFilename = downloadUrl;
 						updateButton.Visibility = Visibility.Visible;
 
-						MessageBox box = new MessageBox(changelog, "Update Available");
+						MessageBox box = new MessageBox(changelog, Properties.Resources.Update_Available);
 						box.Topmost = true;
 						box.Show();
 					}
@@ -1112,15 +944,6 @@ namespace Spark
 			return string.Join(Environment.NewLine, input);
 		}
 
-		private void clearButton_Click(object sender, RoutedEventArgs e)
-		{
-			lock (Program.logOutputWriteLock)
-			{
-				fullFileCache.Clear();
-				mainOutputTextBox.Text = FilterLines(fullFileCache);
-			}
-		}
-
 		private void updateButton_Click(object sender, RoutedEventArgs e)
 		{
 			try
@@ -1132,7 +955,7 @@ namespace Spark
 			}
 			catch (Exception)
 			{
-				new MessageBox("Something broke while trying to download update", Properties.Resources.Error).Show();
+				new MessageBox(Properties.Resources.Something_broke_while_trying_to_download_update_, Properties.Resources.Error).Show();
 			}
 		}
 
@@ -1151,7 +974,7 @@ namespace Spark
 				// Install the update
 				Process.Start(new ProcessStartInfo
 				{
-					FileName = Path.Combine(Path.GetTempPath(), Path.GetFileName(updateFilename)),
+					FileName = Path.Combine(Path.GetTempPath(), Path.GetFileName(updateFilename) ?? throw new InvalidOperationException()),
 					UseShellExecute = true
 				});
 
@@ -1159,7 +982,7 @@ namespace Spark
 			}
 			catch (Exception)
 			{
-				new MessageBox("Something broke while trying to launch update installer", Properties.Resources.Error).Show();
+				new MessageBox(Properties.Resources.Something_broke_while_trying_to_launch_update_installer, Properties.Resources.Error).Show();
 			}
 		}
 
@@ -1205,11 +1028,6 @@ namespace Spark
 		private void OpenSpeedometer(object sender, RoutedEventArgs e)
 		{
 			Program.ToggleWindow(typeof(Speedometer), ownedBy: this);
-		}
-
-		private void hostLiveReplayButton_CheckedChanged(object sender, RoutedEventArgs e)
-		{
-			Program.hostingLiveReplay = ((CheckBox)sender).IsChecked == true;
 		}
 
 		private void enableAPIButton_Click(object sender, RoutedEventArgs e)
@@ -1440,12 +1258,9 @@ namespace Spark
 			IntPtr unityHandle = IntPtr.Zero;
 			Dispatcher.Invoke(() =>
 			{
-
-				HwndSource source = (HwndSource)PresentationSource.FromVisual(speakerSystemPanel);
-
-				var helper = new WindowInteropHelper(this);
-				var hwndSource = HwndSource.FromHwnd(helper.EnsureHandle());
-				unityHandle = hwndSource.Handle;
+				WindowInteropHelper helper = new WindowInteropHelper(this);
+				HwndSource hwndSource = HwndSource.FromHwnd(helper.EnsureHandle());
+				if (hwndSource != null) unityHandle = hwndSource.Handle;
 				return unityHandle;
 			});
 			return unityHandle;
@@ -1463,19 +1278,21 @@ namespace Spark
 					startStopEchoSpeakerSystem.IsEnabled = false;
 					startStopEchoSpeakerSystem.Content = Properties.Resources.Stop_Echo_Speaker_System;
 					SpeakerSystemProcess = new Process();
-					HwndSource source = (HwndSource)PresentationSource.FromVisual(speakerSystemPanel);
 
-					var helper = new WindowInteropHelper(this);
-					var hwndSource = HwndSource.FromHwnd(helper.EnsureHandle());
-					IntPtr unityHandle = hwndSource.Handle;
-					SpeakerSystemProcess.StartInfo.FileName = "C:\\Program Files (x86)\\Echo Speaker System\\Echo Speaker System.exe";
-					SpeakerSystemProcess.StartInfo.Arguments = "ignitebot -parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
-					SpeakerSystemProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-					SpeakerSystemProcess.StartInfo.CreateNoWindow = true;
+					WindowInteropHelper helper = new WindowInteropHelper(this);
+					HwndSource hwndSource = HwndSource.FromHwnd(helper.EnsureHandle());
+					if (hwndSource != null)
+					{
+						IntPtr unityHandle = hwndSource.Handle;
+						SpeakerSystemProcess.StartInfo.FileName = "C:\\Program Files (x86)\\Echo Speaker System\\Echo Speaker System.exe";
+						SpeakerSystemProcess.StartInfo.Arguments = "ignitebot -parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
+						SpeakerSystemProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+						SpeakerSystemProcess.StartInfo.CreateNoWindow = true;
 
-					SpeakerSystemProcess.Start();
-					SpeakerSystemProcess.WaitForInputIdle();
-					SpeakerSystemStart(unityHandle);
+						SpeakerSystemProcess.Start();
+						SpeakerSystemProcess.WaitForInputIdle();
+						SpeakerSystemStart(unityHandle);
+					}
 				}
 				catch (Exception)
 				{
@@ -1513,48 +1330,6 @@ namespace Spark
 		}
 
 		#region Atlas Links Tab
-
-
-		// private void GetLinks(object sender, RoutedEventArgs e)
-		// {
-		// 	string ip = alternateIPTextBox.Text;
-		// 	Program.GetRequestCallback($"http://{ip}:6721/session", null, (responseJSON) =>
-		// 	{
-		// 		try
-		// 		{
-		// 			SimpleFrame obj = JsonConvert.DeserializeObject<SimpleFrame>(responseJSON);
-		//
-		// 			if (obj != null && !string.IsNullOrEmpty(obj.sessionid))
-		// 			{
-		// 				Dispatcher.Invoke(() =>
-		// 				{
-		// 					joinLink.Text = Program.CurrentSparkLink(obj.sessionid);
-		//
-		// 					SparkSettings.instance.alternateEchoVRIP = alternateIPTextBox.Text;
-		// 					SparkSettings.instance.Save();
-		// 				});
-		// 			}
-		//
-		// 		}
-		// 		catch (Exception ex)
-		// 		{
-		// 			Logger.LogRow(Logger.LogType.Error, $"Can't parse response\n{ex}");
-		// 		}
-		// 	});
-		// }
-
-		//public int HostingVisibilityDropdown {
-		//	get => SparkSettings.instance.atlasHostingVisibility;
-		//	set {
-		//		SparkSettings.instance.atlasHostingVisibility = value;
-		//		SparkSettings.instance.Save();
-		//	}
-		//}
-
-		private void CloseButton_Click(object sender, RoutedEventArgs e)
-		{
-			Close();
-		}
 
 		private void HostMatchClicked(object sender, RoutedEventArgs e)
 		{
@@ -1677,7 +1452,7 @@ namespace Spark
 				}
 				catch (Exception e)
 				{
-					Logger.LogRow(Logger.LogType.Error, $"Can't serialize atlas match data.\n{e.Message}\n{e.StackTrace}");
+					LogRow(LogType.Error, $"Can't serialize atlas match data.\n{e.Message}\n{e.StackTrace}");
 					return new Dictionary<string, object>
 					{
 						{"none", 0}
@@ -1748,7 +1523,7 @@ namespace Spark
 							Content = Properties.Resources.Copy_Spark_Link,
 							Margin = new Thickness(50, 0, 0, 0),
 							Padding = new Thickness(10, 0, 10, 0),
-							Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(buttonColor, buttonColor, buttonColor)),
+							Background = new SolidColorBrush(Color.FromRgb(buttonColor, buttonColor, buttonColor)),
 						};
 						copyLinkButton.Click += (_, _) =>
 						{
@@ -1760,7 +1535,7 @@ namespace Spark
 							Content = Properties.Resources.Join,
 							Margin = new Thickness(20, 0, 0, 0),
 							Padding = new Thickness(10, 0, 10, 0),
-							Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(buttonColor, buttonColor, buttonColor)),
+							Background = new SolidColorBrush(Color.FromRgb(buttonColor, buttonColor, buttonColor)),
 						};
 						joinButton.Click += (_, _) =>
 						{
@@ -1794,14 +1569,14 @@ namespace Spark
 
 						content.ShowGridLines = true;
 
-						System.Windows.Controls.Image blueLogo = new System.Windows.Controls.Image
+						Image blueLogo2 = new Image
 						{
 							Width = 100,
 							Height = 100
 						};
 						if (match.blue_team_info?.team_logo != string.Empty)
 						{
-							blueLogo.Source = string.IsNullOrEmpty(match.blue_team_info?.team_logo) ? null : (new BitmapImage(new Uri(match.blue_team_info.team_logo)));
+							blueLogo2.Source = string.IsNullOrEmpty(match.blue_team_info?.team_logo) ? null : (new BitmapImage(new Uri(match.blue_team_info.team_logo)));
 						}
 						StackPanel blueLogoBox = new StackPanel
 						{
@@ -1809,7 +1584,7 @@ namespace Spark
 							Margin = new Thickness(5, 10, 5, 10)
 						};
 						blueLogoBox.SetValue(Grid.ColumnProperty, 0);
-						blueLogoBox.Children.Add(blueLogo);
+						blueLogoBox.Children.Add(blueLogo2);
 						blueLogoBox.Children.Add(new Label
 						{
 							Content = match.blue_team_info?.team_name,
@@ -1818,14 +1593,14 @@ namespace Spark
 						});
 
 
-						System.Windows.Controls.Image orangeLogo = new System.Windows.Controls.Image
+						Image orangeLogo2 = new Image
 						{
 							Width = 100,
 							Height = 100
 						};
 						if (match.orange_team_info?.team_logo != string.Empty)
 						{
-							orangeLogo.Source = string.IsNullOrEmpty(match.orange_team_info?.team_logo) ? null : (new BitmapImage(new Uri(match.orange_team_info.team_logo)));
+							orangeLogo2.Source = string.IsNullOrEmpty(match.orange_team_info?.team_logo) ? null : (new BitmapImage(new Uri(match.orange_team_info.team_logo)));
 						}
 						StackPanel orangeLogoBox = new StackPanel
 						{
@@ -1833,7 +1608,7 @@ namespace Spark
 							Margin = new Thickness(5, 10, 5, 10)
 						};
 						orangeLogoBox.SetValue(Grid.ColumnProperty, 3);
-						orangeLogoBox.Children.Add(orangeLogo);
+						orangeLogoBox.Children.Add(orangeLogo2);
 						orangeLogoBox.Children.Add(new Label
 						{
 							Content = match.orange_team_info?.team_name,
@@ -1853,10 +1628,10 @@ namespace Spark
 							Margin = new Thickness(10, 10, 10, 10)
 						};
 						orangePlayers.SetValue(Grid.ColumnProperty, 2);
-						Label sessionIdTextBox = new Label
-						{
-							Content = match.matchid
-						};
+						// Label sessionIdTextBox = new Label
+						// {
+						// 	Content = match.matchid
+						// };
 						//content.Children.Add(sessionIdTextBox);
 						content.Children.Add(blueLogoBox);
 						content.Children.Add(orangeLogoBox);
@@ -1874,7 +1649,7 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				Logger.LogRow(Logger.LogType.Error, $"Error showing matches in UI\n{e}");
+				LogRow(LogType.Error, $"Error showing matches in UI\n{e}");
 			}
 		}
 
@@ -1941,7 +1716,7 @@ namespace Spark
 						hostURL,
 						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						data,
-						(_) => { GetAtlasMatches(); });
+						_ => { GetAtlasMatches(); });
 				}
 
 				Thread.Sleep(100);
@@ -1953,7 +1728,7 @@ namespace Spark
 				unhostURL,
 				new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 				matchInfo,
-				(responseJSON) =>
+				_ =>
 				{
 					Program.hostedAtlasSessionId = string.Empty;
 					Dispatcher.Invoke(() =>
@@ -1975,7 +1750,7 @@ namespace Spark
 					{ "x-api-key", DiscordOAuth.igniteUploadKey },
 					{ "access_code", DiscordOAuth.AccessCode.series_name }
 				},
-				(responseJSON) =>
+				responseJSON =>
 				{
 					try
 					{
@@ -2029,13 +1804,8 @@ namespace Spark
 			}
 			catch (Exception ex)
 			{
-				Logger.LogRow(Logger.LogType.Error, ex.ToString());
+				LogRow(LogType.Error, ex.ToString());
 			}
-		}
-
-		private void IPSourceDropdownChanged(object sender, SelectionChangedEventArgs e)
-		{
-			// TODO
 		}
 
 		private void WhitelistButtonClicked(object sender, RoutedEventArgs e)
@@ -2052,38 +1822,6 @@ namespace Spark
 				RefreshCurrentLink();
 			}
 		}
-
-		// private async void FindQuestIP(object sender, RoutedEventArgs e)
-		// {
-		// 	findQuestStatusLabel.Content = Properties.Resources.Searching_for_Quest_on_network;
-		// 	findQuestStatusLabel.Visibility = Visibility.Visible;
-		// 	alternateIPTextBox.IsEnabled = false;
-		// 	findQuest.IsEnabled = false;
-		// 	resetIP.IsEnabled = false;
-		// 	Progress<string> progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
-		// 	await Task.Factory.StartNew(() => Program.echoVRIP = QuestIPFetching.FindQuestIP(progress), TaskCreationOptions.None);
-		// 	alternateIPTextBox.IsEnabled = true;
-		// 	findQuest.IsEnabled = true;
-		// 	resetIP.IsEnabled = true;
-		// 	if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
-		// 	alternateIPTextBox.Text = Program.echoVRIP;
-		// 	SparkSettings.instance.echoVRIP = Program.echoVRIP;
-		// 	if (!Program.overrideEchoVRPort) SparkSettings.instance.echoVRPort = Program.echoVRPort;
-		// }
-
-		// private void SetToLocalIP(object sender, RoutedEventArgs e)
-		// {
-		// 	Program.echoVRIP = "127.0.0.1";
-		// 	alternateIPTextBox.Text = Program.echoVRIP;
-		// 	SparkSettings.instance.echoVRIP = Program.echoVRIP;
-		// }
-		//
-		// private void EchoVRIPChanged(object sender, TextChangedEventArgs e)
-		// {
-		// 	if (!initialized) return;
-		// 	Program.echoVRIP = ((TextBox)sender).Text;
-		// 	SparkSettings.instance.echoVRIP = Program.echoVRIP;
-		// }
 
 		#endregion
 
@@ -2125,12 +1863,6 @@ namespace Spark
 			}
 		}
 
-		private void CameraWriteClick(object sender, RoutedEventArgs e)
-		{
-			Program.ToggleWindow(typeof(CameraWrite));
-		}
-
-		
 
 		private void AccessCodeChangedLiveWindow(object sender, SelectionChangedEventArgs e)
 		{

@@ -70,6 +70,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;Clip That&apos; detection (Medal.tv).
+        /// </summary>
+        public static string _Clip_That__detection__Medal_tv_ {
+            get {
+                return ResourceManager.GetString("\'Clip That\' detection (Medal.tv)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;Clip That&apos; detection (NVIDIA Highlights).
+        /// </summary>
+        public static string _Clip_That__detection__NVIDIA_Highlights_ {
+            get {
+                return ResourceManager.GetString("\'Clip That\' detection (NVIDIA Highlights)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .echoreplay Clips.
         /// </summary>
         public static string _echoreplay_Clips {
@@ -102,6 +120,15 @@ namespace Spark.Properties {
         public static string Access_Code {
             get {
                 return ResourceManager.GetString("Access Code", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string Active {
+            get {
+                return ResourceManager.GetString("Active", resourceCulture);
             }
         }
         
@@ -142,6 +169,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow Spectate Me on local PC.
+        /// </summary>
+        public static string Allow_Spectate_Me_on_local_PC {
+            get {
+                return ResourceManager.GetString("Allow Spectate Me on local PC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to and ask questions in the #spark-support channel..
         /// </summary>
         public static string and_ask_questions_in_the__ignitebot_support_channel_ {
@@ -160,11 +196,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Announcer Volume.
+        /// </summary>
+        public static string Announcer_Volume {
+            get {
+                return ResourceManager.GetString("Announcer Volume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Anonymous accounts allow you to join the match twice on the same computer..
         /// </summary>
         public static string Anonymous_accounts_allow_you_to_join_the_match_twice_on_the_same_computer_ {
             get {
                 return ResourceManager.GetString("Anonymous accounts allow you to join the match twice on the same computer.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Anti-aliasing.
+        /// </summary>
+        public static string Anti_aliasing {
+            get {
+                return ResourceManager.GetString("Anti-aliasing", resourceCulture);
             }
         }
         
@@ -202,6 +256,15 @@ namespace Spark.Properties {
         public static string Apply {
             get {
                 return ResourceManager.GetString("Apply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply these settings to .
+        /// </summary>
+        public static string Apply_these_settings_to_ {
+            get {
+                return ResourceManager.GetString("Apply these settings to ", resourceCulture);
             }
         }
         
@@ -269,6 +332,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audio Source.
+        /// </summary>
+        public static string Audio_Source {
+            get {
+                return ResourceManager.GetString("Audio Source", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Australia.
         /// </summary>
         public static string Australia {
@@ -296,6 +368,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto Resolution.
+        /// </summary>
+        public static string Auto_Resolution {
+            get {
+                return ResourceManager.GetString("Auto Resolution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Auto-start Replay Buffer.
         /// </summary>
         public static string Auto_start_Replay_Buffer {
@@ -305,7 +386,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autofocus EchoVR.
+        ///   Looks up a localized string similar to Autofocus EchoVR window.
         /// </summary>
         public static string Autofocus_EchoVR {
             get {
@@ -314,11 +395,38 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autorestart EchoVR into autospectator.
+        ///   Looks up a localized string similar to Automatic Scene Switching.
+        /// </summary>
+        public static string Automatic_Scene_Switching {
+            get {
+                return ResourceManager.GetString("Automatic Scene Switching", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically restarts spectatorstream when it crashes.
+        /// </summary>
+        public static string Automatically_restarts_spectatorstream_when_it_crashes {
+            get {
+                return ResourceManager.GetString("Automatically restarts spectatorstream when it crashes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autorestart EchoVR into Spectatorstream.
         /// </summary>
         public static string Autorestart_EchoVR_into_autospectator {
             get {
                 return ResourceManager.GetString("Autorestart EchoVR into autospectator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bad word detection (for reporting).
+        /// </summary>
+        public static string Bad_word_detection__for_reporting_ {
+            get {
+                return ResourceManager.GetString("Bad word detection (for reporting)", resourceCulture);
             }
         }
         
@@ -347,6 +455,24 @@ namespace Spark.Properties {
         public static string betaUpdates_ToolTip {
             get {
                 return ResourceManager.GetString("betaUpdates.ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Between-game Scene:.
+        /// </summary>
+        public static string Between_game_Scene_ {
+            get {
+                return ResourceManager.GetString("Between-game Scene:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bloom.
+        /// </summary>
+        public static string Bloom {
+            get {
+                return ResourceManager.GetString("Bloom", resourceCulture);
             }
         }
         
@@ -423,6 +549,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change clip length in the medal settings window. (Settings-&gt;Recorder).
+        /// </summary>
+        public static string Change_clip_length_in_the_medal_settings_window___Settings__Recorder_ {
+            get {
+                return ResourceManager.GetString("Change clip length in the medal settings window. (Settings->Recorder)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose.
         /// </summary>
         public static string Choose {
@@ -455,6 +590,25 @@ namespace Spark.Properties {
         public static string chooseRegionSpectator_ToolTip {
             get {
                 return ResourceManager.GetString("chooseRegionSpectator.ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear Highlights On Exit.
+        /// </summary>
+        public static string Clear_Highlights_On_Exit {
+            get {
+                return ResourceManager.GetString("Clear Highlights On Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder.
+        /// </summary>
+        public static string Clear_unsaved_highlight_clips_on_Spark_exit__If_disabled__highlights_will_be_retained_forever_unless_manually_deleted_from_temp_folder {
+            get {
+                return ResourceManager.GetString("Clear unsaved highlight clips on Spark exit. If disabled, highlights will be reta" +
+                        "ined forever unless manually deleted from temp folder", resourceCulture);
             }
         }
         
@@ -702,6 +856,17 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Customize your hotkey in Medal by going to Settings (bottom left) -&gt; Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default. F12 should be good for most people..
+        /// </summary>
+        public static string Customize_your_hotkey_in_Medal_by_going_to_Settings__bottom_left_____Hotkeys__The_default_is_F8__but_this_also_hides_player_nametags_and_the_HUD_in_Echo__so_you_may_want_to_change_the_default__F12_should_be_good_for_most_people_ {
+            get {
+                return ResourceManager.GetString("Customize your hotkey in Medal by going to Settings (bottom left) -> Hotkeys. The" +
+                        " default is F8, but this also hides player nametags and the HUD in Echo, so you " +
+                        "may want to change the default. F12 should be good for most people.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dashboard.
         /// </summary>
         public static string Dashboard {
@@ -716,6 +881,33 @@ namespace Spark.Properties {
         public static string Default_Configuration {
             get {
                 return ResourceManager.GetString("Default Configuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Defensive Joust.
+        /// </summary>
+        public static string Defensive_Joust {
+            get {
+                return ResourceManager.GetString("Defensive Joust", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to deg.
+        /// </summary>
+        public static string deg {
+            get {
+                return ResourceManager.GetString("deg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Desktop Audio.
+        /// </summary>
+        public static string Desktop_Audio {
+            get {
+                return ResourceManager.GetString("Desktop Audio", resourceCulture);
             }
         }
         
@@ -792,11 +984,74 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do Not Switch.
+        /// </summary>
+        public static string Do_Not_Switch {
+            get {
+                return ResourceManager.GetString("Do Not Switch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you play EchoVR on PC or Quest?.
         /// </summary>
         public static string Do_you_play_EchoVR_on_PC_or_Quest_ {
             get {
                 return ResourceManager.GetString("Do you play EchoVR on PC or Quest?", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t Change.
+        /// </summary>
+        public static string Don_t_Change {
+            get {
+                return ResourceManager.GetString("Don\'t Change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t Show Minimap (M).
+        /// </summary>
+        public static string Don_t_Show_Minimap__M_ {
+            get {
+                return ResourceManager.GetString("Don\'t Show Minimap (M)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Donate.
+        /// </summary>
+        public static string Donate {
+            get {
+                return ResourceManager.GetString("Donate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://www.paypal.com/donate/?business=EWXGJHK78FR24&amp;no_recurring=0&amp;item_name=Donations+are+NOT+expected%2C+but+they+act+as+a+thanks+and+encouragement+to+continue+working+on+Echo-related+tools+-NtsFranz&amp;currency_code=USD.
+        /// </summary>
+        public static string DonateURL {
+            get {
+                return ResourceManager.GetString("DonateURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Donations are not expected but are appreciated..
+        /// </summary>
+        public static string Donations_are_not_expected_but_are_appreciated_ {
+            get {
+                return ResourceManager.GetString("Donations are not expected but are appreciated.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download Installer.
+        /// </summary>
+        public static string Download_Installer {
+            get {
+                return ResourceManager.GetString("Download Installer", resourceCulture);
             }
         }
         
@@ -900,6 +1155,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Echo Grand Prix.
+        /// </summary>
+        public static string Echo_Grand_Prix {
+            get {
+                return ResourceManager.GetString("Echo Grand Prix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Echo VR not active.
+        /// </summary>
+        public static string Echo_VR_not_active {
+            get {
+                return ResourceManager.GetString("Echo VR not active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Echopedia page.
         /// </summary>
         public static string Echopedia_page {
@@ -972,6 +1245,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Emote Activation.
+        /// </summary>
+        public static string Emote_Activation {
+            get {
+                return ResourceManager.GetString("Emote Activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable -capturevp2 when launching spectator.
         /// </summary>
         public static string Enable__capturevp2_when_launching_spectator {
@@ -1013,6 +1295,15 @@ namespace Spark.Properties {
         public static string Enable_Replay_Buffer {
             get {
                 return ResourceManager.GetString("Enable Replay Buffer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Voice Recognition.
+        /// </summary>
+        public static string Enable_Voice_Recognition {
+            get {
+                return ResourceManager.GetString("Enable Voice Recognition", resourceCulture);
             }
         }
         
@@ -1126,11 +1417,20 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fast (60 Hz).
+        ///   Looks up a localized string similar to Fast (30 Hz).
         /// </summary>
         public static string Fast__60_Hz_ {
             get {
                 return ResourceManager.GetString("Fast (60 Hz)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fastest.
+        /// </summary>
+        public static string Fastest {
+            get {
+                return ResourceManager.GetString("Fastest", resourceCulture);
             }
         }
         
@@ -1140,6 +1440,42 @@ namespace Spark.Properties {
         public static string Female {
             get {
                 return ResourceManager.GetString("Female", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field of View.
+        /// </summary>
+        public static string Field_of_View {
+            get {
+                return ResourceManager.GetString("Field of View", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Field of View only works in -capturevp2 mode.
+        /// </summary>
+        public static string Field_of_View_only_works_in__capturevp2_mode {
+            get {
+                return ResourceManager.GetString("Field of View only works in -capturevp2 mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find All Quests.
+        /// </summary>
+        public static string Find_All_Quests {
+            get {
+                return ResourceManager.GetString("Find All Quests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Now.
+        /// </summary>
+        public static string Find_Now {
+            get {
+                return ResourceManager.GetString("Find Now", resourceCulture);
             }
         }
         
@@ -1158,6 +1494,15 @@ namespace Spark.Properties {
         public static string Follow {
             get {
                 return ResourceManager.GetString("Follow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Follow Cam Offset.
+        /// </summary>
+        public static string Follow_Cam_Offset {
+            get {
+                return ResourceManager.GetString("Follow Cam Offset", resourceCulture);
             }
         }
         
@@ -1189,6 +1534,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Follow specific player.
+        /// </summary>
+        public static string Follow_specific_player {
+            get {
+                return ResourceManager.GetString("Follow specific player", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Follow specific player name:.
+        /// </summary>
+        public static string Follow_specific_player_name_ {
+            get {
+                return ResourceManager.GetString("Follow specific player name:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to For help, join the Discord.
         /// </summary>
         public static string For_help__join_the_Discord {
@@ -1203,6 +1566,69 @@ namespace Spark.Properties {
         public static string for_help_check_out {
             get {
                 return ResourceManager.GetString("for_help_check_out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FOV for auto cam.
+        /// </summary>
+        public static string FOV_for_auto_cam {
+            get {
+                return ResourceManager.GetString("FOV for auto cam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FOV for free camera.
+        /// </summary>
+        public static string FOV_for_free_camera {
+            get {
+                return ResourceManager.GetString("FOV for free camera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FOV for POV cam. (P on the keyboard when following a player).
+        /// </summary>
+        public static string FOV_for_POV_cam___P_on_the_keyboard_when_following_a_player_ {
+            get {
+                return ResourceManager.GetString("FOV for POV cam. (P on the keyboard when following a player)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free Cam Field of View.
+        /// </summary>
+        public static string Free_Cam_Field_of_View {
+            get {
+                return ResourceManager.GetString("Free Cam Field of View", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free Cam Settings  (C on the keyboard).
+        /// </summary>
+        public static string Free_Cam_Settings___C_on_the_keyboard_ {
+            get {
+                return ResourceManager.GetString("Free Cam Settings  (C on the keyboard)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fullscreen.
+        /// </summary>
+        public static string Fullscreen {
+            get {
+                return ResourceManager.GetString("Fullscreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FX Quality.
+        /// </summary>
+        public static string FX_Quality {
+            get {
+                return ResourceManager.GetString("FX Quality", resourceCulture);
             }
         }
         
@@ -1306,11 +1732,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide Player Nameplates.
+        /// </summary>
+        public static string Hide_Player_Nameplates {
+            get {
+                return ResourceManager.GetString("Hide Player Nameplates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hides this program in the tray. It will continue to run in the background.
         /// </summary>
         public static string hide_tooltip {
             get {
                 return ResourceManager.GetString("hide_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to High.
+        /// </summary>
+        public static string High {
+            get {
+                return ResourceManager.GetString("High", resourceCulture);
             }
         }
         
@@ -1445,6 +1889,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In-game Scene:.
+        /// </summary>
+        public static string In_game_Scene_ {
+            get {
+                return ResourceManager.GetString("In-game Scene:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In Loading Screen.
+        /// </summary>
+        public static string In_Loading_Screen {
+            get {
+                return ResourceManager.GetString("In Loading Screen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In Lobby.
         /// </summary>
         public static string In_Lobby {
@@ -1477,6 +1939,24 @@ namespace Spark.Properties {
         public static string Install_Echo_Speaker_System {
             get {
                 return ResourceManager.GetString("Install Echo Speaker System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install Medal.tv here: .
+        /// </summary>
+        public static string Install_Medal_tv_here__ {
+            get {
+                return ResourceManager.GetString("Install Medal.tv here: ", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install ReShade.
+        /// </summary>
+        public static string Install_ReShade {
+            get {
+                return ResourceManager.GetString("Install ReShade", resourceCulture);
             }
         }
         
@@ -1652,11 +2132,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to League Overlays.
+        /// </summary>
+        public static string League_Overlays {
+            get {
+                return ResourceManager.GetString("League Overlays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Length:.
         /// </summary>
         public static string Length_ {
             get {
                 return ResourceManager.GetString("Length:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lighting Quality.
+        /// </summary>
+        public static string Lighting_Quality {
+            get {
+                return ResourceManager.GetString("Lighting Quality", resourceCulture);
             }
         }
         
@@ -1725,11 +2223,38 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Low.
+        /// </summary>
+        public static string Low {
+            get {
+                return ResourceManager.GetString("Low", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low Frequency Mode.
+        /// </summary>
+        public static string Low_Frequency_Mode {
+            get {
+                return ResourceManager.GetString("Low Frequency Mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Male.
         /// </summary>
         public static string Male {
             get {
                 return ResourceManager.GetString("Male", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Match Setup Page.
+        /// </summary>
+        public static string Match_Setup_Page {
+            get {
+                return ResourceManager.GetString("Match Setup Page", resourceCulture);
             }
         }
         
@@ -1743,11 +2268,38 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Maximum rotation speed of the camera.
+        /// </summary>
+        public static string Maximum_rotation_speed_of_the_camera {
+            get {
+                return ResourceManager.GetString("Maximum rotation speed of the camera", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Maximum speed achieved for times when you are faster than 20 m/s.
         /// </summary>
         public static string Maximum_speed_achieved_for_times_when_you_are_faster_than_20_m_s {
             get {
                 return ResourceManager.GetString("Maximum speed achieved for times when you are faster than 20 m/s", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum translational movement speed.
+        /// </summary>
+        public static string Maximum_translational_movement_speed {
+            get {
+                return ResourceManager.GetString("Maximum translational movement speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum translational movement speed on the vertical axis.
+        /// </summary>
+        public static string Maximum_translational_movement_speed_on_the_vertical_axis {
+            get {
+                return ResourceManager.GetString("Maximum translational movement speed on the vertical axis", resourceCulture);
             }
         }
         
@@ -1761,11 +2313,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Med (30 Hz).
+        ///   Looks up a localized string similar to Med (15 Hz).
         /// </summary>
         public static string Med__30_Hz_ {
             get {
                 return ResourceManager.GetString("Med (30 Hz)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        public static string Medium {
+            get {
+                return ResourceManager.GetString("Medium", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mesh Quality.
+        /// </summary>
+        public static string Mesh_Quality {
+            get {
+                return ResourceManager.GetString("Mesh Quality", resourceCulture);
             }
         }
         
@@ -1779,6 +2349,51 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Monitor.
+        /// </summary>
+        public static string Monitor {
+            get {
+                return ResourceManager.GetString("Monitor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multi-Resolution Shading.
+        /// </summary>
+        public static string Multi_Resolution_Shading {
+            get {
+                return ResourceManager.GetString("Multi-Resolution Shading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Music Volume.
+        /// </summary>
+        public static string Music_Volume {
+            get {
+                return ResourceManager.GetString("Music Volume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mute all players.
+        /// </summary>
+        public static string Mute_all_players {
+            get {
+                return ResourceManager.GetString("Mute all players", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mute enemy team.
+        /// </summary>
+        public static string Mute_enemy_team {
+            get {
+                return ResourceManager.GetString("Mute enemy team", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to My Team Only.
         /// </summary>
         public static string My_Team_Only {
@@ -1788,11 +2403,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Neutral Joust.
+        /// </summary>
+        public static string Neutral_Joust {
+            get {
+                return ResourceManager.GetString("Neutral Joust", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No clips available.
         /// </summary>
         public static string No_clips_available {
             get {
                 return ResourceManager.GetString("No clips available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string None {
+            get {
+                return ResourceManager.GetString("None", resourceCulture);
             }
         }
         
@@ -1941,6 +2574,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only stores up to the 100 most recent joust times..
+        /// </summary>
+        public static string Only_stores_up_to_the_100_most_recent_joust_times_ {
+            get {
+                return ResourceManager.GetString("Only stores up to the 100 most recent joust times.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other in any way..
         /// </summary>
         public static string Only_the_selected_profiles_will_be_uploaded__Your_alternate_accounts_will_not_be_linked_to_each_other_in_any_way_ {
@@ -1965,6 +2607,15 @@ namespace Spark.Properties {
         public static string Open_Folder {
             get {
                 return ResourceManager.GetString("Open Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open settings folder.
+        /// </summary>
+        public static string Open_settings_folder {
+            get {
+                return ResourceManager.GetString("Open settings folder", resourceCulture);
             }
         }
         
@@ -2024,11 +2675,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Overlays.
+        /// </summary>
+        public static string Overlays {
+            get {
+                return ResourceManager.GetString("Overlays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password:.
         /// </summary>
         public static string Password_ {
             get {
                 return ResourceManager.GetString("Password:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste link in #live.
+        /// </summary>
+        public static string Paste_link_in__live {
+            get {
+                return ResourceManager.GetString("Paste link in #live", resourceCulture);
             }
         }
         
@@ -2133,6 +2802,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to POV Field of View.
+        /// </summary>
+        public static string POV_Field_of_View {
+            get {
+                return ResourceManager.GetString("POV Field of View", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Previous Goals.
         /// </summary>
         public static string Previous_Goals {
@@ -2160,6 +2838,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Private Match Rules.
+        /// </summary>
+        public static string Private_Match_Rules {
+            get {
+                return ResourceManager.GetString("Private Match Rules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Profiles:.
         /// </summary>
         public static string Profiles_ {
@@ -2183,6 +2870,15 @@ namespace Spark.Properties {
         public static string Quest {
             get {
                 return ResourceManager.GetString("Quest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent.
+        /// </summary>
+        public static string Recent {
+            get {
+                return ResourceManager.GetString("Recent", resourceCulture);
             }
         }
         
@@ -2228,6 +2924,15 @@ namespace Spark.Properties {
         public static string rejoin_tooltip {
             get {
                 return ResourceManager.GetString("rejoin_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove ReShade.
+        /// </summary>
+        public static string Remove_ReShade {
+            get {
+                return ResourceManager.GetString("Remove ReShade", resourceCulture);
             }
         }
         
@@ -2340,7 +3045,52 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Runs EchoVR with the -spectatorstream option enabled. This is useful for testing.
+        ///   Looks up a localized string similar to Reset All Settings to Default.
+        /// </summary>
+        public static string Reset_All_Settings_to_Default {
+            get {
+                return ResourceManager.GetString("Reset All Settings to Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resolution.
+        /// </summary>
+        public static string Resolution {
+            get {
+                return ResourceManager.GetString("Resolution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart as Spectator.
+        /// </summary>
+        public static string Restart_as_Spectator {
+            get {
+                return ResourceManager.GetString("Restart as Spectator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restarts the game in the 2D spectator mode..
+        /// </summary>
+        public static string Restarts_the_game_in_the_2D_spectator_mode_ {
+            get {
+                return ResourceManager.GetString("Restarts the game in the 2D spectator mode.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rotation Speed.
+        /// </summary>
+        public static string Rotation_Speed {
+            get {
+                return ResourceManager.GetString("Rotation Speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runs EchoVR with the -spectatorstream option enabled. This spectates the highest level public match at any given time..
         /// </summary>
         public static string Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing {
             get {
@@ -2385,6 +3135,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Say &apos;Clip That&apos; at any point to save a clip.
+        /// </summary>
+        public static string Say__Clip_That__at_any_point_to_save_a_clip {
+            get {
+                return ResourceManager.GetString("Say \'Clip That\' at any point to save a clip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Score:.
         /// </summary>
         public static string Score_ {
@@ -2399,6 +3158,15 @@ namespace Spark.Properties {
         public static string Score_Assist {
             get {
                 return ResourceManager.GetString("Score Assist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scoreboard.
+        /// </summary>
+        public static string Scoreboard {
+            get {
+                return ResourceManager.GetString("Scoreboard", resourceCulture);
             }
         }
         
@@ -2521,6 +3289,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shadow Quality.
+        /// </summary>
+        public static string Shadow_Quality {
+            get {
+                return ResourceManager.GetString("Shadow Quality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sharpening.
+        /// </summary>
+        public static string Sharpening {
+            get {
+                return ResourceManager.GetString("Sharpening", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show.
         /// </summary>
         public static string Show {
@@ -2566,6 +3352,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Server Location in Discord RP status.
+        /// </summary>
+        public static string Show_Server_Location_in_Discord_RP_status {
+            get {
+                return ResourceManager.GetString("Show Server Location in Discord RP status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shows a list of all the Quest IPs on the network..
+        /// </summary>
+        public static string Shows_a_list_of_all_the_Quest_IPs_on_the_network_ {
+            get {
+                return ResourceManager.GetString("Shows a list of all the Quest IPs on the network.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shutting down Match Hosting....
         /// </summary>
         public static string Shutting_down_Atlas___ {
@@ -2607,6 +3411,42 @@ namespace Spark.Properties {
         public static string Slow__10_Hz_ {
             get {
                 return ResourceManager.GetString("Slow (10 Hz)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something broke while trying to download update..
+        /// </summary>
+        public static string Something_broke_while_trying_to_download_update_ {
+            get {
+                return ResourceManager.GetString("Something broke while trying to download update.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something broke while trying to launch update installer.
+        /// </summary>
+        public static string Something_broke_while_trying_to_launch_update_installer {
+            get {
+                return ResourceManager.GetString("Something broke while trying to launch update installer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sound Effects Volume.
+        /// </summary>
+        public static string Sound_Effects_Volume {
+            get {
+                return ResourceManager.GetString("Sound Effects Volume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sound Settings.
+        /// </summary>
+        public static string Sound_Settings {
+            get {
+                return ResourceManager.GetString("Sound Settings", resourceCulture);
             }
         }
         
@@ -2692,6 +3532,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spectate Me (Opens the spectator for your current match).
+        /// </summary>
+        public static string Spectate_Me__Opens_the_spectator_for_your_current_match_ {
+            get {
+                return ResourceManager.GetString("Spectate Me (Opens the spectator for your current match)", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spectate Me on by default.
+        /// </summary>
+        public static string Spectate_Me_on_by_default {
+            get {
+                return ResourceManager.GetString("Spectate Me on by default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to spectator.
         /// </summary>
         public static string spectator {
@@ -2710,6 +3568,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spectator Field of View.
+        /// </summary>
+        public static string Spectator_Field_of_View {
+            get {
+                return ResourceManager.GetString("Spectator Field of View", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spectator Mode.
         /// </summary>
         public static string Spectator_Mode {
@@ -2724,6 +3591,15 @@ namespace Spark.Properties {
         public static string Spectators {
             get {
                 return ResourceManager.GetString("Spectators", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spectatorstream opens Echo Combat.
+        /// </summary>
+        public static string Spectatorstream_opens_Echo_Combat {
+            get {
+                return ResourceManager.GetString("Spectatorstream opens Echo Combat", resourceCulture);
             }
         }
         
@@ -2770,6 +3646,24 @@ namespace Spark.Properties {
         public static string Speed_in_m_s_of_your_throws {
             get {
                 return ResourceManager.GetString("Speed in m/s of your throws", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed Multiplier.
+        /// </summary>
+        public static string Speed_Multiplier {
+            get {
+                return ResourceManager.GetString("Speed Multiplier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speed multiplier for movement speed when pressing the speed modifier button.
+        /// </summary>
+        public static string Speed_multiplier_for_movement_speed_when_pressing_the_speed_modifier_button {
+            get {
+                return ResourceManager.GetString("Speed multiplier for movement speed when pressing the speed modifier button", resourceCulture);
             }
         }
         
@@ -2900,6 +3794,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Temporal AA.
+        /// </summary>
+        public static string Temporal_AA {
+            get {
+                return ResourceManager.GetString("Temporal AA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Text-to-Speech.
         /// </summary>
         public static string Text_to_Speech {
@@ -2918,12 +3821,32 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Texture Quality.
+        /// </summary>
+        public static string Texture_Quality {
+            get {
+                return ResourceManager.GetString("Texture Quality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Choose type shows a popup when you click the link to either join as a player or spectator..
         /// </summary>
         public static string The_Choose_type_shows_a_popup_when_you_click_the_link_to_either_join_as_a_player_or_spectator_ {
             get {
                 return ResourceManager.GetString("The Choose type shows a popup when you click the link to either join as a player " +
                         "or spectator.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to These settings control game settings found in &apos;C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json&apos;. This is useful for spectator computers without a headset attached..
+        /// </summary>
+        public static string These_settings_control_game_settings_found_in__C__Program_Files_Oculus_Software_Software_ready_at_dawn_echo_arena_sourcedb_rad15_json_r14_config_mp_spectator_settings_json___This_is_useful_for_spectator_computers_without_a_headset_attached_ {
+            get {
+                return ResourceManager.GetString("These settings control game settings found in \'C:\\Program Files\\Oculus\\Software\\S" +
+                        "oftware\\ready-at-dawn-echo-arena\\sourcedb\\rad15\\json\\r14\\config\\mp_spectator_set" +
+                        "tings.json\'. This is useful for spectator computers without a headset attached.", resourceCulture);
             }
         }
         
@@ -3296,11 +4219,38 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use anonymous mode for Spectatorstream.
+        /// </summary>
+        public static string Use_anonymous_mode_for_Spectatorstream {
+            get {
+                return ResourceManager.GetString("Use anonymous mode for Spectatorstream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use anonymous mode in Spectate Me.
+        /// </summary>
+        public static string Use_anonymous_mode_in_Spectate_Me {
+            get {
+                return ResourceManager.GetString("Use anonymous mode in Spectate Me", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Compression.
         /// </summary>
         public static string Use_Compression {
             get {
                 return ResourceManager.GetString("Use Compression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical Move Speed.
+        /// </summary>
+        public static string Vertical_Move_Speed {
+            get {
+                return ResourceManager.GetString("Vertical Move Speed", resourceCulture);
             }
         }
         
@@ -3328,6 +4278,43 @@ namespace Spark.Properties {
         public static string Voice {
             get {
                 return ResourceManager.GetString("Voice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Voice Recognition.
+        /// </summary>
+        public static string Voice_Recognition {
+            get {
+                return ResourceManager.GetString("Voice Recognition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Voice recognition is powered by Vosk. All audio data is processed locally on your device and not uploaded to a server..
+        /// </summary>
+        public static string Voice_recognition_is_powered_by_Vosk__All_audio_data_is_processed_locally_on_your_device_and_not_uploaded_to_a_server_ {
+            get {
+                return ResourceManager.GetString("Voice recognition is powered by Vosk. All audio data is processed locally on your" +
+                        " device and not uploaded to a server.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VOIP Volume.
+        /// </summary>
+        public static string VOIP_Volume {
+            get {
+                return ResourceManager.GetString("VOIP Volume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Volumetrics.
+        /// </summary>
+        public static string Volumetrics {
+            get {
+                return ResourceManager.GetString("Volumetrics", resourceCulture);
             }
         }
         
@@ -3382,6 +4369,15 @@ namespace Spark.Properties {
         public static string wrong_number_of_____characters_for_link_ {
             get {
                 return ResourceManager.GetString("wrong number of \'/\' characters for link:", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can use Medal to record your entire session, and have Spark make bookmarks instead of saving clips. Enable this feature in Medal&apos;s Settings-&gt;Recorder-&gt;Special Features-&gt;Full Session Recording. Set &apos;Seconds After&apos; to 0s to have the correct event timing in this case..
+        /// </summary>
+        public static string You_can_use_Medal_to_record_your_entire_session__and_have_Spark_make_bookmarks_instead_of_saving_clips__Enable_this_feature_in_Medal_s_Settings__Recorder__Special_Features__Full_Session_Recording__Set__Seconds_After__to_0s_to_have_the_correct_event_timing_in_this_case_ {
+            get {
+                return ResourceManager.GetString(@"You can use Medal to record your entire session, and have Spark make bookmarks instead of saving clips. Enable this feature in Medal's Settings->Recorder->Special Features->Full Session Recording. Set 'Seconds After' to 0s to have the correct event timing in this case.", resourceCulture);
             }
         }
         

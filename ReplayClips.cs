@@ -8,6 +8,13 @@ namespace Spark
 	{
 		public ReplayClips()
 		{
+			Program.EmoteActivated += (frame, _, player) =>
+			{
+				if (player.name == frame.client_name)
+				{
+					SaveClip(SparkSettings.instance.replayClipEmote, player.name, frame, $"{player.name}_emote");
+				}
+			};
 			Program.PlayspaceAbuse += (frame, _, player, _) => { SaveClip(SparkSettings.instance.replayClipPlayspace, player.name, frame, $"{player.name}_abuse"); };
 			Program.Goal += (frame, _) => { SaveClip(SparkSettings.instance.replayClipGoal, frame.last_score.person_scored, frame, $"{frame.last_score.person_scored}_goal"); };
 			Program.Save += (frame, eventData) => { SaveClip(SparkSettings.instance.replayClipSave, eventData.player.name, frame, $"{eventData.player.name}_save"); };

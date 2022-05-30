@@ -245,6 +245,7 @@ namespace Spark
 		/// frame, team, player, speed, howlongago
 		/// </summary>
 		public static Action<Frame, Team, Player, float, float> BigBoost;
+		public static Action<Frame, Team, Player> EmoteActivated;
 		/// <summary>
 		/// frame, team, player, playspacelocation (compare to head.Pos)
 		/// </summary>
@@ -1802,6 +1803,38 @@ namespace Spark
 						else
 						{
 							LogRow(LogType.Error, "PlayerData is null");
+						}
+						
+						
+						// check emote activation
+						if (player.is_emote_playing && !lastPlayer.is_emote_playing)
+						{
+							EventData eventData = new EventData(
+								CurrentRound,
+								EventContainer.EventType.emote,
+								frame.game_clock,
+								team,
+								player,
+								null,
+								player.head.Position,
+								player.velocity.ToVector3()
+							);
+							try
+							{
+								EmoteActivated?.Invoke(frame, team, player);
+							}
+							catch (Exception exp)
+							{
+								LogRow(LogType.Error, "Error processing action", exp.ToString());
+							}
+
+							CurrentRound.events.Enqueue(eventData);
+							
+							// emotes are always local-only
+							if (player.name == frame.client_name)
+							{
+								HighlightsHelper.SaveHighlightMaybe(player.name, frame, "EMOTE");
+							}
 						}
 
 

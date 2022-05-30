@@ -37,6 +37,7 @@ namespace Spark
 			left_game,		// used by websocket for overlays
 			event_log,		// used by websocket for overlays
 			turnover,
+			emote,
 		}
 
 		/// <summary>

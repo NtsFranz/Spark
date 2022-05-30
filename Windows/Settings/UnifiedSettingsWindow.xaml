@@ -41,7 +41,7 @@
 							<Button Content="{x:Static p:Resources.Show_first_time_setup_window}"
 							        Margin="10,4,10,4" HorizontalAlignment="Left" Width="207" Padding="4,4,4,4"
 							        Click="ShowFirstTimeSetupWindowClicked" />
-							<Button Content="Open settings file folder" Margin="10,4,10,4" HorizontalAlignment="Left" Width="207" Padding="4,4,4,4"
+							<Button Content="{x:Static p:Resources.Open_settings_folder}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="207" Padding="4,4,4,4"
 							        Click="OpenSettingsFileFolder" />
 						</StackPanel>
 						
@@ -72,8 +72,8 @@
 							                 MaxLines="1" />
 						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 							<ProgressBar x:Name="ReshadeProgress" Visibility="Collapsed" Width="200" Margin="0,0,10,0"></ProgressBar>
-							<Button Click="InstallReshade" Margin="0,0,10,0" Padding="4,4,4,4">Install ReShade</Button>
-							<Button Click="RemoveReshade" Margin="0,0,10,0" Padding="4,4,4,4">Remove ReShade</Button>
+							<Button Content="{x:Static p:Resources.Install_ReShade}" Click="InstallReshade" Margin="0,0,10,0" Padding="4,4,4,4"></Button>
+							<Button Content="{x:Static p:Resources.Remove_ReShade}" Click="RemoveReshade" Margin="0,0,10,0" Padding="4,4,4,4"></Button>
 						</StackPanel>
 						
 						
@@ -113,33 +113,33 @@
 						<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite"
 						          IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
 						          VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
-						<CheckBox x:Name="LowFrequencyModeCheckBox" Content="Low Frequency Mode" ToolTip="Queries the API less frequently if you are having performance problems."
+						<CheckBox x:Name="LowFrequencyModeCheckBox" Content="{x:Static p:Resources.Low_Frequency_Mode}" ToolTip="Queries the API less frequently if you are having performance problems."
 						          IsChecked="{l:SettingBinding lowFrequencyMode}" HorizontalAlignment="Left"
 						          VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						<CheckBox x:Name="enableAutoFocusCheckbox" Content="{x:Static p:Resources.Autofocus_EchoVR}" Margin="10,4,10,4" IsChecked="{l:SettingBinding isAutofocusEnabled}" ToolTip="{x:Static p:Resources.enableAutoFocusCheckbox_ToolTip}"/>
 						
 						<TextBlock Margin="0,10,0,0">Spectatorstream (Spectates highest level public match)</TextBlock>
 						<Separator/>
-						<CheckBox Content="Spectatorstream opens Echo Combat" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamCombat}" ToolTip="The Open Spectatatorstream button opens Echo Combat instead."/>
-						<CheckBox Content="Use anonymous mode for Spectatorstream" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamNoOVR}" ToolTip="Your username will show up as anonymous when launching the spectatorstream. This also allows you to have two instances of EchoVR open at once."/>
+						<CheckBox Content="{x:Static p:Resources.Spectatorstream_opens_Echo_Combat}" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamCombat}" ToolTip="The Open Spectatatorstream button opens Echo Combat instead."/>
+						<CheckBox Content="{x:Static p:Resources.Use_anonymous_mode_for_Spectatorstream}" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamNoOVR}" ToolTip="Your username will show up as anonymous when launching the spectatorstream. This also allows you to have two instances of EchoVR open at once."/>
 						<CheckBox x:Name="autorestartCheckbox" Content="{x:Static p:Resources.Autorestart_EchoVR_into_autospectator}"
 									  IsChecked="{l:SettingBinding autoRestart}" HorizontalAlignment="Left"
 									  VerticalAlignment="Stretch" Margin="10,4,10,4"
-									  ToolTip="Automatically restarts spectatorstream when it crashes" />
+									  ToolTip="{x:Static p:Resources.Automatically_restarts_spectatorstream_when_it_crashes}" />
 						
-						<TextBlock Margin="0,10,0,0">Spectate Me (Opens the spectator for your current match)</TextBlock>
+						<TextBlock Text="{x:Static p:Resources.Spectate_Me__Opens_the_spectator_for_your_current_match_}" Margin="0,10,0,0"></TextBlock>
 						<Separator/>
-						<CheckBox Content="Allow Spectate Me on local PC" Margin="10,4,10,4" IsChecked="{l:SettingBinding allowSpectateMeOnLocalPC}" ToolTip="Enables the Spectate Me function when your IP is 127.0.0.1. This is not recommended and is still experimental."/>
-						<CheckBox Content="Use anonymous mode in Spectate Me" Margin="10,4,10,4" IsChecked="{l:SettingBinding useAnonymousSpectateMe}" ToolTip="Enables the anonymous mode for the Spectate Me function. Uncheck this to use a second Oculus account for your spectator."/>
-						<CheckBox Content="Spectate Me on by default" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectateMeOnByDefault}" ToolTip="Automatically enables the Spectate Me feature when Spark starts."/>
+						<CheckBox Content="{x:Static p:Resources.Allow_Spectate_Me_on_local_PC}" Margin="10,4,10,4" IsChecked="{l:SettingBinding allowSpectateMeOnLocalPC}" ToolTip="Enables the Spectate Me function when your IP is 127.0.0.1. This is not recommended and is still experimental."/>
+						<CheckBox Content="{x:Static p:Resources.Use_anonymous_mode_in_Spectate_Me}" Margin="10,4,10,4" IsChecked="{l:SettingBinding useAnonymousSpectateMe}" ToolTip="Enables the anonymous mode for the Spectate Me function. Uncheck this to use a second Oculus account for your spectator."/>
+						<CheckBox Content="{x:Static p:Resources.Spectate_Me_on_by_default}" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectateMeOnByDefault}" ToolTip="Automatically enables the Spectate Me feature when Spark starts."/>
 						
-						<TextBlock Margin="0,10,0,0">Discord Rich Presence</TextBlock>
+						<TextBlock Text="{x:Static p:Resources.Discord_Rich_Presence}" Margin="0,10,0,0"></TextBlock>
 						<Separator/>
 						
 						<CheckBox x:Name="discordRichPresenceCheckbox" Content="{x:Static p:Resources.Discord_Rich_Presence}"
 									  IsChecked="{l:SettingBinding discordRichPresence}" HorizontalAlignment="Left"
 									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
-						<CheckBox x:Name="discordRichPresenceServerLocationCheckbox" Content="Show Server Location in Discord RP status"
+						<CheckBox x:Name="discordRichPresenceServerLocationCheckbox" Content="{x:Static p:Resources.Show_Server_Location_in_Discord_RP_status}"
 									  IsChecked="{l:SettingBinding discordRichPresenceServerLocation}" HorizontalAlignment="Left"
 									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						
@@ -173,25 +173,25 @@
 								<TextBlock Text="{x:Static p:Resources.CameraSettingsDescription}" TextWrapping="Wrap" Margin="10,10,10,10"></TextBlock>
 								<CheckBox x:Name="HideUICheckbox" Content="{x:Static p:Resources.Hide_EchoVR_UI}" IsChecked="{l:SettingBinding hideEchoVRUI}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Click="HideEchoVRUINow"/>
 								<CheckBox Content="{x:Static p:Resources.Toggle_Minimap_after_Goals}" IsChecked="{l:SettingBinding toggleMinimapAfterGoals}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" />
-								<CheckBox x:Name="HideMinimapCheckbox" Content="Don't Show Minimap (M)" IsChecked="{l:SettingBinding alwaysHideMinimap}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Click="HideMinimapNow" />
+								<CheckBox x:Name="HideMinimapCheckbox" Content="{x:Static p:Resources.Don_t_Show_Minimap__M_}" IsChecked="{l:SettingBinding alwaysHideMinimap}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4" Click="HideMinimapNow" />
 								<ComboBox x:Name="MutePlayerCommsDropdown" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300" SelectionChanged="MutePlayerCommsDropdownChanged">
-									<ComboBoxItem Content="Don't Change"/>
-									<ComboBoxItem Content="Mute enemy team"/>
-									<ComboBoxItem Content="Mute all players"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Don_t_Change}"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Mute_enemy_team}"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Mute_all_players}"/>
 								</ComboBox>
-								<CheckBox x:Name="HideNameplatesCheckbox" Content="Hide Player Nameplates" IsChecked="{l:SettingBinding hideNameplates}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4"  Click="ToggleNameplatesNow"/>
+								<CheckBox x:Name="HideNameplatesCheckbox" Content="{x:Static p:Resources.Hide_Player_Nameplates}" IsChecked="{l:SettingBinding hideNameplates}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,4,10,4"  Click="ToggleNameplatesNow"/>
 								<Label Content="{x:Static p:Resources.Camera_Mode_}"/>
 								<StackPanel Orientation="Horizontal">
 									<ComboBox SelectedIndex="{l:SettingBinding spectatorCamera}" SelectionChanged="CameraModeDropdownChanged" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
 										<ComboBoxItem Content="{x:Static p:Resources.Auto__leave_default_}"/>
 										<ComboBoxItem Content="{x:Static p:Resources.Sideline}"/>
 										<ComboBoxItem Content="{x:Static p:Resources.Follow_client_player___Spectate_Me__only_}"/>
-										<ComboBoxItem Content="Follow specific player"/>
+										<ComboBoxItem Content="{x:Static p:Resources.Follow_specific_player}"/>
 									</ComboBox>
-									<Button x:Name="findCameraNowButton" Content="Find Now" Click="SpectatorCameraFindNow" Padding="10,1,10,1"/>
+									<Button x:Name="findCameraNowButton" Content="{x:Static p:Resources.Find_Now}" Click="SpectatorCameraFindNow" Padding="10,1,10,1"/>
 								</StackPanel>
 								<StackPanel x:Name="followSpecificPlayerPanel" Orientation="Horizontal" Margin="0,8,0,0">
-									<Label Content="Follow specific player name:"/>
+									<Label Content="{x:Static p:Resources.Follow_specific_player_name_}"/>
 									<TextBox Text="{l:SettingBinding followPlayerName}" Width="200" Margin="10,0,0,0" VerticalContentAlignment="Center"/>
 								</StackPanel>
 								<Label x:Name="followCameraModeLabel" Content="{x:Static p:Resources.Follow_client_player_camera_mode_}"/>
@@ -409,7 +409,7 @@
 				</ScrollViewer>
 			</TabItem>-->
 
-			<TabItem Header="Overlays" Visibility="Visible">
+			<TabItem Header="{x:Static p:Resources.Overlays}" Visibility="Visible">
 				<l:OverlaysConfigWindow x:Name="OverlaysConfigWindow"/>
 			</TabItem>
 
@@ -444,13 +444,13 @@
 
 								<StackPanel Orientation="Horizontal">
 									<CheckBox Content="{x:Static p:Resources.Enable_API_Access}" IsChecked="{Binding Source={StaticResource es}, Path=EnableAPIAccess}"/>
-									<Button Content="Reset All Settings to Default" Click="ResetAllSettings" HorizontalAlignment="Right" Margin="200,0,0,0" Padding="5,5,5,5"></Button>
+									<Button Content="{x:Static p:Resources.Reset_All_Settings_to_Default}" Click="ResetAllSettings" HorizontalAlignment="Right" Margin="200,0,0,0" Padding="5,5,5,5"></Button>
 								</StackPanel>
 
 								<GroupBox Margin="4,8,4,4" ToolTip="{x:Static p:Resources.EchoVR_Settings_info}">
 									<GroupBox.Header>
 										<StackPanel Orientation="Horizontal">
-											<Label Content="Apply these settings to "/>
+											<Label Content="{x:Static p:Resources.Apply_these_settings_to_}"/>
 											<ComboBox SelectedIndex="{Binding Source={StaticResource es}, Path=CaptureVP2}"  Height="24" Width="165" SelectionChanged="RefreshAllSettings">
 												<ComboBoxItem Content="{x:Static p:Resources.Default_Configuration}"/>
 												<ComboBoxItem Content="capturevp2"/>
@@ -460,81 +460,81 @@
 									<StackPanel>
 										<Expander Header="{x:Static p:Resources.Display}" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
 											<StackPanel Margin="10,10,10,10">
-												<CheckBox x:Name="fullscreenCheckbox" Content="Fullscreen" IsChecked="{Binding Fullscreen}" Height="28"/>
+												<CheckBox x:Name="fullscreenCheckbox" Content="{x:Static p:Resources.Fullscreen}" IsChecked="{Binding Fullscreen}" Height="28"/>
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Monitor"/>
+													<Label Content="{x:Static p:Resources.Monitor}"/>
 													<TextBox x:Name="monitorField" Text="{Binding Monitor}" Height="22" Width="20"/>
 												</StackPanel>
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Resolution" Width="160"/>
+													<Label Content="{x:Static p:Resources.Resolution}" Width="160"/>
 													<Slider x:Name="resolutionSlider" Value="{Binding Resolution}" Minimum="0.1" Maximum="2" Width="200" Margin="4,0,4,0" Height="20" SmallChange="0.1" TickFrequency="0.1" LargeChange="0.5" TickPlacement="None"/>
 													<TextBox Text="{Binding ElementName=resolutionSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 												</StackPanel>
-												<CheckBox Content="Multi-Resolution Shading" IsChecked="{Binding MultiResShading}" Height="28"/>
-												<CheckBox Content="Auto Resolution" IsChecked="{Binding Source={StaticResource es}, Path=AutoRes}" Height="28"/>
+												<CheckBox Content="{x:Static p:Resources.Multi_Resolution_Shading}" IsChecked="{Binding MultiResShading}" Height="28"/>
+												<CheckBox Content="{x:Static p:Resources.Auto_Resolution}" IsChecked="{Binding Source={StaticResource es}, Path=AutoRes}" Height="28"/>
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Field of View" Width="160"/>
+													<Label Content="{x:Static p:Resources.Field_of_View}" Width="160"/>
 													<Slider x:Name="mainFovSlider" Value="{Binding FoV}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
 													<TextBox Text="{Binding ElementName=mainFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 												</StackPanel>
-												<TextBlock Text="Field of View only works in -capturevp2 mode" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+												<TextBlock Text="{x:Static p:Resources.Field_of_View_only_works_in__capturevp2_mode}" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 											</StackPanel>
 										</Expander>
 										<Expander Header="{x:Static p:Resources.Graphics}" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
 											<StackPanel Margin="10,10,10,10">
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Anti-aliasing"/>
+													<Label Content="{x:Static p:Resources.Anti_aliasing}"/>
 													<ComboBox SelectedIndex="{Binding AA}" Height="24">
-														<ComboBoxItem Content="None"/>
+														<ComboBoxItem Content="{x:Static p:Resources.None}"/>
 														<ComboBoxItem Content="2x"/>
 														<ComboBoxItem Content="4x"/>
 													</ComboBox>
 												</StackPanel>
-												<CheckBox Content="Temporal AA" IsChecked="{Binding TemporalAA}" Height="28"/>
-												<CheckBox Content="Volumetrics" IsChecked="{Binding Volumetrics}" Height="28"/>
-												<CheckBox Content="Bloom" IsChecked="{Binding Bloom}" Height="28"/>
+												<CheckBox Content="{x:Static p:Resources.Temporal_AA}" IsChecked="{Binding TemporalAA}" Height="28"/>
+												<CheckBox Content="{x:Static p:Resources.Volumetrics}" IsChecked="{Binding Volumetrics}" Height="28"/>
+												<CheckBox Content="{x:Static p:Resources.Bloom}" IsChecked="{Binding Bloom}" Height="28"/>
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Shadow Quality"/>
+													<Label Content="{x:Static p:Resources.Shadow_Quality}"/>
 													<ComboBox SelectedIndex="{Binding ShadowQuality}" Height="24">
-														<ComboBoxItem Content="Low"/>
-														<ComboBoxItem Content="Medium"/>
-														<ComboBoxItem Content="High"/>
+														<ComboBoxItem Content="{x:Static p:Resources.Low}"/>
+														<ComboBoxItem Content="{x:Static p:Resources.Medium}"/>
+														<ComboBoxItem Content="{x:Static p:Resources.High}"/>
 													</ComboBox>
 												</StackPanel>
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Mesh Quality"/>
+													<Label Content="{x:Static p:Resources.Mesh_Quality}"/>
 													<ComboBox SelectedIndex="{Binding MeshQuality}" Height="24">
-														<ComboBoxItem Content="Low"/>
-														<ComboBoxItem Content="Medium"/>
-														<ComboBoxItem Content="High"/>
+														<ComboBoxItem Content="{x:Static p:Resources.Low}"/>
+														<ComboBoxItem Content="{x:Static p:Resources.Medium}"/>
+														<ComboBoxItem Content="{x:Static p:Resources.High}"/>
 													</ComboBox>
 												</StackPanel>
 												<StackPanel Orientation="Horizontal">
-													<Label Content="FX Quality" />
+													<Label Content="{x:Static p:Resources.FX_Quality}" />
 													<ComboBox SelectedIndex="{Binding FXQuality}" Height="24">
-														<ComboBoxItem Content="Low"/>
-														<ComboBoxItem Content="Medium"/>
-														<ComboBoxItem Content="High"/>
+														<ComboBoxItem Content="{x:Static p:Resources.Low}"/>
+														<ComboBoxItem Content="{x:Static p:Resources.Medium}"/>
+														<ComboBoxItem Content="{x:Static p:Resources.High}"/>
 													</ComboBox>
 												</StackPanel>
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Texture Quality"/>
+													<Label Content="{x:Static p:Resources.Texture_Quality}"/>
 													<ComboBox SelectedIndex="{Binding TextureQuality}" Height="24">
-														<ComboBoxItem Content="Low"/>
-														<ComboBoxItem Content="Medium"/>
-														<ComboBoxItem Content="High"/>
+														<ComboBoxItem Content="{x:Static p:Resources.Low}"/>
+														<ComboBoxItem Content="{x:Static p:Resources.Medium}"/>
+														<ComboBoxItem Content="{x:Static p:Resources.High}"/>
 													</ComboBox>
 												</StackPanel>
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Lighting Quality"/>
+													<Label Content="{x:Static p:Resources.Lighting_Quality}"/>
 													<ComboBox SelectedIndex="{Binding LightingQuality}" Height="24">
-														<ComboBoxItem Content="Low"/>
-														<ComboBoxItem Content="Medium"/>
-														<ComboBoxItem Content="High"/>
+														<ComboBoxItem Content="{x:Static p:Resources.Low}"/>
+														<ComboBoxItem Content="{x:Static p:Resources.Medium}"/>
+														<ComboBoxItem Content="{x:Static p:Resources.High}"/>
 													</ComboBox>
 												</StackPanel>
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Sharpening"/>
+													<Label Content="{x:Static p:Resources.Sharpening}"/>
 													<Slider x:Name="sharpeningSlider" Value="{Binding Sharpening}" Minimum="0" Maximum="2" Width="200" Margin="4,0,4,0" Height="20" LargeChange="0.5" SmallChange="0.1" TickFrequency="0.1" TickPlacement="None"/>
 													<TextBox Text="{Binding ElementName=sharpeningSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 												</StackPanel>
@@ -544,32 +544,32 @@
 								</GroupBox>
 
 
-								<Expander Header="Sound Settings" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
+								<Expander Header="{x:Static p:Resources.Sound_Settings}" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
 									<StackPanel Margin="10,10,10,10">
 
 										<StackPanel Orientation="Horizontal">
-											<Label Content="Announcer Volume" Width="160"/>
+											<Label Content="{x:Static p:Resources.Announcer_Volume}" Width="160"/>
 											<Slider x:Name="announcerVolumeSlider" Value="{Binding Source={StaticResource es}, Path=AnnouncerVolume}" Minimum="0" Maximum="100" Width="200" Margin="4,0,4,0" Height="20" TickFrequency="10" SmallChange="10"/>
 											<TextBox Text="{Binding ElementName=announcerVolumeSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 											<Label Content="%"/>
 										</StackPanel>
 
 										<StackPanel Orientation="Horizontal">
-											<Label Content="Music Volume" Width="160"/>
+											<Label Content="{x:Static p:Resources.Music_Volume}" Width="160"/>
 											<Slider x:Name="musicVolumeSlider" Value="{Binding Source={StaticResource es}, Path=MusicVolume}" Minimum="0" Maximum="100" Width="200" Margin="4,0,4,0" Height="20" TickFrequency="10" SmallChange="10"/>
 											<TextBox Text="{Binding ElementName=musicVolumeSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 											<Label Content="%"/>
 										</StackPanel>
 
 										<StackPanel Orientation="Horizontal">
-											<Label Content="Sound Effects Volume" Width="160"/>
+											<Label Content="{x:Static p:Resources.Sound_Effects_Volume}" Width="160"/>
 											<Slider x:Name="sfxVolumeSlider" Value="{Binding Source={StaticResource es}, Path=SFXVolume}" Minimum="0" Maximum="100" Width="200" Margin="4,0,4,0"  Height="20" TickFrequency="10" SmallChange="10"/>
 											<TextBox Text="{Binding ElementName=sfxVolumeSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 											<Label Content="%"/>
 										</StackPanel>
 
 										<StackPanel Orientation="Horizontal">
-											<Label Content="VOIP Volume" Width="160"/>
+											<Label Content="{x:Static p:Resources.VOIP_Volume}" Width="160"/>
 											<Slider x:Name="voipVolumeSlider" Value="{Binding Source={StaticResource es}, Path=VOIPVolume}" Minimum="0" Maximum="100" Width="200" Margin="4,0,4,0"  Height="20" TickFrequency="10" SmallChange="10"/>
 											<TextBox Text="{Binding ElementName=voipVolumeSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 											<Label Content="%"/>
@@ -579,15 +579,15 @@
 								
 								<Expander Header="{x:Static p:Resources.Spectator_Camera_Settings}" Margin="0,4,0,4" BorderBrush="{DynamicResource ContainerBorder}" >
 									<StackPanel>
-										<GroupBox Margin="4,8,4,4" Header="Free Cam Settings  (C on the keyboard)" ToolTip="These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached.">
+										<GroupBox Margin="4,8,4,4" Header="{x:Static p:Resources.Free_Cam_Settings___C_on_the_keyboard_}" ToolTip="{x:Static p:Resources.These_settings_control_game_settings_found_in__C__Program_Files_Oculus_Software_Software_ready_at_dawn_echo_arena_sourcedb_rad15_json_r14_config_mp_spectator_settings_json___This_is_useful_for_spectator_computers_without_a_headset_attached_}">
 											<StackPanel Margin="10,10,10,10">
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Free Cam Field of View" Width="160"/>
+													<Label Content="{x:Static p:Resources.Free_Cam_Field_of_View}" Width="160"/>
 													<Slider x:Name="freeCamFovSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamFov}" Minimum="20" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
 													<TextBox Text="{Binding ElementName=freeCamFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-													<Label Content="deg"/>
+													<Label Content="{x:Static p:Resources.deg}"/>
 												</StackPanel>
-												<TextBlock Text="FOV for free camera" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+												<TextBlock Text="{x:Static p:Resources.FOV_for_free_camera}" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 												<StackPanel Orientation="Horizontal">
 													<Label Content="Movement Speed" Width="160"/>
@@ -595,31 +595,31 @@
 													<TextBox Text="{Binding ElementName=moveSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 													<Label Content="m/s"/>
 												</StackPanel>
-												<TextBlock Text="Maximum translational movement speed" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+												<TextBlock Text="{x:Static p:Resources.Maximum_translational_movement_speed}" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Vertical Move Speed" Width="160"/>
+													<Label Content="{x:Static p:Resources.Vertical_Move_Speed}" Width="160"/>
 													<Slider x:Name="moveSpeedVerticalSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamMaxSpeedVertical}" Minimum="0" Maximum="16" Width="200" Margin="4,0,4,0" Height="20" TickFrequency="0.1"/>
 													<TextBox Text="{Binding ElementName=moveSpeedVerticalSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 													<Label Content="m/s"/>
 												</StackPanel>
-												<TextBlock Text="Maximum translational movement speed on the vertical axis" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+												<TextBlock Text="{x:Static p:Resources.Maximum_translational_movement_speed_on_the_vertical_axis}" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Rotation Speed" Width="160"/>
+													<Label Content="{x:Static p:Resources.Rotation_Speed}" Width="160"/>
 													<Slider  x:Name="freeCamRotationSpeedSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamRotationSpeed}" Minimum="0" Maximum="10" Width="200" Margin="4,0,4,0" Height="20" TickFrequency="0.1"/>
 													<TextBox Text="{Binding ElementName=freeCamRotationSpeedSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 													<Label Content=""/>
 												</StackPanel>
-												<TextBlock Text="Maximum rotation speed of the camera" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+												<TextBlock Text="{x:Static p:Resources.Maximum_rotation_speed_of_the_camera}" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Speed Multiplier" Width="160"/>
+													<Label Content="{x:Static p:Resources.Speed_Multiplier}" Width="160"/>
 													<Slider x:Name="freeCamSpeedMultSlider" Value="{Binding Source={StaticResource es}, Path=FreeCamSpeedMult}" Minimum="0" Maximum="5" Width="200" Margin="4,0,4,0" Height="20" SmallChange="0.1" TickFrequency="0.1"/>
 													<TextBox Text="{Binding ElementName=freeCamSpeedMultSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
 													<Label Content="x"/>
 												</StackPanel>
-												<TextBlock Text="Speed multiplier for movement speed when pressing the speed modifier button" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+												<TextBlock Text="{x:Static p:Resources.Speed_multiplier_for_movement_speed_when_pressing_the_speed_modifier_button}" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 											</StackPanel>
 										</GroupBox>
@@ -627,26 +627,26 @@
 
 										
 										
-										<GroupBox Margin="4,8,4,4" Header="For the 2D spectator" ToolTip="These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached.">
+										<GroupBox Margin="4,8,4,4" Header="For the 2D spectator" ToolTip="{x:Static p:Resources.These_settings_control_game_settings_found_in__C__Program_Files_Oculus_Software_Software_ready_at_dawn_echo_arena_sourcedb_rad15_json_r14_config_mp_spectator_settings_json___This_is_useful_for_spectator_computers_without_a_headset_attached_}">
 											<StackPanel Margin="10,10,10,10">
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Spectator Field of View" Width="160"/>
+													<Label Content="{x:Static p:Resources.Spectator_Field_of_View}" Width="160"/>
 													<Slider x:Name="specFovSlider" Value="{Binding Source={StaticResource es}, Path=SpecFovSlider}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
 													<TextBox Text="{Binding ElementName=specFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-													<Label Content="deg"/>
+													<Label Content="{x:Static p:Resources.deg}"/>
 												</StackPanel>
-												<TextBlock Text="FOV for auto cam" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+												<TextBlock Text="{x:Static p:Resources.FOV_for_auto_cam}" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 												<StackPanel Orientation="Horizontal">
-													<Label Content="POV Field of View" Width="160"/>
+													<Label Content="{x:Static p:Resources.POV_Field_of_View}" Width="160"/>
 													<Slider x:Name="povFovSlider" Value="{Binding Source={StaticResource es}, Path=POVFov}" Minimum="40" Maximum="140" Width="200" Margin="4,0,4,0" Height="20"/>
 													<TextBox Text="{Binding ElementName=povFovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" Height="22"  Width="40"/>
-													<Label Content="deg"/>
+													<Label Content="{x:Static p:Resources.deg}"/>
 												</StackPanel>
-												<TextBlock Text="FOV for POV cam. (P on the keyboard when following a player)" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+												<TextBlock Text="{x:Static p:Resources.FOV_for_POV_cam___P_on_the_keyboard_when_following_a_player_}" Margin="10,0,10,10" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 												<StackPanel Orientation="Horizontal">
-													<Label Content="Follow Cam Offset" Width="160"/>
+													<Label Content="{x:Static p:Resources.Follow_Cam_Offset}" Width="160"/>
 													<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetX}" Width="50" Height="22" />
 													<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetY}" Width="50" Height="22" />
 													<TextBox Text="{Binding Source={StaticResource es}, Path=FollowCamOffsetZ}" Width="50" Height="22" />
@@ -713,6 +713,7 @@
 								GitHub
 							</Hyperlink>
 					</TextBlock>
+					
 					<TextBlock Margin="20,10,0,-5" Foreground="{DynamicResource ControlDisabledGlythColour}" Text="{x:Static p:Resources.Help}"/>
 					<TextBlock TextWrapping="Wrap" Margin="10,10,10,10">
 							<Run Text="{x:Static p:Resources.for_help_check_out}"/>
@@ -726,6 +727,15 @@
 								<Run Text="{x:Static p:Resources.Ignite_Discord_Server}"/>
 							</Hyperlink>
 							<Run Text="{x:Static p:Resources.and_ask_questions_in_the__ignitebot_support_channel_}"/>
+					</TextBlock>
+					
+					<TextBlock Margin="20,10,0,-5" Foreground="{DynamicResource ControlDisabledGlythColour}" Text="{x:Static p:Resources.Donate}"/>
+					<TextBlock TextWrapping="Wrap" Margin="10,10,10,10">
+						<Run Text="{x:Static p:Resources.Donations_are_not_expected_but_are_appreciated_}"/>
+						<Hyperlink NavigateUri="https://ignitevr.gg/spark"
+						           RequestNavigate="Hyperlink_RequestNavigate" >
+							<Run Text="{x:Static p:Resources.Donate}"/>
+						</Hyperlink>
 					</TextBlock>
 				</StackPanel>
 			</TabItem>

@@ -183,9 +183,9 @@
 							<GroupBox.Header>
 								<StackPanel Orientation="Horizontal">
 									<Label Content="{x:Static p:Resources.Joust_Times}"/>
-									<ComboBox SelectedIndex="{l:SettingBinding dashboardJoustTimeOrder}" ToolTip="Only stores up to the 100 most recent joust times.">
-										<ComboBoxItem Content="Recent"/>
-										<ComboBoxItem Content="Fastest"/>
+									<ComboBox SelectedIndex="{l:SettingBinding dashboardJoustTimeOrder}" ToolTip="{x:Static p:Resources.Only_stores_up_to_the_100_most_recent_joust_times_}">
+										<ComboBoxItem Content="{x:Static p:Resources.Recent}"/>
+										<ComboBoxItem Content="{x:Static p:Resources.Fastest}"/>
 									</ComboBox>
 								</StackPanel>
 							</GroupBox.Header>
@@ -355,7 +355,7 @@
 				<TabItem x:Name="ScoreboardTab" FontSize="14" Padding="10,0,10,0" Visibility="Collapsed">
 					<TabItem.Header>
 						<StackPanel Orientation="Horizontal">
-							<Label Content="Scoreboard"/>
+							<Label Content="{x:Static p:Resources.Scoreboard}"/>
 							<Image Source="/img/text-box-outline.png" Height="16"/>
 						</StackPanel>
 					</TabItem.Header>
@@ -482,11 +482,21 @@
 				<TabItem x:Name="EchoGPTab" FontSize="14" Padding="10,0,10,0" Visibility="Collapsed">
 					<TabItem.Header>
 						<StackPanel Orientation="Horizontal">
-							<Label Content="Echo Grand Prix"/>
+							<Label Content="{x:Static p:Resources.Echo_Grand_Prix}"/>
 							<Image Source="/img/flag-checkered.png" Height="16"/>
 						</StackPanel>
 					</TabItem.Header>
 					<l:EchoGP/>
+				</TabItem>
+				
+				<TabItem x:Name="PrivateMatchRulesTab" FontSize="14" Padding="10,0,10,0" Visibility="Visible">
+					<TabItem.Header>
+						<StackPanel Orientation="Horizontal">
+							<Label Content="{x:Static p:Resources.Private_Match_Rules}"/>
+							<Image Source="/img/application-cog-outline.png" Height="16"/>
+						</StackPanel>
+					</TabItem.Header>
+					<l:PrivateMatchRulesWindow/>
 				</TabItem>
 
 			</TabControl>
@@ -501,11 +511,11 @@
 		<StackPanel x:Name="Right_Sidebar" Grid.Column="4" HorizontalAlignment="Stretch" Height="Auto">
 			<GroupBox x:Name="casterToolsBox" Header="Caster Tools" Visibility="Visible">
 				<StackPanel>
-					<Button Content="Restart as Spectator" Height="35" Margin="4,4,4,4" Click="RestartAsSpectatorClick" ToolTip="Restarts the game in the 2D spectator mode"/>
-					<Button Content="Find All Quests" Height="35" Margin="4,4,4,4" Click="FindAllQuests" ToolTip="Shows a list of all the Quest IPs on the network."/>
-					<Button x:Name="PasteLinkInLiveButton" Height="35" Margin="4,4,4,4" Click="PasteLinkInLive">Paste link in #live</Button>
-					<Button x:Name="LeagueOverlaysButton" Height="35" Margin="4,4,4,4" Click="LeagueOverlaysClick">League Overlays</Button>
-					<Button x:Name="MatchSetupButton" Height="35" Margin="4,4,4,4" Click="MatchSetupClick">Match Setup Page</Button>
+					<Button Content="{x:Static p:Resources.Restart_as_Spectator}" Height="35" Margin="4,4,4,4" Click="RestartAsSpectatorClick" ToolTip="{x:Static p:Resources.Restarts_the_game_in_the_2D_spectator_mode_}"/>
+					<Button Content="{x:Static p:Resources.Find_All_Quests}" Height="35" Margin="4,4,4,4" Click="FindAllQuests" ToolTip="{x:Static p:Resources.Shows_a_list_of_all_the_Quest_IPs_on_the_network_}"/>
+					<Button x:Name="PasteLinkInLiveButton" Content="{x:Static p:Resources.Paste_link_in__live}" Height="35" Margin="4,4,4,4" Click="PasteLinkInLive"></Button>
+					<Button x:Name="LeagueOverlaysButton" Content="{x:Static p:Resources.League_Overlays}" Height="35" Margin="4,4,4,4" Click="LeagueOverlaysClick"></Button>
+					<Button x:Name="MatchSetupButton" Content="{x:Static p:Resources.Match_Setup_Page}" Height="35" Margin="4,4,4,4" Click="MatchSetupClick"></Button>
 				</StackPanel>
 			</GroupBox>
 			<GroupBox x:Name="toolsBox" Header="{x:Static p:Resources.Tools}" Margin="0,8,0,0" VerticalAlignment="Top">
@@ -514,11 +524,11 @@
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton"  Visibility="Collapsed" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
 					<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="{x:Static p:Resources.Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing}"/>
-					<Button x:Name="chooseServerRegion" Content="{x:Static p:Resources.Choose_Server_Region}" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="This creates a private match in a region of your choice."/>
+					<Button x:Name="chooseServerRegion" Content="{x:Static p:Resources.Choose_Server_Region}" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="{x:Static p:Resources.This_creates_a_private_match_in_a_region_of_your_choice_}"/>
 					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Collapsed"/>
 					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
 					<Button x:Name="SpeedometerButton" Content="{x:Static p:Resources.Speedometer}" Height="40" Margin="4,4,4,4" Click="OpenSpeedometer" Visibility="Collapsed" />
-					<Button x:Name="OverlaysButton" Content="Overlays" Height="40" Margin="4,4,4,4" Click="OpenOverlays" Visibility="Visible"/>
+					<Button x:Name="OverlaysButton" Content="{x:Static p:Resources.Overlays}" Height="40" Margin="4,4,4,4" Click="OpenOverlays" Visibility="Visible"/>
 					<Button x:Name="ShowClickableOverlayButton" Visibility="Visible" Height="40" Click="showOverlay_Click" Margin="4,4,4,4">
 						<StackPanel>
 							<Label x:Name="ClickableOverlayLabel" Content="Spectator Overlay" Margin="0,-6,0,0"/>

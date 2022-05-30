@@ -223,20 +223,6 @@
     <EmbeddedResource Include="wwwroot_resources\js\autocomplete.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Page Update="Windows\ServerInfo.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Update="Windows\ServerInfo.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>ServerInfo.xaml</DependentUpon>
-    </Compile>
-    <Page Update="Windows\EchoGP.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Update="Windows\EchoGP.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>EchoGP.xaml</DependentUpon>
-    </Compile>
     <None Remove="img\flag-checkered.png" />
     <Resource Include="img\flag-checkered.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -277,13 +263,71 @@
     <EmbeddedResource Include="wwwroot_resources\js\lib\fitty.min.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Page Update="Windows\ClipsSettings.xaml">
+    <Page Update="Windows\LiveWindow\CameraWrite.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Compile Update="Windows\ClipsSettings.xaml.cs">
+    <Compile Update="Windows\LiveWindow\CameraWrite.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>CameraWrite.xaml</DependentUpon>
+    </Compile>
+    <Page Update="Windows\Settings\ClipsSettings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\Settings\ClipsSettings.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>ClipsSettings.xaml</DependentUpon>
     </Compile>
+    <Page Update="Windows\LiveWindow\EchoGP.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\LiveWindow\EchoGP.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>EchoGP.xaml</DependentUpon>
+    </Compile>
+    <Page Update="Windows\LiveWindow\LiveWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\LiveWindow\LiveWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Update="Windows\Settings\OverlaysConfigWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\Settings\OverlaysConfigWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Update="Windows\LiveWindow\ServerInfo.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\LiveWindow\ServerInfo.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>ServerInfo.xaml</DependentUpon>
+    </Compile>
+    <Page Update="Windows\Settings\UnifiedSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\Settings\UnifiedSettingsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Update="Windows\LiveWindow\PrivateMatchRulesWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\LiveWindow\PrivateMatchRulesWindow.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>PrivateMatchSettings.xaml</DependentUpon>
+    </Compile>
+    <None Remove="img\application-cog-outline.png" />
+    <Resource Include="img\application-cog-outline.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <None Remove="img\arrow-left-bold.png" />
+    <Resource Include="img\arrow-left-bold.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <None Remove="img\arrow-right-bold.png" />
+    <Resource Include="img\arrow-right-bold.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -348,7 +392,7 @@
   <ItemGroup>
     <PackageReference Include="ButterReplays" Version="1.0.4" />
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
-    <PackageReference Include="EchoVRAPI" Version="1.0.11" />
+    <PackageReference Include="EchoVRAPI" Version="1.0.13" />
     <PackageReference Include="Fleck" Version="1.2.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
     <PackageReference Include="HidSharpCore" Version="1.2.1.1" />
@@ -412,10 +456,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Windows\CameraWrite.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>CameraWrite.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Windows\CreateServer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -460,10 +500,6 @@
   <ItemGroup>
     <Page Update="Themes\ColourfulDarkTheme_Orange.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Windows\CameraWrite.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-      <SubType>Designer</SubType>
     </Page>
     <Page Update="Windows\CreateServer.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

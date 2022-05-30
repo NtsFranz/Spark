@@ -140,6 +140,7 @@ namespace Spark
 		public int replayClipPlayerScope { get; set; } = 0;
 		public bool replayClipSpectatorRecord { get; set; } = false;
 
+		public bool replayClipEmote { get; set; } = false;
 		public bool replayClipPlayspace { get; set; } = false;
 		public bool replayClipGoal { get; set; } = false;
 		public bool replayClipAssist { get; set; } = false;
@@ -162,6 +163,8 @@ namespace Spark
 		public string obsIP { get; set; } = "ws://127.0.0.1:4444";
 		public string obsPassword { get; set; } = "";
 		public bool obsAutoconnect { get; set; } = false;
+		
+		public bool obsClipEmote { get; set; } = false;
 		public bool obsClipPlayspace { get; set; } = false;
 		public bool obsClipGoal { get; set; } = false;
 		public bool obsClipAssist { get; set; } = false;
@@ -190,6 +193,7 @@ namespace Spark
 		public int medalClipPlayerScope { get; set; } = 0;
 		public bool medalClipSpectatorRecord { get; set; } = false;
 
+		public bool medalClipEmote { get; set; } = false;
 		public bool medalClipPlayspace { get; set; } = false;
 		public bool medalClipGoal { get; set; } = false;
 		public bool medalClipAssist { get; set; } = false;

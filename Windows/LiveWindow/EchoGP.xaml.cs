@@ -6,7 +6,7 @@ using System.Windows.Controls;
 
 namespace Spark
 {
-	public partial class EchoGP : UserControl
+	public partial class EchoGP
 	{
 		private readonly Timer outputUpdateTimer = new Timer();
 
@@ -53,8 +53,8 @@ namespace Spark
 					PreviousRaces.Text = Program.echoGPController.previousRaces
 						.Select(r => $"{r.mapName} {r.finalTime:N2}")
 						.Aggregate(string.Empty, (r1, r2) => r1 + "\n" + r2);
-					
-					SplitsText.Text = string.Join('\n', Program.echoGPController.splitTimes.Select(f=>f.ToString("N2")));
+
+					SplitsText.Text = string.Join('\n', Program.echoGPController.splitTimes.Select(f => f.ToString("N2")));
 				});
 			}
 		}

@@ -9,25 +9,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Windows.Input;
-using System.Text.RegularExpressions;
 using System.Windows.Navigation;
 using System.Windows.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OBSWebsocketDotNet;
-using OBSWebsocketDotNet.Types;
-using System.Linq;
 using System.Net;
 using EchoVRAPI;
-using Spark.Properties;
 
 namespace Spark
 {
 	/// <summary>
 	/// Interaction logic for UnifiedSettingsWindow.xaml
 	/// </summary>
-	public partial class UnifiedSettingsWindow : Window
+	public partial class UnifiedSettingsWindow
 	{
 		// set to false initially so that loading the settings from disk doesn't activate the events
 		private bool initialized;

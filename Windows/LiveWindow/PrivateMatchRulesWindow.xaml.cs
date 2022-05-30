@@ -1,0 +1,536 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Timers;
+using System.Windows;
+using System.Windows.Controls;
+using EchoVRAPI;
+using Newtonsoft.Json;
+
+namespace Spark
+{
+	public partial class PrivateMatchRulesWindow
+	{
+		private readonly Timer outputUpdateTimer = new Timer();
+
+		private readonly PrivateMatchRules rules = new PrivateMatchRules();
+
+		private PrivateMatchRules Rules
+		{
+			get => rules;
+			set
+			{
+				// copies the values rather than replacing reference
+				rules.minutes = value.minutes;
+				rules.seconds = value.seconds;
+				rules.blue_score = value.blue_score;
+				rules.orange_score = value.orange_score;
+				rules.disc_location = value.disc_location;
+				rules.goal_stops_time = value.goal_stops_time;
+				rules.respawn_time = value.respawn_time;
+				rules.catapult_time = value.catapult_time;
+				rules.round_count = value.round_count;
+				rules.rounds_played = value.rounds_played;
+				rules.round_wait_time = value.round_wait_time;
+				rules.carry_points_over = value.carry_points_over;
+				rules.blue_rounds_won = value.blue_rounds_won;
+				rules.orange_rounds_won = value.orange_rounds_won;
+				rules.overtime = value.overtime;
+				rules.standard_chassis = value.standard_chassis;
+				rules.mercy_enabled = value.mercy_enabled;
+				rules.mercy_score_diff = value.mercy_score_diff;
+				rules.team_only_voice = value.team_only_voice;
+				rules.disc_curve = value.disc_curve;
+				rules.self_goaling = value.self_goaling;
+				rules.goalie_ping_adv = value.goalie_ping_adv;
+
+				Dispatcher.Invoke(RefreshWindow);
+			}
+		}
+
+		public Action SettingsUpdated;
+		private DateTime lastSetTime = DateTime.UtcNow;
+
+		private Dictionary<string, PrivateMatchRules> presets = new Dictionary<string, PrivateMatchRules>()
+		{
+			{
+				"Default (VRML)", new PrivateMatchRules()
+				{
+					minutes = 10,
+					seconds = 0,
+					blue_score = 0,
+					orange_score = 0,
+					disc_location = PrivateMatchRules.DiscLocation.mid,
+					goal_stops_time = false,
+					respawn_time = 3,
+					catapult_time = 15,
+					round_count = 3,
+					rounds_played = PrivateMatchRules.RoundsPlayed.best_of,
+					round_wait_time = 59,
+					carry_points_over = false,
+					blue_rounds_won = 0,
+					orange_rounds_won = 0,
+					overtime = PrivateMatchRules.Overtime.round_end,
+					standard_chassis = true,
+					mercy_enabled = true,
+					mercy_score_diff = 20,
+					team_only_voice = true,
+					disc_curve = false,
+					self_goaling = true,
+					goalie_ping_adv = false
+				}
+			},
+			{
+				"NEPA", new PrivateMatchRules()
+				{
+					minutes = 8,
+					seconds = 0,
+					blue_score = 0,
+					orange_score = 0,
+					disc_location = PrivateMatchRules.DiscLocation.mid,
+					goal_stops_time = false,
+					respawn_time = 0,
+					catapult_time = 15,
+					round_count = 4,
+					rounds_played = PrivateMatchRules.RoundsPlayed.all,
+					round_wait_time = 59,
+					carry_points_over = true,
+					blue_rounds_won = 0,
+					orange_rounds_won = 0,
+					overtime = PrivateMatchRules.Overtime.match_end,
+					standard_chassis = true,
+					mercy_enabled = false,
+					mercy_score_diff = 20,
+					team_only_voice = true,
+					disc_curve = false,
+					self_goaling = true,
+					goalie_ping_adv = false
+				}
+			}
+		};
+
+		#region Properties
+
+		public int Minutes
+		{
+			get => Rules.minutes;
+			set
+			{
+				Rules.minutes = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int Seconds
+		{
+			get => Rules.seconds;
+			set
+			{
+				Rules.seconds = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int BlueScore
+		{
+			get => Rules.blue_score;
+			set
+			{
+				Rules.blue_score = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int OrangeScore
+		{
+			get => Rules.orange_score;
+			set
+			{
+				Rules.orange_score = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int DiscLocation
+		{
+			get => (int)Rules.disc_location;
+			set
+			{
+				Rules.disc_location = (PrivateMatchRules.DiscLocation)value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public bool GoalStopsTime
+		{
+			get => Rules.goal_stops_time;
+			set
+			{
+				Rules.goal_stops_time = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int RespawnTime
+		{
+			get => Rules.respawn_time;
+			set
+			{
+				Rules.respawn_time = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int CatapultTime
+		{
+			get => Rules.catapult_time;
+			set
+			{
+				Rules.catapult_time = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int RoundCount
+		{
+			get => Rules.round_count;
+			set
+			{
+				Rules.round_count = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int RoundsPlayed
+		{
+			get => (int)Rules.rounds_played;
+			set
+			{
+				Rules.rounds_played = (PrivateMatchRules.RoundsPlayed)value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int RoundWaitTime
+		{
+			get => Rules.round_wait_time;
+			set
+			{
+				Rules.round_wait_time = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public bool CarryPointsOver
+		{
+			get => Rules.carry_points_over;
+			set
+			{
+				Rules.carry_points_over = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int BlueRoundsWon
+		{
+			get => Rules.blue_rounds_won;
+			set
+			{
+				Rules.blue_rounds_won = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int OrangeRoundsWon
+		{
+			get => Rules.orange_rounds_won;
+			set
+			{
+				Rules.orange_rounds_won = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int Overtime
+		{
+			get => (int)Rules.overtime;
+			set
+			{
+				Rules.overtime = (PrivateMatchRules.Overtime)value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public bool StandardChassis
+		{
+			get => Rules.standard_chassis;
+			set
+			{
+				Rules.standard_chassis = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public bool MercyEnabled
+		{
+			get => Rules.mercy_enabled;
+			set
+			{
+				Rules.mercy_enabled = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public int MercyScoreDiff
+		{
+			get => Rules.mercy_score_diff;
+			set
+			{
+				Rules.mercy_score_diff = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public bool TeamOnlyVoice
+		{
+			get => Rules.team_only_voice;
+			set
+			{
+				Rules.team_only_voice = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public bool DiscCurve
+		{
+			get => Rules.disc_curve;
+			set
+			{
+				Rules.disc_curve = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public bool SelfGoaling
+		{
+			get => Rules.self_goaling;
+			set
+			{
+				Rules.self_goaling = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		public bool GoaliePingAdv
+		{
+			get => Rules.goalie_ping_adv;
+			set
+			{
+				Rules.goalie_ping_adv = value;
+				SettingsUpdated?.Invoke();
+			}
+		}
+
+		#endregion
+
+		public PrivateMatchRulesWindow()
+		{
+			InitializeComponent();
+
+			foreach (KeyValuePair<string, PrivateMatchRules> preset in presets)
+			{
+				PresetSelector.Items.Add(preset.Key);
+			}
+
+			string[] blocks =
+			{
+				"MinutesBlock",
+				"SecondsBlock",
+				"OrangeScoreBlock",
+				"BlueScoreBlock",
+				"RespawnTimeBlock",
+				"CatapultTimeBlock",
+				"RoundCountBlock",
+				"RoundWaitTimeBlock",
+				"BlueRoundsWonBlock",
+				"OrangeRoundsWonBlock",
+				"MercyScoreDiffBlock"
+			};
+
+			foreach (string block in blocks)
+			{
+				StackPanel panel = FindName(block) as StackPanel;
+				TextBox input = panel?.Children.OfType<TextBox>().FirstOrDefault();
+
+				if (input != null)
+				{
+					Button left = panel.Children.OfType<Button>().FirstOrDefault();
+					if (left != null)
+					{
+						left.Click += (_, _) =>
+						{
+							input.Focus();
+							input.Text = int.TryParse(input.Text, out int val) ? Math.Clamp(val - 1, 0, 1000).ToString() : "0";
+							left.Focus();
+						};
+					}
+
+					Button right = panel.Children.OfType<Button>().LastOrDefault();
+					if (right != null)
+					{
+						right.Click += (_, _) =>
+						{
+							input.Focus();
+							input.Text = int.TryParse(input.Text, out int val) ? Math.Clamp(val + 1, 0, 1000).ToString() : "0";
+							right.Focus();
+						};
+					}
+				}
+			}
+
+			SettingsUpdated += OnSettingsUpdated;
+		}
+
+		private void OnSettingsUpdated()
+		{
+			lastSetTime = DateTime.UtcNow;
+
+			// send POST request to update settings /set_rules
+			try
+			{
+				string body = JsonConvert.SerializeObject(Rules);
+				Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body, null);
+			}
+			catch (Exception e)
+			{
+				Logger.LogRow(Logger.LogType.Error, $"Error getting private match rules from game.\n{e}");
+			}
+
+			MatchToPreset();
+		}
+
+		private void MatchToPreset()
+		{
+			foreach (KeyValuePair<string, PrivateMatchRules> preset in presets)
+			{
+				if (preset.Value.Equals(Rules))
+				{
+					PresetSelector.SelectedValue = preset.Key;
+					return;
+				}
+			}
+
+			PresetSelector.SelectedIndex = 0;
+		}
+
+		private void GetSettingsFromGame()
+		{
+			try
+			{
+				Program.GetRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/get_rules", null, resp =>
+				{
+					PrivateMatchRules newRules = JsonConvert.DeserializeObject<PrivateMatchRules>(resp);
+					if (newRules != null)
+					{
+						Rules = newRules;
+						MatchToPreset();
+					}
+				});
+			}
+			catch (Exception e)
+			{
+				Logger.LogRow(Logger.LogType.Error, $"Error sending private match rules to game.\n{e}");
+			}
+		}
+
+		private void RefreshWindow()
+		{
+			DataContext = null;
+			DataContext = this;
+		}
+
+		private void OnControlLoaded(object sender, RoutedEventArgs e)
+		{
+			outputUpdateTimer.Interval = 500;
+			outputUpdateTimer.Elapsed += Update;
+			outputUpdateTimer.Enabled = true;
+		}
+
+
+		private void Update(object source, ElapsedEventArgs e)
+		{
+			if (Program.running)
+			{
+				Dispatcher.Invoke(() =>
+				{
+					if (Program.InGame && Program.lastFrame is { private_match: true, game_status: "pre_match" } &&
+					    (DateTime.UtcNow - lastSetTime).TotalSeconds > 1) // if we didn't just change something locally
+					{
+						GetSettingsFromGame();
+					}
+				});
+			}
+		}
+
+		private void LoadCustom(object sender, RoutedEventArgs e)
+		{
+			// Configure open file dialog box
+			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog
+			{
+				FileName = "", // Default file name
+				DefaultExt = ".json", // Default file extension
+				Filter = "JSON documents (.json)|*.json" // Filter files by extension
+			};
+
+			// Show open file dialog box
+			bool? result = dlg.ShowDialog();
+
+			// Process open file dialog box results
+			if (result == true)
+			{
+				// Open document
+				string filename = dlg.FileName;
+				string text = File.ReadAllText(filename);
+				PrivateMatchRules newRules = JsonConvert.DeserializeObject<PrivateMatchRules>(text);
+				if (newRules != null)
+				{
+					Rules = newRules;
+				}
+			}
+		}
+
+		private void SaveCurrentRules(object sender, RoutedEventArgs e)
+		{
+			Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog
+			{
+				FileName = "private_match_rules", // Default file name
+				DefaultExt = ".json", // Default file extension
+				Filter = "JSON documents (.json)|*.json" // Filter files by extension
+			};
+
+			// Show save file dialog box
+			bool? result = dlg.ShowDialog();
+
+			// Process save file dialog box results
+			if (result == true)
+			{
+				// Save document
+				string filename = dlg.FileName;
+				File.WriteAllText(filename, JsonConvert.SerializeObject(Rules, Formatting.Indented));
+			}
+		}
+
+		private void PresetChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (PresetSelector.SelectedIndex == 0) return;
+
+			string rulesetName = PresetSelector.SelectedValue.ToString() ?? string.Empty;
+			if (presets.ContainsKey(rulesetName))
+			{
+				Rules = presets[rulesetName];
+			}
+		}
+	}
+}

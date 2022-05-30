@@ -37,9 +37,9 @@
                                   Margin="5,5,5,5">
                             <StackPanel>
                                 <TextBlock x:Name="textBlock"
-                                           Text="Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder"
+                                           Text="{x:Static p:Resources.Clear_unsaved_highlight_clips_on_Spark_exit__If_disabled__highlights_will_be_retained_forever_unless_manually_deleted_from_temp_folder}"
                                            TextWrapping="Wrap" Margin="5,10,5,0" />
-                                <CheckBox x:Name="clearHighlightsOnExitCheckbox" Content="Clear Highlights On Exit"
+                                <CheckBox x:Name="clearHighlightsOnExitCheckbox" Content="{x:Static p:Resources.Clear_Highlights_On_Exit}"
                                           Margin="5,5,5,5" IsChecked="{l:SettingBinding clearHighlightsOnExit}" />
                                 <Button x:Name="clearHighlightsButton" Content="{Binding ClearHighlightsButtonContent}"
                                         Width="230" IsEnabled="{Binding DoNVClipsExist}"
@@ -71,7 +71,7 @@
                             <Hyperlink
                                 NavigateUri="https://github.com/Palakis/obs-websocket/releases/download/4.9.1/obs-websocket-4.9.1-Windows-Installer.exe"
                                 RequestNavigate="Hyperlink_RequestNavigate">
-                                Download Installer
+                                <Run Text="{x:Static p:Resources.Download_Installer}"></Run>
                             </Hyperlink>
                             <Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases"
                                        RequestNavigate="Hyperlink_RequestNavigate">
@@ -99,16 +99,16 @@
                                     Content="{x:Static p:Resources.Stop_Replay_Buffer}" Click="OBSStopReplayBuffer"
                                     Margin="4,4,4,4" Padding="4,4,4,4" />
                         </StackPanel>
-                        <GroupBox Header="Automatic Scene Switching" Margin="0,0,0,5">
+                        <GroupBox Header="{x:Static p:Resources.Automatic_Scene_Switching}" Margin="0,0,0,5">
                             <StackPanel Margin="5,5,5,5">
-                                <Label Content="In-game Scene:" />
+                                <Label Content="{x:Static p:Resources.In_game_Scene_}" />
                                 <ComboBox x:Name="inGameScene" Width="300" HorizontalAlignment="Left" SelectedIndex="0">
-                                    <ComboBoxItem Content="Do Not Switch" />
+                                    <ComboBoxItem Content="{x:Static p:Resources.Do_Not_Switch}" />
                                 </ComboBox>
-                                <Label Content="Between-game Scene:" />
+                                <Label Content="{x:Static p:Resources.Between_game_Scene_}" />
                                 <ComboBox x:Name="betweenGameScene" Width="300" HorizontalAlignment="Left"
                                           SelectedIndex="0">
-                                    <ComboBoxItem Content="Do Not Switch" />
+                                    <ComboBoxItem Content="{x:Static p:Resources.Do_Not_Switch}" />
                                 </ComboBox>
                             </StackPanel>
                         </GroupBox>
@@ -118,14 +118,14 @@
 
                     <StackPanel>
                         <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">
-                            <Run Text="Install Medal.tv here: " />
+                            <Run Text="{x:Static p:Resources.Install_Medal_tv_here__}" />
                             <Hyperlink
                                 NavigateUri="https://medal.tv/download"
                                 RequestNavigate="Hyperlink_RequestNavigate">
                                 https://medal.tv/download
                             </Hyperlink>
                         </TextBlock>
-                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">Customize your hotkey in Medal by going to Settings (bottom left) -> Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default. F12 should be good for most people.</TextBlock>
+                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap" Text="{x:Static p:Resources.Customize_your_hotkey_in_Medal_by_going_to_Settings__bottom_left_____Hotkeys__The_default_is_F8__but_this_also_hides_player_nametags_and_the_HUD_in_Echo__so_you_may_want_to_change_the_default__F12_should_be_good_for_most_people_}"></TextBlock>
                         <ComboBox x:Name="medalClipHotkeyDropdown" Margin="8,8,8,8" HorizontalAlignment="Left" Width="200" SelectionChanged="MedalClipHotkeyDropdownOnSelectionChanged">
                             <ComboBoxItem>F8</ComboBoxItem>
                             <ComboBoxItem>F12</ComboBoxItem>
@@ -133,12 +133,12 @@
                             <ComboBoxItem>Home</ComboBoxItem>
                             <ComboBoxItem>ScrollLock</ComboBoxItem>
                         </ComboBox>
-                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">You can use Medal to record your entire session, and have Spark make bookmarks instead of saving clips. Enable this feature in Medal's Settings->Recorder->Special Features->Full Session Recording. Set "Seconds After" to 0s to have the correct event timing in this case.</TextBlock>
-                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">Change clip length in the medal settings window. (Settings->Recorder)</TextBlock>
+                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap" Text="{x:Static p:Resources.You_can_use_Medal_to_record_your_entire_session__and_have_Spark_make_bookmarks_instead_of_saving_clips__Enable_this_feature_in_Medal_s_Settings__Recorder__Special_Features__Full_Session_Recording__Set__Seconds_After__to_0s_to_have_the_correct_event_timing_in_this_case_}"></TextBlock>
+                        <TextBlock Margin="8,8,8,8" TextWrapping="Wrap" Text="{x:Static p:Resources.Change_clip_length_in_the_medal_settings_window___Settings__Recorder_}"></TextBlock>
 
                     </StackPanel>
                 </TabItem>
-                <TabItem Header="Voice Recognition" Padding="8,6,8,6"
+                <TabItem Header="{x:Static p:Resources.Voice_Recognition}" Padding="8,6,8,6"
                          Foreground="{DynamicResource ControlPrimaryDefaultBackground}">
                     <StackPanel Margin="10,0,10,10">
                         <Label Content="{x:Static p:Resources.NVIDIA_Highlights_Settings}" FontSize="16"
@@ -146,36 +146,35 @@
                                Visibility="Collapsed" />
 
                         <TextBlock
-                            Text="Voice recognition is powered by Vosk. All audio data is processed locally on your device and not uploaded to a server."
+                            Text="{x:Static p:Resources.Voice_recognition_is_powered_by_Vosk__All_audio_data_is_processed_locally_on_your_device_and_not_uploaded_to_a_server_}"
                             TextWrapping="Wrap" Margin="5,5,5,5"
                             Foreground="{DynamicResource ControlDisabledGlythColour}" />
 
-                        <CheckBox Content="Enable Voice Recognition" Margin="5,5,5,5"
+                        <CheckBox Content="{x:Static p:Resources.Enable_Voice_Recognition}" Margin="5,5,5,5"
                                   IsChecked="{l:SettingBinding enableVoiceRecognition}"
                                   Checked="VoiceRecognitionChecked"
                                   Unchecked="VoiceRecognitionUnchecked" />
-                        <GroupBox Header="Settings" Margin="5,5,5,5">
+                        <GroupBox Header="{x:Static p:Resources.Settings}" Margin="5,5,5,5">
                             <StackPanel>
-                                <Label>Audio Source</Label>
+                                <Label Content="{x:Static p:Resources.Audio_Source}"></Label>
                                 <CheckBox IsChecked="{l:SettingBinding enableVoiceRecognitionMic}" Margin="10,10,10,5">Microphone</CheckBox>
                                 <ComboBox x:Name="MicSelection" SelectionChanged="MicrophoneSelectionChanged"
                                           Margin="10,0,10,2">
                                 </ComboBox>
                                 <ProgressBar x:Name="MicLevel"  Minimum="0" Maximum="1" Height="10" Margin="10,0,10,10"></ProgressBar>
-                                <CheckBox Visibility="Collapsed" IsChecked="{l:SettingBinding enableVoiceRecognitionSpeaker}"
+                                <CheckBox Content="{x:Static p:Resources.Desktop_Audio}" Visibility="Collapsed" IsChecked="{l:SettingBinding enableVoiceRecognitionSpeaker}"
                                           Margin="10,10,10,5">
-                                    Desktop Audio
                                 </CheckBox>
                                 <ComboBox Visibility="Collapsed" x:Name="SpeakerSelection" SelectionChanged="SpeakerSelectionChanged"
                                           Margin="10,0,10,2">
                                 </ComboBox>
                                 <ProgressBar Visibility="Collapsed" x:Name="SpeakerLevel" Minimum="0" Maximum="1" Height="10" Margin="10,0,10,10"></ProgressBar>
-                                <TextBlock Text="Say 'Clip That' at any point to save a clip"
+                                <TextBlock Text="{x:Static p:Resources.Say__Clip_That__at_any_point_to_save_a_clip}"
                                            TextWrapping="Wrap" Margin="5,10,5,0" />
-                                <CheckBox Content="'Clip That' detection (NVIDIA Highlights)"
+                                <CheckBox Content="{x:Static p:Resources._Clip_That__detection__NVIDIA_Highlights_}"
                                           IsChecked="{l:SettingBinding clipThatDetectionNVHighlights}"
                                           Margin="5,5,5,5" />
-                                <CheckBox Content="'Clip That' detection (Medal.tv)"
+                                <CheckBox Content="{x:Static p:Resources._Clip_That__detection__Medal_tv_}"
                                           IsChecked="{l:SettingBinding clipThatDetectionMedal}"
                                           Margin="5,5,5,5" />
                                 <CheckBox Visibility="Collapsed" Content="Bad word detection (for reporting)"
@@ -221,6 +220,8 @@
                                Text="{x:Static p:Resources.Choose_the_events_you_want_to_clip_in_the_NVIDIA_overlay__ALT_Z_}"
                                Margin="5,5,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}" />
                     <StackPanel x:Name="eventsToChoose">
+                        <CheckBox Content="{x:Static p:Resources.Emote_Activation}" Margin="5,5,5,5"
+                                  IsChecked="{Binding ClipEmoteSetting}" />
                         <CheckBox Content="{x:Static p:Resources.Playspace_Abuse}" Margin="5,5,5,5"
                                   IsChecked="{Binding ClipPlayspaceSetting}" />
                         <CheckBox Content="{x:Static p:Resources.Goal}" Margin="5,5,5,5"
@@ -230,7 +231,7 @@
                                 <Label Content="{x:Static p:Resources.Replay_Scene}" />
                                 <ComboBox x:Name="goalReplayScene" Width="300" HorizontalAlignment="Left"
                                           SelectedIndex="0">
-                                    <ComboBoxItem Content="Do Not Switch" />
+                                    <ComboBoxItem Content="{x:Static p:Resources.Do_Not_Switch}" />
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="15,5,5,5">
@@ -253,7 +254,7 @@
                                 <Label Content="{x:Static p:Resources.Replay_Scene}" />
                                 <ComboBox x:Name="saveReplayScene" Width="300" HorizontalAlignment="Left"
                                           SelectedIndex="0">
-                                    <ComboBoxItem Content="Do Not Switch" />
+                                    <ComboBoxItem Content="{x:Static p:Resources.Do_Not_Switch}" />
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="15,5,5,5">
@@ -269,9 +270,9 @@
                         </StackPanel>
                         <CheckBox Content="{x:Static p:Resources.Interception}" Margin="5,5,5,5"
                                   IsChecked="{Binding ClipInterceptionSetting}" />
-                        <CheckBox Content="Neutral Joust" Margin="5,5,5,5"
+                        <CheckBox Content="{x:Static p:Resources.Neutral_Joust}" Margin="5,5,5,5"
                                   IsChecked="{Binding ClipNeutralJoustSetting}" />
-                        <CheckBox Content="Defensive Joust" Margin="5,5,5,5"
+                        <CheckBox Content="{x:Static p:Resources.Defensive_Joust}" Margin="5,5,5,5"
                                   IsChecked="{Binding ClipDefensiveJoustSetting}" />
                     </StackPanel>
                 </StackPanel>

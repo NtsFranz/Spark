@@ -16,7 +16,7 @@ using OBSWebsocketDotNet.Types;
 
 namespace Spark
 {
-	public partial class ClipsSettings : UserControl
+	public partial class ClipsSettings
 	{
 		// set to false initially so that loading the settings from disk doesn't activate the events
 		private bool initialized;
@@ -91,8 +91,6 @@ namespace Spark
 							saveReplayScene.SelectedIndex = i + 1;
 						}
 					}
-
-					;
 				}
 				else
 				{
@@ -656,6 +654,34 @@ namespace Spark
 
 		#region Event type settings
 
+		public bool ClipEmoteSetting
+		{
+			get
+			{
+				return clipsTab switch
+				{
+					ClipsTab.echoreplay => SparkSettings.instance.replayClipEmote,
+					ClipsTab.OBS => SparkSettings.instance.obsClipEmote,
+					ClipsTab.Medal => SparkSettings.instance.medalClipEmote,
+					_ => false,
+				};
+			}
+			set
+			{
+				switch (clipsTab)
+				{
+					case ClipsTab.echoreplay:
+						SparkSettings.instance.replayClipEmote = value;
+						break;
+					case ClipsTab.OBS:
+						SparkSettings.instance.obsClipEmote = value;
+						break;
+					case ClipsTab.Medal:
+						SparkSettings.instance.medalClipEmote = value;
+						break;
+				}
+			}
+		}
 		public bool ClipPlayspaceSetting
 		{
 			get

@@ -1326,4 +1326,336 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   <data name="In_Lobby" xml:space="preserve">
     <value>In Lobby</value>
   </data>
+  <data name="Open settings folder" xml:space="preserve">
+    <value>Open settings folder</value>
+  </data>
+  <data name="Install ReShade" xml:space="preserve">
+    <value>Install ReShade</value>
+  </data>
+  <data name="Remove ReShade" xml:space="preserve">
+    <value>Remove ReShade</value>
+  </data>
+  <data name="Low Frequency Mode" xml:space="preserve">
+    <value>Low Frequency Mode</value>
+  </data>
+  <data name="Spectatorstream opens Echo Combat" xml:space="preserve">
+    <value>Spectatorstream opens Echo Combat</value>
+  </data>
+  <data name="Use anonymous mode for Spectatorstream" xml:space="preserve">
+    <value>Use anonymous mode for Spectatorstream</value>
+  </data>
+  <data name="Automatically restarts spectatorstream when it crashes" xml:space="preserve">
+    <value>Automatically restarts spectatorstream when it crashes</value>
+  </data>
+  <data name="Spectate Me (Opens the spectator for your current match)" xml:space="preserve">
+    <value>Spectate Me (Opens the spectator for your current match)</value>
+  </data>
+  <data name="Allow Spectate Me on local PC" xml:space="preserve">
+    <value>Allow Spectate Me on local PC</value>
+  </data>
+  <data name="Use anonymous mode in Spectate Me" xml:space="preserve">
+    <value>Use anonymous mode in Spectate Me</value>
+  </data>
+  <data name="Spectate Me on by default" xml:space="preserve">
+    <value>Spectate Me on by default</value>
+  </data>
+  <data name="Show Server Location in Discord RP status" xml:space="preserve">
+    <value>Show Server Location in Discord RP status</value>
+  </data>
+  <data name="Don't Change" xml:space="preserve">
+    <value>Don't Change</value>
+  </data>
+  <data name="Mute enemy team" xml:space="preserve">
+    <value>Mute enemy team</value>
+  </data>
+  <data name="Mute all players" xml:space="preserve">
+    <value>Mute all players</value>
+  </data>
+  <data name="Don't Show Minimap (M)" xml:space="preserve">
+    <value>Don't Show Minimap (M)</value>
+  </data>
+  <data name="Hide Player Nameplates" xml:space="preserve">
+    <value>Hide Player Nameplates</value>
+  </data>
+  <data name="Follow specific player" xml:space="preserve">
+    <value>Follow specific player</value>
+  </data>
+  <data name="Find Now" xml:space="preserve">
+    <value>Find Now</value>
+  </data>
+  <data name="Follow specific player name:" xml:space="preserve">
+    <value>Follow specific player name:</value>
+  </data>
+  <data name="Overlays" xml:space="preserve">
+    <value>Overlays</value>
+  </data>
+  <data name="Reset All Settings to Default" xml:space="preserve">
+    <value>Reset All Settings to Default</value>
+  </data>
+  <data name="Apply these settings to " xml:space="preserve">
+    <value>Apply these settings to </value>
+  </data>
+  <data name="Donations are not expected but are appreciated." xml:space="preserve">
+    <value>Donations are not expected but are appreciated.</value>
+  </data>
+  <data name="Donate" xml:space="preserve">
+    <value>Donate</value>
+  </data>
+  <data name="Follow Cam Offset" xml:space="preserve">
+    <value>Follow Cam Offset</value>
+  </data>
+  <data name="FOV for POV cam. (P on the keyboard when following a player)" xml:space="preserve">
+    <value>FOV for POV cam. (P on the keyboard when following a player)</value>
+  </data>
+  <data name="POV Field of View" xml:space="preserve">
+    <value>POV Field of View</value>
+  </data>
+  <data name="FOV for auto cam" xml:space="preserve">
+    <value>FOV for auto cam</value>
+  </data>
+  <data name="deg" xml:space="preserve">
+    <value>deg</value>
+    <comment>degrees abbreviation</comment>
+  </data>
+  <data name="Spectator Field of View" xml:space="preserve">
+    <value>Spectator Field of View</value>
+  </data>
+  <data name="These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached." xml:space="preserve">
+    <value>These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached.</value>
+  </data>
+  <data name="Speed multiplier for movement speed when pressing the speed modifier button" xml:space="preserve">
+    <value>Speed multiplier for movement speed when pressing the speed modifier button</value>
+  </data>
+  <data name="Speed Multiplier" xml:space="preserve">
+    <value>Speed Multiplier</value>
+  </data>
+  <data name="Maximum rotation speed of the camera" xml:space="preserve">
+    <value>Maximum rotation speed of the camera</value>
+  </data>
+  <data name="Rotation Speed" xml:space="preserve">
+    <value>Rotation Speed</value>
+  </data>
+  <data name="Maximum translational movement speed on the vertical axis" xml:space="preserve">
+    <value>Maximum translational movement speed on the vertical axis</value>
+  </data>
+  <data name="Vertical Move Speed" xml:space="preserve">
+    <value>Vertical Move Speed</value>
+  </data>
+  <data name="Maximum translational movement speed" xml:space="preserve">
+    <value>Maximum translational movement speed</value>
+  </data>
+  <data name="FOV for free camera" xml:space="preserve">
+    <value>FOV for free camera</value>
+  </data>
+  <data name="Free Cam Field of View" xml:space="preserve">
+    <value>Free Cam Field of View</value>
+  </data>
+  <data name="Free Cam Settings  (C on the keyboard)" xml:space="preserve">
+    <value>Free Cam Settings  (C on the keyboard)</value>
+  </data>
+  <data name="VOIP Volume" xml:space="preserve">
+    <value>VOIP Volume</value>
+  </data>
+  <data name="Sound Effects Volume" xml:space="preserve">
+    <value>Sound Effects Volume</value>
+  </data>
+  <data name="Music Volume" xml:space="preserve">
+    <value>Music Volume</value>
+  </data>
+  <data name="Announcer Volume" xml:space="preserve">
+    <value>Announcer Volume</value>
+  </data>
+  <data name="Sound Settings" xml:space="preserve">
+    <value>Sound Settings</value>
+  </data>
+  <data name="Sharpening" xml:space="preserve">
+    <value>Sharpening</value>
+  </data>
+  <data name="Low" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="Lighting Quality" xml:space="preserve">
+    <value>Lighting Quality</value>
+  </data>
+  <data name="Texture Quality" xml:space="preserve">
+    <value>Texture Quality</value>
+  </data>
+  <data name="FX Quality" xml:space="preserve">
+    <value>FX Quality</value>
+  </data>
+  <data name="Mesh Quality" xml:space="preserve">
+    <value>Mesh Quality</value>
+  </data>
+  <data name="Shadow Quality" xml:space="preserve">
+    <value>Shadow Quality</value>
+  </data>
+  <data name="Temporal AA" xml:space="preserve">
+    <value>Temporal AA</value>
+  </data>
+  <data name="Volumetrics" xml:space="preserve">
+    <value>Volumetrics</value>
+  </data>
+  <data name="Bloom" xml:space="preserve">
+    <value>Bloom</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Anti-aliasing" xml:space="preserve">
+    <value>Anti-aliasing</value>
+  </data>
+  <data name="Field of View only works in -capturevp2 mode" xml:space="preserve">
+    <value>Field of View only works in -capturevp2 mode</value>
+  </data>
+  <data name="Field of View" xml:space="preserve">
+    <value>Field of View</value>
+  </data>
+  <data name="Multi-Resolution Shading" xml:space="preserve">
+    <value>Multi-Resolution Shading</value>
+  </data>
+  <data name="Auto Resolution" xml:space="preserve">
+    <value>Auto Resolution</value>
+  </data>
+  <data name="Resolution" xml:space="preserve">
+    <value>Resolution</value>
+  </data>
+  <data name="Monitor" xml:space="preserve">
+    <value>Monitor</value>
+  </data>
+  <data name="Fullscreen" xml:space="preserve">
+    <value>Fullscreen</value>
+  </data>
+  <data name="Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder" xml:space="preserve">
+    <value>Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder</value>
+  </data>
+  <data name="Clear Highlights On Exit" xml:space="preserve">
+    <value>Clear Highlights On Exit</value>
+  </data>
+  <data name="Download Installer" xml:space="preserve">
+    <value>Download Installer</value>
+  </data>
+  <data name="Automatic Scene Switching" xml:space="preserve">
+    <value>Automatic Scene Switching</value>
+    <comment>OBS scene switching</comment>
+  </data>
+  <data name="In-game Scene:" xml:space="preserve">
+    <value>In-game Scene:</value>
+  </data>
+  <data name="Between-game Scene:" xml:space="preserve">
+    <value>Between-game Scene:</value>
+  </data>
+  <data name="Do Not Switch" xml:space="preserve">
+    <value>Do Not Switch</value>
+  </data>
+  <data name="Install Medal.tv here: " xml:space="preserve">
+    <value>Install Medal.tv here: </value>
+  </data>
+  <data name="Customize your hotkey in Medal by going to Settings (bottom left) -&gt; Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default. F12 should be good for most people." xml:space="preserve">
+    <value>Customize your hotkey in Medal by going to Settings (bottom left) -&gt; Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default. F12 should be good for most people.</value>
+  </data>
+  <data name="You can use Medal to record your entire session, and have Spark make bookmarks instead of saving clips. Enable this feature in Medal's Settings-&gt;Recorder-&gt;Special Features-&gt;Full Session Recording. Set 'Seconds After' to 0s to have the correct event timing in this case." xml:space="preserve">
+    <value>You can use Medal to record your entire session, and have Spark make bookmarks instead of saving clips. Enable this feature in Medal's Settings-&gt;Recorder-&gt;Special Features-&gt;Full Session Recording. Set 'Seconds After' to 0s to have the correct event timing in this case.</value>
+  </data>
+  <data name="Change clip length in the medal settings window. (Settings-&gt;Recorder)" xml:space="preserve">
+    <value>Change clip length in the medal settings window. (Settings-&gt;Recorder)</value>
+  </data>
+  <data name="Voice Recognition" xml:space="preserve">
+    <value>Voice Recognition</value>
+  </data>
+  <data name="Voice recognition is powered by Vosk. All audio data is processed locally on your device and not uploaded to a server." xml:space="preserve">
+    <value>Voice recognition is powered by Vosk. All audio data is processed locally on your device and not uploaded to a server.</value>
+  </data>
+  <data name="Enable Voice Recognition" xml:space="preserve">
+    <value>Enable Voice Recognition</value>
+  </data>
+  <data name="Audio Source" xml:space="preserve">
+    <value>Audio Source</value>
+  </data>
+  <data name="Desktop Audio" xml:space="preserve">
+    <value>Desktop Audio</value>
+  </data>
+  <data name="Say 'Clip That' at any point to save a clip" xml:space="preserve">
+    <value>Say 'Clip That' at any point to save a clip</value>
+  </data>
+  <data name="'Clip That' detection (NVIDIA Highlights)" xml:space="preserve">
+    <value>'Clip That' detection (NVIDIA Highlights)</value>
+  </data>
+  <data name="'Clip That' detection (Medal.tv)" xml:space="preserve">
+    <value>'Clip That' detection (Medal.tv)</value>
+  </data>
+  <data name="Bad word detection (for reporting)" xml:space="preserve">
+    <value>Bad word detection (for reporting)</value>
+  </data>
+  <data name="Emote Activation" xml:space="preserve">
+    <value>Emote Activation</value>
+  </data>
+  <data name="Neutral Joust" xml:space="preserve">
+    <value>Neutral Joust</value>
+  </data>
+  <data name="Defensive Joust" xml:space="preserve">
+    <value>Defensive Joust</value>
+  </data>
+  <data name="Scoreboard" xml:space="preserve">
+    <value>Scoreboard</value>
+  </data>
+  <data name="Echo Grand Prix" xml:space="preserve">
+    <value>Echo Grand Prix</value>
+  </data>
+  <data name="Private Match Rules" xml:space="preserve">
+    <value>Private Match Rules</value>
+  </data>
+  <data name="Restart as Spectator" xml:space="preserve">
+    <value>Restart as Spectator</value>
+  </data>
+  <data name="Find All Quests" xml:space="preserve">
+    <value>Find All Quests</value>
+  </data>
+  <data name="Restarts the game in the 2D spectator mode." xml:space="preserve">
+    <value>Restarts the game in the 2D spectator mode.</value>
+  </data>
+  <data name="Shows a list of all the Quest IPs on the network." xml:space="preserve">
+    <value>Shows a list of all the Quest IPs on the network.</value>
+  </data>
+  <data name="Paste link in #live" xml:space="preserve">
+    <value>Paste link in #live</value>
+  </data>
+  <data name="League Overlays" xml:space="preserve">
+    <value>League Overlays</value>
+  </data>
+  <data name="Match Setup Page" xml:space="preserve">
+    <value>Match Setup Page</value>
+  </data>
+  <data name="DonateURL" xml:space="preserve">
+    <value>https://www.paypal.com/donate/?business=EWXGJHK78FR24&amp;no_recurring=0&amp;item_name=Donations+are+NOT+expected%2C+but+they+act+as+a+thanks+and+encouragement+to+continue+working+on+Echo-related+tools+-NtsFranz&amp;currency_code=USD</value>
+  </data>
+  <data name="Only stores up to the 100 most recent joust times." xml:space="preserve">
+    <value>Only stores up to the 100 most recent joust times.</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="Fastest" xml:space="preserve">
+    <value>Fastest</value>
+  </data>
+  <data name="In Loading Screen" xml:space="preserve">
+    <value>In Loading Screen</value>
+  </data>
+  <data name="Echo VR not active" xml:space="preserve">
+    <value>Echo VR not active</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Something broke while trying to download update." xml:space="preserve">
+    <value>Something broke while trying to download update.</value>
+  </data>
+  <data name="Something broke while trying to launch update installer" xml:space="preserve">
+    <value>Something broke while trying to launch update installer</value>
+  </data>
 </root>
