@@ -591,7 +591,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Tube Exit Speed (self)</value>
   </data>
   <data name=", or join the" xml:space="preserve">
-    <value>, or join the</value>
+    <value>, or join the</value><comment>Full sentence is: For help using Spark, check out the Echopedia page, or join the Ignite Discord Server and ask questions in the #spark-support channel.</comment>
   </data>
   <data name="and ask questions in the #ignitebot-support channel." xml:space="preserve">
     <value>and ask questions in the #spark-support channel.</value>
@@ -603,7 +603,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Echopedia page</value>
   </data>
   <data name="for_help_check_out" xml:space="preserve">
-    <value>For help using Spark, check out the</value>
+    <value>For help using Spark, check out the</value><comment>Full sentence is: For help using Spark, check out the Echopedia page, or join the Ignite Discord Server and ask questions in the #spark-support channel.</comment>
   </data>
   <data name="Ignite Discord Server" xml:space="preserve">
     <value>Ignite Discord Server</value>
@@ -653,7 +653,7 @@ CLOSE ECHOVR BEFORE PRESSING OK!</value>
     <value>Stop Spectating Me</value>
   </data>
   <data name="Voice" xml:space="preserve">
-    <value>Voice</value>
+    <value>Voice</value><comment>For what kind of TTS voice to use</comment>
   </data>
   <data name="orange" xml:space="preserve">
     <value>orange</value>
@@ -1630,9 +1630,6 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   </data>
   <data name="Match Setup Page" xml:space="preserve">
     <value>Match Setup Page</value>
-  </data>
-  <data name="DonateURL" xml:space="preserve">
-    <value>https://www.paypal.com/donate/?business=EWXGJHK78FR24&amp;no_recurring=0&amp;item_name=Donations+are+NOT+expected%2C+but+they+act+as+a+thanks+and+encouragement+to+continue+working+on+Echo-related+tools+-NtsFranz&amp;currency_code=USD</value>
   </data>
   <data name="Only stores up to the 100 most recent joust times." xml:space="preserve">
     <value>Only stores up to the 100 most recent joust times.</value>

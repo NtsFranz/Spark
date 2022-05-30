@@ -1029,15 +1029,6 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://www.paypal.com/donate/?business=EWXGJHK78FR24&amp;no_recurring=0&amp;item_name=Donations+are+NOT+expected%2C+but+they+act+as+a+thanks+and+encouragement+to+continue+working+on+Echo-related+tools+-NtsFranz&amp;currency_code=USD.
-        /// </summary>
-        public static string DonateURL {
-            get {
-                return ResourceManager.GetString("DonateURL", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Donations are not expected but are appreciated..
         /// </summary>
         public static string Donations_are_not_expected_but_are_appreciated_ {

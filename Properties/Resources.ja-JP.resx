@@ -168,12 +168,6 @@
     <value>ハイライト</value>
     <comment>product name for NVIDIA Highlights</comment>
   </data>
-  <data name="ignite_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\img\ignite_logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ignite_logo_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\img\ignite_logo_128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Join Link:" xml:space="preserve">
     <value>リンクに参加</value>
   </data>

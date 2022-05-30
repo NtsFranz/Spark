@@ -1,0 +1,748 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value></value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value></value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value></value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value></value>
+  </resheader>
+  <resheader name="version">
+    <value></value>
+  </resheader>
+  <resheader name="reader">
+    <value></value>
+  </resheader>
+  <resheader name="writer">
+    <value></value>
+  </resheader>
+  <data name="About" xml:space="preserve">
+    <value />
+    <comment>tab in Settings</comment>
+  </data>
+  <data name="Atlas" xml:space="preserve">
+    <value />
+    <comment>Tab in main window</comment>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value />
+    <comment>tab in main window</comment>
+  </data>
+  <data name="Event Log" xml:space="preserve">
+    <value></value>
+    <comment>tab in main window</comment>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value></value>
+    <comment>button on bottom of main window</comment>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value></value>
+    <comment>tab in Settings</comment>
+  </data>
+  <data name="Hide" xml:space="preserve">
+    <value />
+    <comment>button on bottom of main window</comment>
+  </data>
+  <data name="Highlights" xml:space="preserve">
+    <value />
+    <comment>product name for NVIDIA Highlights</comment>
+  </data>
+  <data name="Join Link:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Lone Echo Subtitles" xml:space="preserve">
+    <value></value>
+    <comment>button on right side of main window</comment>
+  </data>
+  <data name="Mode" xml:space="preserve">
+    <value></value>
+    <comment>bottom left of main window</comment>
+  </data>
+  <data name="NVIDIAHighlights" xml:space="preserve">
+    <value></value>
+    <comment>tab in Settings</comment>
+  </data>
+  <data name="Open Spectatorstream" xml:space="preserve">
+    <value></value>
+    <comment>button on right side of main window</comment>
+  </data>
+  <data name="Orange Team" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value></value>
+    <comment>mode name</comment>
+  </data>
+  <data name="Player Pings" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Player Speeds" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Previous Goals" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Joust Times" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Previous Rounds" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Replays" xml:space="preserve">
+    <value></value>
+    <comment>tab in Settings</comment>
+  </data>
+  <data name="Server Info" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value></value>
+    <comment>button on bottom of main window</comment>
+  </data>
+  <data name="Show" xml:space="preserve">
+    <value></value>
+    <comment>as in "Show 13 Highlights"</comment>
+  </data>
+  <data name="Show Playspace" xml:space="preserve">
+    <value></value>
+    <comment>button on right side of main window</comment>
+  </data>
+  <data name="Speaker System" xml:space="preserve">
+    <value></value>
+    <comment>tab in main window</comment>
+  </data>
+  <data name="Spectators" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Text-to-Speech" xml:space="preserve">
+    <value></value>
+    <comment>tab in Settings</comment>
+  </data>
+  <data name="Show first-time setup window" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Enable -capturevp2 when launching spectator" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="EchoVR Executable Location:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="EchoVR IP (for Quest)" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Local PC" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Find Quest IP" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="upload_description" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Upload to IgniteVR Database" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Server IP:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Echo Arena Replay Viewer" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Enable API in Settings" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Every Match (Scoreboard)" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Every Round" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="For help, join the Discord" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="join_link_tooltip" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Logging in..." xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="login_button_tooltip" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Only Record Private Matches" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Open Folder" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Rejoin" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="rejoin_tooltip" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Replay File Splitting:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Replay Logging" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Replay Recording Settings" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="replays_description_part_1" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="replays_description_part_4" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Save Folder:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Save Replays" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Searching for Quest" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Send Logs to Ignite" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="server_location_tooltip" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="settings_button_tooltip" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Spectate Me" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Speech Speed" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Split File" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Start Echo Speaker System" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Text-to-Speech (TTS) Settings" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="TTS only works when logged in with Discord!" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Update Echo Speaker System" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Echopedia page" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Enabled API access in the game settings. CLOSE ECHOVR BEFORE PRESSING OK!" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Estimated location of the server as you join" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Fast" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Fast (60 Hz)" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="for_help_check_out" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Game Paused" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Goal Distance" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Goal Speed" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Joust Speed" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Joust Time" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Max Boost Speed" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Maximum speed achieved for times when you are faster than 20 m/s" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Med (30 Hz)" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="No clips available" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="nvhighlights_description_1" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="nvhighlights_description_2" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="NVIDIA Highlights Settings" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="On Server Change" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Only on IgniteBot Restart" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Open Event Log Folder" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event." xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Player Join" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Player Leave" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Player Switch Teams" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="replays_description_part_2" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="replays_description_part_3" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Score:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Server Location" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Server Location:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Show Main Window" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Slow" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Slow (10 Hz)" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Speed in m/s as you exit the launch tube" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Speed in m/s of every goal" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Speed in m/s of your throws" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Stop Echo Speaker System" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Stop Spectating Me" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Throw Speed" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Tube Exit Speed (self)" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Upload to Firestore" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Speed in m/s of the first player on each team to cross the midline on neutral joust" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Time in seconds to reach the midline on neutral jousts for the fastest player on each team" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="orange" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="spectator" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_join_1" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_join_2" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_leave_1" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_leave_2" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_switch_1" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_switch_2" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_switch_3" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_pause_req" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_paused" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_unpause" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_meters_per_second" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_abused" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_meters" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_description" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="EchoVR Settings" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Enable_NVIDIA_Highlights" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Join" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Join as a Player or as a Spectator?" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Join directly as a player." xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Join directly as a spectator." xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Join EchoVR Match" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="join_as_spectator" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Link Type:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Not Logged in" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Player" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Private" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Public" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Quest" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Refresh List" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Shutting down Atlas..." xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Spark Message" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Spark | First-time Setup" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Spark | Login" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Spark | Playspace" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Streamer Mode" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Surround with &amp;lt;&amp;gt;" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="This is the new speed" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="This PC" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Total throw speed from the F10 menu" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Whitelist" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="EchoVR not installed game settings" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="EchoVR Settings info" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="EchoVROpen settings warning" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="echovr_path_not_set" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Enable API Access" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Enable Replay Buffer" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="enableAutoFocusCheckbox.ToolTip" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="enableReplayCheckbox.Content" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Follow Link" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Get Beta Updates to Spark" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Goal" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Graphics" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Last Throw" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Length:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Me Only" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="My Team Only" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="NVIDIA Highlights" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="OBS" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="OBS integration requires the OBS Websocket plugin." xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="optInCheckbox.Content" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="optInCheckbox.ToolTip" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Password:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Playspace Abuse" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Playspace information for players other than yourself can be inaccurate and sensitive to rapid acceleration or high ping." xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Record all events in Spectator" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Save Clip Now" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Score Assist" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Seconds After:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Seconds Before:" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Set your match visibility to something other than Public, then add teams and players here to give them access." xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Spectator Camera Settings" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Start Replay Buffer" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Stop Hosting" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Stop Replay Buffer" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="The Choose type shows a popup when you click the link to either join as a player or spectator." xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="This changes where IgniteBot looks for API data. You can change your preference in Settings later. Quest+Link counts as PC." xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="tts_switch_alt_1" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="Update Available" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="wrong number of '/' characters for link:" xml:space="preserve">
+    <value></value>
+  </data>
+</root>

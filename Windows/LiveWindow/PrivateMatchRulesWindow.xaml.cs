@@ -339,10 +339,31 @@ namespace Spark
 		{
 			InitializeComponent();
 
+			// add local presets
 			foreach (KeyValuePair<string, PrivateMatchRules> preset in presets)
 			{
 				PresetSelector.Items.Add(preset.Key);
 			}
+
+			// add presets from server
+			Program.GetRequestCallback($"{Program.APIURL}/private_match_rules", null, resp =>
+			{
+				Dictionary<string, PrivateMatchRules> dict = JsonConvert.DeserializeObject<Dictionary<string, PrivateMatchRules>>(resp);
+				if (dict != null)
+				{
+					Dispatcher.Invoke(() =>
+					{
+						foreach (KeyValuePair<string, PrivateMatchRules> preset in dict)
+						{
+							if (!presets.ContainsKey(preset.Key))
+							{
+								presets[preset.Key] = preset.Value;
+								PresetSelector.Items.Add(preset.Key);
+							}
+						}
+					});
+				}
+			});
 
 			string[] blocks =
 			{
