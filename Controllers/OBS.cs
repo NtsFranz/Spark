@@ -28,6 +28,8 @@ namespace Spark
 			Program.JoinedGame += JoinedGame;
 			Program.LeftGame += LeftGame;
 
+			Program.GameStatusChanged += GameStatusChanged;
+
 			if (SparkSettings.instance.obsAutoconnect)
 			{
 				Task.Run(() =>
@@ -45,20 +47,75 @@ namespace Spark
 			}
 		}
 
-		private void LeftGame(Frame obj)
+		private void GameStatusChanged(Frame lastFrame, Frame newFrame)
+		{
+			if (!SparkSettings.instance.obsPauseRecordingWithGameClock) return;
+			if (newFrame.private_match) return;
+
+			if (newFrame.game_status == "playing")
+			{
+				try
+				{
+					instance.ResumeRecording();
+				}
+				catch (Exception)
+				{
+					// pass
+				}
+			}
+			else if (lastFrame.game_status == "playing")
+			{
+				try
+				{
+					instance.PauseRecording();
+				}
+				catch (Exception)
+				{
+					// pass
+				}
+			}
+		}
+
+		private void LeftGame(Frame frame)
 		{
 			if (!instance.IsConnected) return;
 			string scene = SparkSettings.instance.obsBetweenGameScene;
 			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
 			instance.SetCurrentScene(scene);
+			
+			if (!SparkSettings.instance.obsPauseRecordingWithGameClock) return;
+			
+			try
+			{
+				instance.PauseRecording();
+			}
+			catch (Exception)
+			{
+				// pass
+			}
 		}
 
-		private void JoinedGame(Frame obj)
+		private void JoinedGame(Frame frame)
 		{
 			if (!instance.IsConnected) return;
 			string scene = SparkSettings.instance.obsInGameScene;
 			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
 			instance.SetCurrentScene(scene);
+			
+			if (!SparkSettings.instance.obsPauseRecordingWithGameClock) return;
+			if (frame.private_match) return;
+
+			if (frame.game_status == "playing")
+			{
+				try
+				{
+					instance.ResumeRecording();
+				}
+				catch (Exception)
+				{
+					// pass
+				}
+			}
 		}
 
 		private void Save(Frame frame, EventData eventData)

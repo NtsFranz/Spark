@@ -53,6 +53,9 @@ namespace Spark
 		public const string WRITE_API_URL = "http://127.0.0.1:6723/";
 
 
+		/// <summary>
+		/// Client used for one-off requests
+		/// </summary>
 		public static readonly HttpClient client = new HttpClient();
 
 		// public static string currentAccessCodeUsername = "";
@@ -240,6 +243,11 @@ namespace Spark
 		/// Frame, nearest player, distance to podium
 		/// </summary>
 		public static Action<Frame, Player, float> GameUnpaused;
+		
+		/// <summary>
+		/// lastFrame, newFrame
+		/// </summary>
+		public static Action<Frame, Frame> GameStatusChanged;
 		public static Action<Frame> LocalThrow;
 		/// <summary>
 		/// frame, team, player, speed, howlongago
@@ -336,6 +344,12 @@ namespace Spark
 						LogRow(LogType.Error, "ERROR 3984. This shouldn't happen");
 					}
 				}
+				
+				
+				client.DefaultRequestHeaders.Add("version", AppVersionString());
+				client.DefaultRequestHeaders.Add("User-Agent", "Spark/" + AppVersionString());
+
+				client.BaseAddress = new Uri(APIURL);
 
 
 				if (CheckIfLaunchedWithCustomURLHandlerParam(args))
@@ -458,10 +472,6 @@ namespace Spark
 
 				ReadSettings();
 
-				client.DefaultRequestHeaders.Add("version", AppVersionString());
-				client.DefaultRequestHeaders.Add("User-Agent", "Spark/" + AppVersionString());
-
-				client.BaseAddress = new Uri(APIURL);
 
 
 				if (!SparkSettings.instance.onlyActivateHighlightsWhenGameIsOpen &&
@@ -721,6 +731,24 @@ namespace Spark
 
 		private static async Task MainLoop()
 		{
+			try
+			{
+				string resp = await Program.GetRequestAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session", null);
+
+				// sessionDataFound = true;
+				// Dispatcher.Invoke(UpdateStatusLabel);
+				
+				Debug.WriteLine("HERE2");
+			}
+			catch (Exception)
+			{
+				Debug.WriteLine("HERE1");
+				// sessionDataFound = false;
+				// Dispatcher.Invoke(UpdateStatusLabel);
+			}
+			
+			
+			fetchClient.Timeout = TimeSpan.FromSeconds(5);
 			while (running)
 			{
 				fetchSw.Restart();
@@ -1129,6 +1157,27 @@ namespace Spark
 			}
 		}
 
+		public static async Task<bool> APIJoin(string session_id, JoinType joinType)
+		{
+			try
+			{
+				Dictionary<string, object> body = new Dictionary<string, object>()
+				{
+					{ "session_id", session_id },
+				};
+				if (joinType == JoinType.Spectator)
+				{
+					body["team_idx"] = 2;
+				}
+				string resp = await PostRequestAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/join_session", null, JsonConvert.SerializeObject(body));
+				return !string.IsNullOrEmpty(resp) && resp.StartsWith("{");
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
+
 		// Functions required to force focus change, couldn't make them all local because GetWindowThreadProcessId would throw an error (though it likely shouldn't)
 		[DllImport("User32.dll")]
 		static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -1398,6 +1447,15 @@ namespace Spark
 			// Did the game state change?
 			if (frame.game_status != lastFrame.game_status)
 			{
+				try
+				{
+					GameStatusChanged?.Invoke(lastFrame, frame);
+				}
+				catch (Exception exp)
+				{
+					LogRow(LogType.Error, "Error processing action", exp.ToString());
+				}
+				
 				ProcessGameStateChange(frame, lastFrame, deltaTime);
 				
 				// Autofocus
@@ -1612,7 +1670,7 @@ namespace Spark
 			List<int>[] pings =
 			{
 				frame.teams[0].players.Select(p => p.ping).ToList(),
-				frame.teams[0].players.Select(p => p.ping).ToList()
+				frame.teams[1].players.Select(p => p.ping).ToList()
 			};
 			float newServerScore = CalculateServerScore(pings[0], pings[1]);
 
@@ -1628,8 +1686,13 @@ namespace Spark
 				float t = 1f - MathF.Pow(1 - serverScoreSmoothingFactor, deltaTime);
 				CurrentRound.smoothedServerScore = Math2.Lerp(CurrentRound.smoothedServerScore, CurrentRound.serverScore, t);
 			}
-			
-			
+
+
+			if (lastFrame.orange_points != frame.orange_points ||
+			    lastFrame.blue_points != frame.blue_points)
+			{
+				_ = ProcessScore(CurrentRound);
+			}
 
 
 			// while playing and frames aren't identical
@@ -1645,6 +1708,26 @@ namespace Spark
 				if (frame.disc.velocity.ToVector3().Equals(Vector3.Zero))
 				{
 					wasThrown = false;
+				}
+
+
+				// check for local throws
+				if (!lastFrame.last_throw.Equals(frame.last_throw))
+				{
+					Team clientPlayerTeam = frame?.GetTeam(frame.client_name);
+					Player clientPlayer = frame?.GetPlayer(frame.client_name);
+
+					CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.local_throw,
+						frame.game_clock, clientPlayerTeam, clientPlayer, frame.last_throw));
+
+					try
+					{
+						LocalThrow?.Invoke(frame);
+					}
+					catch (Exception exp)
+					{
+						LogRow(LogType.Error, "Error processing action", exp.ToString());
+					}
 				}
 
 				// Generate "playing" events
@@ -2122,7 +2205,7 @@ namespace Spark
 							}
 
 						}
-
+						
 
 						// check disk was thrown ⚾
 						if (!wasThrown && player.possession &&
@@ -2566,12 +2649,6 @@ namespace Spark
 
 				// just scored
 				case "score":
-
-					#region Process Score
-
-					_ = ProcessScore(CurrentRound);
-					#endregion
-
 					break;
 
 				case "round_over":
@@ -2581,11 +2658,8 @@ namespace Spark
 						LogRow(LogType.Info, "overtime");
 					}
 					// mercy win
-					else if (!frame.last_score.Equals(lastFrame.last_score))
+					else if (!frame.last_score.Equals(lastLastLastFrame.last_score))
 					{
-						// TODO check if the score actually changes the same frame the game ends
-						_ = ProcessScore(CurrentRound);
-
 						EventMatchFinished(lastFrame, frame, AccumulatedFrame.FinishReason.mercy);
 					}
 					else if (frame.game_clock == 0 || lastFrame.game_clock < deltaTime * 10 || deltaTime < 0)
@@ -2669,7 +2743,7 @@ namespace Spark
 			GoalImmediate?.Invoke(lastFrame);
 
 			// wait some time before re-checking the throw velocity
-			await Task.Delay(100);
+			await Task.Delay(150);
 
 			Frame frame = lastFrame;
 
@@ -2828,34 +2902,26 @@ namespace Spark
 		{
 			try
 			{
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+				using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, uri);
+
 				if (headers != null)
 				{
 					foreach ((string key, string value) in headers)
 					{
-						request.Headers[key] = value;
+						request.Headers.Add(key, value);
 					}
 				}
 
-				request.UserAgent = $"Spark/{AppVersionString()}";
-				using WebResponse response = await request.GetResponseAsync();
-				await using Stream stream = response.GetResponseStream();
-				if (stream != null)
-				{
-					using StreamReader reader = new StreamReader(stream);
-					return await reader.ReadToEndAsync();
-				}
+				HttpResponseMessage response = await client.SendAsync(request);
+
+				response.EnsureSuccessStatusCode();
+
+				return await response.Content.ReadAsStringAsync();
 			}
-			catch (WebException e)
+			catch (Exception)
 			{
-				Console.WriteLine($"Not in match yet\n{e}");
+				return string.Empty;
 			}
-			catch (Exception e)
-			{
-				Console.WriteLine($"Can't get data\n{e}");
-			}
-			
-			return string.Empty;
 		}
 		
 		/// <summary>
@@ -3014,6 +3080,21 @@ namespace Spark
 						.Show();
 					return true;
 			}
+
+
+			_ = Task.Run(async () =>
+			{
+				HttpResponseMessage response = await client.GetAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session");
+				if (response.StatusCode == HttpStatusCode.OK)
+				{
+					Dictionary<string, object> body = new Dictionary<string, object>()
+					{
+						{ "session_id", parts[3] },
+					};
+					string postResponse = await PostRequestAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/join_session", null, JsonConvert.SerializeObject(body));
+				}
+			});
+			
 
 
 			// start client
@@ -3533,7 +3614,6 @@ namespace Spark
 			
 			if (bluePings == null || orangePings == null)
 			{
-				// Console.WriteLine("No player's ping can be over 150.");
 				return -100;
 			}
 			
@@ -3569,7 +3649,7 @@ namespace Spark
 			if (bluePings.Max() > max_ping || orangePings.Max() > max_ping)
 			{
 				// Console.WriteLine("No player's ping can be over 150.");
-				return -2;
+				return -1;
 			}
 			
 			

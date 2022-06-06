@@ -513,13 +513,16 @@ namespace Spark
 						{
 							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} {Program.CurrentRound.smoothedServerScore:N1}";
 						}
+						// if == -1
 						else if (Math.Abs(Program.CurrentRound.serverScore - -1) < .1f)
 						{
 							playerPingsHeader = $"{Properties.Resources.Player_Pings}     >150";
 						}
+						// if <= -2
 						else if (Program.CurrentRound.serverScore < -1.5f)
 						{
-							playerPingsHeader = $"{Properties.Resources.Player_Pings}     Player Count";
+							string wrongPlayerCount = "Wrong Player Count";
+							playerPingsHeader = $"{Properties.Resources.Player_Pings}     {wrongPlayerCount}";
 						}
 						else
 						{
@@ -552,7 +555,7 @@ namespace Spark
 
 						OrangePoints.Text = Program.lastFrame.orange_points.ToString();
 						BluePoints.Text = Program.lastFrame.blue_points.ToString();
-						GameClock.Text = Program.lastFrame.game_clock_display;
+						GameClock.Text = Program.lastFrame.game_clock_display[..^3];
 
 
 						// last goals and last matches

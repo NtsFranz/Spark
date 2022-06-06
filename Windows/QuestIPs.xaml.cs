@@ -32,30 +32,37 @@ namespace Spark
 
 		private async Task FindQuestIPs()
 		{
-			Progress<List<IPAddress>> progress = new Progress<List<IPAddress>>(ips =>
+			try
 			{
-				QuestIPsBox.Text = string.Join('\n', ips.Select(ip => ip.ToString()));
-				LoadingLabel.Content = "Scanning Network...";
-			});
-			List<IPAddress> ips = await QuestIPFetching.FindAllQuestIPs(progress);
+				Progress<List<IPAddress>> progress = new Progress<List<IPAddress>>(ips =>
+				{
+					QuestIPsBox.Text = string.Join('\n', ips.Select(ip => ip.ToString()));
+					LoadingLabel.Content = "Scanning Network...";
+				});
+				List<IPAddress> ips = await QuestIPFetching.FindAllQuestIPs(progress);
 
-			LoadingLabel.Content = "Fetching EchoVR API for each Quest...";
+				LoadingLabel.Content = "Fetching EchoVR API for each Quest...";
 
-			List<(IPAddress, string)> responses = await QuestIPFetching.PingEchoVRAPIAsync(ips);
+				List<(IPAddress, string)> responses = await QuestIPFetching.PingEchoVRAPIAsync(ips);
 
-			List<(IPAddress, Frame)> frames = responses.Select(r => 
-				r.Item2 != null && !r.Item2.StartsWith("<html>") 
-					? (r.Item1, JsonConvert.DeserializeObject<Frame>(r.Item2)) 
-					: (r.Item1, null)).ToList();
+				List<(IPAddress, Frame)> frames = responses.Select(r =>
+					r.Item2 != null && !r.Item2.StartsWith("<html>")
+						? (r.Item1, JsonConvert.DeserializeObject<Frame>(r.Item2))
+						: (r.Item1, null)).ToList();
 
-			string output = string.Join('\n', frames.Select(ip =>
+				string output = string.Join('\n', frames.Select(ip =>
+				{
+					(IPAddress ipAddress, Frame f) = ip;
+					string status = f != null ? f.err_code == -6 ? "Lobby" : Program.CurrentSparkLink(f?.sessionid) + "\t" + f?.game_status + "\t" + "Players: " + f?.GetAllPlayers().Count : "";
+					return ipAddress + "\t" + f?.client_name + " \t" + status;
+				}));
+				QuestIPsBox.Text = output;
+				LoadingLabel.Content = "";
+			}
+			catch (Exception e)
 			{
-				(IPAddress ipAddress, Frame f) = ip;
-				string status = f != null ? f.err_code == -6 ? "Lobby" : Program.CurrentSparkLink(f?.sessionid) + "\t" + f?.game_status  + "\t" + "Players: " + f?.GetAllPlayers().Count: "";
-				return ipAddress + "\t" + f?.client_name + " \t" + status;
-			}));
-			QuestIPsBox.Text = output;
-			LoadingLabel.Content = "";
+				Logger.LogRow(Logger.LogType.Error, $"Error fetching Quest IPs\n{e}");
+			}
 		}
 	}
 }

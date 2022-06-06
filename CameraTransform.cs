@@ -128,6 +128,7 @@ namespace Spark
 		public float duration;
 		public bool easeIn;
 		public bool easeOut;
+		public bool pauseWhenClockNotRunning;
 		public List<CameraTransform> keyframes;
 
 		public AnimationKeyframes()

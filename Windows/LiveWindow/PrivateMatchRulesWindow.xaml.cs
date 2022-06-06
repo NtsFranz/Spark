@@ -47,6 +47,8 @@ namespace Spark
 				rules.goalie_ping_adv = value.goalie_ping_adv;
 
 				Dispatcher.Invoke(RefreshWindow);
+				
+				SettingsUpdated?.Invoke();
 			}
 		}
 
@@ -75,33 +77,6 @@ namespace Spark
 					overtime = PrivateMatchRules.Overtime.round_end,
 					standard_chassis = true,
 					mercy_enabled = true,
-					mercy_score_diff = 20,
-					team_only_voice = true,
-					disc_curve = false,
-					self_goaling = true,
-					goalie_ping_adv = false
-				}
-			},
-			{
-				"NEPA", new PrivateMatchRules()
-				{
-					minutes = 8,
-					seconds = 0,
-					blue_score = 0,
-					orange_score = 0,
-					disc_location = PrivateMatchRules.DiscLocation.mid,
-					goal_stops_time = false,
-					respawn_time = 0,
-					catapult_time = 15,
-					round_count = 4,
-					rounds_played = PrivateMatchRules.RoundsPlayed.all,
-					round_wait_time = 59,
-					carry_points_over = true,
-					blue_rounds_won = 0,
-					orange_rounds_won = 0,
-					overtime = PrivateMatchRules.Overtime.match_end,
-					standard_chassis = true,
-					mercy_enabled = false,
 					mercy_score_diff = 20,
 					team_only_voice = true,
 					disc_curve = false,
@@ -423,6 +398,7 @@ namespace Spark
 			{
 				string body = JsonConvert.SerializeObject(Rules);
 				Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body, null);
+				// Program.PostRequestCallback($"{Program.APIURL}/set_rules", null, body, null);
 			}
 			catch (Exception e)
 			{
@@ -450,6 +426,7 @@ namespace Spark
 		{
 			try
 			{
+				// Program.GetRequestCallback($"{Program.APIURL}/get_rules", null, resp =>
 				Program.GetRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/get_rules", null, resp =>
 				{
 					PrivateMatchRules newRules = JsonConvert.DeserializeObject<PrivateMatchRules>(resp);
@@ -474,7 +451,7 @@ namespace Spark
 
 		private void OnControlLoaded(object sender, RoutedEventArgs e)
 		{
-			outputUpdateTimer.Interval = 500;
+			outputUpdateTimer.Interval = 1000;
 			outputUpdateTimer.Elapsed += Update;
 			outputUpdateTimer.Enabled = true;
 		}
@@ -486,7 +463,7 @@ namespace Spark
 			{
 				Dispatcher.Invoke(() =>
 				{
-					if (Program.InGame && Program.lastFrame is { private_match: true, game_status: "pre_match" } &&
+					if (Program.InGame && Program.lastFrame != null &&
 					    (DateTime.UtcNow - lastSetTime).TotalSeconds > 1) // if we didn't just change something locally
 					{
 						GetSettingsFromGame();

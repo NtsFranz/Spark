@@ -202,7 +202,7 @@
 					</TabItem.Header>
 					<Grid>
 						<Grid.RowDefinitions>
-							<RowDefinition Height="200"/>
+							<RowDefinition Height="170"/>
 							<RowDefinition Height="1*"/>
 							<RowDefinition Height="106"/>
 						</Grid.RowDefinitions>

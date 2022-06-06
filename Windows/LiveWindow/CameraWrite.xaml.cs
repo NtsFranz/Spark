@@ -45,6 +45,13 @@ namespace Spark
 			set => CurrentAnimation.easeOut = value;
 			get => CurrentAnimation?.easeOut ?? false;
 		}
+		
+
+		public bool PauseWhenClockNotRunning
+		{
+			set => CurrentAnimation.pauseWhenClockNotRunning = value;
+			get => CurrentAnimation?.pauseWhenClockNotRunning ?? false;
+		}
 
 		public bool orbitingDisc;
 
@@ -531,9 +538,12 @@ namespace Spark
 			sw.Start();
 			while (animationProgress < 1 && isAnimating)
 			{
-				DateTime currentTime = DateTime.Now;
-				float elapsed = (currentTime.Ticks - startTime.Ticks) / 10000000f;
-				animationProgress = elapsed / CurrentAnimation.duration;
+				if (!CurrentAnimation.pauseWhenClockNotRunning || Program.lastFrame?.private_match == true || Program.lastFrame?.game_status == "playing")
+				{
+					DateTime currentTime = DateTime.Now;
+					float elapsed = (currentTime.Ticks - startTime.Ticks) / 10000000f;
+					animationProgress = elapsed / CurrentAnimation.duration;
+				}
 
 				// Change t to use easing in and out
 				float t = animationProgress;
@@ -567,7 +577,7 @@ namespace Spark
 
 				lastTransform = newTransform;
 
-				Thread.Sleep(8);
+				Thread.Sleep(4);
 			}
 
 			// write out the last frame
@@ -590,6 +600,12 @@ namespace Spark
 			DateTime startTime = DateTime.Now;
 			while (animationProgress < 1 && isAnimating)
 			{
+				if (!Program.InGame)
+				{
+					Thread.Sleep(100);
+					continue;
+				}
+				
 				DateTime currentTime = DateTime.Now;
 				float elapsed = (currentTime.Ticks - startTime.Ticks) / 10000000f;
 				animationProgress = elapsed / CurrentAnimation.duration;
@@ -1044,6 +1060,12 @@ namespace Spark
 
 			while (orbitingDisc)
 			{
+				if (!Program.InGame)
+				{
+					Thread.Sleep(100);
+					continue;
+				}
+				
 				// do another API request for lowest latency
 				Program.GetRequestCallback("http://localhost:6721/session", null, resp =>
 				{

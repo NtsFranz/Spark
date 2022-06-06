@@ -3,22 +3,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:p="clr-namespace:Spark.Properties"
+        xmlns:p="clr-namespace:Spark.Properties"
         xmlns:l="clr-namespace:Spark"
         mc:Ignorable="d"
-        Title="{x:Static p:Resources.Join_EchoVR_Match}" 
-        Height="190" Width="385" 
-        WindowStartupLocation="CenterScreen" 
-        ResizeMode="CanResize" 
-        Icon="/img/ignite_logo.ico" 
-        Background="#FF232323" 
+        Title="{x:Static p:Resources.Join_EchoVR_Match}"
+        Height="290" Width="400"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Icon="/img/ignite_logo.ico"
+        Background="#FF232323"
         FontSize="16"
-        Closed="ChooseJoinTypeDialog_OnClosed"
-        >
-	<Grid>
-		<Button x:Name="playerButton" Width="170" Height="50" Margin="10,0,0,10" Content="{x:Static p:Resources.Player}" Click="JoinAsPlayerClicked" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-		<Button x:Name="spectatorButton" Margin="0,0,10,10" Width="170" Height="50" Content="{x:Static p:Resources.join_as_spectator}" Click="JoinAsSpectatorClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.RowSpan="1"/>
-		<CheckBox x:Name="noovrCheckbox" Width="170" Content="{x:Static p:Resources.noovrCheckbox_Content}" IsChecked="{l:SettingBinding sparkLinkNoOVR}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,65" FontSize="13"></CheckBox>
-		<Label x:Name="label" Content="{x:Static p:Resources.Join_as_a_Player_or_as_a_Spectator_}" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
-	</Grid>
+        Closed="CloseButtonClicked">
+    <StackPanel>
+        <Grid Height="150">
+            <Button x:Name="playerButton" Width="180" Height="50" Margin="10,0,0,10"
+                    Content="{x:Static p:Resources.Player}" Click="JoinAsPlayerClicked" HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom" />
+            <Button x:Name="spectatorButton" Margin="0,0,10,10" Width="180" Height="50"
+                    Content="{x:Static p:Resources.join_as_spectator}" Click="JoinAsSpectatorClicked"
+                    VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.RowSpan="1" />
+            <CheckBox x:Name="noovrCheckbox" Width="180" Content="{x:Static p:Resources.noovrCheckbox_Content}"
+                      IsChecked="{l:SettingBinding sparkLinkNoOVR}" VerticalAlignment="Bottom"
+                      HorizontalAlignment="Right" Margin="0,0,10,65" FontSize="13">
+            </CheckBox>
+            <Label x:Name="label" Content="{x:Static p:Resources.Join_as_a_Player_or_as_a_Spectator_}"
+                   Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32" />
+        </Grid>
+        <StackPanel Margin="40,0,40,20">
+            <Separator/>
+            <TextBlock x:Name="EchoVRDetectedLabel" Foreground="#c4ba4d" TextWrapping="Wrap" Height="35" FontSize="13" Margin="0,10,0,0">Detecting Echo VR...</TextBlock>
+            <CheckBox x:Name="ForceLaunchCheckbox" Content="Force launch new instance"
+                      IsChecked="{l:SettingBinding sparkLinkForceLaunchNewInstance}"
+                      Checked="ForceLaunchChecked" Unchecked="ForceLaunchChecked"
+                      Margin="0,0,0,10" FontSize="13">
+                    </CheckBox>
+        </StackPanel>
+    </StackPanel>
 </Window>

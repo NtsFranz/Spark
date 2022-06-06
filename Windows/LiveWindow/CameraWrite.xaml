@@ -76,7 +76,7 @@
 								<StackPanel x:Name="KeyframesList"></StackPanel>
 							</ScrollViewer>
 						</StackPanel>
-						<StackPanel Margin="0,40,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="180"  Grid.Column="1">
+						<StackPanel Margin="0,40,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="1">
 							<Button x:Name="startButton" Width="140" Height="60" Content="Play" Click="StartKeyframeAnimation" />
 							<ProgressBar x:Name="animationProgressBar" Width="140" Height="10" Maximum="1" LargeChange="0.01" SmallChange="0.01"></ProgressBar>
 							<StackPanel Orientation="Horizontal" Margin="0,10,0,0">
@@ -85,6 +85,7 @@
 							</StackPanel>
 							<CheckBox x:Name="EaseInCheckbox" Content="Ease In" IsChecked="{Binding EaseIn}" Margin="10,10,0,5"/>
 							<CheckBox x:Name="EaseOutCheckbox" Content="Ease Out" IsChecked="{Binding EaseOut}" Margin="10,0,0,10"/>
+							<CheckBox x:Name="PauseWhenClockNotRunningCheckbox" Content="Pause w/ clock" IsChecked="{Binding PauseWhenClockNotRunning}" Margin="10,0,0,10"/>
 						</StackPanel>
 					</Grid>
 				</GroupBox>

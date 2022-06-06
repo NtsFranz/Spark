@@ -99,6 +99,7 @@
                                     Content="{x:Static p:Resources.Stop_Replay_Buffer}" Click="OBSStopReplayBuffer"
                                     Margin="4,4,4,4" Padding="4,4,4,4" />
                         </StackPanel>
+                        <CheckBox Content="Pause recording with game clock" IsChecked="{l:SettingBinding obsPauseRecordingWithGameClock}" Margin="5,5,5,5" />
                         <GroupBox Header="{x:Static p:Resources.Automatic_Scene_Switching}" Margin="0,0,0,5">
                             <StackPanel Margin="5,5,5,5">
                                 <Label Content="{x:Static p:Resources.In_game_Scene_}" />

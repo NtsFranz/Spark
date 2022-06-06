@@ -254,9 +254,8 @@ namespace Spark
 			// get the access codes for this user
 			try
 			{
-				string accessCodesResponseString = await Program.GetRequestAsync(
-					Program.APIURL + "/auth/token/" + oauthToken +
-					$"?u={SparkSettings.instance.client_name}&v={Program.AppVersionString()}", null);
+				string url = $"{Program.APIURL}/auth/token/{oauthToken}?u={SparkSettings.instance.client_name}&v={Program.AppVersionString()}"; 
+				string accessCodesResponseString = await Program.GetRequestAsync(url, null);
 
 				Dictionary<string, JToken> accessCodesResponseData =
 					JsonConvert.DeserializeObject<Dictionary<string, JToken>>(accessCodesResponseString);

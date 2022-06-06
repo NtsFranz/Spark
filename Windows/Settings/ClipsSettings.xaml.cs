@@ -279,30 +279,43 @@ namespace Spark
 					catch (AuthFailureException)
 					{
 						Logger.LogRow(Logger.LogType.Error, "Failed to connect to OBS. AuthFailure");
-						new MessageBox("Authentication failed.", Properties.Resources.Error).Show();
+						Dispatcher.Invoke(() =>
+						{
+							new MessageBox("Authentication failed.", Properties.Resources.Error).Show();
+						});
 						Program.obs.instance.Disconnect();
 						return;
 					}
 					catch (ErrorResponseException ex)
 					{
 						Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS.\n{ex}");
-						new MessageBox("Connect failed.", Properties.Resources.Error).Show();
+						Dispatcher.Invoke(() =>
+						{
+							new MessageBox("Connect failed.", Properties.Resources.Error).Show();
+						});
 						Program.obs.instance.Disconnect();
 						return;
 					}
 					catch (Exception ex)
 					{
 						Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS for another reason.\n{ex}");
-						new MessageBox("Connect failed.", Properties.Resources.Error).Show();
+						Dispatcher.Invoke(() =>
+						{
+							new MessageBox("Connect failed.", Properties.Resources.Error).Show();
+						});
 						Program.obs.instance.Disconnect();
 						return;
 					}
 
 					if (!Program.obs.instance.IsConnected)
 					{
-						new MessageBox(
-							"Connect failed.\nMake sure OBS is open and you have installed the OBS Websocket plugin.",
-							Properties.Resources.Error).Show();
+						Dispatcher.Invoke(() =>
+						{
+							new MessageBox(
+								"Connect failed.\nMake sure OBS is open and you have installed the OBS Websocket plugin.",
+								Properties.Resources.Error).Show();
+						});
+						
 					}
 				}
 				else
