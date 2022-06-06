@@ -120,7 +120,7 @@
 						
 						<TextBlock Margin="0,10,0,0">Spectatorstream (Spectates highest level public match)</TextBlock>
 						<Separator/>
-						<CheckBox Content="{x:Static p:Resources.Spectatorstream_opens_Echo_Combat}" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamCombat}" ToolTip="The Open Spectatatorstream button opens Echo Combat instead."/>
+						<!-- <CheckBox Content="{x:Static p:Resources.Spectatorstream_opens_Echo_Combat}" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamCombat}" ToolTip="The Open Spectatatorstream button opens Echo Combat instead."/> -->
 						<CheckBox Content="{x:Static p:Resources.Use_anonymous_mode_for_Spectatorstream}" Margin="10,4,10,4" IsChecked="{l:SettingBinding spectatorStreamNoOVR}" ToolTip="Your username will show up as anonymous when launching the spectatorstream. This also allows you to have two instances of EchoVR open at once."/>
 						<CheckBox x:Name="autorestartCheckbox" Content="{x:Static p:Resources.Autorestart_EchoVR_into_autospectator}"
 									  IsChecked="{l:SettingBinding autoRestart}" HorizontalAlignment="Left"

@@ -523,12 +523,22 @@
 					<Button x:Name="updateButton" Content="{x:Static p:Resources.Download_Update}" Height="40" Margin="4,4,4,4" Background="#FF8B3434" Click="updateButton_Click" ToolTip="{x:Static p:Resources.Downloads_and_installs_the_most_recent_update__recommended_}" Visibility="Collapsed"/>
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton"  Visibility="Collapsed" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
-					<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Margin="4,4,4,4" Click="startSpectatorStream_Click" ToolTip="{x:Static p:Resources.Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing}"/>
+					<StackPanel Orientation="Horizontal">
+						<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Width="153" Margin="4,4,1,4" Click="StartSpectatorStreamClick" ToolTip="{x:Static p:Resources.Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing}"/>
+						<Button Height="40" Width="25" Margin="1,4,4,4" Click="CombatSpectatorstreamClick" Visibility="Visible">
+							<Image Source="/img/flamingo-white.png" Margin="3,3,3,3"/>
+						</Button>
+					</StackPanel>
 					<Button x:Name="chooseServerRegion" Content="{x:Static p:Resources.Choose_Server_Region}" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="{x:Static p:Resources.This_creates_a_private_match_in_a_region_of_your_choice_}"/>
 					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Collapsed"/>
 					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
 					<Button x:Name="SpeedometerButton" Content="{x:Static p:Resources.Speedometer}" Height="40" Margin="4,4,4,4" Click="OpenSpeedometer" Visibility="Collapsed" />
-					<Button x:Name="OverlaysButton" Content="{x:Static p:Resources.Overlays}" Height="40" Margin="4,4,4,4" Click="OpenOverlays" Visibility="Visible"/>
+					<StackPanel Orientation="Horizontal">
+						<Button x:Name="OverlaysButton" Content="{x:Static p:Resources.Overlays}" Height="40" Width="137" Margin="4,4,1,4" HorizontalAlignment="Stretch" Click="OpenOverlays" Visibility="Visible"/>
+						<Button Height="40" Width="40" Margin="1,4,4,4" Click="DefaultMatchSetupClick" Visibility="Visible">
+							<Image Source="/img/cog.png" Margin="5,5,5,5"/>
+						</Button>
+					</StackPanel>
 					<Button x:Name="ShowClickableOverlayButton" Visibility="Visible" Height="40" Click="showOverlay_Click" Margin="4,4,4,4">
 						<StackPanel>
 							<Label x:Name="ClickableOverlayLabel" Content="Spectator Overlay" Margin="0,-6,0,0"/>

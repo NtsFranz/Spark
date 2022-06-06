@@ -89,12 +89,12 @@
         .checkbox_grid {
             display: flex;
             flex-direction: column;
-			flex-wrap: wrap;
+            flex-wrap: wrap;
         }
 
         .checkbox_grid > label {
-			flex-grow: 1;
-			
+            flex-grow: 1;
+
         }
 	</style>
 </head>
@@ -185,35 +185,49 @@
 					</tbody>
 				</table>
 
-				<!--
-				<h3>Overlay Configuration</h3>
+				<h4>Overlay Configuration</h4>
 				<div class="checkbox_grid">
+
 					<label class="checkbox" style="margin-left: 3em;">
 						<input type="checkbox" id="show_minimap_checkbox"/>
-						Show minimap
+						Show default minimap
 					</label>
 					<label class="checkbox" style="margin-left: 3em;">
 						<input type="checkbox" id="use_minimal_minimap_checkbox"/>
-						Use minimal minimap
+						Show compact minimap
 					</label>
+
 					<label class="checkbox" style="margin-left: 3em;">
 						<input type="checkbox" id="show_player_rosters_checkbox"/>
 						Show player rosters
 					</label>
+
 					<label class="checkbox" style="margin-left: 3em;">
 						<input type="checkbox" id="show_main_banner_checkbox"/>
 						Show main banner
 					</label>
-					<label class="checkbox" style="margin-left: 3em;">
-						<input type="checkbox" id="show_neutral_jousts_checkbox"/>
-						Show neutral joust bannners
+					<label class="checkbox" style="margin-left: 4em;">
+						<input type="checkbox" id="show_team_logos_checkbox"/>
+						Show team logos
 					</label>
+					<!--					<label class="checkbox" style="margin-left: 4em;">-->
+					<!--						<input type="checkbox" id="show_team_names_checkbox"/>-->
+					<!--						Show team names-->
+					<!--					</label>-->
+
+					<!--					<label class="checkbox" style="margin-left: 4em;">-->
+					<!--						<input type="checkbox" id="show_neutral_jousts_checkbox"/>-->
+					<!--						Show neutral joust bannners-->
+					<!--					</label>-->
+					<!--					<label class="checkbox" style="margin-left: 4em;">-->
+					<!--						<input type="checkbox" id="show_defensive_jousts_checkbox"/>-->
+					<!--						Show defensive joust bannners-->
+					<!--					</label>-->
 					<label class="checkbox" style="margin-left: 3em;">
-						<input type="checkbox" id="show_defensive_jousts_checkbox"/>
-						Show defensive joust bannners
+						<input type="checkbox" id="show_event_log_checkbox"/>
+						Show event log
 					</label>
 				</div>
-			-->
 			</div>
 
 
@@ -232,6 +246,18 @@
 <script>
     let teamLogosDict = {}
 
+    let visibility_config = [
+        ["show_minimap_checkbox", "minimap"],
+        ["use_minimal_minimap_checkbox", "compact_minimap"],
+        ["show_player_rosters_checkbox", "player_rosters"],
+        ["show_main_banner_checkbox", "main_banner"],
+        ["show_neutral_jousts_checkbox", "neutral_jousts"],
+        ["show_defensive_jousts_checkbox", "defensive_jousts"],
+        ["show_event_log_checkbox", "event_log"],
+        ["show_team_logos_checkbox", "show_team_logos"],
+        ["show_team_names_checkbox", "show_team_names"],
+    ];
+
     let sw = new SparkWebsocket();
     sw.subscribe("overlay_config", data => {
         // blue team
@@ -249,6 +275,20 @@
         document.getElementById("swap_sides_button").classList.remove("is-loading");
 
         document.getElementById("automatic_team_names_checkbox").checked = data["team_names_source"] === 1;
+
+        visibility_config.forEach(v => {
+            const doc = document.getElementById(v[0]);
+            if (doc !== null) doc.checked = data["visibility"][v[1]] === true;
+        });
+
+
+        // document.getElementById("show_minimap_checkbox").checked = data["visibility"]["minimap"] === true;
+        // document.getElementById("use_minimal_minimap_checkbox").checked = data["visibility"]["compact_minimap"] === true;
+        // document.getElementById("show_player_rosters_checkbox").checked = data["visibility"]["player_rosters"] === true;
+        // document.getElementById("show_main_banner_checkbox").checked = data["visibility"]["main_banner"] === true;
+        // document.getElementById("show_neutral_jousts_checkbox").checked = data["visibility"]["neutral_jousts"] === true;
+        // document.getElementById("show_defensive_jousts_checkbox").checked = data["visibility"]["defensive_jousts"] === true;
+        // document.getElementById("show_event_log_checkbox").checked = data["visibility"]["event_log"] === true;
     });
 
     // set up listeners
@@ -267,6 +307,18 @@
 
     document.getElementById("automatic_team_names_checkbox").addEventListener("click", () => {
         httpPostAsync('/api/set_team_names_source/' + (document.getElementById("automatic_team_names_checkbox").checked ? "1" : "0"));
+    });
+
+
+    visibility_config.forEach(v => {
+        const doc = document.getElementById(v[0]);
+        if (doc !== null) {
+            doc.addEventListener("click", () => {
+                let body = {"configurableOverlaySettings": {}};
+                body["configurableOverlaySettings"][v[1]] = document.getElementById(v[0]).checked
+                httpPostAsync('/api/settings/set', body);
+            });
+        }
     });
 
 

@@ -67,6 +67,12 @@
     <EmbeddedResource Include="wwwroot_resources\css\player_lists.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot_resources\default_minimap.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot_resources\disc_position_heatmap.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot_resources\fonts\Inconsolata.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -74,6 +80,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot_resources\fonts\Inconsolata.woff2">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot_resources\full_overlay.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwroot_resources\game_data\index.html">
@@ -103,6 +112,12 @@
     <EmbeddedResource Include="wwwroot_resources\js\spark_websocket.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot_resources\midmatch_overlay.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot_resources\minimap.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot_resources\overlays\event_log.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -112,13 +127,7 @@
     <EmbeddedResource Include="wwwroot_resources\overlays\match_setup.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwtemplates\full_overlay.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwtemplates\playspace.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwtemplates\speedometer.html">
+    <EmbeddedResource Include="wwwroot_resources\playspace.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Remove="SparkLinkLauncher\**" />
@@ -129,6 +138,9 @@
     <None Remove="wwwroot_resources\api\index.html" />
     <None Remove="wwwtemplates\default_minimap - Copy.html" />
     <None Remove="wwwtemplates\midmatch_overlay - Copy.html" />
+    <EmbeddedResource Include="wwwroot_resources\speedometer.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwtemplates\default_scoreboard.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -196,9 +208,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Remove="wwwtemplates\disc_position_heatmap.html" />
-    <EmbeddedResource Include="wwwtemplates\disc_position_heatmap.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
     <Page Update="Windows\QuestIPs.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -333,6 +342,70 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Remove="img\flamingo-white.png" />
+    <Resource Include="img\flamingo-white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <None Remove="img\cog.png" />
+    <Resource Include="img\cog.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <None Remove="wwwroot_resources\compact_main_banner.html" />
+    <EmbeddedResource Include="wwwroot_resources\compact_main_banner.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\compact_minimap.html" />
+    <EmbeddedResource Include="wwwroot_resources\compact_minimap.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\configurable_overlay.html" />
+    <EmbeddedResource Include="wwwroot_resources\configurable_overlay.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\event_log.html" />
+    <EmbeddedResource Include="wwwroot_resources\event_log.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\player_lists.html" />
+    <EmbeddedResource Include="wwwroot_resources\player_lists.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\img\default_minimap.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\default_minimap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\img\empty_echo_background.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\empty_echo_background.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\img\minimap_raw.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\minimap_raw.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\img\minimap_simple.png" />
+    <EmbeddedResource Include="wwwroot_resources\img\minimap_simple.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\css\compact_main_banner.css" />
+    <EmbeddedResource Include="wwwroot_resources\css\compact_main_banner.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\css\configurable_overlay.css" />
+    <EmbeddedResource Include="wwwroot_resources\css\configurable_overlay.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\css\minimap_canvas.css" />
+    <EmbeddedResource Include="wwwroot_resources\css\minimap_canvas.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\css\minimap_minimal.css" />
+    <EmbeddedResource Include="wwwroot_resources\css\minimap_minimal.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Remove="wwwroot_resources\css\shared.css" />
+    <EmbeddedResource Include="wwwroot_resources\css\shared.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -378,12 +451,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="HighlightsPlugin64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwtemplates\midmatch_overlay.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwtemplates\default_minimap.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <Resource Include="img\camera-outline.png">

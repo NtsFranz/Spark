@@ -1075,9 +1075,14 @@ namespace Spark
 			Program.ToggleWindow(typeof(LoginWindow), ownedBy: this);
 		}
 
-		private void startSpectatorStream_Click(object sender, RoutedEventArgs e)
+		private void StartSpectatorStreamClick(object sender, RoutedEventArgs e)
 		{
-			Program.StartEchoVR(Program.JoinType.Spectator, noovr:SparkSettings.instance.spectatorStreamNoOVR, combat: SparkSettings.instance.spectatorStreamCombat);
+			Program.StartEchoVR(Program.JoinType.Spectator, noovr:SparkSettings.instance.spectatorStreamNoOVR, combat: false);
+		}
+		
+		private void CombatSpectatorstreamClick(object sender, RoutedEventArgs e)
+		{
+			Program.StartEchoVR(Program.JoinType.Spectator, noovr:SparkSettings.instance.spectatorStreamNoOVR, combat: true);
 		}
 
 		private void ToggleHidden(object sender, RoutedEventArgs e)
@@ -1921,6 +1926,11 @@ namespace Spark
 				LogRow(LogType.Error, ex.ToString());
 			}
 		}
+		
+		private void DefaultMatchSetupClick(object sender, RoutedEventArgs e)
+		{
+			OpenWebpage("http://localhost:6724/overlays/match_setup");
+		}
 
 		private void MatchSetupClick(object sender, RoutedEventArgs e)
 		{
@@ -1936,5 +1946,6 @@ namespace Spark
 		{
 			tabControl.SelectedItem = ServerInfoTab;
 		}
+
 	}
 }

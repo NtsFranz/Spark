@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Minimap overlay</title>
+    <script defer src="/js/util.js"></script>
+	<script defer src="/js/spark_websocket.js"></script>
+    <script defer src="js/full_overlay.js"></script>
+
+
+    <link rel="stylesheet" href="css/shared.css">
+    <link rel="stylesheet" href="css/minimap.css">
+</head>
+
+<body>
+    <div class="container_free">
+        <div class="minimap_container">
+
+            <img class="minimap_image" src="img/minimap_raw.png">
+            <div class="player blue   positionable_element"><div></div><p class="player_number">00</p></div>
+            <div class="player blue   positionable_element"><div></div><p class="player_number">00</p></div>
+            <div class="player blue   positionable_element"><div></div><p class="player_number">00</p></div>
+            <div class="player blue   positionable_element"><div></div><p class="player_number">00</p></div>
+            <div class="player blue   positionable_element"><div></div><p class="player_number">00</p></div>
+            <div class="player orange positionable_element"><div></div><p class="player_number">00</p></div>
+            <div class="player orange positionable_element"><div></div><p class="player_number">00</p></div>
+            <div class="player orange positionable_element"><div></div><p class="player_number">00</p></div>
+            <div class="player orange positionable_element"><div></div><p class="player_number">00</p></div>
+            <div class="player orange positionable_element"><div></div><p class="player_number">00</p></div>
+            <div id="disc" class="positionable_element"><img class="minimap_disc" src="/img/minimap_disc.png"></div>
+        </div>
+    </div>
+</body>
+
+</html>

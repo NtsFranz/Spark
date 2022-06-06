@@ -275,6 +275,7 @@ namespace Spark
 		public int overlaysManualRoundCount { get; set; } = 3;
 		public int[] overlaysManualRoundScoresOrange { get; set; } = null;
 		public int[] overlaysManualRoundScoresBlue { get; set; } = null;
+		public string gameOverlayUrl { get; set; } = "/configurable_overlay";
 
 		[Serializable]
 		public class ConfigurableOverlaySettings

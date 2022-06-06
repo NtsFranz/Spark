@@ -1,0 +1,72 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.minimap_container {
+  position: absolute;
+  width: 35.3125em;
+  height: 10.875em;
+  bottom: 1em;
+  right: 1em;
+  overflow: hidden;
+}
+
+.minimap_image {
+  height: 100%;
+  display: block;
+  margin: auto;
+}
+
+.minimap_disc {
+  width: 1em;
+  position: absolute;
+  top: -.5em;
+  left: -.5em;
+}
+
+.player {
+  position: absolute;
+  visibility: hidden;
+}
+
+.player > div {
+  border-radius: 10em;
+  width: .9em;
+  height: .9em;
+  position: absolute;
+  top: -.45em;
+  left: -.45em;
+}
+
+.player > p {
+  display: none;
+}
+
+.blue > div {
+  background-color: #0199ff;
+}
+
+.orange > div {
+  background-color: #ff8d04;
+}
+
+.positionable_element {
+  position: absolute;
+  left: 17.5938em;
+  top: 5.46875em;
+  transition: all .3s;
+}
+
+#timeout_banner {
+  z-index: 1000;
+  position: absolute;
+  width: 100%;
+  margin: 0;
+  top: 0;
+  visibility: hidden;
+}
+
+#timeout_banner > img {
+  width: 100%;
+}

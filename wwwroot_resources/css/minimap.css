@@ -3,37 +3,26 @@ body {
 	padding: 0;
 }
 
-.container_1080 {
-	position: absolute;
-	top: 0;
-	left: 0;
-	margin: 0;
-	width: 1920px;
-	height: 1080px;
-	/*background-color: black;*/
-}
-
 .minimap_container {
 	position: absolute;
 	width: 35.3125em;
-	height: 11.875em;
-	bottom: 0.5625em;
-	right: 0.625em;
+	height: 10.875em;
+	bottom: 1em;
+	right: 1em;
 	overflow: hidden;
 }
 
 .minimap_image {
-	width: 100%;
-	position: absolute;
-	top: 0;
-	left: 0;
+	height: 100%;
+	display: block;
+	margin: auto;
 }
 
 .minimap_disc {
-	width: 1.5625em;
+	width: 25px;
 	position: absolute;
-	top: -0.78125em;
-	left: -0.78125em;
+	top: -12.5px;
+	left: -12.5px;
 }
 
 .player {
@@ -42,12 +31,12 @@ body {
 }
 
 .player>div {
-	border-radius: 6.25em;
-	width: 1.875em;
-	height: 1.875em;
+	border-radius: 100px;
+	width: 30px;
+	height: 30px;
 	position: absolute;
-	top: -0.9375em;
-	left: -0.9375em;
+	top: -15px;
+	left: -15px;
 }
 
 .player>p {
@@ -56,45 +45,36 @@ body {
 	font-weight: bold;
 	text-align: center;
 	position: absolute;
-	top: -0.6em;
-	left: -0.58em;
+	top: -11px;
+	left: -12px;
 	margin: 0;
-	font-size: 1.25em;
-	text-shadow: 0 0 0.1em #0005;
+	font-size: 20px;
 }
 
-.minimap_container .blue>div {
+.blue>div {
 	background-color: #0199ff;
 }
 
-.minimap_container .orange>div {
+.orange>div {
 	background-color: #ff8d04;
 }
 
 .positionable_element {
 	position: absolute;
-	top: 5.40625em;
-	left: 17.59375em;
-	transition: all .2s;
+	top: 86.5px;
+	left: 281.5px;
+	transition: all .3s;
 }
 
 #timeout_banner {
-	padding: 1.25em 0;
-	font-size: 2.5em;
-	font-weight: bold;
-	color: #fffa;
-	text-align: center;
-	font-family: sans-serif;
 	z-index: 1000;
 	position: absolute;
 	width: 100%;
 	margin: 0;
-	top: 2em;
-	background: #000a linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .75) 25%, rgba(0, 0, 0, .75) 75%, rgba(0, 0, 0, 0) 100%);
+	top: 0;
 	visibility: hidden;
 }
 
-#timeout_banner_team {
-	font-size: 1.4375em;
-	text-transform: uppercase;
+#timeout_banner>img {
+	width: 100%;
 }

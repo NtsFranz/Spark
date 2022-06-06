@@ -1,0 +1,333 @@
+:root {
+  --blue: #197abd;
+  --blue-dark: #18639d;
+  --blue-dark-dark: #104269;
+  --orange: #d57d14;
+  --orange-dark: #9d6118;
+  --orange-dark-dark: #694110;
+}
+
+#main_banner {
+  display: none;
+  animation: fade_in 1s;
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+#main_banner #entire_clock_area {
+  width: 17em;
+  margin: 1em auto 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  text-align: center;
+  color: #ddd;
+  font-size: 1.5em;
+  font-family: Inconsolata, monospace;
+  position: relative;
+  /*border: .05em solid #aaa5;*/
+  /*border-bottom: none;*/
+  /*box-shadow: 0 0 2em #000f;*/
+  /*background: linear-gradient(#444 0%, #222 100%);*/
+}
+
+
+#main_banner #entire_clock_area > .center_clock_area {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  position: relative;
+  width: 10em;
+  margin: .3em auto auto;
+}
+
+
+#main_banner #game_clock_display {
+  font-size: 1.2em;
+  text-align: center;
+  width: 100%;
+  font-family: 'Inconsolata', monospace;
+  font-weight: 900;
+  /*transform: scaleY(1.2);*/
+  background: #1c1c1c;
+  height: 1em;
+  padding: 0.4em 1.1em;
+  border: .1em inset #010101;
+  z-index: 5;
+}
+
+#main_banner .team_logo {
+  height: 4em;
+  width: 4em;
+}
+
+#main_banner .team_name {
+  flex-grow: 1;
+  line-height: 1;
+  height: 100%;
+  margin: auto;
+  width: 12.5em;
+  text-transform: uppercase;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 600;
+  font-size: 1.25em;
+  color: #fffa;
+  text-shadow: .1em .1em 0 black;
+}
+
+#main_banner .points {
+  width: 2em;
+  height: 1.3em;
+  font-weight: 900;
+  font-size: 2em;
+  line-height: 1.2em;
+  text-shadow: 0 0 .1em black;
+  padding-left: .4em;
+  padding-right: .4em;
+  position: absolute;
+  border-style: inset;
+  z-index: 10;
+}
+
+#main_banner .points.orange {
+  left: 0;
+  background: var(--orange);
+  clip-path: polygon(25% 0, 0 100%, 75% 100%, 100% 0%);
+  border: .1em solid var(--orange-dark);
+  border-left: none;
+  border-right: none;
+}
+
+#main_banner .points.blue {
+  right: 0;
+  background: var(--blue);
+  clip-path: polygon(25% 0, 0 100%, 75% 100%, 100% 0%);
+  border: .1em solid var(--blue-dark);
+  border-left: none;
+  border-right: none;
+}
+
+#main_banner .points.secondary {
+  width: .05em;
+  margin: 0 -.25em;
+  clip-path: polygon(85% 0, 0 100%, 15% 100%, 100% 0%)
+}
+
+#main_banner .points:before {
+  width: .2em;
+  height: .7em;
+  display: inline-block;
+  content: "";
+  position: absolute;
+  left: -.7em;
+  top: .2em;
+  background-color: #34a6a5;
+  transform: skew(-28deg);
+}
+
+#main_banner .possession {
+  width: .2em;
+  /*border: .1em solid #FFF2;*/
+  height: 100%;
+  /*margin: .1em;*/
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  position: absolute;
+  z-index: 7;
+  transform: skew(-26deg);
+}
+
+#main_banner .possession.orange {
+  /*border-color: rgba(202, 147, 97, 0.13);*/
+  left: 1.6em;
+}
+
+#main_banner .possession.blue {
+  /*border-color: rgba(97, 169, 202, 0.13);*/
+  right: 1.6em;
+}
+
+#main_banner .possession > div {
+  border: .02em solid #fff3;
+  flex-grow: 1;
+  margin: .05em
+}
+
+#main_banner .possession > div.active {
+  background-color: #fffa;
+  box-shadow: 0 0 .2em #fff2;
+}
+
+#main_banner > .underlay {
+  height: .2em;
+  border-top: none;
+  margin-top: 0;
+  background: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: row;
+}
+
+#main_banner > .underlay > .orange {
+  background: linear-gradient(#ff9627 0%, #755e41 100%);
+  height: 100%;
+  flex-grow: 1;
+}
+
+#main_banner > .underlay > .blue {
+  background: linear-gradient(#4890dd 0%, #4f5462 100%);
+  height: 100%;
+  flex-grow: 1;
+}
+
+@keyframes fade_in {
+  0% {
+    opacity: 0;
+    margin-top: -.4em;
+  }
+  100% {
+    opacity: 1;
+    margin-top: 0;
+  }
+}
+
+.moving_part {
+  width: .05em;
+  margin: 0 -.25em;
+  position: absolute;
+  transition: left 1s, right 1s;
+}
+
+.moving_part.orange {
+  right: 1.6em;
+}
+
+.moving_part.orange.visible {
+  right: 10.2em;
+}
+
+.moving_part.blue {
+  left: 1.6em;
+}
+
+.moving_part.blue.visible {
+  left: 10.2em;
+}
+
+.moving_part_container {
+  position: absolute;
+  width: 100%;
+  height: 3em;
+  z-index: 0;
+}
+
+.moving_part_container.orange {
+  left: -15.6em;
+}
+
+.moving_part_container.blue {
+  right: -15.6em;
+}
+
+.banner {
+  width: 10em;
+  margin: 0.4em -.1em;
+  height: 2.2em;
+  clip-path: polygon(1em 0, 0 100%, 9em 100%, 100% 0%);
+  position: absolute;
+  outline: 0.1em #0005 solid;
+  outline-offset: -.1em;
+}
+
+.banner.orange {
+  background: var(--orange-dark);
+  left: 0;
+
+}
+
+.banner.blue {
+  background: var(--blue-dark);
+  right: 0;
+}
+
+
+.banner > div > div {
+  font-size: 0.8em;
+  padding-top: 0.2em;
+}
+
+.banner.orange > div > div {
+  margin-left: 1.6em;
+}
+
+.banner.blue > div > div {
+  margin-right: 1.6em;
+}
+
+.point_value {
+  position: absolute;
+  top: -.15em;
+  font-size: 2.7em;
+  color: #fffa;
+  font-weight: 900;
+}
+
+.point_value.orange {
+  left: 0.4em;
+}
+
+.point_value.blue {
+  right: 0.4em;
+}
+
+.team_logos_collapsible {
+  width: .7em;
+  position: absolute;
+  height: 3em;
+  transition: 1s width;
+}
+
+
+.team_logos_collapsible.visible {
+  width: 3.4em;
+}
+
+.team_logos_collapsible.orange {
+  right: -0.7em;
+}
+
+.team_logos_collapsible.blue {
+  left: -0.7em;
+}
+
+#main_banner .points.secondary.left {
+  right: initial;
+  left: 0;
+}
+#main_banner .points.secondary.right {
+  right: 0;
+  left: initial;
+}
+
+.team_logo_background {
+  width: calc(100% + 0.3em);
+  margin-left: -0.1em;
+  height: 2.1em;
+  position: absolute;
+  top: 0.4em;
+  clip-path: polygon(1em 0, 0 100%, calc(100% - 1em) 100%, 100% 0%);
+  background: no-repeat center;
+  background-size: 2em;
+  /*background-image: url("https://vrmasterleague.com/images/logos/teams/be007dda-30df-480e-9820-bc530b3ee3b0.png");*/
+}
+.team_logo_background.orange {
+  background-color: #694110aa;
+}
+
+.team_logo_background.blue {
+  background-color: #104269aa;
+}

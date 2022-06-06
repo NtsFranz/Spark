@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Compact Main Banner</title>
+
+
+	<link rel="stylesheet" href="css/shared.css">
+	<link rel="stylesheet" href="css/compact_main_banner.css">
+	<!--	<link rel="stylesheet" href="/css/main_banner.css">-->
+
+	<script defer src="/js/util.js"></script>
+	<script defer src="/js/spark_websocket.js"></script>
+	<script defer src="js/full_overlay.js"></script>
+</head>
+
+<body>
+<div class="container_free">
+
+	<div id="main_banner">
+		<div id="entire_clock_area">
+			<!--			<img id="team_logo_orange" class="team_logo"/>-->
+			<!--			<div id="team_name_orange" class="team_name"></div>-->
+
+			<div class="center_clock_area">
+				<div id="game_clock_display"></div>
+				<div class="possession orange">
+					<div id="possession_orange" class="active"></div>
+				</div>
+				<div class="possession blue">
+					<div id="possession_blue"></div>
+				</div>
+				<div id="round_scores_combined" class="round_scores"></div>
+			</div>
+			<div id="points_orange" class="points orange"></div>
+
+			<div class="moving_part_container orange">
+				<div  id="orange_goal_banner" class="moving_part orange">
+					<div class="team_logos_collapsible orange">
+						<div class="points secondary orange left"></div>
+						<div id="team_logo_background_orange" class="team_logo_background orange"></div>
+						<div class="points secondary orange right"></div>
+					</div>
+					<div class="banner orange">
+						<div>
+							<div id="orange_goal_type">TEST GOAL TYPE</div>
+							<div id="orange_goal_player_name">TEST_USER</div>
+						</div>
+						<div class="point_value orange" id="orange_goal_point_value">3</div>
+					</div>
+				</div>
+			</div>
+
+
+			<div id="points_blue" class="points blue"></div>
+
+
+			<div class="moving_part_container blue">
+				<div  id="blue_goal_banner" class="moving_part blue">
+					<div class="banner blue">
+						<div>
+							<div id="blue_goal_type">TEST GOAL TYPE</div>
+							<div id="blue_goal_player_name">TEST_USER</div>
+						</div>
+						<div class="point_value blue" id="blue_goal_point_value">3</div>
+					</div>
+
+					<div class="team_logos_collapsible blue">
+						<div class="points secondary blue right"></div>
+						<div id="team_logo_background_blue" class="team_logo_background blue"></div>
+						<div class="points secondary blue left"></div>
+					</div>
+				</div>
+			</div>
+
+			<!--			<div id="team_name_blue" class="team_name"></div>-->
+			<!--			<img id="team_logo_blue" class="team_logo"/>-->
+		</div>
+		<!--		<div class="underlay">-->
+		<!--			<div class="orange"></div>-->
+		<!--			<div class="blue"></div>-->
+		<!--		</div>-->
+
+
+		<div id="goal_banners" class="banner_box">
+		</div>
+	</div>
+
+
+</div>
+</body>
+
+</html>

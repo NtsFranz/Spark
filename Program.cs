@@ -974,7 +974,7 @@ namespace Spark
 				}
 				
 				// add the stats to the current round data
-				rounds.Last().Accumulate(frame, lastFrame);
+				CurrentRound.Accumulate(frame, lastFrame);
 			}
 			catch (Exception ex)
 			{

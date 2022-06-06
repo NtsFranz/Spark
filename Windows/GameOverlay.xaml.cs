@@ -92,9 +92,9 @@ namespace Spark
 			try
 			{
 				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
-				var webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
+				CoreWebView2Environment webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
 				await WebView.EnsureCoreWebView2Async(webView2Environment);
-				WebView.Source = new Uri("http://localhost:6724/full_overlay");
+				WebView.Source = new Uri("http://localhost:6724" + SparkSettings.instance.gameOverlayUrl);
 			}
 			catch (FileNotFoundException ex)
 			{

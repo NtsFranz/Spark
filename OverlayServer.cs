@@ -208,12 +208,6 @@ namespace Spark
 						}
 					});
 
-					endpoints.MapGet("/midmatch_overlay", async context =>
-					{
-						string file = ReadResource("midmatch_overlay.html");
-						await context.Response.WriteAsync(file);
-					});
-
 
 					endpoints.MapGet("/scoreboard", async context =>
 					{
@@ -389,21 +383,6 @@ namespace Spark
 						{
 							string file = ReadResource("speedometer.html");
 							file = file.Replace("FETCH_URL", "/get_disc_speed");
-							await context.Response.WriteAsync(file);
-						});
-
-					endpoints.MapGet("/minimap",
-						async context =>
-						{
-							string file = ReadResource("default_minimap.html");
-							await context.Response.WriteAsync(file);
-						});
-
-
-					endpoints.MapGet("/full_overlay",
-						async context =>
-						{
-							string file = ReadResource("full_overlay.html");
 							await context.Response.WriteAsync(file);
 						});
 
