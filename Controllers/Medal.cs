@@ -15,6 +15,13 @@ namespace Spark
 			Program.Save += Save;
 			Program.Assist += Assist;
 			Program.Interception += Interception;
+			Program.EmoteActivated += (frame, _, player) =>
+			{
+				if (player.name == frame.client_name)
+				{
+					SaveClip(SparkSettings.instance.medalClipEmote, player.name, frame);
+				}
+			};
 		}
 
 

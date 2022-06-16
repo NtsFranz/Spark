@@ -178,6 +178,14 @@ namespace Spark
 				},
 				new()
 				{
+					Id = "EMOTE",
+					HighlightTags = Highlights.HighlightType.Achievement,
+					Significance = Highlights.HighlightSignificance.Good,
+					UserDefaultInterest = true,
+					NameTranslationTable = new[] {new Highlights.TranslationEntry("en-US", "Emote activation"),}
+				},
+				new()
+				{
 					Id = "MANUAL",
 					HighlightTags = Highlights.HighlightType.Achievement,
 					Significance = Highlights.HighlightSignificance.Good,

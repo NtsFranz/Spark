@@ -164,6 +164,10 @@ namespace Spark
 			{
 				Log(frame, $"Left game");
 			};
+			Program.EmoteActivated += (frame, _, player) =>
+			{
+				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {player.name} used an emote");
+			};
 		}
 
 		private static void Log(Frame frame, string msg)
