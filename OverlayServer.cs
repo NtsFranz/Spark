@@ -46,6 +46,8 @@ namespace Spark
 
 		private async Task RestartServer()
 		{
+			Random rand = new Random();
+			int restartIndex = rand.Next();
 			try
 			{
 				// get new overlay data
@@ -55,13 +57,13 @@ namespace Spark
 				while (serverRestarting && counter < 10)
 				{
 					counter++;
-					Logger.LogRow(Logger.LogType.Error, "Already restarting server. Waiting to try again.");
+					Logger.LogRow(Logger.LogType.Error, $"Already restarting server. Waiting to try again. {restartIndex}");
 					await Task.Delay(100);
 				}
 
 				if (serverRestarting)
 				{
-					Logger.LogRow(Logger.LogType.Error, "Already restarting server. Cancelling this restart.");
+					Logger.LogRow(Logger.LogType.Error, $"Already restarting server. Cancelling this restart. {restartIndex}");
 					return;
 				}
 
@@ -84,11 +86,11 @@ namespace Spark
 					.Build();
 
 				_ = server.RunAsync();
-				Logger.LogRow(Logger.LogType.Error, $"Done restarting server.");
+				Logger.LogRow(Logger.LogType.Error, $"Done restarting server. {restartIndex}");
 			}
 			catch (Exception e)
 			{
-				Logger.LogRow(Logger.LogType.Error, $"Error when restarting server\n{e}");
+				Logger.LogRow(Logger.LogType.Error, $"Error when restarting server {restartIndex}\n{e}");
 			}
 			serverRestarting = false;
 		}

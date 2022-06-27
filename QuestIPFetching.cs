@@ -47,8 +47,8 @@ namespace Spark
 		public static IPAddress QuestIP = null;
 		public static bool IPPingThread1Done = false;
 		public static bool IPPingThread2Done = false;
-		
-		
+
+
 		// Declare the GetIpNetTable function.
 		[DllImport("IpHlpApi.dll")]
 		[return: MarshalAs(UnmanagedType.U4)]
@@ -305,13 +305,12 @@ namespace Spark
 					if (!ips.Contains(ip)) ips.Add(ip);
 				}
 			}
-			
+
 			// Release the memory.
 			FreeMibTable(buffer);
 
 			return ips;
 		}
-
 
 
 		/// <summary>
@@ -412,6 +411,7 @@ namespace Spark
 		public static async Task<List<(IPAddress, string)>> PingEchoVRAPIAsync(IReadOnlyCollection<IPAddress> ips)
 		{
 			HttpClient client = new HttpClient();
+			client.Timeout = TimeSpan.FromSeconds(2);
 			IEnumerable<Task<string>> tasks = ips.Select(async ip =>
 			{
 				string s = null;
@@ -427,7 +427,7 @@ namespace Spark
 
 				return s;
 			});
-				
+
 			string[] results = await Task.WhenAll(tasks);
 
 			return ips.Zip(results).ToList();
@@ -510,7 +510,7 @@ namespace Spark
 			ips.AddRange(await CheckARPTableAsync());
 			ips = ips.Distinct().ToList();
 			progress.Report(ips);
-			
+
 			// IEnumerable<SimpleFrame> frames = results.Select(s=> s != null ? JsonConvert.DeserializeObject<SimpleFrame>(s) : null);
 
 			return ips;

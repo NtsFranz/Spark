@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 using Spark;
 
 /// <summary>
@@ -202,7 +203,9 @@ public class Logger
 			strBuilder.Append(delimiter);
 			strBuilder.Append(MacAddr);
 			strBuilder.Append(delimiter);
-			foreach (var elem in data)
+			strBuilder.Append(Program.AppVersionString());
+			strBuilder.Append(delimiter);
+			foreach (string elem in data)
 			{
 				string newElem = elem;
 				if (elem.Contains(delimiter))

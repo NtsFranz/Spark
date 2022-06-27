@@ -26,10 +26,6 @@ namespace Spark
 				{
 					route = "vrml";
 				}
-				else if (route.Contains("vrsn"))
-				{
-					route = "nepatv";
-				}
 
 				string folder = @"S:\git_repo\IgniteVR-Overlays\SparkOverlays\" + route;
 				if (Directory.Exists(folder))
@@ -130,10 +126,6 @@ namespace Spark
 				if (route.Contains("vrml"))
 				{
 					route = "vrml";
-				}
-				else if (route.Contains("vrsn"))
-				{
-					route = "nepatv";
 				}
 
 				string url = $"/{route}/";

@@ -101,7 +101,9 @@
 					<Label x:Name="spectatorsLabel" Content="" />
 				</GroupBox>
 			</StackPanel>
-			<Grid Grid.Row="1">
+			
+			<Border Grid.Row="1" Background="GhostWhite" BorderBrush="Black" BorderThickness="0,1,0,0">
+			<Grid >
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"/>
 					<ColumnDefinition Width="2*"/>
@@ -111,6 +113,7 @@
 				<TextBlock x:Name="GameClock" Grid.Column="1" Background="#FF515151" TextAlignment="Center" VerticalAlignment="Stretch" Padding="0,14,0,0" FontSize="20" FontFamily="Consolas">00:00.00</TextBlock>
 				<TextBlock x:Name="BluePoints" Grid.Column="2" Background="#FF2A384B" TextAlignment="Center" VerticalAlignment="Stretch" Padding="0,10,0,0" FontSize="26" FontFamily="Consolas" FontWeight="Black">0</TextBlock>
 			</Grid>
+				</Border>
 		</Grid>
 		
 		<Grid x:Name="Center_Panel" Grid.Column="2">
@@ -164,11 +167,11 @@
 						<GroupBox x:Name="playerPingsGroupbox" Header="{x:Static p:Resources.Player_Pings}" Grid.Row="0" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="3">
 							<StackPanel Orientation="Vertical" Margin="0,10,0,10">
 								<StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
-									<TextBlock x:Name="bluePlayerPingsPings" Text="" VerticalAlignment="Top" Width="60"  Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
+									<TextBlock x:Name="bluePlayerPingsPings" Text="" VerticalAlignment="Top" Width="100"  Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
 									<TextBlock x:Name="bluePlayerPingsNames" Text="" VerticalAlignment="Top" Foreground="CornflowerBlue"/>
 								</StackPanel>
 								<StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
-									<TextBlock x:Name="orangePlayerPingsPings" Text="" VerticalAlignment="Top" Width="60" Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
+									<TextBlock x:Name="orangePlayerPingsPings" Text="" VerticalAlignment="Top" Width="100" Padding="5,0,0,0" HorizontalAlignment="Right" Margin="10,0,0,0"/>
 									<TextBlock x:Name="orangePlayerPingsNames" Text="" VerticalAlignment="Top" Foreground="#ffd4941e"/>
 								</StackPanel>
 							</StackPanel>
@@ -344,7 +347,7 @@
 					<TabItem.Header>
 						<StackPanel Orientation="Horizontal">
 							<Label Content="{x:Static p:Resources.Event_Log}"/>
-							<Image Source="/img/text-box-outline.png" Height="16"/>
+							<Image Source="/img/script-text-outline.png" Height="16"/>
 						</StackPanel>
 					</TabItem.Header>
 					<Grid>
@@ -524,14 +527,30 @@
 					<ProgressBar x:Name="updateProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4"/>
 					<Button x:Name="enableAPIButton"  Visibility="Collapsed" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
 					<StackPanel Orientation="Horizontal">
-						<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Width="153" Margin="4,4,1,4" Click="StartSpectatorStreamClick" ToolTip="{x:Static p:Resources.Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing}"/>
+						<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Width="153" Margin="4,4,1,4" Click="StartSpectatorStreamClick" ToolTip="{x:Static p:Resources.Spectatorstream_tooltip}"/>
 						<Button Height="40" Width="25" Margin="1,4,4,4" Click="CombatSpectatorstreamClick" Visibility="Visible">
 							<Image Source="/img/flamingo-white.png" Margin="3,3,3,3"/>
 						</Button>
 					</StackPanel>
-					<Button x:Name="chooseServerRegion" Content="{x:Static p:Resources.Choose_Server_Region}" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="{x:Static p:Resources.This_creates_a_private_match_in_a_region_of_your_choice_}"/>
+					<Button x:Name="chooseServerRegion" Height="40" Margin="4,4,4,4" Click="chooseServerRegion_Click" ToolTip="{x:Static p:Resources.This_creates_a_private_match_in_a_region_of_your_choice_}">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{x:Static p:Resources.Choose_Server_Region}" VerticalAlignment="Center"></TextBlock>
+							<Image Source="/img/earth.png" Margin="8,8,0,8"></Image>
+						</StackPanel>
+					</Button>
 					<Button x:Name="playspaceButton" Content="{x:Static p:Resources.Show_Playspace}" Height="40" Margin="4,4,4,4" Click="playspaceButton_Click" Visibility="Collapsed"/>
-					<Button x:Name="loneEchoSubtitlesButton" Content="{x:Static p:Resources.Lone_Echo_Subtitles}" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible"/>
+					<Button x:Name="loneEchoSubtitlesButton" Height="40" Margin="4,4,4,4" Click="LoneEchoSubtitlesClick" Visibility="Visible">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{x:Static p:Resources.Lone_Echo_Subtitles}" VerticalAlignment="Center"></TextBlock>
+							<Image Source="/img/closed-caption-outline.png" Margin="8,8,0,8"></Image>
+						</StackPanel>
+					</Button>
+					<Button Height="40" Margin="4,4,4,4" Click="TabletStatsUploadClick" Visibility="Visible">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{x:Static p:Resources.Upload_Tablet_Stats}" VerticalAlignment="Center"></TextBlock>
+							<Image Source="/img/text-box-outline.png" Margin="8,8,0,8"></Image>
+						</StackPanel>
+					</Button>
 					<Button x:Name="SpeedometerButton" Content="{x:Static p:Resources.Speedometer}" Height="40" Margin="4,4,4,4" Click="OpenSpeedometer" Visibility="Collapsed" />
 					<StackPanel Orientation="Horizontal">
 						<Button x:Name="OverlaysButton" Content="{x:Static p:Resources.Overlays}" Height="40" Width="137" Margin="4,4,1,4" HorizontalAlignment="Stretch" Click="OpenOverlays" Visibility="Visible"/>
@@ -546,7 +565,7 @@
 						</StackPanel>
 					</Button>
 					<Button x:Name="showHighlights" Content="{x:Static p:Resources.NVIDIAHighlights}" Height="40" Click="showHighlights_Click" Margin="4,4,4,4"/>
-					<Button x:Name="spectateMeButton" Height="40" Click="SpectateMeClicked" Margin="4,4,4,4">
+					<Button x:Name="spectateMeButton" Height="40" Click="SpectateMeClicked" ToolTip="Spectate Me launches the PC version of Echo VR in spectator mode into your Quest match. Spectate Me is not necessary for Spark to work." Margin="4,4,4,4">
 						<StackPanel>
 							<Label x:Name="spectateMeLabel" Content="{x:Static p:Resources.Spectate_Me}" Margin="0,-6,0,0"/>
 							<TextBlock x:Name="spectateMeSubtitle" Text="{x:Static p:Resources.Not_active}" Margin="0,-8,0,0" FontSize="11" Foreground="{DynamicResource ControlDisabledGlythColour}" HorizontalAlignment="Center"/>

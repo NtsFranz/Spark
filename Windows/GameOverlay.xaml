@@ -60,6 +60,6 @@
     <!--     </Grid> -->
     <!-- </Grid> -->
     <DockPanel Background="Transparent">
-		<wv2:WebView2 Name="WebView" DefaultBackgroundColor="Transparent" />
+		<wv2:WebView2 Name="WebView" DefaultBackgroundColor="#00000022" />
 	</DockPanel>
 </Window>

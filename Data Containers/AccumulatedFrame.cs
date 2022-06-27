@@ -70,7 +70,7 @@ namespace Spark
 				{ Team.TeamColor.orange, new TeamData() },
 				{ Team.TeamColor.spectator, new TeamData() },
 			};
-			if (frame.client_name != "anonymous")
+			if (!string.IsNullOrWhiteSpace(frame.client_name) && frame.client_name != "anonymous")
 			{
 				SparkSettings.instance.client_name = frame.client_name;
 			}
@@ -163,7 +163,7 @@ namespace Spark
 				return players[userid];
 			}
 
-			Logger.LogRow(Logger.LogType.Error, "Player not found"); // TODO this happens a lot
+			Logger.LogRow(Logger.LogType.Error, $"Player not found: {userid}"); // TODO this happens a lot
 			return null;
 		}
 
@@ -187,7 +187,7 @@ namespace Spark
 				{ "private", frame.private_match },
 				{ "client_name", frame.client_name },
 				{ "hw_id", Logger.MacAddr },
-				{ "version", GetType().Assembly.GetName().Version?.ToString() },
+				{ "version", Program.AppVersionString() },
 				{ "ip", frame.sessionip },
 				{ "blue_team_name", frame.teams[0].team },
 				{ "orange_team_name", frame.teams[1].team },

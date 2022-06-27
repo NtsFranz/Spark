@@ -558,7 +558,7 @@
   <data name="replays_description_part_3" xml:space="preserve">
     <value>.echoreplayフォーマットの技術的な詳細については、以下をご覧ください。</value>
   </data>
-  <data name="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing" xml:space="preserve">
+  <data name="Spectatorstream tooltip" xml:space="preserve">
     <value>EchoVRを-spectatorstreamオプションを有効にして実行します。これは、次のようなテストに役立ちます。</value>
   </data>
   <data name="Score:" xml:space="preserve">
@@ -950,7 +950,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>許可すると、詳細なウェブサイトの統計情報が得られます。</value>
   </data>
   <data name="optInCheckbox.ToolTip" xml:space="preserve">
-    <value>ignitevr.gg/statsでは、推定身長、プレイ時間、手の利き手など、より詳細な統計情報が表示されます。</value>
+    <value>metrics.ignitevr.ggでは、推定身長、プレイ時間、手の利き手など、より詳細な統計情報が表示されます。</value>
   </data>
   <data name="Password:" xml:space="preserve">
     <value>パスワード</value>

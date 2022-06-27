@@ -636,7 +636,7 @@ CLOSE ECHOVR BEFORE PRESSING OK!</value>
   <data name="Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event." xml:space="preserve">
     <value>Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event.</value>
   </data>
-  <data name="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing" xml:space="preserve">
+  <data name="Spectatorstream tooltip" xml:space="preserve">
     <value>Runs EchoVR with the -spectatorstream option enabled. This spectates the highest level public match at any given time.</value>
   </data>
   <data name="Score:" xml:space="preserve">
@@ -951,7 +951,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
     <value>Opt-in to detailed website stats.</value>
   </data>
   <data name="optInCheckbox.ToolTip" xml:space="preserve">
-    <value>Shows more detailed stats on ignitevr.gg/stats, including estimated height, play times, and hand dominance.</value>
+    <value>Shows more detailed stats on metrics.ignitevr.gg, including estimated height, play times, and hand dominance.</value>
   </data>
   <data name="ClipsTitle.Content" xml:space="preserve">
     <value>Clips Settings</value>
@@ -1272,11 +1272,11 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   <data name="Upload Tablet Stats" xml:space="preserve">
     <value>Upload Tablet Stats</value>
   </data>
-  <data name="Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other in any way." xml:space="preserve">
-    <value>Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other in any way.</value>
+  <data name="Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other publicly." xml:space="preserve">
+    <value>Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other publicly.</value>
   </data>
-  <data name="You can view tablet stats using the /tabletstats PlayerName command in Discord or on ignitevr.gg/stats" xml:space="preserve">
-    <value>You can view tablet stats using the /tabletstats PlayerName command in Discord or on ignitevr.gg/stats</value>
+  <data name="You can view tablet stats using the '/tablet_stats PlayerName' command in Discord or on metrics.ignitevr.gg" xml:space="preserve">
+    <value>You can view tablet stats using the '/tablet_stats PlayerName' command in Discord or on metrics.ignitevr.gg</value>
   </data>
   <data name="Profiles:" xml:space="preserve">
     <value>Profiles:</value>
@@ -1654,5 +1654,8 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   </data>
   <data name="Something broke while trying to launch update installer" xml:space="preserve">
     <value>Something broke while trying to launch update installer</value>
+  </data>
+  <data name="Fetching opt-in status..." xml:space="preserve">
+    <value>Fetching opt-in status...</value>
   </data>
 </root>

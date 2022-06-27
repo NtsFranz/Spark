@@ -19,6 +19,7 @@ using static Logger;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
+using System.Net.Http.Json;
 using EchoVRAPI;
 using NetMQ;
 using Newtonsoft.Json.Linq;
@@ -761,6 +762,7 @@ namespace Spark
 				{
 					fetchClient.GetAsync($"http://{echoVRIP}:{echoVRPort}/session")
 				};
+				
 				if (SparkSettings.instance.fetchBones)
 				{
 					tasks.Add(fetchClient.GetAsync($"http://{echoVRIP}:{echoVRPort}/player_bones"));
@@ -840,6 +842,10 @@ namespace Spark
 					{
 						await FetchFail(results);
 					}
+				}
+				catch (TaskCanceledException)
+				{
+					await FetchFail(null);
 				}
 				catch (HttpRequestException)
 				{
@@ -1361,7 +1367,7 @@ namespace Spark
 
 			// lobby stuff
 
-			if (string.IsNullOrWhiteSpace(frame.game_status)) return;
+			if (frame.game_status == null) return;
 			if (frame.InLobby) return;
 			
 			
@@ -1409,7 +1415,7 @@ namespace Spark
 					LogRow(LogType.Error, "Error processing action", exp.ToString());
 				}
 				
-				rounds.Enqueue(new AccumulatedFrame(frame, LastRound));
+				rounds.Enqueue(new AccumulatedFrame(frame, null));
 
 			}
 
@@ -1505,8 +1511,7 @@ namespace Spark
 
 						if (team.color != Team.TeamColor.spectator)
 						{
-							// cache this players stats so they aren't overridden if they join again
-							// if player was in this match before
+							// cache this players stats so they aren't overwritten
 							CurrentRound.GetPlayerData(player)?.CacheStats(player.stats);
 
 							// find the vrml team names
@@ -1558,6 +1563,9 @@ namespace Spark
 					{
 						LogRow(LogType.Error, "Error processing action", exp.ToString());
 					}
+					
+					// find the vrml team names
+					CurrentRound.teams[team.color].FindTeamNamesFromPlayerList(team);
 				}
 			}
 
@@ -1688,8 +1696,10 @@ namespace Spark
 			}
 
 
-			if (lastFrame.orange_points != frame.orange_points ||
-			    lastFrame.blue_points != frame.blue_points)
+			if (
+				lastFrame.game_status == "playing" &&
+			    (lastFrame.orange_points < frame.orange_points ||
+			    lastFrame.blue_points < frame.blue_points))
 			{
 				_ = ProcessScore(CurrentRound);
 			}
@@ -2320,7 +2330,7 @@ namespace Spark
 
 		private static void OnJoinedGame(Frame frame)
 		{
-			if (frame.client_name != "anonymous")
+			if (!string.IsNullOrWhiteSpace(frame.client_name) && frame.client_name != "anonymous")
 			{
 				SparkSettings.instance.client_name = frame.client_name;
 			}

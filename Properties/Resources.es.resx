@@ -442,7 +442,7 @@
   <data name="replays_description_part_3" xml:space="preserve">
     <value></value>
   </data>
-  <data name="Runs EchoVR with the -spectatorstream option enabled. This is useful for testing" xml:space="preserve">
+  <data name="Spectatorstream tooltip" xml:space="preserve">
     <value></value>
   </data>
   <data name="Score:" xml:space="preserve">

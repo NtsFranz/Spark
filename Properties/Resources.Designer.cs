@@ -1435,6 +1435,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fetching opt-in status....
+        /// </summary>
+        public static string Fetching_opt_in_status___ {
+            get {
+                return ResourceManager.GetString("Fetching opt-in status...", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Field of View.
         /// </summary>
         public static string Field_of_View {
@@ -2574,12 +2583,12 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other in any way..
+        ///   Looks up a localized string similar to Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other publicly..
         /// </summary>
-        public static string Only_the_selected_profiles_will_be_uploaded__Your_alternate_accounts_will_not_be_linked_to_each_other_in_any_way_ {
+        public static string Only_the_selected_profiles_will_be_uploaded__Your_alternate_accounts_will_not_be_linked_to_each_other_publicly_ {
             get {
                 return ResourceManager.GetString("Only the selected profiles will be uploaded. Your alternate accounts will not be " +
-                        "linked to each other in any way.", resourceCulture);
+                        "linked to each other publicly.", resourceCulture);
             }
         }
         
@@ -2639,7 +2648,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shows more detailed stats on ignitevr.gg/stats, including estimated height, play times, and hand dominance..
+        ///   Looks up a localized string similar to Shows more detailed stats on metrics.ignitevr.gg, including estimated height, play times, and hand dominance..
         /// </summary>
         public static string optInCheckbox_ToolTip {
             get {
@@ -3077,15 +3086,6 @@ namespace Spark.Properties {
         public static string Rotation_Speed {
             get {
                 return ResourceManager.GetString("Rotation Speed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Runs EchoVR with the -spectatorstream option enabled. This spectates the highest level public match at any given time..
-        /// </summary>
-        public static string Runs_EchoVR_with_the__spectatorstream_option_enabled__This_is_useful_for_testing {
-            get {
-                return ResourceManager.GetString("Runs EchoVR with the -spectatorstream option enabled. This is useful for testing", resourceCulture);
             }
         }
         
@@ -3591,6 +3591,15 @@ namespace Spark.Properties {
         public static string Spectatorstream_opens_Echo_Combat {
             get {
                 return ResourceManager.GetString("Spectatorstream opens Echo Combat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Runs EchoVR with the -spectatorstream option enabled. This spectates the highest level public match at any given time..
+        /// </summary>
+        public static string Spectatorstream_tooltip {
+            get {
+                return ResourceManager.GetString("Spectatorstream tooltip", resourceCulture);
             }
         }
         
@@ -4373,12 +4382,12 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can view tablet stats using the /tabletstats PlayerName command in Discord or on ignitevr.gg/stats.
+        ///   Looks up a localized string similar to You can view tablet stats using the &apos;/tablet_stats PlayerName&apos; command in Discord or on metrics.ignitevr.gg.
         /// </summary>
-        public static string You_can_view_tablet_stats_using_the__tabletstats_PlayerName_command_in_Discord_or_on_ignitevr_gg_stats {
+        public static string You_can_view_tablet_stats_using_the___tablet_stats_PlayerName__command_in_Discord_or_on_metrics_ignitevr_gg {
             get {
-                return ResourceManager.GetString("You can view tablet stats using the /tabletstats PlayerName command in Discord or" +
-                        " on ignitevr.gg/stats", resourceCulture);
+                return ResourceManager.GetString("You can view tablet stats using the \'/tablet_stats PlayerName\' command in Discord" +
+                        " or on metrics.ignitevr.gg", resourceCulture);
             }
         }
     }

@@ -39,7 +39,7 @@ namespace Spark
 		/// </summary>
 		private readonly ConcurrentQueue<string> ttsQueue = new ConcurrentQueue<string>();
 
-		private static string CacheFolder => Path.Combine(Path.GetTempPath(), "SparkTTSCache");
+		public static string CacheFolder => Path.Combine(Path.GetTempPath(), "SparkTTSCache");
 
 		public TTSController()
 		{

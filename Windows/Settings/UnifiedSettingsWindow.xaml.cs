@@ -46,8 +46,6 @@ namespace Spark
 			_ = GetOptInStatus();
 
 
-
-
 #if WINDOWS_STORE_RELEASE
 			enableBetasCheckbox.Visibility = Visibility.Collapsed;
 #endif
@@ -105,7 +103,7 @@ namespace Spark
 		private void EchoVRIPChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			Program.echoVRIP = ((TextBox) sender).Text;
+			Program.echoVRIP = ((TextBox)sender).Text;
 			SparkSettings.instance.echoVRIP = Program.echoVRIP;
 		}
 
@@ -118,7 +116,7 @@ namespace Spark
 			}
 			else
 			{
-				if (int.TryParse(((TextBox) sender).Text, out Program.echoVRPort))
+				if (int.TryParse(((TextBox)sender).Text, out Program.echoVRPort))
 				{
 					SparkSettings.instance.echoVRPort = Program.echoVRPort;
 				}
@@ -139,7 +137,7 @@ namespace Spark
 		private void ExecutableLocationChanged(object sender, TextChangedEventArgs e)
 		{
 			if (!initialized) return;
-			string path = ((TextBox) sender).Text;
+			string path = ((TextBox)sender).Text;
 			if (File.Exists(path))
 			{
 				exeLocationLabel.Content = "EchoVR Executable Location:";
@@ -189,7 +187,7 @@ namespace Spark
 		{
 			try
 			{
-				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) {UseShellExecute = true});
+				Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
 				e.Handled = true;
 			}
 			catch (Exception ex)
@@ -205,7 +203,7 @@ namespace Spark
 			{
 				SparkSettings.instance.theme = value;
 
-				ThemesController.SetTheme((ThemesController.ThemeTypes) value);
+				ThemesController.SetTheme((ThemesController.ThemeTypes)value);
 			}
 		}
 
@@ -231,12 +229,12 @@ namespace Spark
 			{
 				string resp = await Program.GetRequestAsync(
 					$"{Program.APIURL}/optin/get/{SparkSettings.instance.client_name}",
-					new Dictionary<string, string> {{"x-api-key", DiscordOAuth.igniteUploadKey}});
+					new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } });
 
 				JToken objResp = JsonConvert.DeserializeObject<JToken>(resp);
 				if (objResp?["opted_in"] != null)
 				{
-					optInCheckbox.IsChecked = (bool) objResp["opted_in"];
+					optInCheckbox.IsChecked = (bool)objResp["opted_in"];
 				}
 				else
 				{
@@ -260,10 +258,10 @@ namespace Spark
 			if (!optInFound) return;
 
 			Program.PostRequestCallback(
-				$"{Program.APIURL}/optin/set/{SparkSettings.instance.client_name}/{((CheckBox) sender).IsChecked}",
+				$"{Program.APIURL}/optin/set/{SparkSettings.instance.client_name}/{((CheckBox)sender).IsChecked}",
 				new Dictionary<string, string>
 				{
-					{"x-api-key", DiscordOAuth.igniteUploadKey}, {"token", DiscordOAuth.oauthToken}
+					{ "x-api-key", DiscordOAuth.igniteUploadKey }, { "token", DiscordOAuth.oauthToken }
 				},
 				string.Empty,
 				(resp) =>
@@ -504,7 +502,6 @@ namespace Spark
 		#endregion
 
 
-
 		#region EchoVR Settings
 
 		public Visibility EchoVRSettingsProgramOpenWarning =>
@@ -628,14 +625,13 @@ namespace Spark
 
 		public static string AppVersionLabelText => $"v{Program.AppVersionString()}";
 
-		
 
 		private void CameraModeDropdownChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (!initialized) return;
 
 			// setting already handled in binding
-			ComboBox box = (ComboBox) sender;
+			ComboBox box = (ComboBox)sender;
 			CameraModeDropdownChanged(box.SelectedIndex);
 		}
 
@@ -691,7 +687,7 @@ namespace Spark
 
 			if (stats != null)
 			{
-				new UploadTabletStatsMenu(stats) {Owner = this}.Show();
+				new UploadTabletStatsMenu(stats) { Owner = this }.Show();
 			}
 		}
 
@@ -705,25 +701,25 @@ namespace Spark
 		private void MutePlayerCommsDropdownChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (!initialized) return;
-			
+
 			int index = ((ComboBox)sender).SelectedIndex;
 			switch (index)
 			{
-				case 0:	// leave default
+				case 0: // leave default
 					SparkSettings.instance.mutePlayerComms = false;
 					SparkSettings.instance.muteEnemyTeam = false;
-					CameraWriteController.SetTeamsMuted(false,false);
+					CameraWriteController.SetTeamsMuted(false, false);
 					break;
-				case 1:	// mute enemy team
+				case 1: // mute enemy team
 					SparkSettings.instance.mutePlayerComms = false;
 					SparkSettings.instance.muteEnemyTeam = true;
 					break;
-				case 2:	// mute both teams
+				case 2: // mute both teams
 					SparkSettings.instance.mutePlayerComms = true;
 					SparkSettings.instance.muteEnemyTeam = false;
 					break;
 			}
-			
+
 			CameraWriteController.SetPlayersMuted();
 		}
 
@@ -733,6 +729,24 @@ namespace Spark
 			TTSController.ClearCacheFolder();
 		}
 
+		private void OpenTTSCacheButton(object sender, RoutedEventArgs e)
+		{
+			string folder = TTSController.CacheFolder;
+			if (!Directory.Exists(Path.GetDirectoryName(folder)))
+			{
+				Directory.CreateDirectory(folder);
+			}
+
+			if (Directory.Exists(folder))
+			{
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = folder,
+					UseShellExecute = true
+				});
+			}
+		}
+
 		private void OpenSettingsFileFolder(object sender, RoutedEventArgs e)
 		{
 			string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark");
@@ -740,7 +754,7 @@ namespace Spark
 			{
 				Directory.CreateDirectory(folder);
 			}
-			
+
 			if (Directory.Exists(folder))
 			{
 				Process.Start(new ProcessStartInfo
@@ -755,10 +769,10 @@ namespace Spark
 		{
 			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
 			if (!File.Exists(SparkSettings.instance.echoVRPath)) return;
-			
+
 			ReshadeProgress.Visibility = Visibility.Visible;
 			ReshadeProgress.Value = 0;
-			
+
 			// delete the old temp file
 			if (File.Exists(Path.Combine(Path.GetTempPath(), "reshade.zip")))
 			{
@@ -800,7 +814,7 @@ namespace Spark
 			{
 				new MessageBox("Something broke while trying to install Reshade. Report this to NtsFranz", Properties.Resources.Error).Show();
 			}
-			
+
 			ReshadeProgress.Visibility = Visibility.Collapsed;
 		}
 
@@ -830,7 +844,7 @@ namespace Spark
 			}
 		}
 	}
-	
+
 
 	public class SettingBindingExtension : Binding
 	{

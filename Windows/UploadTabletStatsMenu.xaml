@@ -7,7 +7,7 @@
         xmlns:properties="clr-namespace:Spark.Properties"
         mc:Ignorable="d"
         Title="{x:Static properties:Resources.Upload_Tablet_Stats}" 
-        Height="300" Width="400"
+        Height="300" Width="420"
         Background="{DynamicResource BackgroundColour}" 
         FontSize="16" 
         SizeToContent="Height" 
@@ -19,8 +19,8 @@
     <ScrollViewer VerticalScrollBarVisibility="Visible">
     <StackPanel Margin="10,10,10,10">
         <Label Content="{x:Static properties:Resources.Upload_Tablet_Stats}" HorizontalAlignment="Center" FontSize="16"/>
-        <TextBlock Text="{x:Static properties:Resources.Only_the_selected_profiles_will_be_uploaded__Your_alternate_accounts_will_not_be_linked_to_each_other_in_any_way_}" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
-        <TextBlock Text="{x:Static properties:Resources.You_can_view_tablet_stats_using_the__tabletstats_PlayerName_command_in_Discord_or_on_ignitevr_gg_stats}" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+        <TextBlock Text="{x:Static properties:Resources.Only_the_selected_profiles_will_be_uploaded__Your_alternate_accounts_will_not_be_linked_to_each_other_publicly_}" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}" Margin="0,0,0,10" TextAlignment="Center"/>
+        <TextBlock Text="{x:Static properties:Resources.You_can_view_tablet_stats_using_the___tablet_stats_PlayerName__command_in_Discord_or_on_metrics_ignitevr_gg}" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource ControlDisabledGlythColour}" TextAlignment="Center"/>
         <TextBlock Text="{x:Static properties:Resources.Profiles_}" TextWrapping="Wrap" FontSize="14" Margin="20,20,0,0"/>
         <StackPanel x:Name="profilesList" Margin="10,10,10,10">
             <Grid>

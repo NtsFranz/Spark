@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="PingGraphWebView" Height="450" Width="800">
 	<DockPanel>
-		<wv2:WebView2 Name="webView" Source="https://www.ignitevr.gg/stats"/>
+		<wv2:WebView2 Name="webView" Source="https://metrics.ignitevr.gg"/>
 	</DockPanel>
 
 </Window>

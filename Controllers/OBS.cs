@@ -67,7 +67,10 @@ namespace Spark
 			{
 				try
 				{
-					instance.PauseRecording();
+					if (instance.IsConnected)
+					{
+						instance.PauseRecording();
+					}
 				}
 				catch (Exception)
 				{

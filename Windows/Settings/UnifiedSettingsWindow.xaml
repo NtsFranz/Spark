@@ -160,8 +160,8 @@
 											  IsChecked="{l:SettingBinding uploadToIgniteDB}"
 											  Margin="4,4,4,4" Visibility="Visible" />
 								<CheckBox x:Name="optInCheckbox" Content="{x:Static p:Resources.optInCheckbox_Content}" Margin="4,4,4,4" Unchecked="OptIn" Checked="OptIn" ToolTip="{x:Static p:Resources.optInCheckbox_ToolTip}"/>
-								<Label x:Name="optInStatusLabel" Content="Fetching opt-in status..." Margin="30,-6,0,0" FontSize="10"/>
-								<Button Click="UploadTabletStats" Height="30" Margin="10,10,10,10">Upload Tablet Stats</Button>
+								<Label x:Name="optInStatusLabel" Content="{x:Static p:Resources.Fetching_opt_in_status___}" Margin="30,-6,0,0" FontSize="10"/>
+								<Button Click="UploadTabletStats" Height="30" Margin="10,10,10,10" Content="{x:Static p:Resources.Upload_Tablet_Stats}"></Button>
 								<CheckBox Content="Save Events to Local CSV"
 								          IsChecked="{l:SettingBinding saveEventsToCSV}"
 								          Margin="4,4,4,4" Visibility="Collapsed" />
@@ -340,6 +340,7 @@
 								<!-- </ComboBox> -->
 								
 								<Button Grid.Row="2" Grid.Column="0" Margin="0, 2" Click="ClearTTSCacheButton">Clear TTS Cache</Button>
+								<Button Grid.Row="2" Grid.Column="1" Margin="0, 2" Click="OpenTTSCacheButton">Open TTS Cache Folder</Button>
 							</Grid>
 							<CheckBox x:Name="serverLocationCheckbox" Content="{x:Static p:Resources.Server_Location}" Margin="4,10,4,0"
 										  IsChecked="{Binding ServerLocation}" />

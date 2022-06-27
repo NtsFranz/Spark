@@ -483,7 +483,7 @@ namespace Spark
 									{
 										blueTextNames.AppendLine(player.name);
 										// bluePingsTextPings.AppendLine($"{player.ping}   {player.packetlossratio}");
-										bluePingsTextPings.AppendLine($"{player.ping}");
+										bluePingsTextPings.AppendLine($"{player.ping}\t{player.packetlossratio:P1}");
 										blueSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 									}
 
@@ -491,7 +491,7 @@ namespace Spark
 									{
 										orangeTextNames.AppendLine(player.name);
 										// orangePingsTextPings.AppendLine($"{player.ping}   {player.packetlossratio}");
-										orangePingsTextPings.AppendLine($"{player.ping}");
+										orangePingsTextPings.AppendLine($"{player.ping}\t{player.packetlossratio:P1}");
 										orangeSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 									}
 
@@ -1947,5 +1947,14 @@ namespace Spark
 			tabControl.SelectedItem = ServerInfoTab;
 		}
 
+		private void TabletStatsUploadClick(object sender, RoutedEventArgs e)
+		{
+			List<TabletStats> stats = Program.FindTabletStats();
+
+			if (stats != null)
+			{
+				new UploadTabletStatsMenu(stats) {Owner = this}.Show();
+			}
+		}
 	}
 }

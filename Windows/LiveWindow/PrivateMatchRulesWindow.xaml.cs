@@ -58,7 +58,7 @@ namespace Spark
 		private Dictionary<string, PrivateMatchRules> presets = new Dictionary<string, PrivateMatchRules>()
 		{
 			{
-				"Default (VRML)", new PrivateMatchRules()
+				"Default", new PrivateMatchRules()
 				{
 					minutes = 10,
 					seconds = 0,

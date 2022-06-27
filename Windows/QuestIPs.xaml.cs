@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Timers;
@@ -16,7 +18,13 @@ namespace Spark
 		public QuestIPs()
 		{
 			InitializeComponent();
-			Task.Run(() => { Dispatcher.Invoke(async () => { await FindQuestIPs(); }); });
+			Task.Run(() =>
+			{
+				Dispatcher.Invoke(async () =>
+				{
+					await FindQuestIPs();
+				});
+			});
 		}
 
 
@@ -30,34 +38,89 @@ namespace Spark
 			await FindQuestIPs();
 		}
 
+		private static List<IPAddress> GetLocalIPAddresses()
+		{
+			IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+			return host.AddressList.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork).ToList();
+		}
+
 		private async Task FindQuestIPs()
 		{
 			try
 			{
+				Stopwatch sw = Stopwatch.StartNew();
 				Progress<List<IPAddress>> progress = new Progress<List<IPAddress>>(ips =>
 				{
 					QuestIPsBox.Text = string.Join('\n', ips.Select(ip => ip.ToString()));
 					LoadingLabel.Content = "Scanning Network...";
 				});
-				List<IPAddress> ips = await QuestIPFetching.FindAllQuestIPs(progress);
+				// List<IPAddress> ips = await QuestIPFetching.FindAllQuestIPs(progress);
 
-				LoadingLabel.Content = "Fetching EchoVR API for each Quest...";
+				List<IPAddress> myIps = GetLocalIPAddresses();
+				List<IPAddress> ips = new List<IPAddress>();
+
+				foreach (IPAddress ip in myIps)
+				{
+					for (byte i = 0; i < 255; i++)
+					{
+						List<byte> orig = ip.GetAddressBytes().SkipLast(1).ToList();
+						orig.Add(i);
+						ips.Add(new IPAddress(orig.ToArray()));
+					}
+				}
+				
+
+				QuestIPsBox.Text = string.Join('\n', ips.Select(ip => ip.ToString()));
+				Debug.WriteLine($"Adding additional ips: {sw.Elapsed.TotalSeconds}");
+				sw.Restart();
+
+				LoadingLabel.Content = "Fetching EchoVR API for each IP...";
 
 				List<(IPAddress, string)> responses = await QuestIPFetching.PingEchoVRAPIAsync(ips);
+				
+				Debug.WriteLine($"Pinging ips: {sw.Elapsed.TotalSeconds}");
+				sw.Restart();
 
 				List<(IPAddress, Frame)> frames = responses.Select(r =>
-					r.Item2 != null && !r.Item2.StartsWith("<html>")
-						? (r.Item1, JsonConvert.DeserializeObject<Frame>(r.Item2))
-						: (r.Item1, null)).ToList();
+				{
+					if (r.Item2 != null)
+					{
+						// main menu
+						if (r.Item2.StartsWith("<html>"))
+						{
+							return (r.Item1, new Frame { err_code = -10 });
+						}
+						else
+						{
+							return (r.Item1, Frame.FromJSON(DateTime.UtcNow, r.Item2, null));
+						}
+					}
+					else
+					{
+						return (r.Item1, null);
+					}
+				}).Where(r => r.Item2 != null).ToList();
 
 				string output = string.Join('\n', frames.Select(ip =>
 				{
 					(IPAddress ipAddress, Frame f) = ip;
-					string status = f != null ? f.err_code == -6 ? "Lobby" : Program.CurrentSparkLink(f?.sessionid) + "\t" + f?.game_status + "\t" + "Players: " + f?.GetAllPlayers().Count : "";
-					return ipAddress + "\t" + f?.client_name + " \t" + status;
+					string status = "";
+					if (f != null)
+					{
+						status = f.err_code switch
+						{
+							-2 => "API not enabled",
+							-6 => "Lobby",
+							-10 => "Loading screen",
+							_ => $"{Program.CurrentSparkLink(f.sessionid)}\t{f.client_name}\t{f.game_status}\tPlayers: {f.GetAllPlayers().Count}"
+						};
+					}
+
+					return $"{ipAddress}\t{status}";
 				}));
 				QuestIPsBox.Text = output;
 				LoadingLabel.Content = "";
+				
 			}
 			catch (Exception e)
 			{
