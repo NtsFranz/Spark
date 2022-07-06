@@ -45,31 +45,33 @@
 							        Click="OpenSettingsFileFolder" />
 						</StackPanel>
 						
-						<TextBlock x:Name="thisPCLocalIP" Margin="10,4,4,0" Foreground="Gray">---</TextBlock>
+						<TextBlock x:Name="ThisPCLocalIP" Margin="10,4,4,0" Foreground="Gray">---</TextBlock>
 						<StackPanel Height="37" Orientation="Horizontal" Margin="10,4,4,-8">
-							<Label x:Name="echoVRIPLabel" Content="{x:Static p:Resources.EchoVR_IP__for_Quest_}" Margin="4,4,4,4" />
-							<TextBox x:Name="echoVRIPTextBox" Text="{l:SettingLoad echoVRIP}" TextWrapping="Wrap" Width="130"
-							         Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
-							         Padding="4,4,4,4" TextChanged="EchoVRIPChanged" />
-							<TextBox x:Name="echoVRPortTextBox" Text="{l:SettingLoad echoVRPort}" TextWrapping="Wrap" Width="60"
+							<Label Content="{x:Static p:Resources.EchoVR_IP__for_Quest_}" Margin="0,4,0,4" />
+							<Grid Width="160">
+								<TextBox x:Name="EchoVRIPTextBox" Text="{l:SettingLoad echoVRIP}" TextWrapping="Wrap" HorizontalAlignment="Stretch"
+								         Margin="2,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
+								         Padding="4,4,4,4" TextChanged="EchoVRIPChanged" />
+								<Button x:Name="SaveQuestIPButton" Click="SaveQuestIPClicked" Visibility="Collapsed" HorizontalAlignment="Right" Margin="0,5,0,5" Padding="4,0,4,0" Content="{x:Static p:Resources.Save}"/>
+							</Grid>
+							<TextBox x:Name="EchoVRPortTextBox" Text="{l:SettingLoad echoVRPort}" TextWrapping="Wrap" Width="50"
 							         Margin="4,4,4,4" VerticalAlignment="Center" FontFamily="Consolas"
 							         Padding="4,4,4,4" TextChanged="EchoVRPortChanged" />
-							<Button x:Name="resetIP" Content="{x:Static p:Resources.Local_PC}" Margin="4,4,4,4" Padding="4,4,4,4"
-							        Click="resetIP_Click" />
-							<Button x:Name="findQuest" Content="{x:Static p:Resources.Find_Quest_IP}" Margin="4,4,4,4" Padding="4,4,4,4"
+							<Button x:Name="ResetIP" Content="{x:Static p:Resources.Local_PC}" Margin="4,4,4,4" Padding="4,4,4,4"
+							        Click="ResetIP_Click" />
+							<Button x:Name="FindQuest" Content="{x:Static p:Resources.Find_Quest_IP}" Margin="4,4,4,4" Padding="4,4,4,4"
 							        Click="FindQuestClick" />
 						</StackPanel>
-						<Label x:Name="findQuestStatusLabel" Visibility="Hidden" Content="{x:Static p:Resources.Searching_for_Quest}"
+						<Label x:Name="FindQuestStatusLabel" Visibility="Hidden" Content="{x:Static p:Resources.Searching_for_Quest}"
 						       Margin="30,0,0,0" FontSize="10" FontStyle="Italic" />
 						
 						
-						<Label x:Name="exeLocationLabel" Content="{x:Static p:Resources.EchoVR_Executable_Location_}" Margin="10,0,10,0" />
+						<Label x:Name="ExeLocationLabel" Content="{x:Static p:Resources.EchoVR_Executable_Location_}" Margin="10,0,10,0" />
 						
-							<TextBox x:Name="exeLocationTextBox"
-							                 Text="{l:SettingLoad echoVRPath}" TextWrapping="NoWrap"
-							                 HorizontalAlignment="Stretch"
-							                 Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged"
-							                 MaxLines="1" />
+							<TextBox Text="{l:SettingLoad echoVRPath}" TextWrapping="NoWrap"
+							         HorizontalAlignment="Stretch"
+							         Margin="10,4,10,4" Padding="4,4,4,4" TextChanged="ExecutableLocationChanged"
+							         MaxLines="1" />
 						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 							<ProgressBar x:Name="ReshadeProgress" Visibility="Collapsed" Width="200" Margin="0,0,10,0"></ProgressBar>
 							<Button Content="{x:Static p:Resources.Install_ReShade}" Click="InstallReshade" Margin="0,0,10,0" Padding="4,4,4,4"></Button>
@@ -339,10 +341,11 @@
 								<!-- 	<ComboBoxItem Content="日本語" /> -->
 								<!-- </ComboBox> -->
 								
-								<Button Grid.Row="2" Grid.Column="0" Margin="0, 2" Click="ClearTTSCacheButton">Clear TTS Cache</Button>
-								<Button Grid.Row="2" Grid.Column="1" Margin="0, 2" Click="OpenTTSCacheButton">Open TTS Cache Folder</Button>
+								<Button Grid.Row="2" Grid.Column="0" Margin="0, 2" Click="ClearTTSCacheButton" Content="{x:Static p:Resources.Clear_TTS_Cache}"/>
+								<Button Grid.Row="2" Grid.Column="1" Margin="0, 2" Click="OpenTTSCacheButton" Content="{x:Static p:Resources.Open_TTS_Cache_Folder}"/>
+								<Button Grid.Row="2" Grid.Column="2" Margin="0, 2" Click="PlayTestSound" Content="{x:Static p:Resources.Play_Test_Sound}"/>
 							</Grid>
-							<CheckBox x:Name="serverLocationCheckbox" Content="{x:Static p:Resources.Server_Location}" Margin="4,10,4,0"
+							<CheckBox Content="{x:Static p:Resources.Server_Location}" Margin="4,10,4,0"
 										  IsChecked="{Binding ServerLocation}" />
 							<TextBlock TextWrapping="WrapWithOverflow"
 										   Text="{x:Static p:Resources.Estimated_location_of_the_server_as_you_join}"

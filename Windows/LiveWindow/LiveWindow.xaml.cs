@@ -438,9 +438,10 @@ namespace Spark
 						}
 					}
 
-					if (Program.lastFrame != null && Program.lastFrame.map_name == "mpl_arena_a")  // only the arena has a disc
+					if (Program.lastFrame?.InArena == true)  // only the arena has a disc
 					{
-						discSpeedLabel.Text = Program.lastFrame.disc.velocity.ToVector3().Length().ToString("N2");
+						discSpeedLabel.Text = $"{Program.lastFrame.disc.velocity.ToVector3().Length():N2}";
+						// discSpeedLabel.Text = $"{Program.lastFrame.disc.velocity.ToVector3().Length():N2} m/s\t{Program.lastFrame.disc.Position.X:N2}, {Program.lastFrame.disc.Position.Y:N2}, {Program.lastFrame.disc.Position.Z:N2}";
 						discSpeedLabel.Foreground = Program.lastFrame.possession[0] switch
 						{
 							0 => Brushes.CornflowerBlue,

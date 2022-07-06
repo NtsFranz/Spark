@@ -38,11 +38,6 @@ namespace Spark
 			await FindQuestIPs();
 		}
 
-		private static List<IPAddress> GetLocalIPAddresses()
-		{
-			IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
-			return host.AddressList.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork).ToList();
-		}
 
 		private async Task FindQuestIPs()
 		{
@@ -56,19 +51,8 @@ namespace Spark
 				});
 				// List<IPAddress> ips = await QuestIPFetching.FindAllQuestIPs(progress);
 
-				List<IPAddress> myIps = GetLocalIPAddresses();
-				List<IPAddress> ips = new List<IPAddress>();
+				List<IPAddress> ips = QuestIPFetching.GetPossibleLocalIPs();
 
-				foreach (IPAddress ip in myIps)
-				{
-					for (byte i = 0; i < 255; i++)
-					{
-						List<byte> orig = ip.GetAddressBytes().SkipLast(1).ToList();
-						orig.Add(i);
-						ips.Add(new IPAddress(orig.ToArray()));
-					}
-				}
-				
 
 				QuestIPsBox.Text = string.Join('\n', ips.Select(ip => ip.ToString()));
 				Debug.WriteLine($"Adding additional ips: {sw.Elapsed.TotalSeconds}");
@@ -127,5 +111,6 @@ namespace Spark
 				Logger.LogRow(Logger.LogType.Error, $"Error fetching Quest IPs\n{e}");
 			}
 		}
+
 	}
 }

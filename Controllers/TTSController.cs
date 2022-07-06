@@ -227,6 +227,10 @@ namespace Spark
 
 			if (ttsDisabled) return;
 
+			if (!Directory.Exists(CacheFolder))
+			{
+				Directory.CreateDirectory(CacheFolder);
+			}
 
 			string filePath = Path.Combine(CacheFolder, $"{Rate}_{SparkSettings.instance.languageIndex}_{SparkSettings.instance.useWavenetVoices}_{SparkSettings.instance.ttsVoice}_{text.Replace(" ", "_")}.mp3");
 

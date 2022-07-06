@@ -63,6 +63,40 @@ namespace Spark
 		// The insufficient buffer error.
 		const int ERROR_INSUFFICIENT_BUFFER = 122;
 
+		public static string GetLocalIP()
+		{
+			using Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+			socket.Connect("8.8.8.8", 65530);
+			IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
+			return endPoint != null ? endPoint.Address.ToString() : "";
+		}
+
+		
+		public static List<IPAddress> GetLocalIPAddresses()
+		{
+			IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+			return host.AddressList.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork).ToList();
+		}
+		
+		
+		public static List<IPAddress> GetPossibleLocalIPs()
+		{
+			List<IPAddress> myIps = GetLocalIPAddresses();
+			List<IPAddress> ips = new List<IPAddress>();
+
+			foreach (IPAddress ip in myIps)
+			{
+				for (byte i = 0; i < 255; i++)
+				{
+					List<byte> orig = ip.GetAddressBytes().SkipLast(1).ToList();
+					orig.Add(i);
+					ips.Add(new IPAddress(orig.ToArray()));
+				}
+			}
+
+			return ips;
+		}
+		
 		public static void GetCurrentIPAndPingNetwork()
 		{
 			foreach (NetworkInterface adapter in NetworkInterface.GetAllNetworkInterfaces().Where(ni => ni.OperationalStatus == OperationalStatus.Up && (ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || ni.NetworkInterfaceType == NetworkInterfaceType.Ethernet)))
@@ -408,12 +442,21 @@ namespace Spark
 		// 	return process.HasExited ? Task.CompletedTask : tcs.Task;
 		// }
 
-		public static async Task<List<(IPAddress, string)>> PingEchoVRAPIAsync(IReadOnlyCollection<IPAddress> ips)
+		
+		public static async Task<List<(IPAddress, string)>> PingEchoVRAPIAsync(IReadOnlyCollection<IPAddress> ips, int maxConcurrency = 1000, IProgress<float> progress = null)
 		{
 			HttpClient client = new HttpClient();
 			client.Timeout = TimeSpan.FromSeconds(2);
+
+			int count = ips.Count;
+			int finished = 0;
+			
+			SemaphoreSlim throttler = new SemaphoreSlim(initialCount: maxConcurrency);
 			IEnumerable<Task<string>> tasks = ips.Select(async ip =>
 			{
+				// do an async wait until we can schedule again
+				await throttler.WaitAsync();
+				
 				string s = null;
 				try
 				{
@@ -424,6 +467,11 @@ namespace Spark
 				{
 					// ignored
 				}
+
+				finished += 1;
+				progress?.Report((float)finished/count);
+
+				throttler.Release();
 
 				return s;
 			});
@@ -471,7 +519,7 @@ namespace Spark
 					IPSearchthread2 = null;
 					if (QuestIP != null)
 					{
-						progress.Report("Found Quest on network!");
+						progress.Report(Resources.QuestIPFetching_FindQuestIP_Found_Quest_on_network_);
 					}
 					else
 					{
@@ -479,17 +527,17 @@ namespace Spark
 						CheckARPTable();
 						if (QuestIP != null)
 						{
-							progress.Report("Found Quest on network!");
+							progress.Report(Resources.QuestIPFetching_FindQuestIP_Found_Quest_on_network_);
 						}
 						else
 						{
-							progress.Report("Failed to find Quest on network!");
+							progress.Report(Resources.Failed_to_find_Quest_on_network_);
 						}
 					}
 				}
 				else
 				{
-					progress.Report("Found Quest on network!");
+					progress.Report(Resources.QuestIPFetching_FindQuestIP_Found_Quest_on_network_);
 				}
 			}
 			finally

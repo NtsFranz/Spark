@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ButterReplays;
 using EchoVRAPI;
@@ -22,10 +24,13 @@ namespace Spark
 		private readonly object butterWritingLock = new object();
 		private readonly object fileWritingLock = new object();
 		public bool zipping = false;
+		public bool replayThreadActive = false;
+		public bool splitting = false;
 
 		public ConcurrentQueue<string> lastJSONQueue = new ConcurrentQueue<string>();
 		public ConcurrentQueue<string> lastDateTimeStringQueue = new ConcurrentQueue<string>();
 		public ConcurrentStack<Frame> milkFramesToSave = new ConcurrentStack<Frame>();
+		public ConcurrentQueue<Frame> butterFramesToSave = new ConcurrentQueue<Frame>();
 		public ConcurrentQueue<DateTime> replayBufferTimestamps = new ConcurrentQueue<DateTime>();
 		public ConcurrentQueue<string> replayBufferJSON = new ConcurrentQueue<string>();
 		public ConcurrentQueue<string> replayBufferJSONBones = new ConcurrentQueue<string>();
@@ -40,6 +45,7 @@ namespace Spark
 		/// For replay file saving in batches
 		/// </summary>
 		private readonly ConcurrentQueue<DateTime> dataCacheTimestamps = new ConcurrentQueue<DateTime>();
+
 		private readonly ConcurrentQueue<string> dataCacheLines = new ConcurrentQueue<string>();
 
 
@@ -72,11 +78,39 @@ namespace Spark
 					Split();
 				});
 			};
-			Program.RoundOver += (_,_) => { Split(); };
+			Program.RoundOver += (_, _) =>
+			{
+				Split();
+			};
 			Program.SparkClosing += () =>
 			{
 				Task.Run(Split);
 			};
+
+			Task.Run(ReplayProcessingThread);
+		}
+
+		private async Task ReplayProcessingThread()
+		{
+			replayThreadActive = true;
+			while (Program.running)
+			{
+				// delay first so that when the program quits, we still add the last frames
+				await Task.Delay(100);
+				while (butterFramesToSave.TryDequeue(out Frame f))
+				{
+					butter.AddFrame(f);
+
+					// write the whole file every chunk
+					// at 300 frames/chunk this is every 10 seconds
+					if (butter.NumChunks() - lastButterNumChunks > 1)
+					{
+						WriteOutButterFile();
+						lastButterNumChunks = butter.NumChunks();
+					}
+				}
+			}
+			replayThreadActive = false;
 		}
 
 		private void AddEchoreplayFrame(DateTime timestamp, string session, string bones)
@@ -148,39 +182,6 @@ namespace Spark
 			}
 		}
 
-		// private void MilkThread()
-		// {
-		// 	Thread.Sleep(2000);
-		// 	int frameCount = 0;
-		// 	// Session pull loop.
-		// 	while (running)
-		// 	{
-		// 		if (milkFramesToSave.TryPop(out Frame frame))
-		// 		{
-		// 			if (milkData == null)
-		// 			{
-		// 				milkData = new Milk(frame);
-		// 			}
-		// 			else
-		// 			{
-		// 				milkData.AddFrame(frame);
-		// 			}
-		//
-		// 			frameCount++;
-		// 		}
-		//
-		// 		// only save every once in a while
-		// 		if (frameCount > 200)
-		// 		{
-		// 			frameCount = 0;
-		// 			string filePath = Path.Combine(SparkSettings.instance.saveFolder, fileName + ".milk");
-		// 			File.WriteAllBytes(filePath, milkData.GetBytes());
-		// 		}
-		//
-		// 		Thread.Sleep(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull]);
-		// 	}
-		// }
-
 
 		private void AddButterFrame(Frame f)
 		{
@@ -188,16 +189,8 @@ namespace Spark
 			if (!SparkSettings.instance.saveButterFiles) return;
 
 			if (frameIndex % FrameInterval != 0) return;
-
-			butter.AddFrame(f);
-
-			// write the whole file every chunk
-			// at 300 frames/chunk this is every 10 seconds
-			if (butter.NumChunks() - lastButterNumChunks > 1)
-			{
-				WriteOutButterFile();
-				lastButterNumChunks = butter.NumChunks();
-			}
+			
+			butterFramesToSave.Enqueue(f);
 		}
 
 		private void WriteOutButterFile()
@@ -234,7 +227,7 @@ namespace Spark
 			lock (fileWritingLock)
 			{
 				if (dataCacheLines.IsEmpty) return;
-				
+
 				// Fail if the folder doesn't even exist
 				if (!Directory.Exists(SparkSettings.instance.saveFolder))
 				{
@@ -305,6 +298,7 @@ namespace Spark
 		/// </summary>
 		public void Split()
 		{
+			splitting = true;
 			WriteOutEchoreplayFile();
 
 			lock (butterWritingLock)
@@ -343,6 +337,9 @@ namespace Spark
 			replayBufferTimestamps.Clear();
 			replayBufferJSON.Clear();
 			replayBufferJSONBones.Clear();
+			
+			splitting = false;
 		}
+
 	}
 }

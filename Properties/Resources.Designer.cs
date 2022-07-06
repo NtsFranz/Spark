@@ -603,6 +603,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear TTS Cache.
+        /// </summary>
+        public static string Clear_TTS_Cache {
+            get {
+                return ResourceManager.GetString("Clear TTS Cache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder.
         /// </summary>
         public static string Clear_unsaved_highlight_clips_on_Spark_exit__If_disabled__highlights_will_be_retained_forever_unless_manually_deleted_from_temp_folder {
@@ -1399,6 +1408,34 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed. Scanning for Echo VR API instead. This may take a while..
+        /// </summary>
+        public static string Failed__Scanning_for_Echo_VR_API_instead__This_may_take_a_while_ {
+            get {
+                return ResourceManager.GetString("Failed. Scanning for Echo VR API instead. This may take a while.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to find Quest on network!.
+        /// </summary>
+        public static string Failed_to_find_Quest_on_network_ {
+            get {
+                return ResourceManager.GetString("Failed to find Quest on network!", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to find Quest on network! Make sure you are in a private/public match and API Access is enabled..
+        /// </summary>
+        public static string Failed_to_find_Quest_on_network__Make_sure_you_are_in_a_private_public_match_and_API_Access_is_enabled_ {
+            get {
+                return ResourceManager.GetString("Failed to find Quest on network! Make sure you are in a private/public match and " +
+                        "API Access is enabled.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fast.
         /// </summary>
         public static string Fast {
@@ -1566,6 +1603,15 @@ namespace Spark.Properties {
         public static string for_help_check_out {
             get {
                 return ResourceManager.GetString("for_help_check_out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Found Quest on network!.
+        /// </summary>
+        public static string Found_Quest_on_network_ {
+            get {
+                return ResourceManager.GetString("Found Quest on network!", resourceCulture);
             }
         }
         
@@ -2629,6 +2675,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open TTS Cache Folder.
+        /// </summary>
+        public static string Open_TTS_Cache_Folder {
+            get {
+                return ResourceManager.GetString("Open TTS Cache Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event..
         /// </summary>
         public static string Opens_the_folder_where_the_event_logs_are_stored_on_your_computer__Only_works_once_you_have_logged_at_least_one_event_ {
@@ -2707,6 +2762,15 @@ namespace Spark.Properties {
         public static string Personal {
             get {
                 return ResourceManager.GetString("Personal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play Test Sound.
+        /// </summary>
+        public static string Play_Test_Sound {
+            get {
+                return ResourceManager.GetString("Play Test Sound", resourceCulture);
             }
         }
         
@@ -2870,6 +2934,15 @@ namespace Spark.Properties {
         public static string Quest {
             get {
                 return ResourceManager.GetString("Quest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Found Quest on network!.
+        /// </summary>
+        public static string QuestIPFetching_FindQuestIP_Found_Quest_on_network_ {
+            get {
+                return ResourceManager.GetString("QuestIPFetching_FindQuestIP_Found_Quest_on_network_", resourceCulture);
             }
         }
         

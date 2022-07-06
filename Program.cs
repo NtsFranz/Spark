@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,6 +22,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
 using System.Net.Http.Json;
+using System.Resources;
 using EchoVRAPI;
 using NetMQ;
 using Newtonsoft.Json.Linq;
@@ -567,16 +570,29 @@ namespace Spark
 						JToken toolsAll = EchoVRSettingsManager.loadingTips["tools-all"];
 						JArray tips = (JArray) EchoVRSettingsManager.loadingTips["tools-all"]?["tips"];
 
-						// keep only those without SPARK in the title
 						if (tips != null)
 						{
+							// keep only those without SPARK in the title
 							tips = new JArray(tips.Where(t => (string)t[1] != "SPARK"));
 
-							foreach (string tip in LoadingTips.newTips)
+							ResourceSet resourceSet = LoadingTips.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+							if (resourceSet != null)
 							{
-								if (tips.All(existingTip => (string)existingTip[2] != tip))
+								// loop through the resource strings
+								foreach (DictionaryEntry entry in resourceSet)
 								{
-									tips.Add(new JArray("", "SPARK", tip));
+									string tip = entry.Value?.ToString();
+									if (tip != null)
+									{
+										if (tips.All(existingTip => (string)existingTip[2] != tip))
+										{
+											tips.Add(new JArray("", "SPARK", tip));
+										}
+									}
+									else
+									{
+										LogRow(LogType.Error, "Loading tip was null.");
+									}
 								}
 							}
 
@@ -679,7 +695,9 @@ namespace Spark
 
 			if (replayFilesManager != null)
 			{
-				while (replayFilesManager.zipping)
+				while (replayFilesManager.zipping || 
+				       replayFilesManager.replayThreadActive || 
+				       replayFilesManager.splitting)
 				{
 					if (closingWindow != null) closingWindow.label.Content = Resources.Compressing_Replay_File___;
 					await Task.Delay(10);
@@ -732,24 +750,9 @@ namespace Spark
 
 		private static async Task MainLoop()
 		{
-			try
-			{
-				string resp = await Program.GetRequestAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session", null);
-
-				// sessionDataFound = true;
-				// Dispatcher.Invoke(UpdateStatusLabel);
-				
-				Debug.WriteLine("HERE2");
-			}
-			catch (Exception)
-			{
-				Debug.WriteLine("HERE1");
-				// sessionDataFound = false;
-				// Dispatcher.Invoke(UpdateStatusLabel);
-			}
-			
-			
 			fetchClient.Timeout = TimeSpan.FromSeconds(5);
+
+			DateTime lastFetch = DateTime.UtcNow;
 			while (running)
 			{
 				fetchSw.Restart();
@@ -767,6 +770,15 @@ namespace Spark
 				{
 					tasks.Add(fetchClient.GetAsync($"http://{echoVRIP}:{echoVRPort}/player_bones"));
 				}
+
+				TimeSpan diff = DateTime.UtcNow - lastFetch;
+				if (diff.TotalSeconds > 1)
+				{
+					Debug.WriteLine(DateTime.UtcNow - lastFetch);
+				}
+
+				lastFetch = DateTime.UtcNow;
+				
 
 				try
 				{
@@ -3722,13 +3734,6 @@ namespace Spark
 
 		}
 
-		public static string GetLocalIP()
-		{
-			using Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
-			socket.Connect("8.8.8.8", 65530);
-			IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
-			return endPoint != null ? endPoint.Address.ToString() : "";
-		}
 		
 		public static string CurrentSparkLink(string sessionid)
 		{

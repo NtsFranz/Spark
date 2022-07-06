@@ -426,6 +426,15 @@
     <Resource Include="img\earth.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <EmbeddedResource Update="Properties\LoadingTips\LoadingTips.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LoadingTips.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="Properties\LoadingTips\LoadingTips.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>LoadingTips.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

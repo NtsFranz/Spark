@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -51,7 +52,7 @@ namespace Spark
 #endif
 
 
-			thisPCLocalIP.Text = $"This PC's Local IP: {Program.GetLocalIP()} (for PC-PC Spectate Me)";
+			ThisPCLocalIP.Text = $"This PC's Local IP: {QuestIPFetching.GetLocalIP()} (for PC-PC Spectate Me)";
 
 			CameraModeDropdownChanged(SparkSettings.instance.spectatorCamera);
 
@@ -105,6 +106,7 @@ namespace Spark
 			if (!initialized) return;
 			Program.echoVRIP = ((TextBox)sender).Text;
 			SparkSettings.instance.echoVRIP = Program.echoVRIP;
+			SaveQuestIPButton.Visibility = Visibility.Visible;
 		}
 
 		private void EchoVRPortChanged(object sender, TextChangedEventArgs e)
@@ -112,7 +114,7 @@ namespace Spark
 			if (!initialized) return;
 			if (Program.overrideEchoVRPort)
 			{
-				echoVRPortTextBox.Text = SparkSettings.instance.echoVRPort.ToString();
+				EchoVRPortTextBox.Text = SparkSettings.instance.echoVRPort.ToString();
 			}
 			else
 			{
@@ -123,15 +125,16 @@ namespace Spark
 			}
 		}
 
-		private void resetIP_Click(object sender, RoutedEventArgs e)
+		private void ResetIP_Click(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
 			Program.echoVRIP = "127.0.0.1";
 			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
-			echoVRIPTextBox.Text = Program.echoVRIP;
-			echoVRPortTextBox.Text = Program.echoVRPort.ToString();
+			EchoVRIPTextBox.Text = Program.echoVRIP;
+			EchoVRPortTextBox.Text = Program.echoVRPort.ToString();
 			SparkSettings.instance.echoVRIP = Program.echoVRIP;
 			if (!Program.overrideEchoVRPort) SparkSettings.instance.echoVRPort = Program.echoVRPort;
+			SaveQuestIPButton.Visibility = Visibility.Collapsed;
 		}
 
 		private void ExecutableLocationChanged(object sender, TextChangedEventArgs e)
@@ -140,36 +143,72 @@ namespace Spark
 			string path = ((TextBox)sender).Text;
 			if (File.Exists(path))
 			{
-				exeLocationLabel.Content = "EchoVR Executable Location:";
+				ExeLocationLabel.Content = "EchoVR Executable Location:";
 				SparkSettings.instance.echoVRPath = path;
 			}
 			else
 			{
-				exeLocationLabel.Content = "EchoVR Executable Location:   (not valid)";
+				ExeLocationLabel.Content = "EchoVR Executable Location:   (not valid)";
 			}
 		}
 
 		private async void FindQuestClick(object sender, RoutedEventArgs e)
 		{
 			if (!initialized) return;
-			findQuestStatusLabel.Content = Properties.Resources.Searching_for_Quest_on_network;
-			findQuestStatusLabel.Visibility = Visibility.Visible;
-			echoVRIPTextBox.IsEnabled = false;
-			echoVRPortTextBox.IsEnabled = false;
-			findQuest.IsEnabled = false;
-			resetIP.IsEnabled = false;
-			Progress<string> progress = new Progress<string>(s => findQuestStatusLabel.Content = s);
-			await Task.Factory.StartNew(() => Program.echoVRIP = QuestIPFetching.FindQuestIP(progress),
-				TaskCreationOptions.None);
-			echoVRIPTextBox.IsEnabled = true;
-			echoVRPortTextBox.IsEnabled = true;
-			findQuest.IsEnabled = true;
-			resetIP.IsEnabled = true;
+			FindQuestStatusLabel.Content = Properties.Resources.Searching_for_Quest_on_network;
+			FindQuestStatusLabel.Visibility = Visibility.Visible;
+			EchoVRIPTextBox.IsEnabled = false;
+			EchoVRPortTextBox.IsEnabled = false;
+			FindQuest.IsEnabled = false;
+			ResetIP.IsEnabled = false;
+			SaveQuestIPButton.Visibility = Visibility.Collapsed;
+
+			Progress<string> progress = new Progress<string>(s => FindQuestStatusLabel.Content = s);
+			await Task.Factory.StartNew(() => Program.echoVRIP = QuestIPFetching.FindQuestIP(progress), TaskCreationOptions.None);
+
+			// if we failed with this method, scan the network with API requests instead
+			if ((string)FindQuestStatusLabel.Content == Properties.Resources.Failed_to_find_Quest_on_network_)
+			{
+				FindQuestStatusLabel.Content = Properties.Resources.Failed__Scanning_for_Echo_VR_API_instead__This_may_take_a_while_;
+				await Task.Run(async () =>
+				{
+					Progress<float> searchProgress = new Progress<float>();
+					searchProgress.ProgressChanged += (o, val) =>
+					{
+						Dispatcher.Invoke(() =>
+						{
+							FindQuestStatusLabel.Content = $"{Properties.Resources.Failed__Scanning_for_Echo_VR_API_instead__This_may_take_a_while_}\t{val:P0}";
+						});
+					};
+					List<IPAddress> ips = QuestIPFetching.GetPossibleLocalIPs();
+					List<(IPAddress, string)> responses = await QuestIPFetching.PingEchoVRAPIAsync(ips, 20, searchProgress);
+					IPAddress found = responses.FirstOrDefault(r => r.Item2 != null).Item1;
+					Dispatcher.Invoke(() =>
+					{
+						if (found != null)
+						{
+							Program.echoVRIP = found.ToString();
+
+							FindQuestStatusLabel.Content = Properties.Resources.Found_Quest_on_network_;
+						}
+						else
+						{
+							FindQuestStatusLabel.Content = Properties.Resources.Failed_to_find_Quest_on_network__Make_sure_you_are_in_a_private_public_match_and_API_Access_is_enabled_;
+						}
+					});
+				});
+			}
+
+			EchoVRIPTextBox.IsEnabled = true;
+			EchoVRPortTextBox.IsEnabled = true;
+			FindQuest.IsEnabled = true;
+			ResetIP.IsEnabled = true;
 			if (!Program.overrideEchoVRPort) Program.echoVRPort = 6721;
-			echoVRIPTextBox.Text = Program.echoVRIP;
-			echoVRPortTextBox.Text = Program.echoVRPort.ToString();
+			EchoVRIPTextBox.Text = Program.echoVRIP;
+			EchoVRPortTextBox.Text = Program.echoVRPort.ToString();
 			SparkSettings.instance.echoVRIP = Program.echoVRIP;
 			if (!Program.overrideEchoVRPort) SparkSettings.instance.echoVRPort = Program.echoVRPort;
+			SaveQuestIPButton.Visibility = Visibility.Collapsed;
 		}
 
 		private void ShowFirstTimeSetupWindowClicked(object sender, RoutedEventArgs e)
@@ -842,6 +881,16 @@ namespace Spark
 			{
 				new MessageBox("Can't uninstall Reshade. Try closing EchoVR and trying again.", Properties.Resources.Error).Show();
 			}
+		}
+
+		private void SaveQuestIPClicked(object sender, RoutedEventArgs e)
+		{
+			SaveQuestIPButton.Visibility = Visibility.Collapsed;
+		}
+
+		private void PlayTestSound(object sender, RoutedEventArgs e)
+		{
+			Program.synth.SpeakAsync("THIS IS A TEST SOUND!");
 		}
 	}
 
