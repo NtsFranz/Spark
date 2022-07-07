@@ -1688,4 +1688,7 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   <data name="Discord Rich Presence Spectator" xml:space="preserve">
     <value>Disable Discord Rich Presence when spectating matches</value>
   </data>
+  <data name="Rich presence from Spark" xml:space="preserve">
+    <value>Rich presence from Spark</value>
+  </data>
 </root>

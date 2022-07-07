@@ -566,11 +566,6 @@
     <Compile Update="Windows\FirstTimeSetupWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Properties\Settings.Designer.cs">
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Update="Windows\UpdateWindow.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
@@ -589,10 +584,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <None Update="wwwtemplates\vrml\minimap.html">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>

@@ -3163,6 +3163,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rich presence from Spark.
+        /// </summary>
+        public static string Rich_presence_from_Spark {
+            get {
+                return ResourceManager.GetString("Rich presence from Spark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rotation Speed.
         /// </summary>
         public static string Rotation_Speed {
