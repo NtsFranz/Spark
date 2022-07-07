@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="(Requires Restart)" xml:space="preserve">
     <value>(Requires Restart)</value>
@@ -138,7 +138,7 @@
   <data name="Autorestart EchoVR into autospectator" xml:space="preserve">
     <value>Autorestart EchoVR into Spectatorstream</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="baseline_replay_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\img\baseline_replay_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -591,7 +591,8 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Tube Exit Speed (self)</value>
   </data>
   <data name=", or join the" xml:space="preserve">
-    <value>, or join the</value><comment>Full sentence is: For help using Spark, check out the Echopedia page, or join the Ignite Discord Server and ask questions in the #spark-support channel.</comment>
+    <value>, or join the</value>
+    <comment>Full sentence is: For help using Spark, check out the Echopedia page, or join the Ignite Discord Server and ask questions in the #spark-support channel.</comment>
   </data>
   <data name="and ask questions in the #ignitebot-support channel." xml:space="preserve">
     <value>and ask questions in the #spark-support channel.</value>
@@ -603,7 +604,8 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Echopedia page</value>
   </data>
   <data name="for_help_check_out" xml:space="preserve">
-    <value>For help using Spark, check out the</value><comment>Full sentence is: For help using Spark, check out the Echopedia page, or join the Ignite Discord Server and ask questions in the #spark-support channel.</comment>
+    <value>For help using Spark, check out the</value>
+    <comment>Full sentence is: For help using Spark, check out the Echopedia page, or join the Ignite Discord Server and ask questions in the #spark-support channel.</comment>
   </data>
   <data name="Ignite Discord Server" xml:space="preserve">
     <value>Ignite Discord Server</value>
@@ -653,7 +655,8 @@ CLOSE ECHOVR BEFORE PRESSING OK!</value>
     <value>Stop Spectating Me</value>
   </data>
   <data name="Voice" xml:space="preserve">
-    <value>Voice</value><comment>For what kind of TTS voice to use</comment>
+    <value>Voice</value>
+    <comment>For what kind of TTS voice to use</comment>
   </data>
   <data name="orange" xml:space="preserve">
     <value>orange</value>
@@ -1681,5 +1684,8 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   </data>
   <data name="Clear TTS Cache" xml:space="preserve">
     <value>Clear TTS Cache</value>
+  </data>
+  <data name="Discord Rich Presence Spectator" xml:space="preserve">
+    <value>Disable Discord Rich Presence when spectating matches</value>
   </data>
 </root>

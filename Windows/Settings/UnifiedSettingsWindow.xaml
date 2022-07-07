@@ -144,6 +144,9 @@
 						<CheckBox x:Name="discordRichPresenceServerLocationCheckbox" Content="{x:Static p:Resources.Show_Server_Location_in_Discord_RP_status}"
 									  IsChecked="{l:SettingBinding discordRichPresenceServerLocation}" HorizontalAlignment="Left"
 									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
+                        <CheckBox x:Name="discordRichPresenceSpectatorCheckbox" Content="{x:Static p:Resources.Discord_Rich_Presence_Spectator}"
+									  IsChecked="{l:SettingBinding discordRichPresenceSpectator}" HorizontalAlignment="Left"
+									  VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						
 						
 						
