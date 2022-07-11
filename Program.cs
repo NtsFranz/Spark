@@ -1520,12 +1520,12 @@ namespace Spark
 							player.head.Position, 
 							Vector3.Zero)
 						);
+						
+						// cache this players stats so they aren't overwritten
+						CurrentRound.GetPlayerData(player)?.CacheStats(player.stats);
 
 						if (team.color != Team.TeamColor.spectator)
 						{
-							// cache this players stats so they aren't overwritten
-							CurrentRound.GetPlayerData(player)?.CacheStats(player.stats);
-
 							// find the vrml team names
 							CurrentRound.teams[team.color].FindTeamNamesFromPlayerList(team);
 						}
@@ -2605,20 +2605,20 @@ namespace Spark
 					// if we just started a new 'round' (so stats haven't been reset)
 					if (lastFrame.game_status == "round_over")
 					{
-						foreach (MatchPlayer player in CurrentRound.players.Values)
-						{
-							// TODO isn't this just a shallow copy anyway and won't do anything? How is this working?
-							MatchPlayer lastPlayer = LastRound.GetPlayerData(player.Id);
-
-							if (lastPlayer != null)
-							{
-								player.StoreLastRoundStats(lastPlayer);
-							}
-							else
-							{
-								LogRow(LogType.Error, "Player exists in this round but not in last. Y");
-							}
-						}
+						// foreach (MatchPlayer player in CurrentRound.players.Values)
+						// {
+						// 	// TODO isn't this just a shallow copy anyway and won't do anything? How is this working?
+						// 	MatchPlayer lastPlayer = LastRound.GetPlayerData(player.Id);
+						//
+						// 	if (lastPlayer != null)
+						// 	{
+						// 		player.StoreLastRoundStats(lastPlayer);
+						// 	}
+						// 	else
+						// 	{
+						// 		LogRow(LogType.Error, "Player exists in this round but not in last. Y");
+						// 	}
+						// }
 					}
 
 					break;
@@ -2895,7 +2895,7 @@ namespace Spark
 			RoundOver?.Invoke(lastRoundFrame, reason);
 			
 			rounds.Enqueue(new AccumulatedFrame(nextRoundFrame, rounds.Last()));
-			if (rounds.Count > 50)
+			while (rounds.Count > 50)
 			{
 				rounds.TryDequeue(out AccumulatedFrame _);
 			}

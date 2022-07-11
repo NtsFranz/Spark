@@ -57,7 +57,7 @@ namespace Spark
 				while (serverRestarting && counter < 10)
 				{
 					counter++;
-					Logger.LogRow(Logger.LogType.Error, $"Already restarting server. Waiting to try again. {restartIndex}");
+					// Logger.LogRow(Logger.LogType.Error, $"Already restarting server. Waiting to try again. {restartIndex}");
 					await Task.Delay(100);
 				}
 
@@ -86,12 +86,13 @@ namespace Spark
 					.Build();
 
 				_ = server.RunAsync();
-				Logger.LogRow(Logger.LogType.Error, $"Done restarting server. {restartIndex}");
+				// Logger.LogRow(Logger.LogType.Error, $"Done restarting server. {restartIndex}");
 			}
 			catch (Exception e)
 			{
 				Logger.LogRow(Logger.LogType.Error, $"Error when restarting server {restartIndex}\n{e}");
 			}
+
 			serverRestarting = false;
 		}
 
@@ -587,10 +588,14 @@ namespace Spark
 		/// </summary>
 		public static List<AccumulatedFrame> GetPreviousRounds()
 		{
+			// List<AccumulatedFrame> selectedMatches = Program.rounds
+			//  .Where(m=>m!=null)
+			// 	.Where(m => m.frame.sessionid == Program.CurrentRound.frame.sessionid)
+			// 	.ToList();
 			List<AccumulatedFrame> selectedMatches = Program.rounds
-				.Where(m => m.frame.sessionid == Program.CurrentRound.frame.sessionid)
+				.Where(m => m != null)
+				.TakeLast(1)
 				.ToList();
-			selectedMatches.RemoveAll(m => m == null);
 			return selectedMatches;
 		}
 

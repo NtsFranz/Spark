@@ -78,36 +78,36 @@ namespace Spark
 			teams[Team.TeamColor.blue].FindTeamNamesFromPlayerList(frame.teams[0]);
 			teams[Team.TeamColor.orange].FindTeamNamesFromPlayerList(frame.teams[1]);
 
-			if (lastRound != null)
-			{
-				// Loop through teams.
-				foreach (Team team in frame.teams)
-				{
-					// Loop through players on team.
-					foreach (Player player in team.players)
-					{
-						MatchPlayer oldPlayer = lastRound.GetPlayerData(player);
-						if (oldPlayer != null)
-						{
-							// make a fresh player
-							MatchPlayer newPlayer = new MatchPlayer(this, player);
-							
-							// if stats didn't get reset
-							if (player.stats.Sum() >= oldPlayer.currentStats.Sum())
-							{
-								newPlayer.oldRoundStats += player.stats;
-							}
-							else
-							{
-								Debug.WriteLine("Skipped assigning old round stats");
-							}
-
-							newPlayer.currentStats = player.stats;
-							players.Add(player.userid, newPlayer);
-						}
-					}
-				}
-			}
+			// if (lastRound != null)
+			// {
+			// 	// Loop through teams.
+			// 	foreach (Team team in frame.teams)
+			// 	{
+			// 		// Loop through players on team.
+			// 		foreach (Player player in team.players)
+			// 		{
+			// 			MatchPlayer oldPlayer = lastRound.GetPlayerData(player);
+			// 			if (oldPlayer != null)
+			// 			{
+			// 				// make a fresh player
+			// 				MatchPlayer newPlayer = new MatchPlayer(this, player);
+			// 				
+			// 				// if stats didn't get reset
+			// 				if (player.stats.Sum() >= oldPlayer.currentStats.Sum())
+			// 				{
+			// 					newPlayer.oldRoundStats += player.stats;
+			// 				}
+			// 				else
+			// 				{
+			// 					Debug.WriteLine("Skipped assigning old round stats");
+			// 				}
+			//
+			// 				newPlayer.currentStats = player.stats;
+			// 				players.Add(player.userid, newPlayer);
+			// 			}
+			// 		}
+			// 	}
+			// }
 		}
 
 

@@ -62,6 +62,17 @@
 					<a href="/api/get_overlay_config"><h3>/api/get_overlay_config</h3></a>Shows configuration variables for overlays. These can be customized in <a href="/overlays/match_setup">Match Setup</a>
 				</li>
 				<li>
+					<a href="/api/vrml_api/"><h3>/api/vrml_api/</h3></a>A local proxy for the VRML API at <a href="https://api.vrmasterleague.com">api.vrmasterleague.com</a>. This has a local cache of 30 minutes, so it an be much faster for repeated requests. 
+				</li>
+				<li>
+					<a href="/api/set_team_name"><h3>/api/set_team_name/{enabled}</h3></a>Enables or disables the Orbit Disc algorithm. The parameter must be true/false.
+				</li>
+			</ul>
+		</div>
+		<div class="box">
+			<h2>Camera Write</h2>
+			<ul>
+				<li>
 					<a href="/api/go_to_waypoint/0"><h3>/api/go_to_waypoint/{index}</h3></a>Goes to a Camera Write waypoint by index. The index must be an integer.
 				</li>
 				<li>
@@ -71,7 +82,7 @@
 					<a href="/api/orbit_disc_enabled/true"><h3>/api/orbit_disc_enabled/{enabled}</h3></a>Enables or disables the Orbit Disc algorithm. The parameter must be true/false.
 				</li>
 				<li>
-					<a href="/api/vrml_api/"><h3>/api/orbit_disc_enabled/{enabled}</h3></a>Enables or disables the Orbit Disc algorithm. The parameter must be true/false.
+					<a href="/api/reload_camera_settings"><h3>/api/reload_camera_settings</h3></a>Reloads the Camera Write settings file. This is useful if you've added animation or waypoint files and don't want to restart Spark.
 				</li>
 			</ul>
 		</div>

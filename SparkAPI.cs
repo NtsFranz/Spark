@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Threading;
 using EchoVRAPI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +18,7 @@ namespace Spark
 	public static class SparkAPI
 	{
 		private static readonly object vrmlClientLock = new object();
-		private static HttpClient vrmlAPIClient = null;
+		private static HttpClient vrmlAPIClient;
 		private static Dictionary<string, (DateTime, string)> vrmlAPICache = new Dictionary<string, (DateTime, string)>();
 
 		public static void MapRoutes(IEndpointRouteBuilder endpoints)

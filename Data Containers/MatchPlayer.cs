@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using EchoVRAPI;
@@ -310,7 +311,7 @@ namespace Spark
 				return recentVelocities.Average();
 			}
 
-			return recentVelocities.Skip(recentVelocities.Count() - N).Take(N - 1).Average();
+			return recentVelocities.Skip(recentVelocities.Count - N).Take(N - 1).Average();
 		}
 
 		public bool boosting = false;
@@ -323,19 +324,9 @@ namespace Spark
 		/// <param name="newPlayerStats"></param>
 		public void CacheStats(Stats newPlayerStats)
 		{
-			// if player joined back from spectator
-			if ((newPlayerStats.possession_time +
-			     newPlayerStats.points +
-			     newPlayerStats.shots_taken +
-			     newPlayerStats.saves +
-			     newPlayerStats.passes +
-			     newPlayerStats.catches +
-			     newPlayerStats.steals +
-			     newPlayerStats.stuns +
-			     newPlayerStats.blocks +
-			     newPlayerStats.interceptions +
-			     newPlayerStats.assists) != 0)
+			if (newPlayerStats.Sum() != 0)
 			{
+				Logger.LogRow(Logger.LogType.Error, $"Would have cached, but new stats weren't 0: {Name}\n{newPlayerStats}");
 				return;
 			}
 

@@ -73,6 +73,9 @@
     <EmbeddedResource Include="wwwroot_resources\disc_position_heatmap.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot_resources\docs.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="wwwroot_resources\fonts\Inconsolata.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -435,6 +438,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>LoadingTips.resx</DependentUpon>
     </Compile>
+    <None Remove="wwwroot_resources\docs.html" />
+    <None Remove="wwwroot_resources\openapi.yaml" />
+    <EmbeddedResource Include="wwwroot_resources\openapi.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
