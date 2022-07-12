@@ -17,6 +17,8 @@ namespace Spark
 
 		private readonly PrivateMatchRules rules = new PrivateMatchRules();
 
+		private bool listenersActive;
+
 		private PrivateMatchRules Rules
 		{
 			get => rules;
@@ -46,7 +48,7 @@ namespace Spark
 				rules.self_goaling = value.self_goaling;
 				rules.goalie_ping_adv = value.goalie_ping_adv;
 
-				Dispatcher.Invoke(RefreshWindow);
+				RefreshWindow();
 				
 				SettingsUpdated?.Invoke();
 			}
@@ -67,7 +69,7 @@ namespace Spark
 					disc_location = PrivateMatchRules.DiscLocation.mid,
 					goal_stops_time = false,
 					respawn_time = 3,
-					catapult_time = 15,
+					catapult_time = 12,
 					round_count = 3,
 					rounds_played = PrivateMatchRules.RoundsPlayed.best_of,
 					round_wait_time = 59,
@@ -387,10 +389,13 @@ namespace Spark
 			}
 
 			SettingsUpdated += OnSettingsUpdated;
+			listenersActive = true;
 		}
 
 		private void OnSettingsUpdated()
 		{
+			if (!listenersActive) return;
+			
 			lastSetTime = DateTime.UtcNow;
 
 			// send POST request to update settings /set_rules
@@ -402,7 +407,7 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				Logger.LogRow(Logger.LogType.Error, $"Error getting private match rules from game.\n{e}");
+				Logger.LogRow(Logger.LogType.Error, $"Error setting private match rules to game.\n{e}");
 			}
 
 			MatchToPreset();
@@ -432,14 +437,21 @@ namespace Spark
 					PrivateMatchRules newRules = JsonConvert.DeserializeObject<PrivateMatchRules>(resp);
 					if (newRules != null)
 					{
-						Rules = newRules;
-						MatchToPreset();
+						Dispatcher.Invoke(() =>
+						{
+							listenersActive = false;
+							Rules = newRules;
+							MatchToPreset();
+							listenersActive = true;
+						});
+						
 					}
 				});
 			}
 			catch (Exception e)
 			{
 				Logger.LogRow(Logger.LogType.Error, $"Error sending private match rules to game.\n{e}");
+				listenersActive = true;
 			}
 		}
 
@@ -464,7 +476,9 @@ namespace Spark
 				Dispatcher.Invoke(() =>
 				{
 					if (Program.InGame && Program.lastFrame != null &&
-					    (DateTime.UtcNow - lastSetTime).TotalSeconds > 1) // if we didn't just change something locally
+					    (DateTime.UtcNow - lastSetTime).TotalSeconds > 1 && // if we didn't just change something locally
+					    Equals(Program.liveWindow.tabControl.SelectedItem, Program.liveWindow.PrivateMatchRulesTab)
+					    )
 					{
 						GetSettingsFromGame();
 					}

@@ -126,6 +126,7 @@ namespace Spark
 		public bool pausedTTS { get; set; } = false;
 		public bool useWavenetVoices { get; set; } = false;
 		public bool playspaceTTS { get; set; } = false;
+		public bool rulesChangedTTS { get; set; } = false;
 		public int ttsVoice { get; set; } = 0;
 		public int ttsCacheSizeBytes { get; set; } = 100000000;
 

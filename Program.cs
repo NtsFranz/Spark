@@ -309,6 +309,7 @@ namespace Spark
 		public static Action<Frame> GoalImmediate;
 		public static Action<Frame, GoalData> Assist;
 		public static Action<Frame, Team, Player> LargePing;
+		public static Action<Frame> RulesChanged;
 		
 		public static Action ManualClip;
 		public static Action BadWordDetected;
@@ -1708,12 +1709,25 @@ namespace Spark
 			}
 
 
-			if (
-				lastFrame.game_status == "playing" &&
+			// Score
+			if (lastFrame.game_status == "playing" &&
 			    (lastFrame.orange_points < frame.orange_points ||
 			    lastFrame.blue_points < frame.blue_points))
 			{
 				_ = ProcessScore(CurrentRound);
+			}
+
+
+			if (lastFrame.rules_changed_at != frame.rules_changed_at)
+			{
+				try
+				{
+					RulesChanged?.Invoke(frame);
+				}
+				catch (Exception exp)
+				{
+					LogRow(LogType.Error, "Error processing action", exp.ToString());
+				}
 			}
 
 

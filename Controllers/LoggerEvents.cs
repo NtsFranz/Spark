@@ -166,13 +166,17 @@ namespace Spark
 			};
 			Program.EmoteActivated += (frame, _, player) =>
 			{
-				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {player.name} used an emote");
+				Log(frame, $"{player.name} used an emote");
+			};
+			Program.RulesChanged += frame =>
+			{
+				Log(frame, $"{frame.rules_changed_by} changed the private match rules");
 			};
 		}
 
 		private static void Log(Frame frame, string msg)
 		{
-			LogRow(LogType.File, frame.sessionid, frame.game_clock_display + " - " + msg);
+			LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {msg}");
 		}
 	}
 }

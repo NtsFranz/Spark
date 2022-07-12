@@ -142,14 +142,25 @@ namespace Spark
 			};
 			Program.Goal += (frame, goalEvent) =>
 			{
-				if (SparkSettings.instance.goalDistanceTTS)
+				// combine if both true
+				if (SparkSettings.instance.goalDistanceTTS && SparkSettings.instance.goalSpeedTTS)
+				{
+					SpeakAsync($"{frame.last_score.distance_thrown:N1} {Resources.tts_meters}. {frame.last_score.disc_speed:N1} {Resources.tts_meters_per_second}");
+				}
+				else if (SparkSettings.instance.goalDistanceTTS)
 				{
 					SpeakAsync($"{frame.last_score.distance_thrown:N1} {Resources.tts_meters}");
 				}
-
-				if (SparkSettings.instance.goalSpeedTTS)
+				else if (SparkSettings.instance.goalSpeedTTS)
 				{
 					SpeakAsync($"{frame.last_score.disc_speed:N1} {Resources.tts_meters_per_second}");
+				}
+			};
+			Program.RulesChanged += frame =>
+			{
+				if (SparkSettings.instance.rulesChangedTTS)
+				{
+					SpeakAsync($"{frame.rules_changed_by} changed the rules");
 				}
 			};
 

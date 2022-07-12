@@ -483,16 +483,16 @@ namespace Spark
 									if (t == 0)
 									{
 										blueTextNames.AppendLine(player.name);
-										// bluePingsTextPings.AppendLine($"{player.ping}   {player.packetlossratio}");
-										bluePingsTextPings.AppendLine($"{player.ping}\t{player.packetlossratio:P1}");
+										// bluePingsTextPings.AppendLine($"{player.ping}\t{player.packetlossratio:P1}");
+										bluePingsTextPings.AppendLine($"{player.ping}");
 										blueSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 									}
 
 									if (t == 1)
 									{
 										orangeTextNames.AppendLine(player.name);
-										// orangePingsTextPings.AppendLine($"{player.ping}   {player.packetlossratio}");
-										orangePingsTextPings.AppendLine($"{player.ping}\t{player.packetlossratio:P1}");
+										// orangePingsTextPings.AppendLine($"{player.ping}\t{player.packetlossratio:P1}");
+										orangePingsTextPings.AppendLine($"{player.ping}");
 										orangeSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
 									}
 
@@ -1103,6 +1103,8 @@ namespace Spark
 
 		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (e.Source is not TabControl) return;
+			
 			// if switched to atlas tab
 			if (Equals(((TabControl)sender).SelectedItem, LinksTab))
 			{
@@ -1126,6 +1128,8 @@ namespace Spark
 					ShowWindow(unityHWND, 1);
 				}
 			}
+
+			e.Handled = true;
 		}
 
 		private void SpectateMeClicked(object sender, RoutedEventArgs e)
@@ -1664,8 +1668,8 @@ namespace Spark
 
 		private void AtlasHostingThread()
 		{
-			const string hostURL = Program.APIURL + "host_match";
-			const string unhostURL = Program.APIURL + "unhost_match";
+			const string hostURL = Program.APIURL + "/host_match";
+			const string unhostURL = Program.APIURL + "/unhost_match";
 
 			// TODO show error message instead of just quitting
 			if (Program.lastFrame == null || Program.lastFrame.teams == null) return;

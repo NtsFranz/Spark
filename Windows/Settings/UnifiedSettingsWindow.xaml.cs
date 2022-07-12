@@ -537,6 +537,21 @@ namespace Spark
 				if (value) Program.synth.SpeakAsync($"23 {Properties.Resources.tts_meters}");
 			}
 		}
+		
+		
+		public static bool RulesChanged
+		{
+			get => SparkSettings.instance.rulesChangedTTS;
+			set
+			{
+				SparkSettings.instance.rulesChangedTTS = value;
+
+				if (value)
+				{
+					Program.synth.SpeakAsync($"NtsFranz changed the rules");
+				}
+			}
+		}
 
 		#endregion
 

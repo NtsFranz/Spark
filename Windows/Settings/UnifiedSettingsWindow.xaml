@@ -399,6 +399,8 @@
 										  IsChecked="{Binding PlayerLeave}" />
 							<CheckBox x:Name="playerSwitchCheckbox" Content="{x:Static p:Resources.Player_Switch_Teams}" Margin="4,10,4,0"
 										  IsChecked="{Binding PlayerSwitch}" />
+							<CheckBox Content="Private Match Rules Changed" Margin="4,10,4,0"
+							          IsChecked="{Binding RulesChanged}" />
 						</StackPanel>
 					</StackPanel>
 				</ScrollViewer>
