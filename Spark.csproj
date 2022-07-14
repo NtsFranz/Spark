@@ -344,6 +344,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <None Remove="img\flamingo-white.png" />
     <Resource Include="img\flamingo-white.png">
@@ -429,19 +430,14 @@
     <Resource Include="img\earth.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <EmbeddedResource Update="Properties\LoadingTips\LoadingTips.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LoadingTips.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <Compile Update="Properties\LoadingTips\LoadingTips.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>LoadingTips.resx</DependentUpon>
-    </Compile>
     <None Remove="wwwroot_resources\docs.html" />
     <None Remove="wwwroot_resources\openapi.yaml" />
     <EmbeddedResource Include="wwwroot_resources\openapi.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\LoadingTips.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LoadingTips.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -555,16 +551,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\Resources - Copy.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Update="Windows\CreateServer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -581,13 +567,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.ja-JP.resx">
+    <EmbeddedResource Update="Properties\Resources.ja.resx">
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
+      <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    
+    <EmbeddedResource Update="Properties\LoadingTips.es.resx">
+      <LastGenOutput>LoadingTips.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>LoadingTips.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\LoadingTips.ja.resx">
+      <LastGenOutput>LoadingTips.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <DependentUpon>LoadingTips.resx</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
 

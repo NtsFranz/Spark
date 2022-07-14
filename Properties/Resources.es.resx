@@ -106,16 +106,16 @@
     </xsd:element>
   </xsd:schema>
   <resheader name="resmimetype">
-    <value></value>
+    <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value></value>
+    <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value></value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value></value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About" xml:space="preserve">
     <value />
@@ -752,6 +752,12 @@
     <value />
   </data>
   <data name="'Clip That' detection (NVIDIA Highlights)" xml:space="preserve">
-    <value />
+    <value>'Clip That' detection (NVIDIA Highlights)</value>
+  </data>
+  <data name="Access Code" xml:space="preserve">
+    <value>Access Code</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
   </data>
 </root>

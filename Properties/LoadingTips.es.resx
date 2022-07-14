@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name=".echoreplay files can be used to play back and analyze matches in the Replay Viewer." xml:space="preserve">
+    <value>.echoreplay files can be used to play back and analyze matches in the Replay Viewer.</value>
+  </data>
+  <data name="93% of players in the VR Master League are High Diamond!" xml:space="preserve">
+    <value>93% of players in the VR Master League are High Diamond!</value>
+  </data>
+  <data name="Ban pitch and roll mid-game" xml:space="preserve">
+    <value>Ban pitch and roll mid-game</value>
+  </data>
+  <data name="CV1 is the most comfortable headset by far." xml:space="preserve">
+    <value>CV1 is the most comfortable headset by far.</value>
+  </data>
+  <data name="Echo Arena 2" xml:space="preserve">
+    <value>Echo Arena 2</value>
+  </data>
+  <data name="echopedia.gg has an interactive block callout map. Vote on your preferred block names!" xml:space="preserve">
+    <value>echopedia.gg has an interactive block callout map. Vote on your preferred block names!</value>
+  </data>
+  <data name="Enable TTS in Spark for events like exact throw speed, joust times, player leave events, and more." xml:space="preserve">
+    <value>Enable TTS in Spark for events like exact throw speed, joust times, player leave events, and more.</value>
+  </data>
+  <data name="Get Bigmand!" xml:space="preserve">
+    <value>Get Bigmand!</value>
+  </data>
+  <data name="God is my copilot, and RAD_Natalie is my boss." xml:space="preserve">
+    <value>God is my copilot, and RAD_Natalie is my boss.</value>
+  </data>
+  <data name="Ignite Playercards show you bars for your stats with your percentile compared to other players." xml:space="preserve">
+    <value>Ignite Playercards show you bars for your stats with your percentile compared to other players.</value>
+  </data>
+  <data name="League casters love it when you send them a spark:// link instead of an invite." xml:space="preserve">
+    <value>League casters love it when you send them a spark:// link instead of an invite.</value>
+  </data>
+  <data name="Log into Spark with Discord to enable features like uploading stats to metrics.ignitevr.gg and TTS." xml:space="preserve">
+    <value>Log into Spark with Discord to enable features like uploading stats to metrics.ignitevr.gg and TTS.</value>
+  </data>
+  <data name="Lone Echo 2 releases tomorrow!" xml:space="preserve">
+    <value>Lone Echo 2 releases tomorrow!</value>
+  </data>
+  <data name="metrics.ignitevr.gg" xml:space="preserve">
+    <value>metrics.ignitevr.gg</value>
+  </data>
+  <data name="No one knew if backboards were possible until qlyoung made them real in 2018." xml:space="preserve">
+    <value>No one knew if backboards were possible until qlyoung made them real in 2018.</value>
+  </data>
+  <data name="Respect the save!" xml:space="preserve">
+    <value>Respect the save!</value>
+  </data>
+  <data name="Same Disc, Different Day" xml:space="preserve">
+    <value>Same Disc, Different Day</value>
+  </data>
+  <data name="Send someone a spark:// link to let them join your game without an invite." xml:space="preserve">
+    <value>Send someone a spark:// link to let them join your game without an invite.</value>
+  </data>
+  <data name="Spark can automatically clip your goals or saves using Medal.tv integration." xml:space="preserve">
+    <value>Spark can automatically clip your goals or saves using Medal.tv integration.</value>
+  </data>
+  <data name="Spark is available in both English and Japanese!" xml:space="preserve">
+    <value>Spark is available in both English and Japanese!</value>
+  </data>
+  <data name="Spark makes sure you never forget the scores in league matches." xml:space="preserve">
+    <value>Spark makes sure you never forget the scores in league matches.</value>
+  </data>
+  <data name="Spark offers Discord Rich Presence and game invites." xml:space="preserve">
+    <value>Spark offers Discord Rich Presence and game invites.</value>
+  </data>
+  <data name="Spark's OBS integration allows you to make replay buffer clips and automatically change scenes." xml:space="preserve">
+    <value>Spark's OBS integration allows you to make replay buffer clips and automatically change scenes.</value>
+  </data>
+  <data name="The Replay Viewer is pretty cool. Check it out." xml:space="preserve">
+    <value>The Replay Viewer is pretty cool. Check it out.</value>
+  </data>
+  <data name="The server location provided by Spark is not 100% reliable as it is based on the IP address of the server." xml:space="preserve">
+    <value>The server location provided by Spark is not 100% reliable as it is based on the IP address of the server.</value>
+  </data>
+  <data name="The strategic dinging self-goal 2-pointer was not possible until Lemming scored his iconic goal at OC5" xml:space="preserve">
+    <value>The strategic dinging self-goal 2-pointer was not possible until Lemming scored his iconic goal at OC5</value>
+  </data>
+  <data name="Use NVIDIA Highlights in Spark to automatically record clips of all your noteworthy moments." xml:space="preserve">
+    <value>Use NVIDIA Highlights in Spark to automatically record clips of all your noteworthy moments.</value>
+  </data>
+  <data name="Use the EchoVR Speaker System to make any audio on your PC sound like an arena." xml:space="preserve">
+    <value>Use the EchoVR Speaker System to make any audio on your PC sound like an arena.</value>
+  </data>
+  <data name="Use the server score provided by Spark to choose a server that is fair for both teams." xml:space="preserve">
+    <value>Use the server score provided by Spark to choose a server that is fair for both teams.</value>
+  </data>
+  <data name="You can automatically upload your tablet stats and view them on metrics.ignitevr.gg." xml:space="preserve">
+    <value>You can automatically upload your tablet stats and view them on metrics.ignitevr.gg.</value>
+  </data>
+  <data name="You can change many of Echo VR's ingame settings from within Spark's settings." xml:space="preserve">
+    <value>You can change many of Echo VR's ingame settings from within Spark's settings.</value>
+  </data>
+  <data name="You can create a private match in any region you want using the 'Choose Server Region' button in Spark." xml:space="preserve">
+    <value>You can create a private match in any region you want using the 'Choose Server Region' button in Spark.</value>
+  </data>
+  <data name="You can set Spark up to save clips when you say 'Clip that!'" xml:space="preserve">
+    <value>You can set Spark up to save clips when you say 'Clip that!'</value>
+  </data>
+  <data name="You can set up the in-game emote gesture to activate clips with Spark!" xml:space="preserve">
+    <value>You can set up the in-game emote gesture to activate clips with Spark!</value>
+  </data>
+  <data name="You can sort the joust times in Spark's dashboard by fastest time as well as by most recent." xml:space="preserve">
+    <value>You can sort the joust times in Spark's dashboard by fastest time as well as by most recent.</value>
+  </data>
+  <data name="You can use the event logs in Spark to see exactly when players joined or left in every match." xml:space="preserve">
+    <value>You can use the event logs in Spark to see exactly when players joined or left in every match.</value>
+  </data>
+</root>

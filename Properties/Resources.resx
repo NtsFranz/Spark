@@ -472,9 +472,9 @@ On Rift, set your default Windows sound output to the Rift headphones.
 On Quest, use headphones attached to your PC or turn up the speakers.</value>
     <comment>テキスト読み上げを使用すると、ゲーム中に聞くことができます。その際、出力が聞こえるようにスピーカーを適切に設置してください。
 
-Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッドフォンに設定します。
+      Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッドフォンに設定します。
 
-クエストでは、PCに接続したヘッドホンを使うか、スピーカーの音量をあげて下さい。</comment>
+      クエストでは、PCに接続したヘッドホンを使うか、スピーカーの音量をあげて下さい。</comment>
   </data>
   <data name="Update Echo Speaker System" xml:space="preserve">
     <value>Update Echo Speaker System</value>
