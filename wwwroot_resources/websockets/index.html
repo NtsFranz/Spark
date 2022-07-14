@@ -34,7 +34,7 @@
 	<nav class="breadcrumb" aria-label="breadcrumbs">
 		<ul>
 			<li><a href="/">Home</a></li>
-			<li><a href="/game_data">Game Stats</a></li>
+<!--			<li><a href="/game_data">Game Stats</a></li>-->
 			<li class="is-active"><a href="#" aria-current="page">Websockets</a></li>
 		</ul>
 	</nav>
@@ -69,7 +69,7 @@
 		<p>Add this code to the bottom of your &lt;body&gt; tag in your .html file. Instead of console.log(), modify the
 			visibility or content of various elements on your page.</p>
 		<pre><code class="language-js">
-&lt;script src="/js/spark_websocket.js"&gt;&lt;/script&gt;
+&lt;script src="http://localhost:6724/js/spark_websocket.js"&gt;&lt;/script&gt;
 			
 &lt;script&gt;
 	// initialize the websocket connection
@@ -80,6 +80,7 @@
 		// process the event here
 		console.log(data);
 	});
+			
 	sw.subscribe("joust", data => {
 		console.log(data);
 	});

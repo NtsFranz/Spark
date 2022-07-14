@@ -745,4 +745,13 @@
   <data name="wrong number of '/' characters for link:" xml:space="preserve">
     <value></value>
   </data>
+  <data name="'Clip That' detection (Medal.tv)" xml:space="preserve">
+    <value>Detección de 'Clip That' (Medal.tv)</value>
+  </data>
+  <data name="Allow Spectate Me on local PC" xml:space="preserve">
+    <value />
+  </data>
+  <data name="'Clip That' detection (NVIDIA Highlights)" xml:space="preserve">
+    <value />
+  </data>
 </root>

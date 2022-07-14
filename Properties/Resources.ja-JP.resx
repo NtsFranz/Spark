@@ -124,10 +124,6 @@
   <data name="AppName" xml:space="preserve">
     <value>Spark</value>
   </data>
-  <data name="Atlas" xml:space="preserve">
-    <value />
-    <comment>Tab in main window</comment>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="baseline_replay_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\img\baseline_replay_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1008,5 +1004,275 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
   </data>
   <data name="wrong number of '/' characters for link:" xml:space="preserve">
     <value>リンクの「/」の文字数が間違っています</value>
+  </data>
+  <data name="Auto Resolution" xml:space="preserve">
+    <value>自動解像度</value>
+  </data>
+  <data name="Auto (leave default)" xml:space="preserve">
+    <value>自動 (既定のまま)</value>
+  </data>
+  <data name="'Clip That' detection (Medal.tv)" xml:space="preserve">
+    <value>「Clip That」検出（Medal.tv）</value>
+  </data>
+  <data name="'Clip That' detection (NVIDIA Highlights)" xml:space="preserve">
+    <value>「Clip That」検出（NVIDIA Highlights）</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>有効</value>
+  </data>
+  <data name="Allow Spectate Me on local PC" xml:space="preserve">
+    <value>ローカルPCで 「Spectate Me」を許可</value>
+  </data>
+  <data name="Announcer Volume" xml:space="preserve">
+    <value>アナウンサー音量</value>
+  </data>
+  <data name="Anonymous accounts allow you to join the match twice on the same computer." xml:space="preserve">
+    <value>Anonymous アカウントを使用すると、同じコンピュータ上で同じマッチに同時参加できます。</value>
+  </data>
+  <data name="Anti-aliasing" xml:space="preserve">
+    <value>アンチエイリアシング</value>
+  </data>
+  <data name="API Setting Disabled" xml:space="preserve">
+    <value>API 設定無効</value>
+  </data>
+  <data name="Apply these settings to " xml:space="preserve">
+    <value>これらの設定を適用： </value>
+  </data>
+  <data name="Show Server Location in Discord RP status" xml:space="preserve">
+    <value>Discord RP状態でサーバーの場所を表示する</value>
+  </data>
+  <data name="Show Overlay" xml:space="preserve">
+    <value>オーバーレイを表示</value>
+  </data>
+  <data name="Sharpening" xml:space="preserve">
+    <value>シャープニング</value>
+  </data>
+  <data name="Shadow Quality" xml:space="preserve">
+    <value>影の品質</value>
+  </data>
+  <data name="Searching for Quest on network" xml:space="preserve">
+    <value>ネットワーク上でクエストを検索中</value>
+  </data>
+  <data name="Scoreboard" xml:space="preserve">
+    <value>スコアボード</value>
+  </data>
+  <data name="Rotation Speed" xml:space="preserve">
+    <value>回転速度</value>
+  </data>
+  <data name="Restarts the game in the 2D spectator mode." xml:space="preserve">
+    <value>2D観戦モードでゲームを再起動します。</value>
+  </data>
+  <data name="Restart as Spectator" xml:space="preserve">
+    <value>観戦者として再起動</value>
+  </data>
+  <data name="Resolution" xml:space="preserve">
+    <value>解像度</value>
+  </data>
+  <data name="Reset All Settings to Default" xml:space="preserve">
+    <value>すべての設定をデフォルトに戻す</value>
+  </data>
+  <data name="Replay_Scene" xml:space="preserve">
+    <value>シーン:</value>
+  </data>
+  <data name="Replay_Length" xml:space="preserve">
+    <value>継続時間:</value>
+  </data>
+  <data name="Replay_Delay" xml:space="preserve">
+    <value>遅延:</value>
+  </data>
+  <data name="Remove ReShade" xml:space="preserve">
+    <value>ReShade を削除</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>最近</value>
+  </data>
+  <data name="Profiles:" xml:space="preserve">
+    <value>プロフィール</value>
+  </data>
+  <data name="Private Match Rules" xml:space="preserve">
+    <value>プライベートマッチルール</value>
+  </data>
+  <data name="POV Field of View" xml:space="preserve">
+    <value>一人称時の視野角</value>
+  </data>
+  <data name="POV" xml:space="preserve">
+    <value>一人称</value>
+  </data>
+  <data name="Playercards" xml:space="preserve">
+    <value>プレーヤーカード</value>
+  </data>
+  <data name="Paste link in #live" xml:space="preserve">
+    <value>#live にリンクを貼り付け</value>
+  </data>
+  <data name="Overlays" xml:space="preserve">
+    <value>オーバーレイ</value>
+  </data>
+  <data name="Open settings folder" xml:space="preserve">
+    <value>設定フォルダーを開く</value>
+  </data>
+  <data name="Only stores up to the 100 most recent joust times." xml:space="preserve">
+    <value>ジャウスト時間の記録はは直近100までのみです</value>
+  </data>
+  <data name="Not Connected" xml:space="preserve">
+    <value>未接続</value>
+  </data>
+  <data name="Not active" xml:space="preserve">
+    <value>無効</value>
+  </data>
+  <data name="noovrCheckbox.Content" xml:space="preserve">
+    <value>匿名アカウントを使用</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>無し</value>
+  </data>
+  <data name="Neutral Joust" xml:space="preserve">
+    <value>中立ジャウスト</value>
+  </data>
+  <data name="Mute enemy team" xml:space="preserve">
+    <value>敵チームをミュート</value>
+  </data>
+  <data name="Mute all players" xml:space="preserve">
+    <value>全プレイヤーをミュート</value>
+  </data>
+  <data name="Music Volume" xml:space="preserve">
+    <value>音楽の音量</value>
+  </data>
+  <data name="Multi-Resolution Shading" xml:space="preserve">
+    <value>マルチ解像度シェーディング</value>
+  </data>
+  <data name="Monitor" xml:space="preserve">
+    <value>モニター</value>
+  </data>
+  <data name="Mesh Quality" xml:space="preserve">
+    <value>メッシュ品質</value>
+  </data>
+  <data name="Medium" xml:space="preserve">
+    <value>標準</value>
+  </data>
+  <data name="Maximum translational movement speed on the vertical axis" xml:space="preserve">
+    <value>縦軸の最大移動速度</value>
+  </data>
+  <data name="Maximum translational movement speed" xml:space="preserve">
+    <value>最大移動速度</value>
+  </data>
+  <data name="Maximum rotation speed of the camera" xml:space="preserve">
+    <value>カメラの最大回転速度</value>
+  </data>
+  <data name="Match Setup Page" xml:space="preserve">
+    <value>試合設定ページ</value>
+  </data>
+  <data name="Low Frequency Mode" xml:space="preserve">
+    <value />
+  </data>
+  <data name="e.g. Texas" xml:space="preserve">
+    <value>例: テキサス州</value>
+  </data>
+  <data name="e.g. Sydney, Perth" xml:space="preserve">
+    <value>例: シドニー, パース</value>
+  </data>
+  <data name="e.g. Singapore" xml:space="preserve">
+    <value>例:シンガポール</value>
+  </data>
+  <data name="e.g. New York, Miami, Charleston" xml:space="preserve">
+    <value>例: ニューヨーク, マイアミ, チャールストン</value>
+  </data>
+  <data name="e.g. London, Amsterdam, Brussels" xml:space="preserve">
+    <value>例: ロンドン、アムステルダム、ブリュッセル</value>
+  </data>
+  <data name="e.g. Chicago, Iowa" xml:space="preserve">
+    <value>例: シカゴ、アイオワ州</value>
+  </data>
+  <data name="e.g. California" xml:space="preserve">
+    <value>例: カリフォルニア</value>
+  </data>
+  <data name="Download Installer" xml:space="preserve">
+    <value>インストーラーをダウンロード</value>
+  </data>
+  <data name="Donations are not expected but are appreciated." xml:space="preserve">
+    <value>寄付は期待していませんが、感謝します。</value>
+  </data>
+  <data name="Donate" xml:space="preserve">
+    <value>寄付する</value>
+  </data>
+  <data name="Don't Show Minimap (M)" xml:space="preserve">
+    <value>ミニマップを表示しない (M)</value>
+  </data>
+  <data name="Don't Change" xml:space="preserve">
+    <value>変更しない</value>
+  </data>
+  <data name="Do Not Switch" xml:space="preserve">
+    <value>切り替えない</value>
+  </data>
+  <data name="Discord" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="Disconnect" xml:space="preserve">
+    <value>切断</value>
+  </data>
+  <data name="Desktop Audio" xml:space="preserve">
+    <value>デスクトップ音声</value>
+  </data>
+  <data name="deg" xml:space="preserve">
+    <value>度</value>
+  </data>
+  <data name="Defensive Joust" xml:space="preserve">
+    <value>防衛ジャウスト</value>
+  </data>
+  <data name="Create Server in Region" xml:space="preserve">
+    <value>サーバーを地域に作成</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>作成</value>
+  </data>
+  <data name="Copy Spark Link" xml:space="preserve">
+    <value>Spark のリンクをコピー</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>接続済み</value>
+  </data>
+  <data name="ClosingBoxMessage" xml:space="preserve">
+    <value>「終了」をクリックして完全に閉じ、「隠す」をクリックしてバックグラウンドで Spark を実行します。トレイアイコン(右下)からアクセスできます。</value>
+  </data>
+  <data name="Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder" xml:space="preserve">
+    <value>Spark の終了時に保存されていないハイライトクリップを消去します。無効にすると、一時フォルダから手動で削除しない限り、ハイライトは永久に保持されます</value>
+  </data>
+  <data name="Clear Highlights On Exit" xml:space="preserve">
+    <value>終了時にハイライトをクリア</value>
+  </data>
+  <data name="chooseRegionSpectator.ToolTip" xml:space="preserve">
+    <value>観戦モードで EchoVR を起動します。このマッチにプレイヤーを追加する唯一の方法は、Spark のリンクを共有することです。</value>
+  </data>
+  <data name="Choose Server Region" xml:space="preserve">
+    <value>サーバーの地域を選択</value>
+  </data>
+  <data name="Camera Mode:" xml:space="preserve">
+    <value>カメラモード:</value>
+  </data>
+  <data name="Bloom" xml:space="preserve">
+    <value>ブルーム</value>
+  </data>
+  <data name="Between-game Scene:" xml:space="preserve">
+    <value>Between-gameのシーン</value>
+  </data>
+  <data name="Bad word detection (for reporting)" xml:space="preserve">
+    <value>不適切な単語検出（通報用）</value>
+  </data>
+  <data name="Automatically restarts spectatorstream when it crashes" xml:space="preserve">
+    <value>クラッシュ時にスペクテイターストリームを自動的に再起動する</value>
+  </data>
+  <data name="Automatic Scene Switching" xml:space="preserve">
+    <value>シーンの自動切替</value>
+  </data>
+  <data name="Australia" xml:space="preserve">
+    <value>オーストラリア</value>
+  </data>
+  <data name="Audio Source" xml:space="preserve">
+    <value>音声ソース</value>
+  </data>
+  <data name="Arena" xml:space="preserve">
+    <value>アリーナ</value>
+  </data>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>本当によろしいですか？</value>
   </data>
 </root>

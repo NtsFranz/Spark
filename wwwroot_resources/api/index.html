@@ -7,86 +7,79 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Spark API</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+
+	<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css"/>
+
 	<style>
-		h1 {
-			font-size: 2em;
-		}
+        h1 {
+            font-size: 2em;
+        }
 
-		@font-face {
-			font-family: 'Inconsolata';
-			src: url('/fonts/Inconsolata.woff2') format('woff2'), url('/fonts/Inconsolata.woff') format('woff'), url('/fonts/Inconsolata.ttf') format('truetype');
-		}
+        @font-face {
+            font-family: 'Inconsolata';
+            src: url('/fonts/Inconsolata.woff2') format('woff2'), url('/fonts/Inconsolata.woff') format('woff'), url('/fonts/Inconsolata.ttf') format('truetype');
+        }
 
-		body {
-			font-family: 'Inconsolata';
-		}
+        body {
+            font-family: 'Inconsolata';
+        }
 
-		.content ul li {
-			list-style: none;
-			margin-top: 2em;
-		}
+        .content ul li {
+            list-style: none;
+            margin-top: 2em;
+        }
+
+        .scheme-container {
+            display: none;
+        }
+
+        .information-container.wrapper {
+            display: none;
+        }
 	</style>
+
 </head>
 
 <body>
-	<!-- <div class="watermark">
-		<img src="img/secondary_white.png">
-	</div> -->
-	<section class="hero is-medium">
-		<div class="hero-body" style="background-color: #0003;padding: 4rem 1.5rem; overflow: hidden">
-			<div class="container has-text-centered">
-				<h1>Spark Settings API</h1>
-				<img style="float:left;width: 10em;position: absolute;left: 10em;bottom: 0;opacity: .1;transform: scale(6); z-index: -1" src="/img/ignite_logo.png">
-				<p class="subtitle" style="font-size: 1.2em;">
-					The Spark API can be used to control various aspects of Spark using 3rd party tools such as AutoHotKey.
-				</p>
+<!-- <div class="watermark">
+	<img src="img/secondary_white.png">
+</div> -->
+<section class="hero is-medium">
+	<div class="hero-body" style="background-color: #0003;padding: 4rem 1.5rem; overflow: hidden">
+		<div class="container has-text-centered">
+			<h1>Spark API</h1>
+			<img style="float:left;width: 10em;position: absolute;left: 10em;bottom: 0;opacity: .1;transform: scale(6); z-index: -1"
+				 src="/img/ignite_logo.png" alt="ignite logo">
+			<p class="subtitle" style="font-size: 1.2em;">
+				The Spark API can be used to control various aspects of Spark using 3rd party tools such as AutoHotKey
+				or get data from the game for your own custom overlays or tools.
+			</p>
 
-			</div>
-		</div>
-	</section>
-	<div class="content" style="max-width: 60em; margin: 0 auto;">
-		
-		<nav class="breadcrumb" aria-label="breadcrumbs">
-			<ul>
-				<li><a href="/">Home</a></li>
-				<li class="is-active"><a href="#" aria-current="page">Spark API</a></li>
-			</ul>
-		</nav>
-		
-		<div class="box">
-			<ul>
-				<li>
-					<a href="/spark_info"><h3>/spark_info</h3></a>Shows version info for Spark and its components. Could be used to test if Spark is running.
-				</li>
-				<li>
-					<a href="/api/get_overlay_config"><h3>/api/get_overlay_config</h3></a>Shows configuration variables for overlays. These can be customized in <a href="/overlays/match_setup">Match Setup</a>
-				</li>
-				<li>
-					<a href="/api/vrml_api/"><h3>/api/vrml_api/</h3></a>A local proxy for the VRML API at <a href="https://api.vrmasterleague.com">api.vrmasterleague.com</a>. This has a local cache of 30 minutes, so it an be much faster for repeated requests. 
-				</li>
-				<li>
-					<a href="/api/set_team_name"><h3>/api/set_team_name/{enabled}</h3></a>Enables or disables the Orbit Disc algorithm. The parameter must be true/false.
-				</li>
-			</ul>
-		</div>
-		<div class="box">
-			<h2>Camera Write</h2>
-			<ul>
-				<li>
-					<a href="/api/go_to_waypoint/0"><h3>/api/go_to_waypoint/{index}</h3></a>Goes to a Camera Write waypoint by index. The index must be an integer.
-				</li>
-				<li>
-					<a href="/api/play_animation/0"><h3>/api/play_animation/{index}</h3></a>Plays a Camera Write animation by index. The index must be an integer.
-				</li>
-				<li>
-					<a href="/api/orbit_disc_enabled/true"><h3>/api/orbit_disc_enabled/{enabled}</h3></a>Enables or disables the Orbit Disc algorithm. The parameter must be true/false.
-				</li>
-				<li>
-					<a href="/api/reload_camera_settings"><h3>/api/reload_camera_settings</h3></a>Reloads the Camera Write settings file. This is useful if you've added animation or waypoint files and don't want to restart Spark.
-				</li>
-			</ul>
 		</div>
 	</div>
+</section>
+<div class="content" style="max-width: 60em; margin: 0 auto;">
+
+	<nav class="breadcrumb" aria-label="breadcrumbs">
+		<ul>
+			<li><a href="/">Home</a></li>
+			<li class="is-active"><a href="#" aria-current="page">Spark API</a></li>
+		</ul>
+	</nav>
+
+	<div class="box">
+		<div id="swagger-ui"></div>
+		<script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js" crossorigin></script>
+		<script>
+            window.onload = () => {
+                window.ui = SwaggerUIBundle({
+                    url: '/openapi.yaml',
+                    dom_id: '#swagger-ui',
+                });
+            };
+		</script>
+	</div>
+</div>
 </body>
 
 </html>
