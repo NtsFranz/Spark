@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="(Requires Restart)" xml:space="preserve">
     <value>(Requires Restart)</value>
@@ -137,10 +137,6 @@
   </data>
   <data name="Autorestart EchoVR into autospectator" xml:space="preserve">
     <value>Autorestart EchoVR into Spectatorstream</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="baseline_replay_white_24px" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\img\baseline_replay_white_24px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Batch Writes" xml:space="preserve">
     <value>Batch Writes</value>
@@ -242,12 +238,6 @@
   </data>
   <data name="IgniteBot | Settings" xml:space="preserve">
     <value>Spark | Settings</value>
-  </data>
-  <data name="ignite_logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\img\ignite_logo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ignite_logo_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\img\ignite_logo_128.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Install Echo Speaker System" xml:space="preserve">
     <value>Install Echo Speaker System</value>
@@ -610,9 +600,6 @@ On Quest, use headphones attached to your PC or turn up the speakers.</value>
   <data name="Ignite Discord Server" xml:space="preserve">
     <value>Ignite Discord Server</value>
   </data>
-  <data name="link" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\img\link.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Copied!" xml:space="preserve">
     <value>Copied!</value>
     <comment>successfully copied text to clipboard</comment>
@@ -822,12 +809,6 @@ CLOSE ECHOVR BEFORE PRESSING OK!</value>
   <data name="EchoVR Settings" xml:space="preserve">
     <value>EchoVR Settings</value>
   </data>
-  <data name="ignite_logo_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\img\ignite_logo_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ignite_logo_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\img\ignite_logo_64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Join as a Player or as a Spectator?" xml:space="preserve">
     <value>Join as a Player or as a Spectator?</value>
     <comment>dialog when opening ignitebot://choose or spark://choose links</comment>
@@ -930,19 +911,6 @@ CLOSE ECHOVR BEFORE PRESSING OK!</value>
   </data>
   <data name="Visibility:" xml:space="preserve">
     <value>Visibility:</value>
-  </data>
-  <data name="spark_upgrade_message" xml:space="preserve">
-    <value>IgniteBot is now called Spark!
-      
-Unfortunately, all of your settings are reset. Make sure to go back into settings to re-enable things like TTS or replay recording.
-      
-Both replays and logs are now saved in 'C:\Users\[USER]\Documents\Spark\' by default.
-
-If you want to have your replays in the same folder, copy them over yourself.
-Old Event Log folder: 'C:\Users\[USER]\AppData\Roaming\IgniteBot\Log\'
-Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
-</value>
-    <comment>this is shown the first time people install Spark from IgniteBot</comment>
   </data>
   <data name="Update Available" xml:space="preserve">
     <value>Update Available</value>
@@ -1690,5 +1658,20 @@ Old Replay folder: 'C:\Users\[USER]\Documents\IgniteBot\'
   </data>
   <data name="Rich presence from Spark" xml:space="preserve">
     <value>Rich presence from Spark</value>
+  </data>
+  <data name="Failed to send join data to the game. Maybe you left the game?" xml:space="preserve">
+    <value>Failed to send join data to the game. Maybe you left the game?</value>
+  </data>
+  <data name="Detecting Echo VR..." xml:space="preserve">
+    <value>Detecting Echo VR...</value>
+  </data>
+  <data name="Force launch new instance" xml:space="preserve">
+    <value>Force launch new instance</value>
+  </data>
+  <data name="blue_caps" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="orange_caps" xml:space="preserve">
+    <value>Orange</value>
   </data>
 </root>

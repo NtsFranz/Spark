@@ -979,9 +979,6 @@ namespace Spark
 		{
 			try
 			{
-				// add a new round for the first frame
-				// if (rounds.IsEmpty) rounds.Enqueue(new AccumulatedFrame(frame));
-				
 				// process events. This may include splitting to a new round
 				try
 				{
@@ -1148,7 +1145,7 @@ namespace Spark
 			Player,
 			Spectator
 		}
-		public static void StartEchoVR(JoinType joinType, int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null, bool combat=false)
+		public static void StartEchoVR(JoinType joinType, int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null, bool combat=false, int teamIndex = -1)
 		{
 			if (joinType == JoinType.Choose)
 			{
@@ -1167,7 +1164,8 @@ namespace Spark
 					(noovr ? "-noovr " : "") +
 					(port != 6721 ? $"-httpport {port} " : "") +
 					(level == null ? "" : $"-level {level} ") +
-					(region == null ? "" : $"-region {region} ")
+					(region == null ? "" : $"-region {region} ") + 
+					(teamIndex == -1 ? "" : $"-lobbyteam {teamIndex} ")
 				);
 			}
 			else
@@ -1176,18 +1174,15 @@ namespace Spark
 			}
 		}
 
-		public static async Task<bool> APIJoin(string session_id, JoinType joinType)
+		public static async Task<bool> APIJoin(string session_id, int teamIndex = -1)
 		{
 			try
 			{
 				Dictionary<string, object> body = new Dictionary<string, object>()
 				{
 					{ "session_id", session_id },
+					{ "team_idx", teamIndex },
 				};
-				if (joinType == JoinType.Spectator)
-				{
-					body["team_idx"] = 2;
-				}
 				string resp = await PostRequestAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/join_session", null, JsonConvert.SerializeObject(body));
 				return !string.IsNullOrEmpty(resp) && resp.StartsWith("{");
 			}
@@ -1354,6 +1349,12 @@ namespace Spark
 		/// </summary>
 		private static void GenerateEvents(Frame frame, Frame lastFrame)
 		{
+			// add a new round for the first frame
+			if (lastFrame == null)
+			{
+				rounds.Enqueue(new AccumulatedFrame(frame, null));
+			}
+			
 			if (lastConnectionStateEvent != ConnectionState.InGame)
 			{
 				if (connectionState != ConnectionState.InGame)
@@ -1415,8 +1416,12 @@ namespace Spark
 			// if we entered a different match
 			if (lastFrame == null || frame.sessionid != lastFrame.sessionid)
 			{
-				
-				
+				// only for actual switches, since we already added a round for new join
+				if (lastFrame != null)
+				{
+					rounds.Enqueue(new AccumulatedFrame(frame, null));
+				}
+
 				lastFrame = frame; // don't detect stats changes across matches
 				
 				try
@@ -1427,8 +1432,7 @@ namespace Spark
 				{
 					LogRow(LogType.Error, "Error processing action", exp.ToString());
 				}
-				
-				rounds.Enqueue(new AccumulatedFrame(frame, null));
+
 
 			}
 
@@ -3120,14 +3124,24 @@ namespace Spark
 
 			_ = Task.Run(async () =>
 			{
-				HttpResponseMessage response = await client.GetAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session");
-				if (response.StatusCode == HttpStatusCode.OK)
+				try
 				{
-					Dictionary<string, object> body = new Dictionary<string, object>()
+					client.Timeout = TimeSpan.FromSeconds(1);
+					HttpResponseMessage response = await client.GetAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session");
+					if (response.StatusCode == HttpStatusCode.OK)
 					{
-						{ "session_id", parts[3] },
-					};
-					string postResponse = await PostRequestAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/join_session", null, JsonConvert.SerializeObject(body));
+						await APIJoin(parts[3], spectating ? 2 : 0);
+						// Dictionary<string, object> body = new Dictionary<string, object>()
+						// {
+						// 	{ "session_id", parts[3] },
+						// 	{ "team_idx", spectating ? "2" : "-1" },
+						// };
+						// string postResponse = await PostRequestAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/join_session", null, JsonConvert.SerializeObject(body));
+					}
+				}
+				catch (Exception e)
+				{
+					new MessageBox(Resources.Failed_to_send_join_data_to_the_game__Maybe_you_left_the_game_, Resources.Error, Quit).Show();
 				}
 			});
 			

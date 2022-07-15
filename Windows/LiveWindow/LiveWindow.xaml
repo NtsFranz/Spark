@@ -504,7 +504,7 @@
 
 			</TabControl>
 			<StackPanel Height="48" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,4,0,4" Grid.Row="1">
-				<Button x:Name="rejoinButton" Content="{x:Static p:Resources.Rejoin}" Width="110" Background="#FF6E2F2F" VerticalAlignment="Stretch" Margin="4,4,4,5" Click="RejoinClicked" ToolTip="{x:Static p:Resources.rejoin_tooltip}"/>
+				<Button x:Name="rejoinButton" Content="{x:Static p:Resources.Rejoin}" Width="110" Background="#FF6E2F2F" VerticalAlignment="Stretch" Margin="4,4,4,5" Click="RejoinClicked" ToolTip="{x:Static p:Resources.rejoin_tooltip}" Visibility="Collapsed"/>
 				<Button x:Name="settingsButton" Content="{x:Static p:Resources.Settings}" Width="100" Margin="4,4,4,4" Click="SettingsButtonClicked" ToolTip="{x:Static p:Resources.settings_button_tooltip}"/>
 				<Button x:Name="exitButton" Content="{x:Static p:Resources.Exit}" Width="100" Margin="4,4,4,4" Click="QuitButtonClicked" ToolTip="{x:Static p:Resources.close_tooltip}"/>
 				<Button x:Name="hideButton" Content="{x:Static p:Resources.Hide}" Width="100" Margin="4,4,4,4" Click="CloseButtonClicked" ToolTip="{x:Static p:Resources.hide_tooltip}"/>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -49,7 +50,7 @@ namespace Spark
 				rules.goalie_ping_adv = value.goalie_ping_adv;
 
 				RefreshWindow();
-				
+
 				SettingsUpdated?.Invoke();
 			}
 		}
@@ -395,22 +396,42 @@ namespace Spark
 		private void OnSettingsUpdated()
 		{
 			if (!listenersActive) return;
-			
+
 			lastSetTime = DateTime.UtcNow;
 
 			// send POST request to update settings /set_rules
 			try
 			{
-				string body = JsonConvert.SerializeObject(Rules);
-				Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body, null);
-				// Program.PostRequestCallback($"{Program.APIURL}/set_rules", null, body, null);
+				// set the rules one at a time
+				Task.Run(async () =>
+				{
+					string json = JsonConvert.SerializeObject(Rules);
+					Dictionary<string, object> dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+					if (dict != null)
+					{
+						foreach (KeyValuePair<string, object> keyValue in dict)
+						{
+							string body = JsonConvert.SerializeObject(new Dictionary<string, object>()
+							{
+								{ keyValue.Key, keyValue.Value }
+							});
+							await Program.PostRequestAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body);
+						}
+					}
+				});
+				
+				// set the rules all at once
+				// string body = JsonConvert.SerializeObject(Rules);
+				// Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body, null);
 			}
 			catch (Exception e)
 			{
 				Logger.LogRow(Logger.LogType.Error, $"Error setting private match rules to game.\n{e}");
 			}
 
+			listenersActive = false;
 			MatchToPreset();
+			listenersActive = true;
 		}
 
 		private void MatchToPreset()
@@ -442,9 +463,9 @@ namespace Spark
 							listenersActive = false;
 							Rules = newRules;
 							MatchToPreset();
+							LastChangedBy.Text = Program.lastFrame?.rules_changed_by ?? "---";
 							listenersActive = true;
 						});
-						
 					}
 				});
 			}
@@ -478,7 +499,7 @@ namespace Spark
 					if (Program.InGame && Program.lastFrame != null &&
 					    (DateTime.UtcNow - lastSetTime).TotalSeconds > 1 && // if we didn't just change something locally
 					    Equals(Program.liveWindow.tabControl.SelectedItem, Program.liveWindow.PrivateMatchRulesTab)
-					    )
+					   )
 					{
 						GetSettingsFromGame();
 					}

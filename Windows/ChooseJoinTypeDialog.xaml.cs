@@ -84,13 +84,13 @@ namespace Spark
 			}
 		}
 
-		private void JoinAsPlayerClicked(object sender, RoutedEventArgs e)
+		private void Join(int teamIndex = -1)
 		{
 			_ = Task.Run(async () =>
 			{
 				if (sessionDataFound == true)
 				{
-					bool success = await Program.APIJoin(sessionId, Program.JoinType.Player);
+					bool success = await Program.APIJoin(sessionId, teamIndex);
 					if (success)
 					{
 						Dispatcher.Invoke(() =>
@@ -104,14 +104,21 @@ namespace Spark
 					{
 						Dispatcher.Invoke(() =>
 						{
-							new MessageBox("Failed to send match id to the game. Try again or launch a new instance instead.", "Error", RefreshConnectionStatus).Show();
+							new MessageBox("Failed to send match id to the game. Try again or launch a new instance instead.", "Error", Program.Quit).Show();
 						});
 					}
 				}
 				else
 				{
 					if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
-					Program.StartEchoVR(Program.JoinType.Player, session_id: sessionId);
+					if (teamIndex == 2)
+					{
+						Program.StartEchoVR(Program.JoinType.Spectator, session_id: sessionId, noovr: SparkSettings.instance.sparkLinkNoOVR);
+					}
+					else
+					{
+						Program.StartEchoVR(Program.JoinType.Player, session_id: sessionId, teamIndex: teamIndex);	
+					}
 					SparkSettings.instance.Save();
 					Close();
 					Program.Quit();
@@ -121,29 +128,7 @@ namespace Spark
 
 		private void JoinAsSpectatorClicked(object sender, RoutedEventArgs e)
 		{
-			_ = Task.Run(async () =>
-			{
-				if (sessionDataFound == true)
-				{
-					bool success = await Program.APIJoin(sessionId, Program.JoinType.Spectator);
-					if (success)
-					{
-						Dispatcher.Invoke(() =>
-						{
-							SparkSettings.instance.Save();
-							Close();
-							Program.Quit();
-						});
-						return;
-					}
-				}
-
-				if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
-				Program.StartEchoVR(Program.JoinType.Spectator, session_id: sessionId, noovr: SparkSettings.instance.sparkLinkNoOVR);
-				SparkSettings.instance.Save();
-				Close();
-				Program.Quit();
-			});
+			Join(2);
 		}
 
 		private void CloseButtonClicked(object sender, EventArgs e)
@@ -154,6 +139,16 @@ namespace Spark
 		private void ForceLaunchChecked(object sender, RoutedEventArgs e)
 		{
 			UpdateStatusLabel();
+		}
+
+		private void JoinOrangeTeam(object sender, RoutedEventArgs e)
+		{
+			Join(1);
+		}
+
+		private void JoinBlueTeam(object sender, RoutedEventArgs e)
+		{
+			Join(0);
 		}
 	}
 }

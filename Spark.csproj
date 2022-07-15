@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.4.15</Version>
+    <Version>2.4.16</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -214,6 +214,11 @@
     <Page Update="Windows\QuestIPs.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Windows\QuestIPs.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>QuestIPs.xaml</DependentUpon>
@@ -435,9 +440,17 @@
     <EmbeddedResource Include="wwwroot_resources\openapi.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Update="Properties\LoadingTips.resx">
+    <EmbeddedResource Update="Properties\Icons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LoadingTips.Designer.cs</LastGenOutput>
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="Properties\Icons.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Icons.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Properties\LoadingTips.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -510,8 +523,8 @@
     <PackageReference Include="Vosk" Version="0.3.38" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     <PackageReference Include="ZstdNet" Version="1.4.5" />
-    <PackageReference Include="EchoVRAPI" Version="1.1.0" />
-    <PackageReference Include="ButterReplays" Version="1.3.1" />
+    <PackageReference Include="EchoVRAPI" Version="1.1.1" />
+    <PackageReference Include="ButterReplays" Version="1.3.2" />
   </ItemGroup>
   
   <ItemGroup>

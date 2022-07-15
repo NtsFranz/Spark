@@ -58,23 +58,23 @@
                                 <Image Source="/img/arrow-right-bold.png" Height="25"></Image>
                             </Button>
                         </StackPanel>
-                        <StackPanel x:Name="OrangeScoreBlock" Orientation="Horizontal" Margin="10,10,0,0">
-                            <Label Content="Orange Score: " Width="140" HorizontalContentAlignment="Right" />
-                            <Button Padding="2,2,2,2">
-                                <Image Source="/img/arrow-left-bold.png" Height="25"></Image>
-                            </Button>
-                            <TextBox Text="{Binding OrangeScore}" FontSize="20" Width="40" TextAlignment="Center"
-                                     VerticalContentAlignment="Center" />
-                            <Button Padding="2,2,2,2">
-                                <Image Source="/img/arrow-right-bold.png" Height="25"></Image>
-                            </Button>
-                        </StackPanel>
                         <StackPanel x:Name="BlueScoreBlock" Orientation="Horizontal" Margin="10,10,0,0">
                             <Label Content="Blue Score: " Width="140" HorizontalContentAlignment="Right" />
                             <Button Padding="2,2,2,2">
                                 <Image Source="/img/arrow-left-bold.png" Height="25"></Image>
                             </Button>
                             <TextBox Text="{Binding BlueScore}" FontSize="20" Width="40" TextAlignment="Center"
+                                     VerticalContentAlignment="Center" />
+                            <Button Padding="2,2,2,2">
+                                <Image Source="/img/arrow-right-bold.png" Height="25"></Image>
+                            </Button>
+                        </StackPanel>
+                        <StackPanel x:Name="OrangeScoreBlock" Orientation="Horizontal" Margin="10,10,0,0">
+                            <Label Content="Orange Score: " Width="140" HorizontalContentAlignment="Right" />
+                            <Button Padding="2,2,2,2">
+                                <Image Source="/img/arrow-left-bold.png" Height="25"></Image>
+                            </Button>
+                            <TextBox Text="{Binding OrangeScore}" FontSize="20" Width="40" TextAlignment="Center"
                                      VerticalContentAlignment="Center" />
                             <Button Padding="2,2,2,2">
                                 <Image Source="/img/arrow-right-bold.png" Height="25"></Image>
@@ -239,6 +239,8 @@
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
+                
+                <TextBlock x:Name="LastChangedBy" Foreground="Gray" Margin="20,20,20,20">Last changed by: ---</TextBlock>
 
                 <!--Grid>
                 <Grid.ColumnDefinitions>

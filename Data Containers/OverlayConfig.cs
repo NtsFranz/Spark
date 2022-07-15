@@ -35,8 +35,8 @@ namespace Spark
 					{
 						{ "manual_round_scores", SparkSettings.instance.overlaysRoundScoresManual },
 						{ "round_count", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundCount : Program.CurrentRound.frame.total_round_count },
-						{ "round_scores_orange", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresOrange : previousRounds?.Select(m => m.frame.orange_points).ToArray() ?? Array.Empty<int>() },
-						{ "round_scores_blue", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresBlue : previousRounds?.Select(m => m.frame.blue_points).ToArray() ?? Array.Empty<int>() },
+						{ "round_scores_orange", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresOrange : previousRounds?.Select(m => m.frame.orange_points).ToArray() ?? Array.Empty<float>() },
+						{ "round_scores_blue", SparkSettings.instance.overlaysRoundScoresManual ? SparkSettings.instance.overlaysManualRoundScoresBlue : previousRounds?.Select(m => m.frame.blue_points).ToArray() ?? Array.Empty<float>() },
 					}
 				},
 				{ "team_names_source", SparkSettings.instance.overlaysTeamSource },

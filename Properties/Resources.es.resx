@@ -117,647 +117,1546 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="(Requires Restart)" xml:space="preserve">
+    <value>(Requires Restart)</value>
+  </data>
   <data name="About" xml:space="preserve">
-    <value />
+    <value>About</value>
     <comment>tab in Settings</comment>
   </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Spark</value>
+    <comment>Title of the app</comment>
+  </data>
   <data name="Atlas" xml:space="preserve">
-    <value />
+    <value>Links</value>
     <comment>Tab in main window</comment>
   </data>
+  <data name="atlas_button_tooltip" xml:space="preserve">
+    <value>Shows copy-pastable links to let others join your match</value>
+  </data>
+  <data name="Autorestart EchoVR into autospectator" xml:space="preserve">
+    <value>Autorestart EchoVR into Spectatorstream</value>
+  </data>
+  <data name="Batch Writes" xml:space="preserve">
+    <value>Batch Writes</value>
+  </data>
+  <data name="Blue Team" xml:space="preserve">
+    <value>Blue Team</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="close_tooltip" xml:space="preserve">
+    <value>Close Spark</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="copy_link_tooltip" xml:space="preserve">
+    <value>Copies the Spark join link to the clipboard</value>
+  </data>
   <data name="Dashboard" xml:space="preserve">
-    <value />
+    <value>Dashboard</value>
     <comment>tab in main window</comment>
+  </data>
+  <data name="Disc Speed" xml:space="preserve">
+    <value>Disc Speed (m/s)</value>
+  </data>
+  <data name="Discord Login" xml:space="preserve">
+    <value>Discord Login</value>
+  </data>
+  <data name="Discord Rich Presence" xml:space="preserve">
+    <value>Discord Rich Presence</value>
+  </data>
+  <data name="Download Update" xml:space="preserve">
+    <value>Download Update</value>
+  </data>
+  <data name="Echo Arena Replay Viewer" xml:space="preserve">
+    <value>Echo Arena Replay Viewer</value>
+  </data>
+  <data name="EchoVR Executable Location:" xml:space="preserve">
+    <value>EchoVR Executable Location:</value>
+  </data>
+  <data name="EchoVR IP (for Quest)" xml:space="preserve">
+    <value>EchoVR IP (for Quest)</value>
+  </data>
+  <data name="Enable -capturevp2 when launching spectator" xml:space="preserve">
+    <value>Enable -capturevp2 when launching spectator</value>
+  </data>
+  <data name="Enable API in Settings" xml:space="preserve">
+    <value>Enable API in Settings</value>
   </data>
   <data name="Event Log" xml:space="preserve">
-    <value></value>
+    <value>Event Log</value>
     <comment>tab in main window</comment>
   </data>
+  <data name="Every Match (Scoreboard)" xml:space="preserve">
+    <value>Every Match (Scoreboard)</value>
+  </data>
+  <data name="Every Round" xml:space="preserve">
+    <value>Every Round</value>
+  </data>
   <data name="Exit" xml:space="preserve">
-    <value></value>
+    <value>Exit</value>
     <comment>button on bottom of main window</comment>
   </data>
+  <data name="Fast" xml:space="preserve">
+    <value>Fast</value>
+    <comment>an option in the dropdown refers to the speed of the TTS</comment>
+  </data>
+  <data name="Fast (60 Hz)" xml:space="preserve">
+    <value>Fast (30 Hz)</value>
+    <comment>an option in the dropdown that refers to the speed of replay recording</comment>
+  </data>
+  <data name="Find Quest IP" xml:space="preserve">
+    <value>Find Quest IP</value>
+  </data>
+  <data name="For help, join the Discord" xml:space="preserve">
+    <value>For help, join the Discord</value>
+  </data>
   <data name="General" xml:space="preserve">
-    <value></value>
+    <value>General</value>
     <comment>tab in Settings</comment>
   </data>
   <data name="Hide" xml:space="preserve">
-    <value />
+    <value>Hide</value>
     <comment>button on bottom of main window</comment>
   </data>
+  <data name="Hide Main Window" xml:space="preserve">
+    <value>Hide Main Window</value>
+  </data>
+  <data name="hide_tooltip" xml:space="preserve">
+    <value>Hides this program in the tray. It will continue to run in the background</value>
+  </data>
   <data name="Highlights" xml:space="preserve">
-    <value />
+    <value>Highlights</value>
     <comment>product name for NVIDIA Highlights</comment>
   </data>
+  <data name="IgniteBot | Settings" xml:space="preserve">
+    <value>Spark | Settings</value>
+  </data>
+  <data name="Install Echo Speaker System" xml:space="preserve">
+    <value>Install Echo Speaker System</value>
+  </data>
+  <data name="Installing Echo Speaker System" xml:space="preserve">
+    <value>Installing Echo Speaker System</value>
+  </data>
   <data name="Join Link:" xml:space="preserve">
-    <value></value>
+    <value>Join Link:</value>
+  </data>
+  <data name="join_link_tooltip" xml:space="preserve">
+    <value>Share this link with others who have Spark and play on PC. They will be able to click the link to immediately join your match without an invite.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Local PC" xml:space="preserve">
+    <value>Local PC</value>
+  </data>
+  <data name="Logging in..." xml:space="preserve">
+    <value>Logging in...</value>
+  </data>
+  <data name="login_button_tooltip" xml:space="preserve">
+    <value>Log in to the program with Discord to enable features such as stat uploading and TTS.</value>
   </data>
   <data name="Lone Echo Subtitles" xml:space="preserve">
-    <value></value>
+    <value>Lone Echo Subtitles</value>
     <comment>button on right side of main window</comment>
   </data>
+  <data name="Med (30 Hz)" xml:space="preserve">
+    <value>Med (15 Hz)</value>
+    <comment>an option in the dropdown that refers to the speed of replay recording</comment>
+  </data>
   <data name="Mode" xml:space="preserve">
-    <value></value>
+    <value>Mode: </value>
     <comment>bottom left of main window</comment>
   </data>
+  <data name="Normal" xml:space="preserve">
+    <value>Normal</value>
+    <comment>an option in the dropdown refers to the speed of the TTS</comment>
+  </data>
   <data name="NVIDIAHighlights" xml:space="preserve">
-    <value></value>
+    <value>NVIDIA Highlights</value>
     <comment>tab in Settings</comment>
   </data>
+  <data name="On Server Change" xml:space="preserve">
+    <value>On Server Change</value>
+    <comment>an option in the dropdown that refers to when to split replay files (when switching to a different server ingame) https://cdn.discordapp.com/attachments/706393776918364211/823409603802169354/unknown.png</comment>
+  </data>
+  <data name="Only on IgniteBot Restart" xml:space="preserve">
+    <value>Only on Spark Restart</value>
+    <comment>an option in the dropdown that refers to when to split replay files https://cdn.discordapp.com/attachments/706393776918364211/823409603802169354/unknown.png</comment>
+  </data>
+  <data name="Only Record Private Matches" xml:space="preserve">
+    <value>Only Record Private Matches</value>
+  </data>
+  <data name="Open Folder" xml:space="preserve">
+    <value>Open Folder</value>
+  </data>
   <data name="Open Spectatorstream" xml:space="preserve">
-    <value></value>
+    <value>Open Spectatorstream</value>
     <comment>button on right side of main window</comment>
   </data>
   <data name="Orange Team" xml:space="preserve">
-    <value></value>
+    <value>Orange Team</value>
   </data>
   <data name="Personal" xml:space="preserve">
-    <value></value>
+    <value>Personal</value>
     <comment>mode name</comment>
   </data>
   <data name="Player Pings" xml:space="preserve">
-    <value></value>
+    <value>Player Pings</value>
   </data>
   <data name="Player Speeds" xml:space="preserve">
-    <value></value>
+    <value>Player Speeds</value>
   </data>
   <data name="Previous Goals" xml:space="preserve">
-    <value></value>
+    <value>Previous Goals</value>
   </data>
   <data name="Joust Times" xml:space="preserve">
-    <value></value>
+    <value>Joust Times</value>
   </data>
   <data name="Previous Rounds" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Replays" xml:space="preserve">
-    <value></value>
-    <comment>tab in Settings</comment>
-  </data>
-  <data name="Server Info" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Settings" xml:space="preserve">
-    <value></value>
-    <comment>button on bottom of main window</comment>
-  </data>
-  <data name="Show" xml:space="preserve">
-    <value></value>
-    <comment>as in "Show 13 Highlights"</comment>
-  </data>
-  <data name="Show Playspace" xml:space="preserve">
-    <value></value>
-    <comment>button on right side of main window</comment>
-  </data>
-  <data name="Speaker System" xml:space="preserve">
-    <value></value>
-    <comment>tab in main window</comment>
-  </data>
-  <data name="Spectators" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Text-to-Speech" xml:space="preserve">
-    <value></value>
-    <comment>tab in Settings</comment>
-  </data>
-  <data name="Show first-time setup window" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Enable -capturevp2 when launching spectator" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="EchoVR Executable Location:" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="EchoVR IP (for Quest)" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Local PC" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Find Quest IP" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="upload_description" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Upload to IgniteVR Database" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Server IP:" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Echo Arena Replay Viewer" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Enable API in Settings" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Every Match (Scoreboard)" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Every Round" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="For help, join the Discord" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="join_link_tooltip" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Language" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Logging in..." xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="login_button_tooltip" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Normal" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Only Record Private Matches" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Open Folder" xml:space="preserve">
-    <value></value>
+    <value>Previous Rounds</value>
   </data>
   <data name="Rejoin" xml:space="preserve">
-    <value></value>
+    <value>Rejoin</value>
   </data>
   <data name="rejoin_tooltip" xml:space="preserve">
-    <value></value>
+    <value>Rejoin the last private match that you were in</value>
   </data>
   <data name="Replay File Splitting:" xml:space="preserve">
-    <value></value>
+    <value>Replay File Splitting:</value>
   </data>
   <data name="Replay Logging" xml:space="preserve">
-    <value></value>
+    <value>Replay Logging</value>
   </data>
   <data name="Replay Recording Settings" xml:space="preserve">
-    <value></value>
+    <value>Replay Recording Settings</value>
+  </data>
+  <data name="Replays" xml:space="preserve">
+    <value>Replays</value>
+    <comment>tab in Settings</comment>
   </data>
   <data name="replays_description_part_1" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="replays_description_part_4" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Reset" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Save Folder:" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Save Replays" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Searching for Quest" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Send Logs to Ignite" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="server_location_tooltip" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="settings_button_tooltip" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Spectate Me" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Speech Speed" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Split File" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Start Echo Speaker System" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Text-to-Speech (TTS) Settings" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Tools" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="TTS only works when logged in with Discord!" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Update Echo Speaker System" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Echopedia page" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Enabled API access in the game settings. CLOSE ECHOVR BEFORE PRESSING OK!" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Error" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Estimated location of the server as you join" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Fast" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Fast (60 Hz)" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Female" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="for_help_check_out" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Game Paused" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Goal Distance" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Goal Speed" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Help" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Joust Speed" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Joust Time" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Male" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Max Boost Speed" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Maximum speed achieved for times when you are faster than 20 m/s" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Med (30 Hz)" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="No clips available" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="nvhighlights_description_1" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="nvhighlights_description_2" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="NVIDIA Highlights Settings" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="On Server Change" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Only on IgniteBot Restart" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Open Event Log Folder" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event." xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Player Join" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Player Leave" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Player Switch Teams" xml:space="preserve">
-    <value></value>
+    <value>Replays are recorded in the .echoreplay file format, which contains all API data from the game. Echoreplay files to not contain any video or audio data.</value>
+    <comment>replay description part 1 https://cdn.discordapp.com/attachments/706393776918364211/823409407400083506/unknown.png</comment>
   </data>
   <data name="replays_description_part_2" xml:space="preserve">
-    <value></value>
+    <value>The most common use of .echoreplay files is in the</value>
+    <comment>replay description part 2</comment>
   </data>
   <data name="replays_description_part_3" xml:space="preserve">
-    <value></value>
+    <value>For the technical details on the .echoreplay format, check out the</value>
+    <comment>replay description part 3</comment>
   </data>
-  <data name="Spectatorstream tooltip" xml:space="preserve">
-    <value></value>
+  <data name="replays_description_part_4" xml:space="preserve">
+    <value>Echopedia page</value>
+    <comment>replay description part 4</comment>
   </data>
-  <data name="Score:" xml:space="preserve">
-    <value></value>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
   </data>
-  <data name="Server Location" xml:space="preserve">
-    <value></value>
+  <data name="Save Folder:" xml:space="preserve">
+    <value>Save Folder:</value>
+  </data>
+  <data name="Save Replays" xml:space="preserve">
+    <value>Save Replays</value>
+  </data>
+  <data name="Searching for Quest" xml:space="preserve">
+    <value>Searching for Quest</value>
+  </data>
+  <data name="Send Logs to Ignite" xml:space="preserve">
+    <value>Send Logs to Ignite</value>
+  </data>
+  <data name="Server Info" xml:space="preserve">
+    <value>Server Info</value>
+  </data>
+  <data name="Server IP:" xml:space="preserve">
+    <value>Server IP:</value>
   </data>
   <data name="Server Location:" xml:space="preserve">
-    <value></value>
+    <value>Server Location:</value>
   </data>
-  <data name="Show Main Window" xml:space="preserve">
-    <value></value>
+  <data name="server_location_tooltip" xml:space="preserve">
+    <value>The server location is estimated using ip-api.com</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+    <comment>button on bottom of main window</comment>
+  </data>
+  <data name="settings_button_tooltip" xml:space="preserve">
+    <value>Opens Spark settings window</value>
+  </data>
+  <data name="Show" xml:space="preserve">
+    <value>Show</value>
+    <comment>as in "Show 13 Highlights"</comment>
+  </data>
+  <data name="Show first-time setup window" xml:space="preserve">
+    <value>Show first-time setup window</value>
+  </data>
+  <data name="Show Playspace" xml:space="preserve">
+    <value>Show Playspace</value>
+    <comment>button on right side of main window</comment>
   </data>
   <data name="Slow" xml:space="preserve">
-    <value></value>
+    <value>Slow</value>
+    <comment>an option in the dropdown that refers to the speed of the TTS</comment>
   </data>
   <data name="Slow (10 Hz)" xml:space="preserve">
-    <value></value>
+    <value>Slow (10 Hz)</value>
+    <comment>an option in the dropdown that refers to the speed of replay recording</comment>
   </data>
-  <data name="Speed in m/s as you exit the launch tube" xml:space="preserve">
-    <value></value>
+  <data name="Speaker System" xml:space="preserve">
+    <value>Speaker System</value>
+    <comment>tab in main window</comment>
   </data>
-  <data name="Speed in m/s of every goal" xml:space="preserve">
-    <value></value>
+  <data name="Spectate Me" xml:space="preserve">
+    <value>Spectate Me</value>
   </data>
-  <data name="Speed in m/s of your throws" xml:space="preserve">
-    <value></value>
+  <data name="Spectators" xml:space="preserve">
+    <value>Spectators</value>
   </data>
-  <data name="Stop Echo Speaker System" xml:space="preserve">
-    <value></value>
+  <data name="Speech Speed" xml:space="preserve">
+    <value>Speech Speed</value>
   </data>
-  <data name="Stop Spectating Me" xml:space="preserve">
-    <value></value>
+  <data name="Split File" xml:space="preserve">
+    <value>Split File</value>
   </data>
-  <data name="Throw Speed" xml:space="preserve">
-    <value></value>
+  <data name="Start Echo Speaker System" xml:space="preserve">
+    <value>Start Echo Speaker System</value>
   </data>
-  <data name="Tube Exit Speed (self)" xml:space="preserve">
-    <value></value>
+  <data name="Start Minimized" xml:space="preserve">
+    <value>Start Minimized</value>
   </data>
-  <data name="Upload to Firestore" xml:space="preserve">
-    <value></value>
+  <data name="Start with Windows" xml:space="preserve">
+    <value>Start with Windows</value>
   </data>
-  <data name="Speed in m/s of the first player on each team to cross the midline on neutral joust" xml:space="preserve">
-    <value></value>
+  <data name="Stats Logging" xml:space="preserve">
+    <value>Stats Logging</value>
   </data>
-  <data name="Time in seconds to reach the midline on neutral jousts for the fastest player on each team" xml:space="preserve">
-    <value></value>
+  <data name="Text-to-Speech" xml:space="preserve">
+    <value>Text-to-Speech</value>
+    <comment>tab in Settings</comment>
   </data>
-  <data name="orange" xml:space="preserve">
-    <value></value>
+  <data name="Text-to-Speech (TTS) Settings" xml:space="preserve">
+    <value>Text-to-Speech (TTS) Settings</value>
   </data>
-  <data name="spectator" xml:space="preserve">
-    <value></value>
+  <data name="Tools" xml:space="preserve">
+    <value>Tools</value>
   </data>
-  <data name="tts_join_1" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_join_2" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_leave_1" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_leave_2" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_switch_1" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_switch_2" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_switch_3" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_pause_req" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_paused" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_unpause" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_meters_per_second" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_abused" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="tts_meters" xml:space="preserve">
-    <value></value>
+  <data name="TTS only works when logged in with Discord!" xml:space="preserve">
+    <value>TTS only works when logged in with Discord!
+
+(top left of main window)</value>
   </data>
   <data name="tts_description" xml:space="preserve">
-    <value></value>
+    <value>TTS allows you to hear events while in game. Make sure to set up your speakers appropriately to be able to hear the output.
+
+On Rift, set your default Windows sound output to the Rift headphones.
+
+On Quest, use headphones attached to your PC or turn up the speakers.</value>
+    <comment>テキスト読み上げを使用すると、ゲーム中に聞くことができます。その際、出力が聞こえるようにスピーカーを適切に設置してください。
+
+      Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッドフォンに設定します。
+
+      クエストでは、PCに接続したヘッドホンを使うか、スピーカーの音量をあげて下さい。</comment>
   </data>
-  <data name="EchoVR Settings" xml:space="preserve">
-    <value></value>
+  <data name="Update Echo Speaker System" xml:space="preserve">
+    <value>Update Echo Speaker System</value>
   </data>
-  <data name="Enable_NVIDIA_Highlights" xml:space="preserve">
-    <value></value>
+  <data name="Upload to Firestore" xml:space="preserve">
+    <value>Upload to Firestore</value>
+    <comment>not in the public version, so not really necessary</comment>
   </data>
-  <data name="Join" xml:space="preserve">
-    <value></value>
+  <data name="Upload to IgniteVR Database" xml:space="preserve">
+    <value>Upload to IgniteVR Database</value>
   </data>
-  <data name="Join as a Player or as a Spectator?" xml:space="preserve">
-    <value></value>
+  <data name="upload_description" xml:space="preserve">
+    <value>Uploads data to the Personal Ignite database. This is separate from the public match stats, but is still visible on the website. Discord Login is required for stat uploading. Only public matches are uploaded.</value>
   </data>
-  <data name="Join directly as a player." xml:space="preserve">
-    <value></value>
+  <data name="Use Compression" xml:space="preserve">
+    <value>Use Compression</value>
   </data>
-  <data name="Join directly as a spectator." xml:space="preserve">
-    <value></value>
+  <data name="Very Fast" xml:space="preserve">
+    <value>Very Fast</value>
+    <comment>refers to putting the replay files in a .zip file</comment>
   </data>
-  <data name="Join EchoVR Match" xml:space="preserve">
-    <value></value>
+  <data name="Closing..." xml:space="preserve">
+    <value>Closing...</value>
   </data>
-  <data name="join_as_spectator" xml:space="preserve">
-    <value></value>
+  <data name="Contribute" xml:space="preserve">
+    <value>Contribute</value>
   </data>
-  <data name="Link Type:" xml:space="preserve">
-    <value></value>
+  <data name="Distance in m of every goal" xml:space="preserve">
+    <value>Distance in m of every goal</value>
   </data>
-  <data name="Not Logged in" xml:space="preserve">
-    <value></value>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
   </data>
-  <data name="NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC" xml:space="preserve">
-    <value></value>
+  <data name="Estimated location of the server as you join" xml:space="preserve">
+    <value>Estimated location of the server as you join</value>
   </data>
-  <data name="Player" xml:space="preserve">
-    <value></value>
+  <data name="Game Paused" xml:space="preserve">
+    <value>Game Paused</value>
   </data>
-  <data name="Private" xml:space="preserve">
-    <value></value>
+  <data name="Goal Distance" xml:space="preserve">
+    <value>Goal Distance</value>
   </data>
-  <data name="Public" xml:space="preserve">
-    <value></value>
+  <data name="Goal Speed" xml:space="preserve">
+    <value>Goal Speed</value>
   </data>
-  <data name="Quest" xml:space="preserve">
-    <value></value>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
   </data>
-  <data name="Refresh" xml:space="preserve">
-    <value></value>
+  <data name="IgniteBot was made from contributions by these community members:" xml:space="preserve">
+    <value>Spark was made from contributions by these community members:</value>
   </data>
-  <data name="Refresh List" xml:space="preserve">
-    <value></value>
+  <data name="instance_already_running_message" xml:space="preserve">
+    <value>Instance already running. Running two instances of Spark at the same time can cause problems. Check the task tray in the bottom right, or the Task Manager to kill the old instance if something broke.</value>
   </data>
-  <data name="Shutting down Atlas..." xml:space="preserve">
-    <value></value>
+  <data name="Japanese Translation:" xml:space="preserve">
+    <value>Japanese Translation:</value>
   </data>
-  <data name="Spark Message" xml:space="preserve">
-    <value></value>
+  <data name="Joust Speed" xml:space="preserve">
+    <value>Joust Speed</value>
   </data>
-  <data name="Spark | First-time Setup" xml:space="preserve">
-    <value></value>
+  <data name="Joust Time" xml:space="preserve">
+    <value>Joust Time</value>
   </data>
-  <data name="Spark | Login" xml:space="preserve">
-    <value></value>
+  <data name="Max Boost Speed" xml:space="preserve">
+    <value>Max Boost Speed</value>
   </data>
-  <data name="Spark | Playspace" xml:space="preserve">
-    <value></value>
+  <data name="Maximum speed achieved for times when you are faster than 20 m/s" xml:space="preserve">
+    <value>Maximum speed achieved for times when you are faster than 20 m/s</value>
   </data>
-  <data name="Streamer Mode" xml:space="preserve">
-    <value></value>
+  <data name="nvhighlights_description_1" xml:space="preserve">
+    <value>To enable NVIDIA Highlights, first enable the NVIDIA overlay in Geforce Experience, then enable the Highlights feature from within the overlay (ALT+Z). The events that you want to trigger a clip can be customized in the NVIDIA overlay while the game is open.</value>
   </data>
-  <data name="Surround with &amp;lt;&amp;gt;" xml:space="preserve">
-    <value></value>
+  <data name="nvhighlights_description_2" xml:space="preserve">
+    <value>Make sure to enable Desktop recording (under the 'Privacy control' section in the overlay), otherwise only this program will be recorded.</value>
+  </data>
+  <data name="NVIDIA Highlights Settings" xml:space="preserve">
+    <value>NVIDIA Highlights Settings</value>
+  </data>
+  <data name="Open Event Log Folder" xml:space="preserve">
+    <value>Open Event Log Folder</value>
+    <comment>an option in the dropdown that refers to the speed of the TTS</comment>
+  </data>
+  <data name="Player Join" xml:space="preserve">
+    <value>Player Join</value>
+  </data>
+  <data name="Player Leave" xml:space="preserve">
+    <value>Player Leave</value>
+  </data>
+  <data name="Player Switch Teams" xml:space="preserve">
+    <value>Player Switch Teams</value>
+  </data>
+  <data name="Server Location" xml:space="preserve">
+    <value>Server Location</value>
+  </data>
+  <data name="Speed in m/s as you exit the launch tube" xml:space="preserve">
+    <value>Speed in m/s as you exit the launch tube</value>
+  </data>
+  <data name="Speed in m/s of every goal" xml:space="preserve">
+    <value>Speed in m/s of every goal</value>
+  </data>
+  <data name="Speed in m/s of the first player on each team to cross the midline on neutral joust" xml:space="preserve">
+    <value>Speed in m/s of the first player on each team to cross the midline on neutral joust</value>
+  </data>
+  <data name="Speed in m/s of your throws" xml:space="preserve">
+    <value>Speed in m/s of your throws</value>
+  </data>
+  <data name="Throw Speed" xml:space="preserve">
+    <value>Throw Speed</value>
+  </data>
+  <data name="Time in seconds to reach the midline on neutral jousts for the fastest player on each team" xml:space="preserve">
+    <value>Time in seconds to reach the midline on neutral jousts for the fastest player on each team</value>
+  </data>
+  <data name="Tube Exit Speed (self)" xml:space="preserve">
+    <value>Tube Exit Speed (self)</value>
+  </data>
+  <data name=", or join the" xml:space="preserve">
+    <value>, or join the</value>
+    <comment>Full sentence is: For help using Spark, check out the Echopedia page, or join the Ignite Discord Server and ask questions in the #spark-support channel.</comment>
+  </data>
+  <data name="and ask questions in the #ignitebot-support channel." xml:space="preserve">
+    <value>and ask questions in the #spark-support channel.</value>
+  </data>
+  <data name="contributions_welcome" xml:space="preserve">
+    <value>Contributions to Spark are welcome. Check it out on</value>
+  </data>
+  <data name="Echopedia page" xml:space="preserve">
+    <value>Echopedia page</value>
+  </data>
+  <data name="for_help_check_out" xml:space="preserve">
+    <value>For help using Spark, check out the</value>
+    <comment>Full sentence is: For help using Spark, check out the Echopedia page, or join the Ignite Discord Server and ask questions in the #spark-support channel.</comment>
+  </data>
+  <data name="Ignite Discord Server" xml:space="preserve">
+    <value>Ignite Discord Server</value>
+  </data>
+  <data name="Copied!" xml:space="preserve">
+    <value>Copied!</value>
+    <comment>successfully copied text to clipboard</comment>
+  </data>
+  <data name="Downloads and installs the most recent update (recommended)" xml:space="preserve">
+    <value>Downloads and installs the most recent update (recommended)</value>
+  </data>
+  <data name="Enabled API access in the game settings. CLOSE ECHOVR BEFORE PRESSING OK!" xml:space="preserve">
+    <value>Enabled API access in the game settings.
+CLOSE ECHOVR BEFORE PRESSING OK!</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Female</value>
+    <comment>for voice type</comment>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Male</value>
+    <comment>for voice type</comment>
+  </data>
+  <data name="No clips available" xml:space="preserve">
+    <value>No clips available</value>
+  </data>
+  <data name="Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event." xml:space="preserve">
+    <value>Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event.</value>
+  </data>
+  <data name="Spectatorstream tooltip" xml:space="preserve">
+    <value>Runs EchoVR with the -spectatorstream option enabled. This spectates the highest level public match at any given time.</value>
+  </data>
+  <data name="Score:" xml:space="preserve">
+    <value>Score:</value>
+    <comment>as in server score for pings</comment>
+  </data>
+  <data name="Show Main Window" xml:space="preserve">
+    <value>Show Main Window</value>
+  </data>
+  <data name="Stop Echo Speaker System" xml:space="preserve">
+    <value>Stop Echo Speaker System</value>
+  </data>
+  <data name="Stop Spectating Me" xml:space="preserve">
+    <value>Stop Spectating Me</value>
+  </data>
+  <data name="Voice" xml:space="preserve">
+    <value>Voice</value>
+    <comment>For what kind of TTS voice to use</comment>
+  </data>
+  <data name="orange" xml:space="preserve">
+    <value>orange</value>
+  </data>
+  <data name="blue" xml:space="preserve">
+    <value>blue</value>
+  </data>
+  <data name="spectator" xml:space="preserve">
+    <value>spectator</value>
+  </data>
+  <data name="tts_join_1" xml:space="preserve">
+    <value>joined</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_join_2" xml:space="preserve">
+    <value>.</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_leave_1" xml:space="preserve">
+    <value>left</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_leave_2" xml:space="preserve">
+    <value>.</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_switch_1" xml:space="preserve">
+    <value>switched from</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_switch_2" xml:space="preserve">
+    <value>to</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_switch_3" xml:space="preserve">
+    <value>.</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_pause_req" xml:space="preserve">
+    <value>team requested a pause</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_paused" xml:space="preserve">
+    <value>team paused the game</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_unpause" xml:space="preserve">
+    <value>team unpaused the game</value>
+  </data>
+  <data name="tts_meters_per_second" xml:space="preserve">
+    <value>meters per second</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_abused" xml:space="preserve">
+    <value>abused their playspace</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
+  </data>
+  <data name="tts_meters" xml:space="preserve">
+    <value>meters</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="This is the new speed" xml:space="preserve">
-    <value></value>
+    <value>This is the new speed</value>
   </data>
-  <data name="This PC" xml:space="preserve">
-    <value></value>
+  <data name="NVIDIA_Highlights_failed_to_initialize_or_isn_t_supported_by_your_PC" xml:space="preserve">
+    <value>NVIDIA Highlights failed to initialize or isn't supported by your PC</value>
+    <comment>error message for nvidia highlights setting</comment>
+  </data>
+  <data name="Enable_NVIDIA_Highlights" xml:space="preserve">
+    <value>Enable NVIDIA Highlights</value>
+    <comment>checkbox label</comment>
+  </data>
+  <data name="highlights_cleared" xml:space="preserve">
+    <value>Highlights Cleared: All unsaved highlights have been cleared from the temporary highlights directory.</value>
+  </data>
+  <data name="Highlights_isn_t_supported_by_your_PC" xml:space="preserve">
+    <value>NVIDIA Highlights isn't supported by your PC</value>
   </data>
   <data name="Total throw speed from the F10 menu" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Whitelist" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="EchoVR not installed game settings" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="EchoVR Settings info" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="EchoVROpen settings warning" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="echovr_path_not_set" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Enable API Access" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Enable Replay Buffer" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="enableAutoFocusCheckbox.ToolTip" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="enableReplayCheckbox.Content" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Follow Link" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Get Beta Updates to Spark" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Goal" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Graphics" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Last Throw" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Length:" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Me Only" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="My Team Only" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="NVIDIA Highlights" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="OBS" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="OBS integration requires the OBS Websocket plugin." xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="optInCheckbox.Content" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="optInCheckbox.ToolTip" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Password:" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Playspace Abuse" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Playspace information for players other than yourself can be inaccurate and sensitive to rapid acceleration or high ping." xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Record all events in Spectator" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Save Clip Now" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Score Assist" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Seconds After:" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Seconds Before:" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Set your match visibility to something other than Public, then add teams and players here to give them access." xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Spectator Camera Settings" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Start Replay Buffer" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Stop Hosting" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="Stop Replay Buffer" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="The Choose type shows a popup when you click the link to either join as a player or spectator." xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="This changes where IgniteBot looks for API data. You can change your preference in Settings later. Quest+Link counts as PC." xml:space="preserve">
-    <value></value>
+    <value>Total throw speed from the F10 menu (above 10 m/s)</value>
   </data>
   <data name="tts_switch_alt_1" xml:space="preserve">
-    <value></value>
+    <value>switched to</value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
-  <data name="Update Available" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="wrong number of '/' characters for link:" xml:space="preserve">
-    <value></value>
-  </data>
-  <data name="'Clip That' detection (Medal.tv)" xml:space="preserve">
-    <value>Detección de 'Clip That' (Medal.tv)</value>
-  </data>
-  <data name="Allow Spectate Me on local PC" xml:space="preserve">
-    <value />
-  </data>
-  <data name="'Clip That' detection (NVIDIA Highlights)" xml:space="preserve">
-    <value>'Clip That' detection (NVIDIA Highlights)</value>
+  <data name="tts_switch_alt_2" xml:space="preserve">
+    <value> </value>
+    <comment>ignore and refer to tts spreadsheet</comment>
   </data>
   <data name="Access Code" xml:space="preserve">
     <value>Access Code</value>
   </data>
   <data name="Add" xml:space="preserve">
     <value>Add</value>
+  </data>
+  <data name="Add Player" xml:space="preserve">
+    <value>Add Player</value>
+  </data>
+  <data name="Add Team" xml:space="preserve">
+    <value>Add Team</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Atlas Whitelist" xml:space="preserve">
+    <value>Hosting Whitelist</value>
+  </data>
+  <data name="atlas_whitelist_title" xml:space="preserve">
+    <value>Spark | Hosting Whitelist</value>
+  </data>
+  <data name="cant_connect_to_internet_for_discord" xml:space="preserve">
+    <value>Can't connect to the internet to log into Discord.</value>
+  </data>
+  <data name="Do you play EchoVR on PC or Quest?" xml:space="preserve">
+    <value>Do you play EchoVR on PC or Quest?</value>
+  </data>
+  <data name="echovr_path_not_set" xml:space="preserve">
+    <value>EchoVR exe path not set. Make sure you have the game installed on this computer to use this feature, or set the path of echovr.exe manually in the Settings.</value>
+  </data>
+  <data name="Incorrect join type." xml:space="preserve">
+    <value>Incorrect join type.</value>
+  </data>
+  <data name="Incorrectly formatted Spark or Atlas link:" xml:space="preserve">
+    <value>Incorrectly formatted Spark or Atlas link:</value>
+  </data>
+  <data name="Not Logged in" xml:space="preserve">
+    <value>Not Logged in</value>
+  </data>
+  <data name="Quest" xml:space="preserve">
+    <value>Quest</value>
+  </data>
+  <data name="Set your match visibility to something other than Public, then add teams and players here to give them access." xml:space="preserve">
+    <value>Set your match visibility to something other than Public, then add teams and players here to give them access.</value>
+  </data>
+  <data name="Spark | First-time Setup" xml:space="preserve">
+    <value>Spark | First-time Setup</value>
+  </data>
+  <data name="Spark | Login" xml:space="preserve">
+    <value>Spark | Login</value>
+  </data>
+  <data name="This changes where IgniteBot looks for API data. You can change your preference in Settings later. Quest+Link counts as PC." xml:space="preserve">
+    <value>This changes where Spark looks for API data. You can change your preference in Settings later. Quest+Link counts as PC.</value>
+  </data>
+  <data name="This PC" xml:space="preserve">
+    <value>This PC</value>
+  </data>
+  <data name="wrong number of '/' characters for link:" xml:space="preserve">
+    <value>wrong number of '/' characters for link:</value>
+    <comment>error message</comment>
+  </data>
+  <data name="Closing NVIDIA Highlights..." xml:space="preserve">
+    <value>Closing NVIDIA Highlights...</value>
+    <comment>message when closing the program</comment>
+  </data>
+  <data name="Closing Speaker System..." xml:space="preserve">
+    <value>Closing Speaker System...</value>
+    <comment>message when closing the program</comment>
+  </data>
+  <data name="Compressing Replay File..." xml:space="preserve">
+    <value>Compressing Replay File...</value>
+    <comment>message when closing the program</comment>
+  </data>
+  <data name="EchoVR Settings" xml:space="preserve">
+    <value>EchoVR Settings</value>
+  </data>
+  <data name="Join as a Player or as a Spectator?" xml:space="preserve">
+    <value>Join as a Player or as a Spectator?</value>
+    <comment>dialog when opening ignitebot://choose or spark://choose links</comment>
+  </data>
+  <data name="Join EchoVR Match" xml:space="preserve">
+    <value>Join EchoVR Match</value>
+  </data>
+  <data name="join_as_spectator" xml:space="preserve">
+    <value>Spectator</value>
+  </data>
+  <data name="Player" xml:space="preserve">
+    <value>Player</value>
+    <comment>choose to join as a player rather than a spectator</comment>
+  </data>
+  <data name="Playspace information for players other than yourself can be inaccurate and sensitive to rapid acceleration or high ping." xml:space="preserve">
+    <value>Playspace information for players other than yourself can be inaccurate and sensitive to rapid acceleration or high ping.</value>
+  </data>
+  <data name="Refresh List" xml:space="preserve">
+    <value>Refresh List</value>
+  </data>
+  <data name="Shutting down Atlas..." xml:space="preserve">
+    <value>Shutting down Match Hosting...</value>
+    <comment>message when closing the program</comment>
+  </data>
+  <data name="Spark Message" xml:space="preserve">
+    <value>Spark Message</value>
+    <comment>title of a some message popup boxes</comment>
+  </data>
+  <data name="Spark | Playspace" xml:space="preserve">
+    <value>Spark | Playspace</value>
+  </data>
+  <data name="Streamer Mode" xml:space="preserve">
+    <value>Streamer Mode</value>
+    <comment>makes the background color green for streaming with OBS</comment>
+  </data>
+  <data name="Angle brackes allow you to click on the link when it's pasted in Discord." xml:space="preserve">
+    <value>Angle brackets allow you to click on the link when it's pasted in Discord.</value>
+  </data>
+  <data name="Append team names" xml:space="preserve">
+    <value>Append team names</value>
+  </data>
+  <data name="Appends the team names of the participating teams if enough players from the same VRML team are in the match." xml:space="preserve">
+    <value>Appends the team names of the participating teams if enough players from the same VRML team are in the match.</value>
+  </data>
+  <data name="Casters Only" xml:space="preserve">
+    <value>Casters Only</value>
+    <comment>setting for visibility of a hosted match</comment>
+  </data>
+  <data name="Choose" xml:space="preserve">
+    <value>Choose</value>
+  </data>
+  <data name="Copy Atlas Link" xml:space="preserve">
+    <value>Copy Spark Link</value>
+  </data>
+  <data name="Copy to Clipboard" xml:space="preserve">
+    <value>Copy to Clipboard</value>
+  </data>
+  <data name="Follow Link" xml:space="preserve">
+    <value>Follow Link</value>
+    <comment>actually goes to the link location as if you clicked on it in a browser</comment>
+  </data>
+  <data name="Host Match" xml:space="preserve">
+    <value>Host Match</value>
+  </data>
+  <data name="Hosted Matches" xml:space="preserve">
+    <value>Hosted Matches</value>
+  </data>
+  <data name="Join" xml:space="preserve">
+    <value>Join</value>
+  </data>
+  <data name="Join directly as a player." xml:space="preserve">
+    <value>Join directly as a player.</value>
+  </data>
+  <data name="Join directly as a spectator." xml:space="preserve">
+    <value>Join directly as a spectator.</value>
+  </data>
+  <data name="Link Type:" xml:space="preserve">
+    <value>Link Type:</value>
+  </data>
+  <data name="Private" xml:space="preserve">
+    <value>Private</value>
+    <comment>setting for visibility of a hosted match</comment>
+  </data>
+  <data name="Public" xml:space="preserve">
+    <value>Public</value>
+    <comment>setting for visibility of a hosted match</comment>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Surround with &amp;lt;&amp;gt;" xml:space="preserve">
+    <value>Surround with &lt;&gt;</value>
+  </data>
+  <data name="The Choose type shows a popup when you click the link to either join as a player or spectator." xml:space="preserve">
+    <value>The Choose type shows a popup when you click the link to either join as a player or spectator.</value>
+  </data>
+  <data name="Whitelist" xml:space="preserve">
+    <value>Whitelist</value>
+    <comment>a list of approved players to allow access</comment>
+  </data>
+  <data name="Visibility:" xml:space="preserve">
+    <value>Visibility:</value>
+  </data>
+  <data name="Update Available" xml:space="preserve">
+    <value>Update Available</value>
+  </data>
+  <data name="Clips" xml:space="preserve">
+    <value>Clips</value>
+  </data>
+  <data name="optInCheckbox.Content" xml:space="preserve">
+    <value>Opt-in to detailed website stats.</value>
+  </data>
+  <data name="optInCheckbox.ToolTip" xml:space="preserve">
+    <value>Shows more detailed stats on metrics.ignitevr.gg, including estimated height, play times, and hand dominance.</value>
+  </data>
+  <data name="ClipsTitle.Content" xml:space="preserve">
+    <value>Clips Settings</value>
+  </data>
+  <data name="enableReplayCheckbox.Content" xml:space="preserve">
+    <value>Enable .echoreplay Buffer</value>
+  </data>
+  <data name="Save Clip Now" xml:space="preserve">
+    <value>Save Clip Now</value>
+  </data>
+  <data name="Playspace Abuse" xml:space="preserve">
+    <value>Playspace Abuse</value>
+  </data>
+  <data name="Goal" xml:space="preserve">
+    <value>Goal</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="EchoVROpen settings warning" xml:space="preserve">
+    <value>EchoVR is open. EchoVR saves its settings when it closes, so any settings you set here will be overwritten when EchoVR closes. Make sure to close EchoVR before changing anything here.</value>
+  </data>
+  <data name="EchoVR Settings info" xml:space="preserve">
+    <value>These settings control game settings found in 'C:\Users\[USERNAME]\AppData\Local\rad\loneecho\settings_mp_v2.json'. This is useful for spectator computers without a headset attached.</value>
+  </data>
+  <data name="Default Configuration" xml:space="preserve">
+    <value>Default Configuration</value>
+  </data>
+  <data name="Display" xml:space="preserve">
+    <value>Display</value>
+    <comment>refers to Display settings for the game</comment>
+  </data>
+  <data name="Graphics" xml:space="preserve">
+    <value>Graphics</value>
+    <comment>refers to Graphics settings for the game</comment>
+  </data>
+  <data name="Spectator Camera Settings" xml:space="preserve">
+    <value>Spectator Camera Settings</value>
+  </data>
+  <data name="EchoVR not installed game settings" xml:space="preserve">
+    <value>EchoVR is not found on this PC. Make sure you have EchoVR installed if you want to be able to change these settings, or set the path to the EchoVR executable manually in the General tab.</value>
+  </data>
+  <data name="Autofocus EchoVR" xml:space="preserve">
+    <value>Autofocus EchoVR window</value>
+  </data>
+  <data name="Get Beta Updates to Spark" xml:space="preserve">
+    <value>Get Beta Updates to Spark</value>
+  </data>
+  <data name="enableAutoFocusCheckbox.ToolTip" xml:space="preserve">
+    <value>Makes sure EchoVR is the topmost window every few seconds.</value>
+  </data>
+  <data name="betaUpdates.ToolTip" xml:space="preserve">
+    <value>Gets updates to the beta channel of Spark if they are available. (restart Spark to check for updates)</value>
+  </data>
+  <data name="Interception" xml:space="preserve">
+    <value>Interception</value>
+  </data>
+  <data name="Score Assist" xml:space="preserve">
+    <value>Score Assist</value>
+  </data>
+  <data name="Highlight Scope" xml:space="preserve">
+    <value>Player Scope</value>
+    <comment>when to record clips</comment>
+  </data>
+  <data name="Me Only" xml:space="preserve">
+    <value>Me Only</value>
+    <comment>when to record clips</comment>
+  </data>
+  <data name="My Team Only" xml:space="preserve">
+    <value>My Team Only</value>
+    <comment>when to record clips</comment>
+  </data>
+  <data name="All Players (both teams)" xml:space="preserve">
+    <value>All Players (both teams)</value>
+    <comment>when to record clips</comment>
+  </data>
+  <data name="Record all events in Spectator" xml:space="preserve">
+    <value>Record all events in Spectator</value>
+    <comment>when to record clips</comment>
+  </data>
+  <data name="Clip Settings" xml:space="preserve">
+    <value>Clip Settings</value>
+  </data>
+  <data name="Seconds After:" xml:space="preserve">
+    <value>Seconds After:</value>
+    <comment>time after an event to record in a clip</comment>
+  </data>
+  <data name="Seconds Before:" xml:space="preserve">
+    <value>Seconds Before:</value>
+    <comment>time before an event to record in a clip</comment>
+  </data>
+  <data name="Length:" xml:space="preserve">
+    <value>Length:</value>
+    <comment>total length in seconds of a clip </comment>
+  </data>
+  <data name="Clip Duration:" xml:space="preserve">
+    <value>Clip Duration:</value>
+  </data>
+  <data name="Choose the events you want to clip in the NVIDIA overlay (ALT+Z)" xml:space="preserve">
+    <value>Choose the events you want to clip in the NVIDIA overlay (ALT+Z)</value>
+  </data>
+  <data name="Auto-start Replay Buffer" xml:space="preserve">
+    <value>Auto-start Replay Buffer</value>
+  </data>
+  <data name="Auto-connect" xml:space="preserve">
+    <value>Auto-connect</value>
+  </data>
+  <data name="OBS integration requires the OBS Websocket plugin." xml:space="preserve">
+    <value>OBS integration requires the OBS Websocket plugin. The replay buffer must be set up in OBS settings before this feature can work.</value>
+  </data>
+  <data name=".echoreplay Clips" xml:space="preserve">
+    <value>.echoreplay Clips</value>
+  </data>
+  <data name="NVIDIA Highlights" xml:space="preserve">
+    <value>NVIDIA Highlights</value>
+  </data>
+  <data name="Enable API Access" xml:space="preserve">
+    <value>Enable API Access</value>
+  </data>
+  <data name="Stop Hosting" xml:space="preserve">
+    <value>Stop Hosting</value>
+  </data>
+  <data name="Last Throw" xml:space="preserve">
+    <value>Last Throw</value>
+  </data>
+  <data name="Enable Replay Buffer" xml:space="preserve">
+    <value>Enable Replay Buffer</value>
+  </data>
+  <data name="Disable Replay Buffer" xml:space="preserve">
+    <value>Disable Replay Buffer</value>
+  </data>
+  <data name="Start Replay Buffer" xml:space="preserve">
+    <value>Start Replay Buffer</value>
+  </data>
+  <data name="Stop Replay Buffer" xml:space="preserve">
+    <value>Stop Replay Buffer</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="Password:" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="IP Address:" xml:space="preserve">
+    <value>IP Address:</value>
+  </data>
+  <data name="OBS" xml:space="preserve">
+    <value>OBS</value>
+  </data>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>Are you sure?</value>
+  </data>
+  <data name="ClosingBoxMessage" xml:space="preserve">
+    <value>Click Exit to completely close, and Hide to run Spark in the background. You can access it from the tray icon (bottom right).</value>
+  </data>
+  <data name="Spark is Closing" xml:space="preserve">
+    <value>Spark is Closing</value>
+  </data>
+  <data name="Create Server in Region" xml:space="preserve">
+    <value>Create Server in Region</value>
+  </data>
+  <data name="This creates a private match in a region of your choice." xml:space="preserve">
+    <value>This creates a private match in a region of your choice.</value>
+  </data>
+  <data name="Spectator Mode" xml:space="preserve">
+    <value>Spectator Mode</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+    <comment>refers to the creation of a server in a specific region</comment>
+  </data>
+  <data name="chooseRegionSpectator.ToolTip" xml:space="preserve">
+    <value>Starts EchoVR in spectator mode. The only way to add players to this match is by sharing the Spark link.</value>
+  </data>
+  <data name="Not Connected" xml:space="preserve">
+    <value>Not Connected</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Connected</value>
+  </data>
+  <data name="Hide EchoVR UI" xml:space="preserve">
+    <value>Hide EchoVR UI (U)</value>
+  </data>
+  <data name="Toggle Minimap after Goals" xml:space="preserve">
+    <value>Toggle Minimap after Goals (M)</value>
+  </data>
+  <data name="Camera Mode:" xml:space="preserve">
+    <value>Camera Mode:</value>
+  </data>
+  <data name="Auto (leave default)" xml:space="preserve">
+    <value>Auto (leave default)</value>
+  </data>
+  <data name="Sideline" xml:space="preserve">
+    <value>Sideline</value>
+  </data>
+  <data name="Follow client player ('Spectate Me' only)" xml:space="preserve">
+    <value>Follow client player ('Spectate Me' only)</value>
+  </data>
+  <data name="Follow" xml:space="preserve">
+    <value>Follow</value>
+    <comment>refers to the follow camera in spectator view</comment>
+  </data>
+  <data name="POV" xml:space="preserve">
+    <value>POV</value>
+    <comment>refers to the spectator camera mode</comment>
+  </data>
+  <data name="Disconnect" xml:space="preserve">
+    <value>Disconnect</value>
+  </data>
+  <data name="Follow client player camera mode:" xml:space="preserve">
+    <value>Follow player camera mode:</value>
+  </data>
+  <data name="Replay_Delay" xml:space="preserve">
+    <value>Delay:</value>
+    <comment>label for replay transition delay</comment>
+  </data>
+  <data name="Replay_Length" xml:space="preserve">
+    <value>Duration:</value>
+    <comment>label for length of time for replay scene</comment>
+  </data>
+  <data name="Replay_Scene" xml:space="preserve">
+    <value>Scene:</value>
+    <comment>header for scene selector for replays</comment>
+  </data>
+  <data name="noovrCheckbox.Content" xml:space="preserve">
+    <value>Use Anonymous Account</value>
+  </data>
+  <data name="US Central North" xml:space="preserve">
+    <value>US Central North</value>
+  </data>
+  <data name="US Central South" xml:space="preserve">
+    <value>US Central South</value>
+  </data>
+  <data name="US East" xml:space="preserve">
+    <value>US East</value>
+  </data>
+  <data name="US West" xml:space="preserve">
+    <value>US West</value>
+  </data>
+  <data name="Europe" xml:space="preserve">
+    <value>Europe</value>
+  </data>
+  <data name="Japan" xml:space="preserve">
+    <value>Japan</value>
+  </data>
+  <data name="Australia" xml:space="preserve">
+    <value>Australia</value>
+  </data>
+  <data name="Singapore" xml:space="preserve">
+    <value>Singapore</value>
+  </data>
+  <data name="e.g. Singapore" xml:space="preserve">
+    <value>e.g. Singapore</value>
+  </data>
+  <data name="e.g. Sydney, Perth" xml:space="preserve">
+    <value>e.g. Sydney, Perth</value>
+  </data>
+  <data name="e.g. Tokyo" xml:space="preserve">
+    <value>e.g. Tokyo</value>
+  </data>
+  <data name="e.g. London, Amsterdam, Brussels" xml:space="preserve">
+    <value>e.g. London, Amsterdam, Brussels</value>
+  </data>
+  <data name="e.g. California" xml:space="preserve">
+    <value>e.g. California</value>
+  </data>
+  <data name="e.g. New York, Miami, Charleston" xml:space="preserve">
+    <value>e.g. New York, Miami, Charleston</value>
+  </data>
+  <data name="e.g. Texas" xml:space="preserve">
+    <value>e.g. Texas</value>
+  </data>
+  <data name="e.g. Chicago, Iowa" xml:space="preserve">
+    <value>e.g. Chicago, Iowa</value>
+  </data>
+  <data name="Arena" xml:space="preserve">
+    <value>Arena</value>
+  </data>
+  <data name="Lobby" xml:space="preserve">
+    <value>Lobby</value>
+  </data>
+  <data name="Combat Dyson" xml:space="preserve">
+    <value>Combat Dyson</value>
+  </data>
+  <data name="Combat Combustion" xml:space="preserve">
+    <value>Combat Combustion</value>
+  </data>
+  <data name="Combat Fission" xml:space="preserve">
+    <value>Combat Fission</value>
+  </data>
+  <data name="Combat Surge" xml:space="preserve">
+    <value>Combat Surge</value>
+  </data>
+  <data name="Anonymous accounts allow you to join the match twice on the same computer." xml:space="preserve">
+    <value>Anonymous accounts allow you to join the match twice on the same computer.</value>
+  </data>
+  <data name="Camera Write" xml:space="preserve">
+    <value>Camera Write</value>
+  </data>
+  <data name="Choose Server Region" xml:space="preserve">
+    <value>Choose Server Region</value>
+  </data>
+  <data name="Not active" xml:space="preserve">
+    <value>Not active</value>
+  </data>
+  <data name="Show Overlay" xml:space="preserve">
+    <value>Show Overlay</value>
+  </data>
+  <data name="If you need help:" xml:space="preserve">
+    <value>If you need help:</value>
+  </data>
+  <data name="Wiki" xml:space="preserve">
+    <value>Wiki</value>
+  </data>
+  <data name="Discord" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="Upload Tablet Stats" xml:space="preserve">
+    <value>Upload Tablet Stats</value>
+  </data>
+  <data name="Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other publicly." xml:space="preserve">
+    <value>Only the selected profiles will be uploaded. Your alternate accounts will not be linked to each other publicly.</value>
+  </data>
+  <data name="You can view tablet stats using the '/tablet_stats PlayerName' command in Discord or on metrics.ignitevr.gg" xml:space="preserve">
+    <value>You can view tablet stats using the '/tablet_stats PlayerName' command in Discord or on metrics.ignitevr.gg</value>
+  </data>
+  <data name="Profiles:" xml:space="preserve">
+    <value>Profiles:</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
+  <data name="Uploading..." xml:space="preserve">
+    <value>Uploading...</value>
+  </data>
+  <data name="Success!" xml:space="preserve">
+    <value>Success!</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="Uploaded" xml:space="preserve">
+    <value>Uploaded</value>
+  </data>
+  <data name="Windows Store" xml:space="preserve">
+    <value>Windows Store</value>
+  </data>
+  <data name="Waiting for EchoVR to start" xml:space="preserve">
+    <value>Waiting for EchoVR to start</value>
+  </data>
+  <data name="Waiting until you join a game" xml:space="preserve">
+    <value>Waiting until you join a game</value>
+  </data>
+  <data name="Copy Spark Link" xml:space="preserve">
+    <value>Copy Spark Link</value>
+  </data>
+  <data name="Searching for Quest on network" xml:space="preserve">
+    <value>Searching for Quest on network</value>
+  </data>
+  <data name="Playercards" xml:space="preserve">
+    <value>Playercards</value>
+  </data>
+  <data name="CameraSettingsDescription" xml:space="preserve">
+    <value>These settings are only used if the game is launched in spectator mode. This includes the Spectate Me function as well as spectating other matches.</value>
+  </data>
+  <data name="Speedometer" xml:space="preserve">
+    <value>Speedometer</value>
+  </data>
+  <data name="API Setting Disabled" xml:space="preserve">
+    <value>API Setting Disabled</value>
+  </data>
+  <data name="In_Lobby" xml:space="preserve">
+    <value>In Lobby</value>
+  </data>
+  <data name="Open settings folder" xml:space="preserve">
+    <value>Open settings folder</value>
+  </data>
+  <data name="Install ReShade" xml:space="preserve">
+    <value>Install ReShade</value>
+  </data>
+  <data name="Remove ReShade" xml:space="preserve">
+    <value>Remove ReShade</value>
+  </data>
+  <data name="Low Frequency Mode" xml:space="preserve">
+    <value>Low Frequency Mode</value>
+  </data>
+  <data name="Spectatorstream opens Echo Combat" xml:space="preserve">
+    <value>Spectatorstream opens Echo Combat</value>
+  </data>
+  <data name="Use anonymous mode for Spectatorstream" xml:space="preserve">
+    <value>Use anonymous mode for Spectatorstream</value>
+  </data>
+  <data name="Automatically restarts spectatorstream when it crashes" xml:space="preserve">
+    <value>Automatically restarts spectatorstream when it crashes</value>
+  </data>
+  <data name="Spectate Me (Opens the spectator for your current match)" xml:space="preserve">
+    <value>Spectate Me (Opens the spectator for your current match)</value>
+  </data>
+  <data name="Allow Spectate Me on local PC" xml:space="preserve">
+    <value>Allow Spectate Me on local PC</value>
+  </data>
+  <data name="Use anonymous mode in Spectate Me" xml:space="preserve">
+    <value>Use anonymous mode in Spectate Me</value>
+  </data>
+  <data name="Spectate Me on by default" xml:space="preserve">
+    <value>Spectate Me on by default</value>
+  </data>
+  <data name="Show Server Location in Discord RP status" xml:space="preserve">
+    <value>Show Server Location in Discord RP status</value>
+  </data>
+  <data name="Don't Change" xml:space="preserve">
+    <value>Don't Change</value>
+  </data>
+  <data name="Mute enemy team" xml:space="preserve">
+    <value>Mute enemy team</value>
+  </data>
+  <data name="Mute all players" xml:space="preserve">
+    <value>Mute all players</value>
+  </data>
+  <data name="Don't Show Minimap (M)" xml:space="preserve">
+    <value>Don't Show Minimap (M)</value>
+  </data>
+  <data name="Hide Player Nameplates" xml:space="preserve">
+    <value>Hide Player Nameplates</value>
+  </data>
+  <data name="Follow specific player" xml:space="preserve">
+    <value>Follow specific player</value>
+  </data>
+  <data name="Find Now" xml:space="preserve">
+    <value>Find Now</value>
+  </data>
+  <data name="Follow specific player name:" xml:space="preserve">
+    <value>Follow specific player name:</value>
+  </data>
+  <data name="Overlays" xml:space="preserve">
+    <value>Overlays</value>
+  </data>
+  <data name="Reset All Settings to Default" xml:space="preserve">
+    <value>Reset All Settings to Default</value>
+  </data>
+  <data name="Apply these settings to " xml:space="preserve">
+    <value>Apply these settings to </value>
+  </data>
+  <data name="Donations are not expected but are appreciated." xml:space="preserve">
+    <value>Donations are not expected but are appreciated.</value>
+  </data>
+  <data name="Donate" xml:space="preserve">
+    <value>Donate</value>
+  </data>
+  <data name="Follow Cam Offset" xml:space="preserve">
+    <value>Follow Cam Offset</value>
+  </data>
+  <data name="FOV for POV cam. (P on the keyboard when following a player)" xml:space="preserve">
+    <value>FOV for POV cam. (P on the keyboard when following a player)</value>
+  </data>
+  <data name="POV Field of View" xml:space="preserve">
+    <value>POV Field of View</value>
+  </data>
+  <data name="FOV for auto cam" xml:space="preserve">
+    <value>FOV for auto cam</value>
+  </data>
+  <data name="deg" xml:space="preserve">
+    <value>deg</value>
+    <comment>degrees abbreviation</comment>
+  </data>
+  <data name="Spectator Field of View" xml:space="preserve">
+    <value>Spectator Field of View</value>
+  </data>
+  <data name="These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached." xml:space="preserve">
+    <value>These settings control game settings found in 'C:\Program Files\Oculus\Software\Software\ready-at-dawn-echo-arena\sourcedb\rad15\json\r14\config\mp_spectator_settings.json'. This is useful for spectator computers without a headset attached.</value>
+  </data>
+  <data name="Speed multiplier for movement speed when pressing the speed modifier button" xml:space="preserve">
+    <value>Speed multiplier for movement speed when pressing the speed modifier button</value>
+  </data>
+  <data name="Speed Multiplier" xml:space="preserve">
+    <value>Speed Multiplier</value>
+  </data>
+  <data name="Maximum rotation speed of the camera" xml:space="preserve">
+    <value>Maximum rotation speed of the camera</value>
+  </data>
+  <data name="Rotation Speed" xml:space="preserve">
+    <value>Rotation Speed</value>
+  </data>
+  <data name="Maximum translational movement speed on the vertical axis" xml:space="preserve">
+    <value>Maximum translational movement speed on the vertical axis</value>
+  </data>
+  <data name="Vertical Move Speed" xml:space="preserve">
+    <value>Vertical Move Speed</value>
+  </data>
+  <data name="Maximum translational movement speed" xml:space="preserve">
+    <value>Maximum translational movement speed</value>
+  </data>
+  <data name="FOV for free camera" xml:space="preserve">
+    <value>FOV for free camera</value>
+  </data>
+  <data name="Free Cam Field of View" xml:space="preserve">
+    <value>Free Cam Field of View</value>
+  </data>
+  <data name="Free Cam Settings  (C on the keyboard)" xml:space="preserve">
+    <value>Free Cam Settings  (C on the keyboard)</value>
+  </data>
+  <data name="VOIP Volume" xml:space="preserve">
+    <value>VOIP Volume</value>
+  </data>
+  <data name="Sound Effects Volume" xml:space="preserve">
+    <value>Sound Effects Volume</value>
+  </data>
+  <data name="Music Volume" xml:space="preserve">
+    <value>Music Volume</value>
+  </data>
+  <data name="Announcer Volume" xml:space="preserve">
+    <value>Announcer Volume</value>
+  </data>
+  <data name="Sound Settings" xml:space="preserve">
+    <value>Sound Settings</value>
+  </data>
+  <data name="Sharpening" xml:space="preserve">
+    <value>Sharpening</value>
+  </data>
+  <data name="Low" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="Medium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="Lighting Quality" xml:space="preserve">
+    <value>Lighting Quality</value>
+  </data>
+  <data name="Texture Quality" xml:space="preserve">
+    <value>Texture Quality</value>
+  </data>
+  <data name="FX Quality" xml:space="preserve">
+    <value>FX Quality</value>
+  </data>
+  <data name="Mesh Quality" xml:space="preserve">
+    <value>Mesh Quality</value>
+  </data>
+  <data name="Shadow Quality" xml:space="preserve">
+    <value>Shadow Quality</value>
+  </data>
+  <data name="Temporal AA" xml:space="preserve">
+    <value>Temporal AA</value>
+  </data>
+  <data name="Volumetrics" xml:space="preserve">
+    <value>Volumetrics</value>
+  </data>
+  <data name="Bloom" xml:space="preserve">
+    <value>Bloom</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Anti-aliasing" xml:space="preserve">
+    <value>Anti-aliasing</value>
+  </data>
+  <data name="Field of View only works in -capturevp2 mode" xml:space="preserve">
+    <value>Field of View only works in -capturevp2 mode</value>
+  </data>
+  <data name="Field of View" xml:space="preserve">
+    <value>Field of View</value>
+  </data>
+  <data name="Multi-Resolution Shading" xml:space="preserve">
+    <value>Multi-Resolution Shading</value>
+  </data>
+  <data name="Auto Resolution" xml:space="preserve">
+    <value>Auto Resolution</value>
+  </data>
+  <data name="Resolution" xml:space="preserve">
+    <value>Resolution</value>
+  </data>
+  <data name="Monitor" xml:space="preserve">
+    <value>Monitor</value>
+  </data>
+  <data name="Fullscreen" xml:space="preserve">
+    <value>Fullscreen</value>
+  </data>
+  <data name="Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder" xml:space="preserve">
+    <value>Clear unsaved highlight clips on Spark exit. If disabled, highlights will be retained forever unless manually deleted from temp folder</value>
+  </data>
+  <data name="Clear Highlights On Exit" xml:space="preserve">
+    <value>Clear Highlights On Exit</value>
+  </data>
+  <data name="Download Installer" xml:space="preserve">
+    <value>Download Installer</value>
+  </data>
+  <data name="Automatic Scene Switching" xml:space="preserve">
+    <value>Automatic Scene Switching</value>
+    <comment>OBS scene switching</comment>
+  </data>
+  <data name="In-game Scene:" xml:space="preserve">
+    <value>In-game Scene:</value>
+  </data>
+  <data name="Between-game Scene:" xml:space="preserve">
+    <value>Between-game Scene:</value>
+  </data>
+  <data name="Do Not Switch" xml:space="preserve">
+    <value>Do Not Switch</value>
+  </data>
+  <data name="Install Medal.tv here: " xml:space="preserve">
+    <value>Install Medal.tv here: </value>
+  </data>
+  <data name="Customize your hotkey in Medal by going to Settings (bottom left) -&gt; Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default. F12 should be good for most people." xml:space="preserve">
+    <value>Customize your hotkey in Medal by going to Settings (bottom left) -&gt; Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default. F12 should be good for most people.</value>
+  </data>
+  <data name="You can use Medal to record your entire session, and have Spark make bookmarks instead of saving clips. Enable this feature in Medal's Settings-&gt;Recorder-&gt;Special Features-&gt;Full Session Recording. Set 'Seconds After' to 0s to have the correct event timing in this case." xml:space="preserve">
+    <value>You can use Medal to record your entire session, and have Spark make bookmarks instead of saving clips. Enable this feature in Medal's Settings-&gt;Recorder-&gt;Special Features-&gt;Full Session Recording. Set 'Seconds After' to 0s to have the correct event timing in this case.</value>
+  </data>
+  <data name="Change clip length in the medal settings window. (Settings-&gt;Recorder)" xml:space="preserve">
+    <value>Change clip length in the medal settings window. (Settings-&gt;Recorder)</value>
+  </data>
+  <data name="Voice Recognition" xml:space="preserve">
+    <value>Voice Recognition</value>
+  </data>
+  <data name="Voice recognition is powered by Vosk. All audio data is processed locally on your device and not uploaded to a server." xml:space="preserve">
+    <value>Voice recognition is powered by Vosk. All audio data is processed locally on your device and not uploaded to a server.</value>
+  </data>
+  <data name="Enable Voice Recognition" xml:space="preserve">
+    <value>Enable Voice Recognition</value>
+  </data>
+  <data name="Audio Source" xml:space="preserve">
+    <value>Audio Source</value>
+  </data>
+  <data name="Desktop Audio" xml:space="preserve">
+    <value>Desktop Audio</value>
+  </data>
+  <data name="Say 'Clip That' at any point to save a clip" xml:space="preserve">
+    <value>Say 'Clip That' at any point to save a clip</value>
+  </data>
+  <data name="'Clip That' detection (NVIDIA Highlights)" xml:space="preserve">
+    <value>'Clip That' detection (NVIDIA Highlights)</value>
+  </data>
+  <data name="'Clip That' detection (Medal.tv)" xml:space="preserve">
+    <value>Detección de 'Clip That' (Medal.tv)</value>
+  </data>
+  <data name="Bad word detection (for reporting)" xml:space="preserve">
+    <value>Bad word detection (for reporting)</value>
+  </data>
+  <data name="Emote Activation" xml:space="preserve">
+    <value>Emote Activation</value>
+  </data>
+  <data name="Neutral Joust" xml:space="preserve">
+    <value>Neutral Joust</value>
+  </data>
+  <data name="Defensive Joust" xml:space="preserve">
+    <value>Defensive Joust</value>
+  </data>
+  <data name="Scoreboard" xml:space="preserve">
+    <value>Scoreboard</value>
+  </data>
+  <data name="Echo Grand Prix" xml:space="preserve">
+    <value>Echo Grand Prix</value>
+  </data>
+  <data name="Private Match Rules" xml:space="preserve">
+    <value>Private Match Rules</value>
+  </data>
+  <data name="Restart as Spectator" xml:space="preserve">
+    <value>Restart as Spectator</value>
+  </data>
+  <data name="Find All Quests" xml:space="preserve">
+    <value>Find All Quests</value>
+  </data>
+  <data name="Restarts the game in the 2D spectator mode." xml:space="preserve">
+    <value>Restarts the game in the 2D spectator mode.</value>
+  </data>
+  <data name="Shows a list of all the Quest IPs on the network." xml:space="preserve">
+    <value>Shows a list of all the Quest IPs on the network.</value>
+  </data>
+  <data name="Paste link in #live" xml:space="preserve">
+    <value>Paste link in #live</value>
+  </data>
+  <data name="League Overlays" xml:space="preserve">
+    <value>League Overlays</value>
+  </data>
+  <data name="Match Setup Page" xml:space="preserve">
+    <value>Match Setup Page</value>
+  </data>
+  <data name="Only stores up to the 100 most recent joust times." xml:space="preserve">
+    <value>Only stores up to the 100 most recent joust times.</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="Fastest" xml:space="preserve">
+    <value>Fastest</value>
+  </data>
+  <data name="In Loading Screen" xml:space="preserve">
+    <value>In Loading Screen</value>
+  </data>
+  <data name="Echo VR not active" xml:space="preserve">
+    <value>Echo VR not active</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="Something broke while trying to download update." xml:space="preserve">
+    <value>Something broke while trying to download update.</value>
+  </data>
+  <data name="Something broke while trying to launch update installer" xml:space="preserve">
+    <value>Something broke while trying to launch update installer</value>
+  </data>
+  <data name="Fetching opt-in status..." xml:space="preserve">
+    <value>Fetching opt-in status...</value>
+  </data>
+  <data name="Found Quest on network!" xml:space="preserve">
+    <value>Found Quest on network!</value>
+  </data>
+  <data name="Failed. Scanning for Echo VR API instead. This may take a while." xml:space="preserve">
+    <value>Failed. Scanning for Echo VR API instead. This may take a while.</value>
+  </data>
+  <data name="Failed to find Quest on network! Make sure you are in a private/public match and API Access is enabled." xml:space="preserve">
+    <value>Failed to find Quest on network! Make sure you are in a private/public match and API Access is enabled.</value>
+  </data>
+  <data name="QuestIPFetching_FindQuestIP_Found_Quest_on_network_" xml:space="preserve">
+    <value>Found Quest on network!</value>
+  </data>
+  <data name="Failed to find Quest on network!" xml:space="preserve">
+    <value>Failed to find Quest on network!</value>
+  </data>
+  <data name="Play Test Sound" xml:space="preserve">
+    <value>Play Test Sound</value>
+  </data>
+  <data name="Open TTS Cache Folder" xml:space="preserve">
+    <value>Open TTS Cache Folder</value>
+  </data>
+  <data name="Clear TTS Cache" xml:space="preserve">
+    <value>Clear TTS Cache</value>
+  </data>
+  <data name="Discord Rich Presence Spectator" xml:space="preserve">
+    <value>Disable Discord Rich Presence when spectating matches</value>
+  </data>
+  <data name="Rich presence from Spark" xml:space="preserve">
+    <value>Rich presence from Spark</value>
   </data>
 </root>

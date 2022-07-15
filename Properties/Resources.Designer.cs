@@ -19,7 +19,7 @@ namespace Spark.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -431,16 +431,6 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap baseline_replay_white_24px {
-            get {
-                object obj = ResourceManager.GetObject("baseline_replay_white_24px", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Batch Writes.
         /// </summary>
         public static string Batch_Writes {
@@ -482,6 +472,15 @@ namespace Spark.Properties {
         public static string blue {
             get {
                 return ResourceManager.GetString("blue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blue.
+        /// </summary>
+        public static string blue_caps {
+            get {
+                return ResourceManager.GetString("blue_caps", resourceCulture);
             }
         }
         
@@ -917,6 +916,15 @@ namespace Spark.Properties {
         public static string Desktop_Audio {
             get {
                 return ResourceManager.GetString("Desktop Audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detecting Echo VR....
+        /// </summary>
+        public static string Detecting_Echo_VR___ {
+            get {
+                return ResourceManager.GetString("Detecting Echo VR...", resourceCulture);
             }
         }
         
@@ -1445,6 +1453,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to send join data to the game. Maybe you left the game?.
+        /// </summary>
+        public static string Failed_to_send_join_data_to_the_game__Maybe_you_left_the_game_ {
+            get {
+                return ResourceManager.GetString("Failed to send join data to the game. Maybe you left the game?", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fast.
         /// </summary>
         public static string Fast {
@@ -1612,6 +1629,15 @@ namespace Spark.Properties {
         public static string for_help_check_out {
             get {
                 return ResourceManager.GetString("for_help_check_out", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force launch new instance.
+        /// </summary>
+        public static string Force_launch_new_instance {
+            get {
+                return ResourceManager.GetString("Force launch new instance", resourceCulture);
             }
         }
         
@@ -1882,46 +1908,6 @@ namespace Spark.Properties {
         public static string Ignite_Discord_Server {
             get {
                 return ResourceManager.GetString("Ignite Discord Server", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        public static System.Drawing.Icon ignite_logo {
-            get {
-                object obj = ResourceManager.GetObject("ignite_logo", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ignite_logo_128 {
-            get {
-                object obj = ResourceManager.GetObject("ignite_logo_128", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ignite_logo_32 {
-            get {
-                object obj = ResourceManager.GetObject("ignite_logo_32", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ignite_logo_64 {
-            get {
-                object obj = ResourceManager.GetObject("ignite_logo_64", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -2210,16 +2196,6 @@ namespace Spark.Properties {
         public static string Lighting_Quality {
             get {
                 return ResourceManager.GetString("Lighting Quality", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap link {
-            get {
-                object obj = ResourceManager.GetObject("link", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -2726,6 +2702,15 @@ namespace Spark.Properties {
         public static string orange {
             get {
                 return ResourceManager.GetString("orange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orange.
+        /// </summary>
+        public static string orange_caps {
+            get {
+                return ResourceManager.GetString("orange_caps", resourceCulture);
             }
         }
         
@@ -3574,24 +3559,6 @@ namespace Spark.Properties {
         public static string Spark_Message {
             get {
                 return ResourceManager.GetString("Spark Message", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to IgniteBot is now called Spark!
-        ///      
-        ///Unfortunately, all of your settings are reset. Make sure to go back into settings to re-enable things like TTS or replay recording.
-        ///      
-        ///Both replays and logs are now saved in &apos;C:\Users\[USER]\Documents\Spark\&apos; by default.
-        ///
-        ///If you want to have your replays in the same folder, copy them over yourself.
-        ///Old Event Log folder: &apos;C:\Users\[USER]\AppData\Roaming\IgniteBot\Log\&apos;
-        ///Old Replay folder: &apos;C:\Users\[USER]\Documents\IgniteBot\&apos;
-        ///.
-        /// </summary>
-        public static string spark_upgrade_message {
-            get {
-                return ResourceManager.GetString("spark_upgrade_message", resourceCulture);
             }
         }
         

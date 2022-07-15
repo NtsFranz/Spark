@@ -436,30 +436,9 @@ namespace Spark
 							string stats = $"Total Speed:\t{lt.total_speed:N2} m/s\n Arm:\t\t{lt.speed_from_arm:N2} m/s\n Wrist:\t\t{lt.speed_from_wrist:N2} m/s\n Movement:\t{lt.speed_from_movement:N2} m/s\n\nTouch Data\n Arm Speed:\t{lt.arm_speed:N2} m/s\n Rots/second:\t{lt.rot_per_sec:N2} r/s\n Pot spd from rot:\t{lt.pot_speed_from_rot:N2} m/s\n\nAlignment Analysis\n Off Axis Spin:\t{lt.off_axis_spin_deg:N1} deg\n Wrist align:\t{lt.wrist_align_to_throw_deg:N1} deg\n Movement align:\t{lt.throw_align_to_movement_deg:N1} deg";
 							lastThrowStats.Text = stats;
 						}
-					}
-
-					if (Program.lastFrame?.InArena == true)  // only the arena has a disc
-					{
-						discSpeedLabel.Text = $"{Program.lastFrame.disc.velocity.ToVector3().Length():N2}";
-						// discSpeedLabel.Text = $"{Program.lastFrame.disc.velocity.ToVector3().Length():N2} m/s\t{Program.lastFrame.disc.Position.X:N2}, {Program.lastFrame.disc.Position.Y:N2}, {Program.lastFrame.disc.Position.Z:N2}";
-						discSpeedLabel.Foreground = Program.lastFrame.possession[0] switch
-						{
-							0 => Brushes.CornflowerBlue,
-							1 => Brushes.Orange,
-							_ => Brushes.White
-						};
-						//discSpeedProgressBar.Value = (int)Program.lastFrame.disc.Velocity.Length();
-						//if (Program.lastFrame.teams[0].possession)
-						//{
-						//	discSpeedProgressBar.ForeColor = Color.Blue;
-						//} else if (Program.lastFrame.teams[1].possession)
-						//{
-						//	discSpeedProgressBar.ForeColor = Color.Orange;
-						//} else
-						//{
-						//	discSpeedProgressBar.ForeColor = Color.Gray;
-						//}
-
+						
+						
+						
 						StringBuilder blueTextNames = new StringBuilder();
 						StringBuilder orangeTextNames = new StringBuilder();
 						StringBuilder bluePingsTextPings = new StringBuilder();
@@ -476,28 +455,24 @@ namespace Spark
 						// loop through all the players and set their speed progress bars and pings
 						for (int t = 0; t < 3; t++)
 						{
-							foreach (var player in Program.lastFrame.teams[t].players)
+							foreach (Player player in Program.lastFrame.teams[t].players)
 							{
-								if (t < 2)
+								switch (t)
 								{
-									if (t == 0)
-									{
+									case 0:
 										blueTextNames.AppendLine(player.name);
 										// bluePingsTextPings.AppendLine($"{player.ping}\t{player.packetlossratio:P1}");
 										bluePingsTextPings.AppendLine($"{player.ping}");
 										blueSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
-									}
-
-									if (t == 1)
-									{
+										pings[t].Add(player.ping);
+										break;
+									case 1:
 										orangeTextNames.AppendLine(player.name);
 										// orangePingsTextPings.AppendLine($"{player.ping}\t{player.packetlossratio:P1}");
 										orangePingsTextPings.AppendLine($"{player.ping}");
 										orangeSpeedsTextSpeeds.AppendLine(player.velocity.ToVector3().Length().ToString("N1"));
-									}
-
-									pings[t].Add(player.ping);
-
+										pings[t].Add(player.ping);
+										break;
 								}
 								teamNames[t].AppendLine(player.name);
 							}
@@ -507,7 +482,8 @@ namespace Spark
 						bluePlayerPingsPings.Text = bluePingsTextPings.ToString();
 						orangePlayerPingsNames.Text = orangeTextNames.ToString();
 						orangePlayerPingsPings.Text = orangePingsTextPings.ToString();
-
+						
+						
 						string playerPingsHeader;
 
 						if (Program.CurrentRound.serverScore > 0)
@@ -553,6 +529,53 @@ namespace Spark
 						blueTeamPlayersLabel.Content = teamNames[0].ToString().Trim();
 						orangeTeamPlayersLabel.Content = teamNames[1].ToString().Trim();
 						spectatorsLabel.Content = teamNames[2].ToString().Trim();
+						
+						
+						#region Rejoiner
+
+						// show the button once the player hasn't been getting data for some time
+						float secondsUntilRejoiner = 1f;
+						if (Program.lastFrame != null &&
+						    Program.lastFrame.private_match &&
+						    DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.Now) < 0 &&
+						    SparkSettings.instance.echoVRIP == "127.0.0.1")
+						{
+							rejoinButton.Visibility = Visibility.Visible;
+						}
+						else
+						{
+							rejoinButton.Visibility = Visibility.Collapsed;
+						}
+
+						#endregion
+						
+						
+					}
+
+					if (Program.lastFrame?.InArena == true)  // only the arena has a disc
+					{
+						discSpeedLabel.Text = $"{Program.lastFrame.disc.velocity.ToVector3().Length():N2}";
+						// discSpeedLabel.Text = $"{Program.lastFrame.disc.velocity.ToVector3().Length():N2} m/s\t{Program.lastFrame.disc.Position.X:N2}, {Program.lastFrame.disc.Position.Y:N2}, {Program.lastFrame.disc.Position.Z:N2}";
+						discSpeedLabel.Foreground = Program.lastFrame.possession[0] switch
+						{
+							0 => Brushes.CornflowerBlue,
+							1 => Brushes.Orange,
+							_ => Brushes.White
+						};
+						//discSpeedProgressBar.Value = (int)Program.lastFrame.disc.Velocity.Length();
+						//if (Program.lastFrame.teams[0].possession)
+						//{
+						//	discSpeedProgressBar.ForeColor = Color.Blue;
+						//} else if (Program.lastFrame.teams[1].possession)
+						//{
+						//	discSpeedProgressBar.ForeColor = Color.Orange;
+						//} else
+						//{
+						//	discSpeedProgressBar.ForeColor = Color.Gray;
+						//}
+
+
+						
 
 						OrangePoints.Text = Program.lastFrame.orange_points.ToString();
 						BluePoints.Text = Program.lastFrame.blue_points.ToString();
@@ -610,23 +633,7 @@ namespace Spark
 						discSpeedLabel.Foreground = Brushes.LightGray;
 					}
 
-					#region Rejoiner
 
-					// show the button once the player hasn't been getting data for some time
-					float secondsUntilRejoiner = 1f;
-					if (Program.lastFrame != null &&
-						Program.lastFrame.private_match &&
-						DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.Now) < 0 &&
-						SparkSettings.instance.echoVRIP == "127.0.0.1")
-					{
-						rejoinButton.Visibility = Visibility.Visible;
-					}
-					else
-					{
-						rejoinButton.Visibility = Visibility.Collapsed;
-					}
-
-					#endregion
 
 					RefreshDiscordLogin();
 
@@ -992,6 +999,12 @@ namespace Spark
 
 		private void RejoinClicked(object sender, RoutedEventArgs e)
 		{
+			if (Program.lastFrame == null)
+			{
+				LogRow(LogType.Error, "Last frame null when trying to use rejoiner.");
+				return;
+			}
+			
 			Program.KillEchoVR();
 
 			// join in spectator if we were in spectator before
