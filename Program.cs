@@ -69,7 +69,7 @@ namespace Spark
 		public static ConcurrentQueue<AccumulatedFrame> rounds = new ConcurrentQueue<AccumulatedFrame>();
 		public static AccumulatedFrame CurrentRound => rounds.LastOrDefault() ?? emptyRound;
 		public static AccumulatedFrame LastRound => rounds.TakeLast(2).FirstOrDefault() ?? emptyRound;
-		private static readonly AccumulatedFrame emptyRound = new AccumulatedFrame(Frame.CreateEmptyFrame());
+		private static readonly AccumulatedFrame emptyRound = new AccumulatedFrame(Frame.CreateEmpty());
 
 		public static IEnumerable<GoalData> LastGoals => rounds.SelectMany(r => r.goals);
 		public static IEnumerable<EventData> LastJousts => rounds.SelectMany(r => r.events.Where(e=>e.eventType.IsJoust()));
@@ -988,9 +988,12 @@ namespace Spark
 				{
 					LogRow(LogType.Error, $"Error in GenerateEvents. Please catch inside.\n{ex}");
 				}
-				
-				// add the stats to the current round data
-				CurrentRound.Accumulate(frame, lastFrame);
+
+				if (frame.InArena)
+				{
+					// add the stats to the current round data
+					CurrentRound.Accumulate(frame, lastFrame);
+				}
 			}
 			catch (Exception ex)
 			{

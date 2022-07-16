@@ -9,7 +9,7 @@ tags:
   - name: General
     description: General Spark control
   - name: Game State
-    description: Returns information about the game state
+    description: Returns information about the game state. All Echo VR POST and GET requests are proxied as well.
   - name: Overlays
     description: Enables programmatic control over Spark's overlay settings
   - name: Camera Write
@@ -239,7 +239,7 @@ paths:
           in: "path"
           description: "The VRML API path to be fetched"
           required: true
-          example: "EchoArena/Players"
+          example: "EchoArena/Casters"
           schema:
             type: "string"
       responses:
@@ -290,7 +290,7 @@ paths:
     get:
       tags:
         - Game State
-      summary: Proxy for Echo VR's /session route without CORS restrictions
+      summary: Proxy for Echo VR's /session route without CORS restrictions. Uses Spark's cache to avoid repeating requests.
       responses:
         '200':
           description: Success

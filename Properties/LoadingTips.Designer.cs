@@ -19,10 +19,10 @@ namespace Spark.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class LoadingTips {
+    public class LoadingTips {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace Spark.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Properties.LoadingTips", typeof(LoadingTips).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Spark.Properties.LoadingTips", typeof(LoadingTips).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace Spark.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to 93% of players in the VR Master League are High Diamond!.
         /// </summary>
-        internal static string _93__of_players_in_the_VR_Master_League_are_High_Diamond_ {
+        public static string _93__of_players_in_the_VR_Master_League_are_High_Diamond_ {
             get {
                 return ResourceManager.GetString("93% of players in the VR Master League are High Diamond!", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to .echoreplay files can be used to play back and analyze matches in the Replay Viewer..
         /// </summary>
-        internal static string _echoreplay_files_can_be_used_to_play_back_and_analyze_matches_in_the_Replay_Viewer_ {
+        public static string _echoreplay_files_can_be_used_to_play_back_and_analyze_matches_in_the_Replay_Viewer_ {
             get {
                 return ResourceManager.GetString(".echoreplay files can be used to play back and analyze matches in the Replay View" +
                         "er.", resourceCulture);
@@ -82,7 +82,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Ban pitch and roll mid-game.
         /// </summary>
-        internal static string Ban_pitch_and_roll_mid_game {
+        public static string Ban_pitch_and_roll_mid_game {
             get {
                 return ResourceManager.GetString("Ban pitch and roll mid-game", resourceCulture);
             }
@@ -91,7 +91,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to CV1 is the most comfortable headset by far..
         /// </summary>
-        internal static string CV1_is_the_most_comfortable_headset_by_far_ {
+        public static string CV1_is_the_most_comfortable_headset_by_far_ {
             get {
                 return ResourceManager.GetString("CV1 is the most comfortable headset by far.", resourceCulture);
             }
@@ -100,7 +100,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Echo Arena 2.
         /// </summary>
-        internal static string Echo_Arena_2 {
+        public static string Echo_Arena_2 {
             get {
                 return ResourceManager.GetString("Echo Arena 2", resourceCulture);
             }
@@ -109,7 +109,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to echopedia.gg has an interactive block callout map. Vote on your preferred block names!.
         /// </summary>
-        internal static string echopedia_gg_has_an_interactive_block_callout_map__Vote_on_your_preferred_block_names_ {
+        public static string echopedia_gg_has_an_interactive_block_callout_map__Vote_on_your_preferred_block_names_ {
             get {
                 return ResourceManager.GetString("echopedia.gg has an interactive block callout map. Vote on your preferred block n" +
                         "ames!", resourceCulture);
@@ -119,7 +119,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Enable TTS in Spark for events like exact throw speed, joust times, player leave events, and more..
         /// </summary>
-        internal static string Enable_TTS_in_Spark_for_events_like_exact_throw_speed__joust_times__player_leave_events__and_more_ {
+        public static string Enable_TTS_in_Spark_for_events_like_exact_throw_speed__joust_times__player_leave_events__and_more_ {
             get {
                 return ResourceManager.GetString("Enable TTS in Spark for events like exact throw speed, joust times, player leave " +
                         "events, and more.", resourceCulture);
@@ -129,7 +129,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Get Bigmand!.
         /// </summary>
-        internal static string Get_Bigmand_ {
+        public static string Get_Bigmand_ {
             get {
                 return ResourceManager.GetString("Get Bigmand!", resourceCulture);
             }
@@ -138,7 +138,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to God is my copilot, and RAD_Natalie is my boss..
         /// </summary>
-        internal static string God_is_my_copilot__and_RAD_Natalie_is_my_boss_ {
+        public static string God_is_my_copilot__and_RAD_Natalie_is_my_boss_ {
             get {
                 return ResourceManager.GetString("God is my copilot, and RAD_Natalie is my boss.", resourceCulture);
             }
@@ -147,7 +147,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Ignite Playercards show you bars for your stats with your percentile compared to other players..
         /// </summary>
-        internal static string Ignite_Playercards_show_you_bars_for_your_stats_with_your_percentile_compared_to_other_players_ {
+        public static string Ignite_Playercards_show_you_bars_for_your_stats_with_your_percentile_compared_to_other_players_ {
             get {
                 return ResourceManager.GetString("Ignite Playercards show you bars for your stats with your percentile compared to " +
                         "other players.", resourceCulture);
@@ -157,7 +157,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to League casters love it when you send them a spark:// link instead of an invite..
         /// </summary>
-        internal static string League_casters_love_it_when_you_send_them_a_spark____link_instead_of_an_invite_ {
+        public static string League_casters_love_it_when_you_send_them_a_spark____link_instead_of_an_invite_ {
             get {
                 return ResourceManager.GetString("League casters love it when you send them a spark:// link instead of an invite.", resourceCulture);
             }
@@ -166,7 +166,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Log into Spark with Discord to enable features like uploading stats to metrics.ignitevr.gg and TTS..
         /// </summary>
-        internal static string Log_into_Spark_with_Discord_to_enable_features_like_uploading_stats_to_metrics_ignitevr_gg_and_TTS_ {
+        public static string Log_into_Spark_with_Discord_to_enable_features_like_uploading_stats_to_metrics_ignitevr_gg_and_TTS_ {
             get {
                 return ResourceManager.GetString("Log into Spark with Discord to enable features like uploading stats to metrics.ig" +
                         "nitevr.gg and TTS.", resourceCulture);
@@ -176,7 +176,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Lone Echo 2 releases tomorrow!.
         /// </summary>
-        internal static string Lone_Echo_2_releases_tomorrow_ {
+        public static string Lone_Echo_2_releases_tomorrow_ {
             get {
                 return ResourceManager.GetString("Lone Echo 2 releases tomorrow!", resourceCulture);
             }
@@ -185,7 +185,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to metrics.ignitevr.gg.
         /// </summary>
-        internal static string metrics_ignitevr_gg {
+        public static string metrics_ignitevr_gg {
             get {
                 return ResourceManager.GetString("metrics.ignitevr.gg", resourceCulture);
             }
@@ -194,7 +194,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No one knew if backboards were possible until qlyoung made them real in 2018..
         /// </summary>
-        internal static string No_one_knew_if_backboards_were_possible_until_qlyoung_made_them_real_in_2018_ {
+        public static string No_one_knew_if_backboards_were_possible_until_qlyoung_made_them_real_in_2018_ {
             get {
                 return ResourceManager.GetString("No one knew if backboards were possible until qlyoung made them real in 2018.", resourceCulture);
             }
@@ -203,7 +203,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Respect the save!.
         /// </summary>
-        internal static string Respect_the_save_ {
+        public static string Respect_the_save_ {
             get {
                 return ResourceManager.GetString("Respect the save!", resourceCulture);
             }
@@ -212,7 +212,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Same Disc, Different Day.
         /// </summary>
-        internal static string Same_Disc__Different_Day {
+        public static string Same_Disc__Different_Day {
             get {
                 return ResourceManager.GetString("Same Disc, Different Day", resourceCulture);
             }
@@ -221,7 +221,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Send someone a spark:// link to let them join your game without an invite..
         /// </summary>
-        internal static string Send_someone_a_spark____link_to_let_them_join_your_game_without_an_invite_ {
+        public static string Send_someone_a_spark____link_to_let_them_join_your_game_without_an_invite_ {
             get {
                 return ResourceManager.GetString("Send someone a spark:// link to let them join your game without an invite.", resourceCulture);
             }
@@ -230,7 +230,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Spark can automatically clip your goals or saves using Medal.tv integration..
         /// </summary>
-        internal static string Spark_can_automatically_clip_your_goals_or_saves_using_Medal_tv_integration_ {
+        public static string Spark_can_automatically_clip_your_goals_or_saves_using_Medal_tv_integration_ {
             get {
                 return ResourceManager.GetString("Spark can automatically clip your goals or saves using Medal.tv integration.", resourceCulture);
             }
@@ -239,7 +239,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Spark is available in both English and Japanese!.
         /// </summary>
-        internal static string Spark_is_available_in_both_English_and_Japanese_ {
+        public static string Spark_is_available_in_both_English_and_Japanese_ {
             get {
                 return ResourceManager.GetString("Spark is available in both English and Japanese!", resourceCulture);
             }
@@ -248,7 +248,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Spark makes sure you never forget the scores in league matches..
         /// </summary>
-        internal static string Spark_makes_sure_you_never_forget_the_scores_in_league_matches_ {
+        public static string Spark_makes_sure_you_never_forget_the_scores_in_league_matches_ {
             get {
                 return ResourceManager.GetString("Spark makes sure you never forget the scores in league matches.", resourceCulture);
             }
@@ -257,7 +257,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Spark offers Discord Rich Presence and game invites..
         /// </summary>
-        internal static string Spark_offers_Discord_Rich_Presence_and_game_invites_ {
+        public static string Spark_offers_Discord_Rich_Presence_and_game_invites_ {
             get {
                 return ResourceManager.GetString("Spark offers Discord Rich Presence and game invites.", resourceCulture);
             }
@@ -266,7 +266,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Spark&apos;s OBS integration allows you to make replay buffer clips and automatically change scenes..
         /// </summary>
-        internal static string Spark_s_OBS_integration_allows_you_to_make_replay_buffer_clips_and_automatically_change_scenes_ {
+        public static string Spark_s_OBS_integration_allows_you_to_make_replay_buffer_clips_and_automatically_change_scenes_ {
             get {
                 return ResourceManager.GetString("Spark\'s OBS integration allows you to make replay buffer clips and automatically " +
                         "change scenes.", resourceCulture);
@@ -276,7 +276,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The Replay Viewer is pretty cool. Check it out..
         /// </summary>
-        internal static string The_Replay_Viewer_is_pretty_cool__Check_it_out_ {
+        public static string The_Replay_Viewer_is_pretty_cool__Check_it_out_ {
             get {
                 return ResourceManager.GetString("The Replay Viewer is pretty cool. Check it out.", resourceCulture);
             }
@@ -285,7 +285,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The server location provided by Spark is not 100% reliable as it is based on the IP address of the server..
         /// </summary>
-        internal static string The_server_location_provided_by_Spark_is_not_100__reliable_as_it_is_based_on_the_IP_address_of_the_server_ {
+        public static string The_server_location_provided_by_Spark_is_not_100__reliable_as_it_is_based_on_the_IP_address_of_the_server_ {
             get {
                 return ResourceManager.GetString("The server location provided by Spark is not 100% reliable as it is based on the " +
                         "IP address of the server.", resourceCulture);
@@ -295,7 +295,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The strategic dinging self-goal 2-pointer was not possible until Lemming scored his iconic goal at OC5.
         /// </summary>
-        internal static string The_strategic_dinging_self_goal_2_pointer_was_not_possible_until_Lemming_scored_his_iconic_goal_at_OC5 {
+        public static string The_strategic_dinging_self_goal_2_pointer_was_not_possible_until_Lemming_scored_his_iconic_goal_at_OC5 {
             get {
                 return ResourceManager.GetString("The strategic dinging self-goal 2-pointer was not possible until Lemming scored h" +
                         "is iconic goal at OC5", resourceCulture);
@@ -305,7 +305,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Use NVIDIA Highlights in Spark to automatically record clips of all your noteworthy moments..
         /// </summary>
-        internal static string Use_NVIDIA_Highlights_in_Spark_to_automatically_record_clips_of_all_your_noteworthy_moments_ {
+        public static string Use_NVIDIA_Highlights_in_Spark_to_automatically_record_clips_of_all_your_noteworthy_moments_ {
             get {
                 return ResourceManager.GetString("Use NVIDIA Highlights in Spark to automatically record clips of all your notewort" +
                         "hy moments.", resourceCulture);
@@ -315,7 +315,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Use the EchoVR Speaker System to make any audio on your PC sound like an arena..
         /// </summary>
-        internal static string Use_the_EchoVR_Speaker_System_to_make_any_audio_on_your_PC_sound_like_an_arena_ {
+        public static string Use_the_EchoVR_Speaker_System_to_make_any_audio_on_your_PC_sound_like_an_arena_ {
             get {
                 return ResourceManager.GetString("Use the EchoVR Speaker System to make any audio on your PC sound like an arena.", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Use the server score provided by Spark to choose a server that is fair for both teams..
         /// </summary>
-        internal static string Use_the_server_score_provided_by_Spark_to_choose_a_server_that_is_fair_for_both_teams_ {
+        public static string Use_the_server_score_provided_by_Spark_to_choose_a_server_that_is_fair_for_both_teams_ {
             get {
                 return ResourceManager.GetString("Use the server score provided by Spark to choose a server that is fair for both t" +
                         "eams.", resourceCulture);
@@ -334,7 +334,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to You can automatically upload your tablet stats and view them on metrics.ignitevr.gg..
         /// </summary>
-        internal static string You_can_automatically_upload_your_tablet_stats_and_view_them_on_metrics_ignitevr_gg_ {
+        public static string You_can_automatically_upload_your_tablet_stats_and_view_them_on_metrics_ignitevr_gg_ {
             get {
                 return ResourceManager.GetString("You can automatically upload your tablet stats and view them on metrics.ignitevr." +
                         "gg.", resourceCulture);
@@ -344,7 +344,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to You can change many of Echo VR&apos;s ingame settings from within Spark&apos;s settings..
         /// </summary>
-        internal static string You_can_change_many_of_Echo_VR_s_ingame_settings_from_within_Spark_s_settings_ {
+        public static string You_can_change_many_of_Echo_VR_s_ingame_settings_from_within_Spark_s_settings_ {
             get {
                 return ResourceManager.GetString("You can change many of Echo VR\'s ingame settings from within Spark\'s settings.", resourceCulture);
             }
@@ -353,7 +353,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to You can create a private match in any region you want using the &apos;Choose Server Region&apos; button in Spark..
         /// </summary>
-        internal static string You_can_create_a_private_match_in_any_region_you_want_using_the__Choose_Server_Region__button_in_Spark_ {
+        public static string You_can_create_a_private_match_in_any_region_you_want_using_the__Choose_Server_Region__button_in_Spark_ {
             get {
                 return ResourceManager.GetString("You can create a private match in any region you want using the \'Choose Server Re" +
                         "gion\' button in Spark.", resourceCulture);
@@ -363,7 +363,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to You can set Spark up to save clips when you say &apos;Clip that!&apos;.
         /// </summary>
-        internal static string You_can_set_Spark_up_to_save_clips_when_you_say__Clip_that__ {
+        public static string You_can_set_Spark_up_to_save_clips_when_you_say__Clip_that__ {
             get {
                 return ResourceManager.GetString("You can set Spark up to save clips when you say \'Clip that!\'", resourceCulture);
             }
@@ -372,7 +372,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to You can set up the in-game emote gesture to activate clips with Spark!.
         /// </summary>
-        internal static string You_can_set_up_the_in_game_emote_gesture_to_activate_clips_with_Spark_ {
+        public static string You_can_set_up_the_in_game_emote_gesture_to_activate_clips_with_Spark_ {
             get {
                 return ResourceManager.GetString("You can set up the in-game emote gesture to activate clips with Spark!", resourceCulture);
             }
@@ -381,7 +381,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to You can sort the joust times in Spark&apos;s dashboard by fastest time as well as by most recent..
         /// </summary>
-        internal static string You_can_sort_the_joust_times_in_Spark_s_dashboard_by_fastest_time_as_well_as_by_most_recent_ {
+        public static string You_can_sort_the_joust_times_in_Spark_s_dashboard_by_fastest_time_as_well_as_by_most_recent_ {
             get {
                 return ResourceManager.GetString("You can sort the joust times in Spark\'s dashboard by fastest time as well as by m" +
                         "ost recent.", resourceCulture);
@@ -391,7 +391,7 @@ namespace Spark.Properties {
         /// <summary>
         ///   Looks up a localized string similar to You can use the event logs in Spark to see exactly when players joined or left in every match..
         /// </summary>
-        internal static string You_can_use_the_event_logs_in_Spark_to_see_exactly_when_players_joined_or_left_in_every_match_ {
+        public static string You_can_use_the_event_logs_in_Spark_to_see_exactly_when_players_joined_or_left_in_every_match_ {
             get {
                 return ResourceManager.GetString("You can use the event logs in Spark to see exactly when players joined or left in" +
                         " every match.", resourceCulture);

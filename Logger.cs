@@ -253,6 +253,11 @@ public class Logger
 		LogRow(fileName, new List<string>(elements));
 	}
 
+	public static void Error(string error)
+	{
+		LogRow(LogType.Error, error);
+	}
+
 	private static void ActuallyLog()
 	{
 		if (!ENABLE_LOGGER) return;

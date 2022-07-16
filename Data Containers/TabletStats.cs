@@ -60,7 +60,7 @@ namespace Spark
 				creation_time = (int)data["creationtime"];
 				if (data["purchasedcombat"] != null)
 					purchased_combat = (int)data["purchasedcombat"];
-				if (data["stats"]["arena"] == null) return;
+				if (data["stats"]?["arena"] == null) return;
 				level = (int)data["stats"]["arena"]["Level"]?["val"];
 				if (level > 1)
 				{

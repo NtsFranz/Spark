@@ -22,7 +22,7 @@ namespace Spark
 		{
 			InitializeComponent();
 
-			this.sessionId = session_id;
+			sessionId = session_id;
 
 			RefreshConnectionStatus();
 		}
@@ -30,12 +30,13 @@ namespace Spark
 		private void RefreshConnectionStatus()
 		{
 			sessionDataFound = null;
-			Dispatcher.Invoke(UpdateStatusLabel);
+			UpdateStatusLabel();
 			_ = Task.Run(async () =>
 			{
 				string resp = null;
 				try
 				{
+					Program.client.Timeout = TimeSpan.FromSeconds(2);
 					HttpResponseMessage response = await Program.client.GetAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session");
 					resp = await response.Content.ReadAsStringAsync();
 				}
@@ -84,52 +85,46 @@ namespace Spark
 			}
 		}
 
-		private void Join(int teamIndex = -1)
+		private async Task Join(int teamIndex = -1)
 		{
-			_ = Task.Run(async () =>
+			if (sessionDataFound == true)
 			{
-				if (sessionDataFound == true)
+				bool success = await Program.APIJoin(sessionId, teamIndex);
+				if (success)
 				{
-					bool success = await Program.APIJoin(sessionId, teamIndex);
-					if (success)
+					Dispatcher.Invoke(() =>
 					{
-						Dispatcher.Invoke(() =>
-						{
-							SparkSettings.instance.Save();
-							Close();
-							Program.Quit();
-						});
-					}
-					else
-					{
-						Dispatcher.Invoke(() =>
-						{
-							new MessageBox("Failed to send match id to the game. Try again or launch a new instance instead.", "Error", Program.Quit).Show();
-						});
-					}
+						SparkSettings.instance.Save();
+						Close();
+						Program.Quit();
+					});
 				}
 				else
 				{
-					if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
-					if (teamIndex == 2)
+					Dispatcher.Invoke(() =>
 					{
-						Program.StartEchoVR(Program.JoinType.Spectator, session_id: sessionId, noovr: SparkSettings.instance.sparkLinkNoOVR);
-					}
-					else
-					{
-						Program.StartEchoVR(Program.JoinType.Player, session_id: sessionId, teamIndex: teamIndex);	
-					}
-					SparkSettings.instance.Save();
-					Close();
-					Program.Quit();
+						new MessageBox("Failed to send match id to the game. Try again or launch a new instance instead.", "Error", Program.Quit).Show();
+					});
 				}
-			});
+			}
+			else
+			{
+				if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
+				if (teamIndex == 2)
+				{
+					Program.StartEchoVR(Program.JoinType.Spectator, session_id: sessionId, noovr: SparkSettings.instance.sparkLinkNoOVR);
+				}
+				else
+				{
+					Program.StartEchoVR(Program.JoinType.Player, session_id: sessionId, teamIndex: teamIndex);
+				}
+
+				SparkSettings.instance.Save();
+				// Close();
+				Program.Quit();
+			}
 		}
 
-		private void JoinAsSpectatorClicked(object sender, RoutedEventArgs e)
-		{
-			Join(2);
-		}
 
 		private void CloseButtonClicked(object sender, EventArgs e)
 		{
@@ -141,14 +136,19 @@ namespace Spark
 			UpdateStatusLabel();
 		}
 
-		private void JoinOrangeTeam(object sender, RoutedEventArgs e)
+		private async void JoinBlueTeam(object sender, RoutedEventArgs e)
 		{
-			Join(1);
+			await Join(0);
 		}
 
-		private void JoinBlueTeam(object sender, RoutedEventArgs e)
+		private async void JoinOrangeTeam(object sender, RoutedEventArgs e)
 		{
-			Join(0);
+			await Join(1);
+		}
+
+		private async void JoinAsSpectatorClicked(object sender, RoutedEventArgs e)
+		{
+			await Join(2);
 		}
 	}
 }

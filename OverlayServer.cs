@@ -63,7 +63,7 @@ namespace Spark
 
 				if (serverRestarting)
 				{
-					Logger.LogRow(Logger.LogType.Error, $"Already restarting server. Cancelling this restart. {restartIndex}");
+					Logger.Error($"Already restarting server. Cancelling this restart. {restartIndex}");
 					return;
 				}
 
@@ -106,6 +106,12 @@ namespace Spark
 			public void ConfigureServices(IServiceCollection services)
 			{
 				services.AddDirectoryBrowser();
+				services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+				{
+					builder.WithOrigins("*")
+						.AllowAnyMethod()
+						.AllowAnyHeader();
+				}));
 			}
 
 			public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -117,13 +123,14 @@ namespace Spark
 
 				app.UseDefaultFiles();
 				//app.UseStaticFiles();
+				app.UseCors("MyPolicy");
+				// app.UseCors(x => x.SetIsOriginAllowed(origin => true));
 				app.UseRouting();
 
 				app.UseEndpoints(endpoints =>
 				{
 					SparkAPI.MapRoutes(endpoints);
-
-					// OverlaysVRML.MapRoutes(endpoints);
+					EchoVRAPIPassthrough.MapRoutes(endpoints);
 					OverlaysCustom.MapRoutes(endpoints);
 
 
@@ -141,27 +148,7 @@ namespace Spark
 								{ "ess_version", Program.InstalledSpeakerSystemVersion },
 							});
 					});
-
-
-					endpoints.MapGet("/session", async context =>
-					{
-						context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-						context.Response.Headers.Add("Access-Control-Allow-Headers",
-							"Content-Type, Accept, X-Requested-With");
-						context.Response.Headers.Add("Content-Type", "application/json");
-
-						if (Program.InGame)
-						{
-							await context.Response.WriteAsync(Program.lastJSON);
-						}
-						else
-						{
-							context.Response.StatusCode = 404;
-							await context.Response.WriteAsync("");
-						}
-					});
-
-
+					
 					endpoints.MapGet("/stats", async context =>
 					{
 						context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
