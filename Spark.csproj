@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.4.16</Version>
+    <Version>2.4.17</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -530,7 +530,7 @@
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     <PackageReference Include="ZstdNet" Version="1.4.5" />
     <PackageReference Include="EchoVRAPI" Version="1.1.2" />
-    <PackageReference Include="ButterReplays" Version="1.3.3" />
+    <PackageReference Include="ButterReplays" Version="1.3.4" />
   </ItemGroup>
   
   <ItemGroup>

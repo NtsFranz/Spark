@@ -350,15 +350,15 @@
     }
 
 
-    httpGetAsync('https://api.ignitevr.workers.dev/vrmlapi/echoarena/Standings', autocompleteTeamInputs);
+    httpGetAsync('https://api.ignitevr.gg/vrml/get_team_list', autocompleteTeamInputs);
 
     function autocompleteTeamInputs(data) {
         data = JSON.parse(data);
-        teams = [];
+        let teams = [];
 
         data.forEach(t => {
-            teams.push(t['name']);
-            teamLogosDict[t['name']] = 'https://vrmasterleague.com' + t['logo'];
+            teams.push(t['teamName']);
+            teamLogosDict[t['teamName']] = 'https://vrmasterleague.com' + t['teamLogo'];
         });
 
         Array.from(document.getElementsByClassName("team_input")).forEach(e => {

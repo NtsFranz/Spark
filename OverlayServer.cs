@@ -431,10 +431,9 @@ namespace Spark
 				{
 					List<AccumulatedFrame> selectedMatches = null;
 					List<List<Dictionary<string, object>>> matchStats = null;
-					if (Program.InGame)
+					// if (Program.InGame)
 					{
 						selectedMatches = GetPreviousRounds();
-
 
 						BatchOutputFormat data = new BatchOutputFormat
 						{
@@ -579,10 +578,19 @@ namespace Spark
 			//  .Where(m=>m!=null)
 			// 	.Where(m => m.frame.sessionid == Program.CurrentRound.frame.sessionid)
 			// 	.ToList();
-			List<AccumulatedFrame> selectedMatches = Program.rounds
-				.Where(m => m != null)
-				.TakeLast(1)
-				.ToList();
+			// List<AccumulatedFrame> selectedMatches = Program.rounds
+			// 	.Where(m => m != null)
+			// 	.TakeLast(1)
+			// 	.ToList();
+			
+			List<AccumulatedFrame> selectedMatches = new List<AccumulatedFrame>();
+			selectedMatches.Add(Program.CurrentRound);
+			while (selectedMatches.Last().lastRound != null)
+			{
+				selectedMatches.Add(selectedMatches.Last().lastRound);
+			}
+
+			selectedMatches.Reverse();
 			return selectedMatches;
 		}
 

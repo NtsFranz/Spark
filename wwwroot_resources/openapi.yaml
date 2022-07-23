@@ -232,7 +232,7 @@ paths:
     get:
       tags:
         - Overlays
-      summary: A local proxy for the VRML API at api.vrmasterleague.com. This has a local cache of 30 minutes, so it an be much faster for repeated requests.
+      summary: A local proxy for the VRML API at apiignite.vrmasterleague.com. This has a local cache of 30 minutes, so it can be much faster for repeated requests.
       
       parameters:
         - name: "route"
