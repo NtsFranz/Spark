@@ -12,6 +12,13 @@ using Newtonsoft.Json;
 
 namespace Spark
 {
+	class PrivateMatchRulePreset
+	{
+		public string description;
+		public string last_updated;
+		public PrivateMatchRules rules;
+	}
+
 	public partial class PrivateMatchRulesWindow
 	{
 		private readonly Timer outputUpdateTimer = new Timer();
@@ -19,6 +26,7 @@ namespace Spark
 		private readonly PrivateMatchRules rules = new PrivateMatchRules();
 
 		private bool listenersActive;
+		private bool changingRules;
 
 		private PrivateMatchRules Rules
 		{
@@ -58,33 +66,38 @@ namespace Spark
 		public Action SettingsUpdated;
 		private DateTime lastSetTime = DateTime.UtcNow;
 
-		private Dictionary<string, PrivateMatchRules> presets = new Dictionary<string, PrivateMatchRules>()
+		private Dictionary<string, PrivateMatchRulePreset> presets = new Dictionary<string, PrivateMatchRulePreset>()
 		{
 			{
-				"Default", new PrivateMatchRules()
+				"Default", new PrivateMatchRulePreset()
 				{
-					minutes = 10,
-					seconds = 0,
-					blue_score = 0,
-					orange_score = 0,
-					disc_location = PrivateMatchRules.DiscLocation.mid,
-					goal_stops_time = false,
-					respawn_time = 3,
-					catapult_time = 12,
-					round_count = 3,
-					rounds_played = PrivateMatchRules.RoundsPlayed.best_of,
-					round_wait_time = 59,
-					carry_points_over = false,
-					blue_rounds_won = 0,
-					orange_rounds_won = 0,
-					overtime = PrivateMatchRules.Overtime.round_end,
-					standard_chassis = true,
-					mercy_enabled = true,
-					mercy_score_diff = 20,
-					team_only_voice = true,
-					disc_curve = false,
-					self_goaling = true,
-					goalie_ping_adv = false
+					last_updated = "2022-07-23",
+					description = "",
+					rules = new PrivateMatchRules()
+					{
+						minutes = 10,
+						seconds = 0,
+						blue_score = 0,
+						orange_score = 0,
+						disc_location = PrivateMatchRules.DiscLocation.mid,
+						goal_stops_time = false,
+						respawn_time = 3,
+						catapult_time = 12,
+						round_count = 3,
+						rounds_played = PrivateMatchRules.RoundsPlayed.best_of,
+						round_wait_time = 59,
+						carry_points_over = false,
+						blue_rounds_won = 0,
+						orange_rounds_won = 0,
+						overtime = PrivateMatchRules.Overtime.round_end,
+						standard_chassis = true,
+						mercy_enabled = true,
+						mercy_score_diff = 20,
+						team_only_voice = true,
+						disc_curve = false,
+						self_goaling = true,
+						goalie_ping_adv = false
+					}
 				}
 			}
 		};
@@ -318,20 +331,20 @@ namespace Spark
 			InitializeComponent();
 
 			// add local presets
-			foreach (KeyValuePair<string, PrivateMatchRules> preset in presets)
+			foreach (KeyValuePair<string, PrivateMatchRulePreset> preset in presets)
 			{
 				PresetSelector.Items.Add(preset.Key);
 			}
 
 			// add presets from server
-			Program.GetRequestCallback($"{Program.APIURL}/private_match_rules", null, resp =>
+			Program.GetRequestCallback($"{Program.APIURL}/v2/private_match_rules", null, resp =>
 			{
-				Dictionary<string, PrivateMatchRules> dict = JsonConvert.DeserializeObject<Dictionary<string, PrivateMatchRules>>(resp);
+				Dictionary<string, PrivateMatchRulePreset> dict = JsonConvert.DeserializeObject<Dictionary<string, PrivateMatchRulePreset>>(resp);
 				if (dict != null)
 				{
 					Dispatcher.Invoke(() =>
 					{
-						foreach (KeyValuePair<string, PrivateMatchRules> preset in dict)
+						foreach (KeyValuePair<string, PrivateMatchRulePreset> preset in dict)
 						{
 							if (!presets.ContainsKey(preset.Key))
 							{
@@ -397,6 +410,8 @@ namespace Spark
 		{
 			if (!listenersActive) return;
 
+			changingRules = true;
+
 			lastSetTime = DateTime.UtcNow;
 
 			// send POST request to update settings /set_rules
@@ -416,10 +431,11 @@ namespace Spark
 								{ keyValue.Key, keyValue.Value }
 							});
 							await Program.PostRequestAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body);
+							lastSetTime = DateTime.UtcNow;
 						}
 					}
 				});
-				
+
 				// set the rules all at once
 				// string body = JsonConvert.SerializeObject(Rules);
 				// Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body, null);
@@ -432,13 +448,14 @@ namespace Spark
 			listenersActive = false;
 			MatchToPreset();
 			listenersActive = true;
+			changingRules = false;
 		}
 
 		private void MatchToPreset()
 		{
-			foreach (KeyValuePair<string, PrivateMatchRules> preset in presets)
+			foreach (KeyValuePair<string, PrivateMatchRulePreset> preset in presets)
 			{
-				if (preset.Value.Equals(Rules))
+				if (preset.Value.rules.Equals(Rules))
 				{
 					PresetSelector.SelectedValue = preset.Key;
 					return;
@@ -498,6 +515,7 @@ namespace Spark
 				{
 					if (Program.InGame && Program.lastFrame != null &&
 					    (DateTime.UtcNow - lastSetTime).TotalSeconds > 1 && // if we didn't just change something locally
+					    !changingRules &&
 					    Equals(Program.liveWindow.tabControl.SelectedItem, Program.liveWindow.PrivateMatchRulesTab)
 					   )
 					{
@@ -562,7 +580,7 @@ namespace Spark
 			string rulesetName = PresetSelector.SelectedValue.ToString() ?? string.Empty;
 			if (presets.ContainsKey(rulesetName))
 			{
-				Rules = presets[rulesetName];
+				Rules = presets[rulesetName].rules;
 			}
 		}
 	}

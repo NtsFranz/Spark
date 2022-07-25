@@ -230,18 +230,12 @@ namespace Spark
 		/// </summary>
 		public Vector3 playspaceLocation;
 
-		public DateTime lastAbuse = DateTime.Now;
+		public DateTime lastAbuse = DateTime.UtcNow;
 		public TimeSpan playspaceInvincibility = TimeSpan.Zero;
-		public readonly TimeSpan joinPlayspaceInvincibility = TimeSpan.FromSeconds(5);
 		public int PlayspaceAbuses { get; set; }
 
 		// head, lhand, rhand
 		public float[] averageSpeed = { 0, 0, 0 };
-
-		/// <summary>
-		/// Positions every 1s of game time
-		/// </summary>
-		public List<Vector3> sparsePositions = new List<Vector3>();
 
 		public List<float> distanceBetweenHands = new List<float>();
 

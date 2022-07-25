@@ -273,7 +273,7 @@
 								</StackPanel>
 								<Label x:Name="splitLabel" Content="{x:Static p:Resources.Replay_File_Splitting_}" Margin="4,4,4,4" />
 								<StackPanel Height="30" Margin="4,4,4,4" Orientation="Horizontal">
-									<ComboBox x:Name="whenToSplitReplaysDropdown" Width="210"
+									<ComboBox Visibility="Collapsed" Width="210"
 												  SelectedIndex="{l:SettingBinding whenToSplitReplays}"
 												  Margin="4,0,4,0" Height="24.62">
 										<ComboBoxItem Content="{x:Static p:Resources.Every_Round}" />

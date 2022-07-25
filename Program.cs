@@ -21,7 +21,6 @@ using static Logger;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Management;
-using System.Net.Http.Json;
 using System.Resources;
 using EchoVRAPI;
 using NetMQ;
@@ -217,8 +216,17 @@ namespace Spark
 		/// </summary>
 		public static Action<Frame> LeftGame;
 
-		public static Action<Frame> NewRound;
+		/// <summary>
+		/// We changed session ids. This happens for first join and switching matches
+		/// </summary>
+		public static Action<Frame> NewMatch;
 		public static Action<Frame, AccumulatedFrame.FinishReason> RoundOver;
+		/// <summary>
+		/// A new round started. This only happens for secondary rounds in private matches.
+		/// Frame is the first frame of the new round with scores at 0-0 
+		/// </summary>
+		public static Action<Frame> NewRound;
+		
 
 		public static Action<Frame> JoinedLobby;
 		public static Action<Frame> LeftLobby;
@@ -1353,7 +1361,7 @@ namespace Spark
 		private static void GenerateEvents(Frame frame, Frame lastFrame)
 		{
 			// add a new round for the first frame
-			if (lastFrame == null)
+			if (lastFrame == null || frame.sessionid != lastFrame.sessionid)
 			{
 				rounds.Enqueue(new AccumulatedFrame(frame, null));
 			}
@@ -1419,24 +1427,16 @@ namespace Spark
 			// if we entered a different match
 			if (lastFrame == null || frame.sessionid != lastFrame.sessionid)
 			{
-				// only for actual switches, since we already added a round for new join
-				if (lastFrame != null)
-				{
-					rounds.Enqueue(new AccumulatedFrame(frame, null));
-				}
-
 				lastFrame = frame; // don't detect stats changes across matches
 				
 				try
 				{
-					NewRound?.Invoke(frame);
+					NewMatch?.Invoke(frame);
 				}
 				catch (Exception exp)
 				{
 					LogRow(LogType.Error, "Error processing action", exp.ToString());
 				}
-
-
 			}
 
 			// The time between the current frame and last frame in seconds based on the game clock
@@ -2608,6 +2608,12 @@ namespace Spark
 					if (lastFrame.game_status == "playing" || lastFrame.game_status == "round_start")
 					{
 						EventMatchFinished(lastFrame, frame, AccumulatedFrame.FinishReason.reset);
+						
+						rounds.Enqueue(new AccumulatedFrame(frame, null));
+						while (rounds.Count > 50)
+						{
+							rounds.TryDequeue(out AccumulatedFrame _);
+						}
 
 						try
 						{
@@ -2623,6 +2629,26 @@ namespace Spark
 				// round began
 				case "round_start":
 
+					// new round of a private match started.
+					// this happens when the scores are reset and players teleport back to the start
+					if (lastFrame.game_status == "" && CurrentRound.finishReason != AccumulatedFrame.FinishReason.not_finished)
+					{
+						rounds.Enqueue(new AccumulatedFrame(frame, rounds.Last()));
+						while (rounds.Count > 50)
+						{
+							rounds.TryDequeue(out AccumulatedFrame _);
+						}
+						
+						try
+						{
+							NewRound?.Invoke(frame);
+						}
+						catch (Exception exp)
+						{
+							LogRow(LogType.Error, "Error processing action", exp.ToString());
+						}
+					}
+					
 					// if we just started a new 'round' (so stats haven't been reset)
 					if (lastFrame.game_status == "round_over")
 					{
@@ -2695,7 +2721,7 @@ namespace Spark
 					break;
 
 				case "round_over":
-					if (frame.blue_points == frame.orange_points)
+					if ((int)frame.blue_points == (int)frame.orange_points)
 					{
 						// OVERTIME
 						LogRow(LogType.Info, "overtime");
@@ -2915,11 +2941,6 @@ namespace Spark
 
 			RoundOver?.Invoke(lastRoundFrame, reason);
 			
-			rounds.Enqueue(new AccumulatedFrame(nextRoundFrame, rounds.Last()));
-			while (rounds.Count > 50)
-			{
-				rounds.TryDequeue(out AccumulatedFrame _);
-			}
 		}
 
 

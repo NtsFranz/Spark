@@ -40,6 +40,8 @@ namespace Spark
 		private readonly ConcurrentQueue<string> ttsQueue = new ConcurrentQueue<string>();
 
 		public static string CacheFolder => Path.Combine(Path.GetTempPath(), "SparkTTSCache");
+		
+		private readonly Stopwatch lastRulesChangedTimer = Stopwatch.StartNew();
 
 		public TTSController()
 		{
@@ -158,10 +160,11 @@ namespace Spark
 			};
 			Program.RulesChanged += frame =>
 			{
-				if (SparkSettings.instance.rulesChangedTTS)
+				if (SparkSettings.instance.rulesChangedTTS && lastRulesChangedTimer.Elapsed.TotalSeconds > 2)
 				{
 					SpeakAsync($"{frame.rules_changed_by} changed the rules");
 				}
+				lastRulesChangedTimer.Restart();
 			};
 
 			#endregion

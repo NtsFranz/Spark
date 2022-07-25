@@ -13,7 +13,7 @@ namespace Spark
 
 		public SpectateMeController()
 		{
-			Program.NewRound += OnNewRound;
+			Program.NewMatch += OnNewRound;
 			Program.LeftGame += OnLeftGame;
 			Program.JoinedGame += OnJoinedGame;
 		}

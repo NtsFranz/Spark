@@ -146,7 +146,7 @@ namespace Spark
 			RefreshAccessCodeList();
 			RefreshDiscordLogin();
 
-			Program.JoinedGame += frame =>
+			Program.NewMatch += frame =>
 			{
 				Dispatcher.Invoke(() =>
 				{
@@ -537,7 +537,8 @@ namespace Spark
 						float secondsUntilRejoiner = 1f;
 						if (Program.lastFrame != null &&
 						    Program.lastFrame.private_match &&
-						    DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.Now) < 0 &&
+						    Program.lastFrame.GetAllPlayers(true).Count > 1 &&	// if we weren't the lst
+						    DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.UtcNow) < 0 &&
 						    SparkSettings.instance.echoVRIP == "127.0.0.1")
 						{
 							rejoinButton.Visibility = Visibility.Visible;

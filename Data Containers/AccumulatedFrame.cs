@@ -77,6 +77,8 @@ namespace Spark
 			teams[Team.TeamColor.blue].FindTeamNamesFromPlayerList(frame.teams[0]);
 			teams[Team.TeamColor.orange].FindTeamNamesFromPlayerList(frame.teams[1]);
 
+			serverLocation = lastRound?.serverLocation;
+
 			if (lastRound != null)
 			{
 				// Loop through teams.

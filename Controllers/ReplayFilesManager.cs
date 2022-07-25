@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using ButterReplays;
 using EchoVRAPI;
@@ -23,9 +21,9 @@ namespace Spark
 
 		private readonly object butterWritingLock = new object();
 		private readonly object fileWritingLock = new object();
-		public bool zipping = false;
-		public bool replayThreadActive = false;
-		public bool splitting = false;
+		public bool zipping;
+		public bool replayThreadActive;
+		public bool splitting;
 
 		public ConcurrentQueue<string> lastJSONQueue = new ConcurrentQueue<string>();
 		public ConcurrentQueue<string> lastDateTimeStringQueue = new ConcurrentQueue<string>();
@@ -38,7 +36,7 @@ namespace Spark
 		private const string echoreplayDateFormat = "yyyy/MM/dd HH:mm:ss.fff";
 		private const string fileNameFormat = "rec_yyyy-MM-dd_HH-mm-ss";
 
-		private int lastButterNumChunks = 0;
+		private int lastButterNumChunks;
 		private ulong lastButterFetchFrameIndex = 0;
 
 		/// <summary>
@@ -51,26 +49,27 @@ namespace Spark
 
 		private static readonly List<float> fullDeltaTimes = new List<float> { 33.3333333f, 66.666666f, 100 };
 		private static int FrameInterval => Math.Clamp((int)(fullDeltaTimes[SparkSettings.instance.targetDeltaTimeIndexFull] / Program.StatsIntervalMs), 1, 10000);
-		private int frameIndex = 0;
+		private int frameIndex;
 
 		public ReplayFilesManager()
 		{
 			butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
 
+			// creates a new filename
 			Split();
 
 			Program.NewFrame += AddButterFrame;
 			// Program.NewFrame += AddMilkFrame;
 			Program.FrameFetched += AddEchoreplayFrame;
 
-			Program.JoinedGame += frame =>
+			Program.JoinedGame += _ =>
 			{
 				lock (fileWritingLock)
 				{
 					fileName = DateTime.Now.ToString(fileNameFormat);
 				}
 			};
-			Program.LeftGame += frame =>
+			Program.LeftGame += _ =>
 			{
 				Task.Run(async () =>
 				{
@@ -78,7 +77,7 @@ namespace Spark
 					Split();
 				});
 			};
-			Program.RoundOver += (_, _) =>
+			Program.NewRound += _ =>
 			{
 				Split();
 			};
