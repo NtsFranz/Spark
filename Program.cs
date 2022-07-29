@@ -1736,7 +1736,72 @@ namespace Spark
 					LogRow(LogType.Error, "Error processing action", exp.ToString());
 				}
 			}
+			
+			
+			// Generate events for each player even when not playing
+			foreach (Team team in frame.teams)
+			{
+				foreach (Player player in team.players)
+				{
+					Player lastPlayer = lastFrame.GetPlayer(player.userid);
+					if (lastPlayer == null) continue;
 
+					MatchPlayer playerData = CurrentRound.GetPlayerData(player);
+					if (playerData != null)
+					{
+						// check emote activation
+						if (player.is_emote_playing && !lastPlayer.is_emote_playing)
+						{
+							EventData eventData = new EventData(
+								CurrentRound,
+								EventContainer.EventType.emote,
+								frame.game_clock,
+								team,
+								player,
+								null,
+								player.head.Position,
+								player.velocity.ToVector3()
+							);
+							try
+							{
+								EmoteActivated?.Invoke(frame, team, player);
+							}
+							catch (Exception exp)
+							{
+								LogRow(LogType.Error, "Error processing action", exp.ToString());
+							}
+
+							CurrentRound.events.Enqueue(eventData);
+							
+							// emotes are always local-only
+							if (player.name == frame.client_name)
+							{
+								HighlightsHelper.SaveHighlightMaybe(player.name, frame, "EMOTE");
+							}
+						}
+					}
+				}
+			}
+			
+			
+			// check for local throws
+			if (!lastFrame.last_throw.Equals(frame.last_throw))
+			{
+				Team clientPlayerTeam = frame?.GetTeam(frame.client_name);
+				Player clientPlayer = frame?.GetPlayer(frame.client_name);
+
+				CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.local_throw,
+					frame.game_clock, clientPlayerTeam, clientPlayer, frame.last_throw));
+
+				try
+				{
+					LocalThrow?.Invoke(frame);
+				}
+				catch (Exception exp)
+				{
+					LogRow(LogType.Error, "Error processing action", exp.ToString());
+				}
+			}
 
 			// while playing and frames aren't identical
 			if (frame.game_status == "playing" && deltaTime != 0)
@@ -1754,24 +1819,6 @@ namespace Spark
 				}
 
 
-				// check for local throws
-				if (!lastFrame.last_throw.Equals(frame.last_throw))
-				{
-					Team clientPlayerTeam = frame?.GetTeam(frame.client_name);
-					Player clientPlayer = frame?.GetPlayer(frame.client_name);
-
-					CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.local_throw,
-						frame.game_clock, clientPlayerTeam, clientPlayer, frame.last_throw));
-
-					try
-					{
-						LocalThrow?.Invoke(frame);
-					}
-					catch (Exception exp)
-					{
-						LogRow(LogType.Error, "Error processing action", exp.ToString());
-					}
-				}
 
 				// Generate "playing" events
 				foreach (Team team in frame.teams)
@@ -1929,38 +1976,6 @@ namespace Spark
 						else
 						{
 							LogRow(LogType.Error, "PlayerData is null");
-						}
-						
-						
-						// check emote activation
-						if (player.is_emote_playing && !lastPlayer.is_emote_playing)
-						{
-							EventData eventData = new EventData(
-								CurrentRound,
-								EventContainer.EventType.emote,
-								frame.game_clock,
-								team,
-								player,
-								null,
-								player.head.Position,
-								player.velocity.ToVector3()
-							);
-							try
-							{
-								EmoteActivated?.Invoke(frame, team, player);
-							}
-							catch (Exception exp)
-							{
-								LogRow(LogType.Error, "Error processing action", exp.ToString());
-							}
-
-							CurrentRound.events.Enqueue(eventData);
-							
-							// emotes are always local-only
-							if (player.name == frame.client_name)
-							{
-								HighlightsHelper.SaveHighlightMaybe(player.name, frame, "EMOTE");
-							}
 						}
 
 
@@ -2740,10 +2755,12 @@ namespace Spark
 					{
 						// TODO find why finished and set reason
 						EventMatchFinished(lastFrame, frame, AccumulatedFrame.FinishReason.not_finished);
+						Error("Match finished for unknown reason");
 					}
 					else
 					{
 						EventMatchFinished(lastFrame, frame, AccumulatedFrame.FinishReason.not_finished);
+						Error("Match finished for unknown reason 2");
 					}
 
 					break;

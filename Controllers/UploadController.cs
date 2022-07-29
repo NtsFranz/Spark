@@ -15,12 +15,17 @@ namespace Spark
 			Program.RoundOver += (frame, reason) =>
 			{
 				// if end of match upload
-				if (frame.game_status == "post_match")
+				// this excludes resets
+				if (reason != AccumulatedFrame.FinishReason.reset)
 				{
 					UploadMatchBatch(Program.CurrentRound, true);
 				}
+			};
+
+			Program.Goal += (frame, goalData) =>
+			{
 				// if during-match upload
-				else if (!DiscordOAuth.Personal && DiscordOAuth.AccessCode.series_name != "ignitevr")
+				if (!DiscordOAuth.Personal && DiscordOAuth.AccessCode.series_name != "ignitevr")
 				{
 					UploadMatchBatch(Program.CurrentRound, false);
 				}
@@ -82,7 +87,7 @@ namespace Spark
 			}
 			
 			// upload tablet stats as well
-			if (round.frame?.private_match == false) Program.AutoUploadTabletStats();
+			if (round.frame?.private_match == false && final) Program.AutoUploadTabletStats();
 		}
 
 		static async Task DoUploadMatchBatchIgniteDB(string data, string hash, string client_name)

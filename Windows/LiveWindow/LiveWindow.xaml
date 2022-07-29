@@ -528,7 +528,7 @@
 					<Button x:Name="enableAPIButton"  Visibility="Collapsed" Content="{x:Static p:Resources.Enable_API_in_Settings}" Height="40" Margin="4,4,4,4" Click="enableAPIButton_Click"/>
 					<StackPanel Orientation="Horizontal">
 						<Button x:Name="startSpectatorStream" Content="{x:Static p:Resources.Open_Spectatorstream}" Height="40" Width="153" Margin="4,4,1,4" Click="StartSpectatorStreamClick" ToolTip="{x:Static p:Resources.Spectatorstream_tooltip}"/>
-						<Button Height="40" Width="25" Margin="1,4,4,4" Click="CombatSpectatorstreamClick" Visibility="Visible">
+						<Button Height="40" Width="25" Margin="1,4,4,4" Click="CombatSpectatorstreamClick" Visibility="Visible" ToolTip="{x:Static p:Resources.Opens_Spectatorstream_for_Echo_Combat_matches_}">
 							<Image Source="/img/flamingo-white.png" Margin="3,3,3,3"/>
 						</Button>
 					</StackPanel>

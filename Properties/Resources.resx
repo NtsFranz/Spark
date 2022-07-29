@@ -1674,4 +1674,7 @@ CLOSE ECHOVR BEFORE PRESSING OK!</value>
   <data name="orange_caps" xml:space="preserve">
     <value>Orange</value>
   </data>
+  <data name="Opens Spectatorstream for Echo Combat matches." xml:space="preserve">
+    <value>Opens Spectatorstream for Echo Combat matches.</value>
+  </data>
 </root>

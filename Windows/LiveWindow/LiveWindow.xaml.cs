@@ -535,9 +535,10 @@ namespace Spark
 
 						// show the button once the player hasn't been getting data for some time
 						float secondsUntilRejoiner = 1f;
-						if (Program.lastFrame != null &&
+						if (!Program.InGame &&
+							Program.lastFrame != null &&
 						    Program.lastFrame.private_match &&
-						    Program.lastFrame.GetAllPlayers(true).Count > 1 &&	// if we weren't the lst
+						    Program.lastFrame.GetAllPlayers(true).Count > 1 &&	// if we weren't the last
 						    DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.UtcNow) < 0 &&
 						    SparkSettings.instance.echoVRIP == "127.0.0.1")
 						{

@@ -2669,6 +2669,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Opens Spectatorstream for Echo Combat matches..
+        /// </summary>
+        public static string Opens_Spectatorstream_for_Echo_Combat_matches_ {
+            get {
+                return ResourceManager.GetString("Opens Spectatorstream for Echo Combat matches.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Opens the folder where the event logs are stored on your computer. Only works once you have logged at least one event..
         /// </summary>
         public static string Opens_the_folder_where_the_event_logs_are_stored_on_your_computer__Only_works_once_you_have_logged_at_least_one_event_ {
