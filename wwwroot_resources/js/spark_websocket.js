@@ -16,6 +16,13 @@ class SparkWebsocket {
         });
     }
 
+    close() {
+        if (this) {
+            this.ws.close();
+            this.initialized = false;
+        }
+    }
+
     subscribe(eventType, callback) {
         if (callback === null) return;
         if (this.callbacks[eventType] === undefined) {
@@ -24,6 +31,20 @@ class SparkWebsocket {
         this.callbacks[eventType].push(callback)
         if (this.initialized) {
             this.ws.send("subscribe:" + eventType);
+        }
+    }
+
+    unsubscribe(eventType, callback) {
+        if (this.callbacks[eventType] === undefined) {
+            this.callbacks[eventType] = [];
+        }
+        if (callback == null) {
+            this.callbacks[eventType] = [];
+        } else {
+            this.callbacks[eventType].pop(callback)
+        }
+        if (this.initialized) {
+            this.ws.send("unsubscribe:" + eventType);
         }
     }
 

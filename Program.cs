@@ -812,6 +812,7 @@ namespace Spark
 						}
 
 						DateTime frameTime = DateTime.UtcNow;
+						lastDataTime = DateTime.UtcNow;
 
 						if (connectionState == ConnectionState.NotConnected)
 						{
@@ -1026,7 +1027,8 @@ namespace Spark
 				if (SparkSettings.instance.autoRestart)
 				{
 					// If `minTillAutorestart` minutes have passed, restart EchoVR
-					if (DateTime.Compare(lastDataTime.AddMinutes(minTillAutorestart), DateTime.UtcNow) < 0)
+					double time = (lastDataTime.AddMinutes(minTillAutorestart) - DateTime.UtcNow).TotalSeconds;
+					if (time < 0)
 					{
 						KillEchoVR();
 						StartEchoVR(JoinType.Spectator, noovr: SparkSettings.instance.spectatorStreamNoOVR, combat: SparkSettings.instance.spectatorStreamCombat);

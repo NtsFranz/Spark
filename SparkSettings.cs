@@ -268,6 +268,12 @@ namespace Spark
 		/// Used for caster names/urls...
 		/// </summary>
 		public Dictionary<string, object> casterPrefs { get; set; } = new Dictionary<string, object>();
+		
+		
+		/// <summary>
+		/// Can be used to store generic data without schema changes to Spark.
+		/// </summary>
+		public Dictionary<string, object> data { get; set; } = new Dictionary<string, object>();
 
 		/// <summary>
 		/// 0: automatic, 1: manual

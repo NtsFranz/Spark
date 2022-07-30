@@ -52,6 +52,7 @@ namespace Spark
 						switch (parts[0])
 						{
 							case "subscribe":
+							{
 								if (Enum.TryParse(parts[1], out EventContainer.EventType type))
 								{
 									if (!subscriberMapping.ContainsKey(type))
@@ -76,8 +77,28 @@ namespace Spark
 								{
 									socket.Send("failed:" + message);
 								}
-
 								break;
+							}
+							case "unsubscribe":
+							{
+								if (Enum.TryParse(parts[1], out EventContainer.EventType type))
+								{
+									if (subscriberMapping.ContainsKey(type))
+									{
+										lock (subscriberLock)
+										{
+											subscriberMapping[type].Remove(socket);
+										}
+									}
+
+									socket.Send(message);
+								}
+								else
+								{
+									socket.Send("failed:" + message);
+								}
+								break;
+							}
 						}
 					}
 				};

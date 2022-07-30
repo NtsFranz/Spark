@@ -267,7 +267,7 @@ namespace Spark
 					context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
 					string body = await new StreamReader(context.Request.Body).ReadToEndAsync();
-					Dictionary<string, string> data = JsonConvert.DeserializeObject<Dictionary<string, string>>(body);
+					Dictionary<string, object> data = JsonConvert.DeserializeObject<Dictionary<string, object>>(body);
 
 					if (data == null)
 					{
@@ -275,9 +275,29 @@ namespace Spark
 						return;
 					}
 
-					foreach ((string key, string value) in data)
+
+					SetKey(SparkSettings.instance.casterPrefs, data);
+
+					void SetKey(Dictionary<string, object> setting, Dictionary<string, object> dictionary)
 					{
-						SparkSettings.instance.casterPrefs[key] = value;
+						foreach ((string key, object value) in dictionary)
+						{
+							if (value is JObject j)
+							{
+								if (!setting.ContainsKey(key))
+								{
+									setting[key] = new Dictionary<string, object>();
+								} else if (setting[key] is not Dictionary<string, object>)
+								{
+									setting[key] = new Dictionary<string, object>();
+								}
+								SetKey((Dictionary<string, object>)setting[key], JsonConvert.DeserializeObject<Dictionary<string, object>>(j.ToString()));
+							}
+							else
+							{
+								setting[key] = value;
+							}
+						}
 					}
 
 					Program.OverlayConfigChanged?.Invoke();
@@ -432,7 +452,7 @@ namespace Spark
 						Program.liveWindow.Show();
 						Program.liveWindow.Activate();
 					});
-					
+
 					context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
 
@@ -446,7 +466,7 @@ namespace Spark
 					Logger.LogRow(Logger.LogType.Error, $"{e}");
 				}
 			});
-			
+
 			endpoints.MapPost("/api/settings/set", async context =>
 			{
 				try
@@ -461,6 +481,7 @@ namespace Spark
 						await context.Response.WriteAsync("No data");
 						return;
 					}
+
 					data.OverwriteObject(SparkSettings.instance);
 
 					if (data.ContainsKey("configurableOverlaySettings"))
@@ -480,7 +501,7 @@ namespace Spark
 					Logger.LogRow(Logger.LogType.Error, $"{e}");
 				}
 			});
-			
+
 			endpoints.MapGet("/api/settings/get/{**setting_name}", async context =>
 			{
 				try
