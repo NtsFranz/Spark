@@ -164,7 +164,7 @@ namespace Spark
 				return players[userid];
 			}
 
-			Logger.LogRow(Logger.LogType.Error, $"Player not found: {userid}"); // TODO this happens a lot
+			// Logger.LogRow(Logger.LogType.Error, $"Player not found: {userid}"); // TODO this happens a lot
 			return null;
 		}
 

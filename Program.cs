@@ -1465,7 +1465,7 @@ namespace Spark
 			{
 				lastValidStatsFrame = lastFrame;
 				lastValidSumOfStatsAge = 0;
-				LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Stats reset by game - {lastFrame.game_status}->{frame.game_status}");
+				// LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Stats reset by game - {lastFrame.game_status}->{frame.game_status}");
 			}
 
 			lastValidSumOfStatsAge++;
@@ -2615,8 +2615,8 @@ namespace Spark
 		/// <param name="deltaTime"></param>
 		private static void ProcessGameStateChange(Frame frame, Frame lastFrame, float deltaTime)
 		{
-			LogRow(LogType.File, frame.sessionid, $"{lastFrame.game_clock_display} - Left state: {lastFrame.game_status} ({lastFrame.orange_round_score}+{lastFrame.blue_round_score})/{lastFrame.total_round_count}");
-			LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Entered state: {frame.game_status} ({frame.orange_round_score}+{frame.blue_round_score})/{frame.total_round_count}");
+			// LogRow(LogType.File, frame.sessionid, $"{lastFrame.game_clock_display} - Left state: {lastFrame.game_status} ({lastFrame.orange_round_score}+{lastFrame.blue_round_score})/{lastFrame.total_round_count}");
+			// LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - Entered state: {frame.game_status} ({frame.orange_round_score}+{frame.blue_round_score})/{frame.total_round_count}");
 
 			switch (frame.game_status)
 			{
