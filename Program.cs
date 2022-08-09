@@ -780,12 +780,6 @@ namespace Spark
 					tasks.Add(fetchClient.GetAsync($"http://{echoVRIP}:{echoVRPort}/player_bones"));
 				}
 
-				TimeSpan diff = DateTime.UtcNow - lastFetch;
-				if (diff.TotalSeconds > 1)
-				{
-					Debug.WriteLine(DateTime.UtcNow - lastFetch);
-				}
-
 				lastFetch = DateTime.UtcNow;
 				
 

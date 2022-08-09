@@ -545,6 +545,7 @@
 							<Image Source="/img/closed-caption-outline.png" Margin="8,8,0,8"></Image>
 						</StackPanel>
 					</Button>
+					<Button Content="ASCIIECHO" Height="40" Click="ACIIECHO_Click" Margin="4,4,4,4"/>
 					<Button Height="40" Margin="4,4,4,4" Click="TabletStatsUploadClick" Visibility="Visible">
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{x:Static p:Resources.Upload_Tablet_Stats}" VerticalAlignment="Center"></TextBlock>

@@ -31,7 +31,7 @@ namespace Spark
 	public partial class LiveWindow
 	{
 		private readonly System.Timers.Timer outputUpdateTimer = new System.Timers.Timer();
-		
+
 		private string updateFilename = "";
 
 		public static readonly object lastSnapshotLock = new object();
@@ -53,6 +53,7 @@ namespace Spark
 		static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
 		internal delegate int WindowEnumProc(IntPtr hwnd, IntPtr lparam);
+
 		[DllImport("user32.dll")]
 		internal static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc func, IntPtr lParam);
 
@@ -72,10 +73,10 @@ namespace Spark
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RECT
 		{
-			public int Left;        // x position of upper-left corner
-			public int Top;         // y position of upper-left corner
-			public int Right;       // x position of lower-right corner
-			public int Bottom;      // y position of lower-right corner
+			public int Left; // x position of upper-left corner
+			public int Top; // y position of upper-left corner
+			public int Right; // x position of lower-right corner
+			public int Bottom; // y position of lower-right corner
 		}
 
 
@@ -88,7 +89,7 @@ namespace Spark
 		private const int GWL_STYLE = (-16);
 		private const int WS_VISIBLE = 0x10000000;
 		private const int GWL_USERDATA = (-21);
-		
+
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint ProcessId);
 
@@ -111,7 +112,7 @@ namespace Spark
 			InitializeComponent();
 
 			Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
-			
+
 			outputUpdateTimer.Interval = 150;
 			outputUpdateTimer.Elapsed += Update;
 			outputUpdateTimer.Enabled = true;
@@ -183,11 +184,11 @@ namespace Spark
 			showHighlights.IsEnabled = HighlightsHelper.DoNVClipsExist();
 			showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
 			showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? Properties.Resources.Show + " " + HighlightsHelper.nvHighlightClipCount + " " + Properties.Resources.Highlights : Properties.Resources.No_clips_available;
-			
-			#if DEBUG
+
+#if DEBUG
 			EchoGPTab.Visibility = Visibility.Visible;
 			ShowClickableOverlayButton.Visibility = Visibility.Visible;
-			#endif
+#endif
 
 
 			tabControl.SelectionChanged += TabControl_SelectionChanged;
@@ -201,7 +202,6 @@ namespace Spark
 
 		private async void LiveWindow_Load(object sender, EventArgs e)
 		{
-
 			lock (Program.logOutputWriteLock)
 			{
 				mainOutputTextBox.Text = string.Join('\n', fullFileCache);
@@ -298,20 +298,21 @@ namespace Spark
 				count++;
 				Thread.Sleep(150);
 			}
+
 			ActivateUnityWindow();
 			startStopEchoSpeakerSystem.IsEnabled = true;
 			Point relativePoint = speakerSystemPanel.TransformToAncestor(this)
-						  .Transform(new Point(0, 0));
+				.Transform(new Point(0, 0));
 
 			MoveWindow(unityHWND, Convert.ToInt32(relativePoint.X), Convert.ToInt32(relativePoint.Y), Convert.ToInt32(speakerSystemPanel.ActualWidth), Convert.ToInt32(speakerSystemPanel.ActualHeight), true);
 		}
+
 		private void liveWindow_FormClosed(object sender, EventArgs e)
 		{
 			try
 			{
 				KillSpeakerSystem();
 				SpeakerSystemProcess?.CloseMainWindow();
-
 			}
 			catch (Exception ex)
 			{
@@ -338,8 +339,8 @@ namespace Spark
 				LogRow(LogType.Error, $"Error killing speaker system\n{e}");
 			}
 		}
-		
-		
+
+
 		private void Update(object source, ElapsedEventArgs e)
 		{
 			if (Program.running)
@@ -384,8 +385,10 @@ namespace Spark
 
 							//ColorizeOutput("Entered state:", gameStateChangedCheckBox.ForeColor, mainOutputTextBox.Text.Length - newText.Length);
 						}
+
 						unusedFileCache.Clear();
 					}
+
 					showHighlights.IsEnabled = HighlightsHelper.DoNVClipsExist();
 					showHighlights.Visibility = (HighlightsHelper.didHighlightsInit && HighlightsHelper.isNVHighlightsEnabled) ? Visibility.Visible : Visibility.Collapsed;
 					showHighlights.Content = HighlightsHelper.DoNVClipsExist() ? "Show " + HighlightsHelper.nvHighlightClipCount + " Highlights" : Properties.Resources.No_clips_available;
@@ -420,15 +423,15 @@ namespace Spark
 							NotConnectedHelp.Visibility = Visibility.Collapsed;
 							break;
 					}
-					
+
 
 					// update the other labels in the stats box
-					if (Program.lastFrame != null)  // 'mpl_lobby_b2' may change in the future
+					if (Program.lastFrame != null) // 'mpl_lobby_b2' may change in the future
 					{
 						// session ID
 						sessionIdTextBox.Text = Program.CurrentSparkLink(Program.lastFrame.sessionid);
 
-						
+
 						// last throw stuff
 						LastThrow lt = Program.lastFrame.last_throw;
 						if (lt != null)
@@ -436,16 +439,16 @@ namespace Spark
 							string stats = $"Total Speed:\t{lt.total_speed:N2} m/s\n Arm:\t\t{lt.speed_from_arm:N2} m/s\n Wrist:\t\t{lt.speed_from_wrist:N2} m/s\n Movement:\t{lt.speed_from_movement:N2} m/s\n\nTouch Data\n Arm Speed:\t{lt.arm_speed:N2} m/s\n Rots/second:\t{lt.rot_per_sec:N2} r/s\n Pot spd from rot:\t{lt.pot_speed_from_rot:N2} m/s\n\nAlignment Analysis\n Off Axis Spin:\t{lt.off_axis_spin_deg:N1} deg\n Wrist align:\t{lt.wrist_align_to_throw_deg:N1} deg\n Movement align:\t{lt.throw_align_to_movement_deg:N1} deg";
 							lastThrowStats.Text = stats;
 						}
-						
-						
-						
+
+
 						StringBuilder blueTextNames = new StringBuilder();
 						StringBuilder orangeTextNames = new StringBuilder();
 						StringBuilder bluePingsTextPings = new StringBuilder();
 						StringBuilder orangePingsTextPings = new StringBuilder();
 						StringBuilder blueSpeedsTextSpeeds = new StringBuilder();
 						StringBuilder orangeSpeedsTextSpeeds = new StringBuilder();
-						StringBuilder[] teamNames = {
+						StringBuilder[] teamNames =
+						{
 							new StringBuilder(),
 							new StringBuilder(),
 							new StringBuilder()
@@ -474,6 +477,7 @@ namespace Spark
 										pings[t].Add(player.ping);
 										break;
 								}
+
 								teamNames[t].AppendLine(player.name);
 							}
 						}
@@ -482,8 +486,8 @@ namespace Spark
 						bluePlayerPingsPings.Text = bluePingsTextPings.ToString();
 						orangePlayerPingsNames.Text = orangeTextNames.ToString();
 						orangePlayerPingsPings.Text = orangePingsTextPings.ToString();
-						
-						
+
+
 						string playerPingsHeader;
 
 						if (Program.CurrentRound.serverScore > 0)
@@ -505,14 +509,16 @@ namespace Spark
 						{
 							playerPingsHeader = $"{Properties.Resources.Player_Pings}   {Properties.Resources.Score_} --";
 						}
+
 						playerPingsGroupbox.Header = playerPingsHeader;
-						
+
 						if (blueLogo != Program.CurrentRound.teams[Team.TeamColor.blue].vrmlTeamLogo)
 						{
 							blueLogo = Program.CurrentRound.teams[Team.TeamColor.blue].vrmlTeamLogo;
 							blueTeamLogo.Source = string.IsNullOrEmpty(blueLogo) ? null : new BitmapImage(new Uri(blueLogo));
 							blueTeamLogo.ToolTip = Program.CurrentRound.teams[Team.TeamColor.blue].vrmlTeamName;
 						}
+
 						if (orangeLogo != Program.CurrentRound.teams[Team.TeamColor.orange].vrmlTeamLogo)
 						{
 							orangeLogo = Program.CurrentRound.teams[Team.TeamColor.orange].vrmlTeamLogo;
@@ -529,16 +535,16 @@ namespace Spark
 						blueTeamPlayersLabel.Content = teamNames[0].ToString().Trim();
 						orangeTeamPlayersLabel.Content = teamNames[1].ToString().Trim();
 						spectatorsLabel.Content = teamNames[2].ToString().Trim();
-						
-						
+
+
 						#region Rejoiner
 
 						// show the button once the player hasn't been getting data for some time
 						float secondsUntilRejoiner = 1f;
 						if (!Program.InGame &&
-							Program.lastFrame != null &&
+						    Program.lastFrame != null &&
 						    Program.lastFrame.private_match &&
-						    Program.lastFrame.GetAllPlayers(true).Count > 1 &&	// if we weren't the last
+						    Program.lastFrame.GetAllPlayers(true).Count > 1 && // if we weren't the last
 						    DateTime.Compare(Program.lastDataTime.AddSeconds(secondsUntilRejoiner), DateTime.UtcNow) < 0 &&
 						    SparkSettings.instance.echoVRIP == "127.0.0.1")
 						{
@@ -550,11 +556,9 @@ namespace Spark
 						}
 
 						#endregion
-						
-						
 					}
 
-					if (Program.lastFrame?.InArena == true)  // only the arena has a disc
+					if (Program.lastFrame?.InArena == true) // only the arena has a disc
 					{
 						discSpeedLabel.Text = $"{Program.lastFrame.disc.velocity.ToVector3().Length():N2}";
 						// discSpeedLabel.Text = $"{Program.lastFrame.disc.velocity.ToVector3().Length():N2} m/s\t{Program.lastFrame.disc.Position.X:N2}, {Program.lastFrame.disc.Position.Y:N2}, {Program.lastFrame.disc.Position.Z:N2}";
@@ -577,8 +581,6 @@ namespace Spark
 						//}
 
 
-						
-
 						OrangePoints.Text = Program.lastFrame.orange_points.ToString();
 						BluePoints.Text = Program.lastFrame.blue_points.ToString();
 						GameClock.Text = Program.lastFrame.game_clock_display[..^3];
@@ -595,6 +597,7 @@ namespace Spark
 								lastGoalsString.AppendLine(goal.GameClock.ToString("N0") + "s  " + goal.LastScore.point_amount + " pts  " + goal.LastScore.person_scored + "  " + goal.LastScore.disc_speed.ToString("N1") + " m/s  " + goal.LastScore.distance_thrown.ToString("N1") + " m");
 							}
 						}
+
 						lastGoalsTextBlock.Text = lastGoalsString.ToString();
 
 						StringBuilder lastMatchesString = new StringBuilder();
@@ -604,37 +607,37 @@ namespace Spark
 							for (int j = lastMatches.Length - 1; j >= 0; j--)
 							{
 								AccumulatedFrame match = lastMatches[j];
-								
+
 								// TODO match is null
 								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == AccumulatedFrame.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.frame.orange_points + "  BLUE: " + match.frame.blue_points);
 							}
 						}
+
 						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
 
 						StringBuilder lastJoustsString = new StringBuilder();
-						List<EventData> lastJousts = Program.LastJousts.ToList();	// TODO list was modified
+						List<EventData> lastJousts = Program.LastJousts.ToList(); // TODO list was modified
 						if (lastJousts.Count > 0)
 						{
 							if (SparkSettings.instance.dashboardJoustTimeOrder == 1)
 							{
 								lastJousts.Sort((j1, j2) => j2.joustTimeMillis.CompareTo(j1.joustTimeMillis));
 							}
+
 							for (int j = lastJousts.Count - 1; j >= 0; j--)
 							{
 								EventData joust = lastJousts[j];
 								lastJoustsString.AppendLine(joust.player.name + "  " + (joust.joustTimeMillis / 1000f).ToString("N2") + " s" + (joust.eventType == EventContainer.EventType.joust_speed ? " N" : ""));
 							}
 						}
+
 						lastJoustsTextBlock.Text = lastJoustsString.ToString();
-
-
 					}
 					else
 					{
 						discSpeedLabel.Text = "---";
 						discSpeedLabel.Foreground = Brushes.LightGray;
 					}
-
 
 
 					RefreshDiscordLogin();
@@ -679,7 +682,7 @@ namespace Spark
 							{
 								Program.ToggleWindow(typeof(GameOverlay));
 							}
-							
+
 							ClickableOverlaySubtitle.Text = Properties.Resources.Active;
 						}
 					}
@@ -687,9 +690,6 @@ namespace Spark
 					{
 						ClickableOverlaySubtitle.Text = Properties.Resources.Not_active;
 					}
-					
-					
-					
 
 
 					if (!Program.running)
@@ -711,7 +711,6 @@ namespace Spark
 				e.Cancel = true;
 				Program.ToggleWindow(typeof(YouSureAboutClosing), null, this);
 			}
-
 		}
 
 
@@ -741,9 +740,8 @@ namespace Spark
 						discordPFPImage.Visibility = Visibility.Visible;
 					}
 				}
-
 			}
-			
+
 			lastDiscordUsername = username;
 		}
 
@@ -778,11 +776,11 @@ namespace Spark
 
 			// show or hide the dropdown entirely
 			AccessCodesComboboxLiveWindow.Visibility = DiscordOAuth.availableAccessCodes.Count < 2 ? Visibility.Collapsed : Visibility.Visible;
-			
+
 			casterToolsBox.Visibility = !DiscordOAuth.Personal ? Visibility.Visible : Visibility.Collapsed;
 			PasteLinkInLiveButton.Visibility = DiscordOAuth.AccessCode?.series_name.Contains("vrml") ?? false ? Visibility.Visible : Visibility.Collapsed;
 			MatchSetupButton.Visibility = DiscordOAuth.AccessCode?.series_name.Contains("vrml") ?? false ? Visibility.Visible : Visibility.Collapsed;
-			
+
 			accessCodeDropdownListenerActive = true;
 		}
 
@@ -870,7 +868,6 @@ namespace Spark
 		}
 
 
-
 		private void CloseButtonClicked(object sender, RoutedEventArgs e)
 		{
 			Hide();
@@ -893,8 +890,8 @@ namespace Spark
 		{
 			string output = input;
 			IEnumerable<string> lines = output
-				.Split('\r', '\n')
-				.Select(l => l.Trim())
+					.Split('\r', '\n')
+					.Select(l => l.Trim())
 				//.Where(l =>
 				//{
 				//	if (
@@ -926,7 +923,7 @@ namespace Spark
 		private string FilterLines(List<string> input)
 		{
 			IEnumerable<string> lines = input
-				.Select(l => l.Trim())
+					.Select(l => l.Trim())
 				//.Where(l =>
 				//{
 				//	if (
@@ -1006,7 +1003,7 @@ namespace Spark
 				LogRow(LogType.Error, "Last frame null when trying to use rejoiner.");
 				return;
 			}
-			
+
 			Program.KillEchoVR();
 
 			// join in spectator if we were in spectator before
@@ -1015,6 +1012,7 @@ namespace Spark
 			{
 				Program.StartEchoVR(Program.JoinType.Spectator, session_id: Program.lastFrame.sessionid);
 			}
+
 			Program.StartEchoVR(Program.JoinType.Player, session_id: Program.lastFrame.sessionid);
 		}
 
@@ -1063,7 +1061,6 @@ namespace Spark
 					}).Show();
 
 					enableAPIButton.Visibility = Visibility.Collapsed;
-
 				}
 				else
 				{
@@ -1093,12 +1090,12 @@ namespace Spark
 
 		private void StartSpectatorStreamClick(object sender, RoutedEventArgs e)
 		{
-			Program.StartEchoVR(Program.JoinType.Spectator, noovr:SparkSettings.instance.spectatorStreamNoOVR, combat: false);
+			Program.StartEchoVR(Program.JoinType.Spectator, noovr: SparkSettings.instance.spectatorStreamNoOVR, combat: false);
 		}
-		
+
 		private void CombatSpectatorstreamClick(object sender, RoutedEventArgs e)
 		{
-			Program.StartEchoVR(Program.JoinType.Spectator, noovr:SparkSettings.instance.spectatorStreamNoOVR, combat: true);
+			Program.StartEchoVR(Program.JoinType.Spectator, noovr: SparkSettings.instance.spectatorStreamNoOVR, combat: true);
 		}
 
 		private void ToggleHidden(object sender, RoutedEventArgs e)
@@ -1113,13 +1110,14 @@ namespace Spark
 				Hide();
 				showHideMenuItem.Header = Properties.Resources.Show_Main_Window;
 			}
+
 			hidden = !hidden;
 		}
 
 		private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (e.Source is not TabControl) return;
-			
+
 			// if switched to atlas tab
 			if (Equals(((TabControl)sender).SelectedItem, LinksTab))
 			{
@@ -1150,7 +1148,7 @@ namespace Spark
 		private void SpectateMeClicked(object sender, RoutedEventArgs e)
 		{
 			(string labelText, string subtitleText) = Program.spectateMeController.ToggleSpectateMe();
-			
+
 			Program.liveWindow.spectateMeLabel.Content = labelText;
 			Program.liveWindow.spectateMeSubtitle.Text = subtitleText;
 		}
@@ -1218,6 +1216,7 @@ namespace Spark
 					installEchoSpeakerSystem.Visibility = Visibility.Visible;
 					startStopEchoSpeakerSystem.Visibility = Visibility.Hidden;
 				}
+
 				if (Program.IsSpeakerSystemUpdateAvailable)
 				{
 					updateEchoSpeakerSystem.Visibility = Visibility.Visible;
@@ -1247,7 +1246,7 @@ namespace Spark
 			startStopEchoSpeakerSystem.IsEnabled = false;
 			var progress = new Progress<string>(s => speakerSystemInstallLabel.Content = s);
 			await Task.Factory.StartNew(() => Program.InstallSpeakerSystem(progress),
-										TaskCreationOptions.None);
+				TaskCreationOptions.None);
 
 			if (Program.InstalledSpeakerSystemVersion.Length > 0)
 			{
@@ -1259,6 +1258,7 @@ namespace Spark
 				installEchoSpeakerSystem.Visibility = Visibility.Visible;
 				startStopEchoSpeakerSystem.Visibility = Visibility.Hidden;
 			}
+
 			if (Program.IsSpeakerSystemUpdateAvailable)
 			{
 				updateEchoSpeakerSystem.Visibility = Visibility.Visible;
@@ -1268,6 +1268,7 @@ namespace Spark
 				updateEchoSpeakerSystem.Visibility = Visibility.Hidden;
 			}
 		}
+
 		public void SpeakerSystemStart(IntPtr unityHandle)
 		{
 			Dispatcher.Invoke(() =>
@@ -1384,6 +1385,7 @@ namespace Spark
 			public string qtype;
 			public string datetime;
 		}
+
 		public class AtlasMatch
 		{
 			public class AtlasTeamInfo
@@ -1393,54 +1395,68 @@ namespace Spark
 				public string team_logo;
 				public string team_name;
 			}
-			[Obsolete("Use matchid instead")]
-			public string session_id;
+
+			[Obsolete("Use matchid instead")] public string session_id;
+
 			/// <summary>
 			/// Session id. This could be empty if the match isn't available to join
 			/// </summary>
 			public string matchid;
+
 			/// <summary>
 			/// Who hosted this match?
 			/// </summary>
 			public string username;
+
 			public AtlasTeamInfo blue_team_info;
 			public AtlasTeamInfo orange_team_info;
+
 			/// <summary>
 			/// List of player names
 			/// </summary>
 			public string[] blue_team;
+
 			/// <summary>
 			/// List of player names
 			/// </summary>
 			public string[] orange_team;
+
 			/// <summary>
 			/// If this is true, users with the caster login in Spark can see this match
 			/// </summary>
 			public bool visible_to_casters;
+
 			/// <summary>
 			/// Hides the match from public view. Can still be viewed by whitelist or casters if visible_for_casters is true
 			/// </summary>
 			public bool is_protected;
+
 			/// <summary>
 			/// Resolved location of the server (e.g. Chicago, Illinois)
 			/// </summary>
 			public string server_location;
+
 			public float server_score;
+
 			/// <summary>
 			/// arena
 			/// </summary>
 			public string match_type;
+
 			public string description;
 			public bool is_lfg;
 			public string[] whitelist;
+
 			/// <summary>
 			/// Currently used-up slots
 			/// </summary>
 			public int slots;
+
 			/// <summary>
 			/// Maximum allowed people in the match
 			/// </summary>
 			public int max_slots;
+
 			public int blue_points;
 			public int orange_points;
 			public string title;
@@ -1483,7 +1499,7 @@ namespace Spark
 					LogRow(LogType.Error, $"Can't serialize atlas match data.\n{e.Message}\n{e.StackTrace}");
 					return new Dictionary<string, object>
 					{
-						{"none", 0}
+						{ "none", 0 }
 					};
 				}
 			}
@@ -1506,6 +1522,7 @@ namespace Spark
 			public List<string> players = new();
 
 			public List<string> TeamNames => teams.Select(t => t.teamName).ToList();
+
 			public List<string> AllPlayers
 			{
 				get
@@ -1606,6 +1623,7 @@ namespace Spark
 						{
 							blueLogo2.Source = string.IsNullOrEmpty(match.blue_team_info?.team_logo) ? null : (new BitmapImage(new Uri(match.blue_team_info.team_logo)));
 						}
+
 						StackPanel blueLogoBox = new StackPanel
 						{
 							Orientation = Orientation.Vertical,
@@ -1617,7 +1635,6 @@ namespace Spark
 						{
 							Content = match.blue_team_info?.team_name,
 							HorizontalAlignment = HorizontalAlignment.Center
-
 						});
 
 
@@ -1630,6 +1647,7 @@ namespace Spark
 						{
 							orangeLogo2.Source = string.IsNullOrEmpty(match.orange_team_info?.team_logo) ? null : (new BitmapImage(new Uri(match.orange_team_info.team_logo)));
 						}
+
 						StackPanel orangeLogoBox = new StackPanel
 						{
 							Orientation = Orientation.Vertical,
@@ -1672,7 +1690,6 @@ namespace Spark
 							Header = header
 						});
 					}
-
 				});
 			}
 			catch (Exception e)
@@ -1707,10 +1724,10 @@ namespace Spark
 			bool firstHost = true;
 
 			while (Program.running &&
-				   Program.InGame &&
-				   Program.lastFrame != null &&
-				   Program.lastFrame.teams != null &&
-				   Program.hostedAtlasSessionId == Program.lastFrame.sessionid)
+			       Program.InGame &&
+			       Program.lastFrame != null &&
+			       Program.lastFrame.teams != null &&
+			       Program.hostedAtlasSessionId == Program.lastFrame.sessionid)
 			{
 				bool diff =
 					firstHost ||
@@ -1744,7 +1761,10 @@ namespace Spark
 						hostURL,
 						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						data,
-						_ => { GetAtlasMatches(); });
+						_ =>
+						{
+							GetAtlasMatches();
+						});
 				}
 
 				Thread.Sleep(100);
@@ -1774,7 +1794,8 @@ namespace Spark
 			string matchesAPIURL = $"{Program.APIURL}/hosted_matches/{(SparkSettings.instance.client_name == string.Empty ? "_" : SparkSettings.instance.client_name)}";
 			Program.GetRequestCallback(
 				matchesAPIURL,
-				new Dictionary<string, string>() {
+				new Dictionary<string, string>()
+				{
 					{ "x-api-key", DiscordOAuth.igniteUploadKey },
 					{ "access_code", DiscordOAuth.AccessCode.series_name }
 				},
@@ -1790,7 +1811,7 @@ namespace Spark
 						LogRow(LogType.Error, $"Can't parse Atlas matches response\n{e}");
 					}
 				}
-			 );
+			);
 		}
 
 		private void RefreshMatchesClicked(object sender, RoutedEventArgs e)
@@ -1822,6 +1843,7 @@ namespace Spark
 					{
 						text = text[1..^1];
 					}
+
 					text = text.Split(' ')[0];
 					Process.Start(new ProcessStartInfo
 					{
@@ -1898,10 +1920,9 @@ namespace Spark
 			{
 				string username = AccessCodesComboboxLiveWindow.SelectedValue.ToString();
 				DiscordOAuth.SetAccessCodeByUsername(username);
-				
 			}
 		}
-		
+
 
 		private void FindAllQuests(object sender, RoutedEventArgs e)
 		{
@@ -1946,7 +1967,7 @@ namespace Spark
 				LogRow(LogType.Error, ex.ToString());
 			}
 		}
-		
+
 		private void DefaultMatchSetupClick(object sender, RoutedEventArgs e)
 		{
 			OpenWebpage("http://localhost:6724/overlays/match_setup");
@@ -1973,8 +1994,76 @@ namespace Spark
 
 			if (stats != null)
 			{
-				new UploadTabletStatsMenu(stats) {Owner = this}.Show();
+				new UploadTabletStatsMenu(stats) { Owner = this }.Show();
 			}
+		}
+
+		private void ACIIECHO_Click(object sender, RoutedEventArgs e)
+		{
+			Task.Run(async () =>
+			{
+			// try
+			// {
+			// 	string sparkFolder = Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation) ?? "";
+			// 	string exePath = Path.Combine(sparkFolder, "resources", "asciiecho.exe");
+			// 	
+			// 	//Declare and instantiate a new process component.
+			// 	Process process = new Process();
+			// 	process.StartInfo.UseShellExecute = false;
+			// 	process.StartInfo.RedirectStandardOutput = true;
+			// 	process.StartInfo.RedirectStandardError = true;
+			// 	process.StartInfo.RedirectStandardInput = true; // Is a MUST!
+			// 	process.EnableRaisingEvents = true;
+			// 	process.StartInfo.FileName = "cmd.exe";
+			// 	process.StartInfo.Arguments = "C:\\Users\\Anton\\Desktop\\test.bat";
+			// 	process.StartInfo.CreateNoWindow = true;
+			// 	process.OutputDataReceived += (s, e) =>
+			// 	{
+			// 		Debug.WriteLine(e.Data);
+			// 	};
+			// 	process.ErrorDataReceived += (s, e) =>
+			// 	{
+			// 		Debug.WriteLine(e.Data);
+			// 	};
+			// 	process.Start();
+			// 	process.BeginOutputReadLine();
+			// 	process.BeginErrorReadLine();
+			// 	await process.WaitForExitAsync();
+			// }
+			// catch (Exception ex)
+			// {
+			// 	Error(ex.ToString());
+			// }
+
+			try
+			{
+				string sparkFolder = Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation) ?? "";
+				string exePath = Path.Combine(sparkFolder, "resources", "asciiecho.exe");
+
+				Process p = Process.Start(new ProcessStartInfo
+				{
+					FileName = exePath,
+					// UseShellExecute = true,
+					// WindowStyle = ProcessWindowStyle.Maximized,
+				});
+
+				
+				if (p != null)
+				{
+					for (int i = 0; i < 10; i++)
+					{
+						await Task.Delay(100);
+						// Point relativePoint = speakerSystemPanel.TransformToAncestor(this).Transform(new Point(0, 0));
+						// MoveWindow(p.MainWindowHandle, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
+						MoveWindow(p.MainWindowHandle, 200, 200, 1024, 768, true);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Error(ex.ToString());
+			}
+			});
 		}
 	}
 }

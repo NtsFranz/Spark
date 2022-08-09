@@ -148,7 +148,7 @@ namespace Spark
 								{ "ess_version", Program.InstalledSpeakerSystemVersion },
 							});
 					});
-					
+
 					endpoints.MapGet("/stats", async context =>
 					{
 						context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
@@ -415,7 +415,16 @@ namespace Spark
 
 								endpoints.MapGet(url, async context =>
 								{
-									string finalFileNameText = str;
+									string contentType = folderPieces.Last().Split('.').Last() switch
+									{
+										"js" => "application/javascript",
+										"css" => "text/css",
+										"png" => "image/png",
+										"jpg" => "image/jpeg",
+										_ => ""
+									};
+
+									context.Response.Headers.Add("content-type",contentType);
 									await context.Response.SendFileAsync(Path.Combine(sparkPath, "wwwroot_resources", Path.Combine(folderPieces.ToArray())));
 									//await context.Response.WriteAsync(ReadResourceBytes(finalFileNameText));
 								});
@@ -582,7 +591,7 @@ namespace Spark
 			// 	.Where(m => m != null)
 			// 	.TakeLast(1)
 			// 	.ToList();
-			
+
 			List<AccumulatedFrame> selectedMatches = new List<AccumulatedFrame>();
 			selectedMatches.Add(Program.CurrentRound);
 			while (selectedMatches.Last().lastRound != null)

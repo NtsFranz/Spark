@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -54,6 +55,10 @@ namespace Spark
 						}
 					}
 				}
+				else
+				{
+					overlayData = await GetOverlays();
+				}
 
 				overlayData = data;
 #else
@@ -64,14 +69,13 @@ namespace Spark
 			{
 				Logger.LogRow(Logger.LogType.Error, e.ToString());
 			}
-			
+
 			// write out overlayData to a temp folder
 			// foreach (KeyValuePair<string, string> file in overlayData)
 			// {
-				// file.Value
+			// file.Value
 			// }
 		}
-
 
 
 		public static async Task<Dictionary<string, string>> GetOverlays()
@@ -152,19 +156,18 @@ namespace Spark
 #if DEBUG
 					await FetchOverlayData();
 #endif
-					if (url.EndsWith(".png"))
+
+					string contentType = str.Split('.').Last() switch
 					{
-						await context.Response.SendFileAsync(overlayData[str]);
-						// context.Response.out = new HeaderDictionary()
-						// {
-						// 	{}
-						// }
-						// context.Response.
-					}
-					else
-					{
-						await context.Response.WriteAsync(overlayData[str]);
-					}
+						"js" => "application/javascript",
+						"css" => "text/css",
+						"png" => "image/png",
+						"jpg" => "image/jpeg",
+						_ => ""
+					};
+
+					context.Response.Headers.Add("content-type", contentType);
+					await context.Response.WriteAsync(overlayData[str]);
 				});
 			}
 		}
