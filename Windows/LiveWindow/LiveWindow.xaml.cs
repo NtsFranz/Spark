@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,6 +14,8 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -21,6 +24,7 @@ using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using static Logger;
+using Frame = EchoVRAPI.Frame;
 
 namespace Spark
 {
@@ -154,16 +158,82 @@ namespace Spark
 					// ip stuff
 					serverLocationLabel.Content = "Server IP: " + frame.sessionip;
 					_ = GetServerLocation(frame.sessionip);
+					RefreshPlayerList(frame);
 				});
 			};
 
+			Program.PlayerJoined += (frame, team, arg3) =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					RefreshPlayerList(frame);
+				});
+			};
+
+			Program.PlayerLeft += (frame, team, arg3) =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					RefreshPlayerList(frame);
+				});
+			};
+			Program.PlayerSwitchedTeams += (frame, team, arg3, arg4) =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					RefreshPlayerList(frame);
+				});
+			};
+			Program.LeftGame += frame =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					RefreshLastRoundsList();
+					RefreshPlayerList(frame);
+				});
+			};
+			Program.JoinedGame += frame =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					RefreshLastRoundsList();
+					RefreshPlayerList(frame);
+				});
+			};
+			Program.Goal += (frame, data) =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					RefreshLastRoundsList();
+					RefreshLastGoalsList();
+				});
+			};
+			Program.NewRound += (frame) =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					RefreshLastRoundsList();
+				});
+			};
+			Program.RoundOver += (frame, reason) =>
+			{
+				Dispatcher.Invoke(() =>
+				{
+					RefreshLastRoundsList();
+				});
+			};
+
+			RefreshLastRoundsList();
+			RefreshLastGoalsList();
+
+			RefreshPlayerList(Program.lastFrame);
 
 			JToken gameSettings = EchoVRSettingsManager.ReadEchoVRSettings();
 			if (gameSettings != null)
 			{
 				try
 				{
-					if (gameSettings["game"] != null && gameSettings["game"]["EnableAPIAccess"] != null)
+					if (gameSettings["game"]?["EnableAPIAccess"] != null)
 					{
 						// TODO re-enable this feature once game setting saving works again
 						enableAPIButton.Visibility = !(bool)gameSettings["game"]["EnableAPIAccess"] ? Visibility.Visible : Visibility.Collapsed;
@@ -223,12 +293,12 @@ namespace Spark
 			catch (FileNotFoundException ex)
 			{
 				LogRow(LogType.Error, "4538: Failed to load WebView.\n" + ex);
-				new MessageBox("Failed to load. Please report this to NtsFranz or else ┗|｀O′|┛").Show();
+				new MessageBox("Failed to load. Please report this to NtsFranz or else ┗|｀O′|┛ (4538)").Show();
 			}
 			catch (Exception ex)
 			{
 				LogRow(LogType.Error, "9530: Failed to load WebView for an unknown reason.\n" + ex);
-				new MessageBox("Failed to load. Please report this to NtsFranz. ( ╯□╰ )").Show();
+				new MessageBox("Failed to load. Please report this to NtsFranz ( ╯□╰ ) (9530)").Show();
 			}
 
 			//_ = CheckForAppUpdate();
@@ -532,10 +602,6 @@ namespace Spark
 						orangePlayersSpeedsNames.Text = orangeTextNames.ToString();
 						orangePlayerSpeedsSpeeds.Text = orangeSpeedsTextSpeeds.ToString();
 
-						blueTeamPlayersLabel.Content = teamNames[0].ToString().Trim();
-						orangeTeamPlayersLabel.Content = teamNames[1].ToString().Trim();
-						spectatorsLabel.Content = teamNames[2].ToString().Trim();
-
 
 						#region Rejoiner
 
@@ -584,36 +650,6 @@ namespace Spark
 						OrangePoints.Text = Program.lastFrame.orange_points.ToString();
 						BluePoints.Text = Program.lastFrame.blue_points.ToString();
 						GameClock.Text = Program.lastFrame.game_clock_display[..^3];
-
-
-						// last goals and last matches
-						StringBuilder lastGoalsString = new StringBuilder();
-						GoalData[] lastGoals = Program.LastGoals.ToArray();
-						if (lastGoals.Length > 0)
-						{
-							for (int j = lastGoals.Length - 1; j >= 0; j--)
-							{
-								var goal = lastGoals[j];
-								lastGoalsString.AppendLine(goal.GameClock.ToString("N0") + "s  " + goal.LastScore.point_amount + " pts  " + goal.LastScore.person_scored + "  " + goal.LastScore.disc_speed.ToString("N1") + " m/s  " + goal.LastScore.distance_thrown.ToString("N1") + " m");
-							}
-						}
-
-						lastGoalsTextBlock.Text = lastGoalsString.ToString();
-
-						StringBuilder lastMatchesString = new StringBuilder();
-						AccumulatedFrame[] lastMatches = Program.rounds.ToArray();
-						if (lastMatches.Length > 0)
-						{
-							for (int j = lastMatches.Length - 1; j >= 0; j--)
-							{
-								AccumulatedFrame match = lastMatches[j];
-
-								// TODO match is null
-								lastMatchesString.AppendLine(match.finishReason + (match.finishReason == AccumulatedFrame.FinishReason.reset ? "  " + match.endTime : "") + "  ORANGE: " + match.frame.orange_points + "  BLUE: " + match.frame.blue_points);
-							}
-						}
-
-						lastRoundScoresTextBlock.Text = lastMatchesString.ToString();
 
 						StringBuilder lastJoustsString = new StringBuilder();
 						List<EventData> lastJousts = Program.LastJousts.ToList(); // TODO list was modified
@@ -700,6 +736,195 @@ namespace Spark
 			}
 		}
 
+		private void RefreshLastRoundsList()
+		{
+			LastRoundScoresBox.Children.Clear();
+
+			AccumulatedFrame[] lastMatches = Program.rounds.ToArray();
+			if (lastMatches.Length > 0)
+			{
+				for (int i = lastMatches.Length - 1; i >= 0; i--)
+				{
+					AccumulatedFrame match = lastMatches[i];
+					TextBlock label = new TextBlock()
+					{
+						Background = (i % 2 != 0)
+							? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
+							: new SolidColorBrush(Color.FromArgb(0xff, 0x23, 0x23, 0x23)),
+						Padding = new Thickness(5, 5, 5, 5),
+					};
+
+					switch (match.finishReason)
+					{
+						case AccumulatedFrame.FinishReason.not_finished:
+							label.Inlines.Add(new Run("not finished"));
+							break;
+						case AccumulatedFrame.FinishReason.game_time:
+							label.Inlines.Add(new Run(match.matchTime.ToLocalTime().ToString("t")));
+							break;
+						default:
+							label.Inlines.Add(new Run($"{match.matchTime:t}  {match.finishReason}"));
+							break;
+					}
+
+					label.Inlines.Add(new Run(match.finishReason == AccumulatedFrame.FinishReason.reset ? $"  {match.endTime}" : ""));
+					label.Inlines.Add(new Run($"  {(match.teams[Team.TeamColor.orange].vrmlTeamName != "" ? match.teams[Team.TeamColor.orange].vrmlTeamName : "ORANGE")}: {match.frame.orange_points}") { Foreground = Brushes.Peru });
+					label.Inlines.Add(new Run($"  {(match.teams[Team.TeamColor.blue].vrmlTeamName != "" ? match.teams[Team.TeamColor.blue].vrmlTeamName : "BLUE")}: {match.frame.blue_points}") { Foreground = Brushes.CornflowerBlue });
+					label.Inlines.Add(match.finishReason == AccumulatedFrame.FinishReason.not_finished ? new Run($"  ROUND: {(match.frame.blue_round_score + match.frame.orange_round_score + 1) / match.frame.total_round_count}") : new Run($"\t  ROUND: {(match.frame.blue_round_score + match.frame.orange_round_score) / match.frame.total_round_count}"));
+
+					LastRoundScoresBox.Children.Add(label);
+				}
+			}
+		}
+
+		private void RefreshLastGoalsList()
+		{
+			LastGoalsBox.Children.Clear();
+
+			GoalData[] lastGoals = Program.LastGoals.ToArray();
+			if (lastGoals.Length > 0)
+			{
+				for (int i = lastGoals.Length - 1; i >= 0; i--)
+				{
+					GoalData goal = lastGoals[i];
+					TextBlock label = new TextBlock()
+					{
+						Text = $"{goal.GameClock:N0}s\t  {goal.LastScore.point_amount} pts\t  {goal.LastScore.person_scored}   {goal.LastScore.disc_speed:N1} m/s  {goal.LastScore.distance_thrown:N1} m",
+						Background = (i % 2 != 0)
+							? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
+							: new SolidColorBrush(Color.FromArgb(0xff, 0x23, 0x23, 0x23)),
+						Padding = new Thickness(5, 5, 5, 5),
+					};
+					LastGoalsBox.Children.Add(label);
+				}
+			}
+		}
+
+		private void RefreshPlayerList(Frame frame)
+		{
+			if (frame == null) return;
+
+			BlueTeamPlayersBox.Children.Clear();
+			for (int i = 0; i < frame.teams[0].players.Count; i++)
+			{
+				Player player = frame.teams[0].players[i];
+				StackPanel panel = new StackPanel
+				{
+					Orientation = Orientation.Horizontal,
+					Background = (i % 2 != 0)
+						? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
+						: new SolidColorBrush(Color.FromArgb(0xff, 0x23, 0x23, 0x23))
+				};
+				panel.Children.Add(new TextBlock()
+				{
+					Text = player.name,
+					Padding = new Thickness(5, 5, 5, 5)
+				});
+				if (player.name != "anonymous")
+				{
+					panel.Cursor = Cursors.Hand;
+
+					int i1 = i;
+					panel.MouseEnter += (sender, args) =>
+					{
+						panel.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x1a, 0x1a, 0x1a));
+					};
+					panel.MouseLeave += (sender, args) =>
+					{
+						panel.Background = (i1 % 2 != 0)
+							? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
+							: new SolidColorBrush(Color.FromArgb(0xff, 0x23, 0x23, 0x23));
+					};
+					panel.MouseLeftButtonUp += (sender, args) =>
+					{
+						ClickedOnPlayer(player.name);
+					};
+				}
+
+				BlueTeamPlayersBox.Children.Add(panel);
+			}
+
+			OrangeTeamPlayersBox.Children.Clear();
+			for (int i = 0; i < frame.teams[1].players.Count; i++)
+			{
+				Player player = frame.teams[1].players[i];
+				StackPanel panel = new StackPanel
+				{
+					Orientation = Orientation.Horizontal,
+					Background = (i % 2 != 0)
+						? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
+						: new SolidColorBrush(Color.FromArgb(0xff, 0x20, 0x20, 0x20))
+				};
+				panel.Children.Add(new TextBlock()
+				{
+					Text = player.name,
+					Padding = new Thickness(5, 5, 5, 5)
+				});
+				if (player.name != "anonymous")
+				{
+					panel.Cursor = Cursors.Hand;
+
+					int i1 = i;
+					panel.MouseEnter += (sender, args) =>
+					{
+						panel.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x1a, 0x1a, 0x1a));
+					};
+					panel.MouseLeave += (sender, args) =>
+					{
+						panel.Background = (i1 % 2 != 0)
+							? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
+							: new SolidColorBrush(Color.FromArgb(0xff, 0x20, 0x20, 0x20));
+					};
+					panel.MouseLeftButtonUp += (sender, args) =>
+					{
+						ClickedOnPlayer(player.name);
+					};
+				}
+
+				OrangeTeamPlayersBox.Children.Add(panel);
+			}
+
+			SpectatorsPlayersBox.Children.Clear();
+			for (int i = 0; i < frame.teams[2].players.Count; i++)
+			{
+				Player player = frame.teams[2].players[i];
+				StackPanel panel = new StackPanel
+				{
+					Orientation = Orientation.Horizontal,
+					Background = (i % 2 != 0)
+						? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
+						: new SolidColorBrush(Color.FromArgb(0xff, 0x20, 0x20, 0x20))
+				};
+				panel.Children.Add(new TextBlock()
+				{
+					Text = player.name,
+					Padding = new Thickness(5, 5, 5, 5)
+				});
+				if (player.name != "anonymous")
+				{
+					panel.Cursor = Cursors.Hand;
+
+					int i1 = i;
+					panel.MouseEnter += (sender, args) =>
+					{
+						panel.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x1a, 0x1a, 0x1a));
+					};
+					panel.MouseLeave += (sender, args) =>
+					{
+						panel.Background = (i1 % 2 != 0)
+							? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
+							: new SolidColorBrush(Color.FromArgb(0xff, 0x20, 0x20, 0x20));
+					};
+					panel.MouseLeftButtonUp += (sender, args) =>
+					{
+						ClickedOnPlayer(player.name);
+					};
+				}
+
+				SpectatorsPlayersBox.Children.Add(panel);
+			}
+		}
+
 
 		protected override void OnClosing(CancelEventArgs e)
 		{
@@ -711,6 +936,14 @@ namespace Spark
 				e.Cancel = true;
 				Program.ToggleWindow(typeof(YouSureAboutClosing), null, this);
 			}
+		}
+
+		private void ClickedOnPlayer(string playerName)
+		{
+			Process.Start(new ProcessStartInfo("https://metrics.ignitevr.gg/stats?player_name=" + playerName)
+			{
+				UseShellExecute = true
+			});
 		}
 
 
@@ -2002,67 +2235,67 @@ namespace Spark
 		{
 			Task.Run(async () =>
 			{
-			// try
-			// {
-			// 	string sparkFolder = Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation) ?? "";
-			// 	string exePath = Path.Combine(sparkFolder, "resources", "asciiecho.exe");
-			// 	
-			// 	//Declare and instantiate a new process component.
-			// 	Process process = new Process();
-			// 	process.StartInfo.UseShellExecute = false;
-			// 	process.StartInfo.RedirectStandardOutput = true;
-			// 	process.StartInfo.RedirectStandardError = true;
-			// 	process.StartInfo.RedirectStandardInput = true; // Is a MUST!
-			// 	process.EnableRaisingEvents = true;
-			// 	process.StartInfo.FileName = "cmd.exe";
-			// 	process.StartInfo.Arguments = "C:\\Users\\Anton\\Desktop\\test.bat";
-			// 	process.StartInfo.CreateNoWindow = true;
-			// 	process.OutputDataReceived += (s, e) =>
-			// 	{
-			// 		Debug.WriteLine(e.Data);
-			// 	};
-			// 	process.ErrorDataReceived += (s, e) =>
-			// 	{
-			// 		Debug.WriteLine(e.Data);
-			// 	};
-			// 	process.Start();
-			// 	process.BeginOutputReadLine();
-			// 	process.BeginErrorReadLine();
-			// 	await process.WaitForExitAsync();
-			// }
-			// catch (Exception ex)
-			// {
-			// 	Error(ex.ToString());
-			// }
+				// try
+				// {
+				// 	string sparkFolder = Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation) ?? "";
+				// 	string exePath = Path.Combine(sparkFolder, "resources", "asciiecho.exe");
+				// 	
+				// 	//Declare and instantiate a new process component.
+				// 	Process process = new Process();
+				// 	process.StartInfo.UseShellExecute = false;
+				// 	process.StartInfo.RedirectStandardOutput = true;
+				// 	process.StartInfo.RedirectStandardError = true;
+				// 	process.StartInfo.RedirectStandardInput = true; // Is a MUST!
+				// 	process.EnableRaisingEvents = true;
+				// 	process.StartInfo.FileName = "cmd.exe";
+				// 	process.StartInfo.Arguments = "C:\\Users\\Anton\\Desktop\\test.bat";
+				// 	process.StartInfo.CreateNoWindow = true;
+				// 	process.OutputDataReceived += (s, e) =>
+				// 	{
+				// 		Debug.WriteLine(e.Data);
+				// 	};
+				// 	process.ErrorDataReceived += (s, e) =>
+				// 	{
+				// 		Debug.WriteLine(e.Data);
+				// 	};
+				// 	process.Start();
+				// 	process.BeginOutputReadLine();
+				// 	process.BeginErrorReadLine();
+				// 	await process.WaitForExitAsync();
+				// }
+				// catch (Exception ex)
+				// {
+				// 	Error(ex.ToString());
+				// }
 
-			try
-			{
-				string sparkFolder = Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation) ?? "";
-				string exePath = Path.Combine(sparkFolder, "resources", "asciiecho.exe");
-
-				Process p = Process.Start(new ProcessStartInfo
+				try
 				{
-					FileName = exePath,
-					// UseShellExecute = true,
-					// WindowStyle = ProcessWindowStyle.Maximized,
-				});
+					string sparkFolder = Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation) ?? "";
+					string exePath = Path.Combine(sparkFolder, "resources", "asciiecho.exe");
 
-				
-				if (p != null)
-				{
-					for (int i = 0; i < 10; i++)
+					Process p = Process.Start(new ProcessStartInfo
 					{
-						await Task.Delay(100);
-						// Point relativePoint = speakerSystemPanel.TransformToAncestor(this).Transform(new Point(0, 0));
-						// MoveWindow(p.MainWindowHandle, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
-						MoveWindow(p.MainWindowHandle, 200, 200, 1024, 768, true);
+						FileName = exePath,
+						// UseShellExecute = true,
+						// WindowStyle = ProcessWindowStyle.Maximized,
+					});
+
+
+					if (p != null)
+					{
+						for (int i = 0; i < 10; i++)
+						{
+							await Task.Delay(100);
+							// Point relativePoint = speakerSystemPanel.TransformToAncestor(this).Transform(new Point(0, 0));
+							// MoveWindow(p.MainWindowHandle, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
+							MoveWindow(p.MainWindowHandle, 200, 200, 1024, 768, true);
+						}
 					}
 				}
-			}
-			catch (Exception ex)
-			{
-				Error(ex.ToString());
-			}
+				catch (Exception ex)
+				{
+					Error(ex.ToString());
+				}
 			});
 		}
 	}

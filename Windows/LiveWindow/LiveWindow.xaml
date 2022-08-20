@@ -79,26 +79,29 @@
 						</Button>
 					</StackPanel>
 				</GroupBox>
-				<GroupBox x:Name="blueTeamBox" BorderBrush="#FF2A384B">
+				<GroupBox x:Name="blueTeamBox" BorderBrush="#FF31507a">
 					<GroupBox.Header>
 						<StackPanel Orientation="Horizontal">
 							<Label Content="{x:Static p:Resources.Blue_Team}" />
 							<Image x:Name="blueTeamLogo" Height="26" DockPanel.Dock="Right" Margin="84,0,0,0" />
 						</StackPanel>
 					</GroupBox.Header>
-					<Label x:Name="blueTeamPlayersLabel" Content="" />
+					<StackPanel x:Name="BlueTeamPlayersBox" Margin="-3,-3,-3,-3" >
+					</StackPanel>
 				</GroupBox>
-				<GroupBox x:Name="orangeTeamBox" Width="Auto" VerticalAlignment="Top" BorderBrush="#FF6C5339">
+				<GroupBox x:Name="orangeTeamBox" Width="Auto" VerticalAlignment="Top" BorderBrush="#FF8c5c2a">
 					<GroupBox.Header>
 						<StackPanel Orientation="Horizontal">
 							<Label Content="{x:Static p:Resources.Orange_Team}" />
 							<Image x:Name="orangeTeamLogo" Height="26" DockPanel.Dock="Right" Margin="65,0,0,0" />
 						</StackPanel>
 					</GroupBox.Header>
-					<Label x:Name="orangeTeamPlayersLabel" Content="" />
+					<StackPanel x:Name="OrangeTeamPlayersBox" Margin="-3,-3,-3,-3" >
+					</StackPanel>
 				</GroupBox>
 				<GroupBox x:Name="spectatorsBox" Header="{x:Static p:Resources.Spectators}" BorderBrush="#FF515151">
-					<Label x:Name="spectatorsLabel" Content="" />
+					<StackPanel x:Name="SpectatorsPlayersBox" Margin="-3,-3,-3,-3" >
+					</StackPanel>
 				</GroupBox>
 			</StackPanel>
 			
@@ -109,9 +112,9 @@
 					<ColumnDefinition Width="2*"/>
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
-				<TextBlock x:Name="OrangePoints" Grid.Column="0" Background="#FF6C5339" TextAlignment="Center" VerticalAlignment="Stretch" Padding="0,10,0,0" FontSize="26" FontFamily="Consolas" FontWeight="Black">0</TextBlock>
+				<TextBlock x:Name="OrangePoints" Grid.Column="0" Background="#FF8c5c2a" TextAlignment="Center" VerticalAlignment="Stretch" Padding="0,10,0,0" FontSize="26" FontFamily="Consolas" FontWeight="Black">0</TextBlock>
 				<TextBlock x:Name="GameClock" Grid.Column="1" Background="#FF515151" TextAlignment="Center" VerticalAlignment="Stretch" Padding="0,14,0,0" FontSize="20" FontFamily="Consolas">00:00.00</TextBlock>
-				<TextBlock x:Name="BluePoints" Grid.Column="2" Background="#FF2A384B" TextAlignment="Center" VerticalAlignment="Stretch" Padding="0,10,0,0" FontSize="26" FontFamily="Consolas" FontWeight="Black">0</TextBlock>
+				<TextBlock x:Name="BluePoints" Grid.Column="2" Background="#FF31507a" TextAlignment="Center" VerticalAlignment="Stretch" Padding="0,10,0,0" FontSize="26" FontFamily="Consolas" FontWeight="Black">0</TextBlock>
 			</Grid>
 				</Border>
 		</Grid>
@@ -176,11 +179,11 @@
 								</StackPanel>
 							</StackPanel>
 						</GroupBox>
-						<GroupBox x:Name="lastRoundScores" Header="{x:Static p:Resources.Previous_Rounds}" Grid.Column="0" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" Grid.Row="1">
-							<TextBlock x:Name="lastRoundScoresTextBlock"/>
+						<GroupBox Header="{x:Static p:Resources.Previous_Rounds}" Grid.Column="0" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" Grid.Row="1">
+							<StackPanel x:Name="LastRoundScoresBox" Margin="-3,-3,-3,-3"></StackPanel>
 						</GroupBox>
-						<GroupBox x:Name="lastGoalsBox" Header="{x:Static p:Resources.Previous_Goals}" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1">
-							<TextBlock x:Name="lastGoalsTextBlock"/>
+						<GroupBox Header="{x:Static p:Resources.Previous_Goals}" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Left" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1">
+							<StackPanel x:Name="LastGoalsBox" Margin="-3,-3,-3,-3"></StackPanel>
 						</GroupBox>
 						<GroupBox x:Name="lastJoustsBox" Grid.Row="0" Margin="10,90,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="2">
 							<GroupBox.Header>

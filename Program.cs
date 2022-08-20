@@ -2939,12 +2939,16 @@ namespace Spark
 		{
 			CurrentRound.finishReason = reason;
 
+
 			if (lastRoundFrame == null)
 			{
 				// this happened on a restart right in the beginning once
 				LogRow(LogType.Error, "frame is null on match finished event. INVESTIGATE");
 				return;
 			}
+			
+			CurrentRound.frame.blue_round_score = lastRoundFrame.blue_round_score;
+			CurrentRound.frame.orange_round_score = lastRoundFrame.orange_round_score;
 
 			LogRow(LogType.File, lastRoundFrame.sessionid, "Match Finished: " + reason);
 
