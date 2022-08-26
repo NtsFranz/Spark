@@ -1288,7 +1288,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Spectator Mode</value>
   </data>
   <data name="Hide EchoVR UI" xml:space="preserve">
-    <value>Hide EchoVR UI (U)</value>
+    <value>EchoVR UI を隠す (Uキーを入力)</value>
   </data>
   <data name="Toggle Minimap after Goals" xml:space="preserve">
     <value>Toggle Minimap after Goals (M)</value>
@@ -1297,14 +1297,14 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Sideline</value>
   </data>
   <data name="Follow client player (&apos;Spectate Me&apos; only)" xml:space="preserve">
-    <value>Follow client player ('Spectate Me' only)</value>
+    <value>クライアントプレイヤーを追尾（「Spectate Me」のみ）</value>
   </data>
   <data name="Follow" xml:space="preserve">
-    <value>Follow</value>
+    <value>追尾</value>
     <comment>refers to the follow camera in spectator view</comment>
   </data>
   <data name="Follow client player camera mode:" xml:space="preserve">
-    <value>Follow player camera mode:</value>
+    <value>クライアントプレイヤー追尾カメラモード</value>
   </data>
   <data name="US Central North" xml:space="preserve">
     <value>US Central North</value>
@@ -1319,34 +1319,34 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>US West</value>
   </data>
   <data name="Europe" xml:space="preserve">
-    <value>Europe</value>
+    <value>ヨーロッパ</value>
   </data>
   <data name="Japan" xml:space="preserve">
-    <value>Japan</value>
+    <value>日本</value>
   </data>
   <data name="Singapore" xml:space="preserve">
     <value>Singapore</value>
   </data>
   <data name="e.g. Tokyo" xml:space="preserve">
-    <value>e.g. Tokyo</value>
+    <value>例: 東京</value>
   </data>
   <data name="Lobby" xml:space="preserve">
     <value>Lobby</value>
   </data>
   <data name="Combat Dyson" xml:space="preserve">
-    <value>Combat Dyson</value>
+    <value>コンバット Dyson</value>
   </data>
   <data name="Combat Combustion" xml:space="preserve">
-    <value>Combat Combustion</value>
+    <value>コンバット Combustion</value>
   </data>
   <data name="Combat Fission" xml:space="preserve">
-    <value>Combat Fission</value>
+    <value>コンバット Fission</value>
   </data>
   <data name="Combat Surge" xml:space="preserve">
-    <value>Combat Surge</value>
+    <value>コンバット Surge</value>
   </data>
   <data name="Camera Write" xml:space="preserve">
-    <value>Camera Write</value>
+    <value>echodb/routes/queries.py</value>
   </data>
   <data name="Upload Tablet Stats" xml:space="preserve">
     <value>Upload Tablet Stats</value>
@@ -1367,13 +1367,13 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Success!</value>
   </data>
   <data name="Failed" xml:space="preserve">
-    <value>Failed</value>
+    <value>失敗</value>
   </data>
   <data name="Uploaded" xml:space="preserve">
     <value>Uploaded</value>
   </data>
-  <data name="Windows Store" xml:space="preserve">
-    <value>Windows Store</value>
+  <data name="Microsoft Store" xml:space="preserve">
+    <value>Microsoft Store</value>
   </data>
   <data name="Waiting for EchoVR to start" xml:space="preserve">
     <value>Waiting for EchoVR to start</value>
@@ -1382,16 +1382,16 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Waiting until you join a game</value>
   </data>
   <data name="CameraSettingsDescription" xml:space="preserve">
-    <value>These settings are only used if the game is launched in spectator mode. This includes the Spectate Me function as well as spectating other matches.</value>
+    <value>これらの設定はゲームが観戦モードで起動した場合にのみ使用されます。これには"Spectate Me"機能と他の試合を観戦している場合も含みます。</value>
   </data>
   <data name="Speedometer" xml:space="preserve">
     <value>Speedometer</value>
   </data>
   <data name="In_Lobby" xml:space="preserve">
-    <value>In Lobby</value>
+    <value>ロビー</value>
   </data>
   <data name="Install ReShade" xml:space="preserve">
-    <value>Install ReShade</value>
+    <value>ReShadeをインストール</value>
   </data>
   <data name="Spectatorstream opens Echo Combat" xml:space="preserve">
     <value>Spectatorstream opens Echo Combat</value>
@@ -1409,16 +1409,16 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Spectate Me on by default</value>
   </data>
   <data name="Hide Player Nameplates" xml:space="preserve">
-    <value>Hide Player Nameplates</value>
+    <value>プレイヤーネームプレートを隠す</value>
   </data>
   <data name="Follow Cam Offset" xml:space="preserve">
-    <value>Follow Cam Offset</value>
+    <value>追尾カメラの補正</value>
   </data>
   <data name="FOV for POV cam. (P on the keyboard when following a player)" xml:space="preserve">
-    <value>FOV for POV cam. (P on the keyboard when following a player)</value>
+    <value>一人称カメラのFOV (プレイヤーを追尾中にPキーを入力)</value>
   </data>
   <data name="FOV for auto cam" xml:space="preserve">
-    <value>FOV for auto cam</value>
+    <value>自動カメラ用FOV</value>
   </data>
   <data name="Spectator Field of View" xml:space="preserve">
     <value>Spectator Field of View</value>
@@ -1436,13 +1436,13 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Vertical Move Speed</value>
   </data>
   <data name="FOV for free camera" xml:space="preserve">
-    <value>FOV for free camera</value>
+    <value>フリーカメラ用FOV</value>
   </data>
   <data name="Free Cam Field of View" xml:space="preserve">
-    <value>Free Cam Field of View</value>
+    <value>フリーカメラFOV</value>
   </data>
   <data name="Free Cam Settings  (C on the keyboard)" xml:space="preserve">
-    <value>Free Cam Settings  (C on the keyboard)</value>
+    <value>フリーカメラの設定（Cキーを入力）</value>
   </data>
   <data name="VOIP Volume" xml:space="preserve">
     <value>VOIP Volume</value>
@@ -1457,16 +1457,16 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Low</value>
   </data>
   <data name="High" xml:space="preserve">
-    <value>High</value>
+    <value>高</value>
   </data>
   <data name="Lighting Quality" xml:space="preserve">
-    <value>Lighting Quality</value>
+    <value>ライティング品質</value>
   </data>
   <data name="Texture Quality" xml:space="preserve">
     <value>Texture Quality</value>
   </data>
   <data name="FX Quality" xml:space="preserve">
-    <value>FX Quality</value>
+    <value>FXの質</value>
   </data>
   <data name="Temporal AA" xml:space="preserve">
     <value>Temporal AA</value>
@@ -1475,22 +1475,22 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Volumetrics</value>
   </data>
   <data name="Field of View only works in -capturevp2 mode" xml:space="preserve">
-    <value>Field of View only works in -capturevp2 mode</value>
+    <value>視野角設定は-capturevp2モードでのみ動作します</value>
   </data>
   <data name="Field of View" xml:space="preserve">
-    <value>Field of View</value>
+    <value>FOV (視野角)</value>
   </data>
   <data name="Fullscreen" xml:space="preserve">
-    <value>Fullscreen</value>
+    <value>全画面表示</value>
   </data>
   <data name="Install Medal.tv here: " xml:space="preserve">
-    <value>Install Medal.tv here: </value>
+    <value>ここからMedal.tvをインストール: </value>
   </data>
   <data name="Customize your hotkey in Medal by going to Settings (bottom left) -&gt; Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default. F12 should be good for most people." xml:space="preserve">
-    <value>Customize your hotkey in Medal by going to Settings (bottom left) -&gt; Hotkeys. The default is F8, but this also hides player nametags and the HUD in Echo, so you may want to change the default. F12 should be good for most people.</value>
+    <value>Medalのホットキーをカスタマイズするには、「設定」（左下）→「ホットキー」に移動します。 デフォルトはF8ですが、Echoでプレイヤー名タグとHUDも非表示になりますので、デフォルトを変更することもできます。 F12はほとんどの人にとって良いはずです。</value>
   </data>
   <data name="Change clip length in the medal settings window. (Settings-&gt;Recorder)" xml:space="preserve">
-    <value>Change clip length in the medal settings window. (Settings-&gt;Recorder)</value>
+    <value>メダル設定画面でクリップの長さを変更（設定-&gt;レコーダー）</value>
   </data>
   <data name="Voice Recognition" xml:space="preserve">
     <value>Voice Recognition</value>
@@ -1499,37 +1499,37 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Voice recognition is powered by Vosk. All audio data is processed locally on your device and not uploaded to a server.</value>
   </data>
   <data name="Enable Voice Recognition" xml:space="preserve">
-    <value>Enable Voice Recognition</value>
+    <value>音声認識を有効化</value>
   </data>
   <data name="Say &apos;Clip That&apos; at any point to save a clip" xml:space="preserve">
     <value>Say 'Clip That' at any point to save a clip</value>
   </data>
   <data name="Emote Activation" xml:space="preserve">
-    <value>Emote Activation</value>
+    <value>エモートの起動</value>
   </data>
   <data name="In-game Scene:" xml:space="preserve">
-    <value>In-game Scene:</value>
+    <value>ゲーム内のシーン:</value>
   </data>
   <data name="Echo Grand Prix" xml:space="preserve">
-    <value>Echo Grand Prix</value>
+    <value>Echoグランプリ</value>
   </data>
   <data name="Find All Quests" xml:space="preserve">
-    <value>Find All Quests</value>
+    <value>すべてのクエストを検索</value>
   </data>
   <data name="Shows a list of all the Quest IPs on the network." xml:space="preserve">
     <value>Shows a list of all the Quest IPs on the network.</value>
   </data>
   <data name="League Overlays" xml:space="preserve">
-    <value>League Overlays</value>
+    <value>リーグオーバーレイ</value>
   </data>
   <data name="Fastest" xml:space="preserve">
-    <value>Fastest</value>
+    <value>最速</value>
   </data>
   <data name="In Loading Screen" xml:space="preserve">
-    <value>In Loading Screen</value>
+    <value>ロード画面中</value>
   </data>
   <data name="Echo VR not active" xml:space="preserve">
-    <value>Echo VR not active</value>
+    <value>Echo VR が有効ではありません</value>
   </data>
   <data name="Something broke while trying to download update." xml:space="preserve">
     <value>Something broke while trying to download update.</value>
@@ -1538,22 +1538,22 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Something broke while trying to launch update installer</value>
   </data>
   <data name="Fetching opt-in status..." xml:space="preserve">
-    <value>Fetching opt-in status...</value>
+    <value>オプトインのステータスを取得中...</value>
   </data>
   <data name="Found Quest on network!" xml:space="preserve">
-    <value>Found Quest on network!</value>
+    <value>ネットワーク上にクエストが見つかりました！</value>
   </data>
   <data name="Failed. Scanning for Echo VR API instead. This may take a while." xml:space="preserve">
-    <value>Failed. Scanning for Echo VR API instead. This may take a while.</value>
+    <value>失敗しました。代わりにEcho VR APIをスキャンします。しばらく時間がかかる場合があります。</value>
   </data>
   <data name="Failed to find Quest on network! Make sure you are in a private/public match and API Access is enabled." xml:space="preserve">
-    <value>Failed to find Quest on network! Make sure you are in a private/public match and API Access is enabled.</value>
+    <value>ネットワーク上にクエストを見つけることができませんでした！プライベート/パブリックマッチに参加している状態でAPIアクセスが有効になっていることを確認してください。</value>
   </data>
   <data name="QuestIPFetching_FindQuestIP_Found_Quest_on_network_" xml:space="preserve">
     <value>Found Quest on network!</value>
   </data>
   <data name="Failed to find Quest on network!" xml:space="preserve">
-    <value>Failed to find Quest on network!</value>
+    <value>ネットワーク上にクエストが見つかりませんでした！</value>
   </data>
   <data name="Play Test Sound" xml:space="preserve">
     <value>Play Test Sound</value>
@@ -1562,28 +1562,28 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>Open TTS Cache Folder</value>
   </data>
   <data name="Clear TTS Cache" xml:space="preserve">
-    <value>Clear TTS Cache</value>
+    <value>TTSキャッシュをクリア</value>
   </data>
   <data name="Discord Rich Presence Spectator" xml:space="preserve">
-    <value>Disable Discord Rich Presence when spectating matches</value>
+    <value>観戦時にDiscordリッチプレゼンスを無効にする</value>
   </data>
   <data name="Rich presence from Spark" xml:space="preserve">
     <value>Rich presence from Spark</value>
   </data>
   <data name="If you need help:" xml:space="preserve">
-    <value>If you need help:</value>
+    <value>助けが必要な場合:</value>
   </data>
   <data name="Wiki" xml:space="preserve">
     <value>Wiki</value>
   </data>
   <data name="Follow specific player" xml:space="preserve">
-    <value>Follow specific player</value>
+    <value>特定のプレイヤーを追尾</value>
   </data>
   <data name="Find Now" xml:space="preserve">
-    <value>Find Now</value>
+    <value>今すぐ探す</value>
   </data>
   <data name="Follow specific player name:" xml:space="preserve">
-    <value>Follow specific player name:</value>
+    <value>特定のプレイヤー名を追尾:</value>
   </data>
   <data name="blue_caps" xml:space="preserve">
     <value>ブルー</value>

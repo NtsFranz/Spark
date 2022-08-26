@@ -3643,7 +3643,8 @@ namespace Spark
 						profiles.Add(tabletStats);
 					}
 				});
-				profiles.Sort((p1, p2) => p1.update_time.CompareTo(p2.update_time));
+				profiles.Sort((p1, p2) => p2.update_time.CompareTo(p1.update_time));
+				profiles = profiles.DistinctBy(x => x.player_name).ToList();
 
 				return profiles;
 			}
@@ -3664,8 +3665,6 @@ namespace Spark
 					string dataString = JsonConvert.SerializeObject(p);
 					string hash = SecretKeys.Hash(dataString + p.player_name);
 
-					client.DefaultRequestHeaders.Remove("x-api-key");
-					client.DefaultRequestHeaders.Add("x-api-key", DiscordOAuth.igniteUploadKey);
 
 					StringContent content = new StringContent(dataString, Encoding.UTF8, "application/json");
 

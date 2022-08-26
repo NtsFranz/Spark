@@ -288,6 +288,9 @@ namespace Spark
 
 				availableAccessCodes = newAccessCodes;
 				SetAccessCodeByHash(SparkSettings.instance.accessCode);
+				
+				Program.client.DefaultRequestHeaders.Remove("x-api-key");
+				Program.client.DefaultRequestHeaders.Add("x-api-key", igniteUploadKey);
 
 				Authenticated?.Invoke();
 			}

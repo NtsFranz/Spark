@@ -334,7 +334,7 @@ namespace Spark
 			});
 		}
 
-		public static string AppVersionLabelText => $"v{Program.AppVersionString()}  {(Program.IsWindowsStore() ? Properties.Resources.Windows_Store : "")}";
+		public static string AppVersionLabelText => $"v{Program.AppVersionString()}  {(Program.IsWindowsStore() ? Properties.Resources.Microsoft_Store : "")}";
 		public static Visibility PlayercardsTabVisibility => Visibility.Visible; //Program.IsWindowsStore() ? Visibility.Visible : Visibility.Collapsed;
 
 		private void ActivateUnityWindow()

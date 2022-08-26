@@ -1267,8 +1267,8 @@ CLOSE ECHOVR BEFORE PRESSING OK!</value>
   <data name="Uploaded" xml:space="preserve">
     <value>Uploaded</value>
   </data>
-  <data name="Windows Store" xml:space="preserve">
-    <value>Windows Store</value>
+  <data name="Microsoft Store" xml:space="preserve">
+    <value>Microsoft Store</value>
   </data>
   <data name="Waiting for EchoVR to start" xml:space="preserve">
     <value>Waiting for EchoVR to start</value>

@@ -14,10 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SparkSetup", "SparkSetup\SparkSetup.vdproj", "{49706C01-849A-4C72-976C-A9FAE7661E94}"
-EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "WiX", "WiX\WiX.wixproj", "{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,36 +90,6 @@ Global
 		{BD942588-D1E6-494E-BFCE-F588BC1C153D}.Release|x86.ActiveCfg = Release|x86
 		{BD942588-D1E6-494E-BFCE-F588BC1C153D}.Release|x86.Build.0 = Release|x86
 		{BD942588-D1E6-494E-BFCE-F588BC1C153D}.Release|x86.Deploy.0 = Release|x86
-		{49706C01-849A-4C72-976C-A9FAE7661E94}.Debug|Any CPU.ActiveCfg = Debug
-		{49706C01-849A-4C72-976C-A9FAE7661E94}.Debug|ARM.ActiveCfg = Debug
-		{49706C01-849A-4C72-976C-A9FAE7661E94}.Debug|ARM64.ActiveCfg = Debug
-		{49706C01-849A-4C72-976C-A9FAE7661E94}.Debug|x64.ActiveCfg = Debug
-		{49706C01-849A-4C72-976C-A9FAE7661E94}.Debug|x86.ActiveCfg = Debug
-		{49706C01-849A-4C72-976C-A9FAE7661E94}.Release|Any CPU.ActiveCfg = Release
-		{49706C01-849A-4C72-976C-A9FAE7661E94}.Release|ARM.ActiveCfg = Release
-		{49706C01-849A-4C72-976C-A9FAE7661E94}.Release|ARM64.ActiveCfg = Release
-		{49706C01-849A-4C72-976C-A9FAE7661E94}.Release|x64.ActiveCfg = Release
-		{49706C01-849A-4C72-976C-A9FAE7661E94}.Release|x86.ActiveCfg = Release
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Debug|Any CPU.Build.0 = Debug|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Debug|ARM.ActiveCfg = Debug|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Debug|ARM.Build.0 = Debug|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Debug|ARM64.ActiveCfg = Debug|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Debug|ARM64.Build.0 = Debug|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Debug|x64.ActiveCfg = Debug|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Debug|x64.Build.0 = Debug|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Debug|x86.ActiveCfg = Debug|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Debug|x86.Build.0 = Debug|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Release|Any CPU.ActiveCfg = Release|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Release|Any CPU.Build.0 = Release|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Release|ARM.ActiveCfg = Release|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Release|ARM.Build.0 = Release|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Release|ARM64.ActiveCfg = Release|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Release|ARM64.Build.0 = Release|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Release|x64.ActiveCfg = Release|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Release|x64.Build.0 = Release|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Release|x86.ActiveCfg = Release|x86
-		{43607150-2D5A-47D9-A29D-FFBD4F25F2FA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

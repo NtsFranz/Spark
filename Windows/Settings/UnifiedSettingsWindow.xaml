@@ -322,13 +322,13 @@
 								<Label x:Name="label1" Content="{x:Static p:Resources.Speech_Speed}" />
 								<ComboBox Width="146" HorizontalAlignment="Left"
 										  SelectedIndex="{Binding SpeechSpeed}"
-										  Margin="0,0,0,8" Grid.Row="1">
+										  Margin="0,0,0,8" Grid.Row="1" Grid.Column="0">
 									<ComboBoxItem Content="{x:Static p:Resources.Slow}" />
 									<ComboBoxItem Content="{x:Static p:Resources.Normal}" />
 									<ComboBoxItem Content="{x:Static p:Resources.Fast}" />
 									<ComboBoxItem Content="{x:Static p:Resources.Very_Fast}" />
 								</ComboBox>
-								<Label Content="{x:Static p:Resources.Voice}" Grid.Column="1" />
+								<Label Content="{x:Static p:Resources.Voice}" Grid.Row="0" Grid.Column="1" />
 								<ComboBox Width="146" HorizontalAlignment="Left"
 										  SelectedIndex="{l:SettingBinding ttsVoice}"
 										  Margin="0,0,0,8" Grid.Column="1" Grid.Row="1">

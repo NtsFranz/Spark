@@ -7,12 +7,15 @@ namespace Spark
 	{
 		public enum ThemeTypes
 		{
-			YellowDark, OrangeDark, RedDark
+			YellowDark,
+			OrangeDark,
+			RedDark
 		}
 
 		public static ThemeTypes CurrentTheme { get; set; }
 
-		private static ResourceDictionary ThemeDictionary {
+		private static ResourceDictionary ThemeDictionary
+		{
 			get { return Application.Current.Resources.MergedDictionaries[0]; }
 			set { Application.Current.Resources.MergedDictionaries[0] = value; }
 		}
@@ -24,21 +27,27 @@ namespace Spark
 
 		public static void SetTheme(ThemeTypes theme)
 		{
-			string themeName = null;
 			CurrentTheme = theme;
-			switch (theme)
+			string themeName = theme switch
 			{
-				case ThemeTypes.YellowDark: themeName = "ColourfulDarkTheme_Yellow"; break;
-				case ThemeTypes.OrangeDark: themeName = "ColourfulDarkTheme_Orange"; break;
-				case ThemeTypes.RedDark: themeName = "ColourfulDarkTheme_Red"; break;
-			}
+				ThemeTypes.YellowDark => "ColourfulDarkTheme_Yellow",
+				ThemeTypes.OrangeDark => "ColourfulDarkTheme_Orange",
+				ThemeTypes.RedDark => "ColourfulDarkTheme_Red",
+				_ => null
+			};
 
 			try
 			{
 				if (!string.IsNullOrEmpty(themeName))
+				{
 					ChangeTheme(new Uri($"Themes/{themeName}.xaml", UriKind.Relative));
+				}
 			}
-			catch { }
+			catch (Exception e)
+			{
+				Logger.Error($"Error changing the theme.\n{e}");
+				// ignored
+			}
 		}
 	}
 }
