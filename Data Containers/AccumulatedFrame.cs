@@ -187,7 +187,7 @@ namespace Spark
 				{ "round", frame.blue_round_score + frame.orange_round_score },
 				{ "private", frame.private_match },
 				{ "client_name", frame.client_name },
-				{ "hw_id", Logger.MacAddr },
+				{ "hw_id", Logger.DeviceId },
 				{ "version", Program.AppVersionString() },
 				{ "ip", frame.sessionip },
 				{ "blue_team_name", frame.teams[0].team },

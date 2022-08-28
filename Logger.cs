@@ -72,22 +72,12 @@ public class Logger
 
 	private static string macAddrVal;
 
-	public static string MacAddr
-	{
-		get
-		{
-			if (macAddrVal == null)
-			{
-				macAddrVal = (
-					from nic in NetworkInterface.GetAllNetworkInterfaces()
-					where nic.OperationalStatus == OperationalStatus.Up
-					select nic.GetPhysicalAddress().ToString()
-				).FirstOrDefault();
-			}
-
-			return macAddrVal;
-		}
-	}
+	public static string DeviceId =>
+		macAddrVal ??= (
+			from nic in NetworkInterface.GetAllNetworkInterfaces()
+			where nic.OperationalStatus == OperationalStatus.Up
+			select nic.GetPhysicalAddress().ToString()
+		).FirstOrDefault();
 
 
 	/// <summary>
@@ -201,7 +191,7 @@ public class Logger
 			StringBuilder strBuilder = new StringBuilder();
 			strBuilder.Append(DateTime.Now.ToString(dateFormat));
 			strBuilder.Append(delimiter);
-			strBuilder.Append(MacAddr);
+			strBuilder.Append(DeviceId);
 			strBuilder.Append(delimiter);
 			strBuilder.Append(Program.AppVersionString());
 			strBuilder.Append(delimiter);

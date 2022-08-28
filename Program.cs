@@ -170,6 +170,7 @@ namespace Spark
 		private static readonly HttpClient fetchClient = new HttpClient();
 		// private static readonly System.Timers.Timer fetchTimer = new System.Timers.Timer();
 		private static readonly Stopwatch fetchSw = new Stopwatch();
+		private static Timer ccuCounter;
 
 		public static CoreWebView2Environment webView2Environment;
 
@@ -612,7 +613,7 @@ namespace Spark
 					}
 					catch (Exception e)
 					{
-						Logger.LogRow(LogType.Error, e.ToString());
+						Logger.Error(e.ToString());
 					}
 
 					// wait 5 seconds for login to happen
@@ -622,7 +623,8 @@ namespace Spark
 
 				//HighlightsHelper.CloseNVHighlights();
 
-
+				ccuCounter = new Timer(CCUCounter, null, 0, 60000);
+				
 
 				#region Add Listeners
 
@@ -634,7 +636,7 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				Logger.LogRow(LogType.Error, e.ToString());
+				Logger.Error(e.ToString());
 				Quit();
 			}
 		}
@@ -663,6 +665,11 @@ namespace Spark
 			#else
 				return false;
 			#endif
+		}
+
+		private static void CCUCounter(object state)
+		{
+			_ = client.PostAsync($"/spark_is_open?hw_id={DeviceId}&client_name={SparkSettings.instance.client_name}", null);
 		}
 
 		/// <summary>
@@ -701,6 +708,7 @@ namespace Spark
 			autorestartCancellation?.Cancel();
 			fetchThreadCancellation?.Cancel();
 			liveReplayCancel?.Cancel();
+			ccuCounter.Dispose();
 
 			if (replayFilesManager != null)
 			{
