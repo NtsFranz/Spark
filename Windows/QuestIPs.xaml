@@ -7,19 +7,30 @@
         xmlns:local="clr-namespace:Spark"
         mc:Ignorable="d"
         Title="Quest IPs" 
-        Height="600" Width="500" 
+        Height="600" Width="900" 
         Background="{DynamicResource BackgroundColour}" 
         VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
         FontSize="14"
         Icon="/img/ignite_logo.ico"
         >
 	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"></RowDefinition>
+			<RowDefinition Height="50"></RowDefinition>
+		</Grid.RowDefinitions>
 		
-		<TextBox x:Name="QuestIPsBox" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" IsReadOnly="True" FontSize="20" Text="Loading..."/>
+		<ScrollViewer Grid.Row="0">
+		<StackPanel x:Name="ListBox" Orientation="Vertical" CanVerticallyScroll="True" >
+			<StackPanel Height="30"><Label>192.168.1.1</Label></StackPanel>
+		</StackPanel>
+		</ScrollViewer>
 		
-		<Label x:Name="LoadingLabel" Content="Loading..." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10"></Label>
-		<Button Content="{x:Static p:Resources.Refresh}" HorizontalAlignment="Right" Margin="0,0,100,10" Padding="3,3,3,3" VerticalAlignment="Bottom" Width="70" Click="RefreshClicked"/>
-		<Button Content="{x:Static p:Resources.Close}" HorizontalAlignment="Right" Margin="0,0,30,10" Padding="3,3,3,3" VerticalAlignment="Bottom" Width="56" Click="CloseButtonClicked"/>
+		<Grid Grid.Row="1">
+			<Label x:Name="LoadingLabel" Content="Loading..." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10"></Label>
+			<Button Content="{x:Static p:Resources.Refresh}" HorizontalAlignment="Right" Margin="0,0,220,10" Padding="3,3,3,3" VerticalAlignment="Bottom" Width="100" Click="RefreshClicked" ToolTip="Refreshes the status of existing devices. This is doesn't find new devices."/>
+			<Button Content="Find Quests" HorizontalAlignment="Right" Margin="0,0,110,10" Padding="3,3,3,3" VerticalAlignment="Bottom" Width="100" Click="FindIPsClicked" ToolTip="Searches for new devices on the network."/>
+			<Button Content="{x:Static p:Resources.Close}" HorizontalAlignment="Right" Margin="0,0,30,10" Padding="3,3,3,3" VerticalAlignment="Bottom" Width="70" Click="CloseButtonClicked"/>
+		</Grid>
 		
 	</Grid>
 </Window>

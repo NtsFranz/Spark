@@ -64,7 +64,7 @@ namespace Spark
 		public Team team;
 
 		/// <summary>
-		/// Function to transform event data into the desired format for firestore.
+		/// Function to transform event data into the desired format for databases.
 		/// </summary>
 		/// <returns></returns>
 		public override Dictionary<string, object> ToDict()

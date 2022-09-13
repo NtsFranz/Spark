@@ -285,7 +285,8 @@ namespace Spark
 
 			try
 			{
-				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
+				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+					"IgniteVR", "Spark", "WebView");
 				CoreWebView2Environment webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
 				await PlayercardWebView.EnsureCoreWebView2Async(webView2Environment);
 				PlayercardWebView.Source = new UriBuilder("https://metrics.ignitevr.gg/playercard_embed").Uri;
@@ -295,10 +296,20 @@ namespace Spark
 				LogRow(LogType.Error, "4538: Failed to load WebView.\n" + ex);
 				new MessageBox("Failed to load. Please report this to NtsFranz or else ┗|｀O′|┛ (4538)").Show();
 			}
+			catch (WebView2RuntimeNotFoundException ex)
+			{
+				string sparkFolder = Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation) ?? "";
+				string exePath = Path.Combine(sparkFolder, "resources", "MicrosoftEdgeWebview2Setup.exe");
+
+				Process.Start(new ProcessStartInfo
+				{
+					FileName = exePath,
+				});
+			}
 			catch (Exception ex)
 			{
-				LogRow(LogType.Error, "9530: Failed to load WebView for an unknown reason.\n" + ex);
-				new MessageBox("Failed to load. Please report this to NtsFranz ( ╯□╰ ) (9530)").Show();
+				LogRow(LogType.Error, "3645: Failed to load WebView for an unknown reason.\n" + ex);
+				new MessageBox("Failed to load. Please report this to NtsFranz ( ╯□╰ ) (3645)").Show();
 			}
 
 			//_ = CheckForAppUpdate();

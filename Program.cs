@@ -166,6 +166,7 @@ namespace Spark
 		private static OverlayServer overlayServer;
 		public static SpectateMeController spectateMeController;
 		public static UploadController uploadController;
+		public static LocalDatabase localDatabase;
 		public static NetMQEvents netMQEvents;
 		private static readonly HttpClient fetchClient = new HttpClient();
 		// private static readonly System.Timers.Timer fetchTimer = new System.Timers.Timer();
@@ -322,6 +323,11 @@ namespace Spark
 		
 		public static Action ManualClip;
 		public static Action BadWordDetected;
+
+		/// <summary>
+		/// For any event type that has EventData
+		/// </summary>
+		public static Action<EventData> OnEvent;
 
 		#region Spark Settings Changed
 
@@ -544,6 +550,9 @@ namespace Spark
 				loggerEvents = new LoggerEvents();
 				spectateMeController = new SpectateMeController();
 				uploadController = new UploadController();
+				localDatabase = new LocalDatabase();
+				
+				
 
 				// web server asp.net
 				try
@@ -577,39 +586,44 @@ namespace Spark
 					try
 					{
 						EchoVRSettingsManager.ReloadLoadingTips();
-						JToken toolsAll = EchoVRSettingsManager.loadingTips["tools-all"];
-						JArray tips = (JArray) EchoVRSettingsManager.loadingTips["tools-all"]?["tips"];
-
-						if (tips != null)
+						if (EchoVRSettingsManager.loadingTips != null)
 						{
-							// keep only those without SPARK in the title
-							tips = new JArray(tips.Where(t => (string)t[1] != "SPARK"));
+							JToken toolsAll = EchoVRSettingsManager.loadingTips["tools-all"];
+							JArray tips = (JArray)EchoVRSettingsManager.loadingTips["tools-all"]?["tips"];
 
-							ResourceSet resourceSet = LoadingTips.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-							if (resourceSet != null)
+							if (tips != null)
 							{
-								// loop through the resource strings
-								foreach (DictionaryEntry entry in resourceSet)
+								// keep only those without SPARK in the title
+								tips = new JArray(tips.Where(t => (string)t[1] != "SPARK"));
+
+								ResourceSet resourceSet =
+									LoadingTips.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true,
+										true);
+								if (resourceSet != null)
 								{
-									string tip = entry.Value?.ToString();
-									if (tip != null)
+									// loop through the resource strings
+									foreach (DictionaryEntry entry in resourceSet)
 									{
-										if (tips.All(existingTip => (string)existingTip[2] != tip))
+										string tip = entry.Value?.ToString();
+										if (tip != null)
 										{
-											tips.Add(new JArray("", "SPARK", tip));
+											if (tips.All(existingTip => (string)existingTip[2] != tip))
+											{
+												tips.Add(new JArray("", "SPARK", tip));
+											}
+										}
+										else
+										{
+											LogRow(LogType.Error, "Loading tip was null.");
 										}
 									}
-									else
-									{
-										LogRow(LogType.Error, "Loading tip was null.");
-									}
 								}
+
+								if (toolsAll != null) toolsAll["tips"] = tips;
 							}
 
-							if (toolsAll != null) toolsAll["tips"] = tips;
+							EchoVRSettingsManager.WriteEchoVRLoadingTips(EchoVRSettingsManager.loadingTips);
 						}
-
-						EchoVRSettingsManager.WriteEchoVRLoadingTips(EchoVRSettingsManager.loadingTips);
 					}
 					catch (Exception e)
 					{
@@ -1185,11 +1199,11 @@ namespace Spark
 			}
 			else
 			{
-				new MessageBox(Resources.echovr_path_not_set, Resources.Error, Quit).Show();
+				new MessageBox(Resources.echovr_path_not_set, Resources.Error).Show();
 			}
 		}
 
-		public static async Task<bool> APIJoin(string session_id, int teamIndex = -1)
+		public static async Task<bool> APIJoin(string session_id, int teamIndex = -1, string overrideIP = null, int overridePort = 0)
 		{
 			try
 			{
@@ -1198,7 +1212,10 @@ namespace Spark
 					{ "session_id", session_id },
 					{ "team_idx", teamIndex },
 				};
-				string resp = await PostRequestAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/join_session", null, JsonConvert.SerializeObject(body));
+
+				string ip = overrideIP ?? SparkSettings.instance.echoVRIP;
+				int port = overridePort == 0 ? SparkSettings.instance.echoVRPort : overridePort;
+				string resp = await PostRequestAsync($"http://{ip}:{port}/join_session", null, JsonConvert.SerializeObject(body));
 				return !string.IsNullOrEmpty(resp) && resp.StartsWith("{");
 			}
 			catch (Exception)
@@ -1522,16 +1539,16 @@ namespace Spark
 					// TODO find why this is crashing
 					try
 					{
-						CurrentRound.events.Enqueue(new EventData(
-							CurrentRound, 
+						EventData joinEvent = new EventData(
+							CurrentRound,
 							EventContainer.EventType.player_joined,
-							frame.game_clock, 
-							team, 
-							player, 
-							null, 
-							player.head.Position, 
-							Vector3.Zero)
-						);
+							frame.game_clock,
+							team,
+							player,
+							null,
+							player.head.Position,
+							Vector3.Zero);
+						CurrentRound.events.Enqueue(joinEvent);
 						
 						// cache this players stats so they aren't overwritten
 						CurrentRound.GetPlayerData(player)?.CacheStats(player.stats);
@@ -1545,6 +1562,7 @@ namespace Spark
 						try
 						{
 							PlayerJoined?.Invoke(frame, team, player);
+							OnEvent?.Invoke(joinEvent);
 						}
 						catch (Exception exp)
 						{
@@ -1568,7 +1586,7 @@ namespace Spark
 				{
 					if (frame.GetAllPlayers(true).Any(p => p.userid == player.userid)) continue;
 
-					CurrentRound.events.Enqueue(new EventData(
+					EventData leaveEvent = new EventData(
 						CurrentRound,
 						EventContainer.EventType.player_left,
 						frame.game_clock,
@@ -1576,12 +1594,14 @@ namespace Spark
 						player,
 						null,
 						player.head.Position,
-						player.velocity.ToVector3())
-					);
+						player.velocity.ToVector3());
+					
+					CurrentRound.events.Enqueue(leaveEvent);
 
 					try
 					{
 						PlayerLeft?.Invoke(frame, team, player);
+						OnEvent?.Invoke(leaveEvent);
 					}
 					catch (Exception exp)
 					{
@@ -1604,7 +1624,7 @@ namespace Spark
 					if (lastTeam == null) continue;
 					if (lastTeam.color == team.color) continue;
 
-					CurrentRound.events.Enqueue(new EventData(
+					EventData switchedTeamsEvent = new EventData(
 						CurrentRound,
 						EventContainer.EventType.player_switched_teams,
 						frame.game_clock,
@@ -1612,12 +1632,14 @@ namespace Spark
 						player,
 						null,
 						player.head.Position,
-						player.velocity.ToVector3())
+						player.velocity.ToVector3());
+					CurrentRound.events.Enqueue(switchedTeamsEvent
 					);
 
 					try
 					{
 						PlayerSwitchedTeams?.Invoke(frame, lastTeam, team, player);
+						OnEvent?.Invoke(switchedTeamsEvent);
 					}
 					catch (Exception exp)
 					{
@@ -1654,6 +1676,7 @@ namespace Spark
 						try
 						{
 							GamePaused?.Invoke(frame, minPlayer, minDistance);
+							OnEvent?.Invoke(pauseEvent);
 						}
 						catch (Exception exp)
 						{
@@ -1769,6 +1792,7 @@ namespace Spark
 							try
 							{
 								EmoteActivated?.Invoke(frame, team, player);
+								OnEvent?.Invoke(eventData);
 							}
 							catch (Exception exp)
 							{
@@ -1861,9 +1885,24 @@ namespace Spark
 
 								(float boostSpeed, float howLongAgoBoost) = playerData.GetMaxRecentVelocity(reset: true);
 
+
+								EventData bigBoostEvent = new EventData(
+									CurrentRound,
+									EventContainer.EventType.big_boost,
+									frame.game_clock + howLongAgoBoost,
+									team,
+									player,
+									null,
+									player.head.Position,
+									new Vector3(boostSpeed, 0, 0)
+								);
+								CurrentRound.events.Enqueue(bigBoostEvent);
+								
+								
 								try
 								{
 									BigBoost?.Invoke(frame, team, player, boostSpeed, howLongAgoBoost);
+									OnEvent?.Invoke(bigBoostEvent);
 								}
 								catch (Exception exp)
 								{
@@ -1871,19 +1910,6 @@ namespace Spark
 								}
 
 								HighlightsHelper.SaveHighlightMaybe(player.name, frame, "BIG_BOOST");
-
-								CurrentRound.events.Enqueue(
-									new EventData(
-										CurrentRound,
-										EventContainer.EventType.big_boost,
-										frame.game_clock + howLongAgoBoost,
-										team,
-										player,
-										null,
-										player.head.Position,
-										new Vector3(boostSpeed, 0, 0)
-									)
-								);
 
 							}
 
@@ -1935,25 +1961,28 @@ namespace Spark
 								)
 							{
 								// playspace abuse happened
+							
+
+								EventData eventData = new EventData(
+									CurrentRound,
+									EventContainer.EventType.playspace_abuse,
+									frame.game_clock,
+									team,
+									player,
+									null,
+									player.head.Position,
+									player.head.Position - playerData.playspaceLocation);
+								
+								CurrentRound.events.Enqueue(eventData);
 								try
 								{
 									PlayspaceAbuse?.Invoke(frame, team, player, playerData.playspaceLocation);
+									OnEvent?.Invoke(eventData);
 								}
 								catch (Exception exp)
 								{
 									LogRow(LogType.Error, "Error processing action", exp.ToString());
 								}
-
-								CurrentRound.events.Enqueue(
-									new EventData(
-										CurrentRound,
-										EventContainer.EventType.playspace_abuse,
-										frame.game_clock,
-										team,
-										player,
-										null,
-										player.head.Position,
-										player.head.Position - playerData.playspaceLocation));
 								
 								playerData.PlayspaceAbuses++;
 
@@ -1999,6 +2028,7 @@ namespace Spark
 							try
 							{
 								Save?.Invoke(frame, eventData);
+								OnEvent?.Invoke(eventData);
 							}
 							catch (Exception exp)
 							{
@@ -2017,6 +2047,7 @@ namespace Spark
 							try
 							{
 								Steal?.Invoke(frame, eventData);
+								OnEvent?.Invoke(eventData);
 							}
 							catch (Exception exp)
 							{
@@ -2075,6 +2106,7 @@ namespace Spark
 										try
 										{
 											Stun?.Invoke(frame, stunEventData);
+											OnEvent?.Invoke(stunEventData);
 										}
 										catch (Exception exp)
 										{
@@ -2130,6 +2162,7 @@ namespace Spark
 										try
 										{
 											Stun?.Invoke(frame, stunEventData);
+											OnEvent?.Invoke(stunEventData);
 										}
 										catch (Exception exp)
 										{
@@ -2159,6 +2192,16 @@ namespace Spark
 							Team throwTeam = null;
 							Player throwPlayer = null;
 							bool wasTurnoverCatch = false;
+							
+							try
+							{
+								Catch?.Invoke(frame, team, player);
+								OnEvent?.Invoke(eventData);
+							}
+							catch (Exception exp)
+							{
+								LogRow(LogType.Error, "Error processing action", exp.ToString());
+							}
 
 							if (lastThrowPlayerId > 0)
 							{
@@ -2188,9 +2231,12 @@ namespace Spark
 								{
 									_ = DelayedCatchEvent(frame, team, player, throwPlayer);
 									
+									EventData turnoverEvent = new EventData(CurrentRound, EventContainer.EventType.turnover, frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position, player.head.Position);
+									
 									try
 									{
 										Turnover?.Invoke(frame, team, throwPlayer, player);
+										OnEvent?.Invoke(turnoverEvent);
 									}
 									catch (Exception exp)
 									{
@@ -2198,54 +2244,49 @@ namespace Spark
 									}
 									
 									// TODO enable once the db can handle it
-									CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.turnover, frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position, player.head.Position));
+									CurrentRound.events.Enqueue(turnoverEvent);
 									CurrentRound.GetPlayerData(throwPlayer).Turnovers++;
 								}
 								else
 								{
+									EventData passEvent = new EventData(CurrentRound, EventContainer.EventType.pass,
+										frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position,
+										player.head.Position);
 									try
 									{
 										Pass?.Invoke(frame, team, throwPlayer, player);
+										OnEvent?.Invoke(passEvent);
 									}
 									catch (Exception exp)
 									{
 										LogRow(LogType.Error, "Error processing action", exp.ToString());
 									}
 
-									CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.pass,
-										frame.game_clock, team, throwPlayer, player, throwPlayer.head.Position,
-										player.head.Position));
+									CurrentRound.events.Enqueue(passEvent);
 									CurrentRound.GetPlayerData(throwPlayer).Passes++;
 								}
-							}
-							else
-							{
-								try
-								{
-									Catch?.Invoke(frame, team, player);
-								}
-								catch (Exception exp)
-								{
-									LogRow(LogType.Error, "Error processing action", exp.ToString());
-								}
-
 							}
 						}
 
 						// check shots taken 🧺
 						if (lastPlayer.stats.shots_taken != player.stats.shots_taken)
 						{
+
+							EventData eventData = new EventData(CurrentRound, EventContainer.EventType.shot_taken,
+								frame.game_clock, team, player, null, player.head.Position, Vector3.Zero);
+							CurrentRound.events.Enqueue(eventData);
+							
+							
 							try
 							{
 								ShotTaken?.Invoke(frame, team, player);
+								OnEvent?.Invoke(eventData);
 							}
 							catch (Exception exp)
 							{
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
-
-							CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.shot_taken,
-								frame.game_clock, team, player, null, player.head.Position, Vector3.Zero));
+							
 							if (lastThrowPlayerId == player.playerid)
 							{
 								lastThrowPlayerId = -1;
@@ -2340,37 +2381,42 @@ namespace Spark
 					{
 						(Player minPlayer, float minDistance) = ClosestPlayerToPodium(frame, "blue");
 						
+
+						EventData eventData = new EventData(CurrentRound, EventContainer.EventType.restart_request,
+							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.blue], null, null, Vector3.Zero,
+							Vector3.Zero);
+						CurrentRound.events.Enqueue(eventData);
+						
 						try
 						{
 							RestartRequest?.Invoke(frame, Team.TeamColor.blue, minPlayer, minDistance);
+							OnEvent?.Invoke(eventData);
 						}
 						catch (Exception exp)
 						{
 							LogRow(LogType.Error, "Error processing action", exp.ToString());
 						}
-
-						CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.restart_request,
-							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.blue], null, null, Vector3.Zero,
-							Vector3.Zero));
 					}
 
 					// check orange restart request ↩
 					if (!lastFrame.orange_team_restart_request && frame.orange_team_restart_request)
 					{
 						(Player minPlayer, float minDistance) = ClosestPlayerToPodium(frame, "orange");
-						
+
+
+						EventData eventData = new EventData(CurrentRound, EventContainer.EventType.restart_request,
+							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.orange], null, null, Vector3.Zero,
+							Vector3.Zero);
+						CurrentRound.events.Enqueue(eventData);
 						try
 						{
 							RestartRequest?.Invoke(frame, Team.TeamColor.orange, minPlayer, minDistance);
+							OnEvent?.Invoke(eventData);
 						}
 						catch (Exception exp)
 						{
 							LogRow(LogType.Error, "Error processing action", exp.ToString());
 						}
-
-						CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.restart_request,
-							lastFrame.game_clock, frame.teams[(int)Team.TeamColor.orange], null, null, Vector3.Zero,
-							Vector3.Zero));
 					}
 				}
 				catch (Exception)
@@ -2535,6 +2581,7 @@ namespace Spark
 					try
 					{
 						Interception?.Invoke(originalFrame, originalTeam, throwPlayer, originalPlayer);
+						OnEvent?.Invoke(eventData);
 					}
 					catch (Exception exp)
 					{
@@ -2574,17 +2621,20 @@ namespace Spark
 					{
 						if (player.possession && !frame.disc.velocity.ToVector3().Equals(Vector3.Zero))
 						{
+
+							EventData eventData = new EventData(CurrentRound, EventContainer.EventType.@throw, frame.game_clock,
+								team, player, null, player.head.Position, frame.disc.velocity.ToVector3());
+							CurrentRound.events.Enqueue(eventData);
+							
 							try
 							{
 								Throw?.Invoke(frame, team, player, leftHanded, underhandedness);
+								OnEvent?.Invoke(eventData);
 							}
 							catch (Exception exp)
 							{
 								LogRow(LogType.Error, "Error processing action", exp.ToString());
 							}
-
-							CurrentRound.events.Enqueue(new EventData(CurrentRound, EventContainer.EventType.@throw, frame.game_clock,
-								team, player, null, player.head.Position, frame.disc.velocity.ToVector3()));
 
 							CurrentRound.currentDiskTrajectory.Clear();
 

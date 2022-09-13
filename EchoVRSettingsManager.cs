@@ -89,7 +89,7 @@ namespace Spark
 
 					if (!File.Exists(file))
 					{
-						LogRow(LogType.Error, "Can't find the EchoVR settings file");
+						Error("Can't find the EchoVR settings file");
 						return null;
 					}
 
@@ -100,7 +100,7 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Error when reading Arena settings.\n" + e.ToString());
+				Error("Error when reading Arena settings.\n" + e.ToString());
 			}
 			return null;
 		}
@@ -120,7 +120,7 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Error when writing Arena settings.\n" + e.ToString());
+				Error("Error when writing Arena settings.\n" + e.ToString());
 			}
 		}
 
@@ -137,7 +137,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return false;
 				}
 			}
@@ -156,7 +156,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return 0;
 				}
 			}
@@ -175,7 +175,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return 0;
 				}
 			}
@@ -199,7 +199,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return;
 				}
 			}
@@ -224,7 +224,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return;
 				}
 			}
@@ -249,7 +249,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return;
 				}
 			}
@@ -280,7 +280,7 @@ namespace Spark
 
 					if (!File.Exists(file))
 					{
-						LogRow(LogType.Error, "Can't find the EchoVR settings file");
+						Error("Can't find the EchoVR settings file");
 						return null;
 					}
 
@@ -291,7 +291,7 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Error when reading Arena settings.\n" + e.ToString());
+				Error("Error when reading Arena settings.\n" + e.ToString());
 			}
 			return null;
 		}
@@ -311,7 +311,7 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Error when writing Arena settings.\n" + e.ToString());
+				Error("Error when writing Arena settings.\n" + e.ToString());
 			}
 		}
 
@@ -328,7 +328,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return false;
 				}
 			}
@@ -347,7 +347,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return 0;
 				}
 			}
@@ -366,7 +366,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return 0;
 				}
 			}
@@ -390,7 +390,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return;
 				}
 			}
@@ -415,7 +415,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return;
 				}
 			}
@@ -440,7 +440,7 @@ namespace Spark
 				}
 				else
 				{
-					LogRow(LogType.Error, "Error finding game setting");
+					Error("Error finding game setting");
 					return;
 				}
 			}
@@ -468,22 +468,31 @@ namespace Spark
 				}
 				else
 				{
-					string file = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.echoVRPath), "..", "..", "sourcedb", "rad15", "json", "r14", "loading_tips.json");
-
-					if (!File.Exists(file))
+					if (!string.IsNullOrEmpty(SparkSettings.instance.echoVRPath))
 					{
-						LogRow(LogType.Error, "Can't find the EchoVR settings file");
+						string file = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.echoVRPath), "..", "..",
+							"sourcedb", "rad15", "json", "r14", "loading_tips.json");
+
+						if (!File.Exists(file))
+						{
+							Error("Can't find the EchoVR settings file");
+							return null;
+						}
+
+						jsonData = File.ReadAllText(file);
+					}
+					else
+					{
+						// Echo VR not installed
 						return null;
 					}
-
-					jsonData = File.ReadAllText(file);
 				}
 
 				return JsonConvert.DeserializeObject<JToken>(jsonData);
 			}
 			catch (Exception e)
 			{
-				LogRow(LogType.Error, "Error when reading Arena settings.\n" + e.ToString());
+				Error($"Error when reading Arena settings.\n{e}");
 			}
 			return null;
 		}
@@ -503,7 +512,7 @@ namespace Spark
 			}
 			catch (Exception e)
 			{
-				LogRow(LogType.Error, $"Error when writing loading tips.\n{e}");
+				Error($"Error when writing loading tips.\n{e}");
 			}
 		}
 

@@ -468,6 +468,10 @@
     <EmbeddedResource Include="resources\asciiecho.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <None Remove="resources\MicrosoftEdgeWebview2Setup.exe" />
+    <EmbeddedResource Include="resources\MicrosoftEdgeWebview2Setup.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -528,6 +532,7 @@
     <PackageReference Include="Fleck" Version="1.2.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf.NetCore" Version="1.0.18" />
     <PackageReference Include="HidSharpCore" Version="1.2.1.1" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.9" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1293.44" />
     <PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
