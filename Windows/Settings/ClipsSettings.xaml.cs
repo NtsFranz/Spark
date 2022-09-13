@@ -366,7 +366,7 @@ namespace Spark
 				goalReplaySceneBox.Visibility = Visibility.Visible;
 				saveReplaySceneBox.Visibility = Visibility.Visible;
 			}
-			if (clipsTab == ClipsTab.Medal)
+			else if (clipsTab == ClipsTab.Medal)
 			{
 				clipsEventsBox.Visibility = Visibility.Visible;
 				labelBefore.Visibility = Visibility.Collapsed;
