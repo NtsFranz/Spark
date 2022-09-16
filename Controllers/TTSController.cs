@@ -100,7 +100,7 @@ namespace Spark
 			{
 				if (SparkSettings.instance.pausedTTS)
 				{
-					SpeakAsync($"{frame.pause.paused_requested_team} {Resources.tts_unpause}");
+					SpeakAsync($"{frame.pause.unpaused_team} {Resources.tts_unpause}");
 				}
 			};
 			Program.LocalThrow += (frame) =>

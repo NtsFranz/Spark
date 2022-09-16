@@ -635,6 +635,59 @@ namespace Spark
 						#endregion
 					}
 
+					bool blueReadyVisible = false;
+					bool orangeReadyVisible = false;
+					bool bluePauseVisible = false;
+					bool orangePauseVisible = false;
+					bool blueRestartVisible = false;
+					bool orangeRestartVisible = false;
+					bool bluePauseEnabled = false;
+					bool orangePauseEnabled = false;
+					string bluePauseText = "Pause";
+					string orangePauseText = "Pause";
+					if (Program.InGame && Program.lastFrame!=null && Program.lastFrame.private_match && Program.lastFrame.client_name != "anonymous")
+					{
+						if (!DiscordOAuth.Personal || Program.lastFrame.ClientTeam.color == Team.TeamColor.blue)
+						{
+							blueReadyVisible = true;
+							bluePauseVisible = true;
+							blueRestartVisible = true;
+							bluePauseEnabled = true;
+						}
+						if (!DiscordOAuth.Personal || Program.lastFrame.ClientTeam.color == Team.TeamColor.orange)
+						{
+							orangeReadyVisible = true;
+							orangePauseVisible = true;
+							orangeRestartVisible = true;
+							orangePauseEnabled = true;
+						}
+
+						if (Program.lastFrame.pause.paused_state == "paused_requested" || Program.lastFrame.pause.paused_state == "paused")
+						{
+							if (Program.lastFrame.pause.paused_requested_team == "blue")
+							{
+								bluePauseText = "Unpause";
+								orangePauseText = "Unpause";
+							}
+							if (Program.lastFrame.pause.paused_requested_team == "orange")
+							{
+								bluePauseText = "Unpause";
+								orangePauseText = "Unpause";
+							}
+						}
+					}
+					
+					BlueTeamReadyUp.Visibility = blueReadyVisible ? Visibility.Visible : Visibility.Collapsed;
+					OrangeTeamReadyUp.Visibility = orangeReadyVisible ? Visibility.Visible : Visibility.Collapsed;
+					BlueTeamPause.Visibility = bluePauseVisible ? Visibility.Visible : Visibility.Collapsed;
+					OrangeTeamPause.Visibility = orangePauseVisible ? Visibility.Visible : Visibility.Collapsed;
+					BlueTeamRestart.Visibility = blueRestartVisible ? Visibility.Visible : Visibility.Collapsed;
+					OrangeTeamRestart.Visibility = orangeRestartVisible ? Visibility.Visible : Visibility.Collapsed;
+					BlueTeamPause.IsEnabled = bluePauseEnabled;
+					OrangeTeamPause.IsEnabled = orangePauseEnabled;
+					BlueTeamPause.Content = bluePauseText;
+					OrangeTeamPause.Content = orangePauseText;
+					
 					if (Program.lastFrame?.InArena == true) // only the arena has a disc
 					{
 						discSpeedLabel.Text = $"{Program.lastFrame.disc.velocity.ToVector3().Length():N2}";
@@ -2308,6 +2361,55 @@ namespace Spark
 					Error(ex.ToString());
 				}
 			});
+		}
+
+		private void BlueTeamPauseClick(object sender, RoutedEventArgs e)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{ "team_idx", 0 }
+			};
+			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_pause", null, JsonConvert.SerializeObject(data), null);
+		}
+		private void OrangeTeamPauseClick(object sender, RoutedEventArgs e)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{ "team_idx", 1 }
+			};
+			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_pause", null, JsonConvert.SerializeObject(data), null);
+		}
+		private void BlueTeamReadyClick(object sender, RoutedEventArgs e)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{ "team_idx", 0 }
+			};
+			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_ready", null, JsonConvert.SerializeObject(data), null);
+		}
+		private void OrangeTeamReadyClick(object sender, RoutedEventArgs e)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{ "team_idx", 1 }
+			};
+			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_ready", null, JsonConvert.SerializeObject(data), null);
+		}
+		private void BlueTeamRestartClick(object sender, RoutedEventArgs e)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{ "team_idx", 0 }
+			};
+			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/restart_request", null, JsonConvert.SerializeObject(data), null);
+		}
+		private void OrangeTeamRestartClick(object sender, RoutedEventArgs e)
+		{
+			Dictionary<string, object> data = new Dictionary<string, object>()
+			{
+				{ "team_idx", 1 }
+			};
+			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/restart_request", null, JsonConvert.SerializeObject(data), null);
 		}
 	}
 }

@@ -92,6 +92,7 @@
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Content="{x:Static p:Resources.Auto_start_Replay_Buffer}"
                                       IsChecked="{l:SettingBinding obsAutostartReplayBuffer}" Margin="5,5,5,5" />
+                            <Label x:Name="ReplayBufferNotEnabled" Visibility="Collapsed">Replay Buffer is not enabled in OBS.</Label>
                             <Button x:Name="obsStartReplayBufferButton"
                                     Content="{x:Static p:Resources.Start_Replay_Buffer}" Click="OBSStartReplayBuffer"
                                     Margin="4,4,4,4" Padding="4,4,4,4" />
@@ -104,12 +105,12 @@
                             <StackPanel Margin="5,5,5,5">
                                 <Label Content="{x:Static p:Resources.In_game_Scene_}" />
                                 <ComboBox x:Name="inGameScene" Width="300" HorizontalAlignment="Left" SelectedIndex="0">
-                                    <ComboBoxItem Content="{x:Static p:Resources.Do_Not_Switch}" />
+                                    <ComboBoxItem Content="--- Do Not Switch ---" />
                                 </ComboBox>
                                 <Label Content="{x:Static p:Resources.Between_game_Scene_}" />
                                 <ComboBox x:Name="betweenGameScene" Width="300" HorizontalAlignment="Left"
                                           SelectedIndex="0">
-                                    <ComboBoxItem Content="{x:Static p:Resources.Do_Not_Switch}" />
+                                    <ComboBoxItem Content="--- Do Not Switch ---" />
                                 </ComboBox>
                             </StackPanel>
                         </GroupBox>
@@ -232,7 +233,7 @@
                                 <Label Content="{x:Static p:Resources.Replay_Scene}" />
                                 <ComboBox x:Name="goalReplayScene" Width="300" HorizontalAlignment="Left"
                                           SelectedIndex="0">
-                                    <ComboBoxItem Content="{x:Static p:Resources.Do_Not_Switch}" />
+                                    <ComboBoxItem Content="--- Do Not Switch ---" />
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="15,5,5,5">
@@ -255,7 +256,7 @@
                                 <Label Content="{x:Static p:Resources.Replay_Scene}" />
                                 <ComboBox x:Name="saveReplayScene" Width="300" HorizontalAlignment="Left"
                                           SelectedIndex="0">
-                                    <ComboBoxItem Content="{x:Static p:Resources.Do_Not_Switch}" />
+                                    <ComboBoxItem Content="--- Do Not Switch ---" />
                                 </ComboBox>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="15,5,5,5">

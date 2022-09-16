@@ -53,8 +53,7 @@ CREATE TABLE `Event` (
     `pos_z` NUMERIC NOT NULL,
     `x2` NUMERIC,
     `y2` NUMERIC,
-    `z2` NUMERIC,
-    PRIMARY KEY (`session_id`, `match_time`)
+    `z2` NUMERIC
 );";
 				await command.ExecuteNonQueryAsync();
 

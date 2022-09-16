@@ -163,7 +163,7 @@ namespace Spark
 		public bool onlyActivateHighlightsWhenGameIsOpen { get; set; } = false;
 
 		// obs
-		public string obsIP { get; set; } = "ws://127.0.0.1:4444";
+		public string obsIP { get; set; } = "ws://127.0.0.1:4455";
 		public string obsPassword { get; set; } = "";
 		public bool obsAutoconnect { get; set; } = false;
 		public bool obsPauseRecordingWithGameClock { get; set; }

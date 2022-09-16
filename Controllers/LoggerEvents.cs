@@ -53,7 +53,7 @@ namespace Spark
 			{
 				if (SparkSettings.instance.eventLog.unPauseRequests)
 				{
-					Log(frame, $"{frame.pause.paused_requested_team} team unpaused the game ({player?.name}, {distance:N2} m)");
+					Log(frame, $"{frame.pause.unpaused_team} team unpaused the game ({player?.name}, {distance:N2} m)");
 				}
 			};
 			Program.BigBoost += (frame, team, player, boostSpeed, howLongAgoBoost) =>

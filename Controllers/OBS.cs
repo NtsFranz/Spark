@@ -1,23 +1,33 @@
 ﻿using OBSWebsocketDotNet;
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using System.Threading.Tasks;
 using EchoVRAPI;
+using OBSWebsocketDotNet.Communication;
+using OBSWebsocketDotNet.Types;
 
 namespace Spark
 {
 	public class OBS
 	{
-		public readonly OBSWebsocket instance;
+		public readonly OBSWebsocket ws;
 
 		public int currentReplay = 0;
+		
+		public OutputState? replayBufferState = null;
+		public bool connected = false;
 
 		public OBS()
 		{
-			instance = new OBSWebsocket();
+			ws = new OBSWebsocket();
 
-			instance.Connected += OnConnect;
-			instance.Disconnected += OnDisconnect;
+			ws.Connected += OnConnect;
+			ws.Disconnected += OnDisconnect;
+			ws.ReplayBufferStateChanged += (sender, state) =>
+			{
+				replayBufferState = state.State;
+			};
 
 			Program.PlayspaceAbuse += PlayspaceAbuse;
 			Program.Goal += Goal;
@@ -36,12 +46,12 @@ namespace Spark
 				{
 					try
 					{
-						instance.Connect(SparkSettings.instance.obsIP, SparkSettings.instance.obsPassword);
+						ws.Connect(SparkSettings.instance.obsIP, SparkSettings.instance.obsPassword);
 					}
 					catch (Exception e)
 					{
 						Logger.LogRow(Logger.LogType.Error, $"Error when autoconnecting to OBS.\n{e}");
-						instance.Disconnect();
+						ws.Disconnect();
 					}
 				});
 			}
@@ -56,7 +66,7 @@ namespace Spark
 			{
 				try
 				{
-					instance.ResumeRecording();
+					ws.ResumeRecord();
 				}
 				catch (Exception)
 				{
@@ -67,9 +77,9 @@ namespace Spark
 			{
 				try
 				{
-					if (instance.IsConnected)
+					if (ws.IsConnected)
 					{
-						instance.PauseRecording();
+						ws.PauseRecord();
 					}
 				}
 				catch (Exception)
@@ -81,16 +91,16 @@ namespace Spark
 
 		private void LeftGame(Frame frame)
 		{
-			if (!instance.IsConnected) return;
+			if (!ws.IsConnected) return;
 			string scene = SparkSettings.instance.obsBetweenGameScene;
-			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
-			instance.SetCurrentScene(scene);
+			if (string.IsNullOrEmpty(scene) || scene == "--- Do Not Switch ---" || scene == "Do Not Switch") return;
+			ws.SetCurrentProgramScene(scene);
 			
 			if (!SparkSettings.instance.obsPauseRecordingWithGameClock) return;
 			
 			try
 			{
-				instance.PauseRecording();
+				ws.PauseRecord();
 			}
 			catch (Exception)
 			{
@@ -100,10 +110,10 @@ namespace Spark
 
 		private void JoinedGame(Frame frame)
 		{
-			if (!instance.IsConnected) return;
+			if (!ws.IsConnected) return;
 			string scene = SparkSettings.instance.obsInGameScene;
-			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
-			instance.SetCurrentScene(scene);
+			if (string.IsNullOrEmpty(scene) || scene == "--- Do Not Switch ---" || scene == "Do Not Switch") return;
+			ws.SetCurrentProgramScene(scene);
 			
 			if (!SparkSettings.instance.obsPauseRecordingWithGameClock) return;
 			if (frame.private_match) return;
@@ -112,7 +122,7 @@ namespace Spark
 			{
 				try
 				{
-					instance.ResumeRecording();
+					ws.ResumeRecord();
 				}
 				catch (Exception)
 				{
@@ -148,14 +158,14 @@ namespace Spark
 
 		private void SaveClip(bool setting, string player_name, Frame frame, string to_scene, float save_delay, float scene_delay, float scene_length)
 		{
-			if (!instance.IsConnected) return;
+			if (!ws.IsConnected) return;
 			if (!setting) return;
 			if (!IsPlayerScopeEnabled(player_name, frame)) return;
 			Task.Delay((int) (save_delay * 1000)).ContinueWith(_ =>
 			{
 				try
 				{
-					instance.SaveReplayBuffer();
+					ws.SaveReplayBuffer();
 				}
 				catch (Exception)
 				{
@@ -170,10 +180,10 @@ namespace Spark
 
 		private void SetSceneIfLastReplay(string scene, int replayNum)
 		{
-			if (!instance.IsConnected) return;
+			if (!ws.IsConnected) return;
 			// the last event takes precednce
-			if (string.IsNullOrEmpty(scene) || scene == "Do Not Switch") return;
-			if (replayNum == currentReplay) instance.SetCurrentScene(scene);
+			if (string.IsNullOrEmpty(scene) || scene == "--- Do Not Switch ---" || scene == "Do Not Switch") return;
+			if (replayNum == currentReplay) ws.SetCurrentProgramScene(scene);
 		}
 
 		private static bool IsPlayerScopeEnabled(string player_name, Frame frame)
@@ -211,19 +221,32 @@ namespace Spark
 
 		private void OnConnect(object sender, EventArgs e)
 		{
-			if (!SparkSettings.instance.obsAutostartReplayBuffer) return;
-			try
+			Task.Run(async () =>
 			{
-				instance.StartReplayBuffer();
-			}
-			catch (Exception exp)
-			{
-				Logger.LogRow(Logger.LogType.Error, $"Error when autostarting replay buffer in OBS.\n{exp}");
-			}
+				await Task.Delay(100);
+				if (!ws.IsConnected) return;
+				try
+				{
+					replayBufferState = ws.GetReplayBufferStatus() ? OutputState.OBS_WEBSOCKET_OUTPUT_STARTED : OutputState.OBS_WEBSOCKET_OUTPUT_STOPPED;
+
+					if (SparkSettings.instance.obsAutostartReplayBuffer)
+					{
+						ws.StartReplayBuffer();
+					}
+				}
+				catch (Exception exp)
+				{
+					Debug.WriteLine("Replay buffer not enabled in startup");
+				}
+			});
+			
+			connected = true;
 		}
 
-		private void OnDisconnect(object sender, EventArgs e)
+		private void OnDisconnect(object sender, ObsDisconnectionInfo e)
 		{
+			replayBufferState = null;
+			connected = false;
 		}
 	}
 }

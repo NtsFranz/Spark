@@ -24,7 +24,7 @@
 		>
 	<Grid>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="200"/>
+			<ColumnDefinition Width="220"/>
 			<ColumnDefinition Width="4"/>
 			<ColumnDefinition Width="3*"/>
 			<ColumnDefinition Width="4"/>
@@ -37,9 +37,9 @@
 				<RowDefinition Height="50" />
 			</Grid.RowDefinitions>
 			<StackPanel HorizontalAlignment="Stretch" Height="Auto">
-				<Button x:Name="loginButton" Height="40" Width="200" Click="LoginWindowButtonClicked" Padding="0,0,0,0"
+				<Button x:Name="loginButton" Height="40" Width="220" Click="LoginWindowButtonClicked" Padding="0,0,0,0"
 				        HorizontalContentAlignment="Left" ToolTip="{x:Static p:Resources.login_button_tooltip}">
-					<StackPanel Orientation="Horizontal" Width="200" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+					<StackPanel Orientation="Horizontal" Width="220" ScrollViewer.VerticalScrollBarVisibility="Disabled">
 						<Image x:Name="discordPFPImage" Height="40" Width="40"
 						       Source="https://cdn.discordapp.com/avatars/174743468004868097/f15fadcd0b3c236ebaf4744227f68086"
 						       Visibility="Collapsed" />
@@ -82,8 +82,11 @@
 				<GroupBox x:Name="blueTeamBox" BorderBrush="#FF31507a">
 					<GroupBox.Header>
 						<StackPanel Orientation="Horizontal">
-							<Label Content="{x:Static p:Resources.Blue_Team}" />
-							<Image x:Name="blueTeamLogo" Height="26" DockPanel.Dock="Right" Margin="84,0,0,0" />
+							<!-- <Label Content="{x:Static p:Resources.blue_caps}" Width="50" /> -->
+							<Image x:Name="blueTeamLogo" Height="26" Width="26" DockPanel.Dock="Right" Margin="0,0,0,0" />
+							<Button x:Name="BlueTeamPause" Height="26" Visibility="Collapsed" DockPanel.Dock="Right" Padding="4,0,4,0" Margin="4,2,0,4" Background="#ff1f334f" Click="BlueTeamPauseClick">Pause</Button>
+							<Button x:Name="BlueTeamReadyUp" Height="26" Visibility="Collapsed" DockPanel.Dock="Right" Padding="4,0,4,0"  Margin="4,2,0,4" Background="#ff1f334f" Click="BlueTeamReadyClick">Ready</Button>
+							<Button x:Name="BlueTeamRestart" Height="26" Visibility="Collapsed" DockPanel.Dock="Right" Padding="4,0,4,0"  Margin="4,2,-2,4" Background="#ff1f334f" Click="BlueTeamRestartClick">Restart</Button>
 						</StackPanel>
 					</GroupBox.Header>
 					<StackPanel x:Name="BlueTeamPlayersBox" Margin="-3,-3,-3,-3" >
@@ -92,8 +95,11 @@
 				<GroupBox x:Name="orangeTeamBox" Width="Auto" VerticalAlignment="Top" BorderBrush="#FF8c5c2a">
 					<GroupBox.Header>
 						<StackPanel Orientation="Horizontal">
-							<Label Content="{x:Static p:Resources.Orange_Team}" />
-							<Image x:Name="orangeTeamLogo" Height="26" DockPanel.Dock="Right" Margin="65,0,0,0" />
+							<!-- <Label Content="{x:Static p:Resources.orange_caps}"  Width="50" /> -->
+							<Image x:Name="orangeTeamLogo" Height="26" Width="26" DockPanel.Dock="Right" Margin="0,0,0,0" />
+							<Button x:Name="OrangeTeamPause" Height="26" Visibility="Collapsed" DockPanel.Dock="Right" Padding="4,0,4,0" Margin="4,2,0,4" Background="#ff5e3e1c" Click="OrangeTeamPauseClick">Pause</Button>
+							<Button x:Name="OrangeTeamReadyUp" Height="26" Visibility="Collapsed" DockPanel.Dock="Right" Padding="4,0,4,0"  Margin="4,2,0,4" Background="#ff5e3e1c" Click="OrangeTeamReadyClick">Ready</Button>
+							<Button x:Name="OrangeTeamRestart" Height="26" Visibility="Collapsed" DockPanel.Dock="Right" Padding="4,0,4,0"  Margin="4,2,-2,4" Background="#ff5e3e1c" Click="OrangeTeamRestartClick">Restart</Button>
 						</StackPanel>
 					</GroupBox.Header>
 					<StackPanel x:Name="OrangeTeamPlayersBox" Margin="-3,-3,-3,-3" >
@@ -548,7 +554,7 @@
 							<Image Source="/img/closed-caption-outline.png" Margin="8,8,0,8"></Image>
 						</StackPanel>
 					</Button>
-					<Button Content="ASCIIECHO" Height="40" Click="ACIIECHO_Click" Margin="4,4,4,4"/>
+					<Button Content="ASCIIECHO" Height="40" Click="ACIIECHO_Click" Margin="4,4,4,4" FontFamily="Cascadia Mono"/>
 					<Button Height="40" Margin="4,4,4,4" Click="TabletStatsUploadClick" Visibility="Visible">
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{x:Static p:Resources.Upload_Tablet_Stats}" VerticalAlignment="Center"></TextBlock>

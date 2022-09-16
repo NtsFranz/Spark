@@ -539,7 +539,7 @@
     <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="NetMQ" Version="4.0.1.9" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="obs-websocket-dotnet" Version="4.9.1" />
+    <PackageReference Include="obs-websocket-dotnet" Version="5.0.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
     <PackageReference Include="System.Management" Version="6.0.0" />
     <PackageReference Include="Vosk" Version="0.3.38" />

@@ -7,7 +7,7 @@
 		xmlns:p="clr-namespace:Spark.Properties"
 		mc:Ignorable="d"
 		Title="{x:Static p:Resources.IgniteBot___Settings}"
-		Height="700" Width="600"
+		Height="700" Width="610"
 		Top="{l:SettingBinding settingsWindowTop}"
 		Left="{l:SettingBinding settingsWindowLeft}"
 		Background="{DynamicResource BackgroundColour}"

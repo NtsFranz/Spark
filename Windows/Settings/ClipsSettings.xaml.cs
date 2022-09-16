@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using OBSWebsocketDotNet;
+using OBSWebsocketDotNet.Communication;
 using OBSWebsocketDotNet.Types;
 
 namespace Spark
@@ -21,6 +22,8 @@ namespace Spark
 		// set to false initially so that loading the settings from disk doesn't activate the events
 		private bool initialized;
 		private readonly Timer outputUpdateTimer = new Timer();
+		
+		private bool sceneDropdownListenersActive = false;
 
 		private readonly List<Keyboard.DirectXKeyStrokes> medalTVInputs = new List<Keyboard.DirectXKeyStrokes>
 		{
@@ -33,76 +36,24 @@ namespace Spark
 
 		public ClipsSettings()
 		{
-			
 			InitializeComponent();
 
-			Program.obs.instance.Connected += OBSConnected;
-			Program.obs.instance.Disconnected += OBSDisconnected;
+			Program.obs.ws.Connected += OBSConnected;
+			Program.obs.ws.Disconnected += OBSDisconnected;
 
-			obsConnectButton.Content = Program.obs.instance.IsConnected
+			obsConnectButton.Content = Program.obs.connected
 				? Properties.Resources.Disconnect
 				: Properties.Resources.Connect;
 
 
-			try
+			if (Program.obs.connected)
 			{
-				if (Program.obs.instance.IsConnected)
-				{
-					ReplayBufferChanged(Program.obs.instance,
-						Program.obs.instance.GetReplayBufferStatus() ? OutputState.Started : OutputState.Stopped);
-
-					List<string> sceneNames = Program.obs.instance.GetSceneList().Scenes.Select((scene) => scene.Name)
-						.ToList();
-					for (int i = 0; i < sceneNames.Count; i++)
-					{
-						inGameScene.Items.Add(new ComboBoxItem
-						{
-							Content = sceneNames[i]
-						});
-						if (SparkSettings.instance.obsInGameScene == sceneNames[i])
-						{
-							inGameScene.SelectedIndex = i + 1;
-						}
-
-						betweenGameScene.Items.Add(new ComboBoxItem
-						{
-							Content = sceneNames[i]
-						});
-						if (SparkSettings.instance.obsBetweenGameScene == sceneNames[i])
-						{
-							betweenGameScene.SelectedIndex = i + 1;
-						}
-
-						goalReplayScene.Items.Add(new ComboBoxItem
-						{
-							Content = sceneNames[i]
-						});
-						if (SparkSettings.instance.obsGoalReplayScene == sceneNames[i])
-						{
-							goalReplayScene.SelectedIndex = i + 1;
-						}
-
-						saveReplayScene.Items.Add(new ComboBoxItem
-						{
-							Content = sceneNames[i]
-						});
-						if (SparkSettings.instance.obsSaveReplayScene == sceneNames[i])
-						{
-							saveReplayScene.SelectedIndex = i + 1;
-						}
-					}
-				}
-				else
-				{
-					ReplayBufferChanged(Program.obs.instance, OutputState.Stopped);
-				}
-			}
-			catch (Exception ex)
-			{
-				Logger.LogRow(Logger.LogType.Error, $"Failed getting replay buffer status in startup\n{ex}");
+				Task.Run(() => { Dispatcher.Invoke(RefreshSceneList); });
 			}
 
-			Program.obs.instance.ReplayBufferStateChanged += ReplayBufferChanged;
+			RefreshReplayBufferVisibility();
+
+			Program.obs.ws.ReplayBufferStateChanged += ReplayBufferChanged;
 
 			inGameScene.SelectionChanged += InGameSceneChanged;
 			betweenGameScene.SelectionChanged += BetweenGameSceneChanged;
@@ -111,7 +62,7 @@ namespace Spark
 
 			// if (MedalTVInputs.Contains((Keyboard.DirectXKeyStrokes)SparkSettings.instance.medalClipKey))
 			// {
-				medalClipHotkeyDropdown.SelectedIndex = medalTVInputs.IndexOf((Keyboard.DirectXKeyStrokes)SparkSettings.instance.medalClipKey);	
+			medalClipHotkeyDropdown.SelectedIndex = medalTVInputs.IndexOf((Keyboard.DirectXKeyStrokes)SparkSettings.instance.medalClipKey);
 			// }
 			// else
 			// {
@@ -131,6 +82,70 @@ namespace Spark
 			initialized = true;
 		}
 
+		private void RefreshSceneList()
+		{
+			if (!Program.obs.connected) return;
+			
+			sceneDropdownListenersActive = false;
+
+			List<string> sceneNames = Program.obs.ws.GetSceneList().Scenes.Select((scene) => scene.Name).ToList();
+
+			inGameScene.Items.Clear();
+			betweenGameScene.Items.Clear();
+			goalReplayScene.Items.Clear();
+			saveReplayScene.Items.Clear();
+
+			inGameScene.Items.Add(new ComboBoxItem { Content = "--- Do Not Switch ---" });
+			betweenGameScene.Items.Add(new ComboBoxItem { Content = "--- Do Not Switch ---" });
+			goalReplayScene.Items.Add(new ComboBoxItem { Content = "--- Do Not Switch ---" });
+			saveReplayScene.Items.Add(new ComboBoxItem { Content = "--- Do Not Switch ---" });
+			
+			inGameScene.SelectedIndex = 0;
+			betweenGameScene.SelectedIndex = 0;
+			goalReplayScene.SelectedIndex = 0;
+			saveReplayScene.SelectedIndex = 0;
+
+			for (int i = 0; i < sceneNames.Count; i++)
+			{
+				inGameScene.Items.Add(new ComboBoxItem
+				{
+					Content = sceneNames[i]
+				});
+				if (SparkSettings.instance.obsInGameScene == sceneNames[i])
+				{
+					inGameScene.SelectedIndex = i + 1;
+				}
+
+				betweenGameScene.Items.Add(new ComboBoxItem
+				{
+					Content = sceneNames[i]
+				});
+				if (SparkSettings.instance.obsBetweenGameScene == sceneNames[i])
+				{
+					betweenGameScene.SelectedIndex = i + 1;
+				}
+
+				goalReplayScene.Items.Add(new ComboBoxItem
+				{
+					Content = sceneNames[i]
+				});
+				if (SparkSettings.instance.obsGoalReplayScene == sceneNames[i])
+				{
+					goalReplayScene.SelectedIndex = i + 1;
+				}
+
+				saveReplayScene.Items.Add(new ComboBoxItem
+				{
+					Content = sceneNames[i]
+				});
+				if (SparkSettings.instance.obsSaveReplayScene == sceneNames[i])
+				{
+					saveReplayScene.SelectedIndex = i + 1;
+				}
+			}
+			sceneDropdownListenersActive = true;
+		}
+
 
 		private void Update(object source, ElapsedEventArgs e)
 		{
@@ -144,58 +159,95 @@ namespace Spark
 			}
 		}
 
-		private void ReplayBufferChanged(OBSWebsocket sender, OutputState type)
+		private void ReplayBufferChanged(OBSWebsocket sender, OutputStateChanged changed)
 		{
-			Dispatcher.Invoke(() =>
+			Task.Run(async () =>
 			{
-				if (!sender.IsConnected)
-				{
+				await Task.Delay(100);
+				Dispatcher.Invoke(RefreshReplayBufferVisibility);
+			});
+		}
+
+		private void RefreshReplayBufferVisibility()
+		{
+			if (!Program.obs.connected)
+			{
+				obsStartReplayBufferButton.Visibility = Visibility.Collapsed;
+				obsStartReplayBufferButton.IsEnabled = false;
+				obsStopReplayBufferButton.Visibility = Visibility.Collapsed;
+				obsStopReplayBufferButton.IsEnabled = false;
+
+				return;
+			}
+
+			switch (Program.obs.replayBufferState)
+			{
+				case OutputState.OBS_WEBSOCKET_OUTPUT_STARTING:
 					obsStartReplayBufferButton.Visibility = Visibility.Visible;
 					obsStartReplayBufferButton.IsEnabled = false;
 					obsStopReplayBufferButton.Visibility = Visibility.Collapsed;
 					obsStopReplayBufferButton.IsEnabled = true;
-
-					return;
-				}
-
-				switch (type)
-				{
-					case OutputState.Starting:
-						obsStartReplayBufferButton.Visibility = Visibility.Visible;
-						obsStartReplayBufferButton.IsEnabled = false;
-						obsStopReplayBufferButton.Visibility = Visibility.Collapsed;
-						obsStopReplayBufferButton.IsEnabled = true;
-						break;
-					case OutputState.Started:
-						obsStartReplayBufferButton.Visibility = Visibility.Collapsed;
-						obsStartReplayBufferButton.IsEnabled = true;
-						obsStopReplayBufferButton.Visibility = Visibility.Visible;
-						obsStopReplayBufferButton.IsEnabled = true;
-						break;
-					case OutputState.Stopping:
-						obsStartReplayBufferButton.Visibility = Visibility.Collapsed;
-						obsStartReplayBufferButton.IsEnabled = false;
-						obsStopReplayBufferButton.Visibility = Visibility.Visible;
-						obsStopReplayBufferButton.IsEnabled = false;
-						break;
-					case OutputState.Stopped:
-						obsStartReplayBufferButton.Visibility = Visibility.Visible;
-						obsStartReplayBufferButton.IsEnabled = true;
-						obsStopReplayBufferButton.Visibility = Visibility.Collapsed;
-						obsStopReplayBufferButton.IsEnabled = true;
-						break;
-				}
-			});
+					ReplayBufferNotEnabled.Visibility = Visibility.Collapsed;
+					break;
+				case OutputState.OBS_WEBSOCKET_OUTPUT_STARTED:
+					obsStartReplayBufferButton.Visibility = Visibility.Collapsed;
+					obsStartReplayBufferButton.IsEnabled = true;
+					obsStopReplayBufferButton.Visibility = Visibility.Visible;
+					obsStopReplayBufferButton.IsEnabled = true;
+					ReplayBufferNotEnabled.Visibility = Visibility.Collapsed;
+					break;
+				case OutputState.OBS_WEBSOCKET_OUTPUT_STOPPING:
+					obsStartReplayBufferButton.Visibility = Visibility.Collapsed;
+					obsStartReplayBufferButton.IsEnabled = false;
+					obsStopReplayBufferButton.Visibility = Visibility.Visible;
+					obsStopReplayBufferButton.IsEnabled = false;
+					ReplayBufferNotEnabled.Visibility = Visibility.Collapsed;
+					break;
+				case OutputState.OBS_WEBSOCKET_OUTPUT_STOPPED:
+					obsStartReplayBufferButton.Visibility = Visibility.Visible;
+					obsStartReplayBufferButton.IsEnabled = true;
+					obsStopReplayBufferButton.Visibility = Visibility.Collapsed;
+					obsStopReplayBufferButton.IsEnabled = true;
+					ReplayBufferNotEnabled.Visibility = Visibility.Collapsed;
+					break;
+				case OutputState.OBS_WEBSOCKET_OUTPUT_PAUSED:
+					break;
+				case OutputState.OBS_WEBSOCKET_OUTPUT_RESUMED:
+					break;
+				case null:
+					obsStartReplayBufferButton.Visibility = Visibility.Collapsed;
+					obsStartReplayBufferButton.IsEnabled = false;
+					obsStopReplayBufferButton.Visibility = Visibility.Collapsed;
+					obsStopReplayBufferButton.IsEnabled = false;
+					ReplayBufferNotEnabled.Visibility = Visibility.Visible;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 		}
 
 		private void OBSConnected(object sender, EventArgs e)
 		{
-			Dispatcher.Invoke(() => { obsConnectButton.Content = Properties.Resources.Disconnect; });
+			Task.Run(async () =>
+			{
+				Dispatcher.Invoke(() => { obsConnectButton.Content = Properties.Resources.Disconnect; });
+				await Task.Delay(100);
+				Dispatcher.Invoke(() =>
+				{
+					RefreshSceneList();
+					RefreshReplayBufferVisibility();
+				});
+			});
 		}
 
-		private void OBSDisconnected(object sender, EventArgs e)
+		private void OBSDisconnected(object sender, ObsDisconnectionInfo e)
 		{
-			Dispatcher.Invoke(() => { obsConnectButton.Content = Properties.Resources.Connect; });
+			Dispatcher.Invoke(async () =>
+			{
+				obsConnectButton.Content = Properties.Resources.Connect;
+				await Task.Delay(100);
+				RefreshReplayBufferVisibility();
+			});
 		}
 
 		public bool NVHighlightsEnabled
@@ -269,58 +321,38 @@ namespace Spark
 		{
 			Task.Run(() =>
 			{
-				if (!Program.obs.instance.IsConnected)
+				if (!Program.obs.connected || !Program.obs.ws.IsConnected)
 				{
 					try
 					{
-						Program.obs.instance.Connect(SparkSettings.instance.obsIP, SparkSettings.instance.obsPassword);
+						Program.obs.ws.Connect(SparkSettings.instance.obsIP, SparkSettings.instance.obsPassword);
 						// Program.obs.instance.GetReplayBufferStatus();
 					}
 					catch (AuthFailureException)
 					{
 						Logger.LogRow(Logger.LogType.Error, "Failed to connect to OBS. AuthFailure");
-						Dispatcher.Invoke(() =>
-						{
-							new MessageBox("Authentication failed.", Properties.Resources.Error).Show();
-						});
-						Program.obs.instance.Disconnect();
+						Dispatcher.Invoke(() => { new MessageBox("Authentication failed.", Properties.Resources.Error).Show(); });
+						Program.obs.ws.Disconnect();
 						return;
 					}
 					catch (ErrorResponseException ex)
 					{
 						Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS.\n{ex}");
-						Dispatcher.Invoke(() =>
-						{
-							new MessageBox("Connect failed.", Properties.Resources.Error).Show();
-						});
-						Program.obs.instance.Disconnect();
+						Dispatcher.Invoke(() => { new MessageBox("Connect failed.", Properties.Resources.Error).Show(); });
+						Program.obs.ws.Disconnect();
 						return;
 					}
 					catch (Exception ex)
 					{
 						Logger.LogRow(Logger.LogType.Error, $"Failed to connect to OBS for another reason.\n{ex}");
-						Dispatcher.Invoke(() =>
-						{
-							new MessageBox("Connect failed.", Properties.Resources.Error).Show();
-						});
-						Program.obs.instance.Disconnect();
+						Dispatcher.Invoke(() => { new MessageBox("Connect failed.", Properties.Resources.Error).Show(); });
+						Program.obs.ws.Disconnect();
 						return;
-					}
-
-					if (!Program.obs.instance.IsConnected)
-					{
-						Dispatcher.Invoke(() =>
-						{
-							new MessageBox(
-								"Connect failed.\nMake sure OBS is open and you have installed the OBS Websocket plugin.",
-								Properties.Resources.Error).Show();
-						});
-						
 					}
 				}
 				else
 				{
-					Program.obs.instance.Disconnect();
+					Program.obs.ws.Disconnect();
 				}
 			});
 		}
@@ -402,26 +434,28 @@ namespace Spark
 
 		private void OBSStartReplayBuffer(object sender, RoutedEventArgs e)
 		{
-			if (Program.obs.instance.IsConnected)
+			if (Program.obs.connected && Program.obs.replayBufferState != null)
 			{
 				try
 				{
-					Program.obs.instance.StartReplayBuffer();
+					Program.obs.ws.StartReplayBuffer();
 				}
 				catch (Exception exp)
 				{
 					Logger.LogRow(Logger.LogType.Error, $"Couldn't start replay buffer\n{exp}");
+
+					Dispatcher.Invoke(() => { new MessageBox("Replay buffer not enabled in OBS.", Properties.Resources.Error).Show(); });
 				}
 			}
 		}
 
 		private void OBSStopReplayBuffer(object sender, RoutedEventArgs e)
 		{
-			if (Program.obs.instance.IsConnected)
+			if (Program.obs.connected)
 			{
 				try
 				{
-					Program.obs.instance.StopReplayBuffer();
+					Program.obs.ws.StopReplayBuffer();
 				}
 				catch (Exception exp)
 				{
@@ -695,6 +729,7 @@ namespace Spark
 				}
 			}
 		}
+
 		public bool ClipPlayspaceSetting
 		{
 			get
@@ -902,23 +937,43 @@ namespace Spark
 
 		private void InGameSceneChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (!sceneDropdownListenersActive)
+			{
+				e.Handled = true;
+				return;
+			}
 			SparkSettings.instance.obsInGameScene = (string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
 		}
 
 		private void BetweenGameSceneChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (!sceneDropdownListenersActive)
+			{
+				e.Handled = true;
+				return;
+			}
 			SparkSettings.instance.obsBetweenGameScene =
 				(string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
 		}
 
 		private void GoalReplaySceneChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (!sceneDropdownListenersActive)
+			{
+				e.Handled = true;
+				return;
+			}
 			SparkSettings.instance.obsGoalReplayScene =
 				(string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
 		}
 
 		private void SaveReplaySceneChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (!sceneDropdownListenersActive)
+			{
+				e.Handled = true;
+				return;
+			}
 			SparkSettings.instance.obsSaveReplayScene =
 				(string)((ComboBoxItem)((ComboBox)sender).SelectedValue).Content;
 		}
@@ -961,7 +1016,7 @@ namespace Spark
 			using MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
 			List<string> devices = enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active)
 				.Select(d => d.FriendlyName).ToList();
-			
+
 			for (int i = 0; i < devices.Count; i++)
 			{
 				SpeakerSelection.Items.Add(devices[i]);
