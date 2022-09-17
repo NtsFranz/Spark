@@ -12,7 +12,9 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
 namespace Spark
@@ -22,12 +24,11 @@ namespace Spark
 		private IWebHost server;
 		private bool serverRestarting = false;
 
+		public static string StaticOverlayFolder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "Overlays");
+
 		public OverlayServer()
 		{
-			Task.Run(async () =>
-			{
-				await RestartServer();
-			});
+			Task.Run(async () => { await RestartServer(); });
 
 			//DiscordOAuth.Authenticated += () =>
 			//{
@@ -37,10 +38,7 @@ namespace Spark
 			DiscordOAuth.AccessCodeChanged += (code) =>
 			{
 				Console.WriteLine("Access code changed");
-				Task.Run(async () =>
-				{
-					await RestartServer();
-				});
+				Task.Run(async () => { await RestartServer(); });
 			};
 		}
 
@@ -78,12 +76,10 @@ namespace Spark
 				// restart the server
 				server = WebHost
 					.CreateDefaultBuilder()
-					.UseKestrel(x =>
-					{
-						x.ListenAnyIP(6724);
-					})
+					.UseKestrel(x => { x.ListenAnyIP(6724); })
 					.UseStartup<Routes>()
 					.Build();
+
 
 				_ = server.RunAsync();
 				// Logger.LogRow(Logger.LogType.Error, $"Done restarting server. {restartIndex}");
@@ -105,7 +101,6 @@ namespace Spark
 		{
 			public void ConfigureServices(IServiceCollection services)
 			{
-				services.AddDirectoryBrowser();
 				services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
 				{
 					builder.WithOrigins("*")
@@ -116,23 +111,35 @@ namespace Spark
 
 			public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 			{
-				if (env.IsDevelopment())
-				{
-					app.UseDeveloperExceptionPage();
-				}
+				// if (env.IsDevelopment())
+				// {
+				// 	app.UseDeveloperExceptionPage();
+				// }
 
-				app.UseDefaultFiles();
-				//app.UseStaticFiles();
+				// Directory.CreateDirectory(OverlayServer.StaticOverlayFolder);
+				OverlaysCustom.FetchOverlayData().Wait();
+
+				app.UseFileServer(new FileServerOptions
+				{
+					FileProvider = new PhysicalFileProvider(StaticOverlayFolder),
+					RequestPath = "",
+					// DefaultFilesOptions = { },
+					StaticFileOptions =
+					{
+						ServeUnknownFileTypes = true,
+						DefaultContentType = "text/html"
+					}
+					// EnableDirectoryBrowsing = true
+				});
+
 				app.UseCors("MyPolicy");
-				// app.UseCors(x => x.SetIsOriginAllowed(origin => true));
+				app.UseCors(x => x.SetIsOriginAllowed(origin => true));
 				app.UseRouting();
 
 				app.UseEndpoints(endpoints =>
 				{
 					SparkAPI.MapRoutes(endpoints);
 					EchoVRAPIPassthrough.MapRoutes(endpoints);
-					OverlaysCustom.MapRoutes(endpoints);
-
 
 					endpoints.MapGet("/spark_info", async context =>
 					{
@@ -424,7 +431,7 @@ namespace Spark
 										_ => ""
 									};
 
-									context.Response.Headers.Add("content-type",contentType);
+									context.Response.Headers.Add("content-type", contentType);
 									await context.Response.SendFileAsync(Path.Combine(sparkPath, "wwwroot_resources", Path.Combine(folderPieces.ToArray())));
 									//await context.Response.WriteAsync(ReadResourceBytes(finalFileNameText));
 								});

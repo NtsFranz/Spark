@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.FileProviders;
 
 namespace Spark
 {
@@ -20,156 +21,187 @@ namespace Spark
 			try
 			{
 #if DEBUG
-				Dictionary<string, string> data = new Dictionary<string, string>();
-
-				string route = DiscordOAuth.AccessCode.series_name;
-				if (route.Contains("vrml"))
-				{
-					route = "vrml";
-				}
-
-				string folder = @"S:\git_repo\IgniteVR-Overlays\SparkOverlays\" + route;
-				if (Directory.Exists(folder))
-				{
-					foreach (string file in Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories))
-					{
-						if (file.EndsWith(".png"))
-						{
-							string tempFolder = Path.Combine(Path.GetTempPath(), "Spark", "img");
-							Directory.CreateDirectory(tempFolder);
-							string tempFilePath = Path.Combine(tempFolder, SecretKeys.Hash(file) + ".png");
-							try
-							{
-								File.Copy(file, tempFilePath, true);
-							}
-							catch (IOException e)
-							{
-								Logger.LogRow(Logger.LogType.Error, $"IO Exception: {e}");
-							}
-
-							data[file[(folder.Length + 1)..]] = tempFilePath;
-						}
-						else
-						{
-							data[file[(folder.Length + 1)..]] = await File.ReadAllTextAsync(file);
-						}
-					}
-				}
-				else
-				{
-					overlayData = await GetOverlays();
-				}
-
-				overlayData = data;
+				await DownloadOverlaysDev();
 #else
-				overlayData = await GetOverlays();
+				await DownloadOverlays();
 #endif
 			}
 			catch (Exception e)
 			{
 				Logger.LogRow(Logger.LogType.Error, e.ToString());
 			}
+		}
 
-			// write out overlayData to a temp folder
-			// foreach (KeyValuePair<string, string> file in overlayData)
-			// {
-			// file.Value
-			// }
+		private static async Task DownloadOverlaysDev()
+		{
+			string route = DiscordOAuth.AccessCode.series_name;
+			if (route.Contains("vrml"))
+			{
+				route = "vrml";
+			}
+
+			string folder = @"S:\git_repo\IgniteVR-Overlays\SparkOverlays\" + route;
+			if (Directory.Exists(folder))
+			{
+				if (Directory.Exists(OverlayServer.StaticOverlayFolder)) Directory.Delete(OverlayServer.StaticOverlayFolder, true);
+				Directory.CreateDirectory(OverlayServer.StaticOverlayFolder);
+				CopyDirectory(folder, Path.Combine(OverlayServer.StaticOverlayFolder, route), true);
+				RemoveHtmlExt(Path.Combine(OverlayServer.StaticOverlayFolder, route));
+			}
+			else
+			{
+				await DownloadOverlays();
+			}
 		}
 
 
-		public static async Task<Dictionary<string, string>> GetOverlays()
+		public static async Task DownloadOverlays()
 		{
-			if (DiscordOAuth.Personal) return null;
+			if (DiscordOAuth.Personal) return;
+			
+			string route = DiscordOAuth.AccessCode.series_name;
+			if (route.Contains("vrml"))
+			{
+				route = "vrml";
+			}
+
+			if (Directory.Exists(OverlayServer.StaticOverlayFolder)) Directory.Delete(OverlayServer.StaticOverlayFolder, true);
+			Directory.CreateDirectory(OverlayServer.StaticOverlayFolder);
 
 			try
 			{
-				Dictionary<string, string> data = new Dictionary<string, string>();
 				using HttpClient webClient = new HttpClient();
 				byte[] result = await webClient.GetByteArrayAsync($"{Program.APIURL}/get_overlays/{DiscordOAuth.AccessCode.series_name}/{DiscordOAuth.oauthToken}");
 				await using MemoryStream file = new MemoryStream(result);
 				using ZipArchive zip = new ZipArchive(file, ZipArchiveMode.Read);
-				foreach (ZipArchiveEntry entry in zip.Entries)
-				{
-					await using Stream stream = entry.Open();
-
-					if (entry.Name.EndsWith(".png"))
-					{
-						string tempFolder = Path.Combine(Path.GetTempPath(), "Spark", "img");
-						Directory.CreateDirectory(tempFolder);
-						string tempFilePath = Path.Combine(tempFolder, SecretKeys.Hash(entry.Name) + ".png");
-						await using MemoryStream reader = new MemoryStream();
-						await stream.CopyToAsync(reader);
-						byte[] bytes = reader.ToArray();
-						await File.WriteAllBytesAsync(tempFilePath, bytes);
-						data[entry.Name] = tempFilePath;
-					}
-					else
-					{
-						using StreamReader reader = new StreamReader(stream);
-						data[entry.Name] = await reader.ReadToEndAsync();
-					}
-				}
-
-				return data;
+				zip.ExtractToDirectory(Path.Combine(OverlayServer.StaticOverlayFolder, route));
+				RemoveHtmlExt(Path.Combine(OverlayServer.StaticOverlayFolder, route));
 			}
 			catch (Exception e)
 			{
 				Logger.LogRow(Logger.LogType.Error, e.ToString());
-				return null;
 			}
 		}
 
-		public static void MapRoutes(IEndpointRouteBuilder endpoints)
+		/// <summary>
+		/// https://learn.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
+		/// </summary>
+		static void CopyDirectory(string sourceDir, string destinationDir, bool recursive)
 		{
-			if (overlayData == null) return;
-			foreach (string str in overlayData.Keys)
+			// Get information about the source directory
+			DirectoryInfo dir = new DirectoryInfo(sourceDir);
+
+			// Check if the source directory exists
+			if (!dir.Exists)
 			{
-				string[] ignoreEnds = { "index.html", ".html" };
-				string route = DiscordOAuth.AccessCode.series_name;
-				if (route.Contains("vrml"))
+				throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+			}
+
+			// Cache directories before we start copying
+			DirectoryInfo[] dirs = dir.GetDirectories();
+
+			// Create the destination directory
+			Directory.CreateDirectory(destinationDir);
+
+			// Get the files in the source directory and copy to the destination directory
+			foreach (FileInfo file in dir.GetFiles())
+			{
+				string targetFilePath = Path.Combine(destinationDir, file.Name);
+				file.CopyTo(targetFilePath);
+			}
+
+			// If recursive and copying subdirectories, recursively call this method
+			if (recursive)
+			{
+				foreach (DirectoryInfo subDir in dirs)
 				{
-					route = "vrml";
+					string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+					CopyDirectory(subDir.FullName, newDestinationDir, true);
 				}
-
-				string url = $"/{route}/";
-				bool ended = false;
-				foreach (string e in ignoreEnds)
-				{
-					if (str.EndsWith(e))
-					{
-						url += str[..^e.Length];
-						ended = true;
-						break;
-					}
-				}
-
-				if (!ended)
-				{
-					url += str;
-				}
-
-				url = url.Replace("\\", "/");
-
-				endpoints.MapGet(url, async context =>
-				{
-#if DEBUG
-					await FetchOverlayData();
-#endif
-
-					string contentType = str.Split('.').Last() switch
-					{
-						"js" => "application/javascript",
-						"css" => "text/css",
-						"png" => "image/png",
-						"jpg" => "image/jpeg",
-						_ => ""
-					};
-
-					context.Response.Headers.Add("content-type", contentType);
-					await context.Response.WriteAsync(overlayData[str]);
-				});
 			}
 		}
+
+		private static void RemoveHtmlExt(string path)
+		{
+			// Get information about the source directory
+			DirectoryInfo dir = new DirectoryInfo(path);
+
+			// Check if the source directory exists
+			if (!dir.Exists)
+			{
+				throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+			}
+
+			// Cache directories before we start copying
+			DirectoryInfo[] dirs = dir.GetDirectories();
+
+			// Get the files in the source directory and copy to the destination directory
+			foreach (FileInfo file in dir.GetFiles())
+			{
+				string fileName = file.FullName;
+				if (file.Name != "index.html" && file.Name.EndsWith(".html"))
+				{
+					fileName = fileName.Replace(".html", "");
+				}
+				file.MoveTo(fileName);
+			}
+
+			foreach (DirectoryInfo subDir in dirs)
+			{
+				RemoveHtmlExt(subDir.FullName);
+			}
+		}
+
+// 		public static void MapRoutes(IEndpointRouteBuilder endpoints)
+// 		{
+// 			if (overlayData == null) return;
+// 			foreach (string str in overlayData.Keys)
+// 			{
+// 				string[] ignoreEnds = { "index.html", ".html" };
+// 				string route = DiscordOAuth.AccessCode.series_name;
+// 				if (route.Contains("vrml"))
+// 				{
+// 					route = "vrml";
+// 				}
+//
+// 				string url = $"/{route}/";
+// 				bool ended = false;
+// 				foreach (string e in ignoreEnds)
+// 				{
+// 					if (str.EndsWith(e))
+// 					{
+// 						url += str[..^e.Length];
+// 						ended = true;
+// 						break;
+// 					}
+// 				}
+//
+// 				if (!ended)
+// 				{
+// 					url += str;
+// 				}
+//
+// 				url = url.Replace("\\", "/");
+//
+// 				endpoints.MapGet(url, async context =>
+// 				{
+// #if DEBUG
+// 					await FetchOverlayData();
+// #endif
+//
+// 					string contentType = str.Split('.').Last() switch
+// 					{
+// 						"js" => "application/javascript",
+// 						"css" => "text/css",
+// 						"png" => "image/png",
+// 						"jpg" => "image/jpeg",
+// 						_ => ""
+// 					};
+//
+// 					context.Response.Headers.Add("content-type", contentType);
+// 					await context.Response.WriteAsync(overlayData[str]);
+// 				});
+// 			}
+// 		}
 	}
 }
