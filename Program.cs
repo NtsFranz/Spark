@@ -2520,7 +2520,7 @@ namespace Spark
 							team,
 							player,
 							(long)((startGameClock - frame.game_clock) * 1000),
-							Vector3.Zero,
+							player.head.Position,
 							new Vector3(
 								maxSpeed,
 								maxTubeExitSpeed,
@@ -2534,6 +2534,7 @@ namespace Spark
 						{
 							Joust?.Invoke(frame, team, player, eventType == EventContainer.EventType.joust_speed, startGameClock - frame.game_clock, maxSpeed, maxTubeExitSpeed);
 							JoustEvent?.Invoke(frame, joustEvent);
+							OnEvent?.Invoke(joustEvent);
 						}
 						catch (Exception exp)
 						{
@@ -2918,9 +2919,9 @@ namespace Spark
 			// Call the Score event
 
 			Player scorer = frame.GetPlayer(frame.last_score.person_scored);
-			MatchPlayer scorerPlayerData = matchData.GetPlayerData(scorer);
 			if (scorer != null)
 			{
+				MatchPlayer scorerPlayerData = matchData.GetPlayerData(scorer);
 				if (scorerPlayerData != null)
 				{
 					if (frame.last_score.point_amount == 2)

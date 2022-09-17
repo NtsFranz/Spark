@@ -48,8 +48,6 @@ namespace Spark
 			int restartIndex = rand.Next();
 			try
 			{
-				// get new overlay data
-				await OverlaysCustom.FetchOverlayData();
 
 				int counter = 0;
 				while (serverRestarting && counter < 10)
@@ -67,7 +65,10 @@ namespace Spark
 
 				// stop the server
 				serverRestarting = true;
-				// TODO this is race condition because it is started from somewhere else
+				
+				// get new overlay data
+				await OverlaysCustom.FetchOverlayData();
+				
 				if (server != null)
 				{
 					await server.StopAsync();

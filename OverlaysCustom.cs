@@ -44,6 +44,7 @@ namespace Spark
 			if (Directory.Exists(folder))
 			{
 				if (Directory.Exists(OverlayServer.StaticOverlayFolder)) Directory.Delete(OverlayServer.StaticOverlayFolder, true);
+
 				Directory.CreateDirectory(OverlayServer.StaticOverlayFolder);
 				CopyDirectory(folder, Path.Combine(OverlayServer.StaticOverlayFolder, route), true);
 				RemoveHtmlExt(Path.Combine(OverlayServer.StaticOverlayFolder, route));

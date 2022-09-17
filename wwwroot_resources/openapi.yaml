@@ -373,6 +373,15 @@ paths:
           #         description: Success
           
           
+  /api/db/jousts:
+    get:
+      tags:
+        - Local Database
+      summary: Returns a list of all prior jousts recorded on this computer
+      responses:
+        "200":
+          description: "OK"
+          
           
           
           

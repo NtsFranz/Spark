@@ -551,6 +551,20 @@ namespace Spark
 					Logger.LogRow(Logger.LogType.Error, $"{e}");
 				}
 			});
+			
+			
+			endpoints.MapGet("/api/db/jousts", async (context) =>
+			{
+				try
+				{
+					
+					await context.Response.WriteAsJsonAsync(Program.localDatabase.GetJousts());
+				}
+				catch (Exception e)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"{e}");
+				}
+			});
 
 			// resources
 		}

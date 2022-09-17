@@ -226,7 +226,10 @@ namespace Spark
 		private void Speak(string text)
 		{
 			// rate limiting
+			// the length of the queue counts how many recent requests there are
 			rateLimiterQueue.Enqueue(DateTime.UtcNow);
+			
+			// remove old items from the queue
 			while ((DateTime.UtcNow - rateLimiterQueue.Peek()).TotalSeconds > 1)
 			{
 				rateLimiterQueue.Dequeue();
@@ -275,8 +278,11 @@ namespace Spark
 				byte[] bytes = await response.Content.ReadAsByteArrayAsync();
 			
 				// Write the audio content of the response to an MP3 file.
-				await File.WriteAllBytesAsync(filePath, bytes);
-			
+				if (bytes.Length > 0)
+				{
+					await File.WriteAllBytesAsync(filePath, bytes);
+				}
+
 				// play the file
 				ttsQueue.Enqueue(filePath);
 			});
@@ -314,6 +320,7 @@ namespace Spark
 					files.Sort((f1, f2) => f1.LastAccessTime.CompareTo(f2.LastAccessTime));
 					long size = files.Sum(file => file.Length);
 
+					// delete files over the cache size limit
 					while (size > SparkSettings.instance.ttsCacheSizeBytes)
 					{
 						FileInfo removed = files[0];
