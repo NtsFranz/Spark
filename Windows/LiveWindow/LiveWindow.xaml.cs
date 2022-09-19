@@ -834,7 +834,10 @@ namespace Spark
 					label.Inlines.Add(new Run(match.finishReason == AccumulatedFrame.FinishReason.reset ? $"  {match.endTime}" : ""));
 					label.Inlines.Add(new Run($"  {(match.teams[Team.TeamColor.orange].vrmlTeamName != "" ? match.teams[Team.TeamColor.orange].vrmlTeamName : "ORANGE")}: {match.frame.orange_points}") { Foreground = Brushes.Peru });
 					label.Inlines.Add(new Run($"  {(match.teams[Team.TeamColor.blue].vrmlTeamName != "" ? match.teams[Team.TeamColor.blue].vrmlTeamName : "BLUE")}: {match.frame.blue_points}") { Foreground = Brushes.CornflowerBlue });
-					label.Inlines.Add(match.finishReason == AccumulatedFrame.FinishReason.not_finished ? new Run($"  ROUND: {(match.frame.blue_round_score + match.frame.orange_round_score + 1) / match.frame.total_round_count}") : new Run($"\t  ROUND: {(match.frame.blue_round_score + match.frame.orange_round_score) / match.frame.total_round_count}"));
+					if (match.frame.total_round_count > 0)
+					{
+						label.Inlines.Add(match.finishReason == AccumulatedFrame.FinishReason.not_finished ? new Run($"  ROUND: {(match.frame.blue_round_score + match.frame.orange_round_score + 1) / match.frame.total_round_count}") : new Run($"\t  ROUND: {(match.frame.blue_round_score + match.frame.orange_round_score) / match.frame.total_round_count}"));
+					}
 
 					LastRoundScoresBox.Children.Add(label);
 				}
@@ -2410,6 +2413,16 @@ namespace Spark
 				{ "team_idx", 1 }
 			};
 			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/restart_request", null, JsonConvert.SerializeObject(data), null);
+		}
+
+		private void OpenLocalDatabaseBrowser(object sender, RoutedEventArgs e)
+		{
+			
+			Process.Start(new ProcessStartInfo
+			{
+				FileName = "http://localhost:6724/local_database",
+				UseShellExecute = true
+			});
 		}
 	}
 }

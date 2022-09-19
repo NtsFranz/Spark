@@ -199,6 +199,8 @@
 										<ComboBoxItem Content="{x:Static p:Resources.Recent}"/>
 										<ComboBoxItem Content="{x:Static p:Resources.Fastest}"/>
 									</ComboBox>
+									<Button Click="OpenLocalDatabaseBrowser" Margin="50,0,0,0"><Image Source="/img/open-in-new.png" Height="16"></Image></Button>
+									
 								</StackPanel>
 							</GroupBox.Header>
 							<TextBlock x:Name="lastJoustsTextBlock" ScrollViewer.VerticalScrollBarVisibility="Visible"/>

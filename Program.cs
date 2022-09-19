@@ -722,7 +722,7 @@ namespace Spark
 			autorestartCancellation?.Cancel();
 			fetchThreadCancellation?.Cancel();
 			liveReplayCancel?.Cancel();
-			ccuCounter.Dispose();
+			ccuCounter?.Dispose();
 
 			if (replayFilesManager != null)
 			{

@@ -167,41 +167,61 @@ INSERT INTO `Event`(
 
 		#region Queries
 
-		public List<Dictionary<string, object>> GetJousts()
+		public List<Dictionary<string, object>> GetJousts(int limit = 1000, bool includeNeutral = true, bool includeDefensive = true)
 		{
 			using SqliteConnection connection = new SqliteConnection("DataSource=" + dbName);
 			connection.Open();
 
 			SqliteCommand command = connection.CreateCommand();
-			command.CommandText = @"
-SELECT *
-FROM `Event`
-WHERE `event_type` = 'joust_time' OR `event_type` = 'defensive_joust';";
+			command.CommandText = $"SELECT * FROM `Event` WHERE `event_type` = 'joust_time' OR `event_type` = 'defensive_joust' ORDER BY`match_time` DESC, `game_clock` ASC LIMIT {limit};";
 
 			using SqliteDataReader reader = command.ExecuteReader();
 			List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
 			while (reader.Read())
 			{
-				list.Add(new Dictionary<string, object>
-				{
-					{ "session_id", reader.GetString(0) },
-					{ "match_time", reader.GetString(1) },
-					{ "game_clock", reader.GetFloat(2) },
-					{ "player_id", reader.GetInt64(3) },
-					{ "player_name", reader.GetString(4) },
-					{ "event_type", reader.GetString(5) },
-					{ "other_player_id", reader.GetInt64(6) },
-					{ "other_player_name", reader.GetString(7) },
-					{ "pos_x", reader.GetFloat(8) },
-					{ "pos_y", reader.GetFloat(9) },
-					{ "pos_z", reader.GetFloat(10) },
-					{ "x2", reader.GetFloat(11) },
-					{ "y2", reader.GetFloat(12) },
-					{ "z2", reader.GetFloat(13) }
-				});
+				list.Add(ReadEvent(reader));
 			}
 
 			return list;
+		}
+
+		public List<Dictionary<string, object>> GetEvents(int limit = 1000)
+		{
+			using SqliteConnection connection = new SqliteConnection("DataSource=" + dbName);
+			connection.Open();
+
+			SqliteCommand command = connection.CreateCommand();
+			command.CommandText = $"SELECT * FROM `Event` ORDER BY`match_time` DESC, `game_clock` ASC LIMIT {limit};";
+
+			using SqliteDataReader reader = command.ExecuteReader();
+			List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();
+			while (reader.Read())
+			{
+				list.Add(ReadEvent(reader));
+			}
+
+			return list;
+		}
+
+		private static Dictionary<string, object> ReadEvent(SqliteDataReader reader)
+		{
+			return new Dictionary<string, object>
+			{
+				{ "session_id", reader.GetString(0) },
+				{ "match_time", reader.GetString(1) },
+				{ "game_clock", reader.GetFloat(2) },
+				{ "player_id", reader.GetInt64(3) },
+				{ "player_name", reader.GetString(4) },
+				{ "event_type", reader.GetString(5) },
+				{ "other_player_id", reader.GetInt64(6) },
+				{ "other_player_name", reader.GetString(7) },
+				{ "pos_x", reader.GetFloat(8) },
+				{ "pos_y", reader.GetFloat(9) },
+				{ "pos_z", reader.GetFloat(10) },
+				{ "x2", reader.GetFloat(11) },
+				{ "y2", reader.GetFloat(12) },
+				{ "z2", reader.GetFloat(13) }
+			};
 		}
 
 		#endregion

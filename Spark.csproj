@@ -47,171 +47,52 @@
     <Resource Include="img\swap-horizontal-bold.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <EmbeddedResource Include="wwwroot_resources\api\index.html">
+    <EmbeddedResource Include="SvelteSource\static\css\autocomplete_styles.css" />
+    <EmbeddedResource Include="SvelteSource\static\css\lib\bulma.min.css" />
+    <EmbeddedResource Include="SvelteSource\static\css\lib\prism.css" />
+    <EmbeddedResource Include="SvelteSource\static\css\styles.css" />
+    <EmbeddedResource Include="SvelteSource\static\img\combat_head_240px.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\branding\index.html">
+    <EmbeddedResource Include="SvelteSource\static\img\default_minimap.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\css\event_banners.css">
+    <EmbeddedResource Include="SvelteSource\static\img\empty_echo_background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\css\main_banner.css">
+    <EmbeddedResource Include="SvelteSource\static\img\ignite_logo_primary_256.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\css\mathematical_time.css">
+    <EmbeddedResource Include="SvelteSource\static\img\ignite_logo_primary_white_256.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\css\minimap.css">
+    <EmbeddedResource Include="SvelteSource\static\img\json_cover.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\css\player_lists.css">
+    <EmbeddedResource Include="SvelteSource\static\img\minimap.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\default_minimap.html">
+    <EmbeddedResource Include="SvelteSource\static\img\minimap_disc.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\disc_position_heatmap.html">
+    <EmbeddedResource Include="SvelteSource\static\img\minimap_raw.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\docs.html">
+    <EmbeddedResource Include="SvelteSource\static\img\minimap_simple.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\fonts\Inconsolata.ttf">
+    <EmbeddedResource Include="SvelteSource\static\img\swap-horizontal-bold.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\fonts\Inconsolata.woff">
+    <EmbeddedResource Include="SvelteSource\static\js\autocomplete.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\fonts\Inconsolata.woff2">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\full_overlay.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\websockets\game_data.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\websockets\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\websockets\websocket_example.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\img\minimap.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\img\minimap_disc.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\js\full_overlay.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\js\minimap.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\js\heatmap_min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\js\spark_websocket.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\midmatch_overlay.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\minimap.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\overlays\event_log.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\overlays\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\overlays\match_setup.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="wwwroot_resources\playspace.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="SparkLinkLauncher\**" />
-    <Page Remove="SparkLinkLauncher\**" />
-    <None Remove="html\default_scoreboard.html" />
-    <None Remove="img\camera-outline.png" />
-    <None Remove="img\swap-horizontal-bold.png" />
-    <None Remove="wwwroot_resources\api\index.html" />
-    <None Remove="wwwtemplates\default_minimap - Copy.html" />
-    <None Remove="wwwtemplates\midmatch_overlay - Copy.html" />
-    <EmbeddedResource Include="wwwroot_resources\speedometer.html">
+    <EmbeddedResource Include="SvelteSource\static\openapi.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="wwwtemplates\default_scoreboard.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="html\fonts\Inconsolata.ttf" />
-    <None Remove="html\fonts\Inconsolata.woff" />
-    <None Remove="html\fonts\Inconsolata.woff2" />
-    <None Remove="html\index.html" />
-    <EmbeddedResource Include="wwwroot_resources\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\ignite_logo.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\ignite_logo.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\ignite_logo_128.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\ignite_logo_128.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\fonts\Atmospheric.otf" />
-    <EmbeddedResource Include="wwwroot_resources\fonts\Atmospheric.otf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\fonts\big_noodle_titling.ttf" />
-    <EmbeddedResource Include="wwwroot_resources\fonts\big_noodle_titling.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\fonts\Furore.otf" />
-    <EmbeddedResource Include="wwwroot_resources\fonts\Furore.otf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\fonts\goodtimes.ttf" />
-    <EmbeddedResource Include="wwwroot_resources\fonts\goodtimes.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\fonts\Prototype.ttf" />
-    <EmbeddedResource Include="wwwroot_resources\fonts\Prototype.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\fonts\SF_Sports_Night_NS_Upright.ttf" />
-    <EmbeddedResource Include="wwwroot_resources\fonts\SF_Sports_Night_NS_Upright.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\favicon.ico" />
-    <EmbeddedResource Include="wwwroot_resources\favicon.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\js\util.js" />
-    <EmbeddedResource Include="wwwroot_resources\js\util.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\combat_head_240px.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\combat_head_240px.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\json_cover.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\json_cover.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\ignite_logo_primary_256.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\ignite_logo_primary_256.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\ignite_logo_primary_white_256.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\ignite_logo_primary_white_256.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwtemplates\disc_position_heatmap.html" />
     <Page Update="Windows\QuestIPs.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -234,63 +115,9 @@
       <SubType>Code</SubType>
       <DependentUpon>QuestIPs.xaml</DependentUpon>
     </Compile>
-    <None Remove="wwwroot_resources\overlays\match_setup.html" />
-    <None Remove="wwwroot_resources\js\fetch_utils.js" />
-    <EmbeddedResource Include="wwwroot_resources\js\fetch_utils.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\css\autocomplete_styles.css" />
-    <EmbeddedResource Include="wwwroot_resources\css\autocomplete_styles.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\swap-horizontal-bold.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\swap-horizontal-bold.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\js\autocomplete.js" />
-    <EmbeddedResource Include="wwwroot_resources\js\autocomplete.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="img\flag-checkered.png" />
     <Resource Include="img\flag-checkered.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Remove="wwwroot_resources\js\lib\JSMQ.js" />
-    <None Remove="wwwroot_resources\netmqtest.html" />
-    <None Remove="wwwroot_resources\js\lib\reconnecting-websocket.min.js" />
-    <EmbeddedResource Include="wwwroot_resources\js\lib\reconnecting-websocket.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\js\lib\spark_websocket.js" />
-    <None Remove="wwwroot_resources\game_data\websockets.html" />
-    <None Remove="wwwroot_resources\css\lib\bulma.min.css" />
-    <EmbeddedResource Include="wwwroot_resources\css\lib\bulma.min.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\css\lib\prism.css" />
-    <EmbeddedResource Include="wwwroot_resources\css\lib\prism.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\css\styles.css" />
-    <EmbeddedResource Include="wwwroot_resources\css\styles.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\js\lib\prism.js" />
-    <EmbeddedResource Include="wwwroot_resources\js\lib\prism.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\js\lib\heatmap.min.js" />
-    <EmbeddedResource Include="wwwroot_resources\js\lib\heatmap.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\fonts\Oxanium.ttf" />
-    <EmbeddedResource Include="wwwroot_resources\fonts\Oxanium.ttf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\js\lib\fitty.min.js" />
-    <EmbeddedResource Include="wwwroot_resources\js\lib\fitty.min.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
     <Page Update="Windows\LiveWindow\CameraWrite.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -344,15 +171,12 @@
       <SubType>Code</SubType>
       <DependentUpon>PrivateMatchSettings.xaml</DependentUpon>
     </Compile>
-    <None Remove="img\application-cog-outline.png" />
     <Resource Include="img\application-cog-outline.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Remove="img\arrow-left-bold.png" />
     <Resource Include="img\arrow-left-bold.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Remove="img\arrow-right-bold.png" />
     <Resource Include="img\arrow-right-bold.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -362,95 +186,27 @@
       <SubType>Designer</SubType>
       <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
-    <None Remove="img\flamingo-white.png" />
     <Resource Include="img\flamingo-white.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Remove="img\cog.png" />
     <Resource Include="img\cog.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Remove="wwwroot_resources\compact_main_banner.html" />
-    <EmbeddedResource Include="wwwroot_resources\compact_main_banner.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\compact_minimap.html" />
-    <EmbeddedResource Include="wwwroot_resources\compact_minimap.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\configurable_overlay.html" />
-    <EmbeddedResource Include="wwwroot_resources\configurable_overlay.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\event_log.html" />
-    <EmbeddedResource Include="wwwroot_resources\event_log.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\player_lists.html" />
-    <EmbeddedResource Include="wwwroot_resources\player_lists.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\default_minimap.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\default_minimap.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\empty_echo_background.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\empty_echo_background.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\minimap_raw.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\minimap_raw.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\img\minimap_simple.png" />
-    <EmbeddedResource Include="wwwroot_resources\img\minimap_simple.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\css\compact_main_banner.css" />
-    <EmbeddedResource Include="wwwroot_resources\css\compact_main_banner.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\css\configurable_overlay.css" />
-    <EmbeddedResource Include="wwwroot_resources\css\configurable_overlay.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\css\minimap_canvas.css" />
-    <EmbeddedResource Include="wwwroot_resources\css\minimap_canvas.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\css\minimap_minimal.css" />
-    <EmbeddedResource Include="wwwroot_resources\css\minimap_minimal.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="wwwroot_resources\css\shared.css" />
-    <EmbeddedResource Include="wwwroot_resources\css\shared.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <None Remove="img\closed-caption-outline.png" />
     <Resource Include="img\closed-caption-outline.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Remove="img\script-text-outline.png" />
     <Resource Include="img\script-text-outline.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Remove="img\subtitles-outline.png" />
     <Resource Include="img\subtitles-outline.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Remove="img\tablet.png" />
     <Resource Include="img\tablet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Remove="img\earth.png" />
     <Resource Include="img\earth.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Remove="wwwroot_resources\docs.html" />
-    <None Remove="wwwroot_resources\openapi.yaml" />
-    <EmbeddedResource Include="wwwroot_resources\openapi.yaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Update="Properties\Icons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Icons.Designer.cs</LastGenOutput>
@@ -464,49 +220,15 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LoadingTips.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Remove="resources\asciiecho.exe" />
     <EmbeddedResource Include="resources\asciiecho.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="resources\MicrosoftEdgeWebview2Setup.exe" />
     <EmbeddedResource Include="resources\MicrosoftEdgeWebview2Setup.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="EchoVRDefaultSettings\loading_tips.json" />
-    <None Remove="EchoVRDefaultSettings\mp_spectator_settings.json" />
-    <None Remove="EchoVRDefaultSettings\settings_mp_v2.json" />
-    <None Remove="GfeSDK.dll" />
-    <None Remove="HighlightsPlugin64.dll" />
-    <None Remove="html\css\main.css" />
-    <None Remove="html\default_minimap.html" />
-    <None Remove="html\img\minimap.png" />
-    <None Remove="html\img\minimap_disc.png" />
-    <None Remove="html\js\get_data.js" />
-    <None Remove="html\midmatch_overlay.html" />
-    <None Remove="ignite_logo.png" />
-    <None Remove="ignite_logo_128.png" />
-    <None Remove="img\alternate_white.png" />
-    <None Remove="img\baseline_replay_white_24px.png" />
-    <None Remove="img\baseline_replay_white_48dp.png" />
-    <None Remove="img\cards-outline.png" />
-    <None Remove="img\clipboard-outline.png" />
-    <None Remove="img\delete.png" />
-    <None Remove="img\download.png" />
-    <None Remove="img\ignite_logo.ico" />
-    <None Remove="img\ignite_logo_128.png" />
-    <None Remove="img\ignite_logo_32.png" />
-    <None Remove="img\ignite_logo_64.png" />
-    <None Remove="img\link.png" />
-    <None Remove="img\open-in-new.png" />
-    <None Remove="img\orbit.png" />
-    <None Remove="img\speaker.png" />
-    <None Remove="img\text-box-outline.png" />
-    <None Remove="img\upload.png" />
-    <None Remove="img\view-dashboard.png" />
-    <None Remove="InstallEchoSpeakerSystem.bat" />
   </ItemGroup>
 
   <ItemGroup>
@@ -525,6 +247,12 @@
     <EmbeddedResource Include="InstallEchoSpeakerSystem.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="SvelteBuild\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -580,8 +308,6 @@
     <Resource Include="img\text-box-outline.png" />
     <Resource Include="img\upload.png" />
     <Resource Include="img\view-dashboard.png" />
-    <None Remove="html\js\heatmap.min.js" />
-    <None Remove="img\web.png" />
     <Resource Include="img\web.png" />
   </ItemGroup>
 
@@ -659,6 +385,7 @@
 
   <ItemGroup>
     <Folder Include="SettingsBindings" />
+    <Folder Include="SvelteSource" />
   </ItemGroup>
 
 </Project>

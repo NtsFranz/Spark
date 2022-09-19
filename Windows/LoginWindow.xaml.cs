@@ -54,6 +54,8 @@ namespace Spark
 			DiscordOAuth.SetAccessCodeByUsername(username);
 
 			Close();
+			
+			Program.liveWindow.Activate();
 		}
 
 		private void DiscordLoginButtonClicked(object sender, RoutedEventArgs e)

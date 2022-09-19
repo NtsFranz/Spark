@@ -132,6 +132,11 @@ namespace Spark
 					}
 					// EnableDirectoryBrowsing = true
 				});
+				app.UseFileServer(new FileServerOptions
+				{
+					FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SvelteBuild")),
+					RequestPath = "",
+				});
 
 				app.UseCors("MyPolicy");
 				app.UseCors(x => x.SetIsOriginAllowed(origin => true));

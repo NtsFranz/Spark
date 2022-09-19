@@ -15,16 +15,22 @@ namespace Spark
 
 		public int currentReplay = 0;
 		
-		public OutputState? replayBufferState = null;
-		public bool connected = false;
+		public OutputState? replayBufferState;
+		public bool connected;
 
 		public OBS()
 		{
+			if (SparkSettings.instance.firstTimeOBSv28)
+			{
+				SparkSettings.instance.obsIP = "ws://127.0.0.1:4455";
+				SparkSettings.instance.firstTimeOBSv28 = false;
+			}
+			
 			ws = new OBSWebsocket();
 
 			ws.Connected += OnConnect;
 			ws.Disconnected += OnDisconnect;
-			ws.ReplayBufferStateChanged += (sender, state) =>
+			ws.ReplayBufferStateChanged += (_, state) =>
 			{
 				replayBufferState = state.State;
 			};

@@ -66,6 +66,7 @@ namespace Spark
 		public int atlasLinkStyle { get; set; } = 0;
 		public bool atlasLinkUseAngleBrackets { get; set; } = true;
 		public bool firstTimeSetupShown { get; set; } = false;
+		public bool firstTimeOBSv28 { get; set; } = true;
 		public bool isAutofocusEnabled { get; set; } = false;
 		public bool loneEchoSubtitlesStreamerMode { get; set; } = false;
 		public bool loneEchoSpeedometerStreamerMode { get; set; } = false;

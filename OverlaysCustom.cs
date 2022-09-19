@@ -143,8 +143,8 @@ namespace Spark
 				if (file.Name != "index.html" && file.Name.EndsWith(".html"))
 				{
 					fileName = fileName.Replace(".html", "");
+					file.CopyTo(fileName, true);
 				}
-				file.MoveTo(fileName);
 			}
 
 			foreach (DirectoryInfo subDir in dirs)

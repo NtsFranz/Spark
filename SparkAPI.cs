@@ -565,6 +565,18 @@ namespace Spark
 					Logger.LogRow(Logger.LogType.Error, $"{e}");
 				}
 			});
+			endpoints.MapGet("/api/db/events", async (context) =>
+			{
+				try
+				{
+					
+					await context.Response.WriteAsJsonAsync(Program.localDatabase.GetEvents());
+				}
+				catch (Exception e)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"{e}");
+				}
+			});
 
 			// resources
 		}
