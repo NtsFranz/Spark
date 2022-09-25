@@ -135,7 +135,8 @@ namespace Spark
 			};
 			Program.JoustEvent += (frame, data) =>
 			{
-				if (SparkSettings.instance.eventLog.neutralJousts)
+				if ((SparkSettings.instance.eventLog.neutralJousts && data.eventType == EventContainer.EventType.joust_speed) || 
+				    (SparkSettings.instance.eventLog.defensiveJousts && data.eventType == EventContainer.EventType.defensive_joust))
 				{
 					Log(frame, $"{data.team.color} team joust time{(data.eventType == EventContainer.EventType.defensive_joust ? " (defensive)" : "")}: {(data.vec2.Z):N2} s, Max speed: {data.vec2.X:N2} m/s, Tube Exit Speed: {data.vec2.Y:N2} m/s");
 				}

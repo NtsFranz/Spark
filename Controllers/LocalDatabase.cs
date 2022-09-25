@@ -173,7 +173,7 @@ INSERT INTO `Event`(
 			connection.Open();
 
 			SqliteCommand command = connection.CreateCommand();
-			command.CommandText = $"SELECT * FROM `Event` WHERE `event_type` = 'joust_time' OR `event_type` = 'defensive_joust' ORDER BY`match_time` DESC, `game_clock` ASC LIMIT {limit};";
+			command.CommandText = $"SELECT * FROM `Event` WHERE `event_type` = 'joust_speed' OR `event_type` = 'defensive_joust' ORDER BY`match_time` DESC, `game_clock` ASC LIMIT {limit};";
 
 			using SqliteDataReader reader = command.ExecuteReader();
 			List<Dictionary<string, object>> list = new List<Dictionary<string, object>>();

@@ -124,18 +124,21 @@ namespace Spark
 				{
 					FileProvider = new PhysicalFileProvider(StaticOverlayFolder),
 					RequestPath = "",
-					// DefaultFilesOptions = { },
-					StaticFileOptions =
-					{
-						ServeUnknownFileTypes = true,
-						DefaultContentType = "text/html"
-					}
+					DefaultFilesOptions = { },
+					EnableDefaultFiles = true,
+					// StaticFileOptions =
+					// {
+					// 	ServeUnknownFileTypes = true,
+					// 	DefaultContentType = "text/html"
+					// }
 					// EnableDirectoryBrowsing = true
 				});
 				app.UseFileServer(new FileServerOptions
 				{
 					FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SvelteBuild")),
 					RequestPath = "",
+					DefaultFilesOptions = { },
+					EnableDefaultFiles = true,
 				});
 
 				app.UseCors("MyPolicy");

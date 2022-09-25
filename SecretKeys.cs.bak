@@ -1,0 +1,32 @@
+﻿using System.Security.Cryptography;
+using System.Text;
+
+namespace Spark
+{
+	internal static class SecretKeys
+	{
+		public const string discordRPCClientID = "774457093507514369";
+		public const string webLogPassword = "";
+
+		public const string CLIENT_ID = "706375130531758081";
+		public const string CLIENT_SECRET = "";
+		public const string OAuthURL = "https://discord.com/api/oauth2/authorize?client_id=706375130531758081&redirect_uri=http%3A%2F%2Flocalhost%3A6722%2Foauth_login&response_type=code&scope=identify";
+		
+		private const string salt = "not_real";
+
+		public static string Hash(string input)
+		{
+			using SHA256 sha = SHA256.Create();
+			byte[] rawHash = sha.ComputeHash(Encoding.ASCII.GetBytes(input + salt));
+
+			// Convert the byte array to hexadecimal string
+			StringBuilder sb = new StringBuilder();
+			foreach (byte t in rawHash)
+			{
+				sb.Append(t.ToString("X2"));
+			}
+			string hash = sb.ToString().ToLower();
+			return hash;
+		}
+	}
+}

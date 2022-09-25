@@ -70,7 +70,7 @@ namespace Spark
 			}
 		}
 
-		public static void SpectatorCamFindPlayer(string playerName = null)
+		public static void SpectatorCamFindPlayer(string playerName = null, CameraMode? mode = null)
 		{
 			if (Program.lastFrame == null) return;
 
@@ -123,16 +123,23 @@ namespace Spark
 					if (found)
 					{
 						LogRow(LogType.File, Program.lastFrame.sessionid, "Correct player found.");
-						switch (SparkSettings.instance.followPlayerCameraMode)
+						if (mode != null)
 						{
-							// Follow
-							case 0:
-								SetCameraMode(CameraMode.follow, foundIndex);
-								break;
-							// POV
-							case 1:
-								SetCameraMode(CameraMode.pov, foundIndex);
-								break;
+							SetCameraMode((CameraMode)mode, foundIndex);
+						}
+						else
+						{
+							switch (SparkSettings.instance.followPlayerCameraMode)
+							{
+								// Follow
+								case 0:
+									SetCameraMode(CameraMode.follow, foundIndex);
+									break;
+								// POV
+								case 1:
+									SetCameraMode(CameraMode.pov, foundIndex);
+									break;
+							}
 						}
 					}
 					else

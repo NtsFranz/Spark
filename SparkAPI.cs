@@ -26,7 +26,7 @@ namespace Spark
 			//string file = OverlayServer.ReadResource("api_index.html");
 			//await context.Response.WriteAsync(file);
 
-			endpoints.MapGet("/api/go_to_waypoint/{index}", async context =>
+			endpoints.MapGet("/api/camera/go_to_waypoint/{index}", async context =>
 			{
 				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
@@ -42,7 +42,7 @@ namespace Spark
 			});
 
 
-			endpoints.MapGet("/api/play_animation/{index}", async context =>
+			endpoints.MapGet("/api/camera/play_animation/{index}", async context =>
 			{
 				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
@@ -58,7 +58,7 @@ namespace Spark
 			});
 
 
-			endpoints.MapGet("/api/orbit_disc_enabled/{enabled}", async context =>
+			endpoints.MapGet("/api/camera/orbit_disc_enabled/{enabled}", async context =>
 			{
 				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
@@ -74,16 +74,49 @@ namespace Spark
 			});
 
 
-			endpoints.MapGet("/api/go_to_discholder_pov", async context =>
+			endpoints.MapGet("/api/camera/go_to_discholder_pov", async context =>
 			{
-				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
-
 				try
 				{
 					if (Program.lastFrame != null)
 					{
 						CameraWriteController.SpectatorCamFindPlayer(Program.lastFrame.GetAllPlayers().Find(p => p.possession)?.name);
+					}
+				}
+				catch (Exception)
+				{
+					// ignored
+				}
+
+				await context.Response.WriteAsync($"Done.");
+			});
+
+			endpoints.MapGet("/api/camera/pov/{player_name}", async context =>
+			{
+				try
+				{
+					if (Program.lastFrame != null)
+					{
+						string playerName = context.Request.RouteValues["player_name"]?.ToString() ?? "";
+						CameraWriteController.SpectatorCamFindPlayer(playerName, CameraWriteController.CameraMode.pov);
+					}
+				}
+				catch (Exception)
+				{
+					// ignored
+				}
+
+				await context.Response.WriteAsync($"Done.");
+			});
+
+			endpoints.MapGet("/api/camera/follow/{player_name}", async context =>
+			{
+				try
+				{
+					if (Program.lastFrame != null)
+					{
+						string playerName = context.Request.RouteValues["player_name"]?.ToString() ?? "";
+						CameraWriteController.SpectatorCamFindPlayer(playerName, CameraWriteController.CameraMode.follow);
 					}
 				}
 				catch (Exception)

@@ -28,7 +28,7 @@ paths:
           description: Success
 
 
-  /api/go_to_waypoint/{index}:
+  /api/camera/go_to_waypoint/{index}:
     get:
       tags:
         - Camera Write
@@ -44,7 +44,7 @@ paths:
       responses:
         '200':
           description: Success
-  /api/play_animation/{index}:
+  /api/camera/play_animation/{index}:
     get:
       tags:
         - Camera Write
@@ -62,7 +62,7 @@ paths:
           description: Success
   
   
-  /api/orbit_disc_enabled/{enabled}:
+  /api/camera/orbit_disc_enabled/{enabled}:
     get:
       tags:
         - Camera Write
@@ -79,7 +79,7 @@ paths:
         '200':
           description: Success
   
-  /api/go_to_discholder_pov:
+  /api/camera/go_to_discholder_pov:
     get:
       tags:
         - Camera Write
@@ -93,6 +93,40 @@ paths:
       tags:
         - Camera Write
       summary: Reloads the Camera Write settings file. This is useful if you've added animation or waypoint files and don't want to restart Spark.
+      responses:
+        '200':
+          description: Success
+          
+  /api/camera/pov/{player_name}:
+    get:
+      tags:
+        - Camera Write
+      summary: Switches to POV of the selected player
+      parameters:
+        - name: "player_name"
+          in: "path"
+          description: "The username of the player to switch to"
+          required: true
+          example: "NtsFranz"
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: Success
+          
+  /api/camera/follow/{player_name}:
+    get:
+      tags:
+        - Camera Write
+      summary: Switches to follow cam of the selected player
+      parameters:
+        - name: "player_name"
+          in: "path"
+          description: "The username of the player to switch to"
+          required: true
+          example: "NtsFranz"
+          schema:
+            type: "string"
       responses:
         '200':
           description: Success
