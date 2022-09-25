@@ -55,9 +55,9 @@
                 without the bug of disappearing after some goals.
             </li>
             <!--<li>
-    <a href="/disc_position_heatmap"><h3>/disc_position_heatmap</h3></a>A heatmap of player positions over time. Reads from .echoreplay files, so
-    those need to be enabled. This accumulates positions over all rounds in the session.
-</li>-->
+                <a href="/disc_position_heatmap"><h3>/disc_position_heatmap</h3></a>A heatmap of player positions over time. Reads from .echoreplay files, so
+                those need to be enabled. This accumulates positions over all rounds in the session.
+            </li>-->
             <li>
                 <a href="/playspace"><h3>/playspace</h3></a>Top down view of your local playspace.
             </li>

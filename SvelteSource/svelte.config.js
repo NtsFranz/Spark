@@ -8,17 +8,8 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter: adapter(),
-		prerender: {
-			default: true
-		},
-		// trailingSlash: "always",
-		paths: {
-			base: '',
-			// assets: '/dev',
-		}
+		adapter: adapter()
 	}
-
 };
 
 export default config;

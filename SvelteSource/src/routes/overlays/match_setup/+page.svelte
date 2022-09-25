@@ -232,13 +232,13 @@
 
 
 <script>
-	import {SparkWebsocket} from "../../lib/js/spark_websocket.js";
+	import {SparkWebsocket} from "../../../lib/js/spark_websocket.js";
 
 	let teamLogosDict = {}
 
 	import {onDestroy, onMount} from 'svelte';
-	import {httpPostAsync, httpGetAsync} from '../../lib/js/util.js';
-	import VisibilityConfigCheckbox from "../../lib/components/VisibilityConfigCheckbox.svelte";
+	import {httpPostAsync, httpGetAsync} from '../../../lib/js/util.js';
+	import VisibilityConfigCheckbox from "../../../lib/components/VisibilityConfigCheckbox.svelte";
 
 
 	let sw = new SparkWebsocket();

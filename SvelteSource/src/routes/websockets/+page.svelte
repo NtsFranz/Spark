@@ -6,11 +6,11 @@
     <!-- Syntax Highlighting -->
     <link rel="stylesheet" href="/css/lib/prism.css">
 
-    <script defer src="/js/lib/prism.js"></script>
+<!--    <script defer src="/js/lib/prism.js"></script>-->
 </svelte:head>
 
 <script>
-    import Prism from 'prismjs';
+    // import Prism from 'prismjs';
     let language = 'javascript';
 </script>
 

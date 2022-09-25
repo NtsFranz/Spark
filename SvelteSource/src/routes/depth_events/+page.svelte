@@ -1,7 +1,7 @@
 <script>
 	import {onDestroy} from "svelte";
-	import {SparkWebsocket} from '../lib/js/spark_websocket.js';
-	import ThreeDee from "../lib/components/ThreeDee.svelte";
+	import {SparkWebsocket} from '../../lib/js/spark_websocket.js';
+	import ThreeDee from "../../lib/components/ThreeDee.svelte";
 
 
 	let sw = new SparkWebsocket();

@@ -156,7 +156,7 @@
 </div>
 
 <script lang="ts">
-    import {SparkWebsocket} from "../lib/js/spark_websocket.js";
+    import {SparkWebsocket} from "../../lib/js/spark_websocket.js";
     import {onDestroy} from "svelte";
 
     let orangeJoustVisible = false;

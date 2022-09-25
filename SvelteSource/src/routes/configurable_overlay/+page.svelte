@@ -1,14 +1,14 @@
 <script>
-    import Minimap from "../lib/components/Minimap.svelte";
-    import CompactMainBanner from "../lib/components/CompactMainBanner.svelte";
-    import PlayerLists from "../lib/components/PlayerLists.svelte";
-    import EventLog from "../lib/components/EventLog.svelte";
-    import CompactMinimap from "../lib/components/CompactMinimap.svelte";
-    import PlayerListOrange from "../lib/components/PlayerListOrange.svelte";
-    import PlayerListBlue from "../lib/components/PlayerListBlue.svelte";
+    import Minimap from "../../lib/components/Minimap.svelte";
+    import CompactMainBanner from "../../lib/components/CompactMainBanner.svelte";
+    import PlayerLists from "../../lib/components/PlayerLists.svelte";
+    import EventLog from "../../lib/components/EventLog.svelte";
+    import CompactMinimap from "../../lib/components/CompactMinimap.svelte";
+    import PlayerListOrange from "../../lib/components/PlayerListOrange.svelte";
+    import PlayerListBlue from "../../lib/components/PlayerListBlue.svelte";
     import {onDestroy} from "svelte";
-    import PositionableComponent from "../lib/components/PositionableComponent.svelte";
-    import {SparkWebsocket} from '../lib/js/spark_websocket.js';
+    import PositionableComponent from "../../lib/components/PositionableComponent.svelte";
+    import {SparkWebsocket} from '../../lib/js/spark_websocket.js';
 
 
     let sw = new SparkWebsocket();
