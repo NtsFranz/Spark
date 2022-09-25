@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 using EchoVRAPI;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
@@ -48,7 +50,6 @@ namespace Spark
 			int restartIndex = rand.Next();
 			try
 			{
-
 				int counter = 0;
 				while (serverRestarting && counter < 10)
 				{
@@ -65,10 +66,10 @@ namespace Spark
 
 				// stop the server
 				serverRestarting = true;
-				
+
 				// get new overlay data
 				await OverlaysCustom.FetchOverlayData();
-				
+
 				if (server != null)
 				{
 					await server.StopAsync();
@@ -102,7 +103,7 @@ namespace Spark
 		{
 			public void ConfigureServices(IServiceCollection services)
 			{
-				services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+				services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
 				{
 					builder.WithOrigins("*")
 						.AllowAnyMethod()
@@ -110,7 +111,7 @@ namespace Spark
 				}));
 			}
 
-			public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+			public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ICorsService corsService, ICorsPolicyProvider corsPolicyProvider)
 			{
 				// if (env.IsDevelopment())
 				// {
@@ -120,28 +121,59 @@ namespace Spark
 				// Directory.CreateDirectory(OverlayServer.StaticOverlayFolder);
 				OverlaysCustom.FetchOverlayData().Wait();
 
+				// Set up custom content types - associating file extension to MIME type
+				FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider
+				{
+					Mappings =
+					{
+						[".yaml"] = "application/x-yaml"
+					}
+				};
+
 				app.UseFileServer(new FileServerOptions
 				{
 					FileProvider = new PhysicalFileProvider(StaticOverlayFolder),
 					RequestPath = "",
 					DefaultFilesOptions = { },
 					EnableDefaultFiles = true,
-					// StaticFileOptions =
-					// {
-					// 	ServeUnknownFileTypes = true,
-					// 	DefaultContentType = "text/html"
-					// }
-					// EnableDirectoryBrowsing = true
+					StaticFileOptions =
+					{
+						ContentTypeProvider = provider,
+						OnPrepareResponse = (ctx) =>
+						{
+							CorsPolicy policy = corsPolicyProvider.GetPolicyAsync(ctx.Context, "CorsPolicy")
+								.ConfigureAwait(false)
+								.GetAwaiter().GetResult();
+
+							CorsResult corsResult = corsService.EvaluatePolicy(ctx.Context, policy);
+
+							corsService.ApplyResult(corsResult, ctx.Context.Response);
+						}
+					},
 				});
 				app.UseFileServer(new FileServerOptions
 				{
 					FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SvelteBuild")),
 					RequestPath = "",
+					StaticFileOptions =
+					{
+						ContentTypeProvider = provider,
+						OnPrepareResponse = (ctx) =>
+						{
+							CorsPolicy policy = corsPolicyProvider.GetPolicyAsync(ctx.Context, "CorsPolicy")
+								.ConfigureAwait(false)
+								.GetAwaiter().GetResult();
+
+							CorsResult corsResult = corsService.EvaluatePolicy(ctx.Context, policy);
+
+							corsService.ApplyResult(corsResult, ctx.Context.Response);
+						}
+					},
 					DefaultFilesOptions = { },
 					EnableDefaultFiles = true,
 				});
 
-				app.UseCors("MyPolicy");
+				app.UseCors("CorsPolicy");
 				app.UseCors(x => x.SetIsOriginAllowed(origin => true));
 				app.UseRouting();
 

@@ -42,54 +42,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="SparkLinkLauncher\**" />
-    <EmbeddedResource Remove="SparkLinkLauncher\**" />
     <Resource Include="img\swap-horizontal-bold.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <EmbeddedResource Include="SvelteSource\static\css\autocomplete_styles.css" />
-    <EmbeddedResource Include="SvelteSource\static\css\lib\bulma.min.css" />
-    <EmbeddedResource Include="SvelteSource\static\css\lib\prism.css" />
-    <EmbeddedResource Include="SvelteSource\static\css\styles.css" />
-    <EmbeddedResource Include="SvelteSource\static\img\combat_head_240px.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\img\default_minimap.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\img\empty_echo_background.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\img\ignite_logo_primary_256.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\img\ignite_logo_primary_white_256.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\img\json_cover.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\img\minimap.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\img\minimap_disc.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\img\minimap_raw.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\img\minimap_simple.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\img\swap-horizontal-bold.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\js\autocomplete.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SvelteSource\static\openapi.yaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
     <EmbeddedResource Include="wwwtemplates\default_scoreboard.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -229,6 +184,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="SecretKeys.cs.bak" />
   </ItemGroup>
 
   <ItemGroup>
@@ -385,7 +341,6 @@
 
   <ItemGroup>
     <Folder Include="SettingsBindings" />
-    <Folder Include="SvelteSource" />
   </ItemGroup>
 
 </Project>

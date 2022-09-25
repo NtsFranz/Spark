@@ -67,7 +67,7 @@
         <p>Add this code to the bottom of your &lt;body&gt; tag in your .html file. Instead of console.log(), modify the
             visibility or content of various elements on your page.</p>
         
-        <pre><code class="language-js">{`<script src="http://localhost:6724/js/spark_websocket.js"></script>
+        <pre><code>{`<script src="http://localhost:6724/js/spark_websocket.js"></script>
 			
 <script>
 	// initialize the websocket connection
