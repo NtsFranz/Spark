@@ -42,9 +42,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="img\swap-horizontal-bold.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <EmbeddedResource Include="wwwtemplates\default_scoreboard.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -70,9 +67,6 @@
       <SubType>Code</SubType>
       <DependentUpon>QuestIPs.xaml</DependentUpon>
     </Compile>
-    <Resource Include="img\flag-checkered.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Page Update="Windows\LiveWindow\CameraWrite.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -126,13 +120,7 @@
       <SubType>Code</SubType>
       <DependentUpon>PrivateMatchSettings.xaml</DependentUpon>
     </Compile>
-    <Resource Include="img\application-cog-outline.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="img\arrow-left-bold.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="img\arrow-right-bold.png">
+    <Resource Include="img\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <EmbeddedResource Update="Properties\Resources.es.resx">
@@ -141,27 +129,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>Resources.resx</DependentUpon>
     </EmbeddedResource>
-    <Resource Include="img\flamingo-white.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="img\cog.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="img\closed-caption-outline.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="img\script-text-outline.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="img\subtitles-outline.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="img\tablet.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="img\earth.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <EmbeddedResource Update="Properties\Icons.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Icons.Designer.cs</LastGenOutput>
@@ -197,9 +164,6 @@
     <EmbeddedResource Include="HighlightsPlugin64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Resource Include="img\camera-outline.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <EmbeddedResource Include="InstallEchoSpeakerSystem.bat">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -244,27 +208,6 @@
     <EmbeddedResource Include="EchoVRDefaultSettings\settings_mp_v2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Resource Include="img\alternate_white.png" />
-    <Resource Include="img\baseline_replay_white_24px.png" />
-    <Resource Include="img\baseline_replay_white_48dp.png" />
-    <Resource Include="img\cards-outline.png" />
-    <Resource Include="img\clipboard-outline.png" />
-    <Resource Include="img\delete.png" />
-    <Resource Include="img\download.png" />
-    <Resource Include="img\ignite_logo.ico" />
-    <Resource Include="img\ignite_logo_128.png" />
-    <Resource Include="img\ignite_logo_32.png" />
-    <Resource Include="img\ignite_logo_64.png" />
-    <Resource Include="img\link.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="img\open-in-new.png" />
-    <Resource Include="img\orbit.png" />
-    <Resource Include="img\speaker.png" />
-    <Resource Include="img\text-box-outline.png" />
-    <Resource Include="img\upload.png" />
-    <Resource Include="img\view-dashboard.png" />
-    <Resource Include="img\web.png" />
   </ItemGroup>
 
   <ItemGroup>

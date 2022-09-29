@@ -557,6 +557,17 @@
 						</StackPanel>
 					</Button>
 					<Button Content="ASCIIECHO" Height="40" Click="ACIIECHO_Click" Margin="4,4,4,4" FontFamily="Cascadia Mono"/>
+					<StackPanel Orientation="Horizontal">
+						<Button Height="40" Click="ReplayViewer_Click" Margin="4,4,1,4" Width="141">
+							<StackPanel Orientation="Horizontal">
+                    			<TextBlock Text="Replay Viewer" VerticalAlignment="Center"></TextBlock>
+                    			<Image Source="/img/replay_viewer_logo.png" Margin="10,0,0,0" Height="26" Width="26" VerticalAlignment="Center"></Image>
+                    		</StackPanel>
+						</Button>
+						<Button Height="40" Width="36" Margin="1,4,4,4" Click="ReplayViewerVR_Click" Content="VR">
+						</Button>
+					</StackPanel>
+					<ProgressBar x:Name="ReplayViewerProgressBar" Height="15" Visibility="Collapsed" Margin="4,4,4,4" IsIndeterminate="True"/>
 					<Button Height="40" Margin="4,4,4,4" Click="TabletStatsUploadClick" Visibility="Visible">
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{x:Static p:Resources.Upload_Tablet_Stats}" VerticalAlignment="Center"></TextBlock>

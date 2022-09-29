@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -162,28 +163,10 @@ namespace Spark
 				});
 			};
 
-			Program.PlayerJoined += (frame, team, arg3) =>
-			{
-				Dispatcher.Invoke(() =>
-				{
-					RefreshPlayerList(frame);
-				});
-			};
+			Program.PlayerJoined += (frame, team, arg3) => { Dispatcher.Invoke(() => { RefreshPlayerList(frame); }); };
 
-			Program.PlayerLeft += (frame, team, arg3) =>
-			{
-				Dispatcher.Invoke(() =>
-				{
-					RefreshPlayerList(frame);
-				});
-			};
-			Program.PlayerSwitchedTeams += (frame, team, arg3, arg4) =>
-			{
-				Dispatcher.Invoke(() =>
-				{
-					RefreshPlayerList(frame);
-				});
-			};
+			Program.PlayerLeft += (frame, team, arg3) => { Dispatcher.Invoke(() => { RefreshPlayerList(frame); }); };
+			Program.PlayerSwitchedTeams += (frame, team, arg3, arg4) => { Dispatcher.Invoke(() => { RefreshPlayerList(frame); }); };
 			Program.LeftGame += frame =>
 			{
 				Dispatcher.Invoke(() =>
@@ -208,20 +191,8 @@ namespace Spark
 					RefreshLastGoalsList();
 				});
 			};
-			Program.NewRound += (frame) =>
-			{
-				Dispatcher.Invoke(() =>
-				{
-					RefreshLastRoundsList();
-				});
-			};
-			Program.RoundOver += (frame, reason) =>
-			{
-				Dispatcher.Invoke(() =>
-				{
-					RefreshLastRoundsList();
-				});
-			};
+			Program.NewRound += (frame) => { Dispatcher.Invoke(() => { RefreshLastRoundsList(); }); };
+			Program.RoundOver += (frame, reason) => { Dispatcher.Invoke(() => { RefreshLastRoundsList(); }); };
 
 			RefreshLastRoundsList();
 			RefreshLastGoalsList();
@@ -317,10 +288,7 @@ namespace Spark
 
 		public void SetSpectateMeSubtitle(string text)
 		{
-			Dispatcher.Invoke(() =>
-			{
-				spectateMeSubtitle.Text = text;
-			});
+			Dispatcher.Invoke(() => { spectateMeSubtitle.Text = text; });
 		}
 
 		public void FocusSpark()
@@ -645,7 +613,7 @@ namespace Spark
 					bool orangePauseEnabled = false;
 					string bluePauseText = "Pause";
 					string orangePauseText = "Pause";
-					if (Program.InGame && Program.lastFrame!=null && Program.lastFrame.private_match && Program.lastFrame.client_name != "anonymous")
+					if (Program.InGame && Program.lastFrame != null && Program.lastFrame.private_match && Program.lastFrame.client_name != "anonymous")
 					{
 						if (!DiscordOAuth.Personal || Program.lastFrame.ClientTeam.color == Team.TeamColor.blue)
 						{
@@ -654,6 +622,7 @@ namespace Spark
 							blueRestartVisible = true;
 							bluePauseEnabled = true;
 						}
+
 						if (!DiscordOAuth.Personal || Program.lastFrame.ClientTeam.color == Team.TeamColor.orange)
 						{
 							orangeReadyVisible = true;
@@ -669,6 +638,7 @@ namespace Spark
 								bluePauseText = "Unpause";
 								orangePauseText = "Unpause";
 							}
+
 							if (Program.lastFrame.pause.paused_requested_team == "orange")
 							{
 								bluePauseText = "Unpause";
@@ -676,7 +646,7 @@ namespace Spark
 							}
 						}
 					}
-					
+
 					BlueTeamReadyUp.Visibility = blueReadyVisible ? Visibility.Visible : Visibility.Collapsed;
 					OrangeTeamReadyUp.Visibility = orangeReadyVisible ? Visibility.Visible : Visibility.Collapsed;
 					BlueTeamPause.Visibility = bluePauseVisible ? Visibility.Visible : Visibility.Collapsed;
@@ -687,7 +657,7 @@ namespace Spark
 					OrangeTeamPause.IsEnabled = orangePauseEnabled;
 					BlueTeamPause.Content = bluePauseText;
 					OrangeTeamPause.Content = orangePauseText;
-					
+
 					if (Program.lastFrame?.InArena == true) // only the arena has a disc
 					{
 						discSpeedLabel.Text = $"{Program.lastFrame.disc.velocity.ToVector3().Length():N2}";
@@ -892,20 +862,14 @@ namespace Spark
 					panel.Cursor = Cursors.Hand;
 
 					int i1 = i;
-					panel.MouseEnter += (sender, args) =>
-					{
-						panel.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x1a, 0x1a, 0x1a));
-					};
+					panel.MouseEnter += (sender, args) => { panel.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x1a, 0x1a, 0x1a)); };
 					panel.MouseLeave += (sender, args) =>
 					{
 						panel.Background = (i1 % 2 != 0)
 							? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
 							: new SolidColorBrush(Color.FromArgb(0xff, 0x23, 0x23, 0x23));
 					};
-					panel.MouseLeftButtonUp += (sender, args) =>
-					{
-						ClickedOnPlayer(player.name);
-					};
+					panel.MouseLeftButtonUp += (sender, args) => { ClickedOnPlayer(player.name); };
 				}
 
 				BlueTeamPlayersBox.Children.Add(panel);
@@ -932,20 +896,14 @@ namespace Spark
 					panel.Cursor = Cursors.Hand;
 
 					int i1 = i;
-					panel.MouseEnter += (sender, args) =>
-					{
-						panel.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x1a, 0x1a, 0x1a));
-					};
+					panel.MouseEnter += (sender, args) => { panel.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x1a, 0x1a, 0x1a)); };
 					panel.MouseLeave += (sender, args) =>
 					{
 						panel.Background = (i1 % 2 != 0)
 							? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
 							: new SolidColorBrush(Color.FromArgb(0xff, 0x20, 0x20, 0x20));
 					};
-					panel.MouseLeftButtonUp += (sender, args) =>
-					{
-						ClickedOnPlayer(player.name);
-					};
+					panel.MouseLeftButtonUp += (sender, args) => { ClickedOnPlayer(player.name); };
 				}
 
 				OrangeTeamPlayersBox.Children.Add(panel);
@@ -972,20 +930,14 @@ namespace Spark
 					panel.Cursor = Cursors.Hand;
 
 					int i1 = i;
-					panel.MouseEnter += (sender, args) =>
-					{
-						panel.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x1a, 0x1a, 0x1a));
-					};
+					panel.MouseEnter += (sender, args) => { panel.Background = new SolidColorBrush(Color.FromArgb(0xff, 0x1a, 0x1a, 0x1a)); };
 					panel.MouseLeave += (sender, args) =>
 					{
 						panel.Background = (i1 % 2 != 0)
 							? new SolidColorBrush(Color.FromArgb(0xff, 0x2f, 0x2f, 0x2f))
 							: new SolidColorBrush(Color.FromArgb(0xff, 0x20, 0x20, 0x20));
 					};
-					panel.MouseLeftButtonUp += (sender, args) =>
-					{
-						ClickedOnPlayer(player.name);
-					};
+					panel.MouseLeftButtonUp += (sender, args) => { ClickedOnPlayer(player.name); };
 				}
 
 				SpectatorsPlayersBox.Children.Add(panel);
@@ -1485,16 +1437,10 @@ namespace Spark
 
 		private async Task ShowCopiedText()
 		{
-			Dispatcher.Invoke(() =>
-			{
-				copySessionIdButton.Content = Properties.Resources.Copied_;
-			});
+			Dispatcher.Invoke(() => { copySessionIdButton.Content = Properties.Resources.Copied_; });
 			await Task.Delay(3000);
 
-			Dispatcher.Invoke(() =>
-			{
-				copySessionIdButton.Content = Properties.Resources.Copy;
-			});
+			Dispatcher.Invoke(() => { copySessionIdButton.Content = Properties.Resources.Copy; });
 		}
 
 		private void speakerSystemPanel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -1870,10 +1816,7 @@ namespace Spark
 							Padding = new Thickness(10, 0, 10, 0),
 							Background = new SolidColorBrush(Color.FromRgb(buttonColor, buttonColor, buttonColor)),
 						};
-						copyLinkButton.Click += (_, _) =>
-						{
-							Clipboard.SetText(Program.CurrentSparkLink(match.matchid));
-						};
+						copyLinkButton.Click += (_, _) => { Clipboard.SetText(Program.CurrentSparkLink(match.matchid)); };
 						header.Children.Add(copyLinkButton);
 						Button joinButton = new Button
 						{
@@ -2061,10 +2004,7 @@ namespace Spark
 						hostURL,
 						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						data,
-						_ =>
-						{
-							GetAtlasMatches();
-						});
+						_ => { GetAtlasMatches(); });
 				}
 
 				Thread.Sleep(100);
@@ -2374,6 +2314,7 @@ namespace Spark
 			};
 			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_pause", null, JsonConvert.SerializeObject(data), null);
 		}
+
 		private void OrangeTeamPauseClick(object sender, RoutedEventArgs e)
 		{
 			Dictionary<string, object> data = new Dictionary<string, object>()
@@ -2382,6 +2323,7 @@ namespace Spark
 			};
 			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_pause", null, JsonConvert.SerializeObject(data), null);
 		}
+
 		private void BlueTeamReadyClick(object sender, RoutedEventArgs e)
 		{
 			Dictionary<string, object> data = new Dictionary<string, object>()
@@ -2390,6 +2332,7 @@ namespace Spark
 			};
 			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_ready", null, JsonConvert.SerializeObject(data), null);
 		}
+
 		private void OrangeTeamReadyClick(object sender, RoutedEventArgs e)
 		{
 			Dictionary<string, object> data = new Dictionary<string, object>()
@@ -2398,6 +2341,7 @@ namespace Spark
 			};
 			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_ready", null, JsonConvert.SerializeObject(data), null);
 		}
+
 		private void BlueTeamRestartClick(object sender, RoutedEventArgs e)
 		{
 			Dictionary<string, object> data = new Dictionary<string, object>()
@@ -2406,6 +2350,7 @@ namespace Spark
 			};
 			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/restart_request", null, JsonConvert.SerializeObject(data), null);
 		}
+
 		private void OrangeTeamRestartClick(object sender, RoutedEventArgs e)
 		{
 			Dictionary<string, object> data = new Dictionary<string, object>()
@@ -2417,12 +2362,91 @@ namespace Spark
 
 		private void OpenLocalDatabaseBrowser(object sender, RoutedEventArgs e)
 		{
-			
 			Process.Start(new ProcessStartInfo
 			{
 				FileName = "http://localhost:6724/local_database",
 				UseShellExecute = true
 			});
+		}
+
+		private async void ReplayViewer_Click(object sender, RoutedEventArgs e)
+		{
+			await LaunchInstallReplayViewer(false);
+		}
+
+		private async Task LaunchInstallReplayViewer(bool vrMode)
+		{
+			string versionFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+				"Replay Viewer", "version.txt");
+
+			VersionJson remoteVersion = await GetGitHubVersion("robidasdavid", "Demo-Viewer");
+			if (remoteVersion == null)
+			{
+				Error("Failed to get Replay Viewer version from GitHub.");
+				return;
+			}
+
+			if (File.Exists(versionFile))
+			{
+				string localVersion = await File.ReadAllTextAsync(versionFile);
+				if (localVersion != remoteVersion.tag_name)
+				{
+					await InstallReplayViewer(versionFile, remoteVersion);
+				}
+			}
+			else
+			{
+				await InstallReplayViewer(versionFile, remoteVersion);
+			}
+
+			Process.Start(new ProcessStartInfo
+			{
+				FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Replay Viewer", "Replay Viewer.exe"),
+				Arguments = vrMode ? " -useVR" : "",
+				UseShellExecute = true
+			});
+		}
+
+		private async Task InstallReplayViewer(string versionFile, VersionJson remoteVersion)
+		{
+			ReplayViewerProgressBar.Visibility = Visibility.Visible;
+			string zipUrl = remoteVersion.assets.First(url => url.browser_download_url.EndsWith("zip")).browser_download_url;
+			HttpResponseMessage response = await Program.client.GetAsync(zipUrl);
+			string fileName = Path.Combine(Path.GetTempPath(), "replay_viewer.zip");
+			await using (FileStream fs = new FileStream(fileName, FileMode.Create))
+			{
+				await response.Content.CopyToAsync(fs);
+			}
+
+			string replayViewerFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Replay Viewer");
+			if (!Directory.Exists(replayViewerFolder))
+			{
+				Directory.CreateDirectory(replayViewerFolder);
+			}
+
+			await Task.Run(() => Directory.Delete(replayViewerFolder, true));
+			await Task.Run(() => ZipFile.ExtractToDirectory(fileName, replayViewerFolder));
+			await File.WriteAllTextAsync(versionFile, remoteVersion.tag_name);
+			ReplayViewerProgressBar.Visibility = Visibility.Collapsed;
+		}
+
+		private static async Task<VersionJson> GetGitHubVersion(string authorName, string repoName)
+		{
+			try
+			{
+				string resp = await Program.client.GetStringAsync($"https://api.github.com/repos/{authorName}/{repoName}/releases/latest");
+				return JsonConvert.DeserializeObject<VersionJson>(resp);
+			}
+			catch (Exception e)
+			{
+				LogRow(LogType.Error, e.Message);
+				return null;
+			}
+		}
+
+		private async void ReplayViewerVR_Click(object sender, RoutedEventArgs e)
+		{
+			await LaunchInstallReplayViewer(true);
 		}
 	}
 }
