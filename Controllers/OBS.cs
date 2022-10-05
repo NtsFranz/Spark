@@ -14,7 +14,7 @@ namespace Spark
 		public readonly OBSWebsocket ws;
 
 		public int currentReplay = 0;
-		
+
 		public OutputState? replayBufferState;
 		public bool connected;
 
@@ -25,7 +25,7 @@ namespace Spark
 				SparkSettings.instance.obsIP = "ws://127.0.0.1:4455";
 				SparkSettings.instance.firstTimeOBSv28 = false;
 			}
-			
+
 			ws = new OBSWebsocket();
 
 			ws.Connected += OnConnect;
@@ -35,11 +35,16 @@ namespace Spark
 				replayBufferState = state.State;
 			};
 
+			Program.EmoteActivated += (frame, team, player) =>
+			{
+				SaveClip(SparkSettings.instance.obsClipEmote, player.name, frame, "", 0, 0, 0);
+			};
 			Program.PlayspaceAbuse += PlayspaceAbuse;
 			Program.Goal += Goal;
-			Program.Save += Save;
 			Program.Assist += Assist;
+			Program.Save += Save;
 			Program.Interception += Interception;
+			Program.JoustEvent += Joust;
 
 			Program.JoinedGame += JoinedGame;
 			Program.LeftGame += LeftGame;
@@ -60,6 +65,22 @@ namespace Spark
 						ws.Disconnect();
 					}
 				});
+			}
+		}
+
+		private void Joust(Frame frame, EventData eventData)
+		{
+			if (eventData.eventType == EventContainer.EventType.joust_speed)
+			{
+				SaveClip(SparkSettings.instance.obsClipNeutralJoust, eventData.player.name, frame, "", 0, 0, 0);
+			}
+			else if (eventData.eventType == EventContainer.EventType.defensive_joust)
+			{
+				SaveClip(SparkSettings.instance.obsClipDefensiveJoust, eventData.player.name, frame, "", 0, 0, 0);
+			}
+			else
+			{
+				Logger.Error("Joust that isn't neutral or defensive");
 			}
 		}
 
@@ -101,9 +122,9 @@ namespace Spark
 			string scene = SparkSettings.instance.obsBetweenGameScene;
 			if (string.IsNullOrEmpty(scene) || scene == "--- Do Not Switch ---" || scene == "Do Not Switch") return;
 			ws.SetCurrentProgramScene(scene);
-			
+
 			if (!SparkSettings.instance.obsPauseRecordingWithGameClock) return;
-			
+
 			try
 			{
 				ws.PauseRecord();
@@ -120,7 +141,7 @@ namespace Spark
 			string scene = SparkSettings.instance.obsInGameScene;
 			if (string.IsNullOrEmpty(scene) || scene == "--- Do Not Switch ---" || scene == "Do Not Switch") return;
 			ws.SetCurrentProgramScene(scene);
-			
+
 			if (!SparkSettings.instance.obsPauseRecordingWithGameClock) return;
 			if (frame.private_match) return;
 
@@ -167,7 +188,7 @@ namespace Spark
 			if (!ws.IsConnected) return;
 			if (!setting) return;
 			if (!IsPlayerScopeEnabled(player_name, frame)) return;
-			Task.Delay((int) (save_delay * 1000)).ContinueWith(_ =>
+			Task.Delay((int)(save_delay * 1000)).ContinueWith(_ =>
 			{
 				try
 				{
@@ -245,7 +266,7 @@ namespace Spark
 					Debug.WriteLine("Replay buffer not enabled in startup");
 				}
 			});
-			
+
 			connected = true;
 		}
 

@@ -259,8 +259,8 @@ namespace Spark
 				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
 					"IgniteVR", "Spark", "WebView");
 				CoreWebView2Environment webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
-				await PlayercardWebView.EnsureCoreWebView2Async(webView2Environment);
-				PlayercardWebView.Source = new UriBuilder("https://metrics.ignitevr.gg/playercard_embed").Uri;
+				//await PlayercardWebView.EnsureCoreWebView2Async(webView2Environment);
+				//PlayercardWebView.Source = new UriBuilder("https://metrics.ignitevr.gg/playercard_embed").Uri;
 			}
 			catch (FileNotFoundException ex)
 			{
@@ -2283,21 +2283,21 @@ namespace Spark
 					Process p = Process.Start(new ProcessStartInfo
 					{
 						FileName = exePath,
-						// UseShellExecute = true,
-						// WindowStyle = ProcessWindowStyle.Maximized,
+						UseShellExecute = true,
+						WindowStyle = ProcessWindowStyle.Maximized,
 					});
 
 
-					if (p != null)
-					{
-						for (int i = 0; i < 10; i++)
-						{
-							await Task.Delay(100);
-							// Point relativePoint = speakerSystemPanel.TransformToAncestor(this).Transform(new Point(0, 0));
-							// MoveWindow(p.MainWindowHandle, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
-							MoveWindow(p.MainWindowHandle, 200, 200, 1024, 768, true);
-						}
-					}
+					//if (p != null)
+					//{
+					//	for (int i = 0; i < 50; i++)
+					//	{
+					//		await Task.Delay(100);
+					//		// Point relativePoint = speakerSystemPanel.TransformToAncestor(this).Transform(new Point(0, 0));
+					//		// MoveWindow(p.MainWindowHandle, (int)relativePoint.X, (int)relativePoint.Y, (int)speakerSystemPanel.ActualWidth, (int)speakerSystemPanel.ActualHeight, true);
+					//		MoveWindow(p.MainWindowHandle, 200, 200, 1024, 768, true);
+					//	}
+					//}
 				}
 				catch (Exception ex)
 				{

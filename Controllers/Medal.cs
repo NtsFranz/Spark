@@ -10,18 +10,31 @@ namespace Spark
 	{
 		public Medal()
 		{
-			Program.PlayspaceAbuse += PlayspaceAbuse;
-			Program.Goal += Goal;
-			Program.Save += Save;
-			Program.Assist += Assist;
-			Program.Interception += Interception;
 			Program.EmoteActivated += (frame, _, player) =>
 			{
-				if (player.name == frame.client_name)
+				SaveClip(SparkSettings.instance.medalClipEmote, player.name, frame);
+			};
+			Program.PlayspaceAbuse += PlayspaceAbuse;
+			Program.Goal += Goal;
+			Program.Assist += Assist;
+			Program.Save += Save;
+			Program.Interception += Interception;
+			Program.JoustEvent += (frame, eventData) =>
+			{
+				if (eventData.eventType == EventContainer.EventType.joust_speed)
 				{
-					SaveClip(SparkSettings.instance.medalClipEmote, player.name, frame);
+					SaveClip(SparkSettings.instance.medalClipNeutralJoust, eventData.player.name, frame);
+				}
+				else if (eventData.eventType == EventContainer.EventType.defensive_joust)
+				{
+					SaveClip(SparkSettings.instance.medalClipDefensiveJoust, eventData.player.name, frame);
+				}
+				else
+				{
+					Logger.Error("Joust that isn't neutral or defensive");
 				}
 			};
+
 		}
 
 

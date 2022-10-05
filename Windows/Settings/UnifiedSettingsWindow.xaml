@@ -418,9 +418,9 @@
 				</ScrollViewer>
 			</TabItem>-->
 
-			<TabItem Header="{x:Static p:Resources.Overlays}" Visibility="Visible">
+			<!--<TabItem Header="{x:Static p:Resources.Overlays}" Visibility="Visible">
 				<l:OverlaysConfigWindow x:Name="OverlaysConfigWindow"/>
-			</TabItem>
+			</TabItem>-->
 
 
 			<TabItem Header="{x:Static p:Resources.EchoVR_Settings}" Visibility="Visible">

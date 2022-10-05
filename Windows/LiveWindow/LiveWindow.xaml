@@ -460,7 +460,7 @@
 					</Grid>
 				</TabItem>
 				
-				<TabItem x:Name="StatsTab" FontSize="14" Padding="10,0,10,0" Visibility="{Binding PlayercardsTabVisibility}">
+				<!--<TabItem x:Name="StatsTab" FontSize="14" Padding="10,0,10,0" Visibility="{Binding PlayercardsTabVisibility}">
 					<TabItem.Header>
 						<StackPanel Orientation="Horizontal">
 							<Label Content="{x:Static p:Resources.Playercards}"/>
@@ -468,10 +468,10 @@
 						</StackPanel>
 					</TabItem.Header>
 					<DockPanel>
-						<!-- <wv2:WebView2 Name="webView" Source="http://localhost:6724/scoreboard" OpacityMask="{DynamicResource BackgroundColour}"/> -->
+						--><!-- <wv2:WebView2 Name="webView" Source="http://localhost:6724/scoreboard" OpacityMask="{DynamicResource BackgroundColour}"/> --><!--
 						<wv2:WebView2 Name="PlayercardWebView" />
 					</DockPanel>
-				</TabItem>
+				</TabItem>-->
 				
 				<TabItem x:Name="ServerInfoTab" FontSize="14" Padding="10,0,10,0" Visibility="Visible">
 					<TabItem.Header>

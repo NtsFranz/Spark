@@ -130,6 +130,10 @@ namespace Spark
 					}
 				};
 
+				if (!Directory.Exists(StaticOverlayFolder))
+				{
+					Directory.CreateDirectory(StaticOverlayFolder);
+				}
 				app.UseFileServer(new FileServerOptions
 				{
 					FileProvider = new PhysicalFileProvider(StaticOverlayFolder),

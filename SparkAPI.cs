@@ -171,8 +171,8 @@ namespace Spark
 					}
 
 					// update the UI to match
-					Window window = Program.GetWindowIfOpen(typeof(UnifiedSettingsWindow));
-					((UnifiedSettingsWindow)window)?.OverlaysConfigWindow.SetUIToSettings();
+					//Window window = Program.GetWindowIfOpen(typeof(UnifiedSettingsWindow));
+					//((UnifiedSettingsWindow)window)?.OverlaysConfigWindow.SetUIToSettings();
 
 					await context.Response.WriteAsync("Set team name");
 				}
@@ -210,7 +210,7 @@ namespace Spark
 
 					// update the UI to match
 					Window window = Program.GetWindowIfOpen(typeof(UnifiedSettingsWindow));
-					((UnifiedSettingsWindow)window)?.OverlaysConfigWindow.SetUIToSettings();
+					//((UnifiedSettingsWindow)window)?.OverlaysConfigWindow.SetUIToSettings();
 
 					await context.Response.WriteAsync("Set team team_logo");
 				}
@@ -282,8 +282,8 @@ namespace Spark
 					}
 
 					// update the UI to match
-					Window window = Program.GetWindowIfOpen(typeof(UnifiedSettingsWindow));
-					((UnifiedSettingsWindow)window)?.OverlaysConfigWindow.SetUIToSettings();
+					//Window window = Program.GetWindowIfOpen(typeof(UnifiedSettingsWindow));
+					//((UnifiedSettingsWindow)window)?.OverlaysConfigWindow.SetUIToSettings();
 
 					await context.Response.WriteAsync("Set team logo or name");
 				}
@@ -524,8 +524,8 @@ namespace Spark
 
 
 					// update the UI to match
-					Window window = Program.GetWindowIfOpen(typeof(UnifiedSettingsWindow));
-					((UnifiedSettingsWindow)window)?.OverlaysConfigWindow.SetUIToSettings();
+					//Window window = Program.GetWindowIfOpen(typeof(UnifiedSettingsWindow));
+					//((UnifiedSettingsWindow)window)?.OverlaysConfigWindow.SetUIToSettings();
 
 					await context.Response.WriteAsync("Applied new settings.");
 				}
