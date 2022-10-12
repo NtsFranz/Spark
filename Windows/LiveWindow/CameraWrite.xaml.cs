@@ -438,6 +438,19 @@ namespace Spark
 			SetCamera(waypoints[index]);
 		}
 
+		public bool TryGoToWaypoint(string name)
+		{
+			CameraTransform[] waypoints = CameraWriteSettings.instance.waypoints.Values.ToArray();
+			if (CameraWriteSettings.instance.waypoints.ContainsKey(name))
+			{
+				SetCamera(CameraWriteSettings.instance.waypoints[name]);
+				return true;
+			} else
+			{
+				return false;
+			}
+		}
+
 		public void TryPlayAnim(int index)
 		{
 			if (AnimationsComboBox.Items.Count <= index) return;
@@ -445,6 +458,23 @@ namespace Spark
 			{
 				AnimationsComboBox.SelectedIndex = index;
 				StartKeyframeAnimation(null, null);
+			});
+		}
+
+		public void TryPlayAnim(string name)
+		{
+			Dispatcher.Invoke(() =>
+			{
+				for (int i =0;i< AnimationsComboBox.Items.Count; i++)
+				{
+					var test = ((ComboBoxItem)AnimationsComboBox.Items[i]).Content.ToString();
+					if (((ComboBoxItem)AnimationsComboBox.Items[i]).Content.ToString() == name)
+					{
+						AnimationsComboBox.SelectedIndex = i;
+						StartKeyframeAnimation(null, null);
+						break;
+					}
+				}
 			});
 		}
 

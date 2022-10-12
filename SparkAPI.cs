@@ -57,6 +57,33 @@ namespace Spark
 				}
 			});
 
+			endpoints.MapGet("/api/camera/go_to_waypoint/by_name/{name}", async context =>
+			{
+				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+				string name = context.Request.RouteValues["name"]?.ToString();
+
+				if (Program.cameraWriteWindow.TryGoToWaypoint(name))
+				{
+					await context.Response.WriteAsync($"Going to waypoint {name}");
+				}
+				else
+				{
+					await context.Response.WriteAsync($"Can't find waypoint with name: {name}");
+				}
+			});
+
+
+			endpoints.MapGet("/api/camera/play_animation/by_name/{name}", async context =>
+			{
+				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+				string name = context.Request.RouteValues["name"]?.ToString();
+				
+				Program.cameraWriteWindow.TryPlayAnim(name);
+				await context.Response.WriteAsync($"Playing animation {name}");
+			});
+
 
 			endpoints.MapGet("/api/camera/orbit_disc_enabled/{enabled}", async context =>
 			{
