@@ -1,38 +1,33 @@
 ﻿<svelte:head>
     <title>Spark Websocket API</title>
-    <link rel="stylesheet" href="/css/lib/bulma.min.css">
-    <link rel="stylesheet" href="/css/styles.css">
     
     <!-- Syntax Highlighting -->
-    <link rel="stylesheet" href="/css/lib/prism.css">
-
+<!--    <link rel="stylesheet" href="/css/lib/prism.css">-->
 <!--    <script defer src="/js/lib/prism.js"></script>-->
 </svelte:head>
 
 <script>
     // import Prism from 'prismjs';
-    let language = 'javascript';
+    import Header from "$lib/components/Header.svelte";
+    import "$lib/css/prism.css";
+    import '$lib/js/prism.js';
 </script>
 
+<style>
+    .content ul li {
+        list-style: initial;
+        margin-top: initial;
+    }
+</style>
 
-<section class="hero is-medium">
-    <div class="hero-body" style="background-color: #0003;padding: 4rem 1.5rem; overflow: hidden">
-        <div class="container has-text-centered">
-            <h1>Spark Websocket API</h1>
-            <img style="float:left;width: 10em;position: absolute;left: 10em;bottom: 0;opacity: .1;transform: scale(6); z-index: -1"
-                 src="/img/ignite_logo.png">
-            <p class="subtitle" style="font-size: 1.2em;">
-                Subscribe to events in the browser. This makes event-driven overlays very simple.
-            </p>
-        </div>
-    </div>
-</section>
+<Header title="Spark Websocket API" subtitle="Subscribe to events in the browser. This makes event-driven overlays very simple."/>
+
+
 <div class="content" style="max-width: 60em; margin: auto;">
 
     <nav class="breadcrumb" aria-label="breadcrumbs">
         <ul>
             <li><a href="/">Home</a></li>
-            <!--			<li><a href="/game_data">Game Stats</a></li>-->
             <li class="is-active"><a href="#" aria-current="page">Websockets</a></li>
         </ul>
     </nav>
@@ -67,7 +62,7 @@
         <p>Add this code to the bottom of your &lt;body&gt; tag in your .html file. Instead of console.log(), modify the
             visibility or content of various elements on your page.</p>
         
-        <pre><code>{`<script src="http://localhost:6724/js/spark_websocket.js"></script>
+        <pre><code class="language-js">{`<script src="http://localhost:6724/js/spark_websocket.js"></script>
 			
 <script>
 	// initialize the websocket connection

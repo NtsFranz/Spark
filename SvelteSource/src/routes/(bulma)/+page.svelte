@@ -1,40 +1,8 @@
 ﻿<svelte:head>
     <title>Spark</title>
-    <link rel="stylesheet" href="/css/lib/bulma.min.css">
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css"/>
 </svelte:head>
 
 <style>
-    :root {
-        --ignite-orange: #f27d18;
-        --echo-stats-header-orange: #240407;
-        --echo-stats-header-blue: #0b0b13;
-        --echo-stats-row-dark: rgba(0, 0, 0, 0.4);
-        --echo-stats-row-dark-hover: rgba(0, 0, 0, 0.5);
-        --echo-stats-table-orange: rgba(255, 150, 50, 0.7);
-        --echo-stats-table-blue: rgba(50, 150, 255, 0.7)
-    }
-
-
-    h1 {
-        font-size: 2em;
-    }
-
-    @font-face {
-        font-family: 'Inconsolata';
-        src: url('$lib/fonts/Inconsolata.woff2') format('woff2'), url('$lib/fonts/Inconsolata.ttf') format('truetype');
-    }
-
-    body {
-        font-family: 'Inconsolata', sans-serif;
-    }
-
-    .content ul li {
-        list-style: none;
-        margin-top: 2em;
-    }
-
     .showcase-button {
         overflow: hidden;
         background-color: #0005;

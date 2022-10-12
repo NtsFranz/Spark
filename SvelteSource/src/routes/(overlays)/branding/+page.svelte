@@ -3,7 +3,6 @@
     <link rel="stylesheet" href="/css/styles.css">
 </svelte:head>
 
-
 <style>
     @font-face {
         font-family: 'ubuntu';

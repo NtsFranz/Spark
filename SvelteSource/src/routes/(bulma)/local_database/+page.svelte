@@ -1,87 +1,18 @@
 <svelte:head>
     <title>Local Database</title>
-    <link rel="stylesheet" href="/css/lib/bulma.min.css">
-    <link rel="stylesheet" href="/css/styles.css">
-
     <link rel="stylesheet" type="text/css" href="/css/autocomplete_styles.css">
 </svelte:head>
 
 <style>
-    .content ul li {
-        list-style: none;
-        margin-top: 2em;
-    }
-
-    .team_logo_img {
-        width: 6em;
-    }
 
     input {
         font-size: .8em;
-    }
-
-    .blur-in-background {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 50%;
-        height: 100%;
-        /*  transform: scale(10);  */
-        filter: blur(1em);
-        opacity: 0;
-        transition: opacity 1s;
-    }
-
-    .blur-in-background[src=""] {
-        opacity: .3 !important;
     }
 
     #swap_sides_button.isLoading img {
         opacity: 0;
     }
 
-
-    .orange.input,
-    .orange.textarea {
-        border-color: #d18100
-    }
-
-    .orange.input:active,
-    .orange.input:focus,
-    .orange.is-active.input,
-    .orange.is-active.textarea,
-    .orange.is-focused.input,
-    .orange.is-focused.textarea,
-    .orange.textarea:active,
-    .orange.textarea:focus {
-        box-shadow: 0 0 0 .125em rgba(209, 84, 0, 0.25)
-    }
-
-    .blue.input,
-    .blue.textarea {
-        border-color: #0073d1
-    }
-
-    .blue.input:active,
-    .blue.input:focus,
-    .blue.is-active.input,
-    .blue.is-active.textarea,
-    .blue.is-focused.input,
-    .blue.is-focused.textarea,
-    .blue.textarea:active,
-    .blue.textarea:focus {
-        box-shadow: 0 0 0 .125em rgba(0, 63, 209, 0.25)
-    }
-
-    .hide {
-        display: none !important;
-    }
-
-    .checkbox_grid {
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-    }
 
     .checkbox_grid > label {
         flex-grow: 1;
@@ -97,21 +28,16 @@
     }
 </style>
 
+<Header title="Local Database" subtitle="Explore data from all of your locally recorded matches."/>
 
-<section class="hero is-medium">
-    <div class="hero-body" style="background-color: #0003;padding: 4rem 1.5rem;; overflow: hidden;">
-        <div class="container has-text-centered">
-            <h2 class="title is-1">Local Database</h2>
-            <img style="float:left;width: 10em;position: absolute;left: 10em;bottom: 0;opacity: .1;transform: scale(6); z-index: -1"
-                 src="/img/ignite_logo.png">
-            <p class="subtitle" style="font-size: 1.2em;">
-                Explore data from all of your locally recorded matches.
-            </p>
-        </div>
-    </div>
-</section>
 <div class="content" style="max-width: 80em; margin: auto;">
 
+    <nav class="breadcrumb" aria-label="breadcrumbs" style="position: relative; top: -2em;">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li class="is-active"><a href="#" aria-current="page">Local Database</a></li>
+        </ul>
+    </nav>
     <div class="box" style="position: relative; top: -2em;">
         <button class="button" on:click={refresh} style="position: absolute; top:-3em; right: 0;">Refresh</button>
 
@@ -213,6 +139,7 @@
 
 <script>
     import {onMount} from "svelte";
+    import Header from "$lib/components/Header.svelte";
 
     let jousts = [];
     let events = [];
