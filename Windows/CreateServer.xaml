@@ -21,11 +21,15 @@
 		<ComboBox SelectedIndex="{l:SettingBinding chooseRegionIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="54" Margin="10,10,10,105">
 			<StackPanel>
 				<TextBlock Text="{x:Static p:Resources.US_Central_North}"/>
-				<TextBlock Text="{x:Static p:Resources.e_g__Chicago__Iowa}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+				<TextBlock Text="Chicago, Illinois" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 			<StackPanel>
 				<TextBlock Text="{x:Static p:Resources.US_Central_South}"/>
-				<TextBlock Text="{x:Static p:Resources.e_g__Texas}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+				<TextBlock Text="Dallas, Texas" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+			</StackPanel>
+			<StackPanel>
+				<TextBlock Text="US Central South 2"/>
+				<TextBlock Text="Houston, Texas" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 			<StackPanel>
 				<TextBlock Text="{x:Static p:Resources.US_East}"/>

@@ -1094,8 +1094,16 @@ namespace Spark
 					Dictionary<string, dynamic> obj = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(resp);
 					if (obj == null) return;
 					string loc = (string)obj["ip-api"]["city"] + ", " + (string)obj["ip-api"]["regionName"];
+
+					// if an aws server, use ipdata.co instead
+					if ((string)obj["ip-api"]["org"] == "AWS EC2 (us-east-1)")
+					{
+						loc = (string)obj["ipdata"]["city"] + ", " + (string)obj["ipdata"]["region"];
+					}
+					
 					Program.CurrentRound.serverLocation = loc;
 					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
+					
 					serverLocationLabel.ToolTip = $"{obj["ip-api"]["query"]}\n{obj["ip-api"]["org"]}\n{obj["ip-api"]["as"]}";
 
 					try

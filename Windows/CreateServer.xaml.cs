@@ -15,13 +15,14 @@ namespace Spark
 			return index switch
 			{
 				0 => "uscn",
-				1 => "usc",
-				2 => "use",
-				3 => "usw",
-				4 => "euw",
-				5 => "jp",
-				6 => "aus",
-				7 => "sin",
+				1 => "us-central-2",
+				2 => "us-central-3",
+				3 => "use",
+				4 => "usw",
+				5 => "euw",
+				6 => "jp",
+				7 => "aus",
+				8 => "sin",
 				_ => "",
 			};
 		}

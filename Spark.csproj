@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.6.1</Version>
+    <Version>2.6.2</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -19,7 +19,7 @@
     <AssemblyName>Spark</AssemblyName>
     <RootNamespace>Spark</RootNamespace>
     <LangVersion>9</LangVersion>
-    <PackageVersion>2.6.1</PackageVersion>
+    <PackageVersion>2.6.2</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
