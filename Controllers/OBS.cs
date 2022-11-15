@@ -1,11 +1,17 @@
 ﻿using OBSWebsocketDotNet;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using EchoVRAPI;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OBSWebsocketDotNet.Communication;
 using OBSWebsocketDotNet.Types;
+using Spark.Properties;
 
 namespace Spark
 {
@@ -30,15 +36,9 @@ namespace Spark
 
 			ws.Connected += OnConnect;
 			ws.Disconnected += OnDisconnect;
-			ws.ReplayBufferStateChanged += (_, state) =>
-			{
-				replayBufferState = state.State;
-			};
+			ws.ReplayBufferStateChanged += (_, state) => { replayBufferState = state.State; };
 
-			Program.EmoteActivated += (frame, team, player) =>
-			{
-				SaveClip(SparkSettings.instance.obsClipEmote, player.name, frame, "", 0, 0, 0);
-			};
+			Program.EmoteActivated += (frame, team, player) => { SaveClip(SparkSettings.instance.obsClipEmote, player.name, frame, "", 0, 0, 0); };
 			Program.PlayspaceAbuse += PlayspaceAbuse;
 			Program.Goal += Goal;
 			Program.Assist += Assist;
@@ -274,6 +274,92 @@ namespace Spark
 		{
 			replayBufferState = null;
 			connected = false;
+		}
+
+		public void AddSparkSources()
+		{
+			Task.Run(async () =>
+			{
+				string sceneFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "obs-studio", "basic", "scenes", "Spark.json");
+				if (!File.Exists(sceneFile))
+				{
+					string defaultCollection = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation) ?? "", "resources", "obs_scene_collection.json"));
+					await File.WriteAllTextAsync(sceneFile, defaultCollection);
+				}
+
+				JObject scene = JsonConvert.DeserializeObject<JObject>(await File.ReadAllTextAsync(sceneFile));
+
+				if (scene == null) return;
+
+				string[] urls =
+				{
+					"http://127.0.0.1:6724/branding",
+					"http://127.0.0.1:6724/midmatch_overlay",
+					"http://127.0.0.1:6724/scoreboard",
+					"http://127.0.0.1:6724/configurable_overlay",
+					"http://127.0.0.1:6724/minimap",
+					"http://127.0.0.1:6724/playspace",
+					"http://127.0.0.1:6724/speedometer/player",
+					"http://127.0.0.1:6724/speedometer/disc",
+					"http://127.0.0.1:6724/speedometer/lone_echo_1",
+					"http://127.0.0.1:6724/speedometer/lone_echo_2",
+				};
+
+
+				List<JToken> sources = scene["sources"].ToList();
+				JToken sceneSource = sources.FirstOrDefault(s => s["name"].ToString() == "Spark Sources");
+				
+				// use the existing scene sources list
+				// List<JToken> sceneSources = sceneSource["settings"]["items"].ToList();
+				// reset the existing scene sources list
+				List<JToken> sceneSources = new List<JToken>();
+				
+				foreach (string url in urls)
+				{
+					string name = $"Spark:{string.Join('/', url.Split("/").Skip(3))}";
+
+					// add to the sources list
+					JToken obj = sources.FirstOrDefault(s => s["name"].ToString() == name);
+					if (obj == null)
+					{
+						obj = JToken.Parse($@"
+							{{
+								""id"": ""browser_source"",
+								""versioned_id"": ""browser_source"",
+								""name"": ""{name}"",
+								""settings"": {{
+									""width"": 1920,
+									""height"": 1080,
+									""url"": ""{url}""
+								}}
+							}}
+						");
+						sources.Add(obj);
+					}
+
+					// add the sources to the scene
+					JToken sceneItem = sceneSources.FirstOrDefault(s => s["name"].ToString() == name);
+
+
+					if (sceneItem == null)
+					{
+						sceneSources.Add(JToken.Parse($@"
+							{{
+								""name"": ""{name}"",
+								""private_settings"": {{
+									""color"": ""#55ffc105"",
+									""color-preset"": 1
+								}},
+							}}
+						"));
+					}
+				}
+
+				sceneSource["settings"]["items"] = JsonConvert.DeserializeObject<JToken>(JsonConvert.SerializeObject(sceneSources));
+				scene["sources"] = JsonConvert.DeserializeObject<JToken>(JsonConvert.SerializeObject(sources));
+
+				await File.WriteAllTextAsync(sceneFile, JsonConvert.SerializeObject(scene));
+			});
 		}
 	}
 }

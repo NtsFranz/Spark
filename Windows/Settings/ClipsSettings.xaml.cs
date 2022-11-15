@@ -22,6 +22,8 @@ namespace Spark
 		// set to false initially so that loading the settings from disk doesn't activate the events
 		private bool initialized;
 		private readonly Timer outputUpdateTimer = new Timer();
+		public bool IsOBSConnected => Program.obs.connected;
+		
 		
 		private bool sceneDropdownListenersActive = false;
 
@@ -1078,6 +1080,11 @@ namespace Spark
 		private void MedalClipHotkeyDropdownOnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			SparkSettings.instance.medalClipKey = (int)medalTVInputs[((ComboBox)sender).SelectedIndex];
+		}
+
+		private void AddSparkSourcesOBS(object sender, RoutedEventArgs e)
+		{
+			Program.obs.AddSparkSources();
 		}
 	}
 }

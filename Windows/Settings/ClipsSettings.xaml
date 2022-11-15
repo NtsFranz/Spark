@@ -101,6 +101,7 @@
                                     Margin="4,4,4,4" Padding="4,4,4,4" />
                         </StackPanel>
                         <CheckBox Content="Pause recording with game clock" IsChecked="{l:SettingBinding obsPauseRecordingWithGameClock}" Margin="5,5,5,5" />
+                        <Button Content="Add Spark Sources to Current Scene" Margin="5,5,5,5" Click="AddSparkSourcesOBS" IsEnabled="{Binding IsOBSConnected}"/>
                         <GroupBox Header="{x:Static p:Resources.Automatic_Scene_Switching}" Margin="0,0,0,5">
                             <StackPanel Margin="5,5,5,5">
                                 <Label Content="{x:Static p:Resources.In_game_Scene_}" />

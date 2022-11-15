@@ -157,7 +157,7 @@ namespace Spark
 				});
 				app.UseFileServer(new FileServerOptions
 				{
-					FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "SvelteBuild")),
+					FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Overlay", "build")),
 					RequestPath = "",
 					StaticFileOptions =
 					{

@@ -352,7 +352,6 @@ IgniteBotInstaller/IgniteBotInstaller-cache/
 IgniteBotInstaller/IgniteBotInstaller-SetupFiles/
 !app.config
 IgniteBot.Installer/Installs/
-.idea/
 IgniteBot.Installer/ComponentsGenerated.wxs
 ConfuserEx_bin/
 IgniteBot.crproj

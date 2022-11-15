@@ -7,7 +7,7 @@
 
     @font-face {
         font-family: 'Inconsolata';
-        src: url('../lib/fonts/Inconsolata.woff2') format('woff2'), url('../lib/fonts/Inconsolata.ttf') format('truetype');
+        src: url('$lib/fonts/Inconsolata.woff2') format('woff2'), url('$lib/fonts/Inconsolata.ttf') format('truetype');
     }
 
     :root {
@@ -156,7 +156,7 @@
 </div>
 
 <script lang="ts">
-    import {SparkWebsocket} from "../../lib/js/spark_websocket.js";
+    import {SparkWebsocket} from "$lib/js/spark_websocket.js";
     import {onDestroy} from "svelte";
 
     let orangeJoustVisible = false;

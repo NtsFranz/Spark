@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {frame} from '../js/stores';
+    import {frame} from '$lib/js/stores';
 
     function x_pos(z) {
         return (-z / 80 + .5) * 427 + 68;
