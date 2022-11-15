@@ -1,6 +1,6 @@
 <script lang="ts">
     import {onDestroy, onMount} from "svelte";
-    import {SparkWebsocket} from "../js/spark_websocket.js";
+    import {SparkWebsocket} from "$lib/js/spark_websocket.js";
 
     let container;
 

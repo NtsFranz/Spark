@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {frame} from '$lib/js/stores';
+    export let frame;
 
     function x_pos(z) {
         return (-z / 80 + .5) * 427 + 68;
@@ -11,10 +11,6 @@
 </script>
 
 <style>
-    :global(body) {
-        background: black;
-    }
-
     .minimap_container {
         position: relative;
         width: 35.3125em;
@@ -104,12 +100,12 @@
 
 <div class="minimap_container">
 
-    <img class="minimap_image" src="http://localhost:6724/img/minimap_raw.png" draggable="false" alt="">
+    <img class="minimap_image" src="/img/minimap_raw.png" draggable="false" alt="">
 
-    {#if $frame}
+    {#if frame}
 
-        {#if $frame['teams'][0]['players']}
-            {#each $frame['teams'][0]['players'] as p}
+        {#if frame['teams'][0]['players']}
+            {#each frame['teams'][0]['players'] as p}
                 <div class="player blue positionable_element" class:possession={p['possession']}
                      style="left:{x_pos(p['head']['position'][2])}px; top: {y_pos(p['head']['position'][0])}px;">
                     <div></div>
@@ -119,8 +115,8 @@
         {/if}
 
 
-        {#if $frame['teams'][1]['players']}
-            {#each $frame['teams'][1]['players'] as p}
+        {#if frame['teams'][1]['players']}
+            {#each frame['teams'][1]['players'] as p}
                 <div class="player orange positionable_element" class:possession={p['possession']}
                      style="left:{x_pos(p['head']['position'][2])}px; top: {y_pos(p['head']['position'][0])}px;">
                     <div></div>
@@ -130,10 +126,10 @@
         {/if}
 
 
-        {#if $frame}
+        {#if frame}
             <div id="disc" class="positionable_element"
-                 style="left:{x_pos($frame['disc']['position'][2])}px; top: {y_pos($frame['disc']['position'][0])}px;">
-                <img class="minimap_disc" src="http://localhost:6724/img/minimap_disc.png" draggable="false">
+                 style="left:{x_pos(frame['disc']['position'][2])}px; top: {y_pos(frame['disc']['position'][0])}px;">
+                <img class="minimap_disc" src="/img/minimap_disc.png" draggable="false">
             </div>
         {/if}
     {/if}

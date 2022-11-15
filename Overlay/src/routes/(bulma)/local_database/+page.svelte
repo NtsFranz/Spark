@@ -1,6 +1,5 @@
 <svelte:head>
     <title>Local Database</title>
-    <link rel="stylesheet" type="text/css" href="/css/autocomplete_styles.css">
 </svelte:head>
 
 <style>

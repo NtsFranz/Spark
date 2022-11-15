@@ -265,13 +265,13 @@
     function swapSides() {
         isLoading = true;
         httpPostAsync('http://localhost:6724/api/set_team_details/orange', {
-            "team_logo": config['teams'][1]['team_logo'],
-            "team_name": config['teams'][1]['team_name'],
+            "team_logo": config['teams'][0]['team_logo'],
+            "team_name": config['teams'][0]['team_name'],
         });
 
         httpPostAsync('http://localhost:6724/api/set_team_details/blue', {
-            "team_logo": config['teams'][0]['team_logo'],
-            "team_name": config['teams'][0]['team_name'],
+            "team_logo": config['teams'][1]['team_logo'],
+            "team_name": config['teams'][1]['team_name'],
         });
     }
 

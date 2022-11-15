@@ -1,9 +1,9 @@
 <script lang="ts">
-    import {frame, game_clock_display, last_score, mathematical_time} from '../js/stores';
-    import {overlay_config} from "../js/stores.js";
-    import {onDestroy} from "svelte";
-    import {SparkWebsocket} from '../js/spark_websocket.js';
-    import DiagonalDropdown from "./DiagonalDropdown.svelte";
+    import {frame, game_clock_display, last_score, mathematical_time} from '$lib/js/stores';
+    import {overlay_config} from "$lib/js/stores.js";
+    import {SparkWebsocket} from '$lib/js/spark_websocket.js';
+    import DiagonalDropdown from "$lib/components/DiagonalDropdown.svelte";
+	import {onDestroy} from "svelte";
 
     let orangeGoalVisible = false;
     let blueGoalVisible = false;

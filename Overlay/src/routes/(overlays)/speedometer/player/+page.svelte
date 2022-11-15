@@ -1,13 +1,29 @@
-﻿<svelte:head>
-    <title>Player Speed</title>
-</svelte:head>
+﻿<script lang="ts">
+	import { onDestroy, onMount } from 'svelte';
+	import ShowSpeed from '$lib/components/ShowSpeed.svelte';
+	let speed = 0;
 
-<script>
-    let speed = 0;
-    // TODO implement
+	let si: ReturnType<typeof setInterval>;
+	onMount(() => {
+		si = setInterval(() => {
+			fetch('http://127.0.0.1:6724/get_player_speed')
+				.then((resp) => resp.json())
+				.then((resp) => {
+					speed = resp['speed'];
+				})
+				.catch(() => {});
+		}, 33);
+	});
+
+	onDestroy(() => {
+		if (si) {
+			clearInterval(si);
+		}
+	});
 </script>
 
+<svelte:head>
+	<title>Player Speed</title>
+</svelte:head>
 
-<div>
-    {speed.toFixed(2)}
-</div>
+<ShowSpeed {speed} />

@@ -1,14 +1,5 @@
 ﻿<svelte:head>
-    <link rel="stylesheet" type="text/css" href="http://localhost:6724/css/autocomplete_styles.css">
-    <script type="text/javascript" src="http://localhost:6724/js/autocomplete.js"></script>
-
-    <script src="http://localhost:6724/js/util.js"></script>
-    <script src="http://localhost:6724/js/fetch_utils.js"></script>
 </svelte:head>
-
-<script>
-    import 'bulma';
-</script>
 
 <style global>
 
@@ -41,5 +32,9 @@
     }
 
 </style>
+
+<script>
+	import 'bulma';
+</script>
 
 <slot/>

@@ -1,6 +1,5 @@
 ﻿<svelte:head>
     <title>IgniteVR Metrics Branding</title>
-    <link rel="stylesheet" href="/css/styles.css">
 </svelte:head>
 
 <style>
@@ -137,33 +136,33 @@
 
         <div class="choice1" style="display: flex;">
             <div>Powered By</div>
-            <img src="/img/ignite_logo_primary_256.png"/>
+            <img src="/img/ignite_logo_primary_256.png" alt=""/>
             <div>IgniteVR Metrics</div>
         </div>
 
         <div class="choice2" style="display: flex;">
             <div>Powered By</div>
-            <img src="/img/ignite_logo_primary_white_256.png"/>
+            <img src="/img/ignite_logo_primary_white_256.png" alt=""/>
             <div>IgniteVR Metrics</div>
         </div>
 
 
         <div class="choice3" style="display: flex;">
             <div>Powered By</div>
-            <img src="/img/ignite_logo_primary_white_256.png" style="filter: invert(1);"/>
+            <img src="/img/ignite_logo_primary_white_256.png" style="filter: invert(1);" alt=""/>
             <div>IgniteVR Metrics</div>
         </div>
 
 
         <div class="choice4" style="display: flex;">
             <div>Powered By</div>
-            <img src="/img/ignite_logo_primary_white_256.png"/>
+            <img src="/img/ignite_logo_primary_white_256.png" alt=""/>
             <div>IgniteVR Metrics</div>
         </div>
 
         <div class="choice5" style="display: flex;">
             <div>Powered By</div>
-            <img src="/img/ignite_logo_primary_256.png"/>
+            <img src="/img/ignite_logo_primary_256.png" alt=""/>
             <div>IgniteVR Metrics</div>
         </div>
 

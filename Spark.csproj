@@ -286,7 +286,6 @@
 
   <ItemGroup>
     <Folder Include="SettingsBindings" />
-    <Folder Include="SvelteSource\src\routes\(overlays)" />
   </ItemGroup>
 
 </Project>

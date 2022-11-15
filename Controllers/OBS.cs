@@ -297,12 +297,18 @@ namespace Spark
 					"http://127.0.0.1:6724/midmatch_overlay",
 					"http://127.0.0.1:6724/scoreboard",
 					"http://127.0.0.1:6724/configurable_overlay",
-					"http://127.0.0.1:6724/minimap",
 					"http://127.0.0.1:6724/playspace",
 					"http://127.0.0.1:6724/speedometer/player",
 					"http://127.0.0.1:6724/speedometer/disc",
 					"http://127.0.0.1:6724/speedometer/lone_echo_1",
 					"http://127.0.0.1:6724/speedometer/lone_echo_2",
+					
+					"http://127.0.0.1:6724/components/minimap",
+					"http://127.0.0.1:6724/components/compact_minimap",
+					"http://127.0.0.1:6724/components/event_log",
+					"http://127.0.0.1:6724/components/player_list_blue",
+					"http://127.0.0.1:6724/components/player_list_orange",
+					"http://127.0.0.1:6724/components/compact_banner",
 				};
 
 
@@ -328,9 +334,10 @@ namespace Spark
 								""versioned_id"": ""browser_source"",
 								""name"": ""{name}"",
 								""settings"": {{
+									""url"": ""{url}"",
 									""width"": 1920,
 									""height"": 1080,
-									""url"": ""{url}""
+									""shutdown"": true
 								}}
 							}}
 						");

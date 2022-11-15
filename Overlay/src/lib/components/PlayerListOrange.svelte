@@ -1,6 +1,5 @@
 <script lang="ts">
-    import {frame} from '../js/stores';
-
+    export let frame;
 </script>
 
 <style>
@@ -101,11 +100,11 @@
   }
 </style>
 
-{#if $frame}
+{#if frame}
 	<div id="player_lists">
 		<div class="player_list orange">
-			{#if $frame['teams'][1]['players']}
-				{#each $frame['teams'][1]['players'] as p}
+			{#if frame['teams'][1]['players']}
+				{#each frame['teams'][1]['players'] as p}
 					<div class="{p['possession'] ? 'possession' : ''} {p['stunned'] ? 'stunned' : ''}">
 						<div>{p['name']}</div>
 						<div>{p['number']}</div>
