@@ -797,7 +797,7 @@ namespace Spark
 							label.Inlines.Add(new Run(match.matchTime.ToLocalTime().ToString("t")));
 							break;
 						default:
-							label.Inlines.Add(new Run($"{match.matchTime:t}  {match.finishReason}"));
+							label.Inlines.Add(new Run($"{match.matchTime.ToLocalTime():t}  {match.finishReason}"));
 							break;
 					}
 

@@ -25,7 +25,7 @@
     left: -1em;
     padding: 0 .4em;
     top: -150%;
-    width: 120%;
+    width: 115%;
     height: 100%;
     transition: top 1s cubic-bezier(0.83, 0, 0.17, 1);
     border-bottom: 1em solid black;

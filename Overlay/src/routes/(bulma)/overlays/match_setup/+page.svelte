@@ -111,7 +111,7 @@
                             <div class="button is-dark" id="swap_sides_button" style="margin: auto;"
                                  class:is-loading={isLoading}
                                  on:click={swapSides}>
-                                <img src="http://localhost:6724/img/swap-horizontal-bold.png"
+                                <img src="/img/swap-horizontal-bold.png"
                                      style="height: 1.5em;margin-top: -0.2em;" alt="swap sides button">
                             </div>
                         </td>

@@ -9,6 +9,7 @@
 			<img
 				style="float:left;width: 10em;position: absolute;left: 10em;bottom: 0;opacity: .1;transform: scale(6); z-index: -1"
 				src="/img/ignite_logo.png"
+				alt="Ignite Logo"
 			/>
 			<p class="subtitle" style="font-size: 1.2em;">
 				The overlays provided here are free for non-commercial use <span
@@ -57,9 +58,9 @@
                 <a href="/disc_position_heatmap"><h3>/disc_position_heatmap</h3></a>A heatmap of player positions over time. Reads from .echoreplay files, so
                 those need to be enabled. This accumulates positions over all rounds in the session.
             </li>-->
-<!--			<li>-->
-<!--				<a href="/playspace"><h3>/playspace</h3></a>Top down view of your local playspace.-->
-<!--			</li>-->
+			<!--			<li>-->
+			<!--				<a href="/playspace"><h3>/playspace</h3></a>Top down view of your local playspace.-->
+			<!--			</li>-->
 			<li>
 				<a href="/speedometer/player"><h3>/speedometer/player</h3></a>A simple speed reading overlay
 				for the client player speed. The text is in white, so it won't immediately be visible in
@@ -85,40 +86,44 @@
 				Position these in OBS to create your own overlay layout.
 				<ul>
 					<li>
-						<a href="/components/minimap"><h3>/components/minimap</h3></a>A recreation of the
-						default minimap, but with smoother motion and without the bug of disappearing after some
-						goals.
+						<a href="/components/minimap"><h3>/components/minimap</h3></a>
+						565x174
+						<br />
+						A recreation of the default minimap, but with smoother motion and without the bug of disappearing
+						after some goals.
 					</li>
 					<li>
-						<a href="/components/compact_minimap"><h3>/components/compact_minimap</h3></a>A minimap
-						with a simpler style.
+						<a href="/components/compact_minimap"><h3>/components/compact_minimap</h3></a>
+						565x174
+						<br />
+						A minimap with a simpler style.
 					</li>
 					<li>
-						<a href="/components/event_log"><h3>/components/event_log</h3></a>Scrolling list if
-						events as they happen.
+						<a href="/components/events"><h3>/components/events</h3></a>
+						min: 640x480
+						<br />
+						Scrolling list of events as they happen.
 					</li>
 					<li>
-						<a href="/components/compact_main_banner"><h3>/components/compact_main_banner</h3></a>A
-						banner with scores, team names/logos, timer, score banners, pause banners, and joust
-						banners.
+						<a href="/components/compact_main_banner"><h3>/components/compact_main_banner</h3></a>
+						1024x120
+						<br />
+						A banner with scores, team names/logos, timer, score banners, pause banners, and joust banners.
 					</li>
 					<li>
-						<a href="/components/player_list_orange"><h3>/components/player_list_orange</h3></a>A
-						player roster list for the orange team.
+						<a href="/components/player_list_orange"><h3>/components/player_list_orange</h3></a>
+						340x240
+						<br />
+						A player roster list for the orange team.
 					</li>
 					<li>
-						<a href="/components/player_list_blue"><h3>/components/player_list_blue</h3></a>A player
-						roster list for the blue team.
+						<a href="/components/player_list_blue"><h3>/components/player_list_blue</h3></a>
+						340x240
+						<br />
+						A player roster list for the blue team.
 					</li>
 				</ul>
 			</li>
 		</ul>
 	</div>
 </div>
-
-<style>
-	.content ul li {
-		list-style: none;
-		margin-top: 2em;
-	}
-</style>

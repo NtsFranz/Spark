@@ -1,0 +1,91 @@
+.player_list {
+    animation: fade_in 1s;
+    width: 17em;
+    height: 12em;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    font-family: 'Inconsolata', monospace;
+    font-weight: 900;
+    font-size: 1.25em;
+    color: #eee;
+    text-shadow: 0.1em 0.1em 0 #0005;
+    z-index: 11;
+}
+
+@keyframes fade_in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.player_list.orange {
+    text-align: left;
+}
+
+.player_list.blue {
+    text-align: right;
+}
+
+.player_list.orange>div {
+    background: none;
+    flex-direction: row-reverse;
+}
+
+.player_list.blue>div {
+    background: none;
+}
+
+.player_list>div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.player_list>div>div {
+    padding: 0.4em 1em;
+}
+
+/* name */
+.player_list>div>div:first-child {
+    flex-grow: 1;
+}
+
+.player_list>div.stunned>div:first-child {
+    opacity: 0.5;
+}
+
+/* number */
+.player_list>div>div:last-child {
+    width: 1.5em;
+    border: 0.1em solid #000f;
+    background-color: #000c;
+    margin: 0.1em 0.5em;
+    padding: 0.25em;
+    text-align: center;
+}
+
+.player_list>div.possession>div:last-child {
+    border: 0.2em solid #fff;
+    padding: 0.15em;
+    background-color: #000f;
+    border-radius: 0.2em;
+}
+
+.player_list.orange>div>div:first-child {
+    background: linear-gradient(90deg, #ff9627aa 0%, #bd7a2400 100%);
+    border-bottom: 0.1em solid #ff9627;
+}
+
+.player_list.blue>div>div:first-child {
+    background: linear-gradient(-90deg, #4890ddaa 0%, #3f6ae100 100%);
+    border-bottom: 0.1em solid #2478d0;
+}
+
+.player_list>div {
+    margin: 0.1em;
+}
