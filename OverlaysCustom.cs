@@ -2,22 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.FileProviders;
 
 namespace Spark
 {
 	public static class OverlaysCustom
 	{
 		private static Dictionary<string, string> overlayData;
+		public static bool downloading;
 
 		public static async Task FetchOverlayData()
 		{
+			downloading = true;
 			try
 			{
 #if DEBUG
@@ -25,11 +23,15 @@ namespace Spark
 #else
 				await DownloadOverlays();
 #endif
+
+				CopyObsSceneCollection();
 			}
 			catch (Exception e)
 			{
 				Logger.LogRow(Logger.LogType.Error, e.ToString());
 			}
+
+			downloading = false;
 		}
 
 		private static async Task DownloadOverlaysDev()
@@ -56,10 +58,10 @@ namespace Spark
 		}
 
 
-		public static async Task DownloadOverlays()
+		private static async Task DownloadOverlays()
 		{
 			if (DiscordOAuth.Personal) return;
-			
+
 			string route = DiscordOAuth.AccessCode.series_name;
 			if (route.Contains("vrml"))
 			{
@@ -72,11 +74,15 @@ namespace Spark
 			try
 			{
 				using HttpClient webClient = new HttpClient();
-				byte[] result = await webClient.GetByteArrayAsync($"{Program.APIURL}/get_overlays/{DiscordOAuth.AccessCode.series_name}/{DiscordOAuth.oauthToken}");
+				byte[] result = await webClient.GetByteArrayAsync($"{Program.APIURL}/get_overlays/{DiscordOAuth.AccessCode.series_name}/{DiscordOAuth.oauthToken}", CancellationToken.None);
 				await using MemoryStream file = new MemoryStream(result);
 				using ZipArchive zip = new ZipArchive(file, ZipArchiveMode.Read);
 				zip.ExtractToDirectory(Path.Combine(OverlayServer.StaticOverlayFolder, route));
 				RemoveHtmlExt(Path.Combine(OverlayServer.StaticOverlayFolder, route));
+			}
+			catch (InvalidDataException)
+			{
+				// an access code without overlays
 			}
 			catch (Exception e)
 			{
@@ -122,6 +128,22 @@ namespace Spark
 			}
 		}
 
+		private static void CopyObsSceneCollection()
+		{
+			string route = DiscordOAuth.AccessCode.series_name;
+			if (route.Contains("vrml"))
+			{
+				route = "vrml";
+			}
+
+			string sceneCollectionDestPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "obs-studio", "basic", "scenes", route + ".json");
+			string sceneCollectionFile = Path.Combine(OverlayServer.StaticOverlayFolder, route, route + ".json");
+			if (File.Exists(sceneCollectionFile))
+			{
+				File.Copy(sceneCollectionFile, sceneCollectionDestPath);
+			}
+		}
+
 		private static void RemoveHtmlExt(string path)
 		{
 			// Get information about the source directory
@@ -143,7 +165,10 @@ namespace Spark
 				if (file.Name != "index.html" && file.Name.EndsWith(".html"))
 				{
 					fileName = fileName.Replace(".html", "");
-					file.CopyTo(fileName, true);
+					if (!Directory.Exists(fileName))
+					{
+						file.CopyTo(fileName, true);
+					}
 				}
 			}
 

@@ -113,13 +113,7 @@ namespace Spark
 
 			public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ICorsService corsService, ICorsPolicyProvider corsPolicyProvider)
 			{
-				// if (env.IsDevelopment())
-				// {
-				// 	app.UseDeveloperExceptionPage();
-				// }
-
-				// Directory.CreateDirectory(OverlayServer.StaticOverlayFolder);
-				OverlaysCustom.FetchOverlayData().Wait();
+				// OverlaysCustom.FetchOverlayData().Wait();
 
 				// Set up custom content types - associating file extension to MIME type
 				FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider

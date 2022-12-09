@@ -607,6 +607,8 @@
 		<TextBlock x:Name="accessCodeLabel" Text="{x:Static p:Resources.Mode}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,29" Grid.Column="2" FontSize="12" Padding="5,5,5,3" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 		<ComboBox x:Name="AccessCodesComboboxLiveWindow" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="60,0,0,26" Grid.Column="2" SelectedIndex="0" SelectionChanged="AccessCodeChangedLiveWindow"></ComboBox>
 		<TextBlock x:Name="versionLabel" Text="{Binding AppVersionLabelText}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,5" Grid.Column="2" FontSize="12" Padding="5,3,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
+		<ProgressBar x:Name="DownloadingOverlaysBar" Visibility="Hidden" IsIndeterminate="True"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="170,0,0,26" Grid.Column="2" Width="100" Height="24"></ProgressBar>
+		<TextBlock x:Name="DownloadingOverlaysText" Text="Downloading Overlays..." Visibility="Hidden" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="150,0,0,3" Grid.Column="2" FontSize="12" Padding="5,3,5,5" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 
 
 

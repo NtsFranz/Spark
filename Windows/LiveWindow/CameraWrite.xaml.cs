@@ -3,12 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,7 +49,7 @@ namespace Spark
 			set => CurrentAnimation.easeOut = value;
 			get => CurrentAnimation?.easeOut ?? false;
 		}
-		
+
 
 		public bool PauseWhenClockNotRunning
 		{
@@ -286,6 +290,8 @@ namespace Spark
 
 		private GlobalHotKey[] numPadHotKeys;
 
+		
+		string WriteApiExePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "WriteAPI", "WriteAPI.exe");
 
 		public CameraWrite()
 		{
@@ -312,7 +318,7 @@ namespace Spark
 
 			sliderListenersActivated = true;
 
-			// installWriteAPIButton.Content = File.Exists(WriteAPIExePath) ? "Launch WriteAPI" : "Install WriteAPI";
+			InstallWriteApiButton.Content = File.Exists(WriteApiExePath) ? "Launch WriteAPI" : "Install WriteAPI";
 
 			// set the current animation in memory
 			//if the key exists normally
@@ -339,10 +345,7 @@ namespace Spark
 			RegenerateWaypointButtons();
 			RegenerateKeyframeButtons();
 
-			Program.JoinedGame += frame =>
-			{
-				SetSliderLimits(frame);
-			};
+			Program.JoinedGame += frame => { SetSliderLimits(frame); };
 		}
 
 		private void SetSliderLimits(Frame frame)
@@ -380,42 +383,15 @@ namespace Spark
 			{
 				numPadHotKeys = new GlobalHotKey[]
 				{
-					new GlobalHotKey(Key.NumPad1, KeyModifier.None, (_) =>
-					{
-						TryGoToWaypoint(0);
-					}),
-					new GlobalHotKey(Key.NumPad2, KeyModifier.None, (_) =>
-					{
-						TryGoToWaypoint(1);
-					}),
-					new GlobalHotKey(Key.NumPad3, KeyModifier.None, (_) =>
-					{
-						TryGoToWaypoint(2);
-					}),
-					new GlobalHotKey(Key.NumPad4, KeyModifier.None, (_) =>
-					{
-						TryPlayAnim(0);
-					}),
-					new GlobalHotKey(Key.NumPad5, KeyModifier.None, (_) =>
-					{
-						TryPlayAnim(1);
-					}),
-					new GlobalHotKey(Key.NumPad6, KeyModifier.None, (_) =>
-					{
-						TryPlayAnim(2);
-					}),
-					new GlobalHotKey(Key.NumPad7, KeyModifier.None, (_) =>
-					{
-						TryPlayAnim(3);
-					}),
-					new GlobalHotKey(Key.NumPad8, KeyModifier.None, (_) =>
-					{
-						TryPlayAnim(4);
-					}),
-					new GlobalHotKey(Key.NumPad9, KeyModifier.None, (_) =>
-					{
-						TryPlayAnim(5);
-					})
+					new GlobalHotKey(Key.NumPad1, KeyModifier.None, (_) => { TryGoToWaypoint(0); }),
+					new GlobalHotKey(Key.NumPad2, KeyModifier.None, (_) => { TryGoToWaypoint(1); }),
+					new GlobalHotKey(Key.NumPad3, KeyModifier.None, (_) => { TryGoToWaypoint(2); }),
+					new GlobalHotKey(Key.NumPad4, KeyModifier.None, (_) => { TryPlayAnim(0); }),
+					new GlobalHotKey(Key.NumPad5, KeyModifier.None, (_) => { TryPlayAnim(1); }),
+					new GlobalHotKey(Key.NumPad6, KeyModifier.None, (_) => { TryPlayAnim(2); }),
+					new GlobalHotKey(Key.NumPad7, KeyModifier.None, (_) => { TryPlayAnim(3); }),
+					new GlobalHotKey(Key.NumPad8, KeyModifier.None, (_) => { TryPlayAnim(4); }),
+					new GlobalHotKey(Key.NumPad9, KeyModifier.None, (_) => { TryPlayAnim(5); })
 				};
 			}
 			else
@@ -445,7 +421,8 @@ namespace Spark
 			{
 				SetCamera(CameraWriteSettings.instance.waypoints[name]);
 				return true;
-			} else
+			}
+			else
 			{
 				return false;
 			}
@@ -465,7 +442,7 @@ namespace Spark
 		{
 			Dispatcher.Invoke(() =>
 			{
-				for (int i =0;i< AnimationsComboBox.Items.Count; i++)
+				for (int i = 0; i < AnimationsComboBox.Items.Count; i++)
 				{
 					var test = ((ComboBoxItem)AnimationsComboBox.Items[i]).Content.ToString();
 					if (((ComboBoxItem)AnimationsComboBox.Items[i]).Content.ToString() == name)
@@ -502,10 +479,7 @@ namespace Spark
 		{
 			if (Program.running)
 			{
-				Dispatcher.Invoke(() =>
-				{
-					animationProgressBar.Value = animationProgress;
-				});
+				Dispatcher.Invoke(() => { animationProgressBar.Value = animationProgress; });
 			}
 		}
 
@@ -617,10 +591,7 @@ namespace Spark
 				SetCamera(CurrentAnimation.keyframes.Last());
 			}
 
-			Dispatcher.Invoke(() =>
-			{
-				startButton.Content = "Start";
-			});
+			Dispatcher.Invoke(() => { startButton.Content = "Start"; });
 			animationProgress = 0;
 			isAnimating = false;
 		}
@@ -635,7 +606,7 @@ namespace Spark
 					Thread.Sleep(100);
 					continue;
 				}
-				
+
 				DateTime currentTime = DateTime.Now;
 				float elapsed = (currentTime.Ticks - startTime.Ticks) / 10000000f;
 				animationProgress = elapsed / CurrentAnimation.duration;
@@ -667,10 +638,7 @@ namespace Spark
 
 			SetCamera(end);
 
-			Dispatcher.Invoke(() =>
-			{
-				startButton.Content = "Start";
-			});
+			Dispatcher.Invoke(() => { startButton.Content = "Start"; });
 			animationProgress = 0;
 			isAnimating = false;
 		}
@@ -1066,10 +1034,7 @@ namespace Spark
 				Thread.Sleep(2);
 			}
 
-			Dispatcher.Invoke(() =>
-			{
-				IsOrbitingCheckbox.IsChecked = false;
-			});
+			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
 		}
 
 		private void OrbitDiscThread()
@@ -1095,7 +1060,7 @@ namespace Spark
 					Thread.Sleep(100);
 					continue;
 				}
-				
+
 				// do another API request for lowest latency
 				Program.GetRequestCallback("http://localhost:6721/session", null, resp =>
 				{
@@ -1175,10 +1140,7 @@ namespace Spark
 				Thread.Sleep(8);
 			}
 
-			Dispatcher.Invoke(() =>
-			{
-				IsOrbitingCheckbox.IsChecked = false;
-			});
+			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
 		}
 
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -1256,63 +1218,54 @@ namespace Spark
 			return quaternion;
 		}
 
+		private void InstallLaunchWriteAPI(object sender, RoutedEventArgs e)
+		{
+			if (!File.Exists(WriteApiExePath))
+			{
+				try
+				{
+					InstallWriteApiButton.Content = "Installing...";
+					Task.Run(async () =>
+					{
+						HttpResponseMessage response = await Program.client.GetAsync("https://github.com/NtsFranz/WriteAPI/releases/download/v1.1.1/WriteAPI.zip");
+						string fileName = Path.Combine(Path.GetTempPath(), "WriteAPI.zip");
+						await using (FileStream fs = new FileStream(fileName, FileMode.Create))
+						{
+							await response.Content.CopyToAsync(fs);
+						}
 
-		// private string WriteAPIFolder =>
-		// 	Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "WriteAPI");
-		//
-		// private string WriteAPIExePath => Path.Combine(WriteAPIFolder, "WriteAPI.exe");
-		// private string WriteAPIZipPath => Path.Combine(WriteAPIFolder, "WriteAPI.zip");
-		//
-		//
-		// private void InstallLaunchWriteAPI(object sender, RoutedEventArgs e)
-		// {
-		// 	if (File.Exists(WriteAPIExePath))
-		// 	{
-		// 		try
-		// 		{
-		// 			Process.Start(new ProcessStartInfo(WriteAPIExePath) {UseShellExecute = true});
-		// 		}
-		// 		catch (Exception ex)
-		// 		{
-		// 			Logger.LogRow(Logger.LogType.Error, ex.ToString());
-		// 		}
-		// 	}
-		// 	else
-		// 	{
-		// 		try
-		// 		{
-		// 			installWriteAPIButton.Content = "Installing...";
-		// 			Task.Run(() =>
-		// 			{
-		// 				try
-		// 				{
-		// 					using WebClient webClient = new WebClient();
-		//
-		// 					if (!Directory.Exists(WriteAPIFolder))
-		// 					{
-		// 						Directory.CreateDirectory(WriteAPIFolder);
-		// 					}
-		//
-		// 					webClient.DownloadFile(
-		// 						"https://github.com/Graicc/WriteAPI/releases/download/v1.0.1/Write.API.zip",
-		// 						WriteAPIZipPath);
-		//
-		// 					ZipFile.ExtractToDirectory(WriteAPIZipPath, WriteAPIFolder);
-		//
-		// 					Dispatcher.Invoke(() => { installWriteAPIButton.Content = "Launch WriteAPI"; });
-		// 				}
-		// 				catch (Exception ex)
-		// 				{
-		// 					Logger.LogRow(Logger.LogType.Error, ex.ToString());
-		// 				}
-		// 			});
-		// 		}
-		// 		catch (Exception ex)
-		// 		{
-		// 			Logger.LogRow(Logger.LogType.Error, ex.ToString());
-		// 		}
-		// 	}
-		// }
+						string installFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "WriteAPI");
+						if (!Directory.Exists(installFolder))
+						{
+							Directory.CreateDirectory(installFolder);
+						}
+
+						await Task.Run(() => Directory.Delete(installFolder, true));
+						await Task.Run(() => ZipFile.ExtractToDirectory(fileName, installFolder));
+
+
+						Dispatcher.Invoke(() => { InstallWriteApiButton.Content = "Launch WriteAPI"; });
+					});
+				}
+				catch (Exception ex)
+				{
+					Logger.LogRow(Logger.LogType.Error, ex.ToString());
+				}
+			}
+			
+			
+			if (File.Exists(WriteApiExePath))
+			{
+				try
+				{
+					Process.Start(new ProcessStartInfo(WriteApiExePath) { UseShellExecute = true });
+				}
+				catch (Exception ex)
+				{
+					Logger.LogRow(Logger.LogType.Error, ex.ToString());
+				}
+			}
+		}
 
 		private void AnimationsComboBoxChanged(object sender, SelectionChangedEventArgs e)
 		{

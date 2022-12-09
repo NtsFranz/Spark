@@ -15,10 +15,10 @@
              Loaded="OnControlLoaded">
     <Grid>
 
-        <StackPanel>
+        <ScrollViewer>
 
             <WrapPanel>
-                <GroupBox Header="Choose Preset" Width="280">
+                <GroupBox Header="Choose Preset" Width="270">
                     <StackPanel>
                         <ListBox x:Name="PresetSelector" SelectedIndex="0" Height="145" SelectionChanged="PresetChanged">
                             <ListBoxItem>Custom</ListBoxItem>
@@ -34,7 +34,7 @@
                     </StackPanel>
                 </GroupBox>
 
-                <GroupBox Width="280" Header="Page 1">
+                <GroupBox Width="270" Header="Page 1">
                     <StackPanel Margin="0,0,0,10">
                         <StackPanel x:Name="MinutesBlock" Orientation="Horizontal" Margin="10,10,0,0">
                             <Label Content="Minutes: " Width="140" HorizontalContentAlignment="Right" />
@@ -83,7 +83,7 @@
                     </StackPanel>
                 </GroupBox>
 
-                <GroupBox Width="280" Header="Page 2">
+                <GroupBox Width="270" Header="Page 2">
                     <StackPanel Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
                             <Label Content="Disc Location: " Width="140" HorizontalContentAlignment="Right" />
@@ -122,7 +122,7 @@
                     </StackPanel>
                 </GroupBox>
 
-                <GroupBox Width="280" Header="Page 3">
+                <GroupBox Width="270" Header="Page 3">
                     <StackPanel Margin="0,0,0,10">
                         <StackPanel x:Name="RoundCountBlock" Orientation="Horizontal" Margin="10,10,0,0">
                             <Label Content="Round Count: " Width="140" HorizontalContentAlignment="Right" />
@@ -160,7 +160,7 @@
                     </StackPanel>
                 </GroupBox>
 
-                <GroupBox Width="280" Header="Page 4">
+                <GroupBox Width="270" Header="Page 4">
                     <StackPanel Margin="0,0,0,10">
                         <StackPanel x:Name="BlueRoundsWonBlock" Orientation="Horizontal" Margin="10,10,0,0">
                             <Label Content="Blue Rounds Won: " Width="140" HorizontalContentAlignment="Right" />
@@ -199,7 +199,7 @@
                     </StackPanel>
                 </GroupBox>
 
-                <GroupBox Width="280" Header="Page 5">
+                <GroupBox Width="270" Header="Page 5">
                     <StackPanel Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
                             <Label Content="Mercy Enabled: " Width="140" HorizontalContentAlignment="Right" />
@@ -227,7 +227,7 @@
                     </StackPanel>
                 </GroupBox>
 
-                <GroupBox Width="280" Header="Page 6">
+                <GroupBox Width="270" Header="Page 6">
                     <StackPanel Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal" Margin="10,10,0,0">
                             <Label Content="Self Goaling: " Width="140" HorizontalContentAlignment="Right" />
@@ -254,6 +254,6 @@
             </Grid -->
             </WrapPanel>
 
-        </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

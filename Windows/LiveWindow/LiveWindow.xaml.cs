@@ -761,6 +761,9 @@ namespace Spark
 						ClickableOverlaySubtitle.Text = Properties.Resources.Not_active;
 					}
 
+					DownloadingOverlaysBar.Visibility = OverlaysCustom.downloading ? Visibility.Visible : Visibility.Hidden;
+					DownloadingOverlaysText.Visibility = OverlaysCustom.downloading ? Visibility.Visible : Visibility.Hidden;
+
 
 					if (!Program.running)
 					{
@@ -1100,10 +1103,10 @@ namespace Spark
 					{
 						loc = (string)obj["ipdata"]["city"] + ", " + (string)obj["ipdata"]["region"];
 					}
-					
+
 					Program.CurrentRound.serverLocation = loc;
 					serverLocationLabel.Content = Properties.Resources.Server_Location_ + "\n" + loc;
-					
+
 					serverLocationLabel.ToolTip = $"{obj["ip-api"]["query"]}\n{obj["ip-api"]["org"]}\n{obj["ip-api"]["as"]}";
 
 					try

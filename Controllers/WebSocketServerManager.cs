@@ -104,7 +104,6 @@ namespace Spark
 				};
 			});
 
-
 			Program.Goal += (frame, goalData) =>
 			{
 				SendData(EventContainer.EventType.goal, goalData.ToDict(true));

@@ -2815,7 +2815,7 @@ namespace Spark
 					else
 					{
 						EventMatchFinished(lastFrame, frame, AccumulatedFrame.FinishReason.not_finished);
-						Error("Match finished for unknown reason 2");
+						Error($"Match finished for unknown reason 2. {frame.game_clock} {frame.orange_points} {frame.blue_points} {frame.private_match}");
 					}
 
 					break;
