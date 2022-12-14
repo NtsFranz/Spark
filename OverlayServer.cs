@@ -136,6 +136,7 @@ namespace Spark
 					EnableDefaultFiles = true,
 					StaticFileOptions =
 					{
+						ServeUnknownFileTypes = true,
 						ContentTypeProvider = provider,
 						OnPrepareResponse = (ctx) =>
 						{
