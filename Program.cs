@@ -1174,19 +1174,21 @@ namespace Spark
 			Player,
 			Spectator
 		}
-		public static void StartEchoVR(JoinType joinType, int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null, bool combat=false, int teamIndex = -1)
+		
+		/// <returns>True if successfully launched EchoVR, false if not</returns>
+		public static bool StartEchoVR(JoinType joinType, int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null, bool combat=false, int teamIndex = -1, bool quitIfError = false)
 		{
 			if (joinType == JoinType.Choose)
 			{
-				new MessageBox("Can't launch with join type Choose", Resources.Error).Show();
-				return;
+				new MessageBox("Can't launch with join type Choose", Resources.Error, quitIfError ? Quit: () => { }).Show();
+				return false;
 			}
 			string echoPath = SparkSettings.instance.echoVRPath;
 			if (!string.IsNullOrEmpty(echoPath))
 			{
 				bool spectating = joinType == JoinType.Spectator;
 				Process.Start(echoPath, 
-					(spectating && SparkSettings.instance.capturevp2 ? "-capturevp2 " : " ") + 
+					((spectating && SparkSettings.instance.capturevp2) || SparkSettings.instance.capturevp2VR ? "-capturevp2 " : " ") + 
 					(spectating ? "-spectatorstream " : " ") +
 					(combat ? "echo_combat " : "") + 
 					(session_id == null ? "" : $"-lobbyid {session_id} ") +  
@@ -1199,8 +1201,11 @@ namespace Spark
 			}
 			else
 			{
-				new MessageBox(Resources.echovr_path_not_set, Resources.Error).Show();
+				new MessageBox(Resources.echovr_path_not_set, Resources.Error, quitIfError ? Quit: () => { }).Show();
+				return false;
 			}
+
+			return true;
 		}
 
 		public static async Task<bool> APIJoin(string session_id, int teamIndex = -1, string overrideIP = null, int overridePort = 0)
@@ -1989,7 +1994,7 @@ namespace Spark
 								// reset the playspace so we don't get extra events
 								playerData.playspaceLocation = player.head.Position;
 							}
-							else if (Math.Abs(smoothDeltaTime) > .1f)
+							else if (Math.Abs(smoothDeltaTime) > .2f)
 							{
 								Debug.WriteLine("Update rate too slow to calculate playspace abuses.");
 							}
@@ -3195,19 +3200,19 @@ namespace Spark
 					Resources.Error, Quit).Show();
 			}
 
-			bool spectating = false;
+			JoinType joinType;
 			switch (parts[2])
 			{
 				case "spectate":
 				case "spectator":
 				case "s":
-					spectating = true;
+					joinType = JoinType.Spectator;
 					break;
 				case "join":
 				case "player":
 				case "j":
 				case "p":
-					spectating = false;
+					joinType = JoinType.Player;
 					break;
 				case "choose":
 				case "c":
@@ -3230,13 +3235,7 @@ namespace Spark
 					HttpResponseMessage response = await client.GetAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session");
 					if (response.StatusCode == HttpStatusCode.OK)
 					{
-						await APIJoin(parts[3], spectating ? 2 : 0);
-						// Dictionary<string, object> body = new Dictionary<string, object>()
-						// {
-						// 	{ "session_id", parts[3] },
-						// 	{ "team_idx", spectating ? "2" : "-1" },
-						// };
-						// string postResponse = await PostRequestAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/join_session", null, JsonConvert.SerializeObject(body));
+						await APIJoin(parts[3], joinType == JoinType.Spectator ? 2 : -1);
 					}
 				}
 				catch (Exception e)
@@ -3248,16 +3247,8 @@ namespace Spark
 
 
 			// start client
-			string echoPath = SparkSettings.instance.echoVRPath;
-			if (!string.IsNullOrEmpty(echoPath))
-			{
-				Process.Start(echoPath, (SparkSettings.instance.capturevp2 ? "-capturevp2 " : " ") + (spectating ? "-spectatorstream " : " ") + "-lobbyid " + parts[3]);
-				Quit();
-			}
-			else
-			{
-				new MessageBox(Resources.echovr_path_not_set, Resources.Error, Quit).Show();
-			}
+			// quit immediately if successful, otherwise quit from error messages
+			if (StartEchoVR(joinType, session_id:parts[3], quitIfError:true)) Quit();
 
 			return true;
 		}

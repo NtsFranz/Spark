@@ -141,6 +141,11 @@ namespace Spark
 			await Join(0);
 		}
 
+		private async void JoinRandomTeam(object sender, RoutedEventArgs e)
+		{
+			await Join();
+		}
+
 		private async void JoinOrangeTeam(object sender, RoutedEventArgs e)
 		{
 			await Join(1);

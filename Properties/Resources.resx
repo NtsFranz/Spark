@@ -1322,7 +1322,7 @@ CLOSE ECHOVR BEFORE PRESSING OK!</value>
     <value>Spectate Me (Opens the spectator for your current match)</value>
   </data>
   <data name="Allow Spectate Me on local PC" xml:space="preserve">
-    <value>Allow Spectate Me on local PC</value>
+    <value>Allow Spectate Me on local PC (not recommended)</value>
   </data>
   <data name="Use anonymous mode in Spectate Me" xml:space="preserve">
     <value>Use anonymous mode in Spectate Me</value>

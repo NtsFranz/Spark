@@ -37,9 +37,12 @@ namespace Spark
 
 		public static void SaveHighlight(string highlightGroupName, string id, bool onlyAfter = false)
 		{
-			Highlights.VideoHighlightParams vhp = new Highlights.VideoHighlightParams();
-			vhp.groupId = highlightGroupName;
-			vhp.highlightId = id;
+			LoggerEvents.Log(Program.lastFrame, $"Saving NVIDIA Highlights clip: {id}");
+			Highlights.VideoHighlightParams vhp = new Highlights.VideoHighlightParams
+			{
+				groupId = highlightGroupName,
+				highlightId = id
+			};
 
 			if (onlyAfter)
 			{

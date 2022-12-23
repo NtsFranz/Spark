@@ -33,6 +33,7 @@ namespace Spark
 		private readonly Queue<DateTime> rateLimiterQueue = new Queue<DateTime>();
 		private const float rateLimitPerSecond = 15;
 		private bool ttsDisabled = false;
+		private string[] blacklistedNames = Array.Empty<string>();
 
 		/// <summary>
 		/// Queue of filenames to read
@@ -52,26 +53,33 @@ namespace Spark
 			ttsThread.IsBackground = true;
 			ttsThread.Start();
 
+			Task.Run(async () =>
+			{
+				string blacklistFilename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "tts_blacklist.txt");
+				if (File.Exists(blacklistFilename))
+				{
+					blacklistedNames = await File.ReadAllLinesAsync(blacklistFilename);
+				}
+			});
 
 			#region Set up the event listeners to actually use TTS
 
 			Program.PlayerJoined += (frame, team, player) =>
 			{
-				if (SparkSettings.instance.playerJoinTTS)
-				{
-					SpeakAsync($"{player.name} {Resources.tts_join_1} {team.color} {Resources.tts_join_2}");
-				}
+				if (!SparkSettings.instance.playerJoinTTS) return;
+				if (blacklistedNames.Contains(player.name)) return;
+				SpeakAsync($"{player.name} {Resources.tts_join_1} {team.color} {Resources.tts_join_2}");
 			};
 			Program.PlayerLeft += (frame, team, player) =>
 			{
-				if (SparkSettings.instance.playerLeaveTTS)
-				{
-					SpeakAsync($"{player.name} {Resources.tts_leave_1} {team.color} {Resources.tts_leave_2}");
-				}
+				if (!SparkSettings.instance.playerLeaveTTS) return;
+				if (blacklistedNames.Contains(player.name)) return;
+				SpeakAsync($"{player.name} {Resources.tts_leave_1} {team.color} {Resources.tts_leave_2}");
 			};
 			Program.PlayerSwitchedTeams += (frame, fromTeam, toTeam, player) =>
 			{
 				if (!SparkSettings.instance.playerSwitchTeamTTS) return;
+				if (blacklistedNames.Contains(player.name)) return;
 
 				if (fromTeam != null)
 				{

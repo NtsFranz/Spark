@@ -75,6 +75,7 @@ namespace Spark
 
 		public static void ClipNow()
 		{
+			LoggerEvents.Log(Program.lastFrame, "Pressing the Medal.tv clip key...");
 			Keyboard.SendEchoKey((Keyboard.DirectXKeyStrokes)SparkSettings.instance.medalClipKey, focusEchoVR: false);
 		}
 

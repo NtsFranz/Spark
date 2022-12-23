@@ -290,7 +290,7 @@ namespace Spark
 
 		private GlobalHotKey[] numPadHotKeys;
 
-		
+
 		string WriteApiExePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "WriteAPI", "WriteAPI.exe");
 
 		public CameraWrite()
@@ -1142,6 +1142,7 @@ namespace Spark
 
 			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
 		}
+		
 
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
 		{
@@ -1252,8 +1253,8 @@ namespace Spark
 					Logger.LogRow(Logger.LogType.Error, ex.ToString());
 				}
 			}
-			
-			
+
+
 			if (File.Exists(WriteApiExePath))
 			{
 				try
@@ -1826,6 +1827,10 @@ namespace Spark
 			CameraWriteSettings.instance.enableHotKeys = !CameraWriteSettings.instance.enableHotKeys;
 			EnableKeyboardShortcutsCheckbox.IsChecked = CameraWriteSettings.instance.enableHotKeys;
 			EnableHotKeys(CameraWriteSettings.instance.enableHotKeys);
+		}
+
+		private void DischolderPOVSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
 		}
 	}
 

@@ -269,6 +269,7 @@ namespace Spark
 			}
 			catch (WebView2RuntimeNotFoundException ex)
 			{
+				Error("Error setting up webview: " + ex);
 				string sparkFolder = Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation) ?? "";
 				string exePath = Path.Combine(sparkFolder, "resources", "MicrosoftEdgeWebview2Setup.exe");
 

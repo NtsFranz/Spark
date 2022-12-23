@@ -175,7 +175,7 @@ namespace Spark
 			};
 		}
 
-		private static void Log(Frame frame, string msg)
+		public static void Log(Frame frame, string msg)
 		{
 			LogRow(LogType.File, frame.sessionid, $"{frame.game_clock_display} - {msg}");
 		}

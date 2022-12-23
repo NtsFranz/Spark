@@ -112,6 +112,9 @@
 						<CheckBox x:Name="capturevp2Checkbox" Content="{x:Static p:Resources.Enable__capturevp2_when_launching_spectator}"
 						          IsChecked="{l:SettingBinding capturevp2}" HorizontalAlignment="Left"
 						          VerticalAlignment="Stretch" Margin="10,4,10,4" />
+						<CheckBox Content="Enable -capturevp2 when launching in VR (not recommended)"
+						          IsChecked="{l:SettingBinding capturevp2VR}" HorizontalAlignment="Left"
+						          VerticalAlignment="Stretch" Margin="10,4,10,4" />
 						<CheckBox x:Name="remoteLoggingCheckbox" Content="Send Logs to Ignite"
 						          IsChecked="{l:SettingBinding logToServer}" HorizontalAlignment="Left"
 						          VerticalAlignment="Stretch" Margin="10,4,10,4" Visibility="Collapsed" />
@@ -192,6 +195,7 @@
 										<ComboBoxItem Content="{x:Static p:Resources.Sideline}"/>
 										<ComboBoxItem Content="{x:Static p:Resources.Follow_client_player___Spectate_Me__only_}"/>
 										<ComboBoxItem Content="{x:Static p:Resources.Follow_specific_player}"/>
+										<ComboBoxItem Content="Follow Discholder"/>
 									</ComboBox>
 									<Button x:Name="findCameraNowButton" Content="{x:Static p:Resources.Find_Now}" Click="SpectatorCameraFindNow" Padding="10,1,10,1"/>
 								</StackPanel>
@@ -203,6 +207,12 @@
 								<ComboBox x:Name="followCameraModeDropdown" SelectedIndex="{l:SettingBinding followPlayerCameraMode}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
 									<ComboBoxItem Content="{x:Static p:Resources.Follow}"/>
 									<ComboBoxItem Content="{x:Static p:Resources.POV}"/>
+								</ComboBox>
+								<CheckBox x:Name="discholderFollowTeamCheckbox" Margin="10,4,10,4" IsChecked="{l:SettingBinding discHolderFollowRestrictTeam}">Restrict to players on team</CheckBox>
+								<Label x:Name="discholderFollowCameraModeLabel" Content="Discholder camera mode:"/>
+								<ComboBox x:Name="discholderFollowCameraModeDropdown" SelectedIndex="{l:SettingBinding discHolderFollowCamMode}" Margin="10,4,10,4" HorizontalAlignment="Left" Width="300">
+									<ComboBoxItem Content="{x:Static p:Resources.POV}"/>
+									<ComboBoxItem Content="{x:Static p:Resources.Follow}"/>
 								</ComboBox>
 							</StackPanel>
 						</GroupBox>

@@ -1017,7 +1017,7 @@ Riftでは、Windowsのデフォルトのサウンド出力をRiftのヘッド�
     <value>有効</value>
   </data>
   <data name="Allow Spectate Me on local PC" xml:space="preserve">
-    <value>ローカルPCで 「Spectate Me」を許可</value>
+    <value>ローカルPCで 「Spectate Me」を許可 (not recommended)</value>
   </data>
   <data name="Announcer Volume" xml:space="preserve">
     <value>アナウンサー音量</value>

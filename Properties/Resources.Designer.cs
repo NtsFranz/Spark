@@ -168,7 +168,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow Spectate Me on local PC.
+        ///   Looks up a localized string similar to Allow Spectate Me on local PC (not recommended).
         /// </summary>
         public static string Allow_Spectate_Me_on_local_PC {
             get {

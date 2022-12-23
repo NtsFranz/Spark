@@ -17,6 +17,7 @@ namespace Spark
 		public bool startMinimized { get; set; } = false;
 		public bool autoRestart { get; set; } = false;
 		public bool capturevp2 { get; set; } = false;
+		public bool capturevp2VR { get; set; } = false;
 		public bool showDatabaseLog { get; set; } = false;
 		public bool discordRichPresence { get; set; } = true;
 		public bool discordRichPresenceServerLocation { get; set; } = false;
@@ -90,6 +91,8 @@ namespace Spark
 		public bool hideEchoVRUI { get; set; } = false;
 		public int followPlayerCameraMode { get; set; } = 0;
 		public string followPlayerName { get; set; } = "";
+		public bool discHolderFollowRestrictTeam { get; set; } = false;
+		public int discHolderFollowCamMode { get; set; } = 0;
 		public bool toggleMinimapAfterGoals { get; set; } = false;
 		public bool alwaysHideMinimap { get; set; } = false;
 		public bool mutePlayerComms { get; set; } = false;
@@ -284,7 +287,7 @@ namespace Spark
 		public int overlaysManualRoundCount { get; set; } = 3;
 		public int[] overlaysManualRoundScoresOrange { get; set; } = null;
 		public int[] overlaysManualRoundScoresBlue { get; set; } = null;
-		public string gameOverlayUrl { get; set; } = "/configurable_overlay";
+		public string gameOverlayUrl { get; set; } = "http://localhost:6724/configurable_overlay";
 
 		[Serializable]
 		public class ConfigurableOverlaySettings

@@ -66,18 +66,21 @@
 
                     <StackPanel>
                         <TextBlock Margin="8,8,8,8" TextWrapping="Wrap">
-                            <Run Text="{x:Static p:Resources.OBS_integration_requires_the_OBS_Websocket_plugin_}" />
-                            <LineBreak />
-                            <Hyperlink
-                                NavigateUri="https://github.com/Palakis/obs-websocket/releases/download/4.9.1/obs-websocket-4.9.1-Windows-Installer.exe"
-                                RequestNavigate="Hyperlink_RequestNavigate">
-                                <Run Text="{x:Static p:Resources.Download_Installer}"></Run>
-                            </Hyperlink>
-                            <Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases"
-                                       RequestNavigate="Hyperlink_RequestNavigate">
-                                (GitHub)
-                            </Hyperlink>
+                            <Run Text="OBS integration requires OBS v28 or greater. You can configure settings for the websocket in Tools->obs-websocket Settings" />
                         </TextBlock>
+                        <!-- <TextBlock Margin="8,8,8,8" TextWrapping="Wrap"> -->
+                        <!--     <Run Text="{x:Static p:Resources.OBS_integration_requires_the_OBS_Websocket_plugin_}" /> -->
+                        <!--     <LineBreak /> -->
+                        <!--     <Hyperlink -->
+                        <!--         NavigateUri="https://github.com/Palakis/obs-websocket/releases/download/4.9.1/obs-websocket-4.9.1-Windows-Installer.exe" -->
+                        <!--         RequestNavigate="Hyperlink_RequestNavigate"> -->
+                        <!--         <Run Text="{x:Static p:Resources.Download_Installer}"></Run> -->
+                        <!--     </Hyperlink> -->
+                        <!--     <Hyperlink NavigateUri="https://github.com/Palakis/obs-websocket/releases" -->
+                        <!--                RequestNavigate="Hyperlink_RequestNavigate"> -->
+                        <!--         (GitHub) -->
+                        <!--     </Hyperlink> -->
+                        <!-- </TextBlock> -->
                         <StackPanel Orientation="Horizontal">
                             <Label Content="{x:Static p:Resources.IP_Address_}" Margin="4,4,0,4" Padding="4,4,4,4" />
                             <TextBox Text="{l:SettingBinding obsIP}" Width="160" Margin="4,4,4,4" Padding="4,4,4,4" />
@@ -92,7 +95,7 @@
                         <StackPanel Orientation="Horizontal">
                             <CheckBox Content="{x:Static p:Resources.Auto_start_Replay_Buffer}"
                                       IsChecked="{l:SettingBinding obsAutostartReplayBuffer}" Margin="5,5,5,5" />
-                            <Label x:Name="ReplayBufferNotEnabled" Visibility="Collapsed">Replay Buffer is not enabled in OBS.</Label>
+                            <Label x:Name="ReplayBufferNotEnabled" Visibility="Collapsed">Replay Buffer is not enabled in OBS. Enable it in the OBS settings!</Label>
                             <Button x:Name="obsStartReplayBufferButton"
                                     Content="{x:Static p:Resources.Start_Replay_Buffer}" Click="OBSStartReplayBuffer"
                                     Margin="4,4,4,4" Padding="4,4,4,4" />
@@ -101,7 +104,7 @@
                                     Margin="4,4,4,4" Padding="4,4,4,4" />
                         </StackPanel>
                         <CheckBox Content="Pause recording with game clock" IsChecked="{l:SettingBinding obsPauseRecordingWithGameClock}" Margin="5,5,5,5" />
-                        <Button Content="Add Spark Sources to Current Scene" Margin="5,5,5,5" Click="AddSparkSourcesOBS" IsEnabled="{Binding IsOBSConnected}"/>
+                        <!-- <Button Content="Add Spark Sources to Current Scene" Margin="5,5,5,5" Click="AddSparkSourcesOBS" IsEnabled="{Binding IsOBSConnected}"/> -->
                         <GroupBox Header="{x:Static p:Resources.Automatic_Scene_Switching}" Margin="0,0,0,5">
                             <StackPanel Margin="5,5,5,5">
                                 <Label Content="{x:Static p:Resources.In_game_Scene_}" />

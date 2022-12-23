@@ -7,7 +7,7 @@
         xmlns:l="clr-namespace:Spark"
         mc:Ignorable="d"
         Title="{x:Static p:Resources.Join_EchoVR_Match}"
-        Height="290" Width="428"
+        Height="290" Width="530"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResize"
         Icon="/img/ignite_logo.ico"
@@ -21,11 +21,20 @@
             <!--         VerticalAlignment="Bottom" /> -->
             <StackPanel Orientation="Horizontal">
                 <Button x:Name="OrangeButton" Width="100" Height="74" Margin="10,0,0,10"
-                                Content="{x:Static p:Resources.orange_caps}" Click="JoinOrangeTeam" HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"  Background="#FF6C5339" />
+                        Content="{x:Static p:Resources.orange_caps}" Click="JoinOrangeTeam" HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom" Background="#FF6C5339" />
+                <Button x:Name="RandomButton" Width="100" Height="74" Margin="5,0,0,10"
+                        Click="JoinRandomTeam" HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom">
+                    <TextBlock>
+                        Random
+                        <LineBreak />
+                        Team
+                    </TextBlock>
+                </Button>
                 <Button x:Name="BlueButton" Width="100" Height="74" Margin="5,0,0,10"
                         Content="{x:Static p:Resources.blue_caps}" Click="JoinBlueTeam" HorizontalAlignment="Left"
-                        VerticalAlignment="Bottom" Background="#FF2A384B"/>
+                        VerticalAlignment="Bottom" Background="#FF2A384B" />
             </StackPanel>
             <Button x:Name="spectatorButton" Margin="0,0,10,10" Width="180" Height="50"
                     Content="{x:Static p:Resources.join_as_spectator}" Click="JoinAsSpectatorClicked"
@@ -38,13 +47,15 @@
                    Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32" />
         </Grid>
         <StackPanel Margin="40,0,40,20">
-            <Separator/>
-            <TextBlock x:Name="EchoVRDetectedLabel" Foreground="#c4ba4d" TextWrapping="Wrap" Height="35" FontSize="13" Margin="0,10,0,4" Text="{x:Static p:Resources.Detecting_Echo_VR___}"></TextBlock>
+            <Separator />
+            <TextBlock x:Name="EchoVRDetectedLabel" Foreground="#c4ba4d" TextWrapping="Wrap" Height="35" FontSize="13"
+                       Margin="0,10,0,4" Text="{x:Static p:Resources.Detecting_Echo_VR___}">
+            </TextBlock>
             <CheckBox x:Name="ForceLaunchCheckbox" Content="{x:Static p:Resources.Force_launch_new_instance}"
                       IsChecked="{l:SettingBinding sparkLinkForceLaunchNewInstance}"
                       Checked="ForceLaunchChecked" Unchecked="ForceLaunchChecked"
                       Margin="0,0,0,10" FontSize="13">
-                    </CheckBox>
+            </CheckBox>
         </StackPanel>
     </StackPanel>
 </Window>

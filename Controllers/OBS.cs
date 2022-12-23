@@ -192,6 +192,7 @@ namespace Spark
 			{
 				try
 				{
+					LoggerEvents.Log(Program.lastFrame, "Saving OBS Replay Buffer...");
 					ws.SaveReplayBuffer();
 				}
 				catch (Exception)

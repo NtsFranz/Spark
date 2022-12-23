@@ -94,7 +94,14 @@ namespace Spark
 				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IgniteVR", "Spark", "WebView");
 				CoreWebView2Environment webView2Environment = await CoreWebView2Environment.CreateAsync(null, path);
 				await WebView.EnsureCoreWebView2Async(webView2Environment);
-				WebView.Source = new Uri("http://localhost:6724" + SparkSettings.instance.gameOverlayUrl);
+				if (SparkSettings.instance.gameOverlayUrl.StartsWith('/'))
+				{
+					WebView.Source = new Uri("http://localhost:6724" + SparkSettings.instance.gameOverlayUrl);
+				}
+				else
+				{
+					WebView.Source = new Uri(SparkSettings.instance.gameOverlayUrl);
+				}
 			}
 			catch (FileNotFoundException ex)
 			{
@@ -147,7 +154,7 @@ namespace Spark
 			//Make sure AccessibleEvents equals to LocationChange and the 
 			//current window is the Target Window.
 			if (accEvent == AccessibleEvents.Destroy && windowHandle.ToInt32() ==
-				targetWindow.ToInt32())
+			    targetWindow.ToInt32())
 			{
 				//Queues a method for execution. The method executes when a thread pool 
 				//thread becomes available.
@@ -173,7 +180,7 @@ namespace Spark
 			//Make sure AccessibleEvents equals to LocationChange and the 
 			//current window is the Target Window.
 			if (accEvent == AccessibleEvents.LocationChange && windowHandle.ToInt32() ==
-				targetWindow.ToInt32())
+			    targetWindow.ToInt32())
 			{
 				//Queues a method for execution. The method executes when a thread pool 
 				//thread becomes available.

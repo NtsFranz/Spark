@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace Spark
 	class CameraWriteController
 	{
 		private static string BaseUrl => "http://127.0.0.1:" + (Program.spectateMeController.spectateMe ? SpectateMeController.SPECTATEME_PORT : "6721") + "/";
+		private static Dictionary<string, int> playerCameraIndices = new Dictionary<string, int>();
 
 		public CameraWriteController()
 		{
@@ -30,10 +32,21 @@ namespace Spark
 				}
 			};
 
-			Program.JoinedGame += (_) => { UseCameraControlKeys(); };
+			Program.JoinedGame += (_) =>
+			{
+				UseCameraControlKeys();
+				playerCameraIndices.Clear();
+			};
 			Program.PlayerJoined += (_, _, _) => { UseCameraControlKeys(); };
 			Program.PlayerLeft += (_, _, _) => { UseCameraControlKeys(); };
 			Program.PlayerSwitchedTeams += (_, _, _, _) => { UseCameraControlKeys(); };
+			Program.Catch += (frame, team, player) =>
+			{
+				if (SparkSettings.instance.spectatorCamera == 4)
+				{
+					FollowDischolder(player, SparkSettings.instance.discHolderFollowCamMode == 1, SparkSettings.instance.discHolderFollowRestrictTeam);
+				}
+			};
 		}
 
 		public static void UseCameraControlKeys()
@@ -62,6 +75,9 @@ namespace Spark
 					case 3:
 						SpectatorCamFindPlayer(SparkSettings.instance.followPlayerName);
 						break;
+					case 4:
+						FollowDischolder(null, SparkSettings.instance.discHolderFollowCamMode == 1, SparkSettings.instance.discHolderFollowRestrictTeam);
+						break;
 				}
 			}
 			catch (Exception ex)
@@ -84,17 +100,22 @@ namespace Spark
 
 			try
 			{
+				// try to find player
 				Task.Run(async () =>
 				{
-					await Task.Delay(500);
-
-					// try to find player
-					SetCameraMode(CameraMode.pov);
-
-					await Task.Delay(50);
-					bool found;
-					found = await CheckPovCamIsCorrect(playerName);
+					bool found = false;
 					int foundIndex = 0;
+
+					// try using the cached dictionary of indices first
+					if (playerCameraIndices.ContainsKey(playerName))
+					{
+						SetCameraMode(CameraMode.pov, playerCameraIndices[playerName]);
+						await Task.Delay(50);
+						(Player minPlayer, float dist) = await CheckNearestPlayer();
+						LoggerEvents.Log(Program.lastFrame, $"Initial player camera distance: {dist:N3} m.  Name: {minPlayer.name}");
+						found = minPlayer.name == playerName;
+						foundIndex = playerCameraIndices[playerName];
+					}
 
 					// loop through all the players twice if we don't find the right one the first time
 					int foundTries = 1;
@@ -107,7 +128,11 @@ namespace Spark
 
 							// check if this is the right player
 							await Task.Delay(50);
-							found = await CheckPovCamIsCorrect(playerName, i);
+
+							(Player minPlayer, float dist) = await CheckNearestPlayer();
+							LoggerEvents.Log(Program.lastFrame, $"Player {i} camera distance: {dist:N3} m.  Name: {minPlayer.name}");
+							found = minPlayer.name == playerName;
+							playerCameraIndices[minPlayer.name] = i;
 
 							// if we found the correct player
 							if (found)
@@ -157,12 +182,12 @@ namespace Spark
 			}
 		}
 
-		private static async Task<bool> CheckPovCamIsCorrect(string playerName, int i = -1)
+		private static async Task<(Player, float)> CheckNearestPlayer()
 		{
 			string result = await Program.GetRequestAsync(BaseUrl + "session", null);
-			if (string.IsNullOrEmpty(result)) return false;
+			if (string.IsNullOrEmpty(result)) return (null, 100);
 			Frame frame = JsonConvert.DeserializeObject<Frame>(result);
-			if (frame == null) return false;
+			if (frame == null) return (null, 100);
 			List<Player> players = frame.GetAllPlayers();
 
 			List<Player> sortedList = players
@@ -173,10 +198,7 @@ namespace Spark
 
 			Player minPlayer = sortedList.First();
 			float dist = Vector3.Distance(minPlayer.head.Position, frame.player.vr_position.ToVector3());
-
-			LogRow(LogType.File, frame.sessionid, $"Player {i} camera distance: {dist:N3} m.  Name: {minPlayer.name}");
-
-			return minPlayer.name == playerName;
+			return (minPlayer, dist);
 		}
 
 		public static void SetPlayersMuted()
@@ -284,6 +306,22 @@ namespace Spark
 		public static void SetCameraTransform(CameraTransform data)
 		{
 			Program.PostRequestCallback(BaseUrl + "camera_transform", null, JsonConvert.SerializeObject(data), null);
+		}
+
+		public static void FollowDischolder(Player catchPlayer, bool useFollowCam, bool restrictToClientTeam)
+		{
+			// if the catchplayer is null, find the player with possession manually
+			catchPlayer ??= Program.lastFrame.GetAllPlayers().FirstOrDefault(p => p.possession) ?? Program.lastFrame.GetAllPlayers(true).FirstOrDefault();
+
+			Team clientTeam = Program.lastFrame.ClientTeam;
+			CameraMode mode = useFollowCam ? CameraMode.follow : CameraMode.pov;
+
+			if (!restrictToClientTeam || catchPlayer.team_color == clientTeam.color || clientTeam.color == Team.TeamColor.spectator)
+			{
+				SpectatorCamFindPlayer(catchPlayer.name, mode);
+			}
+
+			// SetCameraMode(mode);
 		}
 	}
 }

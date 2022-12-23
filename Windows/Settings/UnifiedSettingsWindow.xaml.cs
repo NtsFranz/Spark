@@ -173,13 +173,7 @@ namespace Spark
 				await Task.Run(async () =>
 				{
 					Progress<float> searchProgress = new Progress<float>();
-					searchProgress.ProgressChanged += (o, val) =>
-					{
-						Dispatcher.Invoke(() =>
-						{
-							FindQuestStatusLabel.Content = $"{Properties.Resources.Failed__Scanning_for_Echo_VR_API_instead__This_may_take_a_while_}\t{val:P0}";
-						});
-					};
+					searchProgress.ProgressChanged += (o, val) => { Dispatcher.Invoke(() => { FindQuestStatusLabel.Content = $"{Properties.Resources.Failed__Scanning_for_Echo_VR_API_instead__This_may_take_a_while_}\t{val:P0}"; }); };
 					List<IPAddress> ips = QuestIPFetching.GetPossibleLocalIPs();
 					List<(IPAddress, string)> responses = await QuestIPFetching.PingEchoVRAPIAsync(ips, 20, searchProgress);
 					IPAddress found = responses.FirstOrDefault(r => r.Item2 != null).Item1;
@@ -537,8 +531,8 @@ namespace Spark
 				if (value) Program.synth.SpeakAsync($"23 {Properties.Resources.tts_meters}");
 			}
 		}
-		
-		
+
+
 		public static bool RulesChanged
 		{
 			get => SparkSettings.instance.rulesChangedTTS;
@@ -698,16 +692,33 @@ namespace Spark
 					followSpecificPlayerPanel.Visibility = Visibility.Collapsed;
 					followCameraModeLabel.Visibility = Visibility.Collapsed;
 					followCameraModeDropdown.Visibility = Visibility.Collapsed;
+					discholderFollowTeamCheckbox.Visibility = Visibility.Collapsed;
+					discholderFollowCameraModeLabel.Visibility = Visibility.Collapsed;
+					discholderFollowCameraModeDropdown.Visibility = Visibility.Collapsed;
 					break;
 				case 2:
 					followSpecificPlayerPanel.Visibility = Visibility.Collapsed;
 					followCameraModeLabel.Visibility = Visibility.Visible;
 					followCameraModeDropdown.Visibility = Visibility.Visible;
+					discholderFollowTeamCheckbox.Visibility = Visibility.Collapsed;
+					discholderFollowCameraModeLabel.Visibility = Visibility.Collapsed;
+					discholderFollowCameraModeDropdown.Visibility = Visibility.Collapsed;
 					break;
 				case 3:
 					followSpecificPlayerPanel.Visibility = Visibility.Visible;
 					followCameraModeLabel.Visibility = Visibility.Visible;
 					followCameraModeDropdown.Visibility = Visibility.Visible;
+					discholderFollowTeamCheckbox.Visibility = Visibility.Collapsed;
+					discholderFollowCameraModeLabel.Visibility = Visibility.Collapsed;
+					discholderFollowCameraModeDropdown.Visibility = Visibility.Collapsed;
+					break;
+				case 4:
+					followSpecificPlayerPanel.Visibility = Visibility.Collapsed;
+					followCameraModeLabel.Visibility = Visibility.Collapsed;
+					followCameraModeDropdown.Visibility = Visibility.Collapsed;
+					discholderFollowTeamCheckbox.Visibility = Visibility.Visible;
+					discholderFollowCameraModeLabel.Visibility = Visibility.Visible;
+					discholderFollowCameraModeDropdown.Visibility = Visibility.Visible;
 					break;
 			}
 		}
