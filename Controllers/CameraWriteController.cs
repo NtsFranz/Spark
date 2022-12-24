@@ -311,7 +311,9 @@ namespace Spark
 		public static void FollowDischolder(Player catchPlayer, bool useFollowCam, bool restrictToClientTeam)
 		{
 			// if the catchplayer is null, find the player with possession manually
-			catchPlayer ??= Program.lastFrame.GetAllPlayers().FirstOrDefault(p => p.possession) ?? Program.lastFrame.GetAllPlayers(true).FirstOrDefault();
+			catchPlayer ??= Program.lastFrame?.GetAllPlayers().FirstOrDefault(p => p.possession) ?? Program.lastFrame?.GetAllPlayers(true).FirstOrDefault();
+
+			if (catchPlayer == null) return;
 
 			Team clientTeam = Program.lastFrame.ClientTeam;
 			CameraMode mode = useFollowCam ? CameraMode.follow : CameraMode.pov;

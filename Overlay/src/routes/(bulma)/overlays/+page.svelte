@@ -29,6 +29,7 @@
 	</nav>
 
 	<div class="box">
+		<p>A scene collection with these overlays has already been added to OBS. You can also add these URLs as browser sources to your streaming software yourself.</p>
 		<ul>
 			<li>
 				<a href="/branding"><h3>/branding</h3></a>Several examples of acceptable attribution. You

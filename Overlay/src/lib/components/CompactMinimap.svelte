@@ -15,8 +15,6 @@
         position: relative;
         width: 35.3125em;
         height: 10.875em;
-        bottom: 1em;
-        right: 1em;
         overflow: hidden;
     }
 

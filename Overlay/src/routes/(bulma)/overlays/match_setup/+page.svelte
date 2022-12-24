@@ -74,7 +74,15 @@
 
 <Header title="Match Setup" subtitle="Enter custom team names and logos here."/>
 
-<div class="content" style="max-width: 60em; margin: auto;">
+<div class="content" style="max-width: 60em; margin: auto; position:relative;">
+
+    <nav class="breadcrumb" aria-label="breadcrumbs" style="position: absolute;top: -8em;">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/overlays">Overlays</a></li>
+            <li class="is-active"><a href="#" aria-current="page">Match Setup</a></li>
+        </ul>
+    </nav>
 
     <div class="box" style="position: relative; top: -2em;font-size: 1.5em;">
 

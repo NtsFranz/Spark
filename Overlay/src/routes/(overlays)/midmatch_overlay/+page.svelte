@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { SparkWebsocket } from '$lib/js/spark_websocket.js';
 	import { onDestroy } from 'svelte';
+	import type { Config } from '$lib/js/SparkConfig';
 
 	let orangeJoustVisible = false;
 	let blueJoustVisible = false;
@@ -8,7 +9,7 @@
 	let orangeJoustText = '';
 	let blueJoustText = '';
 
-	let config = null;
+	let config: typeof Config | null = null;
 
 	let sw = new SparkWebsocket();
 	sw.subscribe('joust', (data) => {
@@ -28,7 +29,7 @@
 			}, 10000);
 		}
 	});
-	sw.subscribe('overlay_config', (data) => {
+	sw.subscribe('overlay_config', (data: typeof Config) => {
 		config = data;
 	});
 	sw.subscribe('pause', (data) => {

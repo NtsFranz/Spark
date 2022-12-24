@@ -13,6 +13,7 @@ namespace Spark
 		public bool rightClick;
 
 		public Vector3 position;
+
 		public Vector3 rotation;
 		//public float xPos;
 		//public float yPos;
@@ -29,8 +30,18 @@ namespace Spark
 
 	public class SpaceMouseInput
 	{
-		private const int CONNEXION_VENDOR = 0x46d;
-		private const int CONNEXION_PRODUCT = 0xc626;
+		struct Mouse
+		{
+			public string name;
+			public int vendor;
+			public int product;
+		}
+
+		private static readonly Mouse[] mouseVendorProducts =
+		{
+			new Mouse { name = "SpaceNavigator", vendor = 0x46d, product = 0xc626 },
+			new Mouse { name = "SpaceMouse Compact", vendor = 0x256F, product = 0xc635 },
+		};
 
 		private HidDevice device;
 		private readonly ConnexionState state = new ConnexionState();
@@ -51,43 +62,51 @@ namespace Spark
 
 		private void InputThread()
 		{
-			IEnumerable<HidDevice> list = DeviceList.Local.GetHidDevices(CONNEXION_VENDOR, CONNEXION_PRODUCT);
-			device = list.FirstOrDefault();
-
-			if (device == null) return;
-			if (device.TryOpen(out HidStream hidStream))
+			List<HidDevice> deviceList = DeviceList.Local.GetHidDevices().ToList();
+			foreach (HidDevice d in deviceList)
 			{
-				hidStream.ReadTimeout = Timeout.Infinite;
-
-				using (hidStream)
+				foreach (Mouse m in mouseVendorProducts)
 				{
-					while (Running)
+					if (d.VendorID == m.vendor && d.ProductID == m.product)
 					{
-						byte[] bytes = hidStream.Read();
-						if (bytes[0] == 3)
-						{
-							state.leftClick = (bytes[1] & 1) != 0;
-							state.rightClick = (bytes[1] & 2) != 0;
-						}
-						else if (bytes[0] == 1)
-						{
-							state.position = new Vector3(
-								(short)((bytes[2] << 8) | bytes[1]) / 350f,
-								(short)((bytes[4] << 8) | bytes[3]) / 350f,
-								(short)((bytes[6] << 8) | bytes[5]) / 350f
-							);
-						}
-						else if (bytes[0] == 2)
-						{
-							state.rotation = new Vector3(
-								(short)((bytes[2] << 8) | bytes[1]) / 350f,
-								(short)((bytes[4] << 8) | bytes[3]) / 350f,
-								(short)((bytes[6] << 8) | bytes[5]) / 350f
-							);
-						}
-						OnChanged?.Invoke(state);
+						device = d;
 					}
 				}
+			}
+
+			if (device == null) return;
+			if (!device.TryOpen(out HidStream hidStream)) return;
+
+			hidStream.ReadTimeout = Timeout.Infinite;
+
+			using HidStream stream = hidStream;
+			while (Running)
+			{
+				byte[] bytes = hidStream.Read();
+				switch (bytes[0])
+				{
+					case 1:
+						state.position = new Vector3(
+							(short)((bytes[2] << 8) | bytes[1]) / 350f,
+							(short)((bytes[4] << 8) | bytes[3]) / 350f,
+							(short)((bytes[6] << 8) | bytes[5]) / 350f
+						);
+						break;
+					case 2:
+						state.rotation = new Vector3(
+							(short)((bytes[2] << 8) | bytes[1]) / 350f,
+							(short)((bytes[4] << 8) | bytes[3]) / 350f,
+							(short)((bytes[6] << 8) | bytes[5]) / 350f
+						);
+						break;
+					// buttons
+					case 3:
+						state.leftClick = (bytes[1] & 1) != 0;
+						state.rightClick = (bytes[1] & 2) != 0;
+						break;
+				}
+
+				OnChanged?.Invoke(state);
 			}
 		}
 	}

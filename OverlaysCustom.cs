@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.SoundFont;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -136,8 +137,14 @@ namespace Spark
 				route = "vrml";
 			}
 
-			string sceneCollectionDestPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "obs-studio", "basic", "scenes", route + ".json");
+
 			string sceneCollectionFile = Path.Combine(OverlayServer.StaticOverlayFolder, route, route + ".json");
+			if (route == "personal")
+			{
+				route = $"Spark v{Program.AppVersion().Major}.{Program.AppVersion().Minor}";
+				sceneCollectionFile = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation), "resources", "obs_scene_collection.json");
+			}
+			string sceneCollectionDestPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "obs-studio", "basic", "scenes", route + ".json");
 			if (File.Exists(sceneCollectionFile))
 			{
 				File.Copy(sceneCollectionFile, sceneCollectionDestPath);

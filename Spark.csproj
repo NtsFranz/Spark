@@ -146,7 +146,6 @@
     <EmbeddedResource Include="resources\MicrosoftEdgeWebview2Setup.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Remove="resources\obs_scene_collection.json" />
     <EmbeddedResource Include="resources\obs_scene_collection.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

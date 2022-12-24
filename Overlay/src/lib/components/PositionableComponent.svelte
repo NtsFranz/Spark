@@ -1,19 +1,19 @@
 <script>
-	import {onDestroy, onMount} from "svelte";
-	import resizeImg from "../img/resize-bottom-right.png";
-	import centerHorizontalImg from "../img/align-horizontal-center.png";
-	import {SparkWebsocket} from "../js/spark_websocket.js";
+	import { onDestroy, onMount } from 'svelte';
+	import resizeImg from '../img/resize-bottom-right.png';
+	import centerHorizontalImg from '../img/align-horizontal-center.png';
+	import { SparkWebsocket } from '../js/spark_websocket.js';
 
 	// The name of the element in the positioning config file in Spark
-	export let config_key = "";
+	export let config_key = '';
 
 	export let position_data = {
-		left: .1,
-		right: .2,
-		top: .1,
-		bottom: .2,
+		left: 0.1,
+		right: 0.2,
+		top: 0.1,
+		bottom: 0.2,
 		scale: 1,
-		center_horizontally: false,
+		center_horizontally: false
 	};
 
 	let left = 100;
@@ -57,13 +57,12 @@
 
 	function centerHorizontalClick() {
 		position_data['center_horizontally'] = true;
-		lastSetTime = Date.parse("01 Jan 1970 00:00:00 GMT");
+		lastSetTime = Date.parse('01 Jan 1970 00:00:00 GMT');
 		positionDataUpdated();
 		send_data();
 	}
 
 	function onMouseMove(e) {
-
 		if (mouseDownFlag) {
 			mouseDownX = e.pageX;
 			mouseDownY = e.pageY;
@@ -77,7 +76,6 @@
 			position_data['top'] += e.movementY / document.documentElement.clientHeight;
 			position_data['bottom'] -= e.movementY / document.documentElement.clientHeight;
 
-
 			if (Math.abs(e.pageX - mouseDownX) > 100) {
 				position_data['center_horizontally'] = false;
 			}
@@ -89,7 +87,7 @@
 
 		if (resizing) {
 			getCurrentPosition();
-			position_data['scale'] += (e.movementX + e.movementX) * .001;
+			position_data['scale'] += (e.movementX + e.movementX) * 0.001;
 			positionDataUpdated();
 
 			send_data();
@@ -103,7 +101,6 @@
 
 	let lastSetTime = new Date();
 
-
 	let guidesVisible = false;
 
 	onMount(() => {
@@ -111,22 +108,22 @@
 		const urlParams = new URLSearchParams(queryString);
 		guidesVisible = urlParams.has('configure');
 
-
 		if (guidesVisible) {
-			document.body.style.backgroundColor = "#333";
-			document.body.style.color = "white";
+			document.body.style.backgroundColor = '#333';
+			document.body.style.color = 'white';
 		}
 
 		positionDataUpdated();
 		// setTimeout(positionDataUpdated, 100);
 
-		sw.subscribe("overlay_config", data => {
+		sw.subscribe('overlay_config', (data) => {
 			if (data == null) return;
 			if (!guidesVisible || firstFetch) {
 				firstFetch = false;
-				if (data['caster_prefs'] &&
-						data['caster_prefs']['overlay_positions'] &&
-						data['caster_prefs']['overlay_positions'][config_key]
+				if (
+					data['caster_prefs'] &&
+					data['caster_prefs']['overlay_positions'] &&
+					data['caster_prefs']['overlay_positions'][config_key]
 				) {
 					position_data = data['caster_prefs']['overlay_positions'][config_key];
 					// needs 2 because of scale or something
@@ -134,14 +131,11 @@
 					setTimeout(positionDataUpdated, 100);
 				}
 			}
-
 		});
 	});
 
-
 	let sw = new SparkWebsocket();
 	let firstFetch = true;
-
 
 	function send_data() {
 		// don't send if we've never received data before
@@ -152,10 +146,10 @@
 			lastSetTime = new Date();
 
 			// save the position to Spark's config
-			fetch("http://127.0.0.1:6724/api/set_caster_prefs", {
+			fetch('http://127.0.0.1:6724/api/set_caster_prefs', {
 				method: 'POST',
 				body: JSON.stringify({
-					"overlay_positions": {
+					overlay_positions: {
 						[config_key]: position_data
 					}
 				})
@@ -171,7 +165,7 @@
 			top: rect.top / document.documentElement.clientHeight,
 			bottom: 1 - rect.bottom / document.documentElement.clientHeight,
 			scale: scale,
-			center_horizontally: centerHorizontal,
+			center_horizontally: centerHorizontal
 		};
 	}
 
@@ -209,169 +203,173 @@
 	}
 
 	onDestroy(() => sw.close());
-
 </script>
 
-<svelte:window on:resize={positionDataUpdated} on:mouseup={onMouseUp} on:mousemove={onMouseMove}/>
+<svelte:window on:resize={positionDataUpdated} on:mouseup={onMouseUp} on:mousemove={onMouseMove} />
 
-<style>
-  :root {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif
-  }
-
-  .draggable {
-    cursor: move;
-    position: absolute;
-    user-select: none;
-  }
-
-  .draggable.guidesVisible {
-    border: solid 1px gray;
-  }
-
-
-  .lockedLeft.guidesVisible > #left {
-    display: block;
-  }
-
-  .lockedRight.guidesVisible > #right {
-    display: block;
-  }
-
-  .lockedTop.guidesVisible > #top {
-    display: block;
-  }
-
-  .lockedBottom.guidesVisible > #bottom {
-    display: block;
-  }
-
-  .centerHorizontal.guidesVisible > #left,
-  .centerHorizontal.guidesVisible > #right {
-    display: none;
-  }
-
-  .lockLine {
-    position: absolute;
-    text-align: left;
-    display: none;
-  }
-
-  .lockLine:after {
-    content: '';
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  .lockLine#left,
-  .lockLine#right {
-    top: 50%;
-    padding: 0 1em;
-    width: 100em;
-    height: .1em;
-  }
-
-
-  .lockLine#top:after,
-  .lockLine#bottom:after {
-    left: -.3em;
-  }
-
-
-  .lockLine#left {
-    right: 100%;
-    text-align: right;
-  }
-
-  .lockLine#right {
-    left: 100%;
-  }
-
-  .lockLine#top,
-  .lockLine#bottom {
-    left: 50%;
-    padding: 1em 0;
-    width: .1em;
-  }
-
-  .lockLine#top {
-    padding-top: 100em;
-    bottom: 100%;
-  }
-
-  .lockLine#bottom {
-    top: 100%;
-    padding-bottom: 100em;
-  }
-
-  .corner-button {
-    display: none;
-    border: none;
-  }
-
-  .corner-button.guidesVisible {
-    display: block;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    cursor: se-resize;
-    background-color: #444;
-    z-index: 10;
-    border-radius: 0;
-    padding: .1em;
-  }
-
-  .corner-button:hover.guidesVisible {
-    background-color: #252525;
-    transform: scale(1.1);
-  }
-
-  .corner-button:active.guidesVisible {
-    background-color: #222;
-    transform: scale(1.1);
-  }
-
-  .corner-button > img {
-    width: 1em;
-    height: 1em;
-  }
-
-  .centerHorizontalButton.guidesVisible {
-    right: 1.7em;
-    cursor: pointer;
-  }
-</style>
-
-<section on:mousedown={onMouseDown}
-		 style="{lockedLeft ? 'left: '+ left + 'px;': ''}
-				{lockedRight ? 'right: '+ right + 'px;': ''}
-				{lockedTop ? 'top: '+ top + 'px;': ''}
-				{lockedBottom ? 'bottom: '+ bottom + 'px;': ''}
+<section
+	on:mousedown={onMouseDown}
+	style="{lockedLeft ? 'left: ' + left + 'px;' : ''}
+				{lockedRight ? 'right: ' + right + 'px;' : ''}
+				{lockedTop ? 'top: ' + top + 'px;' : ''}
+				{lockedBottom ? 'bottom: ' + bottom + 'px;' : ''}
 				transform: scale({scale});"
-		 class="draggable"
-		 class:lockedLeft class:lockedRight class:lockedTop class:lockedBottom
-		 class:centerHorizontal class:centerVertical
-		 class:guidesVisible
-		 bind:this={elem}>
-
+	class="draggable"
+	class:lockedLeft
+	class:lockedRight
+	class:lockedTop
+	class:lockedBottom
+	class:centerHorizontal
+	class:centerVertical
+	class:guidesVisible
+	bind:this={elem}
+>
 	<div class="lockLine" id="left">{(percentLeft * 100).toFixed(1)}%</div>
 	<div class="lockLine" id="right">{(percentRight * 100).toFixed(1)}%</div>
 	<div class="lockLine" id="top">{(percentTop * 100).toFixed(1)}%</div>
 	<div class="lockLine" id="bottom">{(percentBottom * 100).toFixed(1)}%</div>
 
 	{#if !firstFetch}
-		<slot></slot>
+		<slot />
 	{/if}
 
 	<button class="corner-button resizeCorner" class:guidesVisible on:mousedown={onMouseDownResize}>
-		<img src="{resizeImg}" draggable="false"/>
+		<img src={resizeImg} draggable="false" />
 	</button>
-	<button class="corner-button centerHorizontalButton" class:guidesVisible on:mousedown={centerHorizontalClick}>
-		<img src="{centerHorizontalImg}" draggable="false"/>
+	<button
+		class="corner-button centerHorizontalButton"
+		class:guidesVisible
+		on:mousedown={centerHorizontalClick}
+	>
+		<img src={centerHorizontalImg} draggable="false" />
 	</button>
-
 </section>
+
+<style>
+	:root {
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	.draggable {
+		cursor: move;
+		position: absolute;
+		user-select: none;
+	}
+
+	.draggable.guidesVisible {
+		border: solid 1px gray;
+	}
+
+	.lockedLeft.guidesVisible > #left {
+		display: block;
+	}
+
+	.lockedRight.guidesVisible > #right {
+		display: block;
+	}
+
+	.lockedTop.guidesVisible > #top {
+		display: block;
+	}
+
+	.lockedBottom.guidesVisible > #bottom {
+		display: block;
+	}
+
+	.centerHorizontal.guidesVisible > #left,
+	.centerHorizontal.guidesVisible > #right {
+		display: none;
+	}
+
+	.lockLine {
+		position: absolute;
+		text-align: left;
+		display: none;
+	}
+
+	.lockLine:after {
+		content: '';
+		width: 100%;
+		height: 100%;
+		background-color: white;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+
+	.lockLine#left,
+	.lockLine#right {
+		top: 50%;
+		padding: 0 1em;
+		width: 100em;
+		height: 0.1em;
+	}
+
+	.lockLine#top:after,
+	.lockLine#bottom:after {
+		left: -0.3em;
+	}
+
+	.lockLine#left {
+		right: 100%;
+		text-align: right;
+	}
+
+	.lockLine#right {
+		left: 100%;
+	}
+
+	.lockLine#top,
+	.lockLine#bottom {
+		left: 50%;
+		padding: 1em 0;
+		width: 0.1em;
+	}
+
+	.lockLine#top {
+		padding-top: 100em;
+		bottom: 100%;
+	}
+
+	.lockLine#bottom {
+		top: 100%;
+		padding-bottom: 100em;
+	}
+
+	.corner-button {
+		display: none;
+		border: none;
+	}
+
+	.corner-button.guidesVisible {
+		display: block;
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		cursor: se-resize;
+		background-color: #444;
+		z-index: 10;
+		border-radius: 0;
+		padding: 0.1em;
+	}
+
+	.corner-button:hover.guidesVisible {
+		background-color: #252525;
+		transform: scale(1.1);
+	}
+
+	.corner-button:active.guidesVisible {
+		background-color: #222;
+		transform: scale(1.1);
+	}
+
+	.corner-button > img {
+		width: 1em;
+		height: 1em;
+	}
+
+	.centerHorizontalButton.guidesVisible {
+		right: 1.7em;
+		cursor: pointer;
+	}
+</style>
