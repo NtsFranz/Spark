@@ -137,17 +137,17 @@ namespace Spark
 				route = "vrml";
 			}
 
-
 			string sceneCollectionFile = Path.Combine(OverlayServer.StaticOverlayFolder, route, route + ".json");
 			if (route == "personal")
 			{
 				route = $"Spark v{Program.AppVersion().Major}.{Program.AppVersion().Minor}";
-				sceneCollectionFile = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation), "resources", "obs_scene_collection.json");
+				sceneCollectionFile = Path.Combine(Path.GetDirectoryName(SparkSettings.instance.sparkExeLocation) ?? string.Empty, "resources", "obs_scene_collection.json");
 			}
+
 			string sceneCollectionDestPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "obs-studio", "basic", "scenes", route + ".json");
 			if (File.Exists(sceneCollectionFile))
 			{
-				File.Copy(sceneCollectionFile, sceneCollectionDestPath);
+				File.Copy(sceneCollectionFile, sceneCollectionDestPath, true);
 			}
 		}
 

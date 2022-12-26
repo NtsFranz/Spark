@@ -29,7 +29,6 @@ namespace Spark
 	{
 		private LiveWindow liveWindow;
 
-		public const string url = "http://127.0.0.1:6721/camera_transform";
 		public const string sessionUrl = "http://127.0.0.1:6721/session";
 
 		public string Duration
@@ -1031,7 +1030,7 @@ namespace Spark
 				});
 
 
-				Thread.Sleep(2);
+				Thread.Sleep(8);
 			}
 
 			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
@@ -1142,7 +1141,7 @@ namespace Spark
 
 			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
 		}
-		
+
 
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
 		{
@@ -1337,7 +1336,12 @@ namespace Spark
 		}
 
 
-		private readonly HIDDeviceInput spaceMouseDevice = new HIDDeviceInput(0x46d, 0xc626);
+		private readonly HIDDeviceInput spaceMouseDevice = new HIDDeviceInput(new List<HIDDeviceInput.Device>()
+		{
+			new HIDDeviceInput.Device { name = "SpaceNavigator", vendor = 0x46d, product = 0xc626 },
+			new HIDDeviceInput.Device { name = "SpaceMouse Compact", vendor = 0x256F, product = 0xc635 },
+		});
+
 		private bool spaceMouseSetCameraThreadRunning;
 		private CameraTransform spaceMouseCameraState = new CameraTransform();
 
@@ -1353,7 +1357,7 @@ namespace Spark
 			{
 				spaceMouseDevice.OnChanged += bytes =>
 				{
-					ConnexionState state = new ConnexionState();
+					HIDDeviceInput.ConnexionState state = new HIDDeviceInput.ConnexionState();
 					switch (bytes[0])
 					{
 						case 1:
@@ -1385,6 +1389,10 @@ namespace Spark
 				{
 					while (spaceMouseSetCameraThreadRunning)
 					{
+						if (!Program.InGame)
+						{
+							Thread.Sleep(500);
+						}
 						SetCamera(spaceMouseCameraState);
 						Thread.Sleep(8);
 					}
@@ -1402,7 +1410,7 @@ namespace Spark
 		}
 
 
-		private void OnSpaceMouseChanged(ConnexionState state)
+		private void OnSpaceMouseChanged(HIDDeviceInput.ConnexionState state)
 		{
 			Dispatcher.Invoke(() =>
 			{

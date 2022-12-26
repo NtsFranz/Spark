@@ -1,25 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading;
 using HidSharp;
 
 namespace Spark
 {
-
 	public class HIDDeviceInput
 	{
-		private int vendor = 0x46d;
-		private int product = 0xc626;
+		public struct Device
+		{
+			public string name;
+			public int vendor;
+			public int product;
+		}
 
+		public class ConnexionState
+		{
+			public bool leftClick;
+			public bool rightClick;
+
+			public Vector3 position;
+			public Vector3 rotation;
+
+			public override string ToString()
+			{
+				return $"{leftClick}\t{rightClick}\t{position.X:N2}\t{position.Y:N2}\t{position.Z:N2}\t{rotation.X:N2}\t{rotation.Y:N2}\t{rotation.Z:N2}";
+			}
+		}
+
+		private List<Device> possibleDevices = new List<Device>();
 		private HidDevice device;
 		public Action<byte[]> OnChanged;
 		public bool Running { get; private set; }
 
 		public HIDDeviceInput(int vendor, int product)
 		{
-			this.vendor = vendor;
-			this.product = product;
+			possibleDevices.Add(new Device
+			{
+				vendor = vendor,
+				product = product,
+			});
+		}
+
+		public HIDDeviceInput(IEnumerable<Device> devices)
+		{
+			possibleDevices.AddRange(devices);
 		}
 
 		public void Start()
@@ -36,22 +63,40 @@ namespace Spark
 
 		private void InputThread()
 		{
-			IEnumerable<HidDevice> list = DeviceList.Local.GetHidDevices(vendor, product);
-			device = list.FirstOrDefault();
+			IEnumerable<HidDevice> deviceList = DeviceList.Local.GetHidDevices();
 
-			if (device == null) return;
-			if (device.TryOpen(out HidStream hidStream))
+			foreach (HidDevice d in deviceList)
 			{
-				hidStream.ReadTimeout = Timeout.Infinite;
-
-				using (hidStream)
+				Logger.Error($"Device: {d}");
+				foreach (Device m in possibleDevices)
 				{
-					while (Running)
+					if (d.VendorID == m.vendor && d.ProductID == m.product)
 					{
-						byte[] bytes = hidStream.Read();
-						OnChanged?.Invoke(bytes);
+						Logger.Error($"Found device: {m}\t{d}");
+						device = d;
 					}
 				}
+			}
+
+			if (device == null)
+			{
+				Logger.Error($"Didn't find device");
+				return;
+			}
+
+			if (!device.TryOpen(out HidStream hidStream))
+			{
+				Logger.Error($"Couldn't open device stream.");
+				return;
+			}
+
+			hidStream.ReadTimeout = Timeout.Infinite;
+
+			using HidStream stream = hidStream;
+			while (Running)
+			{
+				byte[] bytes = hidStream.Read();
+				OnChanged?.Invoke(bytes);
 			}
 		}
 	}
