@@ -55,12 +55,6 @@ namespace Spark
 		// public const string APIURL = "http://127.0.0.1:8000";
 		public const string WRITE_API_URL = "http://127.0.0.1:6723/";
 
-
-		/// <summary>
-		/// Client used for one-off requests
-		/// </summary>
-		public static readonly HttpClient client = new HttpClient();
-
 		// public static string currentAccessCodeUsername = "";
 		public static string InstalledSpeakerSystemVersion = "";
 		public static bool IsSpeakerSystemUpdateAvailable;
@@ -172,6 +166,7 @@ namespace Spark
 		// private static readonly System.Timers.Timer fetchTimer = new System.Timers.Timer();
 		private static readonly Stopwatch fetchSw = new Stopwatch();
 		private static Timer ccuCounter;
+		public static CameraController cameraController;
 
 		public static CoreWebView2Environment webView2Environment;
 
@@ -366,10 +361,10 @@ namespace Spark
 				}
 				
 				
-				client.DefaultRequestHeaders.Add("version", AppVersionString());
-				client.DefaultRequestHeaders.Add("User-Agent", "Spark/" + AppVersionString());
+				FetchUtils.client.DefaultRequestHeaders.Add("version", AppVersionString());
+				FetchUtils.client.DefaultRequestHeaders.Add("User-Agent", "Spark/" + AppVersionString());
 
-				client.BaseAddress = new Uri(APIURL);
+				FetchUtils.client.BaseAddress = new Uri(APIURL);
 
 
 				if (CheckIfLaunchedWithCustomURLHandlerParam(args))
@@ -551,6 +546,7 @@ namespace Spark
 				spectateMeController = new SpectateMeController();
 				uploadController = new UploadController();
 				localDatabase = new LocalDatabase();
+				cameraController = new CameraController();
 				
 				
 
@@ -683,7 +679,7 @@ namespace Spark
 
 		private static void CCUCounter(object state)
 		{
-			_ = client.PostAsync($"/spark_is_open?hw_id={DeviceId}&client_name={SparkSettings.instance.client_name}", null);
+			_ = FetchUtils.client.PostAsync($"/spark_is_open?hw_id={DeviceId}&client_name={SparkSettings.instance.client_name}", null);
 		}
 
 		/// <summary>
@@ -1086,7 +1082,7 @@ namespace Spark
 			try
 			{
 				// client_name is just for visibility in the log
-				HttpResponseMessage response = await client.PostAsync(
+				HttpResponseMessage response = await FetchUtils.client.PostAsync(
 					"/live_replay/" + lastFrame.sessionid + "?caprate=1&default=true&client_name=" +
 					lastFrame.client_name, content);
 			}
@@ -1220,7 +1216,7 @@ namespace Spark
 
 				string ip = overrideIP ?? SparkSettings.instance.echoVRIP;
 				int port = overridePort == 0 ? SparkSettings.instance.echoVRPort : overridePort;
-				string resp = await PostRequestAsync($"http://{ip}:{port}/join_session", null, JsonConvert.SerializeObject(body));
+				string resp = await FetchUtils.PostRequestAsync($"http://{ip}:{port}/join_session", null, JsonConvert.SerializeObject(body));
 				return !string.IsNullOrEmpty(resp) && resp.StartsWith("{");
 			}
 			catch (Exception)
@@ -3025,120 +3021,6 @@ namespace Spark
 		}
 
 
-		/// <summary>
-		/// Generic method for getting data from a web url
-		/// </summary>
-		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
-		public static void GetRequestCallback(string uri, Dictionary<string, string> headers, Action<string> callback)
-		{
-			Task.Run(async () =>
-			{
-				string resp = await GetRequestAsync(uri, headers);
-				callback(resp);
-			});
-		}
-
-		/// <summary>
-		/// Generic method for getting data from a web url
-		/// </summary>
-		/// <param name="uri">The URL to GET</param>
-		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
-		public static async Task<string> GetRequestAsync(string uri, Dictionary<string, string> headers)
-		{
-			try
-			{
-				using HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, uri);
-
-				if (headers != null)
-				{
-					foreach ((string key, string value) in headers)
-					{
-						request.Headers.Add(key, value);
-					}
-				}
-
-				HttpResponseMessage response = await client.SendAsync(request);
-
-				response.EnsureSuccessStatusCode();
-
-				return await response.Content.ReadAsStringAsync();
-			}
-			catch (Exception)
-			{
-				return string.Empty;
-			}
-		}
-		
-		/// <summary>
-		/// Generic method for getting data from a web url. Returns a Stream
-		/// </summary>
-		/// <param name="uri">The URL to GET</param>
-		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
-		public static async Task<Stream> GetRequestAsyncStream(string uri, Dictionary<string, string> headers)
-		{
-			try
-			{
-				HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uri);
-				if (headers != null)
-				{
-					foreach ((string key, string value) in headers)
-					{
-						request.Headers[key] = value;
-					}
-				}
-
-				request.UserAgent = $"Spark/{AppVersionString()}";
-				using WebResponse response = await request.GetResponseAsync();
-				return response.GetResponseStream();
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine($"Can't get data\n{e}");
-			}
-			
-			return null;
-		}
-
-		/// <summary>
-		/// Generic method for posting data to a web url
-		/// </summary>
-		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
-		public static void PostRequestCallback(string uri, Dictionary<string, string> headers, string body, Action<string> callback)
-		{
-			Task.Run(async () =>
-			{
-				string resp = await PostRequestAsync(uri, headers, body);
-				callback?.Invoke(resp);
-			});
-		}
-
-		/// <summary>
-		/// Generic method for posting data to a web url
-		/// </summary>
-		/// <param name="headers">Key-value pairs for headers. Leave null if none.</param>
-		public static async Task<string> PostRequestAsync(string uri, Dictionary<string, string> headers, string body)
-		{
-			try
-			{
-				if (headers != null)
-				{
-					foreach (KeyValuePair<string, string> header in headers)
-					{
-						client.DefaultRequestHeaders.Remove(header.Key);
-						client.DefaultRequestHeaders.Add(header.Key, header.Value);
-					}
-				}
-				StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
-				HttpResponseMessage response = await client.PostAsync(uri, content);
-				return await response.Content.ReadAsStringAsync();
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine($"Can't get data\n{e}");
-				return string.Empty;
-			}
-		}
-
 
 		private static void RegisterUriScheme(string UriScheme, string FriendlyName)
 		{
@@ -3231,8 +3113,8 @@ namespace Spark
 			{
 				try
 				{
-					client.Timeout = TimeSpan.FromSeconds(1);
-					HttpResponseMessage response = await client.GetAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session");
+					FetchUtils.client.Timeout = TimeSpan.FromSeconds(1);
+					HttpResponseMessage response = await FetchUtils.client.GetAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session");
 					if (response.StatusCode == HttpStatusCode.OK)
 					{
 						await APIJoin(parts[3], joinType == JoinType.Spectator ? 2 : -1);
@@ -3564,7 +3446,7 @@ namespace Spark
 							if (!spectateMeController.spectateMe) return;
 
 							// TODO this crashes on local pc
-							result = await GetRequestAsync($"http://{ip}:{port}/session", null);
+							result = await FetchUtils.GetRequestAsync($"http://{ip}:{port}/session", null);
 							if (string.IsNullOrEmpty(result))
 							{
 								await Task.Delay(200);
@@ -3720,7 +3602,7 @@ namespace Spark
 
 					try
 					{
-						HttpResponseMessage response = await client.PostAsync("/update_tablet_stats?hashkey=" + hash + "&player_name=" + p.player_name, content);
+						HttpResponseMessage response = await FetchUtils.client.PostAsync("/update_tablet_stats?hashkey=" + hash + "&player_name=" + p.player_name, content);
 						LogRow(LogType.Info, "[DB][Response] " + response.Content.ReadAsStringAsync().Result);
 						finishedCallback?.Invoke(response.IsSuccessStatusCode);
 					}

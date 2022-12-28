@@ -260,7 +260,7 @@ namespace Spark
 
 			try
 			{
-				string resp = await Program.GetRequestAsync(
+				string resp = await FetchUtils.GetRequestAsync(
 					$"{Program.APIURL}/optin/get/{SparkSettings.instance.client_name}",
 					new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } });
 
@@ -290,7 +290,7 @@ namespace Spark
 		{
 			if (!optInFound) return;
 
-			Program.PostRequestCallback(
+			FetchUtils.PostRequestCallback(
 				$"{Program.APIURL}/optin/set/{SparkSettings.instance.client_name}/{((CheckBox)sender).IsChecked}",
 				new Dictionary<string, string>
 				{

@@ -255,7 +255,7 @@ namespace Spark
 			try
 			{
 				string url = $"{Program.APIURL}/auth/token/{oauthToken}?u={SparkSettings.instance.client_name}&v={Program.AppVersionString()}"; 
-				string accessCodesResponseString = await Program.GetRequestAsync(url, null);
+				string accessCodesResponseString = await FetchUtils.GetRequestAsync(url, null);
 
 				Dictionary<string, JToken> accessCodesResponseData =
 					JsonConvert.DeserializeObject<Dictionary<string, JToken>>(accessCodesResponseString);
@@ -289,8 +289,8 @@ namespace Spark
 				availableAccessCodes = newAccessCodes;
 				SetAccessCodeByHash(SparkSettings.instance.accessCode);
 				
-				Program.client.DefaultRequestHeaders.Remove("x-api-key");
-				Program.client.DefaultRequestHeaders.Add("x-api-key", igniteUploadKey);
+				FetchUtils.client.DefaultRequestHeaders.Remove("x-api-key");
+				FetchUtils.client.DefaultRequestHeaders.Add("x-api-key", igniteUploadKey);
 
 				Authenticated?.Invoke();
 			}

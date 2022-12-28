@@ -56,8 +56,6 @@ namespace Spark
 			get => CurrentAnimation?.pauseWhenClockNotRunning ?? false;
 		}
 
-		public bool orbitingDisc;
-
 		public static float lastSetFov = 1;
 		public CameraTransform manualTransform = new CameraTransform();
 
@@ -133,7 +131,7 @@ namespace Spark
 			set
 			{
 				//manualTransform.rotation = Quaternion.CreateFromYawPitchRoll(
-				//	value * Deg2Rad, yRot * Deg2Rad, zRot * Deg2Rad
+				//	value * CameraWriteController.Deg2Rad, yRot * CameraWriteController.Deg2Rad, zRot * CameraWriteController.Deg2Rad
 				//);
 				manualTransform.qx = value;
 				if (sliderListenersActivated)
@@ -158,7 +156,7 @@ namespace Spark
 			set
 			{
 				//manualTransform.rotation = Quaternion.CreateFromYawPitchRoll(
-				//	xRot * Deg2Rad, value * Deg2Rad, zRot * Deg2Rad
+				//	xRot * CameraWriteController.Deg2Rad, value * CameraWriteController.Deg2Rad, zRot * CameraWriteController.Deg2Rad
 				//);
 				manualTransform.qy = value;
 				if (sliderListenersActivated)
@@ -183,7 +181,7 @@ namespace Spark
 			set
 			{
 				//manualTransform.rotation = Quaternion.CreateFromYawPitchRoll(
-				//	xRot * Deg2Rad, yRot * Deg2Rad, value * Deg2Rad
+				//	xRot * CameraWriteController.Deg2Rad, yRot * CameraWriteController.Deg2Rad, value * CameraWriteController.Deg2Rad
 				//);
 				manualTransform.qz = value;
 				if (sliderListenersActivated)
@@ -245,6 +243,13 @@ namespace Spark
 
 		#endregion
 
+		#region Camera Modules
+
+		private ControllableSideline controllableSideline = new ControllableSideline();
+		private DiscOrbit discOrbit = new DiscOrbit();
+		private SpaceMouseInput spaceMouseInput = new SpaceMouseInput();
+
+		#endregion
 
 		public CameraTransform start;
 		public CameraTransform end;
@@ -257,8 +262,6 @@ namespace Spark
 		private readonly Timer outputUpdateTimer = new();
 		private const int deltaMillis = 67; // about 15 fps
 
-		public const float Deg2Rad = 1 / 57.29578f;
-		public const float Rad2Deg = 57.29578f;
 
 		public bool sliderListenersActivated;
 		private bool animationsComboBoxListenersActivated;
@@ -478,7 +481,21 @@ namespace Spark
 		{
 			if (Program.running)
 			{
-				Dispatcher.Invoke(() => { animationProgressBar.Value = animationProgress; });
+				Dispatcher.Invoke(() =>
+				{
+					animationProgressBar.Value = animationProgress;
+					
+					// spacemouse
+					if (spaceMouseInput.Enabled)
+					{
+						inputPosX.Value = spaceMouseInput.lastMouseState.position.X;
+						inputPosY.Value = spaceMouseInput.lastMouseState.position.Y;
+						inputPosZ.Value = spaceMouseInput.lastMouseState.position.Z;
+						inputRotX.Value = spaceMouseInput.lastMouseState.rotation.X;
+						inputRotY.Value = spaceMouseInput.lastMouseState.rotation.Y;
+						inputRotZ.Value = spaceMouseInput.lastMouseState.rotation.Z;
+					}
+				});
 			}
 		}
 
@@ -952,9 +969,7 @@ namespace Spark
 		{
 			CameraWriteSettings.instance.Save();
 
-			orbitingDisc = false;
 			isAnimating = false;
-			spaceMouseDevice.Stop();
 			joystickDevice.Stop();
 		}
 
@@ -977,7 +992,7 @@ namespace Spark
 
 		private void ToggleOrbitDisc(object sender, RoutedEventArgs e)
 		{
-			OrbitDisc(!orbitingDisc);
+			OrbitDisc(!discOrbit.Enabled);
 		}
 
 		public void OrbitDisc(bool enabled)
@@ -985,163 +1000,10 @@ namespace Spark
 			// just in case this is called from the api.
 			Dispatcher.Invoke(() =>
 			{
-				if (orbitThread?.IsAlive == true && !enabled)
-				{
-					orbitingDisc = false;
-					IsOrbitingCheckbox.IsChecked = false;
-				}
-				else if (orbitThread?.IsAlive != true && enabled)
-				{
-					orbitingDisc = true;
-					IsOrbitingCheckbox.IsChecked = true;
-					orbitThread = new Thread(OrbitDiscThread);
-					orbitThread.Start();
-				}
+				discOrbit.Enabled = enabled;
+				IsOrbitingCheckbox.IsChecked = discOrbit.Enabled;
 			});
 		}
-
-
-		private void OrbitDiscThreadSimple()
-		{
-			DateTime startTime = DateTime.Now;
-
-			while (orbitingDisc)
-			{
-				DateTime currentTime = DateTime.Now;
-				double elapsed = (currentTime - startTime).TotalSeconds;
-				double angle = elapsed * CameraWriteSettings.instance.rotSpeed * Deg2Rad;
-
-
-				Vector3 offset = new Vector3((float)Math.Cos(angle), 0, (float)Math.Sin(angle)) * CameraWriteSettings.instance.orbitRadius;
-
-				// do another API request for lowest latency
-				Program.GetRequestCallback(sessionUrl, null, resp =>
-				{
-					Frame frame = JsonConvert.DeserializeObject<Frame>(resp);
-					if (frame == null) return;
-					Vector3 discPos = frame.disc.position.ToVector3();
-					Vector3 pos = discPos - offset;
-
-					// Quaternion lookDir = QuaternionLookRotation(offset, Vector3.UnitY);
-					Quaternion lookDir = Quaternion.CreateFromAxisAngle(Vector3.UnitY, (float)(angle - Math.PI / 2));
-
-					CameraTransform newTransform = new CameraTransform(pos, lookDir);
-					SetCamera(newTransform);
-				});
-
-
-				Thread.Sleep(8);
-			}
-
-			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
-		}
-
-		private void OrbitDiscThread()
-		{
-			DateTime startTime = DateTime.Now;
-
-			const int avgCount = 5;
-
-			List<CameraTransform> lastTransforms = new List<CameraTransform>();
-
-			Vector3 smoothDiscPos = Vector3.Zero;
-
-			Vector3 lastDiscPos = Vector3.Zero;
-			Vector3 lastDiscVel = Vector3.Zero;
-
-
-			CameraWriteController.SetCameraMode(CameraWriteController.CameraMode.api);
-
-			while (orbitingDisc)
-			{
-				if (!Program.InGame)
-				{
-					Thread.Sleep(100);
-					continue;
-				}
-
-				// do another API request for lowest latency
-				Program.GetRequestCallback("http://localhost:6721/session", null, resp =>
-				{
-					DateTime currentTime = DateTime.Now;
-					double elapsed = (currentTime - startTime).TotalSeconds;
-
-					double angle = elapsed * CameraWriteSettings.instance.rotSpeed * Deg2Rad;
-
-					Frame frame = JsonConvert.DeserializeObject<Frame>(resp);
-					if (frame == null) return;
-
-					Vector3 discPos = frame.disc.position.ToVector3();
-					Vector3 discVel = frame.disc.velocity.ToVector3();
-
-					Vector3 diff = discPos - lastDiscPos;
-					if (discVel != Vector3.Zero)
-					{
-						diff = discVel;
-					}
-
-					Quaternion vel;
-					Vector3 offset;
-					if (diff == Vector3.Zero)
-					{
-						vel = Quaternion.Identity;
-						offset = Vector3.UnitZ;
-					}
-					else
-					{
-						vel = QuaternionLookRotation(diff.Normalized(), Vector3.UnitY);
-						offset = diff.Normalized();
-					}
-
-					offset = new Vector3((float)Math.Cos(angle), 0, (float)Math.Sin(angle)) * CameraWriteSettings.instance.orbitRadius;
-
-					// add lag comp
-					discPos += discVel * CameraWriteSettings.instance.lagCompDiscFollow;
-					lastDiscPos += lastDiscVel * CameraWriteSettings.instance.lagCompDiscFollow;
-
-					//discPos = Vector3.Lerp(lastDiscPos, discPos, (float)(DateTime.Now - Program.lastDataTime).TotalSeconds/1);
-					smoothDiscPos = Vector3.Lerp(smoothDiscPos, discPos, CameraWriteSettings.instance.followSmoothing);
-					discPos = smoothDiscPos;
-
-					Vector3 pos = discPos - offset;
-
-					Quaternion lookDir = QuaternionLookRotation(discPos - pos, Vector3.UnitY);
-
-					CameraTransform newTransform = new CameraTransform(pos, lookDir);
-					lastTransforms.Add(newTransform);
-					if (lastTransforms.Count > avgCount)
-					{
-						lastTransforms.RemoveAt(0);
-					}
-
-					CameraTransform avg = lastTransforms[0];
-
-					foreach (CameraTransform t in lastTransforms)
-					{
-						//avg.position = Vector3.Lerp(lastTransforms[i].position, avg.position, .5f);
-						avg.Position += t.Position;
-						avg.Rotation = Quaternion.Lerp(t.Rotation, avg.Rotation, .5f);
-					}
-
-					avg.Position /= avgCount;
-
-					avg.Rotation = new Quaternion(avg.Rotation.X / avgCount, avg.Rotation.Y / avgCount,
-						avg.Rotation.Z / avgCount, avg.Rotation.W / avgCount);
-					//avg.rotation /= (float)avgCount;
-
-
-					SetCamera(newTransform);
-
-					lastDiscPos = discPos;
-					lastDiscVel = discVel;
-				});
-
-				Thread.Sleep(8);
-			}
-
-			Dispatcher.Invoke(() => { IsOrbitingCheckbox.IsChecked = false; });
-		}
-
 
 		private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
 		{
@@ -1156,67 +1018,6 @@ namespace Spark
 			}
 		}
 
-		public static Quaternion QuaternionLookRotation(Vector3 forward, Vector3 up)
-		{
-			forward /= forward.Length();
-
-			Vector3 vector = Vector3.Normalize(forward);
-			Vector3 vector2 = Vector3.Normalize(Vector3.Cross(up, vector));
-			Vector3 vector3 = Vector3.Cross(vector, vector2);
-			var m00 = vector2.X;
-			var m01 = vector2.Y;
-			var m02 = vector2.Z;
-			var m10 = vector3.X;
-			var m11 = vector3.Y;
-			var m12 = vector3.Z;
-			var m20 = vector.X;
-			var m21 = vector.Y;
-			var m22 = vector.Z;
-
-
-			float num8 = (m00 + m11) + m22;
-			var quaternion = new Quaternion();
-			if (num8 > 0f)
-			{
-				var num = (float)Math.Sqrt(num8 + 1f);
-				quaternion.W = num * 0.5f;
-				num = 0.5f / num;
-				quaternion.X = (m12 - m21) * num;
-				quaternion.Y = (m20 - m02) * num;
-				quaternion.Z = (m01 - m10) * num;
-				return quaternion;
-			}
-
-			if ((m00 >= m11) && (m00 >= m22))
-			{
-				var num7 = (float)Math.Sqrt(((1f + m00) - m11) - m22);
-				var num4 = 0.5f / num7;
-				quaternion.X = 0.5f * num7;
-				quaternion.Y = (m01 + m10) * num4;
-				quaternion.Z = (m02 + m20) * num4;
-				quaternion.W = (m12 - m21) * num4;
-				return quaternion;
-			}
-
-			if (m11 > m22)
-			{
-				var num6 = (float)Math.Sqrt(((1f + m11) - m00) - m22);
-				var num3 = 0.5f / num6;
-				quaternion.X = (m10 + m01) * num3;
-				quaternion.Y = 0.5f * num6;
-				quaternion.Z = (m21 + m12) * num3;
-				quaternion.W = (m20 - m02) * num3;
-				return quaternion;
-			}
-
-			var num5 = (float)Math.Sqrt(((1f + m22) - m00) - m11);
-			var num2 = 0.5f / num5;
-			quaternion.X = (m20 + m02) * num2;
-			quaternion.Y = (m21 + m12) * num2;
-			quaternion.Z = 0.5f * num5;
-			quaternion.W = (m01 - m10) * num2;
-			return quaternion;
-		}
 
 		private void InstallLaunchWriteAPI(object sender, RoutedEventArgs e)
 		{
@@ -1227,7 +1028,7 @@ namespace Spark
 					InstallWriteApiButton.Content = "Installing...";
 					Task.Run(async () =>
 					{
-						HttpResponseMessage response = await Program.client.GetAsync("https://github.com/NtsFranz/WriteAPI/releases/download/v1.1.1/WriteAPI.zip");
+						HttpResponseMessage response = await FetchUtils.client.GetAsync("https://github.com/NtsFranz/WriteAPI/releases/download/v1.1.1/WriteAPI.zip");
 						string fileName = Path.Combine(Path.GetTempPath(), "WriteAPI.zip");
 						await using (FileStream fs = new FileStream(fileName, FileMode.Create))
 						{
@@ -1335,109 +1136,10 @@ namespace Spark
 			CameraWriteSettings.instance.Save();
 		}
 
-
-		private readonly HIDDeviceInput spaceMouseDevice = new HIDDeviceInput(new List<HIDDeviceInput.Device>()
-		{
-			new HIDDeviceInput.Device { name = "SpaceNavigator", vendor = 0x46d, product = 0xc626 },
-			new HIDDeviceInput.Device { name = "SpaceMouse Compact", vendor = 0x256F, product = 0xc635 },
-		});
-
-		private bool spaceMouseSetCameraThreadRunning;
-		private CameraTransform spaceMouseCameraState = new CameraTransform();
-
 		private void Toggle3DMouse(object sender, RoutedEventArgs e)
 		{
-			if (spaceMouseDevice.Running)
-			{
-				spaceMouseDevice.Stop();
-				SpaceMouseCheckBox.IsChecked = false;
-				spaceMouseSetCameraThreadRunning = false;
-			}
-			else
-			{
-				spaceMouseDevice.OnChanged += bytes =>
-				{
-					HIDDeviceInput.ConnexionState state = new HIDDeviceInput.ConnexionState();
-					switch (bytes[0])
-					{
-						case 1:
-							state.position = new Vector3(
-								(short)((bytes[2] << 8) | bytes[1]) / 350f,
-								(short)((bytes[4] << 8) | bytes[3]) / 350f,
-								(short)((bytes[6] << 8) | bytes[5]) / 350f
-							);
-							break;
-						case 2:
-							state.rotation = new Vector3(
-								(short)((bytes[2] << 8) | bytes[1]) / 350f,
-								(short)((bytes[4] << 8) | bytes[3]) / 350f,
-								(short)((bytes[6] << 8) | bytes[5]) / 350f
-							);
-							break;
-						case 3:
-							state.leftClick = (bytes[1] & 1) != 0;
-							state.rightClick = (bytes[1] & 2) != 0;
-							break;
-					}
-
-					OnSpaceMouseChanged(state);
-				};
-				spaceMouseDevice.Start();
-				SpaceMouseCheckBox.IsChecked = true;
-				spaceMouseSetCameraThreadRunning = true;
-				new Thread(() =>
-				{
-					while (spaceMouseSetCameraThreadRunning)
-					{
-						if (!Program.InGame)
-						{
-							Thread.Sleep(500);
-						}
-						SetCamera(spaceMouseCameraState);
-						Thread.Sleep(8);
-					}
-				}).Start();
-
-				Program.GetRequestCallback(sessionUrl, null, response =>
-				{
-					if (response == null) return;
-					Frame frame = JsonConvert.DeserializeObject<Frame>(response);
-					if (frame == null) return;
-					(Vector3 p, Quaternion q) = frame.GetCameraTransform();
-					spaceMouseCameraState = new CameraTransform(p, q, lastSetFov);
-				});
-			}
-		}
-
-
-		private void OnSpaceMouseChanged(HIDDeviceInput.ConnexionState state)
-		{
-			Dispatcher.Invoke(() =>
-			{
-				inputPosX.Value = state.position.X;
-				inputPosY.Value = state.position.Y;
-				inputPosZ.Value = state.position.Z;
-
-				inputRotX.Value = state.rotation.X;
-				inputRotY.Value = state.rotation.Y;
-				inputRotZ.Value = state.rotation.Z;
-			});
-
-			Vector3 inputPosition = new Vector3(
-				Exponential(-state.position.X * CameraWriteSettings.instance.spaceMouseMoveSpeed, CameraWriteSettings.instance.spaceMouseMoveExponential),
-				Exponential(-state.position.Z * CameraWriteSettings.instance.spaceMouseMoveSpeed, CameraWriteSettings.instance.spaceMouseMoveExponential),
-				Exponential(-state.position.Y * CameraWriteSettings.instance.spaceMouseMoveSpeed, CameraWriteSettings.instance.spaceMouseMoveExponential)
-			);
-			Quaternion rotate = Quaternion.CreateFromYawPitchRoll(
-				Exponential(-state.rotation.Z * CameraWriteSettings.instance.spaceMouseRotateSpeed, CameraWriteSettings.instance.spaceMouseRotateExponential),
-				Exponential(-state.rotation.X * CameraWriteSettings.instance.spaceMouseRotateSpeed, CameraWriteSettings.instance.spaceMouseRotateExponential),
-				Exponential(-state.rotation.Y * CameraWriteSettings.instance.spaceMouseRotateSpeed, CameraWriteSettings.instance.spaceMouseRotateExponential)
-			);
-
-			Matrix4x4 camPosMatrix = Matrix4x4.CreateFromQuaternion(spaceMouseCameraState.Rotation);
-
-			spaceMouseCameraState.Position += Vector3.Transform(inputPosition, camPosMatrix);
-			spaceMouseCameraState.Rotation = Quaternion.Multiply(spaceMouseCameraState.Rotation, rotate);
+			spaceMouseInput.Enabled = !spaceMouseInput.Enabled;
+			SpaceMouseCheckBox.IsChecked = spaceMouseInput.Enabled;
 		}
 
 		public static void SetCamera(CameraTransform output, bool mirror = false)
@@ -1687,7 +1389,7 @@ namespace Spark
 
 			public Quaternion Rotation
 			{
-				get { return Quaternion.CreateFromYawPitchRoll(-heading * Deg2Rad, -pitch * Deg2Rad, roll * Deg2Rad); }
+				get { return Quaternion.CreateFromYawPitchRoll(-heading * CameraWriteController.Deg2Rad, -pitch * CameraWriteController.Deg2Rad, roll * CameraWriteController.Deg2Rad); }
 			}
 
 			public Vector3 Position
@@ -1784,7 +1486,7 @@ namespace Spark
 				Thread joystickInputThread = new Thread(JoystickInputThread);
 				joystickInputThread.Start();
 
-				Program.GetRequestCallback(sessionUrl, null, response =>
+				FetchUtils.GetRequestCallback(sessionUrl, null, response =>
 				{
 					if (response == null) return;
 					Frame frame = JsonConvert.DeserializeObject<Frame>(response);
@@ -1799,9 +1501,9 @@ namespace Spark
 		{
 			while (joystickDevice.Running)
 			{
-				float x = Exponential(joystickValues.x * -CameraWriteSettings.instance.joystickMoveSpeed, CameraWriteSettings.instance.joystickMoveExponential);
-				float y = Exponential(joystickValues.y * -CameraWriteSettings.instance.joystickMoveSpeed, CameraWriteSettings.instance.joystickMoveExponential);
-				float spin = Exponential(joystickValues.spin * CameraWriteSettings.instance.joystickRotateSpeed, CameraWriteSettings.instance.joystickRotateExponential);
+				float x = CameraWriteController.Exponential(joystickValues.x * -CameraWriteSettings.instance.joystickMoveSpeed, CameraWriteSettings.instance.joystickMoveExponential);
+				float y = CameraWriteController.Exponential(joystickValues.y * -CameraWriteSettings.instance.joystickMoveSpeed, CameraWriteSettings.instance.joystickMoveExponential);
+				float spin = CameraWriteController.Exponential(joystickValues.spin * CameraWriteSettings.instance.joystickRotateSpeed, CameraWriteSettings.instance.joystickRotateExponential);
 
 				Vector3 translateBy = new Vector3(x, 0, y);
 				Quaternion rotateBy = Quaternion.CreateFromYawPitchRoll(spin, 0, 0);
@@ -1818,18 +1520,6 @@ namespace Spark
 		}
 
 
-		private static float Exponential(float value, float expo)
-		{
-			if (value < 0)
-			{
-				return -MathF.Pow(-value, expo);
-			}
-			else
-			{
-				return MathF.Pow(value, expo);
-			}
-		}
-
 		private void ToggleKeyboardShortcuts(object sender, RoutedEventArgs e)
 		{
 			CameraWriteSettings.instance.enableHotKeys = !CameraWriteSettings.instance.enableHotKeys;
@@ -1839,6 +1529,12 @@ namespace Spark
 
 		private void DischolderPOVSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+		}
+
+		private void ToggleControllableSideline(object sender, RoutedEventArgs e)
+		{
+			controllableSideline.Enabled = !controllableSideline.Enabled;
+			ControllableSidelineCheckBox.IsChecked = controllableSideline.Enabled;
 		}
 	}
 

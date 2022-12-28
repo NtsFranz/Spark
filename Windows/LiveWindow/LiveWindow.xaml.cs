@@ -1048,7 +1048,7 @@ namespace Spark
 #endif
 			try
 			{
-				string respString = await Program.GetRequestAsync("https://api.github.com/repos/NtsFranz/Spark/releases", null);
+				string respString = await FetchUtils.GetRequestAsync("https://api.github.com/repos/NtsFranz/Spark/releases", null);
 
 				List<VersionJson> versions = JsonConvert.DeserializeObject<List<VersionJson>>(respString);
 
@@ -1092,8 +1092,8 @@ namespace Spark
 			{
 				try
 				{
-					// string resp = await Program.client.GetStringAsync(new Uri($"{Program.APIURL}/ip_geolocation/{ip}"));
-					string resp = await Program.client.GetStringAsync(new Uri($"{Program.APIURL}/ip_geolocation/{ip}"));
+					// string resp = await FetchUtils.client.GetStringAsync(new Uri($"{Program.APIURL}/ip_geolocation/{ip}"));
+					string resp = await FetchUtils.client.GetStringAsync(new Uri($"{Program.APIURL}/ip_geolocation/{ip}"));
 					Program.CurrentRound.serverLocationResponse = resp;
 					Dictionary<string, dynamic> obj = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(resp);
 					if (obj == null) return;
@@ -2012,7 +2012,7 @@ namespace Spark
 					firstHost = false;
 
 					// post new data, then fetch the updated list
-					Program.PostRequestCallback(
+					FetchUtils.PostRequestCallback(
 						hostURL,
 						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						data,
@@ -2024,7 +2024,7 @@ namespace Spark
 
 			// post new data, then fetch the updated list
 			string matchInfo = JsonConvert.SerializeObject(match.ToDict());
-			Program.PostRequestCallback(
+			FetchUtils.PostRequestCallback(
 				unhostURL,
 				new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 				matchInfo,
@@ -2044,7 +2044,7 @@ namespace Spark
 		private void GetAtlasMatches()
 		{
 			string matchesAPIURL = $"{Program.APIURL}/hosted_matches/{(SparkSettings.instance.client_name == string.Empty ? "_" : SparkSettings.instance.client_name)}";
-			Program.GetRequestCallback(
+			FetchUtils.GetRequestCallback(
 				matchesAPIURL,
 				new Dictionary<string, string>()
 				{
@@ -2324,7 +2324,7 @@ namespace Spark
 			{
 				{ "team_idx", 0 }
 			};
-			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_pause", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_pause", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		private void OrangeTeamPauseClick(object sender, RoutedEventArgs e)
@@ -2333,7 +2333,7 @@ namespace Spark
 			{
 				{ "team_idx", 1 }
 			};
-			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_pause", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_pause", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		private void BlueTeamReadyClick(object sender, RoutedEventArgs e)
@@ -2342,7 +2342,7 @@ namespace Spark
 			{
 				{ "team_idx", 0 }
 			};
-			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_ready", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_ready", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		private void OrangeTeamReadyClick(object sender, RoutedEventArgs e)
@@ -2351,7 +2351,7 @@ namespace Spark
 			{
 				{ "team_idx", 1 }
 			};
-			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_ready", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_ready", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		private void BlueTeamRestartClick(object sender, RoutedEventArgs e)
@@ -2360,7 +2360,7 @@ namespace Spark
 			{
 				{ "team_idx", 0 }
 			};
-			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/restart_request", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/restart_request", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		private void OrangeTeamRestartClick(object sender, RoutedEventArgs e)
@@ -2369,7 +2369,7 @@ namespace Spark
 			{
 				{ "team_idx", 1 }
 			};
-			Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/restart_request", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/restart_request", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		private void OpenLocalDatabaseBrowser(object sender, RoutedEventArgs e)
@@ -2423,7 +2423,7 @@ namespace Spark
 		{
 			ReplayViewerProgressBar.Visibility = Visibility.Visible;
 			string zipUrl = remoteVersion.assets.First(url => url.browser_download_url.EndsWith("zip")).browser_download_url;
-			HttpResponseMessage response = await Program.client.GetAsync(zipUrl);
+			HttpResponseMessage response = await FetchUtils.client.GetAsync(zipUrl);
 			string fileName = Path.Combine(Path.GetTempPath(), "replay_viewer.zip");
 			await using (FileStream fs = new FileStream(fileName, FileMode.Create))
 			{
@@ -2446,7 +2446,7 @@ namespace Spark
 		{
 			try
 			{
-				string resp = await Program.client.GetStringAsync($"https://api.github.com/repos/{authorName}/{repoName}/releases/latest");
+				string resp = await FetchUtils.client.GetStringAsync($"https://api.github.com/repos/{authorName}/{repoName}/releases/latest");
 				return JsonConvert.DeserializeObject<VersionJson>(resp);
 			}
 			catch (Exception e)

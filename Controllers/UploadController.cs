@@ -92,17 +92,16 @@ namespace Spark
 
 		static async Task DoUploadMatchBatchIgniteDB(string data, string hash, string client_name)
 		{
-			Program.client.DefaultRequestHeaders.Remove("x-api-key");
-			Program.client.DefaultRequestHeaders.Add("x-api-key", DiscordOAuth.igniteUploadKey);
-
-			Program.client.DefaultRequestHeaders.Remove("access-code");
-			Program.client.DefaultRequestHeaders.Add("access-code", DiscordOAuth.AccessCode.series_name);
+			FetchUtils.client.DefaultRequestHeaders.Remove("x-api-key");
+			FetchUtils.client.DefaultRequestHeaders.Add("x-api-key", DiscordOAuth.igniteUploadKey);
+			FetchUtils.client.DefaultRequestHeaders.Remove("access-code");
+			FetchUtils.client.DefaultRequestHeaders.Add("access-code", DiscordOAuth.AccessCode.series_name);
 
 			StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
 
 			try
 			{
-				HttpResponseMessage response = await Program.client.PostAsync("/add_data?hashkey=" + hash + "&client_name=" + client_name, content);
+				HttpResponseMessage response = await FetchUtils.client.PostAsync("/add_data?hashkey=" + hash + "&client_name=" + client_name, content);
 				Logger.LogRow(Logger.LogType.Info, "[DB][Response] " + response.Content.ReadAsStringAsync().Result);
 			}
 			catch

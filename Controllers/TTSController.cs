@@ -282,7 +282,7 @@ namespace Spark
 					RequestUri = new Uri($"{Program.APIURL}/tts"),
 					Content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json),
 				};
-				HttpResponseMessage response = await Program.client.SendAsync(request);
+				HttpResponseMessage response = await FetchUtils.client.SendAsync(request);
 				byte[] bytes = await response.Content.ReadAsByteArrayAsync();
 			
 				// Write the audio content of the response to an MP3 file.

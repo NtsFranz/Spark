@@ -10,10 +10,16 @@ using static Logger;
 
 namespace Spark
 {
+	/// <summary>
+	/// Helper methods for EchoVR's camera write API
+	/// </summary>
 	class CameraWriteController
 	{
 		private static string BaseUrl => "http://127.0.0.1:" + (Program.spectateMeController.spectateMe ? SpectateMeController.SPECTATEME_PORT : "6721") + "/";
 		private static Dictionary<string, int> playerCameraIndices = new Dictionary<string, int>();
+		
+		public const float Deg2Rad = 1 / 57.29578f;
+		public const float Rad2Deg = 57.29578f;
 
 		public CameraWriteController()
 		{
@@ -184,7 +190,7 @@ namespace Spark
 
 		private static async Task<(Player, float)> CheckNearestPlayer()
 		{
-			string result = await Program.GetRequestAsync(BaseUrl + "session", null);
+			string result = await FetchUtils.GetRequestAsync(BaseUrl + "session", null);
 			if (string.IsNullOrEmpty(result)) return (null, 100);
 			Frame frame = JsonConvert.DeserializeObject<Frame>(result);
 			if (frame == null) return (null, 100);
@@ -233,7 +239,7 @@ namespace Spark
 			{
 				{ "enabled", visible }
 			};
-			Program.PostRequestCallback(BaseUrl + "ui_visibility", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback(BaseUrl + "ui_visibility", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		public static void SetNameplatesVisibility(bool visible)
@@ -242,7 +248,7 @@ namespace Spark
 			{
 				{ "enabled", visible }
 			};
-			Program.PostRequestCallback(BaseUrl + "nameplates_visibility", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback(BaseUrl + "nameplates_visibility", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		public static void SetMinimapVisibility(bool visible)
@@ -251,7 +257,7 @@ namespace Spark
 			{
 				{ "enabled", visible }
 			};
-			Program.PostRequestCallback(BaseUrl + "minimap_visibility", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback(BaseUrl + "minimap_visibility", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		public static void SetTeamsMuted(bool blueTeamMuted, bool orangeTeamMuted)
@@ -261,7 +267,7 @@ namespace Spark
 				{ "blue_team_muted", blueTeamMuted },
 				{ "orange_team_muted", orangeTeamMuted },
 			};
-			Program.PostRequestCallback(BaseUrl + "team_muted", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback(BaseUrl + "team_muted", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		public enum CameraMode
@@ -280,7 +286,7 @@ namespace Spark
 			{
 				{ "mode", mode.ToString() },
 			};
-			Program.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		public static void SetCameraMode(int playerId)
@@ -289,7 +295,7 @@ namespace Spark
 			{
 				{ "num", playerId },
 			};
-			Program.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		public static void SetCameraMode(CameraMode mode, int playerId)
@@ -299,13 +305,17 @@ namespace Spark
 				{ "mode", mode.ToString() },
 				{ "num", playerId },
 			};
-			Program.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback(BaseUrl + "camera_mode", null, JsonConvert.SerializeObject(data), null);
 		}
 
+		public static async Task<string> SetCameraTransformAsync(CameraTransform data)
+		{
+			return await FetchUtils.PostRequestAsync(BaseUrl + "camera_transform", null, JsonConvert.SerializeObject(data));
+		}
 
 		public static void SetCameraTransform(CameraTransform data)
 		{
-			Program.PostRequestCallback(BaseUrl + "camera_transform", null, JsonConvert.SerializeObject(data), null);
+			FetchUtils.PostRequestCallback(BaseUrl + "camera_transform", null, JsonConvert.SerializeObject(data), null);
 		}
 
 		public static void FollowDischolder(Player catchPlayer, bool useFollowCam, bool restrictToClientTeam)
@@ -324,6 +334,82 @@ namespace Spark
 			}
 
 			// SetCameraMode(mode);
+		}
+
+		public static Quaternion QuaternionLookRotation(Vector3 forward, Vector3 up)
+		{
+			forward /= forward.Length();
+
+			Vector3 vector = Vector3.Normalize(forward);
+			Vector3 vector2 = Vector3.Normalize(Vector3.Cross(up, vector));
+			Vector3 vector3 = Vector3.Cross(vector, vector2);
+			float m00 = vector2.X;
+			float m01 = vector2.Y;
+			float m02 = vector2.Z;
+			float m10 = vector3.X;
+			float m11 = vector3.Y;
+			float m12 = vector3.Z;
+			float m20 = vector.X;
+			float m21 = vector.Y;
+			float m22 = vector.Z;
+
+
+			float num8 = (m00 + m11) + m22;
+			Quaternion quaternion = new Quaternion();
+			if (num8 > 0f)
+			{
+				float num = (float)Math.Sqrt(num8 + 1f);
+				quaternion.W = num * 0.5f;
+				num = 0.5f / num;
+				quaternion.X = (m12 - m21) * num;
+				quaternion.Y = (m20 - m02) * num;
+				quaternion.Z = (m01 - m10) * num;
+				return quaternion;
+			}
+
+			if ((m00 >= m11) && (m00 >= m22))
+			{
+				float num7 = (float)Math.Sqrt(((1f + m00) - m11) - m22);
+				float num4 = 0.5f / num7;
+				quaternion.X = 0.5f * num7;
+				quaternion.Y = (m01 + m10) * num4;
+				quaternion.Z = (m02 + m20) * num4;
+				quaternion.W = (m12 - m21) * num4;
+				return quaternion;
+			}
+
+			if (m11 > m22)
+			{
+				float num6 = (float)Math.Sqrt(((1f + m11) - m00) - m22);
+				float num3 = 0.5f / num6;
+				quaternion.X = (m10 + m01) * num3;
+				quaternion.Y = 0.5f * num6;
+				quaternion.Z = (m21 + m12) * num3;
+				quaternion.W = (m20 - m02) * num3;
+				return quaternion;
+			}
+
+			float num5 = (float)Math.Sqrt(((1f + m22) - m00) - m11);
+			float num2 = 0.5f / num5;
+			quaternion.X = (m20 + m02) * num2;
+			quaternion.Y = (m21 + m12) * num2;
+			quaternion.Z = 0.5f * num5;
+			quaternion.W = (m01 - m10) * num2;
+			return quaternion;
+		}
+		
+		
+
+		public static float Exponential(float value, float expo)
+		{
+			if (value < 0)
+			{
+				return -MathF.Pow(-value, expo);
+			}
+			else
+			{
+				return MathF.Pow(value, expo);
+			}
 		}
 	}
 }

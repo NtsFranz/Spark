@@ -71,7 +71,7 @@ namespace Spark
 				case GameVersion.LoneEcho1:
 					try
 					{
-						string resp = await Program.GetRequestAsync(Program.WRITE_API_URL + "le1/speed", null);
+						string resp = await FetchUtils.GetRequestAsync(Program.WRITE_API_URL + "le1/speed", null);
 						Debug.WriteLine(resp);
 						return (float) JObject.Parse(resp)["speed"];
 					}
@@ -82,7 +82,7 @@ namespace Spark
 				case GameVersion.LoneEcho2:
 					try
 					{
-						string resp = await Program.GetRequestAsync(Program.WRITE_API_URL + "le2/speed", null);
+						string resp = await FetchUtils.GetRequestAsync(Program.WRITE_API_URL + "le2/speed", null);
 						Debug.WriteLine(resp);
 						return (float) JObject.Parse(resp)["speed"];
 					}

@@ -343,6 +343,19 @@
                                 </Button>
                             </StackPanel>
                         </Expander>
+                        <Expander Header="Controllable Sideline" Visibility="Visible">
+                            <StackPanel Margin="0,5,0,0">
+                                <TextBlock
+                                    Text="Sideline but with input"
+                                    TextWrapping="Wrap" Margin="5,5,5,5" />
+                                <Button Click="ToggleControllableSideline">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="Enabled" />
+                                        <CheckBox x:Name="ControllableSidelineCheckBox" Margin="10,0,0,0" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Expander>
                         <Expander Header="3D Mouse Support" Visibility="Visible">
                             <StackPanel Margin="0,5,0,0">
                                 <TextBlock Text="Adds compatibility with the 3DConnexion SpaceMouse."

@@ -337,7 +337,7 @@ namespace Spark
 			}
 
 			// add presets from server
-			Program.GetRequestCallback($"{Program.APIURL}/v2/private_match_rules", null, resp =>
+			FetchUtils.GetRequestCallback($"{Program.APIURL}/v2/private_match_rules", null, resp =>
 			{
 				Dictionary<string, PrivateMatchRulePreset> dict = JsonConvert.DeserializeObject<Dictionary<string, PrivateMatchRulePreset>>(resp);
 				if (dict != null)
@@ -430,7 +430,7 @@ namespace Spark
 							{
 								{ keyValue.Key, keyValue.Value }
 							});
-							await Program.PostRequestAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body);
+							await FetchUtils.PostRequestAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body);
 							lastSetTime = DateTime.UtcNow;
 						}
 					}
@@ -438,7 +438,7 @@ namespace Spark
 
 				// set the rules all at once
 				// string body = JsonConvert.SerializeObject(Rules);
-				// Program.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body, null);
+				// FetchUtils.PostRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/set_rules", null, body, null);
 			}
 			catch (Exception e)
 			{
@@ -469,8 +469,8 @@ namespace Spark
 		{
 			try
 			{
-				// Program.GetRequestCallback($"{Program.APIURL}/get_rules", null, resp =>
-				Program.GetRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/get_rules", null, resp =>
+				// FetchUtils.GetRequestCallback($"{Program.APIURL}/get_rules", null, resp =>
+				FetchUtils.GetRequestCallback($"http://{Program.echoVRIP}:{Program.echoVRPort}/get_rules", null, resp =>
 				{
 					PrivateMatchRules newRules = JsonConvert.DeserializeObject<PrivateMatchRules>(resp);
 					if (newRules != null)

@@ -58,7 +58,7 @@ namespace Spark
 			LiveWindow.AtlasWhitelist.AtlasTeam team = new(teamName);
 			Program.atlasWhitelist.teams.Add(team);
 
-			Program.GetRequestCallback(
+			FetchUtils.GetRequestCallback(
 				$"{Program.APIURL}/vrml/get_players_on_team/" + teamName,
 				new Dictionary<string, string>(),
 				(response) =>

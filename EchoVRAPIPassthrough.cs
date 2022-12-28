@@ -42,7 +42,7 @@ namespace Spark
 
 				try
 				{
-					string resp = await Program.client.GetStringAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/player_bones");
+					string resp = await FetchUtils.client.GetStringAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/player_bones");
 					await context.Response.WriteAsync(resp);
 				}
 				catch (Exception)
@@ -58,7 +58,7 @@ namespace Spark
 
 				try
 				{
-					string resp = await Program.client.GetStringAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/get_rules");
+					string resp = await FetchUtils.client.GetStringAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/get_rules");
 					await context.Response.WriteAsync(resp);
 				}
 				catch (Exception)
@@ -117,7 +117,7 @@ namespace Spark
 				using StreamReader reader = new StreamReader(context.Request.Body);
 				string body = await reader.ReadToEndAsync();
 				StringContent content = new StringContent(body, Encoding.UTF8, "application/json");
-				HttpResponseMessage resp = await Program.client.PostAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/{endpoint}", content);
+				HttpResponseMessage resp = await FetchUtils.client.PostAsync($"http://{Program.echoVRIP}:{Program.echoVRPort}/{endpoint}", content);
 				await context.Response.WriteAsync(await resp.Content.ReadAsStringAsync());
 			}
 			catch (Exception)

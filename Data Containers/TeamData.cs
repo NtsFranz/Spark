@@ -20,7 +20,7 @@ namespace Spark
 			{
 				if (team.players.Count > 0)
 				{
-					Program.GetRequestCallback($"{Program.APIURL}/vrml/get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
+					FetchUtils.GetRequestCallback($"{Program.APIURL}/vrml/get_team_name_from_list?player_list=[{string.Join(',', team.player_names.Select(name => $"\"{name}\""))}]",
 						new Dictionary<string, string> { { "x-api-key", DiscordOAuth.igniteUploadKey } },
 						returnJSON =>
 						{

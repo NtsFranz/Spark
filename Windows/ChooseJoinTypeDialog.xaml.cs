@@ -36,8 +36,8 @@ namespace Spark
 				string resp = null;
 				try
 				{
-					Program.client.Timeout = TimeSpan.FromSeconds(2);
-					HttpResponseMessage response = await Program.client.GetAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session");
+					FetchUtils.client.Timeout = TimeSpan.FromSeconds(2);
+					HttpResponseMessage response = await FetchUtils.client.GetAsync($"http://{SparkSettings.instance.echoVRIP}:{SparkSettings.instance.echoVRPort}/session");
 					resp = await response.Content.ReadAsStringAsync();
 				}
 				catch (Exception)
