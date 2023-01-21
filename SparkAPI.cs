@@ -79,7 +79,7 @@ namespace Spark
 				context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 				context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
 				string name = context.Request.RouteValues["name"]?.ToString();
-				
+
 				Program.cameraWriteWindow.TryPlayAnim(name);
 				await context.Response.WriteAsync($"Playing animation {name}");
 			});
@@ -179,7 +179,7 @@ namespace Spark
 					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
 					string teamName = context.Request.RouteValues["team_name"]?.ToString();
 					if (Enum.TryParse(context.Request.RouteValues["team_color"]?.ToString(), out Team.TeamColor teamColor) &&
-					    !string.IsNullOrEmpty(teamName))
+						!string.IsNullOrEmpty(teamName))
 					{
 						switch (teamColor)
 						{
@@ -217,7 +217,7 @@ namespace Spark
 					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
 					string teamLogo = context.Request.RouteValues["team_logo"]?.ToString();
 					if (Enum.TryParse(context.Request.RouteValues["team_color"]?.ToString(), out Team.TeamColor teamColor) &&
-					    !string.IsNullOrEmpty(teamLogo))
+						!string.IsNullOrEmpty(teamLogo))
 					{
 						switch (teamColor)
 						{
@@ -266,7 +266,7 @@ namespace Spark
 					{
 						string teamLogo = data["team_logo"];
 						if (Enum.TryParse(context.Request.RouteValues["team_color"]?.ToString(), out Team.TeamColor teamColor) &&
-						    !string.IsNullOrEmpty(teamLogo))
+							!string.IsNullOrEmpty(teamLogo))
 						{
 							switch (teamColor)
 							{
@@ -289,7 +289,7 @@ namespace Spark
 					{
 						string teamName = data["team_name"];
 						if (Enum.TryParse(context.Request.RouteValues["team_color"]?.ToString(), out Team.TeamColor teamColor) &&
-						    !string.IsNullOrEmpty(teamName))
+							!string.IsNullOrEmpty(teamName))
 						{
 							switch (teamColor)
 							{
@@ -347,7 +347,8 @@ namespace Spark
 								if (!setting.ContainsKey(key))
 								{
 									setting[key] = new Dictionary<string, object>();
-								} else if (setting[key] is not Dictionary<string, object>)
+								}
+								else if (setting[key] is not Dictionary<string, object>)
 								{
 									setting[key] = new Dictionary<string, object>();
 								}
@@ -611,13 +612,13 @@ namespace Spark
 					Logger.LogRow(Logger.LogType.Error, $"{e}");
 				}
 			});
-			
-			
+
+
 			endpoints.MapGet("/api/db/jousts", async (context) =>
 			{
 				try
 				{
-					
+
 					await context.Response.WriteAsJsonAsync(Program.localDatabase.GetJousts());
 				}
 				catch (Exception e)
@@ -629,8 +630,37 @@ namespace Spark
 			{
 				try
 				{
-					
+
 					await context.Response.WriteAsJsonAsync(Program.localDatabase.GetEvents());
+				}
+				catch (Exception e)
+				{
+					Logger.LogRow(Logger.LogType.Error, $"{e}");
+				}
+			});
+
+
+			endpoints.MapGet("/api/questips", async (context) =>
+			{
+				try
+				{
+					QuestIPs window = (QuestIPs)Program.GetWindowIfOpen(typeof(QuestIPs));
+					if (window != null)
+					{
+						await context.Response.WriteAsJsonAsync(window.data.Select(a => new Dictionary<string, object>() {
+							{ "questip", a.Key },
+							{ "mac", a.Value.mac},
+							{ "inlobby", a.Value.frame?.InLobby ?? false},
+							{ "sessionid", a.Value.frame?.sessionid },
+							{ "players", a.Value.frame?.teams != null ? a.Value.frame.GetAllPlayers().Count : 0 },
+							{ "name", a.Value.frame?.client_name },
+							{ "err_code", a.Value.frame?.err_code },
+						}));
+					}
+					else
+					{
+						await context.Response.WriteAsJsonAsync(Array.Empty<int>());
+					}
 				}
 				catch (Exception e)
 				{

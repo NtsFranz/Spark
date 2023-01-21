@@ -349,6 +349,17 @@ paths:
       responses:
         '200':
           description: Success
+
+
+
+  /api/questips:
+    get:
+      tags:
+        - General
+      summary: Returns a list of IPs and some API info for each Quest in the Find All Quests dialog
+      responses:
+        '200':
+          description: Success
   
   
   

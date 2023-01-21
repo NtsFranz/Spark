@@ -102,7 +102,7 @@ namespace Spark
 
 					// write the whole file every chunk
 					// at 300 frames/chunk this is every 10 seconds
-					if (butter.NumChunks() - lastButterNumChunks > 1)
+					if (butter.NumChunks() != lastButterNumChunks)
 					{
 						WriteOutButterFile();
 						lastButterNumChunks = butter.NumChunks();
@@ -304,6 +304,7 @@ namespace Spark
 			{
 				WriteOutButterFile();
 				butter = new ButterFile(compressionFormat: SparkSettings.instance.butterCompressionFormat);
+				lastButterNumChunks = 0;
 			}
 
 

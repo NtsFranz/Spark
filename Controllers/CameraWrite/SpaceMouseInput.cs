@@ -16,6 +16,9 @@ namespace Spark
 		{
 			new HIDDeviceInput.Device { name = "SpaceNavigator", vendor = 0x46d, product = 0xc626 },
 			new HIDDeviceInput.Device { name = "SpaceMouse Compact", vendor = 0x256F, product = 0xc635 },
+			new HIDDeviceInput.Device { name = "CadMouse Wireless", vendor = 0x256F, product = 0xc651 },
+			new HIDDeviceInput.Device { name = "3DConnexion Universal Receiver", vendor = 0x256F, product = 0xc652 },
+			new HIDDeviceInput.Device { name = "3DConnexion SpaceMouse Wireless Receiver", vendor = 0x256F, product = 0xc62f },
 		});
 
 		public SpaceMouseInput()

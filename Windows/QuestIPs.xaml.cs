@@ -1,26 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Net.Sockets;
-using System.Numerics;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Newtonsoft.Json;
 using Frame = EchoVRAPI.Frame;
 
 namespace Spark
 {
 	public partial class QuestIPs : Window
 	{
-		private Dictionary<string, QuestIPLine> lines = new Dictionary<string, QuestIPLine>();
+		public Dictionary<string, QuestIPLine> data = new Dictionary<string, QuestIPLine>();
 
 		public QuestIPs()
 		{
@@ -29,7 +23,8 @@ namespace Spark
 		}
 
 
-		private class QuestIPLine
+		[Serializable]
+		public class QuestIPLine
 		{
 			public IPAddress ip;
 			public string mac;
@@ -122,7 +117,7 @@ namespace Spark
 		{
 			try
 			{
-				lines.Clear();
+				data.Clear();
 				RefreshChildren();
 
 
@@ -147,7 +142,7 @@ namespace Spark
 				// create UI from the IP list
 				ips.ForEach(ip =>
 				{
-					lines.Add(ip.ToString(), new QuestIPLine()
+					data.Add(ip.ToString(), new QuestIPLine()
 					{
 						ip = ip
 					});
@@ -167,7 +162,7 @@ namespace Spark
 		private async Task RefreshExistingIPs()
 		{
 			LoadingLabel.Content = "Fetching EchoVR API for each IP...";
-			List<IPAddress> ips = lines.Select(l => l.Value.ip).ToList();
+			List<IPAddress> ips = data.Select(l => l.Value.ip).ToList();
 			List<(IPAddress, string)> responses = await QuestIPFetching.PingEchoVRAPIAsync(ips);
 
 			// check the game state for ips with frames
@@ -204,10 +199,10 @@ namespace Spark
 			});
 
 
-			lines.Clear();
+			data.Clear();
 			frames.ForEach(f =>
 			{
-				lines.Add(f.Item1.ToString(), new QuestIPLine()
+				data.Add(f.Item1.ToString(), new QuestIPLine()
 				{
 					ip = f.Item1,
 					frame = f.Item2,
@@ -222,7 +217,7 @@ namespace Spark
 		private void RefreshChildren()
 		{
 			ListBox.Children.Clear();
-			foreach (KeyValuePair<string, QuestIPLine> kvp in lines)
+			foreach (KeyValuePair<string, QuestIPLine> kvp in data)
 			{
 				ListBox.Children.Add(kvp.Value.GetRow());
 			}
