@@ -10,7 +10,7 @@ namespace Spark
 	{
 		public Medal()
 		{
-			Program.EmoteActivated += (frame, _, player) =>
+			Program.EmoteActivated += (frame, _, player, isLeft) =>
 			{
 				SaveClip(SparkSettings.instance.medalClipEmote, player.name, frame);
 			};

@@ -1189,9 +1189,6 @@ CLOSE ECHOVR BEFORE PRESSING OK!</value>
   <data name="e.g. California" xml:space="preserve">
     <value>e.g. California</value>
   </data>
-  <data name="e.g. New York, Miami, Charleston" xml:space="preserve">
-    <value>e.g. New York, Miami, Charleston</value>
-  </data>
   <data name="e.g. Texas" xml:space="preserve">
     <value>e.g. Texas</value>
   </data>

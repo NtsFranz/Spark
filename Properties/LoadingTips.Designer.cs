@@ -88,6 +88,24 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Be careful when shooting backboards or you&apos;ll catch the q-lung.
+        /// </summary>
+        public static string Be_careful_when_shooting_backboards_or_you_ll_catch_the_q_lung {
+            get {
+                return ResourceManager.GetString("Be careful when shooting backboards or you\'ll catch the q-lung", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check out the Replay Viewer. It looks really good now..
+        /// </summary>
+        public static string Check_out_the_Replay_Viewer__It_looks_really_good_now_ {
+            get {
+                return ResourceManager.GetString("Check out the Replay Viewer. It looks really good now.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CV1 is the most comfortable headset by far..
         /// </summary>
         public static string CV1_is_the_most_comfortable_headset_by_far_ {
@@ -102,6 +120,15 @@ namespace Spark.Properties {
         public static string DOME {
             get {
                 return ResourceManager.GetString("DOME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DOMErs only.
+        /// </summary>
+        public static string DOMErs_only {
+            get {
+                return ResourceManager.GetString("DOMErs only", resourceCulture);
             }
         }
         
@@ -149,6 +176,16 @@ namespace Spark.Properties {
         public static string God_is_my_copilot__and_RAD_Natalie_is_my_boss_ {
             get {
                 return ResourceManager.GetString("God is my copilot, and RAD_Natalie is my boss.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you upload your tablet stats through Spark, you can see the day you first played Echo VR.
+        /// </summary>
+        public static string If_you_upload_your_tablet_stats_through_Spark__you_can_see_the_day_you_first_played_Echo_VR {
+            get {
+                return ResourceManager.GetString("If you upload your tablet stats through Spark, you can see the day you first play" +
+                        "ed Echo VR", resourceCulture);
             }
         }
         
@@ -227,6 +264,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scoring is a sign of weakness, passing is a sign of strength..
+        /// </summary>
+        public static string Scoring_is_a_sign_of_weakness__passing_is_a_sign_of_strength_ {
+            get {
+                return ResourceManager.GetString("Scoring is a sign of weakness, passing is a sign of strength.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Send someone a spark:// link to let them join your game without an invite..
         /// </summary>
         public static string Send_someone_a_spark____link_to_let_them_join_your_game_without_an_invite_ {
@@ -254,11 +300,31 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spark is not a bot and does not have a bot. The spectator client is just Echo VR..
+        /// </summary>
+        public static string Spark_is_not_a_bot_and_does_not_have_a_bot__The_spectator_client_is_just_Echo_VR_ {
+            get {
+                return ResourceManager.GetString("Spark is not a bot and does not have a bot. The spectator client is just Echo VR." +
+                        "", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spark makes sure you never forget the scores in league matches..
         /// </summary>
         public static string Spark_makes_sure_you_never_forget_the_scores_in_league_matches_ {
             get {
                 return ResourceManager.GetString("Spark makes sure you never forget the scores in league matches.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spark Mini is useful for people without a PC, but Spark and Spark Mini both work for Quest and PC players..
+        /// </summary>
+        public static string Spark_Mini_is_useful_for_people_without_a_PC__but_Spark_and_Spark_Mini_both_work_for_Quest_and_PC_players_ {
+            get {
+                return ResourceManager.GetString("Spark Mini is useful for people without a PC, but Spark and Spark Mini both work " +
+                        "for Quest and PC players.", resourceCulture);
             }
         }
         
@@ -278,6 +344,15 @@ namespace Spark.Properties {
             get {
                 return ResourceManager.GetString("Spark\'s OBS integration allows you to make replay buffer clips and automatically " +
                         "change scenes.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The more you pass, the better you are..
+        /// </summary>
+        public static string The_more_you_pass__the_better_you_are_ {
+            get {
+                return ResourceManager.GetString("The more you pass, the better you are.", resourceCulture);
             }
         }
         
@@ -365,6 +440,25 @@ namespace Spark.Properties {
             get {
                 return ResourceManager.GetString("You can create a private match in any region you want using the \'Choose Server Re" +
                         "gion\' button in Spark.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can install Spark Mini directly on the Quest Pro and open it while playing the game..
+        /// </summary>
+        public static string You_can_install_Spark_Mini_directly_on_the_Quest_Pro_and_open_it_while_playing_the_game_ {
+            get {
+                return ResourceManager.GetString("You can install Spark Mini directly on the Quest Pro and open it while playing th" +
+                        "e game.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can right click to accept the terms in Echo VR&apos;s spectator mode..
+        /// </summary>
+        public static string You_can_right_click_to_accept_the_terms_in_Echo_VR_s_spectator_mode_ {
+            get {
+                return ResourceManager.GetString("You can right click to accept the terms in Echo VR\'s spectator mode.", resourceCulture);
             }
         }
         

@@ -8,11 +8,11 @@ namespace Spark
 	{
 		public ReplayClips()
 		{
-			Program.EmoteActivated += (frame, _, player) =>
+			Program.EmoteActivated += (frame, _, player, isLeft) =>
 			{
 				if (player.name == frame.client_name)
 				{
-					SaveClip(SparkSettings.instance.replayClipEmote, player.name, frame, $"{player.name}_emote");
+					SaveClip(SparkSettings.instance.replayClipEmote, player.name, frame, $"{player.name}_{(isLeft ? "left" : "right")}_emote");
 				}
 			};
 			Program.PlayspaceAbuse += (frame, _, player, _) => { SaveClip(SparkSettings.instance.replayClipPlayspace, player.name, frame, $"{player.name}_abuse"); };

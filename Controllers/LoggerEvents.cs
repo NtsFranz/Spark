@@ -165,9 +165,9 @@ namespace Spark
 			{
 				Log(frame, $"Left game");
 			};
-			Program.EmoteActivated += (frame, _, player) =>
+			Program.EmoteActivated += (frame, _, player, isLeft) =>
 			{
-				Log(frame, $"{player.name} used an emote");
+				Log(frame, $"{player.name} used the {(isLeft ? "left" : "right")} emote");
 			};
 			Program.RulesChanged += frame =>
 			{

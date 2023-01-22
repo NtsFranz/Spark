@@ -255,6 +255,7 @@ namespace Spark
 		public CameraTransform end;
 
 		public bool isAnimating;
+		public bool animationSliderManipulating;
 		private float animationProgress;
 		public Thread animationThread;
 		public Thread orbitThread;
@@ -266,7 +267,17 @@ namespace Spark
 		public bool sliderListenersActivated;
 		private bool animationsComboBoxListenersActivated;
 
-		public AnimationKeyframes CurrentAnimation;
+		private BezierSpline spline;
+		private AnimationKeyframes currentAnimation;
+		public AnimationKeyframes CurrentAnimation
+		{
+			get => currentAnimation;
+			set
+			{
+				currentAnimation = value;
+				spline = new BezierSpline(currentAnimation);
+			}	
+		}
 		//{
 		//	get
 		//	{
@@ -484,7 +495,8 @@ namespace Spark
 				Dispatcher.Invoke(() =>
 				{
 					animationProgressBar.Value = animationProgress;
-					
+					AnimationInputSlider.Value = animationProgress;
+
 					// spacemouse
 					if (spaceMouseInput.Enabled)
 					{
@@ -550,52 +562,26 @@ namespace Spark
 
 		private void KeyframeAnimationThread()
 		{
-			BezierSpline spline = new BezierSpline(CurrentAnimation);
-
 			DateTime startTime = DateTime.Now;
-			CameraTransform lastTransform = new CameraTransform();
+			// CameraTransform lastTransform = new CameraTransform();
 			Stopwatch sw = new Stopwatch();
 			sw.Start();
 			while (animationProgress < 1 && isAnimating)
 			{
-				if (!CurrentAnimation.pauseWhenClockNotRunning || Program.lastFrame?.private_match == true || Program.lastFrame?.game_status == "playing")
+				if ((!CurrentAnimation.pauseWhenClockNotRunning || Program.lastFrame?.private_match == true || Program.lastFrame?.game_status == "playing") &&
+				    !animationSliderManipulating)
 				{
 					DateTime currentTime = DateTime.Now;
 					float elapsed = (currentTime.Ticks - startTime.Ticks) / 10000000f;
 					animationProgress = elapsed / CurrentAnimation.duration;
 				}
 
-				// Change t to use easing in and out
-				float t = animationProgress;
-				if (CurrentAnimation.easeIn && CurrentAnimation.easeOut)
-				{
-					t = EaseInOut(animationProgress);
-				}
-				else if (CurrentAnimation.easeIn)
-				{
-					t = DoEaseIn(animationProgress);
-				}
-				else if (CurrentAnimation.easeOut)
-				{
-					t = DoEaseOut(animationProgress);
-				}
+				animationSliderManipulating = false;
 
-
-				Vector3 newPos = spline.GetPoint(t);
-				//Quaternion newRot = QuaternionLookRotation(spline.GetDirection(t), Vector3.UnitY);
-				Quaternion newRot = spline.GetRotation(t);
-				float newFov = spline.GetFov(t);
-
-				CameraTransform newTransform = new CameraTransform(newPos, newRot, newFov);
-
-				string distance = Vector3.Distance(newPos, lastTransform.Position) / sw.Elapsed.TotalSeconds + "\t" +
-				                  spline.GetCurve(t).Item1?.keyframes[0].px;
+				UpdateCameraForAnimation();
 				sw.Restart();
-				// Debug.WriteLine(distance);
 
-				SetCamera(newTransform);
-
-				lastTransform = newTransform;
+				// lastTransform = newTransform;
 
 				Thread.Sleep(4);
 			}
@@ -604,12 +590,45 @@ namespace Spark
 			// the if check is to avoid doing so if the stop button was clicked
 			if (animationProgress >= 1)
 			{
-				SetCamera(CurrentAnimation.keyframes.Last());
+				SetCamera(CurrentAnimation.keyframes.LastOrDefault());
 			}
 
 			Dispatcher.Invoke(() => { startButton.Content = "Start"; });
 			animationProgress = 0;
 			isAnimating = false;
+		}
+
+		private void UpdateCameraForAnimation()
+		{
+			// Change t to use easing in and out
+			float t = animationProgress;
+			if (CurrentAnimation.easeIn && CurrentAnimation.easeOut)
+			{
+				t = EaseInOut(animationProgress);
+			}
+			else if (CurrentAnimation.easeIn)
+			{
+				t = DoEaseIn(animationProgress);
+			}
+			else if (CurrentAnimation.easeOut)
+			{
+				t = DoEaseOut(animationProgress);
+			}
+
+
+			Vector3 newPos = spline.GetPoint(t);
+			//Quaternion newRot = QuaternionLookRotation(spline.GetDirection(t), Vector3.UnitY);
+			Quaternion newRot = spline.GetRotation(t);
+			float newFov = spline.GetFov(t);
+
+			CameraTransform newTransform = new CameraTransform(newPos, newRot, newFov);
+
+			// string distance = Vector3.Distance(newPos, lastTransform.Position) / sw.Elapsed.TotalSeconds + "\t" +
+			//                   spline.GetCurve(t).Item1?.keyframes[0].px;
+
+			// Debug.WriteLine(distance);
+
+			SetCamera(newTransform);
 		}
 
 		private void AnimationThread()
@@ -1144,6 +1163,7 @@ namespace Spark
 
 		public static void SetCamera(CameraTransform output, bool mirror = false)
 		{
+			if (output == null) return;
 			if (output.qx != null)
 			{
 				output.Rotation = Quaternion.Normalize(output.Rotation);
@@ -1535,6 +1555,14 @@ namespace Spark
 		{
 			controllableSideline.Enabled = !controllableSideline.Enabled;
 			ControllableSidelineCheckBox.IsChecked = controllableSideline.Enabled;
+		}
+
+		private void AnimationSliderChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			animationSliderManipulating = true;
+			animationProgress = (float)e.NewValue;
+
+			UpdateCameraForAnimation();
 		}
 	}
 

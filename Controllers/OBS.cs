@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OBSWebsocketDotNet.Communication;
 using OBSWebsocketDotNet.Types;
-using Spark.Properties;
 
 namespace Spark
 {
@@ -36,9 +35,9 @@ namespace Spark
 
 			ws.Connected += OnConnect;
 			ws.Disconnected += OnDisconnect;
-			ws.ReplayBufferStateChanged += (_, state) => { replayBufferState = state.State; };
+			ws.ReplayBufferStateChanged += (_, state) => { replayBufferState = state.OutputState.State; };
 
-			Program.EmoteActivated += (frame, team, player) => { SaveClip(SparkSettings.instance.obsClipEmote, player.name, frame, "", 0, 0, 0); };
+			Program.EmoteActivated += (frame, team, player, isLeft) => { SaveClip(SparkSettings.instance.obsClipEmote, player.name, frame, "", 0, 0, 0); };
 			Program.PlayspaceAbuse += PlayspaceAbuse;
 			Program.Goal += Goal;
 			Program.Assist += Assist;
@@ -57,7 +56,7 @@ namespace Spark
 				{
 					try
 					{
-						ws.Connect(SparkSettings.instance.obsIP, SparkSettings.instance.obsPassword);
+						ws.ConnectAsync(SparkSettings.instance.obsIP, SparkSettings.instance.obsPassword);
 					}
 					catch (Exception e)
 					{
@@ -303,7 +302,7 @@ namespace Spark
 					"http://127.0.0.1:6724/speedometer/disc",
 					"http://127.0.0.1:6724/speedometer/lone_echo_1",
 					"http://127.0.0.1:6724/speedometer/lone_echo_2",
-					
+
 					"http://127.0.0.1:6724/components/minimap",
 					"http://127.0.0.1:6724/components/compact_minimap",
 					"http://127.0.0.1:6724/components/event_log",
@@ -315,12 +314,12 @@ namespace Spark
 
 				List<JToken> sources = scene["sources"].ToList();
 				JToken sceneSource = sources.FirstOrDefault(s => s["name"].ToString() == "Spark Sources");
-				
+
 				// use the existing scene sources list
 				// List<JToken> sceneSources = sceneSource["settings"]["items"].ToList();
 				// reset the existing scene sources list
 				List<JToken> sceneSources = new List<JToken>();
-				
+
 				foreach (string url in urls)
 				{
 					string name = $"Spark:{string.Join('/', url.Split("/").Skip(3))}";

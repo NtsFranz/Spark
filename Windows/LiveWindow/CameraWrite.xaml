@@ -60,6 +60,10 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="160" />
                         </Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="20"/>
+						</Grid.RowDefinitions>
                         <Grid VerticalAlignment="Top" Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
@@ -111,7 +115,8 @@
                             <CheckBox x:Name="PauseWhenClockNotRunningCheckbox" Content="Pause w/ clock"
                                       IsChecked="{Binding PauseWhenClockNotRunning}" Margin="10,0,0,10" />
                         </StackPanel>
-                    </Grid>
+						<Slider Grid.Row="1" Grid.ColumnSpan="2" x:Name="AnimationInputSlider" ValueChanged="AnimationSliderChanged" TickFrequency="0.01" SmallChange="0.01" Maximum="1" LargeChange="0.01" />
+					</Grid>
                 </GroupBox>
                 <!--</Expander>-->
 

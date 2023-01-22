@@ -1117,7 +1117,7 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to e.g. New York, Miami, Charleston.
+        ///   Looks up a localized string similar to e.g. Ashburn, New York, Miami, Charleston.
         /// </summary>
         public static string e_g__New_York__Miami__Charleston {
             get {

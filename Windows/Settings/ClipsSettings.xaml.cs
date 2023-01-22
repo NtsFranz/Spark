@@ -14,6 +14,7 @@ using NAudio.Wave;
 using OBSWebsocketDotNet;
 using OBSWebsocketDotNet.Communication;
 using OBSWebsocketDotNet.Types;
+using OBSWebsocketDotNet.Types.Events;
 
 namespace Spark
 {
@@ -22,9 +23,7 @@ namespace Spark
 		// set to false initially so that loading the settings from disk doesn't activate the events
 		private bool initialized;
 		private readonly Timer outputUpdateTimer = new Timer();
-		public bool IsOBSConnected => Program.obs.connected;
-		
-		
+
 		private bool sceneDropdownListenersActive = false;
 
 		private readonly List<Keyboard.DirectXKeyStrokes> medalTVInputs = new List<Keyboard.DirectXKeyStrokes>
@@ -161,7 +160,7 @@ namespace Spark
 			}
 		}
 
-		private void ReplayBufferChanged(OBSWebsocket sender, OutputStateChanged changed)
+		private void ReplayBufferChanged(object sender, ReplayBufferStateChangedEventArgs changed)
 		{
 			Task.Run(async () =>
 			{

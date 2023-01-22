@@ -187,4 +187,34 @@
     <data name="DOME" xml:space="preserve">
         <value>DOME</value>
     </data>
+    <data name="DOMErs only" xml:space="preserve">
+        <value>DOMErs only</value>
+    </data>
+    <data name="You can install Spark Mini directly on the Quest Pro and open it while playing the game." xml:space="preserve">
+        <value>You can install Spark Mini directly on the Quest Pro and open it while playing the game.</value>
+    </data>
+    <data name="Spark Mini is useful for people without a PC, but Spark and Spark Mini both work for Quest and PC players." xml:space="preserve">
+        <value>Spark Mini is useful for people without a PC, but Spark and Spark Mini both work for Quest and PC players.</value>
+    </data>
+    <data name="Check out the Replay Viewer. It looks really good now." xml:space="preserve">
+        <value>Check out the Replay Viewer. It looks really good now.</value>
+    </data>
+    <data name="If you upload your tablet stats through Spark, you can see the day you first played Echo VR" xml:space="preserve">
+        <value>If you upload your tablet stats through Spark, you can see the day you first played Echo VR</value>
+    </data>
+    <data name="The more you pass, the better you are." xml:space="preserve">
+        <value>The more you pass, the better you are.</value>
+    </data>
+    <data name="Scoring is a sign of weakness, passing is a sign of strength." xml:space="preserve">
+        <value>Scoring is a sign of weakness, passing is a sign of strength.</value>
+    </data>
+    <data name="Be careful when shooting backboards or you'll catch the q-lung" xml:space="preserve">
+        <value>Be careful when shooting backboards or you'll catch the q-lung</value>
+    </data>
+    <data name="You can right click to accept the terms in Echo VR's spectator mode." xml:space="preserve">
+        <value>You can right click to accept the terms in Echo VR's spectator mode.</value>
+    </data>
+    <data name="Spark is not a bot and does not have a bot. The spectator client is just Echo VR." xml:space="preserve">
+        <value>Spark is not a bot and does not have a bot. The spectator client is just Echo VR.</value>
+    </data>
 </root>

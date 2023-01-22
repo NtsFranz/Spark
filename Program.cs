@@ -262,7 +262,10 @@ namespace Spark
 		/// frame, team, player, speed, howlongago
 		/// </summary>
 		public static Action<Frame, Team, Player, float, float> BigBoost;
-		public static Action<Frame, Team, Player> EmoteActivated;
+		/// <summary>
+		/// bool is true for left, false for right
+		/// </summary>
+		public static Action<Frame, Team, Player, bool> EmoteActivated;
 		/// <summary>
 		/// frame, team, player, playspacelocation (compare to head.Pos)
 		/// </summary>
@@ -1790,9 +1793,24 @@ namespace Spark
 								player.head.Position,
 								player.velocity.ToVector3()
 							);
+
+							float leftHandDistance = Vector3.Distance(player.lhand.Position,player.head.Position); 
+							float rightHandDistance = Vector3.Distance(player.rhand.Position,player.head.Position);
+							float leftHandHorizontalDistance = Vector3.Dot(player.head.left.ToVector3(), player.head.Position - player.lhand.Position);
+							float rightHandHorizontalDistance = Vector3.Dot(player.head.left.ToVector3(), player.head.Position - player.rhand.Position);
+
+							bool isLeft;
+							if (leftHandDistance < rightHandDistance)
+							{
+								isLeft = leftHandHorizontalDistance < 0;
+							}
+							else
+							{
+								isLeft = rightHandHorizontalDistance < 0;
+							}
 							try
 							{
-								EmoteActivated?.Invoke(frame, team, player);
+								EmoteActivated?.Invoke(frame, team, player, isLeft);
 								OnEvent?.Invoke(eventData);
 							}
 							catch (Exception exp)

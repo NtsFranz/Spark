@@ -24,9 +24,8 @@
                         Content="{x:Static p:Resources.orange_caps}" Click="JoinOrangeTeam" HorizontalAlignment="Left"
                         VerticalAlignment="Bottom" Background="#FF6C5339" />
                 <Button x:Name="RandomButton" Width="100" Height="74" Margin="5,0,0,10"
-                        Click="JoinRandomTeam" HorizontalAlignment="Left"
-                        VerticalAlignment="Bottom">
-                    <TextBlock>
+                        Click="JoinRandomTeam" HorizontalAlignment="Left" VerticalAlignment="Bottom" HorizontalContentAlignment="Center">
+                    <TextBlock TextAlignment="Center">
                         Random
                         <LineBreak />
                         Team
