@@ -1,0 +1,31 @@
+﻿<Window x:Class="Spark.QProJoiner"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:p="clr-namespace:Spark.Properties"
+        xmlns:l="clr-namespace:Spark"
+        mc:Ignorable="d"
+        Title="{x:Static p:Resources.Join_EchoVR_Match}"
+        Height="380" Width="480"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Icon="/img/ignite_logo.ico"
+        Background="#FF232323"
+        FontSize="16"
+        Closed="CloseButtonClicked">
+    <StackPanel Margin="30">
+        <TextBlock FontSize="30" TextAlignment="Center">
+            <Hyperlink>
+                <TextBlock x:Name="MainMessage">??</TextBlock>
+            </Hyperlink>
+        </TextBlock>
+        <TextBlock TextWrapping="Wrap" Margin="0,10,0,0">
+            Open the link above in your Quest browser while in a match/lobby to join. You can bookmark this page for the future.
+        </TextBlock>
+        <Separator Margin="20"></Separator>
+        <TextBlock TextWrapping="Wrap" Foreground="#aaa">Spark can't read data from a Quest when using Quest Pro controllers. If you're using the Quest Pro headset, you can install Spark Mini directly on the headset.</TextBlock>
+        <Separator Margin="20"></Separator>
+        <TextBlock TextWrapping="Wrap" TextAlignment="Center">Close this window when you're done.</TextBlock>
+    </StackPanel>
+</Window>

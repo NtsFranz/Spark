@@ -24,7 +24,8 @@
                         Content="{x:Static p:Resources.orange_caps}" Click="JoinOrangeTeam" HorizontalAlignment="Left"
                         VerticalAlignment="Bottom" Background="#FF6C5339" />
                 <Button x:Name="RandomButton" Width="100" Height="74" Margin="5,0,0,10"
-                        Click="JoinRandomTeam" HorizontalAlignment="Left" VerticalAlignment="Bottom" HorizontalContentAlignment="Center">
+                        Click="JoinRandomTeam" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                        HorizontalContentAlignment="Center">
                     <TextBlock TextAlignment="Center">
                         Random
                         <LineBreak />
@@ -50,11 +51,16 @@
             <TextBlock x:Name="EchoVRDetectedLabel" Foreground="#c4ba4d" TextWrapping="Wrap" Height="35" FontSize="13"
                        Margin="0,10,0,4" Text="{x:Static p:Resources.Detecting_Echo_VR___}">
             </TextBlock>
-            <CheckBox x:Name="ForceLaunchCheckbox" Content="{x:Static p:Resources.Force_launch_new_instance}"
-                      IsChecked="{l:SettingBinding sparkLinkForceLaunchNewInstance}"
-                      Checked="ForceLaunchChecked" Unchecked="ForceLaunchChecked"
-                      Margin="0,0,0,10" FontSize="13">
-            </CheckBox>
+            <StackPanel Orientation="Horizontal">
+                <CheckBox x:Name="ForceLaunchCheckbox" Content="{x:Static p:Resources.Force_launch_new_instance}"
+                          IsChecked="{l:SettingBinding sparkLinkForceLaunchNewInstance}"
+                          Checked="ForceLaunchChecked" Unchecked="ForceLaunchChecked"
+                          Margin="0,0,0,10" FontSize="13">
+                </CheckBox>
+                <TextBlock Margin="20,0">
+                    <Hyperlink Click="Hyperlink_OnClick">I'm using Quest Pro controllers.</Hyperlink>
+                </TextBlock>
+            </StackPanel>
         </StackPanel>
     </StackPanel>
 </Window>

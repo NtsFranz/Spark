@@ -155,5 +155,10 @@ namespace Spark
 		{
 			await Join(2);
 		}
+
+		private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
+		{
+			new QProJoiner(sessionId).Show();
+		}
 	}
 }

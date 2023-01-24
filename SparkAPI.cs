@@ -179,7 +179,7 @@ namespace Spark
 					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
 					string teamName = context.Request.RouteValues["team_name"]?.ToString();
 					if (Enum.TryParse(context.Request.RouteValues["team_color"]?.ToString(), out Team.TeamColor teamColor) &&
-						!string.IsNullOrEmpty(teamName))
+					    !string.IsNullOrEmpty(teamName))
 					{
 						switch (teamColor)
 						{
@@ -217,7 +217,7 @@ namespace Spark
 					context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
 					string teamLogo = context.Request.RouteValues["team_logo"]?.ToString();
 					if (Enum.TryParse(context.Request.RouteValues["team_color"]?.ToString(), out Team.TeamColor teamColor) &&
-						!string.IsNullOrEmpty(teamLogo))
+					    !string.IsNullOrEmpty(teamLogo))
 					{
 						switch (teamColor)
 						{
@@ -266,7 +266,7 @@ namespace Spark
 					{
 						string teamLogo = data["team_logo"];
 						if (Enum.TryParse(context.Request.RouteValues["team_color"]?.ToString(), out Team.TeamColor teamColor) &&
-							!string.IsNullOrEmpty(teamLogo))
+						    !string.IsNullOrEmpty(teamLogo))
 						{
 							switch (teamColor)
 							{
@@ -289,7 +289,7 @@ namespace Spark
 					{
 						string teamName = data["team_name"];
 						if (Enum.TryParse(context.Request.RouteValues["team_color"]?.ToString(), out Team.TeamColor teamColor) &&
-							!string.IsNullOrEmpty(teamName))
+						    !string.IsNullOrEmpty(teamName))
 						{
 							switch (teamColor)
 							{
@@ -352,6 +352,7 @@ namespace Spark
 								{
 									setting[key] = new Dictionary<string, object>();
 								}
+
 								SetKey((Dictionary<string, object>)setting[key], JsonConvert.DeserializeObject<Dictionary<string, object>>(j.ToString()));
 							}
 							else
@@ -618,7 +619,6 @@ namespace Spark
 			{
 				try
 				{
-
 					await context.Response.WriteAsJsonAsync(Program.localDatabase.GetJousts());
 				}
 				catch (Exception e)
@@ -630,7 +630,6 @@ namespace Spark
 			{
 				try
 				{
-
 					await context.Response.WriteAsJsonAsync(Program.localDatabase.GetEvents());
 				}
 				catch (Exception e)
@@ -647,10 +646,11 @@ namespace Spark
 					QuestIPs window = (QuestIPs)Program.GetWindowIfOpen(typeof(QuestIPs));
 					if (window != null)
 					{
-						await context.Response.WriteAsJsonAsync(window.data.Select(a => new Dictionary<string, object>() {
+						await context.Response.WriteAsJsonAsync(window.data.Select(a => new Dictionary<string, object>()
+						{
 							{ "questip", a.Key },
-							{ "mac", a.Value.mac},
-							{ "inlobby", a.Value.frame?.InLobby ?? false},
+							{ "mac", a.Value.mac },
+							{ "inlobby", a.Value.frame?.InLobby ?? false },
 							{ "sessionid", a.Value.frame?.sessionid },
 							{ "players", a.Value.frame?.teams != null ? a.Value.frame.GetAllPlayers().Count : 0 },
 							{ "name", a.Value.frame?.client_name },

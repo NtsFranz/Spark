@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.6.9</Version>
+    <Version>2.6.10</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -19,7 +19,7 @@
     <AssemblyName>Spark</AssemblyName>
     <RootNamespace>Spark</RootNamespace>
     <LangVersion>9</LangVersion>
-    <PackageVersion>2.6.9</PackageVersion>
+    <PackageVersion>2.6.10</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -149,6 +149,15 @@
     <EmbeddedResource Include="resources\obs_scene_collection.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Page Update="Windows\QProJoiner.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Update="Windows\QProJoiner.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>QProJoiner.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
