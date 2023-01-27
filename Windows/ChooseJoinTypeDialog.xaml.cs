@@ -158,7 +158,11 @@ namespace Spark
 
 		private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
 		{
-			new QProJoiner(sessionId).Show();
+			QProJoiner window = new QProJoiner(sessionId)
+			{
+				Owner = this
+			};
+			window.Show();
 		}
 	}
 }

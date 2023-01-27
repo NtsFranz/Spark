@@ -86,13 +86,15 @@ namespace Spark
 			color: #eee;
 	    }}
 
-	    h1,
-	    h2 {{
+		h1 {{
+			margin-bottom: 0;
 			text-align: center;
-	    }}
+		}}
 
 	    h2 {{
 			opacity: .7;
+			margin-top: 10px;
+			text-align: center;
 	    }}
 
 	    .buttons {{
@@ -156,7 +158,7 @@ namespace Spark
 
 	<script>
 		function join(team_idx) {{
-			messages.innerText = 'Joining... if you are not redirected in a few seconds, please refresh this window and try again.';
+			messages.innerHTML = 'Joining... if you are not redirected in a few seconds, please refresh this window and try again.<br>You need to be in a lobby/match for this to work.';
 
 			const data = {{
 				'session_id': '{sessionId}',

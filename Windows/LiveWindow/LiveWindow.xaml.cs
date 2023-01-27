@@ -963,7 +963,7 @@ namespace Spark
 
 		private void ClickedOnPlayer(string playerName)
 		{
-			Process.Start(new ProcessStartInfo("https://metrics.ignitevr.gg/stats?player_name=" + playerName)
+			Process.Start(new ProcessStartInfo("https://metrics.ignitevr.gg/stats/" + playerName)
 			{
 				UseShellExecute = true
 			});

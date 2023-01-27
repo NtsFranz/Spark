@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="{x:Static p:Resources.Join_EchoVR_Match}"
         Height="380" Width="480"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
         Icon="/img/ignite_logo.ico"
         Background="#FF232323"

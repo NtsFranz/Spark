@@ -9,7 +9,7 @@
   <Identity
     Name="25937NtsFranz.Spark-EchoVRCompanionApp"
     Publisher="CN=NtsFranz"
-    Version="2.6.0.0" />
+    Version="2.6.11.0" />
 
   <Properties>
     <DisplayName>Spark - EchoVR Companion App</DisplayName>
