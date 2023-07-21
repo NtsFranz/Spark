@@ -77,7 +77,11 @@
 							<Button Content="{x:Static p:Resources.Install_ReShade}" Click="InstallReshade" Margin="0,0,10,0" Padding="4,4,4,4"></Button>
 							<Button Content="{x:Static p:Resources.Remove_ReShade}" Click="RemoveReshade" Margin="0,0,10,0" Padding="4,4,4,4"></Button>
 						</StackPanel>
-						
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+							<ProgressBar x:Name="RumbleProgress" Visibility="Collapsed" Width="200" Margin="0,0,10,0"></ProgressBar>
+							<Button Content="Install Rumble" Click="InstallRumble" Margin="0,0,10,0" Padding="4,4,4,4"></Button>
+							<Button Content="Remove Rumble" Click="RemoveRumble" Margin="0,0,10,0" Padding="4,4,4,4"></Button>
+						</StackPanel>
 						
 						
 						<StackPanel Orientation="Horizontal">

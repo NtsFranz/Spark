@@ -907,6 +907,76 @@ namespace Spark
 			{
 				new MessageBox("Can't uninstall Reshade. Try closing EchoVR and trying again.", Properties.Resources.Error).Show();
 			}
+		}		
+		
+		private void InstallRumble(object sender, RoutedEventArgs e)
+		{
+			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
+			if (!File.Exists(SparkSettings.instance.echoVRPath)) return;
+
+			RumbleProgress.Visibility = Visibility.Visible;
+			RumbleProgress.Value = 0;
+
+			// delete the old temp file
+			if (File.Exists(Path.Combine(Path.GetTempPath(), "dbgcore.dll")))
+			{
+				File.Delete(Path.Combine(Path.GetTempPath(), "dbgcore.dll"));
+			}
+
+			// download reshade
+			try
+			{
+				WebClient webClient = new WebClient();
+				webClient.DownloadFileCompleted += RumbleDownloadCompleted;
+				webClient.DownloadProgressChanged += RumbleDownloadProgressChanged;
+				webClient.DownloadFileAsync(new Uri("https://github.com/NtsFranz/Spark/raw/main/resources/dbgcore.dll"), Path.Combine(Path.GetTempPath(), "dbgcore.dll"));
+			}
+			catch (Exception)
+			{
+				new MessageBox("Something broke while trying to download update", Properties.Resources.Error).Show();
+			}
+		}
+
+		private void RumbleDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+		{
+			RumbleProgress.Visibility = Visibility.Visible;
+			RumbleProgress.Value = e.ProgressPercentage;
+		}
+
+		private void RumbleDownloadCompleted(object sender, AsyncCompletedEventArgs e)
+		{
+			try
+			{
+				// install rumble from the zip
+				string dir = Path.GetDirectoryName(SparkSettings.instance.echoVRPath);
+				if (dir != null)
+				{
+					File.Copy(Path.Combine(Path.GetTempPath(), "dbgcore.dll"), dir, true);
+				}
+			}
+			catch (Exception)
+			{
+				new MessageBox("Something broke while trying to install Rumble. Report this to NtsFranz", Properties.Resources.Error).Show();
+			}
+
+			ReshadeProgress.Visibility = Visibility.Collapsed;
+		}
+
+		private void RemoveRumble(object sender, RoutedEventArgs e)
+		{
+			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
+			if (!File.Exists(SparkSettings.instance.echoVRPath)) return;
+			string dir = Path.GetDirectoryName(SparkSettings.instance.echoVRPath);
+			if (dir == null) return;
+
+			try
+			{
+				File.Delete(Path.Combine(dir, "dbgcore.dll"));
+			}
+			catch (UnauthorizedAccessException)
+			{
+				new MessageBox("Can't uninstall Rumble. Try closing EchoVR and trying again.", Properties.Resources.Error).Show();
+			}
 		}
 
 		private void SaveQuestIPClicked(object sender, RoutedEventArgs e)

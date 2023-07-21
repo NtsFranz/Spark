@@ -79,6 +79,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A2.
+        /// </summary>
+        public static string A2 {
+            get {
+                return ResourceManager.GetString("A2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ban pitch and roll mid-game.
         /// </summary>
         public static string Ban_pitch_and_roll_mid_game {
@@ -93,6 +102,15 @@ namespace Spark.Properties {
         public static string Be_careful_when_shooting_backboards_or_you_ll_catch_the_q_lung {
             get {
                 return ResourceManager.GetString("Be careful when shooting backboards or you\'ll catch the q-lung", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bigman and iblowatsports don&apos;t attend LAN events.
+        /// </summary>
+        public static string Bigman_and_iblowatsports_don_t_attend_LAN_events {
+            get {
+                return ResourceManager.GetString("Bigman and iblowatsports don\'t attend LAN events", resourceCulture);
             }
         }
         
@@ -171,11 +189,29 @@ namespace Spark.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to God is my copilot, and RAD_Natalie is my boss..
+        ///   Looks up a localized string similar to God is my copilot, and CHAD_Natalie is my boss..
         /// </summary>
         public static string God_is_my_copilot__and_RAD_Natalie_is_my_boss_ {
             get {
                 return ResourceManager.GetString("God is my copilot, and RAD_Natalie is my boss.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I didn&apos;t get the CTO job from John Carmack..
+        /// </summary>
+        public static string I_didn_t_get_the_CTO_job_from_John_Carmack_ {
+            get {
+                return ResourceManager.GetString("I didn\'t get the CTO job from John Carmack.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I&apos;m not an ads guy.
+        /// </summary>
+        public static string I_m_not_an_ads_guy {
+            get {
+                return ResourceManager.GetString("I\'m not an ads guy", resourceCulture);
             }
         }
         
@@ -233,6 +269,15 @@ namespace Spark.Properties {
         public static string metrics_ignitevr_gg {
             get {
                 return ResourceManager.GetString("metrics.ignitevr.gg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My balls is hot.
+        /// </summary>
+        public static string My_balls_is_hot {
+            get {
+                return ResourceManager.GetString("My balls is hot", resourceCulture);
             }
         }
         
@@ -386,12 +431,30 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Try Rumble today!.
+        /// </summary>
+        public static string Try_Rumble_today_ {
+            get {
+                return ResourceManager.GetString("Try Rumble today!", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use NVIDIA Highlights in Spark to automatically record clips of all your noteworthy moments..
         /// </summary>
         public static string Use_NVIDIA_Highlights_in_Spark_to_automatically_record_clips_of_all_your_noteworthy_moments_ {
             get {
                 return ResourceManager.GetString("Use NVIDIA Highlights in Spark to automatically record clips of all your notewort" +
                         "hy moments.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the Echo-G for a competitive advantage..
+        /// </summary>
+        public static string Use_the_Echo_G_for_a_competitive_advantage_ {
+            get {
+                return ResourceManager.GetString("Use the Echo-G for a competitive advantage.", resourceCulture);
             }
         }
         

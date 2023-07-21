@@ -169,7 +169,7 @@
         <value>metrics.ignitevr.gg</value>
     </data>
     <data name="God is my copilot, and RAD_Natalie is my boss." xml:space="preserve">
-        <value>God is my copilot, and RAD_Natalie is my boss.</value>
+        <value>God is my copilot, and CHAD_Natalie is my boss.</value>
     </data>
     <data name="Get Bigmand!" xml:space="preserve">
         <value>Get Bigmand!</value>
@@ -216,5 +216,26 @@
     </data>
     <data name="Spark is not a bot and does not have a bot. The spectator client is just Echo VR." xml:space="preserve">
         <value>Spark is not a bot and does not have a bot. The spectator client is just Echo VR.</value>
+    </data>
+    <data name="Use the Echo-G for a competitive advantage." xml:space="preserve">
+        <value>Use the Echo-G for a competitive advantage.</value>
+    </data>
+    <data name="Try Rumble today!" xml:space="preserve">
+        <value>Try Rumble today!</value>
+    </data>
+    <data name="I'm not an ads guy" xml:space="preserve">
+        <value>I'm not an ads guy</value>
+    </data>
+    <data name="A2" xml:space="preserve">
+        <value>A2</value>
+    </data>
+    <data name="I didn't get the CTO job from John Carmack." xml:space="preserve">
+        <value>I didn't get the CTO job from John Carmack.</value>
+    </data>
+    <data name="Bigman and iblowatsports don't attend LAN events" xml:space="preserve">
+        <value>Bigman and iblowatsports don't attend LAN events</value>
+    </data>
+    <data name="My balls is hot" xml:space="preserve">
+        <value>My balls is hot</value>
     </data>
 </root>
