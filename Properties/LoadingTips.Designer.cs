@@ -60,6 +60,15 @@ namespace Spark.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 6 Years..
+        /// </summary>
+        public static string _6_Years_ {
+            get {
+                return ResourceManager.GetString("6 Years.", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 93% of players in the VR Master League are High Diamond!.
         /// </summary>
         public static string _93__of_players_in_the_VR_Master_League_are_High_Diamond_ {
@@ -84,6 +93,15 @@ namespace Spark.Properties {
         public static string A2 {
             get {
                 return ResourceManager.GetString("A2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ask anyone in the beta.
+        /// </summary>
+        public static string Ask_anyone_in_the_beta {
+            get {
+                return ResourceManager.GetString("Ask anyone in the beta", resourceCulture);
             }
         }
         

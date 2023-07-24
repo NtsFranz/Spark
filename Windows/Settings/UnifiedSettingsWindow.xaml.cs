@@ -951,7 +951,7 @@ namespace Spark
 				string dir = Path.GetDirectoryName(SparkSettings.instance.echoVRPath);
 				if (dir != null)
 				{
-					File.Copy(Path.Combine(Path.GetTempPath(), "dbgcore.dll"), dir, true);
+					File.Copy(Path.Combine(Path.GetTempPath(), "dbgcore.dll"), Path.Combine(dir, "dbgcore.dll"), true);
 				}
 			}
 			catch (Exception)
@@ -959,7 +959,7 @@ namespace Spark
 				new MessageBox("Something broke while trying to install Rumble. Report this to NtsFranz", Properties.Resources.Error).Show();
 			}
 
-			ReshadeProgress.Visibility = Visibility.Collapsed;
+			RumbleProgress.Visibility = Visibility.Collapsed;
 		}
 
 		private void RemoveRumble(object sender, RoutedEventArgs e)

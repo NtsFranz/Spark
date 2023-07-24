@@ -238,4 +238,10 @@
     <data name="My balls is hot" xml:space="preserve">
         <value>My balls is hot</value>
     </data>
+    <data name="6 Years." xml:space="preserve">
+        <value>6 Years.</value>
+    </data>
+    <data name="Ask anyone in the beta" xml:space="preserve">
+        <value>Ask anyone in the beta</value>
+    </data>
 </root>
