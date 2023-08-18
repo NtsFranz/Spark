@@ -1175,7 +1175,7 @@ namespace Spark
 		}
 		
 		/// <returns>True if successfully launched EchoVR, false if not</returns>
-		public static bool StartEchoVR(JoinType joinType, int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null, bool combat=false, int teamIndex = -1, bool quitIfError = false)
+		public static bool StartEchoVR(JoinType joinType, int port = 6721, bool noovr = false, string session_id = null, string level = null, string region = null, bool combat=false, int teamIndex = -1, bool quitIfError = false, string gameType = null)
 		{
 			if (joinType == JoinType.Choose)
 			{
@@ -1192,9 +1192,10 @@ namespace Spark
 					(combat ? "echo_combat " : "") + 
 					(session_id == null ? "" : $"-lobbyid {session_id} ") +  
 					(noovr ? "-noovr " : "") +
-					(port != 6721 ? $"-httpport {port} " : "") +
+					($"-httpport {port} ") +
 					(level == null ? "" : $"-level {level} ") +
 					(region == null ? "" : $"-region {region} ") + 
+					(string.IsNullOrEmpty(gameType) ? "" : $"-gametype {gameType} ") + 
 					(teamIndex == -1 ? "" : $"-lobbyteam {teamIndex} ")
 				);
 			}

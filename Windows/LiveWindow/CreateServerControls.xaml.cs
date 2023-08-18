@@ -1,11 +1,15 @@
 ﻿using System;
+using System.ComponentModel;
+using System.IO;
+using System.Net;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Spark
 {
-	public partial class CreateServer : Window
+	public partial class CreateServerControls : UserControl
 	{
-		public CreateServer()
+		public CreateServerControls()
 		{
 			InitializeComponent();
 		}
@@ -99,8 +103,63 @@ namespace Spark
 			{
 				new MessageBox(Properties.Resources.echovr_path_not_set, Properties.Resources.Error, Program.Quit).Show();
 			}
+		}
 
-			Close();
+		private void InstallOfflineEcho(object sender, RoutedEventArgs e)
+		{
+			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
+			if (!File.Exists(SparkSettings.instance.echoVRPath)) return;
+
+			// delete the old temp file
+			if (File.Exists(Path.Combine(Path.GetTempPath(), "dbgcore.dll")))
+			{
+				File.Delete(Path.Combine(Path.GetTempPath(), "dbgcore.dll"));
+			}
+
+			try
+			{
+				WebClient webClient = new WebClient();
+				webClient.DownloadFileCompleted += OfflineEchoDownloadCompleted;
+				webClient.DownloadFileAsync(new Uri("https://echo-foundation.pages.dev/files/offline_echo/dbgcore.dll"), Path.Combine(Path.GetTempPath(), "dbgcore.dll"));
+			}
+			catch (Exception)
+			{
+				new MessageBox("Something broke while trying to download update", Properties.Resources.Error).Show();
+			}
+		}
+
+		private void OfflineEchoDownloadCompleted(object sender, AsyncCompletedEventArgs e)
+		{
+			try
+			{
+				// install OfflineEcho from the zip
+				string dir = Path.GetDirectoryName(SparkSettings.instance.echoVRPath);
+				if (dir != null)
+				{
+					File.Copy(Path.Combine(Path.GetTempPath(), "dbgcore.dll"), Path.Combine(dir, "dbgcore.dll"), true);
+				}
+			}
+			catch (Exception)
+			{
+				new MessageBox("Something broke while trying to install OfflineEcho. Report this to NtsFranz", Properties.Resources.Error).Show();
+			}
+		}
+
+		private void RemoveOfflineEcho(object sender, RoutedEventArgs e)
+		{
+			if (string.IsNullOrEmpty(SparkSettings.instance.echoVRPath)) return;
+			if (!File.Exists(SparkSettings.instance.echoVRPath)) return;
+			string dir = Path.GetDirectoryName(SparkSettings.instance.echoVRPath);
+			if (dir == null) return;
+
+			try
+			{
+				File.Delete(Path.Combine(dir, "dbgcore.dll"));
+			}
+			catch (UnauthorizedAccessException)
+			{
+				new MessageBox("Can't uninstall OfflineEcho. Try closing EchoVR and trying again.", Properties.Resources.Error).Show();
+			}
 		}
 	}
 }

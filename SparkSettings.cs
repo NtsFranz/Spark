@@ -100,6 +100,7 @@ namespace Spark
 		public bool hideNameplates { get; set; } = false;
 		public int chooseRegionIndex { get; set; } = 0;
 		public int chooseMapIndex { get; set; } = 0;
+		public int chooseGameTypeIndex { get; set; } = 0;
 		public bool chooseRegionSpectator { get; set; } = false;
 		public bool chooseRegionNoOVR { get; set; } = false;
 		public bool sparkLinkNoOVR { get; set; } = false;

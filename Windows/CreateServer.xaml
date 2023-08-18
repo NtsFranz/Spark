@@ -7,7 +7,7 @@
         xmlns:l="clr-namespace:Spark"
         mc:Ignorable="d"
         Title="{x:Static p:Resources.Create_Server_in_Region}" 
-		Height="305" 
+		Height="340" 
 		Width="440" 
 		WindowStartupLocation="CenterOwner" 
 		ResizeMode="NoResize" 
@@ -18,7 +18,7 @@
 	<Grid>
 		<Label Content="{x:Static p:Resources.Create_Server_in_Region}" Margin="0,19,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="32"/>
 		<TextBlock Text="{x:Static p:Resources.This_creates_a_private_match_in_a_region_of_your_choice_}" TextWrapping="Wrap" Margin="0,60,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.RowSpan="1" Height="25" FontSize="14" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
-		<ComboBox SelectedIndex="{l:SettingBinding chooseRegionIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="54" Margin="10,10,10,105">
+		<ComboBox SelectedIndex="{l:SettingBinding chooseRegionIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="54" Margin="10,10,10,140">
 			<StackPanel>
 				<TextBlock Text="{x:Static p:Resources.US_Central_North}"/>
 				<TextBlock Text="Chicago, Illinois" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
@@ -56,13 +56,36 @@
 				<TextBlock Text="{x:Static p:Resources.e_g__Singapore}" Foreground="{DynamicResource ControlDisabledGlythColour}"/>
 			</StackPanel>
 		</ComboBox>
-		<ComboBox SelectedIndex="{l:SettingBinding chooseMapIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="28" Margin="10,10,10,70">
+		<ComboBox SelectedIndex="{l:SettingBinding chooseMapIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="28" Margin="10,10,10,105">
 			<ComboBoxItem Content="{x:Static p:Resources.Arena}"/>
 			<ComboBoxItem Content="{x:Static p:Resources.Lobby}"/>
 			<ComboBoxItem Content="{x:Static p:Resources.Combat_Dyson}"/>
 			<ComboBoxItem Content="{x:Static p:Resources.Combat_Combustion}"/>
 			<ComboBoxItem Content="{x:Static p:Resources.Combat_Fission}"/>
 			<ComboBoxItem Content="{x:Static p:Resources.Combat_Surge}"/>
+		</ComboBox>
+		<ComboBox SelectedIndex="{l:SettingBinding chooseGameTypeIndex}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="230" Height="28" Margin="10,10,10,70" ToolTip="Not all of these will work">
+			<ComboBoxItem Content="(default)" />
+			<ComboBoxItem Content="Social_2.0_Private" />
+			<ComboBoxItem Content="Social_2.0_NPE" />
+			<ComboBoxItem Content="Social_2.0" />
+			<ComboBoxItem Content="Echo_Arena" />
+			<ComboBoxItem Content="Echo_Arena_Tournament" />
+			<ComboBoxItem Content="Echo_Arena_Public_AI" />
+			<ComboBoxItem Content="Echo_Arena_Practice_AI" />
+			<ComboBoxItem Content="Echo_Arena_Private_AI" />
+			<ComboBoxItem Content="Echo_Arena_First_Match" />
+			<ComboBoxItem Content="Echo_Demo" />
+			<ComboBoxItem Content="Echo_Demo_Public" />
+			<ComboBoxItem Content="Echo_Arena_NPE" />
+			<ComboBoxItem Content="Echo_Arena_Private" />
+			<ComboBoxItem Content="Echo_Combat" />
+			<ComboBoxItem Content="Echo_Combat_Tournament" />
+			<ComboBoxItem Content="Echo_Combat_Private" />
+			<ComboBoxItem Content="Echo_Combat_Public_AI" />
+			<ComboBoxItem Content="Echo_Combat_Practice_AI" />
+			<ComboBoxItem Content="Echo_Combat_Private_AI" />
+			<ComboBoxItem Content="Echo_Combat_First_Match" />
 		</ComboBox>
 		<CheckBox x:Name="spectatorModeCheckbox" Content="{x:Static p:Resources.Spectator_Mode}" ToolTip="{x:Static p:Resources.chooseRegionSpectator_ToolTip}" IsChecked="{l:SettingBinding chooseRegionSpectator}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,40" />
 		<CheckBox Content="{x:Static p:Resources.noovrCheckbox_Content}" ToolTip="{x:Static p:Resources.Anonymous_accounts_allow_you_to_join_the_match_twice_on_the_same_computer_}" IsChecked="{l:SettingBinding chooseRegionNoOVR}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,10,10" Height="24" IsEnabled="{Binding ElementName=spectatorModeCheckbox, Path=IsChecked}" />
