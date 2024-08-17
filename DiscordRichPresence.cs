@@ -227,6 +227,13 @@ namespace Spark
 				// Process the frame if it's not null
 				if (frame != null)
 				{
+					// If player is spectating as a moderator, don't update rich presence.
+                    			if (frame.GetPlayer(frame.client_name) == null)
+                    			{
+                        			RemoveRichPresence();
+                        			return;
+                    			}
+					
 					// The user has requested to disable rich presence while spectating, disabling rich presence accordingly
 					if (!string.IsNullOrEmpty(frame.teams[2].ToString()) && frame.teams[2].players.Find(p => p.name == frame.client_name) != null && SparkSettings.instance.discordRichPresenceSpectator)
 					{
