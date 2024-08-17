@@ -358,3 +358,5 @@ IgniteBot.crproj
 SvelteBuild/
 bfg-1.14.0.jar
 .git.bfg-report/
+IgniteBotKey.pfx.bak2
+SparkMSIX/SparkMSIX_TemporaryKey.pfx.bak

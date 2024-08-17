@@ -57,7 +57,15 @@ namespace Spark
 				}
 
 				update_time = (int)data["updatetime"];
-				creation_time = (int)data["creationtime"];
+				if (data.Contains("creationtime"))
+				{
+					creation_time = (int)data["creationtime"];
+				}
+				else if (data.Contains("createtime"))
+				{
+					creation_time = (int)data["createtime"];
+				}
+
 				if (data["purchasedcombat"] != null)
 					purchased_combat = (int)data["purchasedcombat"];
 				if (data["stats"]?["arena"] == null) return;

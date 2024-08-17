@@ -8,7 +8,7 @@
 		<StartupObject>Spark.App</StartupObject>
     <ApplicationIcon>img\ignite_logo.ico</ApplicationIcon>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <Version>2.6.15</Version>
+    <Version>2.6.16</Version>
     <PackageProjectUrl>https://www.ignitevr.gg/spark</PackageProjectUrl>
     <Company>IgniteVR</Company>
     <Authors>NtsFranz, VTSxKING, iblowatsports</Authors>
@@ -19,24 +19,24 @@
     <AssemblyName>Spark</AssemblyName>
     <RootNamespace>Spark</RootNamespace>
     <LangVersion>9</LangVersion>
-    <PackageVersion>2.6.15</PackageVersion>
+    <PackageVersion>2.6.16</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS_STORE_RELEASE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DefineConstants>TRACE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS_STORE_RELEASE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS_STORE_RELEASE</DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DefineConstants>TRACE;WINDOWS_STORE_RELEASEbak</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS_STORE_RELEASE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

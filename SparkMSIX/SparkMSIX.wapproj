@@ -62,7 +62,7 @@
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <UserSecretsId>f2889a03-53d3-4685-bd74-9e5e45662f5e</UserSecretsId>
-    <PackageCertificateThumbprint>6AAFA6A766362D0818C8557D9F372C3A9559627A</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>09F6A19C6151C6FC350FA4F0D9A16A2DE83702F3</PackageCertificateThumbprint>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
