@@ -139,63 +139,50 @@ namespace Spark
                 // Global CORS policy - applied before static files
                 app.UseCors("CorsPolicy");
 
-                string buildArenaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Overlay", "build_arena");
-                string buildCombatPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Overlay", "build_combat");
+                // Svelte overlay build output. "build" is what `npm run build` in /Overlay produces;
+                // build_arena / build_combat are kept for older packaged layouts.
+                string overlayRoot = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Overlay");
+                List<string> overlayFolders = new List<string> { StaticOverlayFolder };
+                overlayFolders.AddRange(new[] { "build", "build_arena", "build_combat" }
+                    .Select(f => Path.Combine(overlayRoot, f))
+                    .Where(Directory.Exists));
 
+                if (overlayFolders.Count == 1)
+                {
+                    Logger.LogRow(Logger.LogType.Error, $"Overlay build not found in {overlayRoot}. Run `npm run build` in the Overlay folder.");
+                }
+
+                // Map extension-less URLs onto the prerendered files, accepting both build layouts:
+                //   /overlays  or /overlays/  ->  overlays/index.html  or  overlays.html
                 app.Use(async (context, next) =>
                 {
-                    if (!context.Request.Path.Value.Contains("."))
+                    string path = context.Request.Path.Value ?? "/";
+                    if (path != "/" && !Path.HasExtension(path))
                     {
-                        string pathWithHtml = context.Request.Path.Value + ".html";
-                        string relativePath = pathWithHtml.TrimStart('/');
-                        
-                        if (File.Exists(Path.Combine(StaticOverlayFolder, relativePath)) ||
-                            File.Exists(Path.Combine(buildArenaPath, relativePath)) ||
-                            File.Exists(Path.Combine(buildCombatPath, relativePath)))
+                        string trimmed = path.Trim('/');
+                        foreach (string folder in overlayFolders)
                         {
-                            context.Request.Path = pathWithHtml;
+                            if (File.Exists(Path.Combine(folder, trimmed, "index.html")))
+                            {
+                                context.Request.Path = "/" + trimmed + "/index.html";
+                                break;
+                            }
+
+                            if (File.Exists(Path.Combine(folder, trimmed + ".html")))
+                            {
+                                context.Request.Path = "/" + trimmed + ".html";
+                                break;
+                            }
                         }
                     }
                     await next();
                 });
 
-                // Serve from AppData Overlays folder
-                app.UseFileServer(new FileServerOptions
-                {
-                    FileProvider = new PhysicalFileProvider(StaticOverlayFolder),
-                    RequestPath = "",
-                    EnableDefaultFiles = true,
-                    StaticFileOptions =
-                    {
-                        ServeUnknownFileTypes = true,
-                        ContentTypeProvider = provider,
-                        OnPrepareResponse = onPrepareResponse
-                    }
-                });
-
-                // Serve from Arena Build folder
-                if (Directory.Exists(buildArenaPath))
+                foreach (string folder in overlayFolders)
                 {
                     app.UseFileServer(new FileServerOptions
                     {
-                        FileProvider = new PhysicalFileProvider(buildArenaPath),
-                        RequestPath = "",
-                        EnableDefaultFiles = true,
-                        StaticFileOptions =
-                        {
-                            ServeUnknownFileTypes = true,
-                            ContentTypeProvider = provider,
-                            OnPrepareResponse = onPrepareResponse
-                        }
-                    });
-                }
-
-                // Serve from Combat Build folder
-                if (Directory.Exists(buildCombatPath))
-                {
-                    app.UseFileServer(new FileServerOptions
-                    {
-                        FileProvider = new PhysicalFileProvider(buildCombatPath),
+                        FileProvider = new PhysicalFileProvider(folder),
                         RequestPath = "",
                         EnableDefaultFiles = true,
                         StaticFileOptions =

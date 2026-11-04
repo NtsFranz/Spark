@@ -12,7 +12,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
-        Topmost="True"
+        Topmost="False"
         ShowActivated="False"
         Background="Transparent"
 		Loaded="OnLoaded"

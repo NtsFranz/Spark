@@ -33,19 +33,15 @@ namespace Spark
 				socket.OnClose = () =>
 				{
 					Console.WriteLine("Websocket Close!");
-					lock (subscriberLock)
-					{
-						allSockets.Remove(socket);
-						foreach ((EventContainer.EventType key, List<IWebSocketConnection> value) in subscriberMapping)
-						{
-							value.RemoveAll(v => v == socket);
-						}
-					}
+					RemoveSocket(socket);
 				};
+
+				socket.OnError = _ => RemoveSocket(socket);
 
 				// send the message back
 				socket.OnMessage = message =>
 				{
+					if (string.IsNullOrEmpty(message)) return;
 					string[] parts = message.Split(':');
 					if (parts.Length == 2)
 					{
@@ -53,49 +49,53 @@ namespace Spark
 						{
 							case "subscribe":
 							{
-								if (Enum.TryParse(parts[1], out EventContainer.EventType type))
+								if (Enum.TryParse(parts[1].Trim(), out EventContainer.EventType type))
 								{
-									if (!subscriberMapping.ContainsKey(type))
-									{
-										subscriberMapping[type] = new List<IWebSocketConnection>();
-									}
-
+									List<IWebSocketConnection> subs = subscriberMapping.GetOrAdd(type, _ => new List<IWebSocketConnection>());
 									lock (subscriberLock)
 									{
-										subscriberMapping[type].Add(socket);
+										// a client that resubscribes after reconnecting must not get every message twice
+										if (!subs.Contains(socket)) subs.Add(socket);
 									}
 
-									socket.Send(message);
+									SafeSend(socket, message);
 
 									// send back the current state if it's an event that requires it
 									if (type == EventContainer.EventType.overlay_config)
 									{
-										SendData(EventContainer.EventType.overlay_config, OverlayConfig.ToDict());
+										SafeSend(socket, EventContainer.EventType.overlay_config + ":" + JsonConvert.SerializeObject(OverlayConfig.ToDict()));
+									}
+									else if (type is EventContainer.EventType.frame_1hz or EventContainer.EventType.frame_10hz or EventContainer.EventType.frame_30hz)
+									{
+										// give the new subscriber the latest frame right away instead of waiting for the next one
+										string last;
+										lock (Program.lastJSONLock) last = Program.lastJSON;
+										if (Program.InGame && !string.IsNullOrEmpty(last)) SafeSend(socket, type + ":" + last);
 									}
 								}
 								else
 								{
-									socket.Send("failed:" + message);
+									SafeSend(socket, "failed:" + message);
 								}
 								break;
 							}
 							case "unsubscribe":
 							{
-								if (Enum.TryParse(parts[1], out EventContainer.EventType type))
+								if (Enum.TryParse(parts[1].Trim(), out EventContainer.EventType type))
 								{
-									if (subscriberMapping.ContainsKey(type))
+									if (subscriberMapping.TryGetValue(type, out List<IWebSocketConnection> subs))
 									{
 										lock (subscriberLock)
 										{
-											subscriberMapping[type].Remove(socket);
+											subs.RemoveAll(v => v == socket);
 										}
 									}
 
-									socket.Send(message);
+									SafeSend(socket, message);
 								}
 								else
 								{
-									socket.Send("failed:" + message);
+									SafeSend(socket, "failed:" + message);
 								}
 								break;
 							}
@@ -203,9 +203,11 @@ namespace Spark
 
 		~WebSocketServerManager()
 		{
-			allSockets.ForEach(s =>
+			List<IWebSocketConnection> copy;
+			lock (subscriberLock) copy = allSockets.ToList();
+			copy.ForEach(s =>
 			{
-				s.Close();
+				try { s.Close(); } catch { /* ignored */ }
 			});
 			server.Dispose();
 		}
@@ -217,28 +219,54 @@ namespace Spark
 		/// <param name="message">Message content</param>
 		public void SendData(EventContainer.EventType? subscriberGroup, string message)
 		{
+			List<IWebSocketConnection> copy;
+			string payload;
 			if (subscriberGroup == null)
 			{
-				// just send it to all
-				allSockets.ForEach(s =>
-				{
-					s.Send(":" + message);
-				});
+				lock (subscriberLock) copy = allSockets.ToList();
+				payload = ":" + message;
 			}
 			else
 			{
-				if (subscriberMapping.ContainsKey((EventContainer.EventType)subscriberGroup))
-				{
-					List<IWebSocketConnection> copy;
-					lock (subscriberLock)
-					{
-						copy = subscriberMapping[(EventContainer.EventType)subscriberGroup].ToList();
-					}
+				if (!subscriberMapping.TryGetValue((EventContainer.EventType)subscriberGroup, out List<IWebSocketConnection> subs)) return;
+				lock (subscriberLock) copy = subs.ToList();
+				if (copy.Count == 0) return;
+				payload = (EventContainer.EventType)subscriberGroup + ":" + message;
+			}
 
-					copy.ForEach(s =>
-					{
-						s.Send((EventContainer.EventType)subscriberGroup + ":" + message);
-					});
+			foreach (IWebSocketConnection s in copy)
+			{
+				SafeSend(s, payload);
+			}
+		}
+
+		private void SafeSend(IWebSocketConnection socket, string payload)
+		{
+			try
+			{
+				if (socket.IsAvailable)
+				{
+					socket.Send(payload);
+				}
+				else
+				{
+					RemoveSocket(socket);
+				}
+			}
+			catch (Exception)
+			{
+				RemoveSocket(socket);
+			}
+		}
+
+		private void RemoveSocket(IWebSocketConnection socket)
+		{
+			lock (subscriberLock)
+			{
+				allSockets.Remove(socket);
+				foreach (List<IWebSocketConnection> value in subscriberMapping.Values)
+				{
+					value.RemoveAll(v => v == socket);
 				}
 			}
 		}

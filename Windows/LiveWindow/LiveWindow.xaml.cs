@@ -132,7 +132,6 @@ namespace Spark
         string blueLogo = "";
         string orangeLogo = "";
 
-        private bool tryingToShowGameOverlay;
 
         [DllImport("User32.dll")]
         static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
@@ -201,6 +200,7 @@ namespace Spark
         public LiveWindow()
         {
             InitializeComponent();
+            PopulateOverlayPicker();
 
             Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
 
@@ -869,36 +869,16 @@ namespace Spark
 
                     UpdateJoinLink();
 
-                    // if we're trying to show the window
-                    if (tryingToShowGameOverlay)
+                    // SpectatorOverlayController opens and closes the overlay; this only reports its state.
+                    if (!SparkSettings.instance.spectatorOverlayEnabled)
                     {
-                        // if the window is closed
-                        if (Program.GetWindowIfOpen(typeof(GameOverlay)) == null)
-                        {
-                            // if echovr is focused
-                            if (GetActiveProcessFileName().ProcessName == "echovr")
-                            {
-                                Program.ToggleWindow(typeof(GameOverlay));
-                            }
-                            else
-                            {
-                                ClickableOverlaySubtitle.Text = Properties.Resources.Echo_VR_not_active;
-                            }
-                        }
-                        else
-                        {
-                            // close the overlay
-                            if (GetActiveProcessFileName().ProcessName != "echovr")
-                            {
-                                Program.ToggleWindow(typeof(GameOverlay));
-                            }
-
-                            ClickableOverlaySubtitle.Text = Properties.Resources.Active;
-                        }
+                        ClickableOverlaySubtitle.Text = Properties.Resources.Not_active;
                     }
                     else
                     {
-                        ClickableOverlaySubtitle.Text = Properties.Resources.Not_active;
+                        ClickableOverlaySubtitle.Text = Program.GetWindowIfOpen(typeof(GameOverlay)) != null
+                            ? Properties.Resources.Active
+                            : Properties.Resources.Echo_VR_not_active;
                     }
 
                     // Collapsed, not Hidden — these now sit in the status row, so Hidden would leave a
@@ -3632,12 +3612,154 @@ namespace Spark
 
         private void showOverlay_Click(object sender, RoutedEventArgs e)
         {
-            tryingToShowGameOverlay = !tryingToShowGameOverlay;
+            SparkSettings.instance.spectatorOverlayEnabled = !SparkSettings.instance.spectatorOverlayEnabled;
+            SparkSettings.instance.Save();
 
-            // close the overlay if it's open
-            if (Program.GetWindowIfOpen(typeof(GameOverlay)) != null)
+            // apply right away instead of waiting for the controller's next check
+            Program.spectatorOverlayController?.Refresh();
+            ClickableOverlaySubtitle.Text = SparkSettings.instance.spectatorOverlayEnabled
+                ? (Program.GetWindowIfOpen(typeof(GameOverlay)) != null ? Properties.Resources.Active : Properties.Resources.Echo_VR_not_active)
+                : Properties.Resources.Not_active;
+        }
+
+        // ───── overlay picker ─────
+
+        private static readonly (string name, string url)[] BuiltInOverlays =
+        {
+            ("Spark Arena", "/arena_overlay"),
+            ("Configurable overlay", "/configurable_overlay"),
+            ("Full overlay", "/full_overlay"),
+            ("Midmatch overlay", "/midmatch_overlay"),
+            ("Minimap only", "/components/minimap"),
+        };
+
+        private bool populatingOverlayPicker;
+
+        private void PopulateOverlayPicker()
+        {
+            populatingOverlayPicker = true;
+            try
             {
-                Program.ToggleWindow(typeof(GameOverlay));
+                string current = SparkSettings.instance.gameOverlayUrl ?? "";
+                OverlayPicker.Items.Clear();
+
+                void Add(string name, string url)
+                {
+                    if (OverlayPicker.Items.Cast<ComboBoxItem>().Any(i => SameOverlay((string)i.Tag, url))) return;
+                    OverlayPicker.Items.Add(new ComboBoxItem { Content = name, Tag = url, ToolTip = url });
+                }
+
+                foreach ((string name, string url) in BuiltInOverlays) Add(name, url);
+
+                // your own overlays: .html files in the Overlays folder are served at /<name>
+                try
+                {
+                    if (Directory.Exists(OverlayServer.StaticOverlayFolder))
+                    {
+                        foreach (string file in Directory.EnumerateFiles(OverlayServer.StaticOverlayFolder, "*.html", SearchOption.TopDirectoryOnly).OrderBy(f => f))
+                        {
+                            string n = Path.GetFileNameWithoutExtension(file);
+                            if (n == "index") continue;
+                            Add(n + " (my overlay)", "/" + n);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.LogRow(Logger.LogType.Error, $"Couldn't list custom overlays: {e.Message}");
+                }
+
+                // URLs typed in before
+                foreach (string url in SparkSettings.instance.gameOverlayCustomUrls ?? new List<string>()) Add(url, url);
+                if (!string.IsNullOrWhiteSpace(current)) Add(current, current);
+
+                OverlayPicker.SelectedItem = OverlayPicker.Items.Cast<ComboBoxItem>().FirstOrDefault(i => SameOverlay((string)i.Tag, current));
+            }
+            finally
+            {
+                populatingOverlayPicker = false;
+            }
+        }
+
+        private static string NormalizeOverlayUrl(string url)
+        {
+            url = (url ?? "").Trim();
+            if (url.StartsWith("http://localhost:6724/", StringComparison.OrdinalIgnoreCase)) url = url["http://localhost:6724".Length..];
+            if (url.StartsWith("http://127.0.0.1:6724/", StringComparison.OrdinalIgnoreCase)) url = url["http://127.0.0.1:6724".Length..];
+            return url.TrimEnd('/').ToLowerInvariant();
+        }
+
+        private static bool SameOverlay(string a, string b) => NormalizeOverlayUrl(a) == NormalizeOverlayUrl(b);
+
+        private void SetOverlayUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url) || SameOverlay(url, SparkSettings.instance.gameOverlayUrl)) return;
+            SparkSettings.instance.gameOverlayUrl = url;
+            SparkSettings.instance.Save();
+            Program.spectatorOverlayController?.Reload();
+        }
+
+        private void OverlayPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (populatingOverlayPicker) return;
+            if (OverlayPicker.SelectedItem is ComboBoxItem item) SetOverlayUrl((string)item.Tag);
+        }
+
+        private void OverlayPicker_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter) CommitTypedOverlay();
+        }
+
+        private void OverlayPicker_LostFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            CommitTypedOverlay();
+        }
+
+        private void OverlayPicker_DropDownOpened(object sender, EventArgs e)
+        {
+            // pick up overlay files added since the window opened
+            PopulateOverlayPicker();
+        }
+
+        /// <summary>Accepts whatever was typed: a URL, a path on this server, or a local .html file.</summary>
+        private void CommitTypedOverlay()
+        {
+            if (populatingOverlayPicker) return;
+            string text = OverlayPicker.Text?.Trim();
+            if (string.IsNullOrEmpty(text)) return;
+
+            // the text of an existing entry: that entry's URL
+            ComboBoxItem match = OverlayPicker.Items.Cast<ComboBoxItem>().FirstOrDefault(i => (string)i.Content == text);
+            if (match != null)
+            {
+                SetOverlayUrl((string)match.Tag);
+                return;
+            }
+
+            string url = text;
+            if (File.Exists(text)) url = new Uri(Path.GetFullPath(text)).AbsoluteUri;
+            else if (!url.Contains("://") && !url.StartsWith('/')) url = (url.Contains('.') && !url.EndsWith(".html") ? "https://" : "/") + url;
+
+            SparkSettings.instance.gameOverlayCustomUrls ??= new List<string>();
+            if (!SparkSettings.instance.gameOverlayCustomUrls.Any(u => SameOverlay(u, url)) && !BuiltInOverlays.Any(b => SameOverlay(b.url, url)))
+            {
+                SparkSettings.instance.gameOverlayCustomUrls.Add(url);
+            }
+
+            SetOverlayUrl(url);
+            PopulateOverlayPicker();
+        }
+
+        private void OpenOverlayFolder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Directory.CreateDirectory(OverlayServer.StaticOverlayFolder);
+                Process.Start(new ProcessStartInfo("explorer.exe", $"\"{OverlayServer.StaticOverlayFolder}\"") { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogRow(Logger.LogType.Error, $"Couldn't open overlay folder: {ex.Message}");
             }
         }
 

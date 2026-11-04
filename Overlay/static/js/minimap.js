@@ -5,29 +5,44 @@ const timeout_banner = document.getElementById('timeout_banner');
 const timeout_banner_team = document.getElementById('timeout_banner_team');
 
 
+function api_pos(obj) {
+	const p = obj && ((obj.head && obj.head.position) || obj.position);
+	return Array.isArray(p) && p.length >= 3 ? p : [0, 0, 0];
+}
+
 let sw = new SparkWebsocket();
 sw.subscribe("frame_10hz", data => {
-	
-	set_pos(disc, data['disc']['position'][2], data['disc']['position'][0]);
+	if (!data) return;
+
+	if (data.disc) {
+		const d = api_pos(data.disc);
+		set_pos(disc, d[2], d[0]);
+	}
+
+	const teams = Array.isArray(data.teams) ? data.teams : [];
 	for (let i = 0; i < 10; i++) {
-		if (data['teams'][Math.floor(i / 5)]['players'] &&
-			data['teams'][Math.floor(i / 5)]['players'].length > i % 5) {
-			const player_data = data['teams'][Math.floor(i / 5)]['players'][Math.floor(i % 5)];
-			set_pos(players[i], player_data['head']['position'][2], player_data['head']['position'][0]);
-			set_number(player_numbers[i], "" + player_data['number']);
+		if (!players[i]) continue;
+		const team = teams[Math.floor(i / 5)];
+		const list = team && Array.isArray(team.players) ? team.players : [];
+		const player_data = list[i % 5];
+		if (player_data) {
+			const pp = api_pos(player_data);
+			set_pos(players[i], pp[2], pp[0]);
+			set_number(player_numbers[i], "" + (player_data.number ?? 0));
 			players[i].style.visibility = 'visible';
-		}
-		else {
+		} else {
 			set_pos(players[i], 0, 0);
 			players[i].style.visibility = 'hidden';
 		}
 	}
 
-	if (data['pause']['paused_state'] === 'paused') {
-		timeout_banner.style.visibility = 'visible';
-		timeout_banner_team.innerText = data['pause']['paused_requested_team']
-	} else {
-		timeout_banner.style.visibility = 'hidden';
+	if (timeout_banner) {
+		if (data.pause && data.pause.paused_state === 'paused') {
+			timeout_banner.style.visibility = 'visible';
+			if (timeout_banner_team) timeout_banner_team.innerText = data.pause.paused_requested_team;
+		} else {
+			timeout_banner.style.visibility = 'hidden';
+		}
 	}
 });
 

@@ -114,7 +114,7 @@ namespace Spark
 		public static ulong fetchFrameIndex = 0;
 
 
-		private static readonly object lastJSONLock = new object();
+		internal static readonly object lastJSONLock = new object();
 		private static readonly object lastFrameLock = new object();
 		public static readonly object logOutputWriteLock = new object();
 		public static readonly object gameStateLock = new object();
@@ -184,6 +184,7 @@ namespace Spark
 		public static OBS obs;
 		public static Medal medal;
 		private static OverlayServer overlayServer;
+		public static SpectatorOverlayController spectatorOverlayController;
 		public static SpectateMeController spectateMeController;
 		public static SimpleSpectateController simpleSpectateController;
 		public static UploadController uploadController;
@@ -601,6 +602,7 @@ namespace Spark
 				loggerEvents = new LoggerEvents();
 				spectateMeController = new SpectateMeController();
 				simpleSpectateController = new SimpleSpectateController();
+				spectatorOverlayController = new SpectatorOverlayController();
 				uploadController = new UploadController();
 				localDatabase = new LocalDatabase();
 				cameraController = new CameraController();

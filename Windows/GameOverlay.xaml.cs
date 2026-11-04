@@ -23,6 +23,7 @@ namespace Spark
 		bool uiVisible = true;
 		bool minimapVisible = true;
 
+
 		public GameOverlay()
 		{
 			InitializeComponent();
@@ -87,6 +88,22 @@ namespace Spark
 			// 	AccessibleEvents.Destroy, IntPtr.Zero, eventHandler
 			// 	, 0, 0, NativeMethods.SetWinEventHookParameter.WINEVENT_OUTOFCONTEXT);
 		}
+
+		protected override void OnSourceInitialized(EventArgs e)
+		{
+			base.OnSourceInitialized(e);
+			// Click-through: mouse and keyboard keep going to the game underneath.
+			IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(this).Handle;
+			const int GWL_EXSTYLE = -20, WS_EX_TRANSPARENT = 0x20, WS_EX_TOOLWINDOW = 0x80, WS_EX_NOACTIVATE = 0x08000000;
+			int style = GetWindowLongInt(hwnd, GWL_EXSTYLE);
+			SetWindowLongInt(hwnd, GWL_EXSTYLE, style | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
+		}
+
+		[DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+		private static extern int GetWindowLongInt(IntPtr hWnd, int nIndex);
+
+		[DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+		private static extern int SetWindowLongInt(IntPtr hWnd, int nIndex, int dwNewLong);
 
 		private async void OnLoaded(object sender, RoutedEventArgs e)
 		{

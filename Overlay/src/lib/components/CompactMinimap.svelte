@@ -1,13 +1,29 @@
 <script lang="ts">
     export let frame;
 
+    // Arena is 80m long (z) and 32m wide (x); map those onto the minimap image.
     function x_pos(z) {
-        return (-z / 80 + .5) * 427 + 68;
+        return (-(Number(z) || 0) / 80 + .5) * 427 + 68;
     }
 
     function y_pos(x) {
-        return (x / 32 + .5) * 165 + 5;
+        return ((Number(x) || 0) / 32 + .5) * 165 + 5;
     }
+
+    // The game API reports player positions under head.position (newer builds)
+    // or position (older builds). Missing data must never break the render.
+    function pos(obj) {
+        const p = obj?.head?.position ?? obj?.position;
+        return Array.isArray(p) && p.length >= 3 ? p : [0, 0, 0];
+    }
+
+    function num(p) {
+        return String(p?.number ?? 0).padStart(2, '0');
+    }
+
+    $: blue = Array.isArray(frame?.teams?.[0]?.players) ? frame.teams[0].players : [];
+    $: orange = Array.isArray(frame?.teams?.[1]?.players) ? frame.teams[1].players : [];
+    $: disc = frame?.disc ? pos(frame.disc) : null;
 </script>
 
 <style>
@@ -81,35 +97,26 @@
 
     <img class="minimap_image" src="/img/minimap_simple.png" draggable="false">
 
-    {#if frame}
+    {#each blue as p}
+        <div class="player blue positionable_element" class:possession={p?.possession}
+             style="left:{x_pos(pos(p)[2])}px; top: {y_pos(pos(p)[0])}px;">
+            <div></div>
+            <p class="player_number">{num(p)}</p>
+        </div>
+    {/each}
 
-        {#if frame['teams'][0]['players']}
-            {#each frame['teams'][0]['players'] as p}
-                <div class="player blue positionable_element"
-                     style="left:{x_pos(p['head']['position'][2])}px; top: {y_pos(p['head']['position'][0])}px;">
-                    <div></div>
-                    <p class="player_number">{p['number'].toString().padStart(2, '0')}</p>
-                </div>
-            {/each}
-        {/if}
+    {#each orange as p}
+        <div class="player orange positionable_element" class:possession={p?.possession}
+             style="left:{x_pos(pos(p)[2])}px; top: {y_pos(pos(p)[0])}px;">
+            <div></div>
+            <p class="player_number">{num(p)}</p>
+        </div>
+    {/each}
 
-
-        {#if frame['teams'][1]['players']}
-            {#each frame['teams'][1]['players'] as p}
-                <div class="player orange positionable_element"
-                     style="left:{x_pos(p['head']['position'][2])}px; top: {y_pos(p['head']['position'][0])}px;">
-                    <div></div>
-                    <p class="player_number">{p['number'].toString().padStart(2, '0')}</p>
-                </div>
-            {/each}
-        {/if}
-
-
-        {#if frame}
-            <div id="disc" class="positionable_element"
-                 style="left:{x_pos(frame['disc']['position'][2])}px; top: {y_pos(frame['disc']['position'][0])}px;">
-                <img class="minimap_disc" src="/img/minimap_disc.png" draggable="false">
-            </div>
-        {/if}
+    {#if disc}
+        <div id="disc" class="positionable_element"
+             style="left:{x_pos(disc[2])}px; top: {y_pos(disc[0])}px;">
+            <img class="minimap_disc" src="/img/minimap_disc.png" draggable="false" alt="">
+        </div>
     {/if}
 </div>

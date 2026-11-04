@@ -1,73 +1,88 @@
-﻿'use strict';
+'use strict';
 
+// Used by the legacy static overlays (minimap.html, full_overlay.js, ...).
 class SparkWebsocket {
     ws;
     callbacks = {};
     initialized = false;
 
-    constructor() {
-        this.ws = new ReconnectingWebSocket("ws://127.0.0.1:6725")
-        this.ws.addEventListener("message", event => {
-            this.processMessage(event);
+    constructor(url) {
+        this.ws = new ReconnectingWebSocket(url || "ws://127.0.0.1:6725", null, {
+            reconnectInterval: 500,
+            maxReconnectInterval: 3000,
+            timeoutInterval: 2000
         });
-        this.ws.addEventListener("open", event => {
-            this.connect(event);
+        this.ws.addEventListener("message", event => this.processMessage(event));
+        this.ws.addEventListener("open", () => {
             this.initialized = true;
+            this.connect();
+        });
+        this.ws.addEventListener("close", () => {
+            this.initialized = false;
         });
     }
 
     close() {
-        if (this) {
-            this.ws.close();
-            this.initialized = false;
-        }
+        this.initialized = false;
+        if (this.ws) this.ws.close();
     }
 
     subscribe(eventType, callback) {
-        if (callback === null) return;
-        if (this.callbacks[eventType] === undefined) {
-            this.callbacks[eventType] = [];
-        }
-        this.callbacks[eventType].push(callback)
-        if (this.initialized) {
-            this.ws.send("subscribe:" + eventType);
-        }
+        if (!callback) return;
+        if (!this.callbacks[eventType]) this.callbacks[eventType] = [];
+        const isNew = this.callbacks[eventType].length === 0;
+        this.callbacks[eventType].push(callback);
+        if (this.initialized && isNew) this.send("subscribe:" + eventType);
     }
 
     unsubscribe(eventType, callback) {
-        if (this.callbacks[eventType] === undefined) {
-            this.callbacks[eventType] = [];
-        }
-        if (callback == null) {
-            this.callbacks[eventType] = [];
-        } else {
-            this.callbacks[eventType].pop(callback)
-        }
-        if (this.initialized) {
-            this.ws.send("unsubscribe:" + eventType);
+        const list = this.callbacks[eventType] || [];
+        this.callbacks[eventType] = callback == null ? [] : list.filter(c => c !== callback);
+        if (this.initialized && this.callbacks[eventType].length === 0) this.send("unsubscribe:" + eventType);
+    }
+
+    send(msg) {
+        try {
+            this.ws.send(msg);
+        } catch (e) {
+            // not connected yet; connect() resubscribes on open
         }
     }
 
-    connect(event) {
-        for (const [key, value] of Object.entries(this.callbacks)) {
-            this.ws.send("subscribe:" + key)
+    connect() {
+        for (const [key, list] of Object.entries(this.callbacks)) {
+            if (list.length > 0) this.send("subscribe:" + key);
         }
     }
 
     processMessage(event) {
-        // split the message header from the rest of the json
-        let parts = event.data.split(/:(.+)/)
-
-        // if the message didn't have a header properly
-        if (parts.length !== 3) return;
-
-        if (parts[0] === "subscribe") {
-            console.log("Subscribed: " + parts[1]);
+        if (typeof event.data !== "string") return;
+        // "<event_type>:<json>" - split on the first colon only; the JSON may span lines.
+        const idx = event.data.indexOf(":");
+        if (idx <= 0) return;
+        const type = event.data.slice(0, idx);
+        const body = event.data.slice(idx + 1);
+        if (type === "subscribe" || type === "unsubscribe") return;
+        if (type === "failed") {
+            console.warn("Spark websocket rejected: " + body);
+            return;
         }
-
-        if (this.callbacks[parts[0]] !== undefined) {
-            this.callbacks[parts[0]].forEach(c => c(JSON.parse(parts[1])));
+        const list = this.callbacks[type];
+        if (!list || list.length === 0) return;
+        let data;
+        try {
+            data = JSON.parse(body);
+        } catch (e) {
+            console.warn("Spark websocket: bad JSON for " + type, e);
+            return;
         }
+        list.forEach(c => {
+            try {
+                c(data);
+            } catch (e) {
+                console.error("Spark websocket callback error (" + type + ")", e);
+            }
+        });
     }
 }
 

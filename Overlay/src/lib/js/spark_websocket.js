@@ -1,79 +1,102 @@
 ﻿import ReconnectingWebSocket from 'reconnecting-websocket';
-import {WebSocket} from "ws";
 
+// Keep retrying forever: overlays are often loaded in OBS before Spark (or the game)
+// is running, and a browser source that gave up after a few tries never recovers.
 const options = {
-    WebSocket: WebSocket, // custom WebSocket constructor
-    connectionTimeout: 1000,
-    maxRetries: 10,
+    connectionTimeout: 2000,
+    maxRetries: Infinity,
+    minReconnectionDelay: 500,
+    maxReconnectionDelay: 3000,
+    reconnectionDelayGrowFactor: 1.5,
 };
+
+const DEFAULT_URL = 'ws://127.0.0.1:6725';
 
 export class SparkWebsocket {
     ws;
     callbacks = {};
     initialized = false;
 
-    constructor() {
-        this.ws = new ReconnectingWebSocket("ws://127.0.0.1:6725", [], options);
-        this.ws.addEventListener("message", event => {
-            this.processMessage(event);
-        });
-        this.ws.addEventListener("open", event => {
-            this.connect(event);
+    constructor(url = DEFAULT_URL) {
+        this.ws = new ReconnectingWebSocket(url, [], options);
+        this.ws.addEventListener('message', event => this.processMessage(event));
+        this.ws.addEventListener('open', () => {
             this.initialized = true;
+            this.connect();
+        });
+        this.ws.addEventListener('close', () => {
+            this.initialized = false;
         });
     }
 
     close() {
-        if (this) {
-            this.ws.close();
-            this.initialized = false;
-        }
+        this.initialized = false;
+        this.ws?.close();
     }
 
     subscribe(eventType, callback) {
-        if (callback === null) return;
-        if (this.callbacks[eventType] === undefined) {
-            this.callbacks[eventType] = [];
-        }
-        this.callbacks[eventType].push(callback)
-        if (this.initialized) {
-            this.ws.send("subscribe:" + eventType);
+        if (!callback) return;
+        const isNew = !this.callbacks[eventType] || this.callbacks[eventType].length === 0;
+        (this.callbacks[eventType] ??= []).push(callback);
+        if (this.initialized && isNew) {
+            this.send('subscribe:' + eventType);
         }
     }
 
     unsubscribe(eventType, callback) {
-        if (this.callbacks[eventType] === undefined) {
-            this.callbacks[eventType] = [];
-        }
-        if (callback == null) {
-            this.callbacks[eventType] = [];
-        } else {
-            this.callbacks[eventType].pop(callback)
-        }
-        if (this.initialized) {
-            this.ws.send("unsubscribe:" + eventType);
+        const list = this.callbacks[eventType] ?? [];
+        this.callbacks[eventType] = callback == null ? [] : list.filter(c => c !== callback);
+        if (this.initialized && this.callbacks[eventType].length === 0) {
+            this.send('unsubscribe:' + eventType);
         }
     }
 
-    connect(event) {
-        for (const [key, value] of Object.entries(this.callbacks)) {
-            this.ws.send("subscribe:" + key)
+    send(msg) {
+        try {
+            this.ws.send(msg);
+        } catch (e) {
+            // socket not open yet; connect() resubscribes on the next open
+        }
+    }
+
+    connect() {
+        for (const [key, list] of Object.entries(this.callbacks)) {
+            if (list.length > 0) this.send('subscribe:' + key);
         }
     }
 
     processMessage(event) {
-        // split the message header from the rest of the json
-        let parts = event.data.split(/:(.+)/)
+        if (typeof event.data !== 'string') return;
 
-        // if the message didn't have a header properly
-        if (parts.length !== 3) return;
+        // Messages are "<event_type>:<json>". Split on the first colon only: the payload
+        // is raw game API JSON, which can span multiple lines and contains colons itself.
+        const idx = event.data.indexOf(':');
+        if (idx <= 0) return;
+        const type = event.data.slice(0, idx);
+        const body = event.data.slice(idx + 1);
 
-        if (parts[0] === "subscribe") {
-            console.log("Subscribed: " + parts[1]);
+        if (type === 'subscribe' || type === 'unsubscribe') return;
+        if (type === 'failed') {
+            console.warn('Spark websocket rejected: ' + body);
+            return;
         }
 
-        if (this.callbacks[parts[0]] !== undefined) {
-            this.callbacks[parts[0]].forEach(c => c(JSON.parse(parts[1])));
+        const list = this.callbacks[type];
+        if (!list || list.length === 0) return;
+
+        let data;
+        try {
+            data = JSON.parse(body);
+        } catch (e) {
+            console.warn('Spark websocket: bad JSON for ' + type, e);
+            return;
+        }
+        for (const c of list) {
+            try {
+                c(data);
+            } catch (e) {
+                console.error('Spark websocket callback error (' + type + ')', e);
+            }
         }
     }
 }

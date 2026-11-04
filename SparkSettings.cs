@@ -178,6 +178,10 @@ namespace Spark
 		public bool sparkLinkForceLaunchNewInstance { get; set; } = false;
 		public bool spectatorStreamCombat { get; set; } = false;
 		public bool spectatorStreamNoOVR { get; set; } = false;
+		/// <summary>The "Spectator overlay" toggle in the Live window: shows the Spark arena overlay over the Echo VR window.</summary>
+		public bool spectatorOverlayEnabled { get; set; } = false;
+		/// <summary>Hide Echo's built-in spectator HUD while the Spark overlay is showing.</summary>
+		public bool spectatorStreamHideGameHud { get; set; } = true;
 		public string sparkExeLocation { get; set; } = "";
 		public bool allowSpectateMeOnLocalPC { get; set; } = false;
 		public bool useAnonymousSpectateMe { get; set; } = true;
@@ -438,7 +442,10 @@ namespace Spark
 		public int overlaysManualRoundCount { get; set; } = 3;
 		public int[] overlaysManualRoundScoresOrange { get; set; } = null;
 		public int[] overlaysManualRoundScoresBlue { get; set; } = null;
-		public string gameOverlayUrl { get; set; } = "http://localhost:6724/configurable_overlay";
+		/// <summary>Overlay shown over the game by the Spectator overlay toggle: a path on the overlay server, a URL, or a file:/// URI.</summary>
+		public string gameOverlayUrl { get; set; } = "/arena_overlay";
+		/// <summary>URLs players typed into the overlay picker, kept so they stay in the list.</summary>
+		public List<string> gameOverlayCustomUrls { get; set; } = new List<string>();
 
 		[Serializable]
 		public class ConfigurableOverlaySettings

@@ -77,7 +77,7 @@
 
         <!-- The theme's TabPanel wraps onto extra rows once the tabs stop fitting. With several
              optional tabs enabled that means a second row of navigation; this keeps them on one
-             line and scrolls instead. Remove Template="{StaticResource ScrollingTabs}" from the
+             line and shrinks them to fit instead. Remove Template="{StaticResource ScrollingTabs}" from the
              TabControl to go back to wrapping. -->
         <Style x:Key="TabStripIconButton" TargetType="Button">
             <Setter Property="Width" Value="26"/>
@@ -127,11 +127,13 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <ScrollViewer Grid.Column="0" Panel.ZIndex="1" Focusable="False"
-                                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <!-- When the tabs don't fit, shrink them (text and icons) to the available width
+                         instead of showing a scrollbar. DownOnly: never scaled up past normal size. -->
+                    <Viewbox Grid.Column="0" Panel.ZIndex="1" Stretch="Uniform" StretchDirection="DownOnly"
+                             HorizontalAlignment="Left" VerticalAlignment="Center">
                         <StackPanel x:Name="headerPanel" Orientation="Horizontal" IsItemsHost="True"
                                     Margin="2,2,2,0" KeyboardNavigation.TabIndex="1"/>
-                    </ScrollViewer>
+                    </Viewbox>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="6,2,6,0" VerticalAlignment="Center">
                         <Button Style="{StaticResource TabStripIconButton}" Click="RefreshDashboardClick"
                                 ToolTip="Reload the dashboard view">
@@ -313,6 +315,18 @@
                                FontSize="12" VerticalAlignment="Center"/>
                     </DockPanel>
                 </Button>
+
+                <!-- which overlay the toggle shows: a built-in one, a file from the Overlays folder, or any typed URL -->
+                <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                    <Button DockPanel.Dock="Right" Content="…" Width="26" Height="24" Margin="4,0,0,0" Padding="0"
+                            ToolTip="Open the folder for your own overlays (.html files there show up in this list)"
+                            Click="OpenOverlayFolder_Click"/>
+                    <ComboBox x:Name="OverlayPicker" Height="24" FontSize="11" IsEditable="True"
+                              ToolTip="Overlay shown by the Spectator overlay toggle. Pick one, or type any URL and press Enter."
+                              SelectionChanged="OverlayPicker_SelectionChanged"
+                              KeyDown="OverlayPicker_KeyDown" LostKeyboardFocus="OverlayPicker_LostFocus"
+                              DropDownOpened="OverlayPicker_DropDownOpened"/>
+                </DockPanel>
 
                 <Grid>
                 <Grid.RowDefinitions>
